@@ -134,7 +134,7 @@ int advection_example()
 	phreeqc_rm.SetTime(&time);
 	phreeqc_rm.SetTimeStep(&time_step);
 	phreeqc_rm.RunCells(); 
-	phreeqc_rm.Module2Concentrations(c.data());
+	phreeqc_rm.GetConcentrations(c.data());
 
 	int nsteps = 10;
 
@@ -146,8 +146,7 @@ int advection_example()
 	for (int steps = 0; steps < nsteps; steps++)
 	{
 		advect(c, bc_conc, ncomps, nxyz, dim);
-		phreeqc_rm.SetConcentration(c.data());
-		phreeqc_rm.Concentrations2Module();
+		phreeqc_rm.SetConcentrations(c.data());
 		if (steps == nsteps -1)
 		{
 			print_chemistry_on = 1;

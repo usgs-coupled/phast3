@@ -37,10 +37,11 @@ public:
 	~Reaction_module(void);
 	
 	// Key methods
-	void                                      Concentrations2Module(void);	
+	//void                                      Concentrations2Module(void);	
 	IRM_RESULT                                CreateMapping(int *grid2chem);
 	IRM_RESULT                                DumpModule(int *dump_on, int *use_gz = NULL);
 	int                                       FindComponents();
+	void                                      GetConcentrations(double * c);
 	IRM_RESULT                                InitialPhreeqc2Concentrations( 
                                                    double *c,
                                                    int *n_boundary, 
@@ -54,7 +55,6 @@ public:
                                                    double *fraction1 = NULL);
 	int                                       InitialPhreeqcRunFile(const char *chemistry_name, long l = -1);
 	int                                       LoadDatabase(const char * database, long l = -1);
-	void                                      Module2Concentrations(double * c);
 	void                                      RunCells(void);
 
 	// Utilities
@@ -75,7 +75,7 @@ public:
 	std::vector<double> &                     GetCellVolume(void) {return this->cell_volume;}
 	const int                                 GetChemistryCellCount(void) const {return this->count_chemistry;}
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
-	std::vector<double> &                     GetConcentration(void) {return this->concentration;}
+	//std::vector<double> &                     GetConcentration(void) {return this->concentration;}
 	const std::string                         GetDatabaseFileName(void) const {return this->database_file_name;}
 	std::vector<double> &                     GetDensity(void); 
 	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;} 
@@ -117,7 +117,8 @@ public:
 
 	// Setters 
 	IRM_RESULT                                SetChemistryFileName(const char * prefix, long l = -1);
-	void                                      SetConcentration(double * t = NULL); 
+	void                                      SetConcentration(double * t = NULL); // delete 
+	void                                      SetConcentrations(double * t = NULL); 
 	int										  SetCurrentSelectedOutputUserNumber(int *i);
 	IRM_RESULT                                SetDatabaseFileName(const char * prefix, long l = -1);
 	void                                      SetCellVolume(double * t);
@@ -157,7 +158,9 @@ protected:
 		                                          double *fraction1,
 		                                          std::set<std::string> error_set);
 	int                                       CheckSelectedOutput();
-	void                                      Concentrations2Threads(int n);
+	//void                                      Concentrations2Solutions(double * c);
+	//void                                      Concentrations2Threads(int n); // delete
+	void                                      Concentrations2Solutions(int n, std::vector<double> &c);
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
@@ -188,7 +191,7 @@ protected:
 	double time;						    // time from transport, sec 
 	double time_step;					    // time step from transport, sec
 	double time_conversion;					// time conversion factor, multiply to convert to preferred time unit for output
-	std::vector<double> concentration;		// nxyz by ncomps concentrations nxyz:components
+	//std::vector<double> concentration;		// nxyz by ncomps concentrations nxyz:components
 	std::vector <double> old_saturation;	// saturation fraction from previous step
 	std::vector<double> saturation;	        // nxyz saturation fraction
 	std::vector<double> pressure;			// nxyz current pressure

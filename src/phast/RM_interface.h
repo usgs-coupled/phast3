@@ -25,6 +25,7 @@
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
 #define RM_GetChemistryCellCount           FC_FUNC_ (rm_getchemistrycellcount,         RM_GETNCHEMISTRYCELLCOUNT)
 #define RM_GetComponent                    FC_FUNC_ (rm_getcomponent,                  RM_GETCOMPONENT)
+#define RM_GetConcentrations               FC_FUNC_ (rm_getconcentrations,             RM_GETCONCENTRATIONS)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
 #define RM_GetMpiTasks                     FC_FUNC_ (rm_getmpitasks,                   RM_GETMPITASKS)
@@ -44,7 +45,6 @@
 #define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
 #define RM_LogScreenMessage                FC_FUNC_ (rm_logscreenmessage,              RM_LOGSCREENMESSAGE)
-#define RM_Module2Concentrations           FC_FUNC_ (rm_module2concentrations,         RM_MODULE2CONCENTRATIONS)
 #define RM_OpenFiles                       FC_FUNC_ (rm_openfiles,                     RM_OPENFILES)
 #define RM_RunCells                        FC_FUNC_ (rm_runcells,                      RM_RUNCELLS)
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
@@ -501,16 +501,16 @@ void       RM_LogScreenMessage(const char *str, long l = -1);
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      SUBROUTINE RM_Module2Concentrations(id, c)   
+ *      SUBROUTINE RM_GetConcentrations(id, c)   
  *          IMPLICIT NONE
  *          INTEGER :: id
  *          DOUBLE PRECISION, OPTIONAL :: c
- *      END SUBROUTINE RM_Module2Concentrations 
+ *      END SUBROUTINE RM_GetConcentrations 
  *  </PRE>
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_Module2Concentrations(int *id, double *c = NULL);
+void       RM_GetConcentrations(int *id, double *c = NULL);
 /**
  *  Opens the output file and log file. 
  *  @see                  @ref RM_SetFilePrefix @ref RM_CloseFiles
