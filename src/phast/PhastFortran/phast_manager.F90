@@ -241,7 +241,9 @@ SUBROUTINE phast_manager
     ! ... Cleanup reaction module
 	CALL FH_FinalizeFiles();
     IF (solute) THEN  
-        if (RM_Destroy(rm_id) < 0) CALL RM_error(rm_id)     
+        if (RM_Destroy(rm_id) < 0) then
+            CALL RM_error('RM_Destroy failed.') 
+        endif
     ENDIF
     CALL RM_CloseFiles()
 
@@ -344,7 +346,7 @@ SUBROUTINE transport_component(i)
     CALL XP_aplbce(xp_list(i))
     CALL XP_asmslc(xp_list(i))
     CALL XP_sumcal1(xp_list(i))
-    IF(errexe .OR. errexi) CALL RM_error(rm_id)
+    IF(errexe .OR. errexi) CALL RM_error("transport_component failed.")
 END SUBROUTINE transport_component
     
 SUBROUTINE transport_component_thread(i)
@@ -367,7 +369,7 @@ SUBROUTINE transport_component_thread(i)
     CALL XP_asmslc_thread(xp_list(i))
     CALL XP_sumcal1(xp_list(i))
     CALL XP_free_thread(xp_list(i))
-    IF(errexe .OR. errexi) CALL RM_error(rm_id)
+    IF(errexe .OR. errexi) CALL RM_error("transport_component_thread failed.")
     END SUBROUTINE transport_component_thread
     
 SUBROUTINE CreateRM 

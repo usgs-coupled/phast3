@@ -112,7 +112,7 @@ FileHandler::ProcessRestartFiles(
 	*   
 	*      saves results in restart_bin and then the reaction module
 	*/
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
 		IRM_RESULT rtn = IRM_OK;
@@ -134,8 +134,7 @@ FileHandler::ProcessRestartFiles(
 				initial_conditions2_in == NULL ||
 				fraction1_in == NULL)
 			{
-				RM_ErrorMessage("NULL pointer in call to DistributeInitialConditions");
-				RM_Error(id);
+				RM_Error("NULL pointer in call to DistributeInitialConditions");
 			}
 			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
 			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
@@ -184,8 +183,7 @@ FileHandler::ProcessRestartFiles(
 				myfile.close();
 				std::ostringstream errstr;
 				errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
-				RM_ErrorMessage(errstr.str().c_str());
-				RM_Error(id);
+				RM_Error(errstr.str().c_str());
 			}
 
 			// points are x, y, z, cell_no
@@ -432,7 +430,7 @@ IRM_RESULT
 FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *print_xyz_in, int *xyz_mask, int *print_restart_in)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		IRM_RESULT rtn = IRM_OK;
@@ -446,8 +444,7 @@ FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *pr
 				xyz_mask == 0 ||
 				print_restart_in == 0)
 			{
-				RM_ErrorMessage("Null pointer in WriteFiles");
-				RM_Error(id);
+				RM_Error("Null pointer in WriteFiles");
 			}
 			print_media = *print_media_in;		
 			print_hdf = *print_hdf_in;
@@ -492,7 +489,7 @@ IRM_RESULT
 FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -588,7 +585,7 @@ IRM_RESULT
 FileHandler::WriteRestart(int *id, int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
 		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
@@ -722,7 +719,7 @@ IRM_RESULT
 FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -753,8 +750,7 @@ FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 							filename << prefix << "_" << n_user << ".chem.xyz.tsv";
 							if (!this->Get_io()->punch_open(filename.str().c_str()))
 							{
-								RM_ErrorMessage("Could not open xyz file.");
-								RM_Error(id);
+								RM_Error("Could not open xyz file.");
 							}
 							this->GetXYZOstreams().push_back(this->Get_io()->Get_punch_ostream());
 							// write first headings

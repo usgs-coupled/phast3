@@ -33,9 +33,9 @@
             INTEGER, OPTIONAL, INTENT(in) :: dump_on, use_gz
         END FUNCTION RM_DumpModule
         
-        SUBROUTINE RM_Error(id)
+        SUBROUTINE RM_Error(str)
             IMPLICIT NONE
-            INTEGER, OPTIONAL, INTENT(in) :: id
+            CHARACTER, OPTIONAL, INTENT(in) :: str
         END SUBROUTINE RM_Error
         
         SUBROUTINE RM_ErrorMessage(errstr)
