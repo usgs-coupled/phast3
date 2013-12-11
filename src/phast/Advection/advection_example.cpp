@@ -90,8 +90,20 @@ int advection_example()
 
 	// Load database
 	phreeqc_rm.LoadDatabase("phreeqc.dat");
-	// Run file to get initial conditions
-    phreeqc_rm.InitialPhreeqcRunFile("advect.pqi"); 
+
+	// Run file to define solutions and reactants for initial conditions
+	int initial_phreeqc = 1;     // This is an IPhreeqc for accumulating initial and boundary conditions
+	int workers = 1;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
+	int utility = 1;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a 
+	                             // mixture for a well
+    phreeqc_rm.RunFile(&initial_phreeqc, &workers, &utility, "advect.pqi"); 
+
+	// For demonstration, clear contents of workers and utility
+	// Worker initial conditions are defined below
+	initial_phreeqc = 0;
+	std::string input = "DELETE; -all";
+    phreeqc_rm.RunString(&initial_phreeqc, &workers, &utility, input.c_str()); 
+
 	// Set reference to components
 	phreeqc_rm.FindComponents();
 	const std::vector<std::string> &components = phreeqc_rm.GetComponents();

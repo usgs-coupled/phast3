@@ -60,7 +60,7 @@ SUBROUTINE phast_worker
     
     IF (solute) THEN
         ! ... initial PHREEQC run to define reactants 
-        status = RM_InitialPhreeqcRunFile(rm_id) 
+        status = RM_RunFile(rm_id) 
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 

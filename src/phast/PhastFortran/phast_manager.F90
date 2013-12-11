@@ -396,7 +396,7 @@ SUBROUTINE CreateRM
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
         CALL RM_LogScreenMessage("Initial PHREEQC run.")  
-        status = RM_InitialPhreeqcRunFile(rm_id, f1name) 
+        status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
