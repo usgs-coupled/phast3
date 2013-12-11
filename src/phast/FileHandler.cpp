@@ -112,7 +112,7 @@ FileHandler::ProcessRestartFiles(
 	*   
 	*      saves results in restart_bin and then the reaction module
 	*/
-	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
 		IRM_RESULT rtn = IRM_OK;
@@ -415,7 +415,7 @@ IRM_RESULT
 FileHandler::SetRestartName(const char *name, long nchar)
 /* ---------------------------------------------------------------------- */
 {
-	std::string str = Reaction_module::Char2TrimString(name, nchar);
+	std::string str = PhreeqcRM::Char2TrimString(name, nchar);
 	if (str.size() > 0)
 	{
 		int	i = (int) this->RestartFileMap.size();
@@ -430,7 +430,7 @@ IRM_RESULT
 FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *print_xyz_in, int *xyz_mask, int *print_restart_in)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		IRM_RESULT rtn = IRM_OK;
@@ -489,7 +489,7 @@ IRM_RESULT
 FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -585,7 +585,7 @@ IRM_RESULT
 FileHandler::WriteRestart(int *id, int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
 		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
@@ -707,7 +707,7 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 
 			ofs_restart.close();
 			// rename files
-			Reaction_module::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+			PhreeqcRM::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 			return IRM_OK;
 		}
 		return IRM_INVALIDARG;
@@ -719,7 +719,7 @@ IRM_RESULT
 FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);

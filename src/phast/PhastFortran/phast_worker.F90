@@ -46,7 +46,7 @@ SUBROUTINE phast_worker
 !    
 ! start CreateRM
 !
-    ! ... Make a Reaction_module
+    ! ... Make a PhreeqcRM
     rm_id = RM_Create(nxyz, nthreads)
     IF (rm_id.LT.0) THEN
         WRITE(*,*) "Could not create reaction module, worker ", mpi_myself

@@ -28,18 +28,18 @@
 #endif
 #include "Phreeqc.h"
 
-std::map<size_t, Reaction_module*> Reaction_module::Instances;
-size_t Reaction_module::InstancesIndex = 0;
-PHRQ_io Reaction_module::phast_io;
+std::map<size_t, PhreeqcRM*> PhreeqcRM::Instances;
+size_t PhreeqcRM::InstancesIndex = 0;
+PHRQ_io PhreeqcRM::phast_io;
 
-//// static Reaction_module methods
+//// static PhreeqcRM methods
 /* ---------------------------------------------------------------------- */
-void Reaction_module::CleanupReactionModuleInstances(void)
+void PhreeqcRM::CleanupReactionModuleInstances(void)
 /* ---------------------------------------------------------------------- */
 {
-	std::map<size_t, Reaction_module*>::iterator it = Reaction_module::Instances.begin();
-	std::vector<Reaction_module*> rm_list;
-	for ( ; it != Reaction_module::Instances.end(); it++)
+	std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.begin();
+	std::vector<PhreeqcRM*> rm_list;
+	for ( ; it != PhreeqcRM::Instances.end(); it++)
 	{
 		rm_list.push_back(it->second);
 	}
@@ -50,17 +50,17 @@ void Reaction_module::CleanupReactionModuleInstances(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-Reaction_module::CreateReactionModule(int *nxyz, int *nthreads)
+PhreeqcRM::CreateReactionModule(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	int n = IRM_OUTOFMEMORY;
 	try
 	{
-		Reaction_module * Reaction_module_ptr = new Reaction_module(nxyz, nthreads);
+		PhreeqcRM * Reaction_module_ptr = new PhreeqcRM(nxyz, nthreads);
 		if (Reaction_module_ptr)
 		{
 			n = (int) Reaction_module_ptr->GetWorkers()[0]->Get_Index();
-			Reaction_module::Instances[n] = Reaction_module_ptr;
+			PhreeqcRM::Instances[n] = Reaction_module_ptr;
 			return n;
 		}
 	}
@@ -72,14 +72,14 @@ Reaction_module::CreateReactionModule(int *nxyz, int *nthreads)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::DestroyReactionModule(int *id)
+PhreeqcRM::DestroyReactionModule(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	IRM_RESULT retval = IRM_BADINSTANCE;
 	if (id)
 	{
-		std::map<size_t, Reaction_module*>::iterator it = Reaction_module::Instances.find(size_t(*id));
-		if (it != Reaction_module::Instances.end())
+		std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(size_t(*id));
+		if (it != PhreeqcRM::Instances.end())
 		{
 			delete (*it).second;
 			retval = IRM_OK;
@@ -90,14 +90,14 @@ Reaction_module::DestroyReactionModule(int *id)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::ErrorStop(const char *err_str, long l)
+PhreeqcRM::ErrorStop(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	//
-	// Delete all Reaction_module instances
+	// Delete all PhreeqcRM instances
 	//
 	std::string error_string;
-	error_string = "Stopping in Reaction_module::ErrorStop\n";
+	error_string = "Stopping in PhreeqcRM::ErrorStop\n";
 	if (err_str)
 	{
 		error_string.append(Char2TrimString(err_str, l));
@@ -108,21 +108,21 @@ Reaction_module::ErrorStop(const char *err_str, long l)
 #ifdef MPI
 	MPI_Abort(MPI_COMM_WORLD);
 #endif
-	PHRQ_io io = Reaction_module::GetRmIo();
+	PHRQ_io io = PhreeqcRM::GetRmIo();
 	io.error_msg(error_string.c_str(), false);
-	Reaction_module::CleanupReactionModuleInstances();
+	PhreeqcRM::CleanupReactionModuleInstances();
 	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
 	exit(4);
 }
 /* ---------------------------------------------------------------------- */
-Reaction_module*
-Reaction_module::GetInstance(int *id)
+PhreeqcRM*
+PhreeqcRM::GetInstance(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	if (id != NULL)
 	{
-		std::map<size_t, Reaction_module*>::iterator it = Reaction_module::Instances.find(size_t(*id));
-		if (it != Reaction_module::Instances.end())
+		std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(size_t(*id));
+		if (it != PhreeqcRM::Instances.end())
 		{
 			return (*it).second;
 		}
@@ -131,11 +131,11 @@ Reaction_module::GetInstance(int *id)
 }
 /*
 //
-// end static Reaction_module methods
+// end static PhreeqcRM methods
 //
 */
 
-Reaction_module::Reaction_module(int *nxyz_arg, int *thread_count, PHRQ_io *io)
+PhreeqcRM::PhreeqcRM(int *nxyz_arg, int *thread_count, PHRQ_io *io)
 	//
 	// constructor
 	//
@@ -205,7 +205,7 @@ if( numCPU < 1 )
 		if (*nxyz_arg == NULL)
 		{
 			std::ostringstream errstr;
-			errstr << "Number of grid cells (nxyz) not defined in creating Reaction_module"; 
+			errstr << "Number of grid cells (nxyz) not defined in creating PhreeqcRM"; 
 			error_msg(errstr.str().c_str(), 1);
 		}
 		this->nxyz = *nxyz_arg;
@@ -228,8 +228,8 @@ if( numCPU < 1 )
 	}
 	if (this->GetWorkers()[0])
 	{
-		std::map<size_t, Reaction_module*>::value_type instance(this->GetWorkers()[0]->Get_Index(), this);
-		Reaction_module::Instances.insert(instance);
+		std::map<size_t, PhreeqcRM*>::value_type instance(this->GetWorkers()[0]->Get_Index(), this);
+		PhreeqcRM::Instances.insert(instance);
 	}
 	else
 	{
@@ -282,26 +282,26 @@ if( numCPU < 1 )
 	// set work for each thread or process
 	SetEndCells();
 }
-Reaction_module::~Reaction_module(void)
+PhreeqcRM::~PhreeqcRM(void)
 {
-	std::map<size_t, Reaction_module*>::iterator it = Reaction_module::Instances.find(this->GetWorkers()[0]->Get_Index());
+	std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(this->GetWorkers()[0]->Get_Index());
 
 	for (int i = 0; i <= it->second->GetNthreads(); i++)
 	{
 		delete it->second->GetWorkers()[i];
 	}
-	if (it != Reaction_module::Instances.end())
+	if (it != PhreeqcRM::Instances.end())
 	{
-		Reaction_module::Instances.erase(it);
+		PhreeqcRM::Instances.erase(it);
 	}
 
 }
 
-// Reaction_module methods
+// PhreeqcRM methods
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
+PhreeqcRM::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 /* ---------------------------------------------------------------------- */
 {
 
@@ -346,7 +346,7 @@ Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::CellInitialize(
+PhreeqcRM::CellInitialize(
 					int i, 
 					int n_user_new, 
 					int *initial_conditions1,
@@ -605,7 +605,7 @@ Reaction_module::CellInitialize(
 
 /* ---------------------------------------------------------------------- */
 int 
-Reaction_module::CheckSelectedOutput()
+PhreeqcRM::CheckSelectedOutput()
 /* ---------------------------------------------------------------------- */
 {
 #ifdef USE_MPI
@@ -764,7 +764,7 @@ Reaction_module::CheckSelectedOutput()
 			std::map < int, CSelectedOutput >::iterator n_it = this->workers[n]->CSelectedOutputMap.begin();
 			for( ; root_it != this->workers[0]->CSelectedOutputMap.end(); root_it++, n_it++)
 			{
-				for (int i = 0; i < root_it->second.GetColCount(); i++)
+				for (int i = 0; i < (int) root_it->second.GetColCount(); i++)
 				{
 					CVar root_cvar;
 					root_it->second.Get(0, i, &root_cvar);
@@ -805,7 +805,7 @@ Reaction_module::CheckSelectedOutput()
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Convert_to_molal(double *c, int n, int dim)
+PhreeqcRM::Convert_to_molal(double *c, int n, int dim)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -829,7 +829,7 @@ Reaction_module::Convert_to_molal(double *c, int n, int dim)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::CreateMapping(int *t)
+PhreeqcRM::CreateMapping(int *t)
 /* ---------------------------------------------------------------------- */
 {
 	IRM_RESULT rtn = IRM_OK;
@@ -910,7 +910,7 @@ Reaction_module::CreateMapping(int *t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
+PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
 /* ---------------------------------------------------------------------- */
 {
 	d.clear();
@@ -961,7 +961,7 @@ Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vecto
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::DumpModule(int *dump_on, int *use_gz_in)
+PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 /* ---------------------------------------------------------------------- */
 {
 	bool dump = false;
@@ -1101,7 +1101,7 @@ Reaction_module::DumpModule(int *dump_on, int *use_gz_in)
 			ofs_restart.close();
 		}
 		// rename files
-		Reaction_module::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+		PhreeqcRM::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 	}
 	return IRM_OK;
 }
@@ -1109,7 +1109,7 @@ Reaction_module::DumpModule(int *dump_on, int *use_gz_in)
 
 /* ---------------------------------------------------------------------- */
 bool
-Reaction_module::FileExists(const std::string &name)
+PhreeqcRM::FileExists(const std::string &name)
 /* ---------------------------------------------------------------------- */
 {
 	FILE *stream;
@@ -1123,13 +1123,13 @@ Reaction_module::FileExists(const std::string &name)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::FileRename(const std::string &temp_name, const std::string &name, 
+PhreeqcRM::FileRename(const std::string &temp_name, const std::string &name, 
 	const std::string &backup_name)
 /* ---------------------------------------------------------------------- */
 {
-	if (Reaction_module::FileExists(name))
+	if (PhreeqcRM::FileExists(name))
 	{
-		if (Reaction_module::FileExists(backup_name.c_str()))
+		if (PhreeqcRM::FileExists(backup_name.c_str()))
 			remove(backup_name.c_str());
 		rename(name.c_str(), backup_name.c_str());
 	}
@@ -1137,7 +1137,7 @@ Reaction_module::FileRename(const std::string &temp_name, const std::string &nam
 }
 /* ---------------------------------------------------------------------- */
 int
-Reaction_module::FindComponents(void)	
+PhreeqcRM::FindComponents(void)	
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -1195,7 +1195,7 @@ Reaction_module::FindComponents(void)
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::GetConcentrations(double * c)
+PhreeqcRM::GetConcentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to concentrations for transport
@@ -1276,7 +1276,7 @@ Reaction_module::GetConcentrations(double * c)
 #else
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::GetConcentrations(double * c)
+PhreeqcRM::GetConcentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
@@ -1312,7 +1312,7 @@ Reaction_module::GetConcentrations(double * c)
 #endif
 /* ---------------------------------------------------------------------- */
 std::vector<double> &
-Reaction_module::GetDensity(void)
+PhreeqcRM::GetDensity(void)
 /* ---------------------------------------------------------------------- */
 {
 
@@ -1377,7 +1377,7 @@ Reaction_module::GetDensity(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-Reaction_module::GetNthSelectedOutputUserNumber(int *i)
+PhreeqcRM::GetNthSelectedOutputUserNumber(int *i)
 /* ---------------------------------------------------------------------- */
 {
 	if (i != NULL && *i >= 0) 
@@ -1389,7 +1389,7 @@ Reaction_module::GetNthSelectedOutputUserNumber(int *i)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::GetSelectedOutput(double *so)
+PhreeqcRM::GetSelectedOutput(double *so)
 /* ---------------------------------------------------------------------- */
 {
 	
@@ -1491,9 +1491,9 @@ Reaction_module::GetSelectedOutput(double *so)
 				// Now write data from thread to so
 				if (so)
 				{
-					for (size_t icol = 0; icol < ncol; icol++)
+					for (size_t icol = 0; icol < (size_t) ncol; icol++)
 					{
-						for (size_t irow = 0; irow < nrow_x; irow++)
+						for (size_t irow = 0; irow < (size_t) nrow_x; irow++)
 						{
 							int ichem = local_start_cell + (int) irow;
 							for (size_t k = 0; k < back[ichem].size(); k++)
@@ -1523,7 +1523,7 @@ Reaction_module::GetSelectedOutput(double *so)
 }
 /* ---------------------------------------------------------------------- */
 int
-Reaction_module::GetSelectedOutputColumnCount()
+PhreeqcRM::GetSelectedOutputColumnCount()
 /* ---------------------------------------------------------------------- */
 {	
 	if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
@@ -1539,14 +1539,14 @@ Reaction_module::GetSelectedOutputColumnCount()
 }
 /* ---------------------------------------------------------------------- */
 int 
-Reaction_module::GetSelectedOutputCount(void)
+PhreeqcRM::GetSelectedOutputCount(void)
 /* ---------------------------------------------------------------------- */
 {	
 	return (int) this->workers[0]->CSelectedOutputMap.size();
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::GetSelectedOutputHeading(int *icol, std::string &heading)
+PhreeqcRM::GetSelectedOutputHeading(int *icol, std::string &heading)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
@@ -1571,14 +1571,14 @@ Reaction_module::GetSelectedOutputHeading(int *icol, std::string &heading)
 }
 /* ---------------------------------------------------------------------- */
 int
-Reaction_module::GetSelectedOutputRowCount()
+PhreeqcRM::GetSelectedOutputRowCount()
 /* ---------------------------------------------------------------------- */
 {
 	return this->nxyz;
 }
 /* ---------------------------------------------------------------------- */
 std::string 
-Reaction_module::Char2TrimString(const char * str, long l)
+PhreeqcRM::Char2TrimString(const char * str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string stdstr;
@@ -1599,7 +1599,7 @@ Reaction_module::Char2TrimString(const char * str, long l)
 };
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Concentrations2Solutions(int n, std::vector<double> &c)
+PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 /* ---------------------------------------------------------------------- */
 {
 	// assumes total H, total O, and charge are transported
@@ -1681,7 +1681,7 @@ Reaction_module::Concentrations2Solutions(int n, std::vector<double> &c)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::RunFileThread(int n)
+PhreeqcRM::RunFileThread(int n)
 /* ---------------------------------------------------------------------- */
 {
 		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
@@ -1717,7 +1717,7 @@ Reaction_module::RunFileThread(int n)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::RunStringThread(int n, std::string & input)
+PhreeqcRM::RunStringThread(int n, std::string & input)
 /* ---------------------------------------------------------------------- */
 {
 		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
@@ -1752,7 +1752,7 @@ Reaction_module::RunStringThread(int n, std::string & input)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::InitialPhreeqc2Concentrations(
+PhreeqcRM::InitialPhreeqc2Concentrations(
 					double *c, 
 					int *n_boundary_in, 
 					int *dim_in,
@@ -1818,7 +1818,7 @@ Reaction_module::InitialPhreeqc2Concentrations(
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::InitialPhreeqc2Module(
+PhreeqcRM::InitialPhreeqc2Module(
 					int *initial_conditions1_in,
 					int *initial_conditions2_in, 
 					double *fraction1_in)
@@ -1964,14 +1964,14 @@ Reaction_module::InitialPhreeqc2Module(
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::RunFile(int *initial_phreeqc, int * workers, int * utility, const char * chemistry_name, long l)
+PhreeqcRM::RunFile(int *initial_phreeqc, int * workers, int * utility, const char * chemistry_name, long l)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
 		if (initial_phreeqc == NULL || workers == NULL || utility == NULL || chemistry_name == NULL)
 		{
-			Reaction_module::ErrorStop("NULL pointer in Reaction_module::RunFile");
+			PhreeqcRM::ErrorStop("NULL pointer in PhreeqcRM::RunFile");
 		}
 	}
 	/*
@@ -2013,14 +2013,14 @@ Reaction_module::RunFile(int *initial_phreeqc, int * workers, int * utility, con
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::RunString(int *initial_phreeqc, int * workers, int * utility, const char * input_string, long l)
+PhreeqcRM::RunString(int *initial_phreeqc, int * workers, int * utility, const char * input_string, long l)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
 		if (initial_phreeqc == NULL || workers == NULL || utility == NULL || input_string == NULL)
 		{
-			Reaction_module::ErrorStop("NULL pointer in Reaction_module::RunFile");
+			PhreeqcRM::ErrorStop("NULL pointer in PhreeqcRM::RunFile");
 		}
 	}
 	/*
@@ -2065,13 +2065,13 @@ Reaction_module::RunString(int *initial_phreeqc, int * workers, int * utility, c
 }
 /* ---------------------------------------------------------------------- */
 int
-Reaction_module::LoadDatabase(const char * database, long l)
+PhreeqcRM::LoadDatabase(const char * database, long l)
 /* ---------------------------------------------------------------------- */
 {
 	int rtn1 = this->SetDatabaseFileName(database, l);
 	if (rtn1 < 0) 
 	{
-			error_msg("Reaction_module.LoadDatabase: Could not open database.", 0);
+			error_msg("PhreeqcRM.LoadDatabase: Could not open database.", 0);
 	}
 
 	std::vector< int > rtn;
@@ -2099,7 +2099,7 @@ Reaction_module::LoadDatabase(const char * database, long l)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
+PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 /* ---------------------------------------------------------------------- */
 {
 	int n_user;
@@ -2242,7 +2242,7 @@ Reaction_module::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::RebalanceLoadPerCell(void)
+PhreeqcRM::RebalanceLoadPerCell(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_tasks <= 1) return;
@@ -2486,7 +2486,7 @@ Reaction_module::RebalanceLoadPerCell(void)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::RebalanceLoad(void)
+PhreeqcRM::RebalanceLoad(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_tasks <= 1) return;
@@ -2744,7 +2744,7 @@ Reaction_module::RebalanceLoad(void)
 	return;
 }
 void
-Reaction_module::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
+PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 {
 	if (this->mpi_myself == old)
 	{
@@ -2774,7 +2774,7 @@ Reaction_module::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 #else
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::RebalanceLoad(void)
+PhreeqcRM::RebalanceLoad(void)
 /* ---------------------------------------------------------------------- */
 {
 	// Threaded version
@@ -2994,7 +2994,7 @@ Reaction_module::RebalanceLoad(void)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::RebalanceLoadPerCell(void)
+PhreeqcRM::RebalanceLoadPerCell(void)
 /* ---------------------------------------------------------------------- */
 {
 	// Threaded version
@@ -3180,7 +3180,7 @@ Reaction_module::RebalanceLoadPerCell(void)
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::RunCells()
+PhreeqcRM::RunCells()
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -3254,7 +3254,7 @@ Reaction_module::RunCells()
 #else
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::RunCells()
+PhreeqcRM::RunCells()
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -3301,7 +3301,7 @@ Reaction_module::RunCells()
 #endif
 /* ---------------------------------------------------------------------- */
 void 
-Reaction_module::RunCellsThread(int n)
+PhreeqcRM::RunCellsThread(int n)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -3514,7 +3514,7 @@ Reaction_module::RunCellsThread(int n)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Scale_solids(int n, int iphrq, LDBLE frac)
+PhreeqcRM::Scale_solids(int n, int iphrq, LDBLE frac)
 /* ---------------------------------------------------------------------- */
 {
 	int n_user;
@@ -3570,7 +3570,7 @@ Reaction_module::Scale_solids(int n, int iphrq, LDBLE frac)
 
 /* ---------------------------------------------------------------------- */
 int 
-Reaction_module::SetCurrentSelectedOutputUserNumber(int *i)
+PhreeqcRM::SetCurrentSelectedOutputUserNumber(int *i)
 {
 	if (i != NULL && *i >= 0)
 	{
@@ -3581,7 +3581,7 @@ Reaction_module::SetCurrentSelectedOutputUserNumber(int *i)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::SetFilePrefix(const char * prefix, long l)
+PhreeqcRM::SetFilePrefix(const char * prefix, long l)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_myself == 0)
@@ -3607,10 +3607,10 @@ Reaction_module::SetFilePrefix(const char * prefix, long l)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetCellVolume(double *t)
+PhreeqcRM::SetCellVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->cell_volume.size() < this->nxyz)
+	if ((int) this->cell_volume.size() < this->nxyz)
 	{
 		this->cell_volume.resize(this->nxyz);
 	}
@@ -3626,7 +3626,7 @@ Reaction_module::SetCellVolume(double *t)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::SetChemistryFileName(const char * cn, long l)
+PhreeqcRM::SetChemistryFileName(const char * cn, long l)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_myself == 0)
@@ -3651,7 +3651,7 @@ Reaction_module::SetChemistryFileName(const char * cn, long l)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetConcentrations(double *t)
+PhreeqcRM::SetConcentrations(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	// Distribute data
@@ -3674,7 +3674,7 @@ Reaction_module::SetConcentrations(double *t)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::SetDatabaseFileName(const char * db, long l)
+PhreeqcRM::SetDatabaseFileName(const char * db, long l)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_myself == 0)
@@ -3700,10 +3700,10 @@ Reaction_module::SetDatabaseFileName(const char * db, long l)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetDensity(double *t)
+PhreeqcRM::SetDensity(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->density.size() < this->nxyz)
+	if ((int) this->density.size() < this->nxyz)
 	{
 		this->density.resize((size_t) (this->nxyz), 0.0);
 	}
@@ -3719,7 +3719,7 @@ Reaction_module::SetDensity(double *t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetEndCells(void)
+PhreeqcRM::SetEndCells(void)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef USE_MPI
@@ -3751,7 +3751,7 @@ Reaction_module::SetEndCells(void)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-Reaction_module::SetFilePrefix(std::string &prefix)
+PhreeqcRM::SetFilePrefix(std::string &prefix)
 /* ---------------------------------------------------------------------- */
 {
 	this->file_prefix.clear();
@@ -3774,7 +3774,7 @@ Reaction_module::SetFilePrefix(std::string &prefix)
 
 /* ---------------------------------------------------------------------- */
 void 
-Reaction_module::SetPartitionUZSolids(int * t)
+PhreeqcRM::SetPartitionUZSolids(int * t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -3788,10 +3788,10 @@ Reaction_module::SetPartitionUZSolids(int * t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetPoreVolume(double *t)
+PhreeqcRM::SetPoreVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->pore_volume.size() < this->nxyz)
+	if ((int) this->pore_volume.size() < this->nxyz)
 	{
 		this->pore_volume.resize(this->nxyz);
 	}
@@ -3806,10 +3806,10 @@ Reaction_module::SetPoreVolume(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetPoreVolumeZero(double *t)
+PhreeqcRM::SetPoreVolumeZero(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->pore_volume_zero.size() < this->nxyz)
+	if ((int) this->pore_volume_zero.size() < this->nxyz)
 	{
 		this->pore_volume_zero.resize(this->nxyz);
 	}
@@ -3824,10 +3824,10 @@ Reaction_module::SetPoreVolumeZero(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetPressure(double *t)
+PhreeqcRM::SetPressure(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->pressure.size() < this->nxyz)
+	if ((int) this->pressure.size() < this->nxyz)
 	{
 		this->pressure.resize(this->nxyz);
 	}
@@ -3842,7 +3842,7 @@ Reaction_module::SetPressure(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void 
-Reaction_module::SetPrintChemistryOn(int *t)
+PhreeqcRM::SetPrintChemistryOn(int *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && t != NULL)
@@ -3855,10 +3855,10 @@ Reaction_module::SetPrintChemistryOn(int *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetPrintChemistryMask(int * t)
+PhreeqcRM::SetPrintChemistryMask(int * t)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->print_chem_mask.size() < this->nxyz)
+	if ((int) this->print_chem_mask.size() < this->nxyz)
 	{
 		this->print_chem_mask.resize(this->nxyz);
 	}
@@ -3873,7 +3873,7 @@ Reaction_module::SetPrintChemistryMask(int * t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetRebalanceFraction(double *t)
+PhreeqcRM::SetRebalanceFraction(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -3887,7 +3887,7 @@ Reaction_module::SetRebalanceFraction(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetRebalanceMethod(int *t)
+PhreeqcRM::SetRebalanceMethod(int *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -3901,10 +3901,10 @@ Reaction_module::SetRebalanceMethod(int *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetSaturation(double *t)
+PhreeqcRM::SetSaturation(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->saturation.size() < this->nxyz)
+	if ((int) this->saturation.size() < this->nxyz)
 	{
 		this->saturation.resize(this->nxyz);
 	}
@@ -3920,7 +3920,7 @@ Reaction_module::SetSaturation(double *t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetSelectedOutputOn(int *t)
+PhreeqcRM::SetSelectedOutputOn(int *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && t != NULL)
@@ -3933,7 +3933,7 @@ Reaction_module::SetSelectedOutputOn(int *t)
 }
 /* ---------------------------------------------------------------------- */
 void 
-Reaction_module::SetStopMessage(bool t)
+PhreeqcRM::SetStopMessage(bool t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -3947,10 +3947,10 @@ Reaction_module::SetStopMessage(bool t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetTemperature(double *t)
+PhreeqcRM::SetTemperature(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->tempc.size() < this->nxyz)
+	if ((int) this->tempc.size() < this->nxyz)
 	{
 		this->tempc.resize(this->nxyz);
 	}
@@ -3966,7 +3966,7 @@ Reaction_module::SetTemperature(double *t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetTime(double *t)
+PhreeqcRM::SetTime(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -3981,7 +3981,7 @@ Reaction_module::SetTime(double *t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetTimeConversion(double *t)
+PhreeqcRM::SetTimeConversion(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -3996,7 +3996,7 @@ Reaction_module::SetTimeConversion(double *t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetTimeStep(double *t)
+PhreeqcRM::SetTimeStep(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_myself == 0)
@@ -4011,7 +4011,7 @@ Reaction_module::SetTimeStep(double *t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
+PhreeqcRM::SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
 /* ---------------------------------------------------------------------- */
 {
 	int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin;
@@ -4067,7 +4067,7 @@ Reaction_module::SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count, 
+PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count, 
 			int * solution_number, const std::string &fn)
 /* ---------------------------------------------------------------------- */
 {
@@ -4170,7 +4170,7 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 #else
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count, 
+PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count, 
 			int * solution_number, const std::string &fn)
 /* ---------------------------------------------------------------------- */
 {
@@ -4224,16 +4224,16 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 #endif
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module:: WriteError(const char * item)
+PhreeqcRM:: WriteError(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module::phast_io.error_msg(item);
+	PhreeqcRM::phast_io.error_msg(item);
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module:: WriteOutput(const char * item)
+PhreeqcRM:: WriteOutput(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module::phast_io.output_msg(item);
+	PhreeqcRM::phast_io.output_msg(item);
 }
 
