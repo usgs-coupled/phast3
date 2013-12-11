@@ -1,5 +1,5 @@
-#if !defined(REACTION_MODULE_H_INCLUDED)
-#define REACTION_MODULE_H_INCLUDED
+#if !defined(PHREEQCRM_H_INCLUDED)
+#define PHREEQCRM_H_INCLUDED
 #include "PHRQ_base.h"
 #include "IPhreeqcPhast.h"
 #include "StorageBin.h"
@@ -23,18 +23,18 @@ typedef enum {
 	IRM_FAIL          = -7,  /*!< Failure, Unspecified */
 } IRM_RESULT;
 
-class Reaction_module: public PHRQ_base
+class PhreeqcRM: public PHRQ_base
 {
 public:
 	static void             CleanupReactionModuleInstances(void);
 	static int              CreateReactionModule(int *nxyz, int *nthreads = NULL);
 	static IRM_RESULT       DestroyReactionModule(int *n);
     static void             ErrorStop(const char * str = NULL, long l = -1);
-	static Reaction_module* GetInstance(int *n);
-	static PHRQ_io &        GetRmIo(void) {return Reaction_module::phast_io;};
+	static PhreeqcRM      * GetInstance(int *n);
+	static PHRQ_io &        GetRmIo(void) {return PhreeqcRM::phast_io;};
 
-	Reaction_module(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
-	~Reaction_module(void);
+	PhreeqcRM(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
+	~PhreeqcRM(void);
 	
 	// Key methods	
 	IRM_RESULT                                CreateMapping(int *grid2chem);
@@ -225,9 +225,9 @@ protected:
 private:
 	friend class RM_interface;
 	static PHRQ_io phast_io;
-	static std::map<size_t, Reaction_module*> Instances;
+	static std::map<size_t, PhreeqcRM*> Instances;
 	static size_t InstancesIndex;
 
 	
 };
-#endif // !defined(REACTION_MODULE_H_INCLUDED)
+#endif // !defined(PHREEQCRM_H_INCLUDED)

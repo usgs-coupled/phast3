@@ -15,22 +15,22 @@ int advection_example()
 	int nthreads = 2;
 
 	// Create reaction module
-	Reaction_module phreeqc_rm(&nxyz, &nthreads);
+	PhreeqcRM phreeqc_rm(&nxyz, &nthreads);
 	phreeqc_rm.SetFilePrefix("Advect");
 	if (phreeqc_rm.GetMpiMyself() == 0)
 	{
 		// error_file is stderr
-		Reaction_module::GetRmIo().Set_error_ostream(&std::cerr);
+		PhreeqcRM::GetRmIo().Set_error_ostream(&std::cerr);
 
 		// open echo and log file, prefix.log.txt
 		std::string ln = phreeqc_rm.GetFilePrefix();
 		ln.append(".log.txt");
-		Reaction_module::GetRmIo().log_open(ln.c_str());
+		PhreeqcRM::GetRmIo().log_open(ln.c_str());
 
 		// prefix.chem.txt
 		std::string cn = phreeqc_rm.GetFilePrefix();
 		cn.append(".chem.txt");
-		Reaction_module::GetRmIo().output_open(cn.c_str());
+		PhreeqcRM::GetRmIo().output_open(cn.c_str());
 	}
 
 	// Set concentration units
@@ -224,13 +224,13 @@ advect(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int nxyz
 {
 	for (int i = nxyz - 1 ; i > 0; i--)
 	{
-		for (size_t j = 0; j < ncomps; j++)
+		for (int j = 0; j < ncomps; j++)
 		{
 			c[j * nxyz + i] = c[j * nxyz + i - 1];                 // component j
 		}
 	}
 	// Cell zero gets boundary condition
-	for (size_t j = 0; j < ncomps; j++)
+	for (int j = 0; j < ncomps; j++)
 	{
 		c[j * nxyz] = bc_conc[j * dim];                                // component j
 	} 
