@@ -981,7 +981,11 @@ PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 		std::string char_buffer;
 		bool use_gz;
 		use_gz = (use_gz_in && (*use_gz_in != 0)) ? true : false;
+#ifdef USE_GZ
 		ogzstream ofs_restart_gz;
+#else
+		use_gz = 0;
+#endif
 		ofstream ofs_restart;
 
 		std::string temp_name("temp_dump_file");
@@ -994,6 +998,7 @@ PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 			backup_name.append(".dump.backup");
 			if (use_gz)
 			{
+#ifdef USE_GZ
 				temp_name.append(".gz");
 				name.append(".gz");
 				backup_name.append(".gz");
@@ -1005,6 +1010,7 @@ PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 					WriteError(errstr.str().c_str());
 					ErrorStop();
 				}
+#endif
 			}
 			else
 			{
@@ -1035,7 +1041,9 @@ PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 				{			
 					if (use_gz)
 					{
+#ifdef USE_GZ
 						ofs_restart_gz << this->GetWorkers()[0]->GetDumpString();
+#endif
 					} 
 					else
 					{
@@ -1059,7 +1067,9 @@ PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 				char_buffer[size] = '\0';
 				if (use_gz)
 				{
+#ifdef USE_GZ
 					ofs_restart_gz << char_buffer;
+#endif
 				} 
 				else
 				{
@@ -1080,7 +1090,9 @@ PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 			this->workers[n]->RunString(in.str().c_str());
 			if (use_gz)
 			{
+#ifdef USE_GZ
 				ofs_restart_gz << this->GetWorkers()[n]->GetDumpString();
+#endif
 			} 
 			else
 			{
@@ -1094,7 +1106,9 @@ PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 #endif
 		if (use_gz)
 		{
+#ifdef USE_GZ
 			ofs_restart_gz.close();
+#endif
 		}
 		else
 		{
