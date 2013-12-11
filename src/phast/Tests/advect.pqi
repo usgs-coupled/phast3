@@ -20,7 +20,7 @@ EXCHANGE 1-40
         X                0.0011
 END
 SELECTED_OUTPUT
-        -file            ex11adv.sel
+        -file            advect.sel
         -reset           false
 #        -step
         -totals          Na Cl K Ca
@@ -28,5 +28,3 @@ USER_PUNCH
   -heading  Temperature Pressure
   10 PUNCH TC, PRESSURE
 END
-
-

@@ -9,10 +9,6 @@
       <UniqueIdentifier>{331d9e3c-c850-4516-a7ad-36f0bd6ca8b0}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{499f1dbc-fe10-4d7b-a3e4-d8eccc9840fe}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="advection_example.cpp">
@@ -27,11 +23,6 @@
     <ClCompile Include="..\PhreeqcRM\RM_interface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="phast.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h">
