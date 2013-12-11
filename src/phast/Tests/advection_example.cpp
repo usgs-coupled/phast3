@@ -215,7 +215,7 @@ int advection_example()
 		}
 	}
 	int dump_on = 1;
-	int use_gz = 1;
+	int use_gz = 0;                // gz disabled unless compiled with #define USE_GZ
 	phreeqc_rm.DumpModule(&dump_on, &use_gz);   
 	return EXIT_SUCCESS;
 }
