@@ -4,7 +4,6 @@
 #include "hdf.h"
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
-extern int advection_example();
 #if defined(USE_MPI)
 #include <mpi.h>
 #endif
@@ -104,7 +103,7 @@ int main(int argc, char* argv[])
 	//_crtBreakAlloc = 198;
 
 	PHAST_SUB(&mpi_tasks, &mpi_myself);
-	//advection_example();
+
 #if defined(USE_MPI)
 	MPI_Finalize();
 #endif
