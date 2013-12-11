@@ -853,9 +853,8 @@ void
 FH_FinalizeFiles()
 /* ---------------------------------------------------------------------- */
 {
-#ifdef HDF5_CREATE
 	HDFFinalize();
-#endif
+
 	file_handler.Get_io()->Set_punch_ostream(NULL);
 	for (int iso = 0; iso < (int) file_handler.GetXYZOstreams().size(); iso++)
 	{

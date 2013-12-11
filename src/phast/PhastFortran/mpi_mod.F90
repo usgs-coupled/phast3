@@ -18,9 +18,8 @@ CONTAINS
     CHARACTER(LEN=*), INTENT(inout) :: fname
     CHARACTER(LEN=30) :: char_10
     !-------------------------------------------------------------------------------
-#if defined(MERGE_FILES)
+
     IF (mpi_myself == 0) RETURN
-#endif
 
     WRITE(char_10,*) mpi_myself
     char_10 = ADJUSTL(char_10)
@@ -33,7 +32,7 @@ CONTAINS
   END SUBROUTINE get_mpi_filename
 
   SUBROUTINE update_status(st)
-  ! ... Purpose: delete non-root files -- called if MERGE_FILES is defined
+  ! ... Purpose: delete non-root files -- called if MERGE_FILES is defined // MERGE_FILES is OBSOLETE
   ! ... Preconditions:
   ! ...   none
   ! ... Postconditions:

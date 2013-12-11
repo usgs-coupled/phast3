@@ -7,7 +7,9 @@
 #include "IPhreeqcPhastLib.h"
 #include <assert.h>
 #include "System.h"
+#ifdef USE_GZ
 #include "gzstream.h"
+#endif
 #include "KDtree/KDtree.h"
 #include "cxxMix.h"
 #include "Solution.h"
