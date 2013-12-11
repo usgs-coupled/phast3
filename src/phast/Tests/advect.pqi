@@ -24,9 +24,9 @@ SELECTED_OUTPUT
         -reset           false
 #        -step
         -totals          Na Cl K Ca
-#USER_PUNCH
-#  -heading  Pore_vol
-#  10 PUNCH (STEP_NO + .5) / 40.
+USER_PUNCH
+  -heading  Temperature Pressure
+  10 PUNCH TC, PRESSURE
 END
 
 

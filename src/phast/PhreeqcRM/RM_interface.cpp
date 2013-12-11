@@ -1,4 +1,4 @@
-#include "Reaction_module.h"
+#include "PhreeqcRM.h"
 #include "RM_interface.h"
 #include "IPhreeqcPhastLib.h"
 #include "Phreeqc.h"

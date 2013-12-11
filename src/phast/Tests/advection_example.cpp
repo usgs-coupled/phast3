@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#include "../Reaction_module.h"
+#include "PhreeqcRM.h"
 
 
 void advect(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int nxyz, int dim);
@@ -41,8 +41,8 @@ int advection_example()
 	phreeqc_rm.SetUnitsGasPhase(1);      // 1, mol/L; 2 mol/kg rock
 	phreeqc_rm.SetUnitsSSassemblage(1);  // 1, mol/L; 2 mol/kg rock
 	phreeqc_rm.SetUnitsKinetics(1);      // 1, mol/L; 2 mol/kg rock
-	// Set conversion from seconds to user units
 
+	// Set conversion from seconds to user units
 	double time_conversion = 1.0 / 86400;
 	phreeqc_rm.SetTimeConversion(&time_conversion);     // days
 
@@ -100,7 +100,8 @@ int advection_example()
 
 	// For demonstration, clear contents of workers and utility
 	// Worker initial conditions are defined below
-	initial_phreeqc = 0;
+	workers = 0;
+	utility = 0; 
 	std::string input = "DELETE; -all";
     phreeqc_rm.RunString(&initial_phreeqc, &workers, &utility, input.c_str()); 
 
@@ -151,23 +152,36 @@ int advection_example()
 	int nsteps = 10;
 
 	// Transient loop
-	std::vector<double> density;
+	std::vector<double> density, temperature, pressure;
 	density.resize(nxyz);
+	temperature.resize(nxyz, 20.0);
+	pressure.resize(nxyz, 2.0);
+
 	time_step = 86400.;
 	phreeqc_rm.SetTimeStep(&time_step);
 	for (int steps = 0; steps < nsteps; steps++)
 	{
+		// Transport calculation here
 		advect(c, bc_conc, ncomps, nxyz, dim);
+
+		// Send new conditions to module
 		phreeqc_rm.SetConcentrations(c.data());
-		if (steps == nsteps -1)
+		if (steps == nsteps - 1)
 		{
+			// print at last time step
 			print_chemistry_on = 1;
 			phreeqc_rm.SetPrintChemistryOn(&print_chemistry_on);
 		}
-		phreeqc_rm.SetSaturation(sat.data());     // If saturation changes
+		phreeqc_rm.SetSaturation(sat.data());           // If saturation changes
+		phreeqc_rm.SetTemperature(temperature.data());  // If temperature changes
+		phreeqc_rm.SetPressure(pressure.data());        // If pressure changes
+
+		// Run cells with new conditions
 		time = time + time_step;
 		phreeqc_rm.SetTime(&time);
 		phreeqc_rm.RunCells();
+
+		// Print results at last time step
 		if (print_chemistry_on != 0)
 		{
 			// Get current density

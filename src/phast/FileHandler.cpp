@@ -3,7 +3,7 @@
 #include <map>
 #include <iostream>
 #include "FileHandler.h"
-#include "Reaction_module.h"
+#include "PhreeqcRM.h"
 #include "RM_interface.h"
 #include "gzstream.h"
 #include "KDtree/KDtree.h"
@@ -690,7 +690,7 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 			clr << "END\n";
 			Reaction_module_ptr->GetWorkers()[0]->RunString(clr.str().c_str());
 #else
-			for (int n = 0; n < (int) Reaction_module_ptr->GetWorkers().size() - 1; n++)
+			for (int n = 0; n < (int) Reaction_module_ptr->GetNthreads(); n++)
 			{
 				// Create DUMP and write
 				Reaction_module_ptr->GetWorkers()[n]->SetDumpStringOn(true); 
