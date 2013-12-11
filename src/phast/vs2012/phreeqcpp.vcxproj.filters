@@ -48,16 +48,16 @@
     <ClCompile Include="..\gzstream.cxx">
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\Reaction_module.cxx">
-      <Filter>Source Files\COMMON_COBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RM_interface.cpp">
-      <Filter>Source Files\COMMON_COBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\TM_interface.cpp">
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\Advection\advection_example.cpp">
+    <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\RM_interface.cpp">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Tests\advection_example.cpp">
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,12 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gzstream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Reaction_module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RM_interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\KDtree\Cell_Face.h">
@@ -92,6 +86,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\FileHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PhreeqcRM\RM_interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

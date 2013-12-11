@@ -1,5 +1,4 @@
-#include "Reaction_module.h"
-#include "Reaction_module.h"
+#include "PhreeqcRM.h"
 #include "PHRQ_base.h"
 #include "PHRQ_io.h"
 #include "IPhreeqc.h"
