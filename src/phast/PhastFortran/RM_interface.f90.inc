@@ -142,13 +142,7 @@
             INTEGER, INTENT(in) :: id
             INTEGER, OPTIONAL :: ic1, ic2
             DOUBLE PRECISION, OPTIONAL :: f1
-        END FUNCTION RM_InitialPhreeqc2Module
-        
-        INTEGER FUNCTION RM_InitialPhreeqcRunFile(id, chem_name)
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, OPTIONAL, INTENT(in) :: chem_name
-        END FUNCTION RM_InitialPhreeqcRunFile          
+        END FUNCTION RM_InitialPhreeqc2Module       
         
         INTEGER FUNCTION RM_LoadDatabase(id, db) 
             IMPLICIT NONE
@@ -177,6 +171,20 @@
             DOUBLE PRECISION :: time, time_step, c
             INTEGER :: stop_msg
         END SUBROUTINE RM_RunCells  
+        
+        INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, chem_name)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
+            CHARACTER, OPTIONAL, INTENT(in) :: chem_name
+        END FUNCTION RM_RunFile   
+        
+        INTEGER FUNCTION RM_RunString(id, initial_phreeqc, workers, utility, input_string)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
+            CHARACTER, OPTIONAL, INTENT(in) :: input_string
+        END FUNCTION RM_RunString   
         
         SUBROUTINE RM_ScreenMessage(str) 
             IMPLICIT NONE

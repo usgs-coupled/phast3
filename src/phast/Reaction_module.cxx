@@ -223,7 +223,7 @@ if( numCPU < 1 )
 #endif
 
 	// last one is to calculate well pH
-	for (int i = 0; i <= this->nthreads; i++)
+	for (int i = 0; i < this->nthreads + 2; i++)
 	{
 		this->workers.push_back(new IPhreeqcPhast);
 	}
@@ -1073,7 +1073,7 @@ Reaction_module::DumpModule(int *dump_on, int *use_gz_in)
 			this->GetWorkers()[0]->RunString(clr.str().c_str());
 		}
 #else
-		for (int n = 0; n < (int) this->workers.size() - 1; n++)
+		for (int n = 0; n < (int) this->nthreads; n++)
 		{
 			this->workers[n]->SetDumpStringOn(true); 
 			std::ostringstream in;
@@ -1681,8 +1681,8 @@ Reaction_module::Concentrations2Solutions(int n, std::vector<double> &c)
 }
 
 /* ---------------------------------------------------------------------- */
-int
-Reaction_module::InitialPhreeqcRunThread(int n)
+IRM_RESULT
+Reaction_module::RunFileThread(int n)
 /* ---------------------------------------------------------------------- */
 {
 		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
@@ -1704,7 +1704,7 @@ Reaction_module::InitialPhreeqcRunThread(int n)
 		}
 
 		// Run chemistry file
-		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) ErrorStop("RunFile failed");
+		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) ErrorStop("RunFile failed\n");
 
 		// Create a StorageBin with initial PHREEQC for boundary conditions
 		if (n == 0)
@@ -1713,9 +1713,44 @@ Reaction_module::InitialPhreeqcRunThread(int n)
 			this->Get_phreeqc_bin().Clear();
 			this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 		}
-		return -1;
+		return IRM_OK;
 }
 
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+Reaction_module::RunStringThread(int n, std::string & input)
+/* ---------------------------------------------------------------------- */
+{
+		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
+		int ipp_id = (int) iphreeqc_phast_worker->Get_Index();
+
+		iphreeqc_phast_worker->SetOutputFileOn(false);
+		iphreeqc_phast_worker->SetErrorFileOn(false);
+		iphreeqc_phast_worker->SetLogFileOn(false);
+		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
+		if (n == 0)
+		{
+			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
+			iphreeqc_phast_worker->SetOutputStringOn(true);
+		}
+		else
+		{
+			iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
+			iphreeqc_phast_worker->SetOutputStringOn(false);
+		}
+
+		// Run chemistry file
+		if (iphreeqc_phast_worker->RunString(input.c_str()) > 0) ErrorStop("RunString failed\n");
+
+		// Create a StorageBin with initial PHREEQC for boundary conditions
+		if (n == 0)
+		{
+			WriteOutput(iphreeqc_phast_worker->GetOutputString());
+			this->Get_phreeqc_bin().Clear();
+			this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
+		}
+		return IRM_OK;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 Reaction_module::InitialPhreeqc2Concentrations(
@@ -1929,27 +1964,106 @@ Reaction_module::InitialPhreeqc2Module(
 	return rtn;
 }
 /* ---------------------------------------------------------------------- */
-int
-Reaction_module::InitialPhreeqcRunFile(const char * chemistry_name, long l)
+IRM_RESULT
+Reaction_module::RunFile(int *initial_phreeqc, int * workers, int * utility, const char * chemistry_name, long l)
 /* ---------------------------------------------------------------------- */
 {
+	if (mpi_myself == 0)
+	{
+		if (initial_phreeqc == NULL || workers == NULL || utility == NULL || chemistry_name == NULL)
+		{
+			Reaction_module::ErrorStop("NULL pointer in Reaction_module::RunFile");
+		}
+	}
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
+	std::vector<int> flags;
+	flags.resize(3);
 	this->SetChemistryFileName(chemistry_name, l);
-
-#ifdef THREADED_PHAST
-	omp_set_num_threads(this->nthreads+1);
-	#pragma omp parallel 
-	#pragma omp for
-#endif
-	for (int n = 0; n <= this->nthreads; n++)
+	if (mpi_myself == 0)
 	{
-		InitialPhreeqcRunThread(n);
-	} 	
+		flags[0] = *initial_phreeqc;
+		flags[1] = *workers;
+		flags[2] = *utility;
+	}
+#ifdef USE_MPI
+	MPI_Bcast((void *) flags.data(), 3, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+	if (flags[0] != 0)
+	{
+		RunFileThread(this->nthreads);
+	}
+	if (flags[1] != 0)
+	{
+#ifdef THREADED_PHAST
+		omp_set_num_threads(this->nthreads);
+		#pragma omp parallel 
+		#pragma omp for
+#endif
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			RunFileThread(n);
+		} 
+	}	
+	if (flags[2] != 0)
+	{
+		RunFileThread(this->nthreads + 1);
+	}
 	return IRM_OK;
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+Reaction_module::RunString(int *initial_phreeqc, int * workers, int * utility, const char * input_string, long l)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		if (initial_phreeqc == NULL || workers == NULL || utility == NULL || input_string == NULL)
+		{
+			Reaction_module::ErrorStop("NULL pointer in Reaction_module::RunFile");
+		}
+	}
+	/*
+	*  Run PHREEQC to obtain PHAST reactants
+	*/
+	std::string input = Char2TrimString(input_string, l);
+	std::vector<int> flags;
+	flags.resize(4);
+	if (mpi_myself == 0)
+	{
+		flags[0] = *initial_phreeqc;
+		flags[1] = *workers;
+		flags[2] = *utility;
+		flags[3] = (int) input.size();
+	}
+#ifdef USE_MPI
+	MPI_Bcast((void *) flags.data(), 4, MPI_INT, 0, MPI_COMM_WORLD);
+	input.resize(flags[4]);
+	MPI_Bcast((void *) input.c_str(), flags[4], MPI_CHAR, 0, MPI_COMM_WORLD);
+#endif
+	if (flags[0] != 0)
+	{
+		RunStringThread(this->nthreads, input);
+	}
+	if (flags[1] != 0)
+	{
+#ifdef THREADED_PHAST
+		omp_set_num_threads(this->nthreads);
+		#pragma omp parallel 
+		#pragma omp for
+#endif
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			RunStringThread(n, input);
+		} 
+	}	
+	if (flags[2] != 0)
+	{
+		RunStringThread(this->nthreads + 1, input);
+	}
+	return IRM_OK;
+}
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::LoadDatabase(const char * database, long l)
@@ -1962,18 +2076,18 @@ Reaction_module::LoadDatabase(const char * database, long l)
 	}
 
 	std::vector< int > rtn;
-	rtn.resize(this->nthreads + 1);
+	rtn.resize(this->nthreads + 2);
 #ifdef THREADED_PHAST
 	omp_set_num_threads(this->nthreads+1);
 	#pragma omp parallel 
 	#pragma omp for
 #endif
-	for (int n = 0; n <= this->nthreads; n++)
+	for (int n = 0; n < this->nthreads + 2; n++)
 	{
 		rtn[n] = this->workers[n]->LoadDatabase(this->database_file_name.c_str());
 	} 	
 	int rtn_value = 0;
-	for (int n = 0; n <= this->nthreads; n++)
+	for (int n = 0; n < this->nthreads + 2; n++)
 	{
 		rtn_value += rtn[n];
 		if (rtn[n] != 0)

@@ -52,7 +52,8 @@ public:
                                                    int *initial_conditions1 = NULL,
                                                    int *initial_conditions2 = NULL,	
                                                    double *fraction1 = NULL);
-	int                                       InitialPhreeqcRunFile(const char *chemistry_name, long l = -1);
+	IRM_RESULT                                RunFile(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name, long l = -1);
+	IRM_RESULT                                RunString(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name, long l = -1);
 	int                                       LoadDatabase(const char * database, long l = -1);
 	void                                      RunCells(void);
 
@@ -158,11 +159,12 @@ protected:
 	void                                      Concentrations2Solutions(int n, std::vector<double> &c);
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
-	int                                       InitialPhreeqcRunThread(int n);
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);
 	void                                      RunCellsThread(int i);
+	IRM_RESULT                                RunFileThread(int n);
+	IRM_RESULT                                RunStringThread(int n, std::string & input);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
 	void                                      SetEndCells(void);
 	void                                      TransferCells(cxxStorageBin &t_bin, int old, int nnew);

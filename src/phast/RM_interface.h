@@ -41,12 +41,13 @@
 #define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
 #define RM_InitialPhreeqc2Concentrations   FC_FUNC_ (rm_initialphreeqc2concentrations, RM_INITIALPHREEQC2CONCENTRATIONS)
 #define RM_InitialPhreeqc2Module           FC_FUNC_ (rm_initialphreeqc2module,         RM_INITIALPHREEQC2MODULE)
-#define RM_InitialPhreeqcRunFile           FC_FUNC_ (rm_initialphreeqcrunfile,         RM_INITIALPHREEQCRUNFILE)
 #define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
 #define RM_LogScreenMessage                FC_FUNC_ (rm_logscreenmessage,              RM_LOGSCREENMESSAGE)
 #define RM_OpenFiles                       FC_FUNC_ (rm_openfiles,                     RM_OPENFILES)
 #define RM_RunCells                        FC_FUNC_ (rm_runcells,                      RM_RUNCELLS)
+#define RM_RunFile                         FC_FUNC_ (runfile,                          RM_RUNFILE)
+#define RM_RunString                       FC_FUNC_ (rm_runstring,                     RM_RUNSTRING)
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
 #define RM_SetCellVolume				   FC_FUNC_ (rm_setcellvolume,                 RM_SETCELLVOLUME)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
@@ -404,29 +405,6 @@ IRM_RESULT RM_InitialPhreeqc2Module(int *id,
                 int *initial_conditions2 = NULL,		// 7 x nxyz end-member 2
                 double *fraction1 = NULL);			    // 7 x nxyz fraction of end-member 1
 /**
- *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
- *  @param id            The instance id returned from @ref RM_Create.
- *  @param chem_name     String containing the name of the PHREEQC file to run.
- *  @param l             Length of the chem_name string buffer (automatic in Fortran, optional in C).
- *  @see                 ???
- *  MPI:
- *     Called by all processes.
- *     Except for id, arguments are optional for non-root processes.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      INTEGER FUNCTION RM_InitialPhreeqcRunFile(id, chem_name)
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *          CHARACTER, OPTIONAL, INTENT(in) :: chem_name
- *      END FUNCTION RM_InitialPhreeqcRunFile 
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-int        RM_InitialPhreeqcRunFile(int *id, const char *chem_name = NULL, long l = -1);
-/**
  *  Load a database for the InitialPhreeqc and all worker IPhreeqc instances. 
  *  @param id            The instance id returned from @ref RM_Create.
  *  @param db_name       String containing the database name.
@@ -574,6 +552,55 @@ void       RM_RunCells(int *id,
  *  </CODE>
  *  @endhtmlonly
  */
+/**
+ *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @param chem_name     String containing the name of the PHREEQC file to run.
+ *  @param l             Length of the chem_name string buffer (automatic in Fortran, optional in C).
+ *  @see                 ???
+ *  MPI:
+ *     Called by all processes.
+ *     Except for id, arguments are optional for non-root processes.
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *      INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, chem_name)
+ *          IMPLICIT NONE
+ *          INTEGER, INTENT(in) :: id
+ *          INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
+ *          CHARACTER, OPTIONAL, INTENT(in) :: chem_name
+ *      END FUNCTION RM_RunFile 
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
+int        RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility, const char *chem_name = NULL, long l = -1);
+/**
+ *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @param chem_name     String containing the name of the PHREEQC file to run.
+ *  @param l             Length of the chem_name string buffer (automatic in Fortran, optional in C).
+ *  @see                 ???
+ *  <H>
+ *  MPI:
+ *     Called by all processes.
+ *     Except for id, arguments are optional for non-root processes.
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *      INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, input_string)
+ *          IMPLICIT NONE
+ *          INTEGER, INTENT(in) :: id
+ *          INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
+ *          CHARACTER, OPTIONAL, INTENT(in) :: input_string
+ *      END FUNCTION RM_RunFile 
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
+int        RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utility, const char * input_string = NULL, long l = -1);
 void       RM_ScreenMessage(const char *str, long l = -1);
 void       RM_SetCellVolume(int *id, double *t);
 int        RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);

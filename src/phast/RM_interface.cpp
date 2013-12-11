@@ -455,18 +455,6 @@ RM_InitialPhreeqc2Module(int *id,
 	}
 	return IRM_BADINSTANCE;
 }
-/* ---------------------------------------------------------------------- */
-int 
-RM_InitialPhreeqcRunFile(int *id, const char *chem_name, long l)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->InitialPhreeqcRunFile(chem_name, l);
-	}
-	return IRM_BADINSTANCE;
-}
 
 /* ---------------------------------------------------------------------- */
 void
@@ -600,6 +588,31 @@ void RM_RunCells(int *id,
 	}
 }
 
+/* ---------------------------------------------------------------------- */
+int 
+RM_RunFile(int *id, int *initial_phreeqc, int *workers, int *utility, const char *chem_name, long l)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->RunFile(initial_phreeqc, workers, utility, chem_name, l);
+	}
+	return IRM_BADINSTANCE;
+}
+
+/* ---------------------------------------------------------------------- */
+int 
+RM_RunString(int *id, int *initial_phreeqc, int *workers, int *utility, const char *input_string, long l)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->RunString(initial_phreeqc, workers, utility, input_string, l);
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 void
 RM_ScreenMessage(const char *err_str, long l)
