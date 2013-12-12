@@ -19,11 +19,21 @@
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
+#if defined(_MSC_VER)
+#define FC_FUNC_(name,NAME) NAME
+#endif
+
+#if defined(FC_FUNC_)
+// Calls to Fortran
+#define hdf_write_invariant         FC_FUNC_ (hdf_write_invariant,       HDF_WRITE_INVARIANT)
+#define HDF_BEGIN_TIME_STEP         FC_FUNC_ (hdf_begin_time_step,       HDF_BEGIN_TIME_STEP)
+#define HDF_END_TIME_STEP           FC_FUNC_ (hdf_end_time_step,         HDF_END_TIME_STEP)
+#endif
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-extern void HDF_WRITE_INVARIANT(int *iso, int * mpi_myself);
+extern void hdf_write_invariant(int *iso, int * mpi_myself);
 extern void HDF_BEGIN_TIME_STEP(int *iso);
 extern void HDF_END_TIME_STEP(int *iso);
 #if defined(__cplusplus)
@@ -556,7 +566,7 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
 							if ( !this->GetHDFInvariant())
 							{
-								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
+								hdf_write_invariant(&iso, &local_mpi_myself);
 							}
 							// Now write HDF file
 							HDF_BEGIN_TIME_STEP(&iso);

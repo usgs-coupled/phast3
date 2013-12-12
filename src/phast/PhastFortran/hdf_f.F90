@@ -1,5 +1,5 @@
 ! ... $Id: hdf_f.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $
-SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself)
+SUBROUTINE hdf_write_invariant(iso, l_mpi_myself)
   ! ... Preconditions:
   ! ...   Must be called before first call to EQUILIBRATE
   ! ...   
@@ -99,7 +99,7 @@ SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself)
   IF (l_mpi_myself == 0) THEN
      CALL HDF_FINALIZE_INVARIANT(iso)
   ENDIF
-END SUBROUTINE HDF_WRITE_INVARIANT
+END SUBROUTINE hdf_write_invariant
 
 SUBROUTINE HDF_BEGIN_TIME_STEP(iso)
   USE mcc, ONLY: solute
