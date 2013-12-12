@@ -156,8 +156,8 @@ openmpi_intel_64_debug:
 # =============================================================================
 
 SRC              = ../IPHreeqcPhast/IPhreeqc/phreeqcpp/phreeqc
-PHREEQC_INCLUDES = -I.. -I../IPhreeqcPhast -I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp 
-PHREEQC_VPATH    = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../KDtree
+PHREEQC_INCLUDES = -I.. -I../PhreeqcRM -I../IPhreeqcPhast -I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp 
+PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../KDtree
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
@@ -261,7 +261,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
-  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring $(DEFINES)
+  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring $(DEFINES) $(PHREEQC_INCLUDES)
   CC           = g++
   CFLAGS       = -Wall -fopenmp -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS)
@@ -491,6 +491,7 @@ COMMON_FOBJS =	\
 	closef.o \
 	coeff_flow.o \
 	coeff_trans.o \
+	create_mapping.o \
 	dealloc_arr.o \
 	dealloc_arr_worker.o \
 	dump.o \
@@ -595,9 +596,11 @@ COMMON_FOBJS =	\
 COMMON_CXXOBJS = \
 gzstream.o \
 phast_main.o  \
-Reaction_module.o \
+PhreeqcRM.o \
 RM_interface.o \
 hdf.o \
+TM_interface.o \
+FileHandler.o \
 \
 fwrap2Phast.o \
 fwrap3Phast.o \
@@ -878,11 +881,12 @@ clean:
 
 depends:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast \
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast -I../PhreeqcRM \
 	-I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp \
 	-I../KDtree \
 	../*.cxx ../*.cpp \
 	../IPhreeqcPhast/*.cpp 	../IPhreeqcPhast/*.cxx \
+	../PhreeqcRM/*.cpp \
 	../IPhreeqcPhast/IPhreeqc/*.cpp ../IPhreeqcPhast/IPhreeqc/*.c \
 	../IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cxx ../IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cpp \
 	../KDtree/*.cpp $(PHASTINPUT_FILES) > ../dependencies

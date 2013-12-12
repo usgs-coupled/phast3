@@ -46,7 +46,7 @@
 #define RM_LogScreenMessage                FC_FUNC_ (rm_logscreenmessage,              RM_LOGSCREENMESSAGE)
 #define RM_OpenFiles                       FC_FUNC_ (rm_openfiles,                     RM_OPENFILES)
 #define RM_RunCells                        FC_FUNC_ (rm_runcells,                      RM_RUNCELLS)
-#define RM_RunFile                         FC_FUNC_ (runfile,                          RM_RUNFILE)
+#define RM_RunFile                         FC_FUNC_ (rm_runfile,                          RM_RUNFILE)
 #define RM_RunString                       FC_FUNC_ (rm_runstring,                     RM_RUNSTRING)
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
 #define RM_SetCellVolume				   FC_FUNC_ (rm_setcellvolume,                 RM_SETCELLVOLUME)
@@ -68,7 +68,7 @@
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
-#endif;
+#endif
 
 #if defined(__cplusplus)
 extern "C" {

@@ -439,7 +439,9 @@ SUBROUTINE InitialEquilibrationRM
         CALL RM_SetPoreVolume(rm_id, pv(1))
         CALL RM_SetSaturation(rm_id, frac(1))
         status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi)
-        status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
+	status = 0
+	if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
+        status = RM_SetSelectedOutputOn(rm_id, status)
         CALL RM_RunCells(      &
             rm_id,              &
             time_phreeqc,       &        ! time_hst
@@ -559,7 +561,9 @@ SUBROUTINE TimeStepRM
         CALL RM_SetSaturation(rm_id, frac(1))
         
         status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer)
-        status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
+	status = 0
+	if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
+        status = RM_SetSelectedOutputOn(rm_id, status)
         CALL RM_RunCells(                               &
             rm_id,                                      &
             time,                                       &        ! time_hst

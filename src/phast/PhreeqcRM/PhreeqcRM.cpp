@@ -204,7 +204,7 @@ if( numCPU < 1 )
 #endif
 	if (mpi_myself == 0)
 	{
-		if (*nxyz_arg == NULL)
+		if (nxyz_arg == NULL)
 		{
 			std::ostringstream errstr;
 			errstr << "Number of grid cells (nxyz) not defined in creating PhreeqcRM"; 
@@ -217,7 +217,7 @@ if( numCPU < 1 )
 	this->nthreads = 1;
 #else
 	this->nthreads = n;
-	if (*thread_count != NULL)
+	if (thread_count != NULL)
 	{
 		this->nthreads = (*thread_count > 0) ? *thread_count : n;
 	}
@@ -1379,7 +1379,6 @@ PhreeqcRM::GetDensity(void)
 	{
 		for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
 		{
-			cxxSolution *soln_ptr = this->workers[n]->Get_solution(i);
 			double d = this->workers[n]->Get_solution(i)->Get_density();
 			for(size_t j = 0; j < back[i].size(); j++)
 			{
@@ -1573,7 +1572,7 @@ PhreeqcRM::GetSelectedOutputHeading(int *icol, std::string &heading)
 		{
 			VAR pVar;
 			VarInit(&pVar);
-			if (icol != NULL && it->second.Get(0, *icol, &pVar) == IRM_OK)
+			if (icol != NULL && it->second.Get(0, *icol, &pVar) == VR_OK)
 			{
 				if (pVar.type == TT_STRING)
 				{
@@ -1701,7 +1700,6 @@ PhreeqcRM::RunFileThread(int n)
 /* ---------------------------------------------------------------------- */
 {
 		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
-		int ipp_id = (int) iphreeqc_phast_worker->Get_Index();
 
 		iphreeqc_phast_worker->SetOutputFileOn(false);
 		iphreeqc_phast_worker->SetErrorFileOn(false);
@@ -1737,7 +1735,6 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 /* ---------------------------------------------------------------------- */
 {
 		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
-		int ipp_id = (int) iphreeqc_phast_worker->Get_Index();
 
 		iphreeqc_phast_worker->SetOutputFileOn(false);
 		iphreeqc_phast_worker->SetErrorFileOn(false);

@@ -1,4 +1,6 @@
+#ifdef WIN32
 #include <windows.h>
+#endif
 #include <string>
 #include <map>
 #include <iostream>
@@ -21,9 +23,9 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-extern void HDF_WRITE_INVARIANT(int *iso, int * mpi_myself);
-extern void HDF_BEGIN_TIME_STEP(int *iso);
-extern void HDF_END_TIME_STEP(int *iso);
+extern void hdf_write_invariant(int *iso, int * mpi_myself);
+extern void hdf_begin_time_step(int *iso);
+extern void hdf_end_time_step(int *iso);
 #if defined(__cplusplus)
 }
 #endif
@@ -146,9 +148,6 @@ FileHandler::ProcessRestartFiles(
 	MPI_Bcast(initial_conditions2.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(fraction1.data(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
-		int begin = Reaction_module_ptr->GetStartCell()[mpi_myself];
-		int end =   Reaction_module_ptr->GetEndCell()[mpi_myself] + 1;
-
 		/*
 		* Read any restart files
 		*/
@@ -557,14 +556,14 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
 							if ( !this->GetHDFInvariant())
 							{
-								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
+								hdf_write_invariant(&iso, &local_mpi_myself);
 							}
 							// Now write HDF file
-							HDF_BEGIN_TIME_STEP(&iso);
+							hdf_begin_time_step(&iso);
 							HDFBeginCTimeStep(iso);
 							HDFFillHyperSlab(iso, local_selected_out, ncol);
 							HDFEndCTimeStep(iso);
-							HDF_END_TIME_STEP(&iso);
+							hdf_end_time_step(&iso);
 						}
 						else
 						{
