@@ -852,6 +852,7 @@ FOBJ =	phast_spmd.o            \
 	clog.o                  \
 	closef.o                \
 	coeff_flow.o            \
+	create_mapping.o        \
 	dealloc_arr.o           \
 	dump.o                  \
 	error1.o                \
