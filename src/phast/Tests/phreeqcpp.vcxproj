@@ -352,7 +352,7 @@
   <ItemGroup>
     <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp" />
     <ClCompile Include="..\PhreeqcRM\RM_interface.cpp" />
-    <ClCompile Include="advection_example.cpp" />
+    <ClCompile Include="advection_cpp.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

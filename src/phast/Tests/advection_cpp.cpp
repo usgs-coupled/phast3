@@ -172,6 +172,7 @@ int advection_example()
 			print_chemistry_on = 1;
 			phreeqc_rm.SetPrintChemistryOn(&print_chemistry_on);
 		}
+		phreeqc_rm.SetPoreVolume(pv.data());           // If pore volume changes due to compressibility
 		phreeqc_rm.SetSaturation(sat.data());           // If saturation changes
 		phreeqc_rm.SetTemperature(temperature.data());  // If temperature changes
 		phreeqc_rm.SetPressure(pressure.data());        // If pressure changes
