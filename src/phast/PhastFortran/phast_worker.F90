@@ -105,7 +105,15 @@ SUBROUTINE phast_worker
 !
         ! ... Initialize chemistry 
 
-        CALL RM_SetUnits (rm_id)
+        !CALL RM_SetUnits (rm_id)
+        CALL RM_SetUnitsSolution(rm_id)
+        CALL RM_SetUnitsExchange(rm_id)
+        CALL RM_SetUnitsGasPhase(rm_id)
+        CALL RM_SetUnitsKinetics(rm_id)
+        CALL RM_SetUnitsPPassemblage(rm_id)
+        CALL RM_SetUnitsSSassemblage(rm_id)
+        CALL RM_SetUnitsSurface(rm_id)
+        
         CALL RM_SetTimeConversion(rm_id)
         CALL RM_SetPoreVolumeZero(rm_id)
         CALL RM_SetSaturation(rm_id)

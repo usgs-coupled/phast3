@@ -461,6 +461,7 @@ SUBROUTINE InitializeRM
     USE mcn, ONLY:  x_node, y_node, z_node, pv0, volume
     USE mcp, ONLY:  cnvtmi
     USE mcv, ONLY:  c, frac, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
+    USE mcv_m, ONLY: exchange_units, gasphase_units, kinetics_units, ppassemblage_units, ssassemblage_units, surface_units
 
     IMPLICIT NONE
     SAVE
@@ -479,8 +480,15 @@ SUBROUTINE InitializeRM
     IF(solute) THEN
 
         ! ... Send data to threads or workers
+        !CALL RM_SetUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
+        CALL RM_SetUnitsSolution(rm_id, 3)
+        CALL RM_SetUnitsExchange(rm_id, exchange_units)
+        CALL RM_SetUnitsGasPhase(rm_id, gasphase_units)
+        CALL RM_SetUnitsKinetics(rm_id, kinetics_units)
+        CALL RM_SetUnitsPPassemblage(rm_id, ppassemblage_units)
+        CALL RM_SetUnitsSSassemblage(rm_id, ssassemblage_units)
+        CALL RM_SetUnitsSurface(rm_id, surface_units)      
         
-        CALL RM_SetUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
         CALL RM_SetTimeConversion(rm_id, cnvtmi)
         CALL RM_SetPoreVolumeZero(rm_id, pv0(1))
         CALL RM_SetSaturation(rm_id, frac(1))

@@ -1,5 +1,25 @@
 #include <stdlib.h>
 
+// Fortran functions
+#if defined(_MSC_VER)
+#define FC_FUNC_(name,NAME) NAME
+#endif
+#if defined(FC_FUNC_)
+// Calls to Fortran
+#define advection_f90         FC_FUNC_ (advection_f90,       ADVECTION_F90)
+#endif
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+	
+extern void advection_f90(void);
+
+#if defined(__cplusplus)
+}
+#endif
+
+// C++ function
 extern int advection_example();
 
 #if defined(USE_MPI)
@@ -32,6 +52,7 @@ int main(int argc, char* argv[])
 #endif
 
 	advection_example();
+	//advection_f90();
 
 #if defined(USE_MPI)
 	MPI_Finalize();

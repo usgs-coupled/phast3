@@ -239,7 +239,6 @@ if( numCPU < 1 )
 		exit(4);
 	}
 
-
 	this->gfw_water = 18.;						// gfw of water
 	this->count_chemistry = this->nxyz;
 	//this->free_surface = false;					// free surface calculation
@@ -1171,7 +1170,7 @@ PhreeqcRM::FindComponents(void)
 	this->components.push_back("Charge");
 
 	// Get other components
-	IPhreeqcPhast * phast_iphreeqc_worker = this->GetWorkers()[0];
+	IPhreeqcPhast * phast_iphreeqc_worker = this->GetWorkers()[this->nthreads];
 	size_t count_components = phast_iphreeqc_worker->GetComponentCount();
 	size_t i;
 	for (i = 0; i < count_components; i++)
@@ -1456,9 +1455,9 @@ PhreeqcRM::GetSelectedOutput(double *so)
 					if (so)
 					{
 						// Now write data from the process to so
-						for (size_t icol = 0; icol < ncol; icol++)
+						for (int icol = 0; icol < ncol; icol++)
 						{
-							for (size_t irow = 0; irow < nrow; irow++)
+							for (int irow = 0; irow < nrow; irow++)
 							{
 								int ichem = local_start_cell + (int) irow;
 								for (size_t k = 0; k < back[ichem].size(); k++)
@@ -1705,7 +1704,7 @@ PhreeqcRM::RunFileThread(int n)
 		iphreeqc_phast_worker->SetErrorFileOn(false);
 		iphreeqc_phast_worker->SetLogFileOn(false);
 		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
-		if (n == 0)
+		if (n == this->nthreads)
 		{
 			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
 			iphreeqc_phast_worker->SetOutputStringOn(true);
@@ -1720,11 +1719,11 @@ PhreeqcRM::RunFileThread(int n)
 		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) ErrorStop("RunFile failed\n");
 
 		// Create a StorageBin with initial PHREEQC for boundary conditions
-		if (n == 0)
+		if (n == this->nthreads)
 		{
 			WriteOutput(iphreeqc_phast_worker->GetOutputString());
-			this->Get_phreeqc_bin().Clear();
-			this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
+			//this->Get_phreeqc_bin().Clear();
+			//this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 		}
 		return IRM_OK;
 }
@@ -1740,7 +1739,7 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 		iphreeqc_phast_worker->SetErrorFileOn(false);
 		iphreeqc_phast_worker->SetLogFileOn(false);
 		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
-		if (n == 0)
+		if (n == this->nthreads)
 		{
 			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
 			iphreeqc_phast_worker->SetOutputStringOn(true);
@@ -1755,11 +1754,11 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 		if (iphreeqc_phast_worker->RunString(input.c_str()) > 0) ErrorStop("RunString failed\n");
 
 		// Create a StorageBin with initial PHREEQC for boundary conditions
-		if (n == 0)
+		if (n == this->nthreads)
 		{
 			WriteOutput(iphreeqc_phast_worker->GetOutputString());
-			this->Get_phreeqc_bin().Clear();
-			this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
+			//this->Get_phreeqc_bin().Clear();
+			//this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 		}
 		return IRM_OK;
 }
@@ -1860,6 +1859,9 @@ PhreeqcRM::InitialPhreeqc2Module(
 	 */
 	int i, j;
 	IRM_RESULT rtn = IRM_OK;
+
+	this->Get_phreeqc_bin().Clear();
+	this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 
 	std::vector < int > initial_conditions1, initial_conditions2;
 	std::vector < double > fraction1;
@@ -4021,7 +4023,7 @@ PhreeqcRM::SetTimeStep(double *t)
 	MPI_Bcast(&this->time_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
@@ -4076,6 +4078,119 @@ PhreeqcRM::SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, in
 	{
 		SetUnitsKinetics(local_kin);
 	}
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::SetUnitsExchange(int *u)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0 && u != NULL)
+	{
+		if (*u > 0)
+		{
+			this->input_units_Exchange  = *u;
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->input_units_Exchange,  1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::SetUnitsGasPhase(int *u)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0 && u != NULL)
+	{
+		if (*u > 0)
+		{
+			this->input_units_GasPhase  = *u;
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->input_units_GasPhase,  1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::SetUnitsKinetics(int *u)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0 && u != NULL)
+	{
+		if (*u > 0)
+		{
+			this->input_units_Kinetics  = *u;
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->input_units_Kinetics,  1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::SetUnitsPPassemblage(int *u)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0 && u != NULL)
+	{
+		if (*u > 0)
+		{
+			this->input_units_PPassemblage  = *u;
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->input_units_PPassemblage,  1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::SetUnitsSolution(int *u)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0 && u != NULL)
+	{
+		if (*u > 0)
+		{
+			this->input_units_Solution  = *u;
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->input_units_Solution,  1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::SetUnitsSSassemblage(int *u)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0 && u != NULL)
+	{
+		if (*u > 0)
+		{
+			this->input_units_SSassemblage  = *u;
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->input_units_SSassemblage,  1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::SetUnitsSurface(int *u)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0 && u != NULL)
+	{
+		if (*u > 0)
+		{
+			this->input_units_Surface  = *u;
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->input_units_Surface,  1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
 }
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
