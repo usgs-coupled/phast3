@@ -813,7 +813,7 @@ void RM_SetTimeConversion(int *id, double *t)
 		Reaction_module_ptr->SetTimeConversion(t);
 	}
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void 
 RM_SetUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
@@ -829,7 +829,86 @@ RM_SetUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, 
 		Reaction_module_ptr->SetUnits(sol, pp, ex, surf, gas, ss, kin);
 	}
 }
-/* -
+#endif
+/* ---------------------------------------------------------------------- */
+void 
+RM_SetUnitsExchange (int *id, int *u)
+/* ---------------------------------------------------------------------- */
+{	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetUnitsExchange(u);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void 
+RM_SetUnitsGasPhase (int *id, int *u)
+/* ---------------------------------------------------------------------- */
+{	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetUnitsGasPhase(u);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void 
+RM_SetUnitsKinetics (int *id, int *u)
+/* ---------------------------------------------------------------------- */
+{	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetUnitsKinetics(u);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void 
+RM_SetUnitsPPassemblage (int *id, int *u)
+/* ---------------------------------------------------------------------- */
+{	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetUnitsPPassemblage(u);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void 
+RM_SetUnitsSolution (int *id, int *u)
+/* ---------------------------------------------------------------------- */
+{	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetUnitsSolution(u);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void 
+RM_SetUnitsSSassemblage (int *id, int *u)
+/* ---------------------------------------------------------------------- */
+{	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetUnitsSSassemblage(u);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void 
+RM_SetUnitsSurface (int *id, int *u)
+/* ---------------------------------------------------------------------- */
+{	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetUnitsSurface(u);
+	}
+}
+
+/* 
 --------------------------------------------------------------------- */
 void
 RM_WarningMessage(const char *err_str, long l)

@@ -138,14 +138,14 @@ public:
 	void                                      SetTime(double *t = NULL);
 	void                                      SetTimeConversion(double *t);
 	void                                      SetTimeStep(double *t = NULL);
-	void                                      SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
-	void                                      SetUnitsExchange(int i) {this->input_units_Exchange = i;}
-	void                                      SetUnitsGasPhase(int i) {this->input_units_GasPhase = i;}
-	void                                      SetUnitsKinetics(int i) {this->input_units_Kinetics = i;}
-	void                                      SetUnitsPPassemblage(int i) {this->input_units_PPassemblage = i;}
-	void                                      SetUnitsSolution(int i) {this->input_units_Solution = i;}
-	void                                      SetUnitsSSassemblage(int i) {this->input_units_SSassemblage = i;}
-	void                                      SetUnitsSurface(int i) {this->input_units_Surface = i;}
+	//void                                      SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
+	void                                      SetUnitsExchange(int *i);
+	void                                      SetUnitsGasPhase(int *i);
+	void                                      SetUnitsKinetics(int *i);
+	void                                      SetUnitsPPassemblage(int *i);
+	void                                      SetUnitsSolution(int *i);
+	void                                      SetUnitsSSassemblage(int *i);
+	void                                      SetUnitsSurface(int *i);
 protected:
 	void                                      BeginTimeStep(void);
 	IRM_RESULT                                CellInitialize(

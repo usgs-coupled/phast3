@@ -34,13 +34,15 @@ int advection_example()
 	}
 
 	// Set concentration units
-	phreeqc_rm.SetUnitsSolution(2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
-	phreeqc_rm.SetUnitsPPassemblage(1);  // 1, mol/L; 2 mol/kg rock
-	phreeqc_rm.SetUnitsExchange(1);      // 1, mol/L; 2 mol/kg rock
-	phreeqc_rm.SetUnitsSurface(1);       // 1, mol/L; 2 mol/kg rock
-	phreeqc_rm.SetUnitsGasPhase(1);      // 1, mol/L; 2 mol/kg rock
-	phreeqc_rm.SetUnitsSSassemblage(1);  // 1, mol/L; 2 mol/kg rock
-	phreeqc_rm.SetUnitsKinetics(1);      // 1, mol/L; 2 mol/kg rock
+	int units = 2;
+	phreeqc_rm.SetUnitsSolution(&units);      // 1, mg/L; 2, mol/L; 3, kg/kgs
+	units = 1;
+	phreeqc_rm.SetUnitsPPassemblage(&units);  // 1, mol/L; 2 mol/kg rock
+	phreeqc_rm.SetUnitsExchange(&units);      // 1, mol/L; 2 mol/kg rock
+	phreeqc_rm.SetUnitsSurface(&units);       // 1, mol/L; 2 mol/kg rock
+	phreeqc_rm.SetUnitsGasPhase(&units);      // 1, mol/L; 2 mol/kg rock
+	phreeqc_rm.SetUnitsSSassemblage(&units);  // 1, mol/L; 2 mol/kg rock
+	phreeqc_rm.SetUnitsKinetics(&units);      // 1, mol/L; 2 mol/kg rock
 
 	// Set conversion from seconds to user units
 	double time_conversion = 1.0 / 86400;
@@ -91,7 +93,7 @@ int advection_example()
 	// Load database
 	phreeqc_rm.LoadDatabase("phreeqc.dat");
 
-	// Run file to define solutions and reactants for initial conditions
+	// Run file to define solutions and reactants for initial conditions, selected output
 	int initial_phreeqc = 1;     // This is an IPhreeqc for accumulating initial and boundary conditions
 	int workers = 1;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
 	int utility = 1;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a 
@@ -100,8 +102,7 @@ int advection_example()
 
 	// For demonstration, clear contents of workers and utility
 	// Worker initial conditions are defined below
-	workers = 0;
-	utility = 0; 
+	initial_phreeqc = 0; 
 	std::string input = "DELETE; -all";
     phreeqc_rm.RunString(&initial_phreeqc, &workers, &utility, input.c_str()); 
 
@@ -146,7 +147,7 @@ int advection_example()
 	c.resize(nxyz * components.size());
 	phreeqc_rm.SetTime(&time);
 	phreeqc_rm.SetTimeStep(&time_step);
-	phreeqc_rm.RunCells(); 
+	phreeqc_rm.RunCells();
 	phreeqc_rm.GetConcentrations(c.data());
 
 	int nsteps = 10;

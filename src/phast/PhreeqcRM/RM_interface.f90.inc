@@ -276,10 +276,46 @@
             DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_SetTimeConversion 
 
-        SUBROUTINE RM_SetUnits(id, sol, pp, ex, surf, gas, ss, kin)   
+        SUBROUTINE RM_SetUnitsExchange(id, u)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER, OPTIONAL :: sol, pp, ex, surf, gas, ss, kin
-        END SUBROUTINE RM_SetUnits 
+            INTEGER, OPTIONAL :: u
+        END SUBROUTINE RM_SetUnitsExchange 
+
+        SUBROUTINE RM_SetUnitsGasPhase(id, u)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: u
+        END SUBROUTINE RM_SetUnitsGasPhase 
+
+        SUBROUTINE RM_SetUnitsKinetics(id, u)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: u
+        END SUBROUTINE RM_SetUnitsKinetics 
+
+        SUBROUTINE RM_SetUnitsPPassemblage(id, u)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: u
+        END SUBROUTINE RM_SetUnitsPPassemblage
+
+        SUBROUTINE RM_SetUnitsSolution(id, u)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: u
+        END SUBROUTINE RM_SetUnitsSolution  
+
+        SUBROUTINE RM_SetUnitsSSassemblage(id, u)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: u
+        END SUBROUTINE RM_SetUnitsSSassemblage  
+
+        SUBROUTINE RM_SetUnitsSurface(id, u)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: u
+        END SUBROUTINE RM_SetUnitsSurface  
 		 
     END INTERFACE

@@ -64,7 +64,15 @@
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
 #define RM_SetTemperature                  FC_FUNC_ (rm_settemperature,                RM_SETTEMPERATURE)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
-#define RM_SetUnits                        FC_FUNC_ (rm_setunits,                      RM_SETUNITS)
+//#define RM_SetUnits                        FC_FUNC_ (rm_setunits,                      RM_SETUNITS)
+#define RM_SetUnitsExchange                FC_FUNC_ (rm_setunitsexchange,              RM_SETUNITSEXCHANGE)
+#define RM_SetUnitsGasPhase                FC_FUNC_ (rm_setunitsgasphase,              RM_SETUNITSGASPHASE)
+#define RM_SetUnitsKinetics                FC_FUNC_ (rm_setunitskinetics,              RM_SETUNITSKINETICS)
+#define RM_SetUnitsPPassemblage            FC_FUNC_ (rm_setunitsppassemblage,          RM_SETUNITSPPASSEMBLAGE)
+#define RM_SetUnitsSolution                FC_FUNC_ (rm_setunitssolution,              RM_SETUNITSSOLUTION)
+#define RM_SetUnitsSSassemblage            FC_FUNC_ (rm_setunitsssassemblage,          RM_SETUNITSSSASSEMBLAGE)
+#define RM_SetUnitsSSassemblage            FC_FUNC_ (rm_setunitsssassemblage,          RM_SETUNITSSSASSEMBLAGE)
+#define RM_SetUnitsSurface                 FC_FUNC_ (rm_setunitssurface,               RM_SETUNITSSURFACE)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
@@ -618,8 +626,15 @@ void       RM_SetSaturation(int *id, double *t);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
 void       RM_SetTemperature(int *id, double *t);
 void       RM_SetTimeConversion(int *id, double *t);
-void       RM_SetUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 
-                int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
+//void       RM_SetUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 
+//                int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
+void       RM_SetUnitsExchange(int *id, int *i);
+void       RM_SetUnitsGasPhase(int *id, int *i);
+void       RM_SetUnitsKinetics(int *id, int *i);
+void       RM_SetUnitsPPassemblage(int *id, int *i);
+void       RM_SetUnitsSolution(int *id, int *i);
+void       RM_SetUnitsSSassemblage(int *id, int *i);
+void       RM_SetUnitsSurface(int *id, int *i);
 /**
  *  Send an warning message to the screen and log file. 
  *  @param str           String to be sent.
