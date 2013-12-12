@@ -23,9 +23,9 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-extern void hdf_write_invariant(int *iso, int * mpi_myself);
-extern void hdf_begin_time_step(int *iso);
-extern void hdf_end_time_step(int *iso);
+extern void HDF_WRITE_INVARIANT(int *iso, int * mpi_myself);
+extern void HDF_BEGIN_TIME_STEP(int *iso);
+extern void HDF_END_TIME_STEP(int *iso);
 #if defined(__cplusplus)
 }
 #endif
@@ -556,14 +556,14 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
 							if ( !this->GetHDFInvariant())
 							{
-								hdf_write_invariant(&iso, &local_mpi_myself);
+								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
 							}
 							// Now write HDF file
-							hdf_begin_time_step(&iso);
+							HDF_BEGIN_TIME_STEP(&iso);
 							HDFBeginCTimeStep(iso);
 							HDFFillHyperSlab(iso, local_selected_out, ncol);
 							HDFEndCTimeStep(iso);
-							hdf_end_time_step(&iso);
+							HDF_END_TIME_STEP(&iso);
 						}
 						else
 						{

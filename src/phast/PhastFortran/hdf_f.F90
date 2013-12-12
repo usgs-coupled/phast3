@@ -1,5 +1,5 @@
 ! ... $Id: hdf_f.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $
-SUBROUTINE hdf_write_invariant(iso, l_mpi_myself)
+SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself)
   ! ... Preconditions:
   ! ...   Must be called before first call to EQUILIBRATE
   ! ...   
@@ -48,7 +48,7 @@ SUBROUTINE hdf_write_invariant(iso, l_mpi_myself)
      ALLOCATE (mwbc(nwbc),  &
           STAT = a_err)
      IF (a_err /= 0) THEN  
-        PRINT *, "Array allocation failed: hdf_write_invariant, mwbc"
+        PRINT *, "Array allocation failed: HDF_WRITE_INVARIANT, mwbc"
         STOP  
      ENDIF
 
@@ -92,16 +92,16 @@ SUBROUTINE hdf_write_invariant(iso, l_mpi_myself)
      DEALLOCATE (mwbc,  &
           STAT = a_err)
      IF (a_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: hdf_write_invariant, mwbc"
+        PRINT *, "Array deallocation failed: HDF_WRITE_INVARIANT, mwbc"
         STOP  
      ENDIF
   ENDIF
   IF (l_mpi_myself == 0) THEN
      CALL HDF_FINALIZE_INVARIANT(iso)
   ENDIF
-END SUBROUTINE hdf_write_invariant
+END SUBROUTINE HDF_WRITE_INVARIANT
 
-SUBROUTINE hdf_begin_time_step(iso)
+SUBROUTINE HDF_BEGIN_TIME_STEP(iso)
   USE mcc, ONLY: solute
   USE mcc, ONLY: prhdfhi, prhdfci, prhdfvi
   USE mcv, ONLY: time
@@ -126,9 +126,9 @@ SUBROUTINE hdf_begin_time_step(iso)
   ENDIF
   ! ... Open HDF file
   CALL HDF_OPEN_TIME_STEP(iso, time, cnvtmi, prhdfci, prhdfvi, time_step_fscalar_count)
-END SUBROUTINE hdf_begin_time_step
+END SUBROUTINE HDF_BEGIN_TIME_STEP
 
-SUBROUTINE hdf_end_time_step(iso)
+SUBROUTINE HDF_END_TIME_STEP(iso)
 !!$  USE machine_constants, ONLY: kdp
   USE mcc,               ONLY:  prhdfhi, prhdfvi
   USE mcc_m,             ONLY: vmask, ntprhdfv, ntprhdfh
@@ -400,7 +400,7 @@ CONTAINS
     ENDIF
   END SUBROUTINE media_hdf
 
-END SUBROUTINE hdf_end_time_step
+END SUBROUTINE HDF_END_TIME_STEP
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! TODO

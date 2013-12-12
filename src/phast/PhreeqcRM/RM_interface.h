@@ -3,8 +3,8 @@
 */
 #ifndef RM_INTERFACE_H
 #define RM_INTERFACE_H
-#include "IPhreeqc.h"
-#include "Var.h"
+//#include "IPhreeqc.h"
+//#include "Var.h"
 
 
 #if defined(_MSC_VER)
