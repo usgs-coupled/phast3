@@ -274,6 +274,12 @@
             INTEGER, OPTIONAL :: tf
         END FUNCTION RM_SetSelectedOutputOn   
 
+        INTEGER FUNCTION RM_SetStopMessage(id, tf)
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: tf
+        END FUNCTION RM_SetStopMessage  
+
         INTEGER FUNCTION RM_SetTemperature(id, t)
             IMPLICIT NONE
             INTEGER :: id

@@ -114,9 +114,9 @@ SUBROUTINE phast_worker
         CALL RM_SetUnitsSSassemblage(rm_id)
         CALL RM_SetUnitsSurface(rm_id)
         
-        CALL RM_SetTimeConversion(rm_id)
-        CALL RM_SetPoreVolumeZero(rm_id)
-        CALL RM_SetSaturation(rm_id)
+        status = RM_SetTimeConversion(rm_id)
+        status = RM_SetPoreVolumeZero(rm_id)
+        status = RM_SetSaturation(rm_id)
         CALL RM_SetPrintChemistryMask(rm_id)
         CALL RM_SetPartitionUZSolids(rm_id)
         CALL RM_SetCellVolume(rm_id)
@@ -143,16 +143,23 @@ SUBROUTINE phast_worker
 !start  of InitialEquilibrationRM
 !
         ! ... Initial equilibration
-        CALL RM_SetPoreVolume(rm_id)
-        CALL RM_SetSaturation(rm_id)
+        status = RM_SetPoreVolume(rm_id)
+        status = RM_SetSaturation(rm_id)
         status = RM_SetPrintChemistryOn(rm_id)
         status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
-        CALL RM_RunCells(                                &
-            rm_id,                                        &
-            time_phreeqc,                                 &        ! time_hst
-            deltim_dummy,                                 &        ! time_step_hst
-            c(1,1),                                       &        ! fraction
-            stop_msg) 
+        
+        status = RM_SetTime(rm_id) 
+        status = RM_SetTimeStep(rm_id) 
+        status = RM_SetConcentrations(rm_id)
+        status = RM_SetStopMessage(rm_id)
+        
+        status = RM_RunCells(rm_id)  
+        !CALL RM_RunCells(                                &
+        !    rm_id,                                        &
+        !    time_phreeqc,                                 &        ! time_hst
+        !    deltim_dummy,                                 &        ! time_step_hst
+        !    c(1,1),                                       &        ! fraction
+        !    stop_msg) 
         CALL FH_WriteFiles(rm_id)  
 !        
 !end  of InitialEquilibrationRM
@@ -205,16 +212,23 @@ SUBROUTINE phast_worker
 !Start  of TimeStepRM
 ! 
             ! ... Chemistry calculation
-            CALL RM_SetPoreVolume(rm_id)
-            CALL RM_SetSaturation(rm_id)
+            status = RM_SetPoreVolume(rm_id)
+            status = RM_SetSaturation(rm_id)
             status = RM_SetPrintChemistryOn(rm_id)
             status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
-            CALL RM_RunCells(                                &
-                rm_id,                                        &
-                time_phreeqc,                                 &        ! time_hst
-                deltim_dummy,                                 &        ! time_step_hst
-                c(1,1),                                       &        ! fraction
-                stop_msg) 
+            
+            status = RM_SetTime(rm_id) 
+            status = RM_SetTimeStep(rm_id) 
+            status = RM_SetConcentrations(rm_id)
+            status = RM_SetStopMessage(rm_id)
+        
+            status = RM_RunCells(rm_id)             
+            !CALL RM_RunCells(                                &
+            !    rm_id,                                        &
+            !    time_phreeqc,                                 &        ! time_hst
+            !    deltim_dummy,                                 &        ! time_step_hst
+            !    c(1,1),                                       &        ! fraction
+            !    stop_msg) 
             CALL FH_WriteFiles(rm_id)
             status = RM_DumpModule(rm_id)
 !        
