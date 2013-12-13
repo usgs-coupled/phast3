@@ -165,17 +165,18 @@ int advection_example()
 		advect(c, bc_conc, ncomps, nxyz, dim);
 
 		// Send new conditions to module
-		phreeqc_rm.SetConcentrations(c.data());
+		print_chemistry_on = 0;
 		if (steps == nsteps - 1)
 		{
 			// print at last time step
 			print_chemistry_on = 1;
-			phreeqc_rm.SetPrintChemistryOn(&print_chemistry_on);
 		}
+		phreeqc_rm.SetPrintChemistryOn(&print_chemistry_on);
 		phreeqc_rm.SetPoreVolume(pv.data());           // If pore volume changes due to compressibility
 		phreeqc_rm.SetSaturation(sat.data());           // If saturation changes
 		phreeqc_rm.SetTemperature(temperature.data());  // If temperature changes
 		phreeqc_rm.SetPressure(pressure.data());        // If pressure changes
+		phreeqc_rm.SetConcentrations(c.data());
 
 		// Run cells with new conditions
 		time = time + time_step;

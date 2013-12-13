@@ -436,18 +436,25 @@ SUBROUTINE InitialEquilibrationRM
         CALL RM_LogScreenMessage(logline1)
         stop_msg = 0
         deltim_dummy = 0._kdp
-        CALL RM_SetPoreVolume(rm_id, pv(1))
-        CALL RM_SetSaturation(rm_id, frac(1))
+        status = RM_SetPoreVolume(rm_id, pv(1))
+        status = RM_SetSaturation(rm_id, frac(1))
         status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi)
 	status = 0
 	if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)
-        CALL RM_RunCells(      &
-            rm_id,              &
-            time_phreeqc,       &        ! time_hst
-            deltim_dummy,       &        ! time_step
-            c(1,1),             &        ! fraction
-            stop_msg) 
+        status = RM_SetTime(rm_id, time_phreeqc) 
+        status = RM_SetTimeStep(rm_id, deltim_dummy) 
+        status = RM_SetConcentrations(rm_id, c(1,1))
+        status = RM_SetStopMessage(rm_id, stop_msg)
+        
+        status = RM_RunCells(rm_id)        
+        !CALL RM_RunCells(      &
+        !    rm_id,              &
+        !    time_phreeqc,       &        ! time_hst
+        !    deltim_dummy,       &        ! time_step
+        !    c(1,1),             &        ! fraction
+        !    stop_msg) 
+
         CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
 	        iprint_xyz(1), 0); 
     ENDIF       
@@ -489,9 +496,9 @@ SUBROUTINE InitializeRM
         CALL RM_SetUnitsSSassemblage(rm_id, ssassemblage_units)
         CALL RM_SetUnitsSurface(rm_id, surface_units)      
         
-        CALL RM_SetTimeConversion(rm_id, cnvtmi)
-        CALL RM_SetPoreVolumeZero(rm_id, pv0(1))
-        CALL RM_SetSaturation(rm_id, frac(1))
+        status = RM_SetTimeConversion(rm_id, cnvtmi)
+        status = RM_SetPoreVolumeZero(rm_id, pv0(1))
+        status = RM_SetSaturation(rm_id, frac(1))
         CALL RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
         if (fresur .and. .not. steady_flow) then
             ipartition_uz_solids = 1
@@ -565,19 +572,26 @@ SUBROUTINE TimeStepRM
     IF (solute) THEN
         WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
         CALL RM_LogScreenMessage(logline1)
-        CALL RM_SetPoreVolume(rm_id, pv(1))
-        CALL RM_SetSaturation(rm_id, frac(1))
+        status = RM_SetPoreVolume(rm_id, pv(1))
+        status = RM_SetSaturation(rm_id, frac(1))
         
         status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer)
-	status = 0
-	if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
+	    status = 0
+        if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)
-        CALL RM_RunCells(                               &
-            rm_id,                                      &
-            time,                                       &        ! time_hst
-            deltim,                                     &        ! time_step_hst
-            c(1,1),                                     &        ! fraction
-            stop_msg) 
+        
+        status = RM_SetTime(rm_id, time) 
+        status = RM_SetTimeStep(rm_id, deltim) 
+        status = RM_SetConcentrations(rm_id, c(1,1))
+        status = RM_SetStopMessage(rm_id, stop_msg)
+        
+        status = RM_RunCells(rm_id)          
+        !CALL RM_RunCells(                               &
+        !    rm_id,                                      &
+        !    time,                                       &        ! time_hst
+        !    deltim,                                     &        ! time_step_hst
+        !    c(1,1),                                     &        ! fraction
+        !    stop_msg) 
         CALL FH_WriteFiles(rm_id, prhdfci, pr_hdf_media, prcphrqi, &
             iprint_xyz(1), print_restart%print_flag_integer) 
         status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 1)

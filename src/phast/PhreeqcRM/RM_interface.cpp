@@ -834,6 +834,20 @@ RM_SetSelectedOutputOn(int *id, int *selected_output_on)
 	}
 	return IRM_BADINSTANCE;
 }
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_SetStopMessage(int *id, int *stop_flag)
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetStopMessage(stop_flag == 0);
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
+}
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetTemperature(int *id, double *t)

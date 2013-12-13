@@ -64,6 +64,7 @@
 #define RM_SetRebalance                    FC_FUNC_ (rm_setrebalance,                  RM_SETREBALANCE)
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
+#define RM_SetStopMessage                  FC_FUNC_ (rm_setstopmessage,                RM_SETSTOPMESSAGE)
 #define RM_SetTemperature                  FC_FUNC_ (rm_settemperature,                RM_SETTEMPERATURE)
 #define RM_SetTime                         FC_FUNC_ (rm_settime,                       RM_SETTIME)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
@@ -632,6 +633,7 @@ IRM_RESULT RM_SetPressure(int *id, double *t);
 void       RM_SetRebalance(int *id, int *method, double *f);
 IRM_RESULT RM_SetSaturation(int *id, double *t);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
+IRM_RESULT RM_SetStopMessage(int *id, int *stop_flag = NULL);
 IRM_RESULT RM_SetTemperature(int *id, double *t);
 IRM_RESULT RM_SetTime(int *id, double *t);
 IRM_RESULT RM_SetTimeConversion(int *id, double *t);
