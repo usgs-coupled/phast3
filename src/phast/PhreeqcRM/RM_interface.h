@@ -26,6 +26,7 @@
 #define RM_GetChemistryCellCount           FC_FUNC_ (rm_getchemistrycellcount,         RM_GETNCHEMISTRYCELLCOUNT)
 #define RM_GetComponent                    FC_FUNC_ (rm_getcomponent,                  RM_GETCOMPONENT)
 #define RM_GetConcentrations               FC_FUNC_ (rm_getconcentrations,             RM_GETCONCENTRATIONS)
+#define RM_GetDensity                      FC_FUNC_ (rm_getdensity,                    RM_GETDENSITY)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
 #define RM_GetMpiTasks                     FC_FUNC_ (rm_getmpitasks,                   RM_GETMPITASKS)
@@ -50,6 +51,7 @@
 #define RM_RunString                       FC_FUNC_ (rm_runstring,                     RM_RUNSTRING)
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
 #define RM_SetCellVolume				   FC_FUNC_ (rm_setcellvolume,                 RM_SETCELLVOLUME)
+#define RM_SetConcentrations			   FC_FUNC_ (rm_setconcentrations,             RM_SETCONCENTRATIONS)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
 #define RM_SetDensity                      FC_FUNC_ (rm_setdensity,                    RM_SETDENSITY)
 #define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
@@ -63,7 +65,9 @@
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
 #define RM_SetTemperature                  FC_FUNC_ (rm_settemperature,                RM_SETTEMPERATURE)
+#define RM_SetTime                         FC_FUNC_ (rm_settime,                       RM_SETTIME)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
+#define RM_SetTimeStep                     FC_FUNC_ (rm_settimestep,                   RM_SETTIMESTEP)
 //#define RM_SetUnits                        FC_FUNC_ (rm_setunits,                      RM_SETUNITS)
 #define RM_SetUnitsExchange                FC_FUNC_ (rm_setunitsexchange,              RM_SETUNITSEXCHANGE)
 #define RM_SetUnitsGasPhase                FC_FUNC_ (rm_setunitsgasphase,              RM_SETUNITSGASPHASE)
@@ -301,6 +305,7 @@ int        RM_GetChemistryCellCount(int *id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, int l1 = -1);
+IRM_RESULT RM_GetDensity(int *id, double *density);
 IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, long l = -1);
 /**
  *  Returns the number of grid cells in the user's model.
@@ -528,21 +533,23 @@ IRM_RESULT RM_OpenFiles(int * id);
  *  @htmlonly
  *  <CODE>
  *  <PRE>
- *      SUBROUTINE RM_RunCells(id, time, time_step, c, stop_msg)   
+ *      INTEGER FUNCTION RM_RunCells(id)   
  *          IMPLICIT NONE
  *          INTEGER :: id
- *          DOUBLE PRECISION :: time, time_step, c
- *          INTEGER :: stop_msg
- *      END SUBROUTINE RM_RunCells     
+ *      END FUNCTION RM_RunCells     
  *  </PRE>
  *  </CODE>
  *  @endhtmlonly
  */
+IRM_RESULT
+RM_RunCells(int *id);
+#ifdef SKIP
 void       RM_RunCells(int *id,
                 double *time,					        // time from transport 
                 double *time_step,				        // time step from transport
                 double *concentration,					// mass fractions nxyz:components
                 int * stop_msg);
+#endif
 /**
  *  Send a message to the screen. 
  *  @param str           String to be sent to the screen.
@@ -611,21 +618,24 @@ int        RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility
 int        RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utility, const char * input_string = NULL, long l = -1);
 void       RM_ScreenMessage(const char *str, long l = -1);
 void       RM_SetCellVolume(int *id, double *t);
+IRM_RESULT RM_SetConcentrations(int *id, double *t);
 int        RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 void       RM_SetDensity(int *id, double *t);
 void       RM_SetDumpModuleOn(int *id, int *dump_on = NULL);
 IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, long l = -1);
 void       RM_SetPartitionUZSolids(int *id, int *t);
-void       RM_SetPoreVolume(int *id, double *t);
-void       RM_SetPoreVolumeZero(int *id, double *t);
+IRM_RESULT RM_SetPoreVolume(int *id, double *t);
+IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t);
 int        RM_SetPrintChemistryOn(int *id, int *print_chem);
 void       RM_SetPrintChemistryMask(int *id, int *t);
-void       RM_SetPressure(int *id, double *t);
+IRM_RESULT RM_SetPressure(int *id, double *t);
 void       RM_SetRebalance(int *id, int *method, double *f);
-void       RM_SetSaturation(int *id, double *t);
+IRM_RESULT RM_SetSaturation(int *id, double *t);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
-void       RM_SetTemperature(int *id, double *t);
-void       RM_SetTimeConversion(int *id, double *t);
+IRM_RESULT RM_SetTemperature(int *id, double *t);
+IRM_RESULT RM_SetTime(int *id, double *t);
+IRM_RESULT RM_SetTimeConversion(int *id, double *t);
+IRM_RESULT RM_SetTimeStep(int *id, double *t);
 //void       RM_SetUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 
 //                int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
 void       RM_SetUnitsExchange(int *id, int *i);

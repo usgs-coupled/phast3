@@ -59,6 +59,12 @@
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: c
         END SUBROUTINE RM_GetConcentrations 
+
+        INTEGER FUNCTION RM_GetDensity(id, d)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: d
+        END FUNCTION RM_GetDensity 
         
         INTEGER FUNCTION RM_GetFilePrefix(id, prefix)
             IMPLICIT NONE
@@ -165,12 +171,10 @@
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_OpenFiles
         
-        SUBROUTINE RM_RunCells(id, time, time_step, c, stop_msg)   
+        INTEGER FUNCTION RM_RunCells(id)   
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: time, time_step, c
-            INTEGER :: stop_msg
-        END SUBROUTINE RM_RunCells  
+        END FUNCTION RM_RunCells  
         
         INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, chem_name)
             IMPLICIT NONE
@@ -196,6 +200,12 @@
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_SetCellVolume
+ 		     
+        INTEGER FUNCTION RM_SetConcentrations(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: t
+        END FUNCTION RM_SetConcentrations
 
         SUBROUTINE RM_SetDensity(id, t)
             IMPLICIT NONE
@@ -203,10 +213,10 @@
             DOUBLE PRECISION, OPTIONAL, INTENT(in) :: t
         END SUBROUTINE RM_SetDensity  
         
-        FUNCTION RM_SetFilePrefix(id, prefix) RESULT(iout)
+        INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
             IMPLICIT NONE
-            INTEGER :: id, iout
-            CHARACTER, OPTIONAL :: prefix
+            INTEGER, INTENT(in) :: id
+            CHARACTER, OPTIONAL, INTENT(in) :: prefix
         END FUNCTION RM_SetFilePrefix  
 				
         SUBROUTINE RM_SetPartitionUZSolids(id, t)   
@@ -215,23 +225,23 @@
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_SetPartitionUZSolids 
 
-        SUBROUTINE RM_SetPoreVolume(id, t)   
+        INTEGER FUNCTION RM_SetPoreVolume(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetPoreVolume 
+        END FUNCTION RM_SetPoreVolume 
         
-        SUBROUTINE RM_SetPoreVolumeZero(id, t)
+        INTEGER FUNCTION RM_SetPoreVolumeZero(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetPoreVolumeZero
+        END FUNCTION RM_SetPoreVolumeZero
 
-        SUBROUTINE RM_SetPressure(id, t)   
+        INTEGER FUNCTION RM_SetPressure(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetPressure        
+        END FUNCTION RM_SetPressure        
         
         INTEGER FUNCTION RM_SetPrintChemistryOn(id, print_chem)   
             IMPLICIT NONE
@@ -252,11 +262,11 @@
             DOUBLE PRECISION, OPTIONAL  :: f
         END SUBROUTINE RM_SetRebalance
 
-        SUBROUTINE RM_SetSaturation(id, t)
+        INTEGER FUNCTION RM_SetSaturation(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetSaturation 
+        END FUNCTION RM_SetSaturation 
 
         INTEGER FUNCTION RM_SetSelectedOutputOn(id, tf)
             IMPLICIT NONE
@@ -264,17 +274,29 @@
             INTEGER, OPTIONAL :: tf
         END FUNCTION RM_SetSelectedOutputOn   
 
-        SUBROUTINE RM_SetTemperature(id, t)
+        INTEGER FUNCTION RM_SetTemperature(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION :: t
-        END SUBROUTINE RM_SetTemperature 
+        END FUNCTION RM_SetTemperature 
 		     
-        SUBROUTINE RM_SetTimeConversion(id, t)   
+        INTEGER FUNCTION RM_SetTime(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetTimeConversion 
+        END FUNCTION RM_SetTime 
+		     
+        INTEGER FUNCTION RM_SetTimeConversion(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: t
+        END FUNCTION RM_SetTimeConversion 
+		     
+        INTEGER FUNCTION RM_SetTimeStep(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: t
+        END FUNCTION RM_SetTimeStep 
 
         SUBROUTINE RM_SetUnitsExchange(id, u)   
             IMPLICIT NONE

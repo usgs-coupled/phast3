@@ -3194,7 +3194,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 #endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::RunCells()
 /* ---------------------------------------------------------------------- */
 {
@@ -3265,10 +3265,11 @@ PhreeqcRM::RunCells()
 	// Rebalance load
 	this->RebalanceLoad();
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
+	return IRM_OK;
 }
 #else
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::RunCells()
 /* ---------------------------------------------------------------------- */
 {
@@ -3312,6 +3313,7 @@ PhreeqcRM::RunCells()
 	// Rebalance load
 	this->RebalanceLoad();
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
+	return IRM_OK;
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -3665,7 +3667,7 @@ PhreeqcRM::SetChemistryFileName(const char * cn, long l)
 	return IRM_INVALIDARG;
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetConcentrations(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3685,6 +3687,7 @@ PhreeqcRM::SetConcentrations(double *t)
 	{
 		this->Concentrations2Solutions(n, c);
 	}
+	return IRM_OK;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -3788,7 +3791,7 @@ PhreeqcRM::SetFilePrefix(std::string &prefix)
 }
 
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 PhreeqcRM::SetPartitionUZSolids(int * t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3800,9 +3803,10 @@ PhreeqcRM::SetPartitionUZSolids(int * t)
 #ifdef USE_MPI
 	MPI_Bcast(&this->partition_uz_solids, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetPoreVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3818,9 +3822,10 @@ PhreeqcRM::SetPoreVolume(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(this->pore_volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetPoreVolumeZero(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3836,9 +3841,10 @@ PhreeqcRM::SetPoreVolumeZero(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(pore_volume_zero.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetPressure(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3854,6 +3860,7 @@ PhreeqcRM::SetPressure(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(this->pressure.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 void 
@@ -3869,7 +3876,7 @@ PhreeqcRM::SetPrintChemistryOn(int *t)
 #endif
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetPrintChemistryMask(int * t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3885,6 +3892,7 @@ PhreeqcRM::SetPrintChemistryMask(int * t)
 #ifdef USE_MPI	
 	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -3915,7 +3923,7 @@ PhreeqcRM::SetRebalanceMethod(int *t)
 #endif
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetSaturation(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3931,6 +3939,7 @@ PhreeqcRM::SetSaturation(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(this->saturation.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -3961,7 +3970,7 @@ PhreeqcRM::SetStopMessage(bool t)
 }
 
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetTemperature(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3977,10 +3986,11 @@ PhreeqcRM::SetTemperature(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(this->tempc.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetTime(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3992,10 +4002,11 @@ PhreeqcRM::SetTime(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(&this->time, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetTimeConversion(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -4007,10 +4018,11 @@ PhreeqcRM::SetTimeConversion(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(&this->time_conversion, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetTimeStep(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -4022,6 +4034,7 @@ PhreeqcRM::SetTimeStep(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(&this->time_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
