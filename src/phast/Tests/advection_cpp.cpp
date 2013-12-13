@@ -153,8 +153,7 @@ int advection_example()
 	int nsteps = 10;
 
 	// Transient loop
-	std::vector<double> density, temperature, pressure;
-	density.resize(nxyz);
+	std::vector<double> temperature, pressure;
 	temperature.resize(nxyz, 20.0);
 	pressure.resize(nxyz, 2.0);
 

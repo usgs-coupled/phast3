@@ -55,7 +55,7 @@ public:
 	IRM_RESULT                                RunFile(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name, long l = -1);
 	IRM_RESULT                                RunString(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name, long l = -1);
 	int                                       LoadDatabase(const char * database, long l = -1);
-	void                                      RunCells(void);
+	IRM_RESULT                                RunCells(void);
 
 	// Utilities
 	static std::string                        Char2TrimString(const char * str, long l = -1);
@@ -116,28 +116,28 @@ public:
 
 	// Setters 
 	IRM_RESULT                                SetChemistryFileName(const char * prefix, long l = -1);
-	void                                      SetConcentrations(double * t = NULL); 
+	IRM_RESULT                                SetConcentrations(double * t = NULL); 
 	int										  SetCurrentSelectedOutputUserNumber(int *i);
 	IRM_RESULT                                SetDatabaseFileName(const char * prefix, long l = -1);
 	void                                      SetCellVolume(double * t);
 	void                                      SetDensity(double * t = NULL); 
 	IRM_RESULT                                SetFilePrefix(std::string &fn); 
 	IRM_RESULT                                SetFilePrefix(const char * prefix, long l = -1);
-	void                                      SetPartitionUZSolids(int * t);
-	void                                      SetPoreVolume(double * t = NULL); 
-	void                                      SetPoreVolumeZero(double * t = NULL);
-	void                                      SetPrintChemistryMask(int * t);
+	IRM_RESULT                                SetPartitionUZSolids(int * t);
+	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
+	IRM_RESULT                                SetPoreVolumeZero(double * t = NULL);
+	IRM_RESULT                                SetPrintChemistryMask(int * t);
 	void                                      SetPrintChemistryOn(int *t);
-	void                                      SetPressure(double * t = NULL);  
+	IRM_RESULT                                SetPressure(double * t = NULL);  
 	void                                      SetRebalanceFraction(double * t); 
 	void                                      SetRebalanceMethod(int * t); 
-	void                                      SetSaturation(double * t); 
+	IRM_RESULT                                SetSaturation(double * t); 
 	void                                      SetSelectedOutputOn(int *t);
 	void                                      SetStopMessage(bool t = false); 
-	void                                      SetTemperature(double * t = NULL);
-	void                                      SetTime(double *t = NULL);
-	void                                      SetTimeConversion(double *t);
-	void                                      SetTimeStep(double *t = NULL);
+	IRM_RESULT                                SetTemperature(double * t = NULL);
+	IRM_RESULT                                SetTime(double *t = NULL);
+	IRM_RESULT                                SetTimeConversion(double *t);
+	IRM_RESULT                                SetTimeStep(double *t = NULL);
 	//void                                      SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
 	void                                      SetUnitsExchange(int *i);
 	void                                      SetUnitsGasPhase(int *i);

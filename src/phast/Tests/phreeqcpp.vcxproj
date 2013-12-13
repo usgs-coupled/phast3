@@ -154,8 +154,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IPhreeqcPhast.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_BOOST_THREAD32_LIB);$(DEV_IFC_LIB);$(SolutionDir)$(OUTDIR);$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_BOOST_THREAD32_LIB);$(DEV_IFC_LIB);$(SolutionDir)$(OUTDIR);$(SolutionDir)Debug;$(SolutionDir)FortranAdvect\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -178,12 +178,13 @@
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug;$(SolutionDir)Lib1\Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug;$(SolutionDir)FortranAdvect\$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -208,8 +209,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IPhreeqcPhast.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_BOOST_THREAD32_LIB);$(DEV_IFC_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_BOOST_THREAD32_LIB);$(DEV_IFC_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release;$(SolutionDir)FortranAdvect\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -235,8 +236,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IPhreeqcPhast.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release;$(SolutionDir)FortranAdvect\$(platform)\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -258,9 +259,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IPhreeqcPhast.lib;fmpich2.lib;mpi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IPhreeqcPhast.lib;fmpich2.lib;mpi.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_MPICH2_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_MPICH2_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release;$(SolutionDir)FortranAdvect\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -285,8 +286,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>fmpich2.lib;mpi.lib;IPhreeqcPhast.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_MPICH2_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmpich2.lib;mpi.lib;IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_MPICH2_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release;$(SolutionDir)FortranAdvect\$(platform)\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -312,7 +313,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;fmpich2.lib;mpi.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_MPICH2_LIB);$(OUTDIR);$(SolutionDir)Debug;$(SolutionDir)Lib1\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_MPICH2_LIB);$(OUTDIR);$(SolutionDir)Debug;$(SolutionDir)Lib1\$(Configuration);$(SolutionDir)FortranAdvect\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -341,8 +342,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>fmpich2.lib;mpi.lib;IPhreeqcPhast.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_MPICH2_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmpich2.lib;mpi.lib;IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_MPICH2_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug;$(SolutionDir)FortranAdvect\$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
