@@ -62,7 +62,7 @@
 #define RM_SetPoreVolume                   FC_FUNC_ (rm_setporevolume,                 RM_SETPOREVOLUME)
 #define RM_SetPoreVolumeZero               FC_FUNC_ (rm_setporevolumezero,             RM_SETPOREVOLUMEZERO)
 #define RM_SetRebalanceFraction            FC_FUNC_ (rm_setrebalancefraction,          RM_SETREBALANCEFRACTION)
-#define RM_SetRebalanceMethod              FC_FUNC_ (rm_setrebalancemethod,            RM_SETREBALANCEMETHOD)
+#define RM_SetRebalanceByCell              FC_FUNC_ (rm_setrebalancebycell,            RM_SETREBALANCEBYCELL)
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
 #define RM_SetStopMessage                  FC_FUNC_ (rm_setstopmessage,                RM_SETSTOPMESSAGE)
@@ -619,21 +619,20 @@ int        RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility
  */
 int        RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utility, const char * input_string = NULL, long l = -1);
 void       RM_ScreenMessage(const char *str, long l = -1);
-void       RM_SetCellVolume(int *id, double *t);
+IRM_RESULT RM_SetCellVolume(int *id, double *t);
 IRM_RESULT RM_SetConcentrations(int *id, double *t);
 int        RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
-void       RM_SetDensity(int *id, double *t);
-void       RM_SetDumpModuleOn(int *id, int *dump_on = NULL);
+IRM_RESULT RM_SetDensity(int *id, double *t);
+IRM_RESULT RM_SetDumpModuleOn(int *id, int *dump_on = NULL);
 IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, long l = -1);
 IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t);
 IRM_RESULT RM_SetPoreVolume(int *id, double *t);
 IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t);
 IRM_RESULT RM_SetPrintChemistryOn(int *id, int *print_chem);
-void       RM_SetPrintChemistryMask(int *id, int *t);
+IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t);
 IRM_RESULT RM_SetPressure(int *id, double *t);
-//void       RM_SetRebalance(int *id, int *method, double *f);
 IRM_RESULT RM_SetRebalanceFraction(int *id, double *f);
-IRM_RESULT RM_SetRebalanceMethod(int *id, int *method);
+IRM_RESULT RM_SetRebalanceByCell(int *id, int *method);
 IRM_RESULT RM_SetSaturation(int *id, double *t);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
 IRM_RESULT RM_SetStopMessage(int *id, int *stop_flag = NULL);
@@ -641,15 +640,13 @@ IRM_RESULT RM_SetTemperature(int *id, double *t);
 IRM_RESULT RM_SetTime(int *id, double *t);
 IRM_RESULT RM_SetTimeConversion(int *id, double *t);
 IRM_RESULT RM_SetTimeStep(int *id, double *t);
-//void       RM_SetUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 
-//                int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
-void       RM_SetUnitsExchange(int *id, int *i);
-void       RM_SetUnitsGasPhase(int *id, int *i);
-void       RM_SetUnitsKinetics(int *id, int *i);
-void       RM_SetUnitsPPassemblage(int *id, int *i);
-void       RM_SetUnitsSolution(int *id, int *i);
-void       RM_SetUnitsSSassemblage(int *id, int *i);
-void       RM_SetUnitsSurface(int *id, int *i);
+IRM_RESULT RM_SetUnitsExchange(int *id, int *i);
+IRM_RESULT RM_SetUnitsGasPhase(int *id, int *i);
+IRM_RESULT RM_SetUnitsKinetics(int *id, int *i);
+IRM_RESULT RM_SetUnitsPPassemblage(int *id, int *i);
+IRM_RESULT RM_SetUnitsSolution(int *id, int *i);
+IRM_RESULT RM_SetUnitsSSassemblage(int *id, int *i);
+IRM_RESULT RM_SetUnitsSurface(int *id, int *i);
 /**
  *  Send an warning message to the screen and log file. 
  *  @param str           String to be sent.

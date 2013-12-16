@@ -122,7 +122,7 @@ SUBROUTINE phast_worker
         CALL RM_SetCellVolume(rm_id)
         !CALL RM_SetRebalance(rm_id)
         status = RM_SetRebalanceFraction(rm_id)
-        status = RM_SetRebalanceMethod(rm_id)
+        status = RM_SetRebalanceByCell(rm_id)
 
         ! ... Mapping from full 3D domain to chemistry
         status = RM_CreateMapping(rm_id)
