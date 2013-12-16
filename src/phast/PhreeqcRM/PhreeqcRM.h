@@ -115,22 +115,22 @@ public:
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
 
 	// Setters 
-	IRM_RESULT                                SetChemistryFileName(const char * prefix);
+	IRM_RESULT                                SetChemistryFileName(const char * prefix = NULL);
 	IRM_RESULT                                SetConcentrations(double * t = NULL); 
-	int								          SetCurrentSelectedOutputUserNumber(int *i);
-	IRM_RESULT                                SetDatabaseFileName(const char * prefix);
-	IRM_RESULT                                SetCellVolume(double * t);
+	int								          SetCurrentSelectedOutputUserNumber(int i = -1);
+	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
+	IRM_RESULT                                SetCellVolume(double * t = NULL);
 	IRM_RESULT                                SetDensity(double * t = NULL); 
 	IRM_RESULT                                SetFilePrefix(std::string &fn); 
-	IRM_RESULT                                SetFilePrefix(const char * prefix);
-	IRM_RESULT                                SetPartitionUZSolids(int * t);
+	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL);
+	IRM_RESULT                                SetPartitionUZSolids(int t = -1);
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
 	IRM_RESULT                                SetPoreVolumeZero(double * t = NULL);
-	IRM_RESULT                                SetPrintChemistryMask(int * t);
-	void                                      SetPrintChemistryOn(int *t);
+	IRM_RESULT                                SetPrintChemistryMask(int * t = NULL);
+	IRM_RESULT                                SetPrintChemistryOn(int t = -1);
 	IRM_RESULT                                SetPressure(double * t = NULL);  
-	void                                      SetRebalanceFraction(double * t); 
-	void                                      SetRebalanceMethod(int * t); 
+	IRM_RESULT                                SetRebalanceFraction(double t = 0.0); 
+	IRM_RESULT                                SetRebalanceMethod(int t); 
 	IRM_RESULT                                SetSaturation(double * t); 
 	void                                      SetSelectedOutputOn(int *t);
 	void                                      SetStopMessage(bool t = false); 

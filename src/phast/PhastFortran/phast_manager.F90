@@ -507,7 +507,9 @@ SUBROUTINE InitializeRM
         endif
         CALL RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
         CALL RM_SetCellVolume(rm_id, volume(1))
-        CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
+        !CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
+        status = RM_SetRebalanceFraction(rm_id, rebalance_fraction_f)
+        status = RM_SetRebalanceMethod(rm_id, rebalance_method_f)
 
         ! ... Define mapping from 3D domain to chemistry
         CALL CreateMappingFortran(indx_sol1_ic)

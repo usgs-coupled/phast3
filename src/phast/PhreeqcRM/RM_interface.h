@@ -61,7 +61,8 @@
 #define RM_SetPressure                     FC_FUNC_ (rm_setpressure,                   RM_SETPRESSURE)
 #define RM_SetPoreVolume                   FC_FUNC_ (rm_setporevolume,                 RM_SETPOREVOLUME)
 #define RM_SetPoreVolumeZero               FC_FUNC_ (rm_setporevolumezero,             RM_SETPOREVOLUMEZERO)
-#define RM_SetRebalance                    FC_FUNC_ (rm_setrebalance,                  RM_SETREBALANCE)
+#define RM_SetRebalanceFraction            FC_FUNC_ (rm_setrebalancefraction,          RM_SETREBALANCEFRACTION)
+#define RM_SetRebalanceMethod              FC_FUNC_ (rm_setrebalancemethod,            RM_SETREBALANCEMETHOD)
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
 #define RM_SetStopMessage                  FC_FUNC_ (rm_setstopmessage,                RM_SETSTOPMESSAGE)
@@ -624,13 +625,15 @@ int        RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 void       RM_SetDensity(int *id, double *t);
 void       RM_SetDumpModuleOn(int *id, int *dump_on = NULL);
 IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, long l = -1);
-void       RM_SetPartitionUZSolids(int *id, int *t);
+IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t);
 IRM_RESULT RM_SetPoreVolume(int *id, double *t);
 IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t);
-int        RM_SetPrintChemistryOn(int *id, int *print_chem);
+IRM_RESULT RM_SetPrintChemistryOn(int *id, int *print_chem);
 void       RM_SetPrintChemistryMask(int *id, int *t);
 IRM_RESULT RM_SetPressure(int *id, double *t);
-void       RM_SetRebalance(int *id, int *method, double *f);
+//void       RM_SetRebalance(int *id, int *method, double *f);
+IRM_RESULT RM_SetRebalanceFraction(int *id, double *f);
+IRM_RESULT RM_SetRebalanceMethod(int *id, int *method);
 IRM_RESULT RM_SetSaturation(int *id, double *t);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
 IRM_RESULT RM_SetStopMessage(int *id, int *stop_flag = NULL);
