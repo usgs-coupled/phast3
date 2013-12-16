@@ -160,6 +160,7 @@ protected:
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
+	//void                                      Pressures2Solutions(int n, std::vector<double> &t);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);
 	void                                      RunCellsThread(int i);
@@ -167,6 +168,7 @@ protected:
 	IRM_RESULT                                RunStringThread(int n, std::string & input);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
 	void                                      SetEndCells(void);
+	//void                                      Temperatures2Solutions(int n, std::vector<double> &t);
 	void                                      TransferCells(cxxStorageBin &t_bin, int old, int nnew);
 	void                                      WriteError(const char * item);
 	void                                      WriteOutput(const char * item);

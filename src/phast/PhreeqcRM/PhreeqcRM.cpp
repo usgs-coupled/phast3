@@ -1610,7 +1610,8 @@ PhreeqcRM::Char2TrimString(const char * str, long l)
 	}
 	stdstr = trim(stdstr);
 	return stdstr;
-};
+}
+
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
@@ -1686,8 +1687,8 @@ PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 		if (soln_ptr)
 		{
 			soln_ptr->Update(d[0], d[1], d[2], nd);
-			soln_ptr->Set_patm(this->pressure[i]);
-			soln_ptr->Set_tc(this->tempc[i]);
+			//soln_ptr->Set_patm(this->pressure[i]);
+			//soln_ptr->Set_tc(this->tempc[i]);
 		}
 	}
 	return;
@@ -2254,6 +2255,38 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 
 	this->old_saturation[ihst] = new_frac;
 }
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::Pressures2Solutions(int n, std::vector<double> &p)
+/* ---------------------------------------------------------------------- */
+{
+	// assumes total H, total O, and charge are transported
+	int i, j;
+
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+
+	for (j = start; j <= end; j++)
+	{		
+		// j is count_chem number
+		i = this->back[j][0];
+		if (j < 0) continue;
+
+		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
+		if (soln_ptr)
+		{
+			soln_ptr->Set_patm(p[i]);
+		}
+	}
+	return;
+}
+#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
@@ -3854,6 +3887,50 @@ PhreeqcRM::SetPressure(double *t)
 	}
 	if (mpi_myself == 0)
 	{
+		if (t == NULL) error_msg("NULL pointer in Set_tempc", 1);
+		memcpy(this->pressure.data(), t, (size_t) (this->nxyz * sizeof(double)));
+	}
+#ifdef USE_MPI
+	MPI_Bcast(this->pressure.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		//this->Pressures2Solutions(n, this->pressure);
+#ifdef USE_MPI
+		int start = this->start_cell[this->mpi_myself];
+		int end = this->end_cell[this->mpi_myself];
+#else
+		int start = this->start_cell[n];
+		int end = this->end_cell[n];
+#endif
+
+		for (int j = start; j <= end; j++)
+		{		
+			// j is count_chem number
+			int i = this->back[j][0];
+			if (j < 0) continue;
+
+			cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
+			if (soln_ptr)
+			{
+				soln_ptr->Set_patm(this->pressure[i]);
+			}
+		}
+	}
+	return IRM_OK;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetPressure(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	if ((int) this->pressure.size() < this->nxyz)
+	{
+		this->pressure.resize(this->nxyz);
+	}
+	if (mpi_myself == 0)
+	{
 		if (t == NULL) error_msg("NULL pointer in Set_pressure", 1);
 		memcpy(this->pressure.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
@@ -3862,6 +3939,7 @@ PhreeqcRM::SetPressure(double *t)
 #endif
 	return IRM_OK;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void 
 PhreeqcRM::SetPrintChemistryOn(int *t)
@@ -3968,7 +4046,6 @@ PhreeqcRM::SetStopMessage(bool t)
 	MPI_Bcast(&this->stop_message, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
-
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetTemperature(double *t)
@@ -3986,9 +4063,59 @@ PhreeqcRM::SetTemperature(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(this->tempc.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		//this->Temperatures2Solutions(n, this->tempc);
+#ifdef USE_MPI
+		int start = this->start_cell[this->mpi_myself];
+		int end = this->end_cell[this->mpi_myself];
+#else
+		int start = this->start_cell[n];
+		int end = this->end_cell[n];
+#endif
+
+		for (int j = start; j <= end; j++)
+		{		
+			// j is count_chem number
+			int i = this->back[j][0];
+			if (j < 0) continue;
+
+			cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
+			if (soln_ptr)
+			{
+				//soln_ptr->Set_patm(this->pressure[i]);
+				soln_ptr->Set_tc(tempc[i]);
+			}
+		}
+	}
 	return IRM_OK;
 }
 
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetTemperature(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	if ((int) this->tempc.size() < this->nxyz)
+	{
+		this->tempc.resize(this->nxyz);
+	}
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_tempc", 1);
+		memcpy(this->tempc.data(), t, (size_t) (this->nxyz * sizeof(double)));
+	}
+#ifdef USE_MPI
+	MPI_Bcast(this->tempc.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		this->Temperatures2Solutions(n, t);
+	}
+	return IRM_OK;
+}
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetTime(double *t)
@@ -4205,6 +4332,39 @@ PhreeqcRM::SetUnitsSurface(int *u)
 	MPI_Bcast(&this->input_units_Surface,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
 }
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::Temperatures2Solutions(int n, std::vector<double> &t)
+/* ---------------------------------------------------------------------- */
+{
+	// assumes total H, total O, and charge are transported
+	int i, j;
+
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+
+	for (j = start; j <= end; j++)
+	{		
+		// j is count_chem number
+		i = this->back[j][0];
+		if (j < 0) continue;
+
+		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
+		if (soln_ptr)
+		{
+			//soln_ptr->Set_patm(this->pressure[i]);
+			soln_ptr->Set_tc(t[i]);
+		}
+	}
+	return;
+}
+#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
