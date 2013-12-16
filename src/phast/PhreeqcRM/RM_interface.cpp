@@ -118,7 +118,9 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->DumpModule(dump_on, use_gz);
+		bool dump = (dump_on != 0);
+		bool gz = (use_gz != 0);
+		return Reaction_module_ptr->DumpModule(dump, gz);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -589,35 +591,7 @@ RM_RunCells(int *id)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void RM_RunCells(int *id,
-			 double *time,					        // time from transport 
-			 double *time_step,		   		        // time step from transport
- 			 double *concentration,					// mass fractions nxyz:components
-			 int * stop_msg)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->SetStopMessage(*stop_msg != 0);
-		if (!Reaction_module_ptr->GetStopMessage())
-		{
-			// Transfer data and pointers to PhreeqcRM	  
-			Reaction_module_ptr->SetTime(time);
-			Reaction_module_ptr->SetTimeStep(time_step);
-			Reaction_module_ptr->SetConcentrations(concentration);
 
-			// Run chemistry calculations
-			Reaction_module_ptr->RunCells(); 
-
-			// Transfer data reaction module to Fortran
-			Reaction_module_ptr->GetConcentrations(concentration);
-		}
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int 
 RM_RunFile(int *id, int *initial_phreeqc, int *workers, int *utility, const char *chem_name, long l)
@@ -852,8 +826,7 @@ RM_SetSelectedOutputOn(int *id, int *selected_output_on)
 	if (Reaction_module_ptr)
 	{
 		bool so = (selected_output_on == NULL) ? false : (*selected_output_on != 0);
-		Reaction_module_ptr->SetSelectedOutputOn(so);
-		return IRM_OK;
+		return Reaction_module_ptr->SetSelectedOutputOn(so);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -866,8 +839,8 @@ RM_SetStopMessage(int *id, int *stop_flag)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetStopMessage(stop_flag == 0);
-		return IRM_OK;
+		bool s = (stop_flag == NULL) ? true : (*stop_flag != 0);
+		return Reaction_module_ptr->SetStopMessage(s);
 	}
 	return IRM_BADINSTANCE;
 }

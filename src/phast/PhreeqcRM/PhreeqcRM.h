@@ -38,7 +38,7 @@ public:
 	
 	// Key methods	
 	IRM_RESULT                                CreateMapping(int *grid2chem);
-	IRM_RESULT                                DumpModule(int *dump_on, int *use_gz = NULL);
+	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c);
 	IRM_RESULT                                InitialPhreeqc2Concentrations( 

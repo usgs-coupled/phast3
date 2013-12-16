@@ -352,13 +352,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp" />
+    <ClCompile Include="..\PhreeqcRM\RM_interface _C.cpp" />
     <ClCompile Include="..\PhreeqcRM\RM_interface.cpp" />
     <ClCompile Include="advection_cpp.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h" />
-    <ClInclude Include="..\PhreeqcRM\RM_interface.h" />
+    <ClInclude Include="..\PhreeqcRM\RM_interface.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\PhreeqcRM\RM_interface_C.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
