@@ -20,7 +20,7 @@ extern void advection_f90(void);
 #endif
 
 // C++ function
-extern int advection_example();
+extern int advection_cpp();
 
 #if defined(USE_MPI)
 #include <mpi.h>
@@ -51,8 +51,8 @@ int main(int argc, char* argv[])
 	mpi_myself = 0;
 #endif
 
-	//advection_example();
-	advection_f90();
+	advection_cpp();
+	//advection_f90();
 
 #if defined(USE_MPI)
 	MPI_Finalize();
