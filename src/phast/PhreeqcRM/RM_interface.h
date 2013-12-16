@@ -619,34 +619,34 @@ int        RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility
  */
 int        RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utility, const char * input_string = NULL, long l = -1);
 void       RM_ScreenMessage(const char *str, long l = -1);
-IRM_RESULT RM_SetCellVolume(int *id, double *t);
-IRM_RESULT RM_SetConcentrations(int *id, double *t);
-int        RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
-IRM_RESULT RM_SetDensity(int *id, double *t);
+IRM_RESULT RM_SetCellVolume(int *id, double *t = NULL);
+IRM_RESULT RM_SetConcentrations(int *id, double *t = NULL);
+int        RM_SetCurrentSelectedOutputUserNumber(int *id, int *i = NULL);
+IRM_RESULT RM_SetDensity(int *id, double *t = NULL);
 IRM_RESULT RM_SetDumpModuleOn(int *id, int *dump_on = NULL);
 IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, long l = -1);
-IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t);
-IRM_RESULT RM_SetPoreVolume(int *id, double *t);
-IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t);
-IRM_RESULT RM_SetPrintChemistryOn(int *id, int *print_chem);
-IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t);
-IRM_RESULT RM_SetPressure(int *id, double *t);
-IRM_RESULT RM_SetRebalanceFraction(int *id, double *f);
-IRM_RESULT RM_SetRebalanceByCell(int *id, int *method);
-IRM_RESULT RM_SetSaturation(int *id, double *t);
+IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t = NULL);
+IRM_RESULT RM_SetPoreVolume(int *id, double *t = NULL);
+IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t = NULL);
+IRM_RESULT RM_SetPrintChemistryOn(int *id, int *print_chem = NULL);
+IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t = NULL);
+IRM_RESULT RM_SetPressure(int *id, double *t = NULL);
+IRM_RESULT RM_SetRebalanceFraction(int *id, double *f = NULL);
+IRM_RESULT RM_SetRebalanceByCell(int *id, int *method = NULL);
+IRM_RESULT RM_SetSaturation(int *id, double *t = NULL);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
 IRM_RESULT RM_SetStopMessage(int *id, int *stop_flag = NULL);
-IRM_RESULT RM_SetTemperature(int *id, double *t);
-IRM_RESULT RM_SetTime(int *id, double *t);
-IRM_RESULT RM_SetTimeConversion(int *id, double *t);
-IRM_RESULT RM_SetTimeStep(int *id, double *t);
-IRM_RESULT RM_SetUnitsExchange(int *id, int *i);
-IRM_RESULT RM_SetUnitsGasPhase(int *id, int *i);
-IRM_RESULT RM_SetUnitsKinetics(int *id, int *i);
-IRM_RESULT RM_SetUnitsPPassemblage(int *id, int *i);
-IRM_RESULT RM_SetUnitsSolution(int *id, int *i);
-IRM_RESULT RM_SetUnitsSSassemblage(int *id, int *i);
-IRM_RESULT RM_SetUnitsSurface(int *id, int *i);
+IRM_RESULT RM_SetTemperature(int *id, double *t = NULL);
+IRM_RESULT RM_SetTime(int *id, double *t = NULL);
+IRM_RESULT RM_SetTimeConversion(int *id, double *t = NULL);
+IRM_RESULT RM_SetTimeStep(int *id, double *t = NULL);
+IRM_RESULT RM_SetUnitsExchange(int *id, int *i = NULL);
+IRM_RESULT RM_SetUnitsGasPhase(int *id, int *i = NULL);
+IRM_RESULT RM_SetUnitsKinetics(int *id, int *i = NULL);
+IRM_RESULT RM_SetUnitsPPassemblage(int *id, int *i = NULL);
+IRM_RESULT RM_SetUnitsSolution(int *id, int *i = NULL);
+IRM_RESULT RM_SetUnitsSSassemblage(int *id, int *i = NULL);
+IRM_RESULT RM_SetUnitsSurface(int *id, int *i = NULL);
 /**
  *  Send an warning message to the screen and log file. 
  *  @param str           String to be sent.

@@ -439,8 +439,8 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetPoreVolume(rm_id, pv(1))
         status = RM_SetSaturation(rm_id, frac(1))
         status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi)
-	status = 0
-	if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
+	    status = 0
+	    if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)
         status = RM_SetTime(rm_id, time_phreeqc) 
         status = RM_SetTimeStep(rm_id, deltim_dummy) 

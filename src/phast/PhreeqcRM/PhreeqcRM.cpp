@@ -963,16 +963,13 @@ PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<doub
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
+PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 /* ---------------------------------------------------------------------- */
 {
 	bool dump = false;
 	if (this->mpi_myself == 0)
 	{
-		if (dump_on != NULL)
-		{
-			dump = (*dump_on != 0);
-		}
+		dump = dump_on;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
@@ -982,7 +979,7 @@ PhreeqcRM::DumpModule(int *dump_on, int *use_gz_in)
 	{
 		std::string char_buffer;
 		bool use_gz;
-		use_gz = (use_gz_in && (*use_gz_in != 0)) ? true : false;
+		use_gz = use_gz_in;
 #ifdef USE_GZ
 		ogzstream ofs_restart_gz;
 #else
