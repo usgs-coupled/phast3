@@ -97,7 +97,7 @@ public:
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
 	std::vector<int> &                        GetPrintChemistryMask (void) {return this->print_chem_mask;}
 	const bool                                GetPrintChemistryOn(void) const {return this->print_chemistry_on;}  
-	int                                       GetRebalanceMethod(void) const {return this->rebalance_method;}
+	bool                                      GetRebalanceMethod(void) const {return this->rebalance_by_cell;}
 	double                                    GetRebalanceFraction(void) const {return this->rebalance_fraction;}
 	std::vector<double> &                     GetSaturation(void) {return this->saturation;}
 	IRM_RESULT                                GetSelectedOutput(double *so);
@@ -127,25 +127,24 @@ public:
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
 	IRM_RESULT                                SetPoreVolumeZero(double * t = NULL);
 	IRM_RESULT                                SetPrintChemistryMask(int * t = NULL);
-	IRM_RESULT                                SetPrintChemistryOn(int t = -1);
+	IRM_RESULT                                SetPrintChemistryOn(bool t = false);
 	IRM_RESULT                                SetPressure(double * t = NULL);  
 	IRM_RESULT                                SetRebalanceFraction(double t = 0.0); 
-	IRM_RESULT                                SetRebalanceMethod(int t); 
-	IRM_RESULT                                SetSaturation(double * t); 
-	void                                      SetSelectedOutputOn(int *t);
-	void                                      SetStopMessage(bool t = false); 
+	IRM_RESULT                                SetRebalanceByCell(bool t = false); 
+	IRM_RESULT                                SetSaturation(double * t = NULL); 
+	IRM_RESULT                                SetSelectedOutputOn(bool t = false);
+	IRM_RESULT                                SetStopMessage(bool t = false); 
 	IRM_RESULT                                SetTemperature(double * t = NULL);
-	IRM_RESULT                                SetTime(double *t = NULL);
-	IRM_RESULT                                SetTimeConversion(double *t);
-	IRM_RESULT                                SetTimeStep(double *t = NULL);
-	//void                                      SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
-	void                                      SetUnitsExchange(int *i);
-	void                                      SetUnitsGasPhase(int *i);
-	void                                      SetUnitsKinetics(int *i);
-	void                                      SetUnitsPPassemblage(int *i);
-	void                                      SetUnitsSolution(int *i);
-	void                                      SetUnitsSSassemblage(int *i);
-	void                                      SetUnitsSurface(int *i);
+	IRM_RESULT                                SetTime(double t = 0.0);
+	IRM_RESULT                                SetTimeConversion(double t = 1.0);
+	IRM_RESULT                                SetTimeStep(double t = 1.0);
+	IRM_RESULT                                SetUnitsExchange(int i = 1);
+	IRM_RESULT                                SetUnitsGasPhase(int i = 1);
+	IRM_RESULT                                SetUnitsKinetics(int i);
+	IRM_RESULT                                SetUnitsPPassemblage(int i);
+	IRM_RESULT                                SetUnitsSolution(int i);
+	IRM_RESULT                                SetUnitsSSassemblage(int i);
+	IRM_RESULT                                SetUnitsSurface(int i);
 protected:
 	void                                      BeginTimeStep(void);
 	IRM_RESULT                                CellInitialize(
@@ -200,15 +199,15 @@ protected:
 	std::vector<double> tempc;				// nxyz temperature Celsius
 	std::vector<double> density;			// nxyz density
 	std::vector<int> print_chem_mask;		// nxyz print flags for output file
-	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell
+	bool rebalance_by_cell;                 // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
-	int input_units_Solution;
-	int input_units_PPassemblage;
-	int input_units_Exchange;
-	int input_units_Surface;
-	int input_units_GasPhase;
-	int input_units_SSassemblage;
-	int input_units_Kinetics;
+	int input_units_Solution;               // 1 mg/L, 2 mmol/L, 3 kg/kgs
+	int input_units_PPassemblage;           // water 1, rock 2
+	int input_units_Exchange;               // water 1, rock 2
+	int input_units_Surface;                // water 1, rock 2
+	int input_units_GasPhase;               // water 1, rock 2
+	int input_units_SSassemblage;           // water 1, rock 2
+	int input_units_Kinetics;               // water 1, rock 2
 	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells
 	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 
 

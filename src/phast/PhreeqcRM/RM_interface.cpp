@@ -670,14 +670,16 @@ RM_ScreenMessage(const char *err_str, long l)
 }
 
 /* ---------------------------------------------------------------------- */
-void RM_SetCellVolume(int *id, double *t)
+IRM_RESULT 
+RM_SetCellVolume(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetCellVolume(t);
+		return Reaction_module_ptr->SetCellVolume(t);
 	}
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -706,14 +708,16 @@ int RM_SetCurrentSelectedOutputUserNumber(int * id, int * i)
 }
 
 /* ---------------------------------------------------------------------- */
-void RM_SetDensity(int *id, double *t)
+IRM_RESULT
+RM_SetDensity(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetDensity(t);
+		return Reaction_module_ptr->SetDensity(t);
 	}
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -786,21 +790,22 @@ RM_SetPrintChemistryOn(int *id,	 int *print_chem)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		int tf = (print_chem == NULL) ? 0 : *print_chem;
+		bool tf = (print_chem == NULL) ? false : (*print_chem != 0);
 		return Reaction_module_ptr->SetPrintChemistryOn(tf);
 	}
 	return IRM_BADINSTANCE;
 
 }
 /* ---------------------------------------------------------------------- */
-void RM_SetPrintChemistryMask(int *id, int *t)
+IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetPrintChemistryMask(t);
+		return Reaction_module_ptr->SetPrintChemistryMask(t);
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetRebalanceFraction(int *id, double *f)
@@ -815,14 +820,14 @@ IRM_RESULT RM_SetRebalanceFraction(int *id, double *f)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetRebalanceMethod(int *id, int *method)
+IRM_RESULT RM_SetRebalanceByCell(int *id, int *method)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		int m = (method == NULL) ? 0 : *method;
-		return Reaction_module_ptr->SetRebalanceMethod(m);
+		bool m = (method == NULL) ? false : (*method != 0);
+		return Reaction_module_ptr->SetRebalanceByCell(m);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -846,7 +851,8 @@ RM_SetSelectedOutputOn(int *id, int *selected_output_on)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetSelectedOutputOn(selected_output_on);
+		bool so = (selected_output_on == NULL) ? false : (*selected_output_on != 0);
+		Reaction_module_ptr->SetSelectedOutputOn(so);
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -889,7 +895,8 @@ RM_SetTime(int *id, double *t)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetTime(t);
+		double d = (t == NULL) ? 0.0 : *t;
+		return Reaction_module_ptr->SetTime(d);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -904,7 +911,8 @@ IRM_RESULT RM_SetTimeConversion(int *id, double *t)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetTimeConversion(t);
+		double d = (t == NULL) ? 1.0 : *t;
+		return Reaction_module_ptr->SetTimeConversion(d);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -920,103 +928,101 @@ RM_SetTimeStep(int *id, double *t)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetTimeStep(t);
+		double d = (t == NULL) ? 0.0 : *t;
+		return Reaction_module_ptr->SetTimeStep(d);
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
-void 
-RM_SetUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
-/* ---------------------------------------------------------------------- */
-{
-	//
-	// Sets units for reaction_module
-	//
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		// WATER = 1, ROCK = 2, as is < 0
-		Reaction_module_ptr->SetUnits(sol, pp, ex, surf, gas, ss, kin);
-	}
-}
-#endif
-/* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 RM_SetUnitsExchange (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetUnitsExchange(u);
+		int t = (u == NULL) ? 1 : *u;
+		return Reaction_module_ptr->SetUnitsExchange(t);
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 RM_SetUnitsGasPhase (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetUnitsGasPhase(u);
+		int t = (u == NULL) ? 1 : *u;
+		return Reaction_module_ptr->SetUnitsGasPhase(t);
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 RM_SetUnitsKinetics (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetUnitsKinetics(u);
+		int t = (u == NULL) ? 1 : *u;
+		return Reaction_module_ptr->SetUnitsKinetics(t);
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 RM_SetUnitsPPassemblage (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetUnitsPPassemblage(u);
+		int t = (u == NULL) ? 1 : *u;
+		return Reaction_module_ptr->SetUnitsPPassemblage(t);
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 RM_SetUnitsSolution (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetUnitsSolution(u);
+		int t = (u == NULL) ? 1 : *u;
+		return Reaction_module_ptr->SetUnitsSolution(t);
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 RM_SetUnitsSSassemblage (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetUnitsSSassemblage(u);
+		int t = (u == NULL) ? 1 : *u;
+		return Reaction_module_ptr->SetUnitsSSassemblage(t);
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 RM_SetUnitsSurface (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetUnitsSurface(u);
+		int t = (u == NULL) ? 1 : *u;
+		return Reaction_module_ptr->SetUnitsSurface(t);
 	}
+	return IRM_BADINSTANCE;
 }
 
 /* 

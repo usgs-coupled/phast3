@@ -247,6 +247,7 @@ if( numCPU < 1 )
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
+	this->rebalance_by_cell = false;
 	this->rebalance_fraction = 0.5;				// parameter for rebalancing process load for parallel	
 
 	// print flags
@@ -2538,7 +2539,7 @@ PhreeqcRM::RebalanceLoad(void)
 {
 	if (this->mpi_tasks <= 1) return;
 	if (this->mpi_tasks > count_chemistry) return;
-	if (this->rebalance_method != 0)
+	if (this->rebalance_by_cell)
 	{
 		return RebalanceLoadPerCell();
 	}
@@ -2828,7 +2829,7 @@ PhreeqcRM::RebalanceLoad(void)
 	if (this->nthreads <= 1) return;
 	if (this->nthreads > count_chemistry) return;
 #include <time.h>
-	if (this->rebalance_method != 0)
+	if (this->rebalance_by_cell)
 	{
 		RebalanceLoadPerCell();
 		return; 
@@ -3942,12 +3943,12 @@ PhreeqcRM::SetPressure(double *t)
 #endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
-PhreeqcRM::SetPrintChemistryOn(int t)
+PhreeqcRM::SetPrintChemistryOn(bool t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		this->print_chemistry_on = (t != 0);
+		this->print_chemistry_on = t;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->print_chemistry_on, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
@@ -3989,15 +3990,15 @@ PhreeqcRM::SetRebalanceFraction(double t)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetRebalanceMethod(int t)
+PhreeqcRM::SetRebalanceByCell(bool t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		this->rebalance_method = (t != 0);
+		this->rebalance_by_cell = t;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&(this->rebalance_method), 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(this->rebalance_by_cell), 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 	return IRM_OK;
 }
@@ -4022,20 +4023,21 @@ PhreeqcRM::SetSaturation(double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetSelectedOutputOn(int *t)
+IRM_RESULT
+PhreeqcRM::SetSelectedOutputOn(bool t)
 /* ---------------------------------------------------------------------- */
 {
-	if (mpi_myself == 0 && t != NULL)
+	if (mpi_myself == 0)
 	{
-		this->selected_output_on = *t != 0;
+		this->selected_output_on = t;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->selected_output_on, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 PhreeqcRM::SetStopMessage(bool t)
 /* ---------------------------------------------------------------------- */
 {
@@ -4046,6 +4048,7 @@ PhreeqcRM::SetStopMessage(bool t)
 #ifdef USE_MPI
 	MPI_Bcast(&this->stop_message, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -4119,13 +4122,12 @@ PhreeqcRM::SetTemperature(double *t)
 #endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetTime(double *t)
+PhreeqcRM::SetTime(double t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_time", 1);
-		this->time = *t;
+		this->time = t;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->time, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -4135,13 +4137,12 @@ PhreeqcRM::SetTime(double *t)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetTimeConversion(double *t)
+PhreeqcRM::SetTimeConversion(double t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in SetTimeConversion", 1);
-		this->time_conversion = *t;
+		this->time_conversion = t;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->time_conversion, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -4151,221 +4152,137 @@ PhreeqcRM::SetTimeConversion(double *t)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetTimeStep(double *t)
+PhreeqcRM::SetTimeStep(double t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_time_step", 1);
-		this->time_step = *t;
+		this->time_step = t;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->time_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 	return IRM_OK;
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
-/* ---------------------------------------------------------------------- */
-{
-	int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin;
-	if (mpi_myself == 0)
-	{
-		local_sol  = (sol  != NULL) ? *sol  : -1;
-		local_pp   = (pp   != NULL) ? *pp   : -1;
-		local_ex   = (ex   != NULL) ? *ex   : -1;
-		local_surf = (surf != NULL) ? *surf : -1;
-		local_gas  = (gas  != NULL) ? *gas  : -1;
-		local_ss   = (ss   != NULL) ? *ss   : -1;
-		local_kin  = (kin  != NULL) ? *kin  : -1;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&local_sol,  1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_pp,   1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_ex,   1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_gas,  1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_ss,   1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_kin,  1, MPI_INT, 0, MPI_COMM_WORLD);
-#endif
-
-	if (local_sol >= 0)
-	{
-		SetUnitsSolution(local_sol);
-	}
-	if (local_pp >= 0)
-	{
-		SetUnitsPPassemblage(local_pp);
-	}
-	if (local_ex >= 0)
-	{
-		SetUnitsExchange(local_ex);
-	}
-	if (local_surf >= 0)
-	{
-		SetUnitsSurface(local_surf);
-	}	
-	if (local_gas >= 0)
-	{
-		SetUnitsGasPhase(local_gas);
-	}
-	if (local_ss >= 0)
-	{
-		SetUnitsSSassemblage(local_ss);
-	}
-	if (local_kin >= 0)
-	{
-		SetUnitsKinetics(local_kin);
-	}
-}
-#endif
-/* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetUnitsExchange(int *u)
+IRM_RESULT
+PhreeqcRM::SetUnitsExchange(int u)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && u != NULL)
 	{
-		if (*u > 0)
+		if (u > 0 && u < 3)
 		{
-			this->input_units_Exchange  = *u;
+			this->input_units_Exchange  = u;
 		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_Exchange,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetUnitsGasPhase(int *u)
+IRM_RESULT
+PhreeqcRM::SetUnitsGasPhase(int u)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && u != NULL)
 	{
-		if (*u > 0)
+		if (u > 0 && u < 3)
 		{
-			this->input_units_GasPhase  = *u;
+			this->input_units_GasPhase  = u;
 		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_GasPhase,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetUnitsKinetics(int *u)
+IRM_RESULT
+PhreeqcRM::SetUnitsKinetics(int u)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && u != NULL)
 	{
-		if (*u > 0)
+		if (u > 0 && u < 3)
 		{
-			this->input_units_Kinetics  = *u;
+			this->input_units_Kinetics  = u;
 		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_Kinetics,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetUnitsPPassemblage(int *u)
+IRM_RESULT
+PhreeqcRM::SetUnitsPPassemblage(int u)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && u != NULL)
 	{
-		if (*u > 0)
+		if (u > 0 && u < 3)
 		{
-			this->input_units_PPassemblage  = *u;
+			this->input_units_PPassemblage  = u;
 		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_PPassemblage,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetUnitsSolution(int *u)
+IRM_RESULT
+PhreeqcRM::SetUnitsSolution(int u)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && u != NULL)
 	{
-		if (*u > 0)
+		if (u > 0 && u < 4)
 		{
-			this->input_units_Solution  = *u;
+			this->input_units_Solution  = u;
 		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_Solution,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetUnitsSSassemblage(int *u)
+IRM_RESULT
+PhreeqcRM::SetUnitsSSassemblage(int u)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && u != NULL)
 	{
-		if (*u > 0)
+		if (u > 0 && u < 3)
 		{
-			this->input_units_SSassemblage  = *u;
+			this->input_units_SSassemblage  = u;
 		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_SSassemblage,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetUnitsSurface(int *u)
+IRM_RESULT
+PhreeqcRM::SetUnitsSurface(int u)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && u != NULL)
 	{
-		if (*u > 0)
+		if (u > 0 && u < 3)
 		{
-			this->input_units_Surface  = *u;
+			this->input_units_Surface  = u;
 		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_Surface,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::Temperatures2Solutions(int n, std::vector<double> &t)
-/* ---------------------------------------------------------------------- */
-{
-	// assumes total H, total O, and charge are transported
-	int i, j;
-
-#ifdef USE_MPI
-	int start = this->start_cell[this->mpi_myself];
-	int end = this->end_cell[this->mpi_myself];
-#else
-	int start = this->start_cell[n];
-	int end = this->end_cell[n];
-#endif
-
-	for (j = start; j <= end; j++)
-	{		
-		// j is count_chem number
-		i = this->back[j][0];
-		if (j < 0) continue;
-
-		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
-		if (soln_ptr)
-		{
-			//soln_ptr->Set_patm(this->pressure[i]);
-			soln_ptr->Set_tc(t[i]);
-		}
-	}
-	return;
-}
-#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
