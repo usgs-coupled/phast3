@@ -1209,7 +1209,7 @@ PhreeqcRM::FindComponents(void)
 }
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::GetConcentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
@@ -1286,11 +1286,11 @@ PhreeqcRM::GetConcentrations(double * c)
 			}
 		}
 	}
-
+	return IRM_OK;
 }
 #else
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::GetConcentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
@@ -1323,6 +1323,7 @@ PhreeqcRM::GetConcentrations(double * c)
 			}
 		}
 	}
+	return IRM_OK;
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -1767,8 +1768,8 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Concentrations(
 					double *c, 
-					int *n_boundary_in, 
-					int *dim_in,
+					int n_boundary, 
+					int dim,
 					int *boundary_solution1,
 					int *boundary_solution2, 
 					double *fraction1)
@@ -1790,10 +1791,8 @@ PhreeqcRM::InitialPhreeqc2Concentrations(
  */
 	if (this->mpi_myself == 0) 
 	{
-		if (c != NULL && n_boundary_in != NULL && dim_in != NULL && boundary_solution1 != NULL)
+		if (c != NULL && n_boundary > 0 && dim > 0 && boundary_solution1 != NULL)
 		{
-			int n_boundary = *n_boundary_in;
-			int dim = *dim_in;
 			int	i, n_old1, n_old2;
 			double f1, f2;
 
@@ -1980,7 +1979,7 @@ PhreeqcRM::InitialPhreeqc2Module(
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunFile(int *initial_phreeqc, int * workers, int * utility, const char * chemistry_name, long l)
+PhreeqcRM::RunFile(int *initial_phreeqc, int * workers, int * utility, const char * chemistry_name)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -1995,7 +1994,7 @@ PhreeqcRM::RunFile(int *initial_phreeqc, int * workers, int * utility, const cha
 	*/
 	std::vector<int> flags;
 	flags.resize(3);
-	this->SetChemistryFileName(chemistry_name, l);
+	this->SetChemistryFileName(chemistry_name);
 	if (mpi_myself == 0)
 	{
 		flags[0] = *initial_phreeqc;
@@ -2029,7 +2028,7 @@ PhreeqcRM::RunFile(int *initial_phreeqc, int * workers, int * utility, const cha
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunString(int *initial_phreeqc, int * workers, int * utility, const char * input_string, long l)
+PhreeqcRM::RunString(int *initial_phreeqc, int * workers, int * utility, const char * input_string)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -2042,7 +2041,7 @@ PhreeqcRM::RunString(int *initial_phreeqc, int * workers, int * utility, const c
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
-	std::string input = Char2TrimString(input_string, l);
+	std::string input = Char2TrimString(input_string);
 	std::vector<int> flags;
 	flags.resize(4);
 	if (mpi_myself == 0)
@@ -2081,10 +2080,10 @@ PhreeqcRM::RunString(int *initial_phreeqc, int * workers, int * utility, const c
 }
 /* ---------------------------------------------------------------------- */
 int
-PhreeqcRM::LoadDatabase(const char * database, long l)
+PhreeqcRM::LoadDatabase(const char * database)
 /* ---------------------------------------------------------------------- */
 {
-	int rtn1 = this->SetDatabaseFileName(database, l);
+	int rtn1 = this->SetDatabaseFileName(database);
 	if (rtn1 < 0) 
 	{
 			error_msg("PhreeqcRM.LoadDatabase: Could not open database.", 0);
@@ -3631,12 +3630,12 @@ PhreeqcRM::SetCurrentSelectedOutputUserNumber(int *i)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetFilePrefix(const char * prefix, long l)
+PhreeqcRM::SetFilePrefix(const char * prefix)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_myself == 0)
 	{	
-		this->file_prefix = Char2TrimString(prefix, l);
+		this->file_prefix = Char2TrimString(prefix);
 	}
 #ifdef USE_MPI
 	int l1 = 0;
@@ -3656,7 +3655,7 @@ PhreeqcRM::SetFilePrefix(const char * prefix, long l)
 }
 
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetCellVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3672,16 +3671,17 @@ PhreeqcRM::SetCellVolume(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(this->cell_volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetChemistryFileName(const char * cn, long l)
+PhreeqcRM::SetChemistryFileName(const char * cn)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_myself == 0)
 	{	
-		this->chemistry_file_name = Char2TrimString(cn, l);
+		this->chemistry_file_name = Char2TrimString(cn);
 	}
 #ifdef USE_MPI
 	int l1 = 0;
@@ -3725,12 +3725,12 @@ PhreeqcRM::SetConcentrations(double *t)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetDatabaseFileName(const char * db, long l)
+PhreeqcRM::SetDatabaseFileName(const char * db)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_myself == 0)
 	{	
-		this->database_file_name = Char2TrimString(db, l);
+		this->database_file_name = Char2TrimString(db);
 	}
 #ifdef USE_MPI
 	int l1 = 0;
@@ -3750,7 +3750,7 @@ PhreeqcRM::SetDatabaseFileName(const char * db, long l)
 }
 
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 PhreeqcRM::SetDensity(double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -3766,6 +3766,7 @@ PhreeqcRM::SetDensity(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(this->density.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 
 /* ---------------------------------------------------------------------- */

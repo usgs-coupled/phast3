@@ -40,11 +40,11 @@ public:
 	IRM_RESULT                                CreateMapping(int *grid2chem);
 	IRM_RESULT                                DumpModule(int *dump_on, int *use_gz = NULL);
 	int                                       FindComponents();
-	void                                      GetConcentrations(double * c);
+	IRM_RESULT                                GetConcentrations(double * c);
 	IRM_RESULT                                InitialPhreeqc2Concentrations( 
                                                    double *c,
-                                                   int *n_boundary, 
-                                                   int *dim, 
+                                                   int n_boundary, 
+                                                   int dim, 
                                                    int *boundary_solution1,
                                                    int *boundary_solution2 = NULL,
                                                    double *boundary_fraction = NULL);
@@ -52,9 +52,9 @@ public:
                                                    int *initial_conditions1 = NULL,
                                                    int *initial_conditions2 = NULL,	
                                                    double *fraction1 = NULL);
-	IRM_RESULT                                RunFile(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name, long l = -1);
-	IRM_RESULT                                RunString(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name, long l = -1);
-	int                                       LoadDatabase(const char * database, long l = -1);
+	int                                       LoadDatabase(const char * database);
+	IRM_RESULT                                RunFile(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name);
+	IRM_RESULT                                RunString(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name);
 	IRM_RESULT                                RunCells(void);
 
 	// Utilities
@@ -115,14 +115,14 @@ public:
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
 
 	// Setters 
-	IRM_RESULT                                SetChemistryFileName(const char * prefix, long l = -1);
+	IRM_RESULT                                SetChemistryFileName(const char * prefix);
 	IRM_RESULT                                SetConcentrations(double * t = NULL); 
-	int										  SetCurrentSelectedOutputUserNumber(int *i);
-	IRM_RESULT                                SetDatabaseFileName(const char * prefix, long l = -1);
-	void                                      SetCellVolume(double * t);
-	void                                      SetDensity(double * t = NULL); 
+	int								          SetCurrentSelectedOutputUserNumber(int *i);
+	IRM_RESULT                                SetDatabaseFileName(const char * prefix);
+	IRM_RESULT                                SetCellVolume(double * t);
+	IRM_RESULT                                SetDensity(double * t = NULL); 
 	IRM_RESULT                                SetFilePrefix(std::string &fn); 
-	IRM_RESULT                                SetFilePrefix(const char * prefix, long l = -1);
+	IRM_RESULT                                SetFilePrefix(const char * prefix);
 	IRM_RESULT                                SetPartitionUZSolids(int * t);
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
 	IRM_RESULT                                SetPoreVolumeZero(double * t = NULL);
