@@ -434,8 +434,8 @@ RM_InitialPhreeqc2Concentrations(
 	{
 			return Reaction_module_ptr->InitialPhreeqc2Concentrations(
 						boundary_c,
-						n_boundary, 
-						dim,
+						*n_boundary, 
+						*dim,
 						boundary_solution1,
 						boundary_solution2,
 						fraction1 );
@@ -501,7 +501,8 @@ RM_LoadDatabase(int * id, const char *db_name, long l)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->LoadDatabase(db_name, l);
+		std::string db = PhreeqcRM::Char2TrimString(db_name, l);
+		return Reaction_module_ptr->LoadDatabase(db.c_str());
 	}
 	return IRM_BADINSTANCE;
 }
@@ -625,7 +626,8 @@ RM_RunFile(int *id, int *initial_phreeqc, int *workers, int *utility, const char
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->RunFile(initial_phreeqc, workers, utility, chem_name, l);
+		std::string str = PhreeqcRM::Char2TrimString(chem_name, l);
+		return Reaction_module_ptr->RunFile(initial_phreeqc, workers, utility, str.c_str());
 	}
 	return IRM_BADINSTANCE;
 }
@@ -638,7 +640,8 @@ RM_RunString(int *id, int *initial_phreeqc, int *workers, int *utility, const ch
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->RunString(initial_phreeqc, workers, utility, input_string, l);
+		std::string str = PhreeqcRM::Char2TrimString(input_string, l);
+		return Reaction_module_ptr->RunString(initial_phreeqc, workers, utility, input_string);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -721,7 +724,8 @@ RM_SetFilePrefix(int *id, const char *name, long nchar)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetFilePrefix(name, nchar);
+		std::string str = PhreeqcRM::Char2TrimString(name, nchar);
+		return Reaction_module_ptr->SetFilePrefix(str.c_str());
 	}
 	return IRM_BADINSTANCE;
 }
