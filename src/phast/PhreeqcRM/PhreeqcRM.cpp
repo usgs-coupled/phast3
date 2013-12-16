@@ -1417,7 +1417,7 @@ PhreeqcRM::GetSelectedOutput(double *so)
 		std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(n_user);
 		if (it != this->workers[0]->CSelectedOutputMap.end())
 		{
-			this->SetCurrentSelectedOutputUserNumber(&n_user);
+			this->SetCurrentSelectedOutputUserNumber(n_user);
 			int ncol = this->GetSelectedOutputColumnCount();
 			int local_start_cell = 0;
 			std::vector<double> dbuffer;
@@ -1489,7 +1489,7 @@ PhreeqcRM::GetSelectedOutput(double *so)
 
 	if (n_user >= 0)
 	{
-		this->SetCurrentSelectedOutputUserNumber(&n_user);
+		this->SetCurrentSelectedOutputUserNumber(n_user);
 		int ncol = this->GetSelectedOutputColumnCount();
 		std::vector<double> dbuffer;
 		int local_start_cell = 0;
@@ -3619,11 +3619,11 @@ PhreeqcRM::Scale_solids(int n, int iphrq, LDBLE frac)
 
 /* ---------------------------------------------------------------------- */
 int 
-PhreeqcRM::SetCurrentSelectedOutputUserNumber(int *i)
+PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
 {
-	if (i != NULL && *i >= 0)
+	if (i != NULL && i >= 0)
 	{
-		return this->workers[0]->SetCurrentSelectedOutputUserNumber(*i);
+		return this->workers[0]->SetCurrentSelectedOutputUserNumber(i);
 	}
 	return VR_INVALIDARG;
 }
@@ -3826,13 +3826,12 @@ PhreeqcRM::SetFilePrefix(std::string &prefix)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
-PhreeqcRM::SetPartitionUZSolids(int * t)
+PhreeqcRM::SetPartitionUZSolids(int t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in SetPartitionUZSolids", 1);
-		this->partition_uz_solids = (*t != 0);
+		this->partition_uz_solids = (t != 0);
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->partition_uz_solids, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
@@ -3942,17 +3941,18 @@ PhreeqcRM::SetPressure(double *t)
 }
 #endif
 /* ---------------------------------------------------------------------- */
-void 
-PhreeqcRM::SetPrintChemistryOn(int *t)
+IRM_RESULT 
+PhreeqcRM::SetPrintChemistryOn(int t)
 /* ---------------------------------------------------------------------- */
 {
-	if (mpi_myself == 0 && t != NULL)
+	if (mpi_myself == 0)
 	{
-		this->print_chemistry_on = (*t != 0);
+		this->print_chemistry_on = (t != 0);
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->print_chemistry_on, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -3974,32 +3974,32 @@ PhreeqcRM::SetPrintChemistryMask(int * t)
 	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetRebalanceFraction(double *t)
+IRM_RESULT
+PhreeqcRM::SetRebalanceFraction(double t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in SetRebalanceFraction", 1);
-		this->rebalance_fraction = *t;
+		this->rebalance_fraction = t;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&(this->rebalance_fraction), 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::SetRebalanceMethod(int *t)
+IRM_RESULT
+PhreeqcRM::SetRebalanceMethod(int t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in SetRebalanceMethod", 1);
-		this->rebalance_method = (*t != 0);
+		this->rebalance_method = (t != 0);
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&(this->rebalance_method), 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT

@@ -255,12 +255,17 @@
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_SetPrintChemistryMask 
         
-        SUBROUTINE RM_SetRebalance(id, method, f)
+        INTEGER FUNCTION RM_SetRebalanceFraction(id, f)
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL  :: f
+        END FUNCTION RM_SetRebalanceFraction
+        
+        INTEGER FUNCTION RM_SetRebalanceMethod(id, method)
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL  :: method
-            DOUBLE PRECISION, OPTIONAL  :: f
-        END SUBROUTINE RM_SetRebalance
+        END FUNCTION RM_SetRebalanceMethod
 
         INTEGER FUNCTION RM_SetSaturation(id, t)
             IMPLICIT NONE

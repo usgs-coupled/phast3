@@ -700,7 +700,7 @@ int RM_SetCurrentSelectedOutputUserNumber(int * id, int * i)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetCurrentSelectedOutputUserNumber(i);
+		return Reaction_module_ptr->SetCurrentSelectedOutputUserNumber(*i);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -731,15 +731,17 @@ RM_SetFilePrefix(int *id, const char *name, long nchar)
 }
 
 /* ---------------------------------------------------------------------- */
-void 
+IRM_RESULT 
 RM_SetPartitionUZSolids(int *id, int *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetPartitionUZSolids(t);
+		int tf = (t == NULL) ? 0 : 1;
+		return Reaction_module_ptr->SetPartitionUZSolids(tf);
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetPoreVolume(int *id, double *t)
@@ -777,15 +779,15 @@ IRM_RESULT RM_SetPressure(int *id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetPrintChemistryOn(int *id,	 int *print_chem)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetPrintChemistryOn(print_chem);
-		return IRM_OK;
+		int tf = (print_chem == NULL) ? 0 : *print_chem;
+		return Reaction_module_ptr->SetPrintChemistryOn(tf);
 	}
 	return IRM_BADINSTANCE;
 
@@ -800,19 +802,30 @@ void RM_SetPrintChemistryMask(int *id, int *t)
 		Reaction_module_ptr->SetPrintChemistryMask(t);
 	}
 }
-
 /* ---------------------------------------------------------------------- */
-void RM_SetRebalance(int *id, int *method, double *f)
+IRM_RESULT RM_SetRebalanceFraction(int *id, double *f)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetRebalanceMethod(method);
-		Reaction_module_ptr->SetRebalanceFraction(f);
+		double d = (f == NULL) ? 0.0 : *f;
+		return Reaction_module_ptr->SetRebalanceFraction(d);
 	}
+	return IRM_BADINSTANCE;
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT RM_SetRebalanceMethod(int *id, int *method)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		int m = (method == NULL) ? 0 : *method;
+		return Reaction_module_ptr->SetRebalanceMethod(m);
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetSaturation(int *id, double *t)
 /* ---------------------------------------------------------------------- */
