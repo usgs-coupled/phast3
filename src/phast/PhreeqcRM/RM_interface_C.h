@@ -4,6 +4,10 @@
 #ifndef RM_INTERFACE_C_H
 #define RM_INTERFACE_C_H
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 /**
  *  Closes the output file and log file. 
@@ -44,7 +48,7 @@ void       RM_convert_to_molal(int id, double *c, int n, int dim);
  *  </CODE>
  *  @endhtmlonly
  */
-int        RM_Create(int nxyz, int nthreads);
+int RM_Create(int nxyz, int nthreads);
 /**
  *  Provides a many-to-one mapping of cells in the user's model to cells for which chemistry need to be run. 
  *  @param id                   The instance id returned from @ref RM_Create.
@@ -70,7 +74,8 @@ int        RM_Create(int nxyz, int nthreads);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_CreateMapping (int id, int *grid2chem); 
+//IRM_RESULT RM_CreateMapping (int id, int *grid2chem); 
+int RM_CreateMapping (int id, int *grid2chem);
 /**
  *  Destroys a reaction module. 
  *  @param id               The instance id returned from @ref RM_Create.
@@ -89,7 +94,8 @@ IRM_RESULT RM_CreateMapping (int id, int *grid2chem);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_Destroy(int id);
+//IRM_RESULT RM_Destroy(int id);
+int RM_Destroy(int id);
 /**
  *  Writes the contents of all workers to file in _RAW formats, including SOLUTIONs and all reactants.
  *  @param id               The instance id returned from @ref RM_Create.
@@ -114,7 +120,8 @@ IRM_RESULT RM_Destroy(int id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_DumpModule(int *id, int dump_on, int use_gz);
+//IRM_RESULT RM_DumpModule(int *id, int dump_on, int use_gz);
+int RM_DumpModule(int id, int dump_on, int use_gz);
 /**
  *  Aborts reaction all modules and stops program execution. 
  *  @param id                   The instance id returned from @ref RM_Create (optional).
@@ -222,9 +229,12 @@ int        RM_GetChemistryCellCount(int id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_GetComponent(int id, int num, char *chem_name, int l);
-IRM_RESULT RM_GetDensity(int id, double *density);
-IRM_RESULT RM_GetFilePrefix(int id, char *prefix);
+//IRM_RESULT RM_GetComponent(int id, int num, char *chem_name, int l);
+//IRM_RESULT RM_GetDensity(int id, double *density);
+//IRM_RESULT RM_GetFilePrefix(int id, char *prefix);
+int RM_GetComponent(int id, int num, char *chem_name, size_t l);
+int RM_GetDensity(int id, double *density);
+int RM_GetFilePrefix(int id, char *prefix, size_t l);
 /**
  *  Returns the number of grid cells in the user's model.
  *  @param id            The instance id returned from @ref RM_Create.
@@ -251,10 +261,10 @@ int        RM_GetGridCellCount(int id);
 int        RM_GetMpiMyself(int id);
 int        RM_GetMpiTasks(int id);
 int        RM_GetNthSelectedOutputUserNumber(int id, int i);
-IRM_RESULT RM_GetSelectedOutput(int id, double *so);
+int        RM_GetSelectedOutput(int id, double *so);
 int        RM_GetSelectedOutputColumnCount(int id);
 int        RM_GetSelectedOutputCount(int id);
-IRM_RESULT RM_GetSelectedOutputHeading(int id, int icol, char * heading);
+int        RM_GetSelectedOutputHeading(int id, int icol, char * heading, size_t length);
 int        RM_GetSelectedOutputRowCount(int id);
 double     RM_GetTime(int id);
 double     RM_GetTimeConversion(int id);
@@ -291,7 +301,15 @@ double     RM_GetTimeStep(int id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_InitialPhreeqc2Concentrations(
+//IRM_RESULT RM_InitialPhreeqc2Concentrations(
+//                int id,
+//                double *c,
+//                int n_boundary,
+//                int dim, 
+//                int *boundary_solution1,  
+//                int *boundary_solution2, 
+//                double *fraction1);
+int RM_InitialPhreeqc2Concentrations(
                 int id,
                 double *c,
                 int n_boundary,
@@ -331,7 +349,11 @@ IRM_RESULT RM_InitialPhreeqc2Concentrations(
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_InitialPhreeqc2Module(int id,
+//IRM_RESULT RM_InitialPhreeqc2Module(int id,
+//                int *initial_conditions1,		// 7 x nxyz end-member 1
+//                int *initial_conditions2L,		// 7 x nxyz end-member 2
+//                double *fraction1);			    // 7 x nxyz fraction of end-member 1
+int RM_InitialPhreeqc2Module(int id,
                 int *initial_conditions1,		// 7 x nxyz end-member 1
                 int *initial_conditions2L,		// 7 x nxyz end-member 2
                 double *fraction1);			    // 7 x nxyz fraction of end-member 1
@@ -419,7 +441,8 @@ void       RM_LogScreenMessage(const char *str);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT       RM_GetConcentrations(int id, double *c);
+//IRM_RESULT       RM_GetConcentrations(int id, double *c);
+int       RM_GetConcentrations(int id, double *c);
 /**
  *  Opens the output file and log file. 
  *  @see                  @ref RM_SetFilePrefix @ref RM_CloseFiles
@@ -438,7 +461,8 @@ IRM_RESULT       RM_GetConcentrations(int id, double *c);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_OpenFiles(int id);
+//IRM_RESULT RM_OpenFiles(int id);
+int RM_OpenFiles(int id);
 /**
  *  Transfer array of concentrations to the reaction module workers. 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -459,8 +483,8 @@ IRM_RESULT RM_OpenFiles(int id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT
-RM_RunCells(int id);
+//IRM_RESULT RM_RunCells(int id);
+int RM_RunCells(int id);
 /**
  *  Send a message to the screen. 
  *  @param str           String to be sent to the screen.
@@ -501,7 +525,8 @@ RM_RunCells(int id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT        RM_RunFile(int id, int initial_phreeqc, int workers, int utility, const char *chem_name);
+//IRM_RESULT        RM_RunFile(int id, int initial_phreeqc, int workers, int utility, const char *chem_name);
+int        RM_RunFile(int id, int initial_phreeqc, int workers, int utility, const char *chem_name);
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -526,36 +551,66 @@ IRM_RESULT        RM_RunFile(int id, int initial_phreeqc, int workers, int utili
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_RunString(int id, int initial_phreeqc, int workers, int utility, const char * input_string);
-void       RM_ScreenMessage(const char *str);
-IRM_RESULT RM_SetCellVolume(int id, double *t);
-IRM_RESULT RM_SetConcentrations(int id, double *t);
-int        RM_SetCurrentSelectedOutputUserNumber(int id, int i);
-IRM_RESULT RM_SetDensity(int id, double *t);
-IRM_RESULT RM_SetDumpModuleOn(int id, bool dump_on);
-IRM_RESULT RM_SetFilePrefix(int id, const char *prefix);
-IRM_RESULT RM_SetPartitionUZSolids(int id, bool t);
-IRM_RESULT RM_SetPoreVolume(int id, double *t);
-IRM_RESULT RM_SetPoreVolumeZero(int id, double *t);
-IRM_RESULT RM_SetPrintChemistryOn(int id, bool *print_chem);
-IRM_RESULT RM_SetPrintChemistryMask(int id, int *t);
-IRM_RESULT RM_SetPressure(int id, double *t);
-IRM_RESULT RM_SetRebalanceFraction(int id, double *f);
-IRM_RESULT RM_SetRebalanceByCell(int id, bool method);
-IRM_RESULT RM_SetSaturation(int id, double *t);
-IRM_RESULT RM_SetSelectedOutputOn(int id, bool selected_output);
-IRM_RESULT RM_SetStopMessage(int id, bool stop_flag);
-IRM_RESULT RM_SetTemperature(int id, double *t);
-IRM_RESULT RM_SetTime(int id, double t);
-IRM_RESULT RM_SetTimeConversion(int id, double t);
-IRM_RESULT RM_SetTimeStep(int id, double t);
-IRM_RESULT RM_SetUnitsExchange(int id, int i);
-IRM_RESULT RM_SetUnitsGasPhase(int id, int i);
-IRM_RESULT RM_SetUnitsKinetics(int id, int i);
-IRM_RESULT RM_SetUnitsPPassemblage(int id, int i);
-IRM_RESULT RM_SetUnitsSolution(int id, int i);
-IRM_RESULT RM_SetUnitsSSassemblage(int id, int i);
-IRM_RESULT RM_SetUnitsSurface(int id, int i);
+//IRM_RESULT RM_RunString(int id, int initial_phreeqc, int workers, int utility, const char * input_string);
+//void       RM_ScreenMessage(const char *str);
+//IRM_RESULT RM_SetCellVolume(int id, double *t);
+//IRM_RESULT RM_SetConcentrations(int id, double *t);
+//int        RM_SetCurrentSelectedOutputUserNumber(int id, int i);
+//IRM_RESULT RM_SetDensity(int id, double *t);
+//IRM_RESULT RM_SetDumpModuleOn(int id, bool dump_on);
+//IRM_RESULT RM_SetFilePrefix(int id, const char *prefix);
+//IRM_RESULT RM_SetPartitionUZSolids(int id, bool t);
+//IRM_RESULT RM_SetPoreVolume(int id, double *t);
+//IRM_RESULT RM_SetPoreVolumeZero(int id, double *t);
+//IRM_RESULT RM_SetPrintChemistryOn(int id, bool *print_chem);
+//IRM_RESULT RM_SetPrintChemistryMask(int id, int *t);
+//IRM_RESULT RM_SetPressure(int id, double *t);
+//IRM_RESULT RM_SetRebalanceFraction(int id, double *f);
+//IRM_RESULT RM_SetRebalanceByCell(int id, bool method);
+//IRM_RESULT RM_SetSaturation(int id, double *t);
+//IRM_RESULT RM_SetSelectedOutputOn(int id, bool selected_output);
+//IRM_RESULT RM_SetStopMessage(int id, bool stop_flag);
+//IRM_RESULT RM_SetTemperature(int id, double *t);
+//IRM_RESULT RM_SetTime(int id, double t);
+//IRM_RESULT RM_SetTimeConversion(int id, double t);
+//IRM_RESULT RM_SetTimeStep(int id, double t);
+//IRM_RESULT RM_SetUnitsExchange(int id, int i);
+//IRM_RESULT RM_SetUnitsGasPhase(int id, int i);
+//IRM_RESULT RM_SetUnitsKinetics(int id, int i);
+//IRM_RESULT RM_SetUnitsPPassemblage(int id, int i);
+//IRM_RESULT RM_SetUnitsSolution(int id, int i);
+//IRM_RESULT RM_SetUnitsSSassemblage(int id, int i);
+//IRM_RESULT RM_SetUnitsSurface(int id, int i);
+int RM_RunString(int id, int initial_phreeqc, int workers, int utility, const char * input_string);
+void RM_ScreenMessage(const char *str);
+int RM_SetCellVolume(int id, double *t);
+int RM_SetConcentrations(int id, double *t);
+int RM_SetCurrentSelectedOutputUserNumber(int id, int i);
+int RM_SetDensity(int id, double *t);
+int RM_SetDumpModuleOn(int id, int dump_on);
+int RM_SetFilePrefix(int id, const char *prefix);
+int RM_SetPartitionUZSolids(int id, int t);
+int RM_SetPoreVolume(int id, double *t);
+int RM_SetPoreVolumeZero(int id, double *t);
+int RM_SetPrintChemistryOn(int id, int print_chem);
+int RM_SetPrintChemistryMask(int id, int *t);
+int RM_SetPressure(int id, double *t);
+int RM_SetRebalanceFraction(int id, double *f);
+int RM_SetRebalanceByCell(int id, int method);
+int RM_SetSaturation(int id, double *t);
+int RM_SetSelectedOutputOn(int id, int selected_output);
+int RM_SetStopMessage(int id, int stop_flag);
+int RM_SetTemperature(int id, double *t);
+int RM_SetTime(int id, double t);
+int RM_SetTimeConversion(int id, double t);
+int RM_SetTimeStep(int id, double t);
+int RM_SetUnitsExchange(int id, int i);
+int RM_SetUnitsGasPhase(int id, int i);
+int RM_SetUnitsKinetics(int id, int i);
+int RM_SetUnitsPPassemblage(int id, int i);
+int RM_SetUnitsSolution(int id, int i);
+int RM_SetUnitsSSassemblage(int id, int i);
+int RM_SetUnitsSurface(int id, int i);
 /**
  *  Send an warning message to the screen and log file. 
  *  @param str           String to be sent.
@@ -601,4 +656,9 @@ void RM_write_output(int id);
 //	std::string str = source;
 //	return trim_left( trim_right( str , t) , t );
 //} 
+
+#if defined(__cplusplus)
+}
+#endif
+
 #endif // RM_INTERFACE__C_H

@@ -29,7 +29,7 @@ public:
 	static void             CleanupReactionModuleInstances(void);
 	static int              CreateReactionModule(int *nxyz, int *nthreads = NULL);
 	static IRM_RESULT       DestroyReactionModule(int *n);
-    static void             ErrorStop(const char * str = NULL, long l = -1);
+    static void             ErrorStop(const char * str = NULL, size_t l = 0);
 	static PhreeqcRM      * GetInstance(int *n);
 	static PHRQ_io &        GetRmIo(void) {return PhreeqcRM::phast_io;};
 
@@ -52,13 +52,13 @@ public:
                                                    int *initial_conditions1 = NULL,
                                                    int *initial_conditions2 = NULL,	
                                                    double *fraction1 = NULL);
-	int                                       LoadDatabase(const char * database);
+	IRM_RESULT                                LoadDatabase(const char * database);
 	IRM_RESULT                                RunFile(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name);
 	IRM_RESULT                                RunString(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name);
 	IRM_RESULT                                RunCells(void);
 
 	// Utilities
-	static std::string                        Char2TrimString(const char * str, long l = -1);
+	static std::string                        Char2TrimString(const char * str, size_t l = 0);
 	static bool                               FileExists(const std::string &name);
 	static void                               FileRename(const std::string &temp_name, const std::string &name, 
 		                                           const std::string &backup_name);
@@ -117,7 +117,7 @@ public:
 	// Setters 
 	IRM_RESULT                                SetChemistryFileName(const char * prefix = NULL);
 	IRM_RESULT                                SetConcentrations(double * t = NULL); 
-	int								          SetCurrentSelectedOutputUserNumber(int i = -1);
+	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i = -1);
 	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
 	IRM_RESULT                                SetCellVolume(double * t = NULL);
 	IRM_RESULT                                SetDensity(double * t = NULL); 

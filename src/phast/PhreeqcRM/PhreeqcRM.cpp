@@ -92,7 +92,7 @@ PhreeqcRM::DestroyReactionModule(int *id)
 
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::ErrorStop(const char *err_str, long l)
+PhreeqcRM::ErrorStop(const char *err_str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -1591,13 +1591,13 @@ PhreeqcRM::GetSelectedOutputRowCount()
 }
 /* ---------------------------------------------------------------------- */
 std::string 
-PhreeqcRM::Char2TrimString(const char * str, long l)
+PhreeqcRM::Char2TrimString(const char * str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string stdstr;
 	if (str)
 	{
-		if (l >= 0)
+		if (l > 0)
 		{
 			std::string tstr(str, l);
 			stdstr = tstr;
@@ -2077,12 +2077,12 @@ PhreeqcRM::RunString(int *initial_phreeqc, int * workers, int * utility, const c
 	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 PhreeqcRM::LoadDatabase(const char * database)
 /* ---------------------------------------------------------------------- */
 {
-	int rtn1 = this->SetDatabaseFileName(database);
-	if (rtn1 < 0) 
+	IRM_RESULT rtn_value = this->SetDatabaseFileName(database);
+	if (rtn_value < 0) 
 	{
 			error_msg("PhreeqcRM.LoadDatabase: Could not open database.", 0);
 	}
@@ -2098,13 +2098,13 @@ PhreeqcRM::LoadDatabase(const char * database)
 	{
 		rtn[n] = this->workers[n]->LoadDatabase(this->database_file_name.c_str());
 	} 	
-	int rtn_value = 0;
 	for (int n = 0; n < this->nthreads + 2; n++)
 	{
-		rtn_value += rtn[n];
+		//rtn_value += rtn[n];
 		if (rtn[n] != 0)
 		{
 			error_msg(this->workers[n]->GetErrorString(), 0);
+			rtn_value = IRM_FAIL;
 		}
 	}
 	return rtn_value;
@@ -3442,6 +3442,7 @@ PhreeqcRM::RunCellsThread(int n)
 				line_buff << "\n";
 				phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
 				phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
+				//std::cerr << phast_iphreeqc_worker->GetOutputString();
 			}
 
 			// Save selected output data
@@ -3614,18 +3615,17 @@ PhreeqcRM::Scale_solids(int n, int iphrq, LDBLE frac)
 	phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, n_user);
 	return;
 }
-
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
 {
 	if (i != NULL && i >= 0)
 	{
-		return this->workers[0]->SetCurrentSelectedOutputUserNumber(i);
+		int ret = this->workers[0]->SetCurrentSelectedOutputUserNumber(i);
+		return (IRM_RESULT) ret;
 	}
-	return VR_INVALIDARG;
+	return IRM_INVALIDARG;
 }
-
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetFilePrefix(const char * prefix)

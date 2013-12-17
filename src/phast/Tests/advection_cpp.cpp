@@ -173,6 +173,7 @@ int advection_cpp()
 		time = time + time_step;
 		phreeqc_rm.SetTime(time);
 		phreeqc_rm.RunCells();
+		phreeqc_rm.GetConcentrations(c.data());
 
 		// Print results at last time step
 		if (print_chemistry_on != 0)

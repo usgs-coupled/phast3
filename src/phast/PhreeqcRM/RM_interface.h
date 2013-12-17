@@ -128,7 +128,7 @@ void       RM_convert_to_molal(int *id, double *c, int *n, int *dim);
  *  </CODE>
  *  @endhtmlonly
  */
-int        RM_Create(int *nxyz, int *nthreads = NULL);
+int RM_Create(int *nxyz, int *nthreads = NULL);
 /**
  *  Provides a many-to-one mapping of cells in the user's model to cells for which chemistry need to be run. 
  *  @param id                   The instance id returned from @ref RM_Create.
@@ -217,7 +217,7 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_Error(const char * err_str = NULL, long l = -1);
+void       RM_Error(const char * err_str = NULL, size_t l = 0);
 /**
  *  Send an error message to the screen, output file, and log file. 
  *  @param str           String to be sent.
@@ -237,7 +237,7 @@ void       RM_Error(const char * err_str = NULL, long l = -1);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_ErrorMessage(const char *err_str, long l = -1);
+void       RM_ErrorMessage(const char *err_str, size_t l);
 /**
  *  Returns the number of items in the list of elements included in solutions and reactants in the IPhreeqcPhast workers.
  *  @param id            The instance id returned from @ref RM_Create.
@@ -306,9 +306,9 @@ int        RM_GetChemistryCellCount(int *id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, int l1 = -1);
+IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1);
 IRM_RESULT RM_GetDensity(int *id, double *density);
-IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, long l = -1);
+IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, long l);
 /**
  *  Returns the number of grid cells in the user's model.
  *  @param id            The instance id returned from @ref RM_Create.
@@ -338,7 +338,7 @@ int        RM_GetNthSelectedOutputUserNumber(int *id, int *i);
 IRM_RESULT RM_GetSelectedOutput(int *id, double *so = NULL);
 int        RM_GetSelectedOutputColumnCount(int *id);
 int        RM_GetSelectedOutputCount(int *id);
-IRM_RESULT RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, int length);
+IRM_RESULT RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, size_t length);
 int        RM_GetSelectedOutputRowCount(int *id);
 double     RM_GetTime(int *id);
 double     RM_GetTimeConversion(int *id);
@@ -441,7 +441,7 @@ IRM_RESULT RM_InitialPhreeqc2Module(int *id,
  *  </CODE>
  *  @endhtmlonly
  */
-int        RM_LoadDatabase(int *id, const char *db_name = NULL, long l = -1);
+IRM_RESULT RM_LoadDatabase(int *id, const char *db_name = NULL, size_t l = 0);
 /**
  *  Send a message to the log file. 
  *  @param str           String to be sent.
@@ -461,7 +461,7 @@ int        RM_LoadDatabase(int *id, const char *db_name = NULL, long l = -1);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_LogMessage(const char *str, long l = -1);
+void       RM_LogMessage(const char *str, size_t l = 0);
 /**
  *  Send a message to the screen and the log file. 
  *  @param str           String to be sent.
@@ -479,7 +479,7 @@ void       RM_LogMessage(const char *str, long l = -1);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_LogScreenMessage(const char *str, long l = -1);
+void       RM_LogScreenMessage(const char *str, size_t l);
 /**
  *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
  *  @param id                   The instance id returned from @ref RM_Create.
@@ -503,7 +503,7 @@ void       RM_LogScreenMessage(const char *str, long l = -1);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_GetConcentrations(int *id, double *c = NULL);
+IRM_RESULT RM_GetConcentrations(int *id, double *c = NULL);
 /**
  *  Opens the output file and log file. 
  *  @see                  @ref RM_SetFilePrefix @ref RM_CloseFiles
@@ -543,8 +543,7 @@ IRM_RESULT RM_OpenFiles(int * id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT
-RM_RunCells(int *id);
+IRM_RESULT RM_RunCells(int *id);
 #ifdef SKIP
 void       RM_RunCells(int *id,
                 double *time,					        // time from transport 
@@ -592,7 +591,7 @@ void       RM_RunCells(int *id,
  *  </CODE>
  *  @endhtmlonly
  */
-int        RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility, const char *chem_name = NULL, long l = -1);
+IRM_RESULT RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility, const char *chem_name = NULL, size_t l = 0);
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -617,14 +616,14 @@ int        RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility
  *  </CODE>
  *  @endhtmlonly
  */
-int        RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utility, const char * input_string = NULL, long l = -1);
-void       RM_ScreenMessage(const char *str, long l = -1);
+IRM_RESULT RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utility, const char * input_string = NULL, size_t l = 0);
+void       RM_ScreenMessage(const char *str, size_t l = 0);
 IRM_RESULT RM_SetCellVolume(int *id, double *t = NULL);
 IRM_RESULT RM_SetConcentrations(int *id, double *t = NULL);
-int        RM_SetCurrentSelectedOutputUserNumber(int *id, int *i = NULL);
+IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int *id, int *i = NULL);
 IRM_RESULT RM_SetDensity(int *id, double *t = NULL);
 IRM_RESULT RM_SetDumpModuleOn(int *id, int *dump_on = NULL);
-IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, long l = -1);
+IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, size_t l = 0);
 IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t = NULL);
 IRM_RESULT RM_SetPoreVolume(int *id, double *t = NULL);
 IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t = NULL);
@@ -666,13 +665,13 @@ IRM_RESULT RM_SetUnitsSurface(int *id, int *i = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_WarningMessage(const char *warn_str, long l = -1);
+void       RM_WarningMessage(const char *warn_str, size_t l);
 void       RM_write_bc_raw(int *id, 
                 int *solution_list, 
                 int * bc_solution_count, 
                 int * solution_number, 
                 char *prefix, 
-                int prefix_l);
+                size_t prefix_l);
 void RM_write_output(int *id);
 
 #if defined(__cplusplus)

@@ -352,15 +352,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp" />
-    <ClCompile Include="..\PhreeqcRM\RM_interface _C.cpp" />
     <ClCompile Include="..\PhreeqcRM\RM_interface.cpp" />
+    <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp" />
+    <ClCompile Include="advection_c.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
     <ClCompile Include="advection_cpp.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h" />
     <ClInclude Include="..\PhreeqcRM\RM_interface.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\PhreeqcRM\RM_interface_C.h" />
   </ItemGroup>

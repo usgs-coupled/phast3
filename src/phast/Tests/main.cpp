@@ -14,6 +14,7 @@ extern "C" {
 #endif
 	
 extern void advection_f90(void);
+extern void advection_c(void);
 
 #if defined(__cplusplus)
 }
@@ -51,8 +52,9 @@ int main(int argc, char* argv[])
 	mpi_myself = 0;
 #endif
 
-	advection_cpp();
+	//advection_cpp();
 	//advection_f90();
+	advection_c();
 
 #if defined(USE_MPI)
 	MPI_Finalize();

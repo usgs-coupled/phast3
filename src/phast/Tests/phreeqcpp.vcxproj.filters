@@ -23,7 +23,10 @@
     <ClCompile Include="advection_cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\RM_interface _C.cpp">
+    <ClCompile Include="advection_c.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
