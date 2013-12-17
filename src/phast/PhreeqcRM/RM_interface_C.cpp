@@ -13,7 +13,6 @@
 #include "mpi.h"
 #endif
 
-
 //class RM_interface
 //{
 //public:
@@ -88,7 +87,8 @@ int RM_Create(int nxyz, int nthreads)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_CreateMapping(int id, int *grid2chem)
+//IRM_RESULT RM_CreateMapping(int id, int *grid2chem)
+int RM_CreateMapping(int id, int *grid2chem)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -105,20 +105,22 @@ IRM_RESULT RM_CreateMapping(int id, int *grid2chem)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_Destroy(int id)
+//IRM_RESULT RM_Destroy(int id)
+int RM_Destroy(int id)
 /* ---------------------------------------------------------------------- */
 {
 	return PhreeqcRM::DestroyReactionModule(&id);
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_DumpModule(int id, bool dump_on, bool use_gz)
+//IRM_RESULT RM_DumpModule(int id, bool dump_on, bool use_gz)
+int RM_DumpModule(int id, int dump_on, int use_gz)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->DumpModule(dump_on, use_gz);
+		return Reaction_module_ptr->DumpModule((dump_on != 0), (use_gz != 0));
 	}
 	return IRM_BADINSTANCE;
 }
@@ -173,7 +175,8 @@ int RM_GetChemistryCellCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_GetComponent(int id, int * num, char *chem_name, int l1)
+//IRM_RESULT RM_GetComponent(int id, int * num, char *chem_name, int l1)
+int RM_GetComponent(int id, int num, char *chem_name, size_t l1)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -183,7 +186,7 @@ IRM_RESULT RM_GetComponent(int id, int * num, char *chem_name, int l1)
 		{
 			if (l1 >= 0)
 			{
-				strncpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), l1);
+				strncpy(chem_name, Reaction_module_ptr->GetComponents()[num].c_str(), l1);
 			}
 			return IRM_OK;
 		}
@@ -193,8 +196,8 @@ IRM_RESULT RM_GetComponent(int id, int * num, char *chem_name, int l1)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_GetConcentrations(int id, double * c)
+//IRM_RESULT RM_GetConcentrations(int id, double * c)
+int RM_GetConcentrations(int id, double * c)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -206,8 +209,8 @@ RM_GetConcentrations(int id, double * c)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_GetDensity(int id, double * d)
+//IRM_RESULT RM_GetDensity(int id, double * d)
+int RM_GetDensity(int id, double * d)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -287,8 +290,9 @@ RM_GetNthSelectedOutputUserNumber(int id, int i)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_GetSelectedOutput(int id, double * so)
-	/* ---------------------------------------------------------------------- */
+//IRM_RESULT RM_GetSelectedOutput(int id, double * so)
+int RM_GetSelectedOutput(int id, double * so)
+/* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
 	if (Reaction_module_ptr)
@@ -324,7 +328,8 @@ int RM_GetSelectedOutputCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_GetSelectedOutputHeading(int id, int icol, char *heading, int length)
+//IRM_RESULT RM_GetSelectedOutputHeading(int id, int icol, char *heading)
+int RM_GetSelectedOutputHeading(int id, int icol, char *heading, size_t length)
 	/* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -390,7 +395,16 @@ double RM_GetTimeStep(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
+//IRM_RESULT
+//RM_InitialPhreeqc2Concentrations(
+//			int id,
+//			double *boundary_c,
+//			int n_boundary,
+//			int dim,
+//			int *boundary_solution1,  
+//			int *boundary_solution2, 
+//			double *fraction1)
+int
 RM_InitialPhreeqc2Concentrations(
 			int id,
 			double *boundary_c,
@@ -431,7 +445,12 @@ RM_InitialPhreeqc2Concentrations(
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
+//IRM_RESULT
+//RM_InitialPhreeqc2Module(int id,
+//							  int *initial_conditions1,		// 7 x nxyz end-member 1
+//							  int *initial_conditions2,		// 7 x nxyz end-member 2
+//							  double *fraction1)			// 7 x nxyz fraction of end-member 1
+int
 RM_InitialPhreeqc2Module(int id,
 							  int *initial_conditions1,		// 7 x nxyz end-member 1
 							  int *initial_conditions2,		// 7 x nxyz end-member 2
@@ -509,8 +528,8 @@ RM_open_error_file(void)
 }
 #endif
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_OpenFiles(int id)
+//IRM_RESULT RM_OpenFiles(int id)
+int RM_OpenFiles(int id)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -542,8 +561,8 @@ RM_OpenFiles(int id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
-RM_RunCells(int id)
+//IRM_RESULT RM_RunCells(int id)
+int RM_RunCells(int id)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -559,7 +578,9 @@ RM_RunCells(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_RunFile(int id, int initial_phreeqc, int workers, int utility, const char *chem_name)
+int 
 RM_RunFile(int id, int initial_phreeqc, int workers, int utility, const char *chem_name)
 /* ---------------------------------------------------------------------- */
 {
@@ -573,7 +594,9 @@ RM_RunFile(int id, int initial_phreeqc, int workers, int utility, const char *ch
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_RunString(int id, int initial_phreeqc, int workers, int utility, const char *input_string)
+int 
 RM_RunString(int id, int initial_phreeqc, int workers, int utility, const char *input_string)
 /* ---------------------------------------------------------------------- */
 {
@@ -600,7 +623,9 @@ RM_ScreenMessage(const char *err_str)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetCellVolume(int id, double *t)
+int 
 RM_SetCellVolume(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -613,7 +638,9 @@ RM_SetCellVolume(int id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetConcentrations(int id, double *t)
+int 
 RM_SetConcentrations(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -638,7 +665,9 @@ int RM_SetCurrentSelectedOutputUserNumber(int id, int i)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
+//IRM_RESULT
+//RM_SetDensity(int id, double *t)
+int
 RM_SetDensity(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -651,7 +680,9 @@ RM_SetDensity(int id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
+//IRM_RESULT
+//RM_SetFilePrefix(int id, const char *name)
+int
 RM_SetFilePrefix(int id, const char *name)
 /* ---------------------------------------------------------------------- */
 {
@@ -665,8 +696,10 @@ RM_SetFilePrefix(int id, const char *name)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
-RM_SetPartitionUZSolids(int id, bool t)
+//IRM_RESULT 
+//RM_SetPartitionUZSolids(int id, bool t)
+int 
+RM_SetPartitionUZSolids(int id, int t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -677,7 +710,8 @@ RM_SetPartitionUZSolids(int id, bool t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPoreVolume(int id, double *t)
+//IRM_RESULT RM_SetPoreVolume(int id, double *t)
+int RM_SetPoreVolume(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -689,7 +723,8 @@ IRM_RESULT RM_SetPoreVolume(int id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPoreVolumeZero(int id, double *t)
+//IRM_RESULT RM_SetPoreVolumeZero(int id, double *t)
+int RM_SetPoreVolumeZero(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -701,7 +736,8 @@ IRM_RESULT RM_SetPoreVolumeZero(int id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPressure(int id, double *t)
+//IRM_RESULT RM_SetPressure(int id, double *t)
+int RM_SetPressure(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -712,20 +748,23 @@ IRM_RESULT RM_SetPressure(int id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_SetPrintChemistryOn(int id,	 bool print_chem)
+//IRM_RESULT
+//RM_SetPrintChemistryOn(int id,	 bool print_chem)
+int
+RM_SetPrintChemistryOn(int id,	 int print_chem)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetPrintChemistryOn(print_chem);
+		return Reaction_module_ptr->SetPrintChemistryOn(print_chem != 0);
 	}
 	return IRM_BADINSTANCE;
 
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPrintChemistryMask(int id, int *t)
+//IRM_RESULT RM_SetPrintChemistryMask(int id, int *t)
+int RM_SetPrintChemistryMask(int id, int *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -736,7 +775,8 @@ IRM_RESULT RM_SetPrintChemistryMask(int id, int *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetRebalanceFraction(int id, double f)
+//IRM_RESULT RM_SetRebalanceFraction(int id, double f)
+int RM_SetRebalanceFraction(int id, double f)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -747,18 +787,20 @@ IRM_RESULT RM_SetRebalanceFraction(int id, double f)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetRebalanceByCell(int id, bool method)
+//IRM_RESULT RM_SetRebalanceByCell(int id, bool method)
+int RM_SetRebalanceByCell(int id, int method)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetRebalanceByCell(method);
+		return Reaction_module_ptr->SetRebalanceByCell(method != 0);
 	}
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetSaturation(int id, double *t)
+//IRM_RESULT RM_SetSaturation(int id, double *t)
+int RM_SetSaturation(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -769,36 +811,41 @@ IRM_RESULT RM_SetSaturation(int id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_SetSelectedOutputOn(int id, bool selected_output_on)
+//IRM_RESULT
+//RM_SetSelectedOutputOn(int id, bool selected_output_on)
+int
+RM_SetSelectedOutputOn(int id, int selected_output_on)
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetSelectedOutputOn(selected_output_on);
+		Reaction_module_ptr->SetSelectedOutputOn(selected_output_on != 0);
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_SetStopMessage(int id, bool stop_flag)
+//IRM_RESULT
+//RM_SetStopMessage(int id, bool stop_flag)
+int
+RM_SetStopMessage(int id, int stop_flag)
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetStopMessage(stop_flag);
+		Reaction_module_ptr->SetStopMessage(stop_flag != 0);
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetTemperature(int id, double *t)
+//IRM_RESULT RM_SetTemperature(int id, double *t)
+int RM_SetTemperature(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -810,7 +857,9 @@ IRM_RESULT RM_SetTemperature(int id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetTime(int id, double t)
+int 
 RM_SetTime(int id, double t)
 /* ---------------------------------------------------------------------- */
 {
@@ -826,7 +875,8 @@ RM_SetTime(int id, double t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetTimeConversion(int id, double t)
+//IRM_RESULT RM_SetTimeConversion(int id, double t)
+int RM_SetTimeConversion(int id, double t)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -841,7 +891,9 @@ IRM_RESULT RM_SetTimeConversion(int id, double t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetTimeStep(int id, double t)
+int 
 RM_SetTimeStep(int id, double t)
 /* ---------------------------------------------------------------------- */
 {
@@ -856,7 +908,9 @@ RM_SetTimeStep(int id, double t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetUnitsExchange (int id, int u)
+int 
 RM_SetUnitsExchange (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -868,7 +922,9 @@ RM_SetUnitsExchange (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetUnitsGasPhase (int id, int u)
+int 
 RM_SetUnitsGasPhase (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -880,7 +936,9 @@ RM_SetUnitsGasPhase (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetUnitsKinetics (int id, int u)
+int 
 RM_SetUnitsKinetics (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -892,7 +950,9 @@ RM_SetUnitsKinetics (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetUnitsPPassemblage (int id, int u)
+int 
 RM_SetUnitsPPassemblage (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -904,7 +964,9 @@ RM_SetUnitsPPassemblage (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetUnitsSolution (int id, int u)
+int 
 RM_SetUnitsSolution (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -916,7 +978,9 @@ RM_SetUnitsSolution (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetUnitsSSassemblage (int id, int u)
+int 
 RM_SetUnitsSSassemblage (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -928,7 +992,9 @@ RM_SetUnitsSSassemblage (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+//IRM_RESULT 
+//RM_SetUnitsSurface (int id, int u)
+int 
 RM_SetUnitsSurface (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
