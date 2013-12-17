@@ -544,30 +544,6 @@ IRM_RESULT RM_OpenFiles(int * id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_RunCells(int *id);
-#ifdef SKIP
-void       RM_RunCells(int *id,
-                double *time,					        // time from transport 
-                double *time_step,				        // time step from transport
-                double *concentration,					// mass fractions nxyz:components
-                int * stop_msg);
-#endif
-/**
- *  Send a message to the screen. 
- *  @param str           String to be sent to the screen.
- *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogMessage, RM_LogScreenMessage, RM_WarningMessage. 
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>
- *      SUBROUTINE RM_ScreenMessage(str) 
- *          IMPLICIT NONE
- *          CHARACTER :: str
- *      END SUBROUTINE RM_ScreenMessage     
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -617,6 +593,23 @@ IRM_RESULT RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility
  *  @endhtmlonly
  */
 IRM_RESULT RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utility, const char * input_string = NULL, size_t l = 0);
+/**
+ *  Send a message to the screen. 
+ *  @param str           String to be sent to the screen.
+ *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
+ *  @see                 RM_ErrorMessage, RM_LogMessage, RM_LogScreenMessage, RM_WarningMessage. 
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+ *      SUBROUTINE RM_ScreenMessage(str) 
+ *          IMPLICIT NONE
+ *          CHARACTER :: str
+ *      END SUBROUTINE RM_ScreenMessage     
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
 void       RM_ScreenMessage(const char *str, size_t l = 0);
 IRM_RESULT RM_SetCellVolume(int *id, double *t = NULL);
 IRM_RESULT RM_SetConcentrations(int *id, double *t = NULL);
