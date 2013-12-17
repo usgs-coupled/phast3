@@ -199,7 +199,7 @@ Reading input data for simulation 4.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.846 Seconds.
+End of Run after 0.985 Seconds.
 -------------------------------
 
 List of Components:
@@ -323,7 +323,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.892 Seconds.
+End of Run after 2.211 Seconds.
 -------------------------------
 
 Time:           10
@@ -359,17 +359,17 @@ X               1.100e-003 mol
 	Species             Moles      alents      Fraction     Gamma
 
 	CaX2             5.500e-004  1.100e-003  1.000e+000    -0.080
-	KX               5.823e-016  5.823e-016  5.294e-013    -0.020
-	NaX              3.104e-022  3.104e-022  2.822e-019    -0.020
+	KX               6.396e-015  6.396e-015  5.815e-012    -0.020
+	NaX              2.685e-021  2.685e-021  2.441e-018    -0.020
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               6.000e-004  1.196e-003
-	Cl               1.200e-003  2.393e-003
-	K                6.155e-015  1.227e-014
-	Na               1.694e-020  3.377e-020
+	Ca               6.000e-004  1.198e-003
+	Cl               1.200e-003  2.396e-003
+	K                6.761e-014  1.350e-013
+	Na               1.465e-019  2.926e-019
 
 ----------------------------Description of solution----------------------------
 
@@ -377,20 +377,20 @@ X               1.100e-003 mol
                                        pe  =  13.969      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 137
                           Density (g/cm3)  =   0.99831
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.800e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -4.851e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -8.145e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -8.928e-012
+                  Electrical balance (eq)  = -1.201e-011
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                                  Total H  = 2.216319e+002
+                                  Total O  = 1.108170e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -407,11 +407,11 @@ Cl           1.200e-003
    Cl-            1.200e-003  1.145e-003    -2.921    -2.941    -0.020     17.92
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            6.155e-015
-   K+             6.155e-015  5.872e-015   -14.211   -14.231    -0.020      8.85
-Na           1.694e-020
-   Na+            1.694e-020  1.617e-020   -19.771   -19.791    -0.020     -1.74
-   NaOH           1.327e-037  1.327e-037   -36.877   -36.877     0.000     (0)  
+K            6.761e-014
+   K+             6.761e-014  6.450e-014   -13.170   -13.190    -0.020      8.85
+Na           1.465e-019
+   Na+            1.465e-019  1.399e-019   -18.834   -18.854    -0.020     -1.74
+   NaOH           1.148e-036  1.148e-036   -35.940   -35.940     0.000     (0)  
 O(0)         5.351e-004
    O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -421,9 +421,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite          -24.30    -22.73    1.57  NaCl
+  Halite          -23.36    -21.80    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite         -18.05    -17.17    0.87  KCl
+  Sylvite         -17.01    -16.13    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -437,7 +437,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.899 Seconds.
+End of Run after 2.219 Seconds.
 -------------------------------
 
 Time:           10
@@ -473,17 +473,17 @@ X               1.100e-003 mol
 	Species             Moles      alents      Fraction     Gamma
 
 	CaX2             5.500e-004  1.100e-003  1.000e+000    -0.080
-	KX               1.290e-014  1.290e-014  1.173e-011    -0.020
-	NaX              3.396e-020  3.396e-020  3.087e-017    -0.020
+	KX               9.011e-013  9.011e-013  8.192e-010    -0.020
+	NaX              2.227e-018  2.227e-018  2.025e-015    -0.020
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               6.000e-004  1.196e-003
-	Cl               1.200e-003  2.393e-003
-	K                1.364e-013  2.719e-013
-	Na               1.853e-018  3.695e-018
+	Ca               6.000e-004  1.198e-003
+	Cl               1.200e-003  2.396e-003
+	K                9.525e-012  1.902e-011
+	Na               1.215e-016  2.426e-016
 
 ----------------------------Description of solution----------------------------
 
@@ -491,20 +491,20 @@ X               1.100e-003 mol
                                        pe  =  13.969      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 137
                           Density (g/cm3)  =   0.99831
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.800e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -4.443e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -3.628e-017
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -8.406e-012
+                  Electrical balance (eq)  = -1.668e-011
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
-                               Iterations  =   0
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                               Iterations  =   1
+                                  Total H  = 2.216319e+002
+                                  Total O  = 1.108170e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -521,11 +521,11 @@ Cl           1.200e-003
    Cl-            1.200e-003  1.145e-003    -2.921    -2.941    -0.020     17.92
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            1.364e-013
-   K+             1.364e-013  1.301e-013   -12.865   -12.886    -0.020      8.85
-Na           1.853e-018
-   Na+            1.853e-018  1.769e-018   -17.732   -17.752    -0.020     -1.74
-   NaOH           1.451e-035  1.452e-035   -34.838   -34.838     0.000     (0)  
+K            9.525e-012
+   K+             9.525e-012  9.087e-012   -11.021   -11.042    -0.020      8.85
+Na           1.215e-016
+   Na+            1.215e-016  1.160e-016   -15.915   -15.936    -0.020     -1.74
+   NaOH           9.517e-034  9.521e-034   -33.022   -33.021     0.000     (0)  
 O(0)         5.351e-004
    O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -535,9 +535,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite          -22.26    -20.69    1.57  NaCl
+  Halite          -20.44    -18.88    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite         -16.70    -15.83    0.87  KCl
+  Sylvite         -14.86    -13.98    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -551,7 +551,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.904 Seconds.
+End of Run after 2.225 Seconds.
 -------------------------------
 
 Time:           10
@@ -587,17 +587,17 @@ X               1.100e-003 mol
 	Species             Moles      alents      Fraction     Gamma
 
 	CaX2             5.500e-004  1.100e-003  1.000e+000    -0.080
-	KX               2.853e-013  2.853e-013  2.594e-010    -0.020
-	NaX              3.722e-018  3.722e-018  3.384e-015    -0.020
+	KX               8.463e-011  8.463e-011  7.694e-008    -0.020
+	NaX              1.631e-015  1.631e-015  1.483e-012    -0.020
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               6.000e-004  1.196e-003
-	Cl               1.200e-003  2.393e-003
-	K                3.016e-012  6.013e-012
-	Na               2.031e-016  4.050e-016
+	Ca               6.000e-004  1.198e-003
+	Cl               1.200e-003  2.396e-003
+	K                8.946e-010  1.786e-009
+	Na               8.900e-014  1.777e-013
 
 ----------------------------Description of solution----------------------------
 
@@ -605,20 +605,20 @@ X               1.100e-003 mol
                                        pe  =  13.969      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 137
                           Density (g/cm3)  =   0.99831
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.800e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -4.163e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.982e-015
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -2.679e-012
+                  Electrical balance (eq)  = -2.647e-012
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
-                               Iterations  =   1
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                               Iterations  =   2
+                                  Total H  = 2.216319e+002
+                                  Total O  = 1.108170e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -635,11 +635,11 @@ Cl           1.200e-003
    Cl-            1.200e-003  1.145e-003    -2.921    -2.941    -0.020     17.92
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            3.016e-012
-   K+             3.016e-012  2.877e-012   -11.521   -11.541    -0.020      8.85
-Na           2.031e-016
-   Na+            2.031e-016  1.939e-016   -15.692   -15.712    -0.020     -1.74
-   NaOH           1.591e-033  1.591e-033   -32.798   -32.798     0.000     (0)  
+K            8.946e-010
+   K+             8.946e-010  8.534e-010    -9.048    -9.069    -0.020      8.85
+Na           8.900e-014
+   Na+            8.900e-014  8.497e-014   -13.051   -13.071    -0.020     -1.74
+   NaOH           6.971e-031  6.973e-031   -30.157   -30.157     0.000     (0)  
 O(0)         5.351e-004
    O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -649,9 +649,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite          -20.22    -18.65    1.57  NaCl
+  Halite          -17.58    -16.01    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite         -15.36    -14.48    0.87  KCl
+  Sylvite         -12.88    -12.01    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -664,9 +664,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 1.91 Seconds.
-------------------------------
+-------------------------------
+End of Run after 2.231 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 4
@@ -701,17 +701,17 @@ X               1.100e-003 mol
 	Species             Moles      alents      Fraction     Gamma
 
 	CaX2             5.500e-004  1.100e-003  1.000e+000    -0.080
-	KX               6.303e-012  6.303e-012  5.730e-009    -0.020
-	NaX              4.084e-016  4.084e-016  3.713e-013    -0.020
+	KX               6.687e-009  6.687e-009  6.080e-006    -0.020
+	NaX              9.191e-013  9.191e-013  8.356e-010    -0.020
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               6.000e-004  1.196e-003
-	Cl               1.200e-003  2.393e-003
-	K                6.662e-011  1.328e-010
-	Na               2.229e-014  4.444e-014
+	Ca               6.000e-004  1.198e-003
+	Cl               1.200e-003  2.396e-003
+	K                7.069e-008  1.411e-007
+	Na               5.015e-011  1.001e-010
 
 ----------------------------Description of solution----------------------------
 
@@ -719,20 +719,20 @@ X               1.100e-003 mol
                                        pe  =  13.969      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 137
                           Density (g/cm3)  =   0.99831
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.800e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.049e-019
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  =  6.351e-020
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  8.935e-018
+                  Electrical balance (eq)  =  8.671e-013
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
                                Iterations  =   2
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                                  Total H  = 2.216319e+002
+                                  Total O  = 1.108170e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -744,16 +744,16 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 Ca           6.000e-004
    Ca+2           6.000e-004  4.991e-004    -3.222    -3.302    -0.080    -18.16
-   CaOH+          1.041e-009  9.931e-010    -8.983    -9.003    -0.020     (0)  
+   CaOH+          1.041e-009  9.930e-010    -8.983    -9.003    -0.020     (0)  
 Cl           1.200e-003
    Cl-            1.200e-003  1.145e-003    -2.921    -2.941    -0.020     17.92
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            6.662e-011
-   K+             6.662e-011  6.356e-011   -10.176   -10.197    -0.020      8.85
-Na           2.229e-014
-   Na+            2.229e-014  2.128e-014   -13.652   -13.672    -0.020     -1.74
-   NaOH           1.745e-031  1.746e-031   -30.758   -30.758     0.000     (0)  
+K            7.069e-008
+   K+             7.069e-008  6.744e-008    -7.151    -7.171    -0.020      8.85
+Na           5.015e-011
+   Na+            5.015e-011  4.788e-011   -10.300   -10.320    -0.020     -1.74
+   NaOH           3.928e-028  3.929e-028   -27.406   -27.406     0.000     (0)  
 O(0)         5.351e-004
    O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -763,9 +763,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite          -18.18    -16.61    1.57  NaCl
+  Halite          -14.83    -13.26    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite         -14.01    -13.14    0.87  KCl
+  Sylvite         -10.99    -10.11    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -779,7 +779,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.915 Seconds.
+End of Run after 2.238 Seconds.
 -------------------------------
 
 Time:           10
@@ -814,18 +814,18 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	CaX2             5.500e-004  1.100e-003  1.000e+000    -0.080
-	KX               1.392e-010  1.392e-010  1.265e-007    -0.020
-	NaX              4.483e-014  4.483e-014  4.076e-011    -0.020
+	CaX2             5.498e-004  1.100e-003  9.996e-001    -0.080
+	KX               4.392e-007  4.392e-007  3.993e-004    -0.020
+	NaX              4.577e-010  4.577e-010  4.161e-007    -0.020
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               6.000e-004  1.196e-003
-	Cl               1.200e-003  2.393e-003
-	K                1.471e-009  2.934e-009
-	Na               2.446e-012  4.878e-012
+	Ca               5.977e-004  1.193e-003
+	Cl               1.200e-003  2.396e-003
+	K                4.635e-006  9.253e-006
+	Na               2.493e-008  4.978e-008
 
 ----------------------------Description of solution----------------------------
 
@@ -833,20 +833,20 @@ X               1.100e-003 mol
                                        pe  =  13.969      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 137
                           Density (g/cm3)  =   0.99831
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
-                           Ionic strength  =  1.800e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  =  7.043e-020
+                           Ionic strength  =  1.798e-003
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  =  5.845e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  6.285e-016
+                  Electrical balance (eq)  =  1.240e-011
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   2
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                               Iterations  =   3
+                                  Total H  = 2.216319e+002
+                                  Total O  = 1.108170e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -856,18 +856,18 @@ X               1.100e-003 mol
    H+             8.715e-008  8.341e-008    -7.060    -7.079    -0.019      0.00
    OH-            8.611e-008  8.215e-008    -7.065    -7.085    -0.020     -4.31
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
-Ca           6.000e-004
-   Ca+2           6.000e-004  4.991e-004    -3.222    -3.302    -0.080    -18.16
-   CaOH+          1.041e-009  9.931e-010    -8.983    -9.003    -0.020     (0)  
+Ca           5.977e-004
+   Ca+2           5.977e-004  4.972e-004    -3.224    -3.303    -0.080    -18.16
+   CaOH+          1.037e-009  9.893e-010    -8.984    -9.005    -0.020     (0)  
 Cl           1.200e-003
    Cl-            1.200e-003  1.145e-003    -2.921    -2.941    -0.020     17.92
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            1.471e-009
-   K+             1.471e-009  1.404e-009    -8.832    -8.853    -0.020      8.85
-Na           2.446e-012
-   Na+            2.446e-012  2.335e-012   -11.611   -11.632    -0.020     -1.74
-   NaOH           1.916e-029  1.917e-029   -28.718   -28.717     0.000     (0)  
+K            4.635e-006
+   K+             4.635e-006  4.422e-006    -5.334    -5.354    -0.020      8.85
+Na           2.493e-008
+   Na+            2.493e-008  2.380e-008    -7.603    -7.623    -0.020     -1.74
+   NaOH           1.953e-025  1.954e-025   -24.709   -24.709     0.000     (0)  
 O(0)         5.351e-004
    O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -877,9 +877,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite          -16.14    -14.57    1.57  NaCl
+  Halite          -12.13    -10.56    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite         -12.67    -11.79    0.87  KCl
+  Sylvite          -9.17     -8.30    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -892,9 +892,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 1.92 Seconds.
-------------------------------
+-------------------------------
+End of Run after 2.244 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 6
@@ -928,60 +928,60 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	CaX2             5.500e-004  1.100e-003  1.000e+000    -0.080
-	KX               3.074e-009  3.074e-009  2.794e-006    -0.020
-	NaX              4.922e-012  4.922e-012  4.475e-009    -0.020
+	CaX2             5.359e-004  1.072e-003  9.744e-001    -0.077
+	KX               2.794e-005  2.794e-005  2.540e-002    -0.020
+	NaX              2.356e-007  2.356e-007  2.142e-004    -0.019
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               6.000e-004  1.196e-003
-	Cl               1.200e-003  2.393e-003
-	K                3.249e-008  6.478e-008
-	Na               2.686e-010  5.356e-010
+	Ca               4.629e-004  9.242e-004
+	Cl               1.200e-003  2.396e-003
+	K                2.628e-004  5.246e-004
+	Na               1.144e-005  2.284e-005
 
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.079      Charge balance
                                        pe  =  13.969      Adjusted to redox equilibrium
-       Specific Conductance (uS/cm, 20 oC) = 137
+       Specific Conductance (uS/cm, 20 oC) = 141
                           Density (g/cm3)  =   0.99831
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00001
                         Activity of water  =   1.000
-                           Ionic strength  =  1.800e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  =  1.514e-019
+                           Ionic strength  =  1.663e-003
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  =  6.325e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  3.150e-013
+                  Electrical balance (eq)  =  1.377e-011
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   2
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                               Iterations  =   6
+                                  Total H  = 2.216316e+002
+                                  Total O  = 1.108169e+002
 
 ----------------------------Distribution of species----------------------------
 
                                                Log       Log       Log    mole V
    Species          Molality    Activity  Molality  Activity     Gamma   cm3/mol
 
-   H+             8.715e-008  8.341e-008    -7.060    -7.079    -0.019      0.00
-   OH-            8.611e-008  8.215e-008    -7.065    -7.085    -0.020     -4.31
+   H+             8.689e-008  8.329e-008    -7.061    -7.079    -0.018      0.00
+   OH-            8.608e-008  8.227e-008    -7.065    -7.085    -0.020     -4.31
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
-Ca           6.000e-004
-   Ca+2           6.000e-004  4.991e-004    -3.222    -3.302    -0.080    -18.16
-   CaOH+          1.041e-009  9.930e-010    -8.983    -9.003    -0.020     (0)  
+Ca           4.629e-004
+   Ca+2           4.629e-004  3.876e-004    -3.335    -3.412    -0.077    -18.17
+   CaOH+          8.080e-010  7.724e-010    -9.093    -9.112    -0.020     (0)  
 Cl           1.200e-003
-   Cl-            1.200e-003  1.145e-003    -2.921    -2.941    -0.020     17.92
+   Cl-            1.200e-003  1.147e-003    -2.921    -2.940    -0.020     17.92
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            3.249e-008
-   K+             3.249e-008  3.099e-008    -7.488    -7.509    -0.020      8.85
-Na           2.686e-010
-   Na+            2.686e-010  2.564e-010    -9.571    -9.591    -0.020     -1.74
-   NaOH           2.103e-027  2.104e-027   -26.677   -26.677     0.000     (0)  
+K            2.628e-004
+   K+             2.628e-004  2.511e-004    -3.580    -3.600    -0.020      8.85
+Na           1.144e-005
+   Na+            1.144e-005  1.094e-005    -4.942    -4.961    -0.019     -1.74
+   NaOH           8.987e-023  8.990e-023   -22.046   -22.046     0.000     (0)  
 O(0)         5.351e-004
    O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -991,9 +991,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite          -14.10    -12.53    1.57  NaCl
+  Halite           -9.47     -7.90    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite         -11.32    -10.45    0.87  KCl
+  Sylvite          -7.42     -6.54    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -1006,9 +1006,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 1.925 Seconds.
--------------------------------
+------------------------------
+End of Run after 2.25 Seconds.
+------------------------------
 
 Time:           10
 Chemistry cell: 7
@@ -1042,62 +1042,62 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	CaX2             5.500e-004  1.100e-003  9.999e-001    -0.080
-	KX               6.786e-008  6.786e-008  6.169e-005    -0.020
-	NaX              5.405e-010  5.405e-010  4.913e-007    -0.020
+	KX               9.551e-004  9.551e-004  8.683e-001    -0.017
+	NaX              7.464e-005  7.464e-005  6.786e-002    -0.017
+	CaX2             3.513e-005  7.026e-005  6.387e-002    -0.066
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               5.996e-004  1.196e-003
-	Cl               1.200e-003  2.393e-003
-	K                7.171e-007  1.430e-006
-	Na               2.948e-008  5.879e-008
+	Ca               2.747e-007  5.483e-007
+	Cl               1.200e-003  2.396e-003
+	K                8.546e-004  1.706e-003
+	Na               3.448e-004  6.884e-004
 
 ----------------------------Description of solution----------------------------
 
-                                       pH  =   7.079      Charge balance
-                                       pe  =  13.969      Adjusted to redox equilibrium
-       Specific Conductance (uS/cm, 20 oC) = 137
-                          Density (g/cm3)  =   0.99831
-                               Volume (L)  =   1.99758
+                                       pH  =   7.082      Charge balance
+                                       pe  =  13.967      Adjusted to redox equilibrium
+       Specific Conductance (uS/cm, 20 oC) = 149
+                          Density (g/cm3)  =   0.99830
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
-                           Ionic strength  =  1.800e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.327e-023
+                           Ionic strength  =  1.200e-003
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  =  8.495e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  1.158e-017
+                  Electrical balance (eq)  =  1.704e-011
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   3
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                               Iterations  =   9
+                                  Total H  = 2.216278e+002
+                                  Total O  = 1.108150e+002
 
 ----------------------------Distribution of species----------------------------
 
                                                Log       Log       Log    mole V
    Species          Molality    Activity  Molality  Activity     Gamma   cm3/mol
 
-   H+             8.715e-008  8.341e-008    -7.060    -7.079    -0.019      0.00
-   OH-            8.611e-008  8.215e-008    -7.065    -7.085    -0.020     -4.31
+   H+             8.596e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
+   OH-            8.596e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
-Ca           5.996e-004
-   Ca+2           5.996e-004  4.988e-004    -3.222    -3.302    -0.080    -18.16
-   CaOH+          1.040e-009  9.925e-010    -8.983    -9.003    -0.020     (0)  
+Ca           2.747e-007
+   Ca+2           2.747e-007  2.359e-007    -6.561    -6.627    -0.066    -18.19
+   CaOH+          4.909e-013  4.724e-013   -12.309   -12.326    -0.017     (0)  
 Cl           1.200e-003
-   Cl-            1.200e-003  1.145e-003    -2.921    -2.941    -0.020     17.92
+   Cl-            1.200e-003  1.154e-003    -2.921    -2.938    -0.017     17.91
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            7.171e-007
-   K+             7.171e-007  6.841e-007    -6.144    -6.165    -0.020      8.85
-Na           2.948e-008
-   Na+            2.948e-008  2.815e-008    -7.530    -7.551    -0.020     -1.74
-   NaOH           2.309e-025  2.310e-025   -24.637   -24.636     0.000     (0)  
+K            8.546e-004
+   K+             8.546e-004  8.222e-004    -3.068    -3.085    -0.017      8.84
+Na           3.448e-004
+   Na+            3.448e-004  3.318e-004    -3.462    -3.479    -0.017     -1.75
+   NaOH           2.740e-021  2.741e-021   -20.562   -20.562     0.000     (0)  
 O(0)         5.351e-004
-   O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
+   O2             2.675e-004  2.676e-004    -3.573    -3.573     0.000     29.98
 
 ------------------------------Saturation indices-------------------------------
 
@@ -1105,9 +1105,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite          -12.06    -10.49    1.57  NaCl
+  Halite           -7.98     -6.42    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite          -9.98     -9.11    0.87  KCl
+  Sylvite          -6.90     -6.02    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -1120,9 +1120,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 1.93 Seconds.
-------------------------------
+-------------------------------
+End of Run after 2.256 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 8
@@ -1156,62 +1156,62 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	CaX2             5.492e-004  1.098e-003  9.986e-001    -0.080
-	KX               1.498e-006  1.498e-006  1.362e-003    -0.020
-	NaX              5.933e-008  5.933e-008  5.393e-005    -0.020
+	KX               7.166e-004  7.166e-004  6.515e-001    -0.017
+	NaX              3.834e-004  3.834e-004  3.485e-001    -0.017
+	CaX2             3.288e-012  6.575e-012  5.977e-009    -0.066
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               5.905e-004  1.178e-003
-	Cl               1.200e-003  2.393e-003
-	K                1.572e-005  3.134e-005
-	Na               3.214e-006  6.409e-006
+	Ca               6.360e-015  1.270e-014
+	Cl               1.200e-003  2.396e-003
+	K                3.190e-004  6.368e-004
+	Na               8.810e-004  1.759e-003
 
 ----------------------------Description of solution----------------------------
 
-                                       pH  =   7.079      Charge balance
-                                       pe  =  13.969      Adjusted to redox equilibrium
+                                       pH  =   7.082      Charge balance
+                                       pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 138
-                          Density (g/cm3)  =   0.99831
-                               Volume (L)  =   1.99758
+                          Density (g/cm3)  =   0.99830
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
-                           Ionic strength  =  1.791e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  =  7.401e-018
+                           Ionic strength  =  1.200e-003
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  =  6.878e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  1.648e-011
+                  Electrical balance (eq)  =  2.805e-011
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   4
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                               Iterations  =   9
+                                  Total H  = 2.216291e+002
+                                  Total O  = 1.108156e+002
 
 ----------------------------Distribution of species----------------------------
 
                                                Log       Log       Log    mole V
    Species          Molality    Activity  Molality  Activity     Gamma   cm3/mol
 
-   H+             8.713e-008  8.340e-008    -7.060    -7.079    -0.019      0.00
-   OH-            8.611e-008  8.216e-008    -7.065    -7.085    -0.020     -4.31
+   OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
+   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
-Ca           5.905e-004
-   Ca+2           5.905e-004  4.915e-004    -3.229    -3.309    -0.080    -18.16
-   CaOH+          1.025e-009  9.779e-010    -8.989    -9.010    -0.020     (0)  
+Ca           6.360e-015
+   Ca+2           6.360e-015  5.462e-015   -14.197   -14.263    -0.066    -18.19
+   CaOH+          1.137e-020  1.094e-020   -19.944   -19.961    -0.017     (0)  
 Cl           1.200e-003
-   Cl-            1.200e-003  1.145e-003    -2.921    -2.941    -0.020     17.92
+   Cl-            1.200e-003  1.154e-003    -2.921    -2.938    -0.017     17.91
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            1.572e-005
-   K+             1.572e-005  1.500e-005    -4.804    -4.824    -0.020      8.85
-Na           3.214e-006
-   Na+            3.214e-006  3.069e-006    -5.493    -5.513    -0.020     -1.74
-   NaOH           2.518e-023  2.519e-023   -22.599   -22.599     0.000     (0)  
+K            3.190e-004
+   K+             3.190e-004  3.069e-004    -3.496    -3.513    -0.017      8.84
+Na           8.810e-004
+   Na+            8.810e-004  8.479e-004    -3.055    -3.072    -0.017     -1.75
+   NaOH           7.002e-021  7.004e-021   -20.155   -20.155     0.000     (0)  
 O(0)         5.351e-004
-   O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
+   O2             2.675e-004  2.676e-004    -3.573    -3.573     0.000     29.98
 
 ------------------------------Saturation indices-------------------------------
 
@@ -1219,9 +1219,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite          -10.02     -8.45    1.57  NaCl
+  Halite           -7.58     -6.01    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite          -8.64     -7.77    0.87  KCl
+  Sylvite          -7.33     -6.45    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -1235,7 +1235,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.936 Seconds.
+End of Run after 2.263 Seconds.
 -------------------------------
 
 Time:           10
@@ -1270,62 +1270,57 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	CaX2             5.303e-004  1.061e-003  9.643e-001    -0.074
-	KX               3.284e-005  3.284e-005  2.985e-002    -0.019
-	NaX              6.468e-006  6.468e-006  5.880e-003    -0.019
+	KX               5.642e-004  5.642e-004  5.129e-001    -0.017
+	NaX              5.358e-004  5.358e-004  4.871e-001    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	Ca               3.340e-004  6.661e-004
-	Cl               1.200e-003  2.393e-003
-	K                2.638e-004  5.259e-004
-	Na               2.682e-004  5.348e-004
+	Cl               1.200e-003  2.396e-003
+	K                2.033e-004  4.058e-004
+	Na               9.967e-004  1.990e-003
 
 ----------------------------Description of solution----------------------------
 
-                                       pH  =   7.080      Charge balance
-                                       pe  =  13.968      Adjusted to redox equilibrium
-       Specific Conductance (uS/cm, 20 oC) = 140
+                                       pH  =   7.082      Charge balance
+                                       pe  =  13.967      Adjusted to redox equilibrium
+       Specific Conductance (uS/cm, 20 oC) = 135
                           Density (g/cm3)  =   0.99830
-                               Volume (L)  =   1.99760
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
-                           Ionic strength  =  1.534e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  =  2.629e-019
+                           Ionic strength  =  1.200e-003
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -3.525e-016
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  4.657e-016
+                  Electrical balance (eq)  =  2.598e-014
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =  10
-                                  Total H  = 2.213642e+002
-                                  Total O  = 1.106831e+002
+                               Iterations  =   3
+                                  Total H  = 2.216295e+002
+                                  Total O  = 1.108158e+002
 
 ----------------------------Distribution of species----------------------------
 
                                                Log       Log       Log    mole V
    Species          Molality    Activity  Molality  Activity     Gamma   cm3/mol
 
-   H+             8.664e-008  8.317e-008    -7.062    -7.080    -0.018      0.00
-   OH-            8.606e-008  8.238e-008    -7.065    -7.084    -0.019     -4.32
+   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
+   OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
-Ca           3.340e-004
-   Ca+2           3.340e-004  2.816e-004    -3.476    -3.550    -0.074    -18.17
-   CaOH+          5.867e-010  5.618e-010    -9.232    -9.250    -0.019     (0)  
 Cl           1.200e-003
-   Cl-            1.200e-003  1.149e-003    -2.921    -2.940    -0.019     17.91
+   Cl-            1.200e-003  1.154e-003    -2.921    -2.938    -0.017     17.91
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.638e-004
-   K+             2.638e-004  2.525e-004    -3.579    -3.598    -0.019      8.85
-Na           2.682e-004
-   Na+            2.682e-004  2.569e-004    -3.572    -3.590    -0.019     -1.75
-   NaOH           2.113e-021  2.114e-021   -20.675   -20.675     0.000     (0)  
+K            2.033e-004
+   K+             2.033e-004  1.956e-004    -3.692    -3.709    -0.017      8.84
+Na           9.967e-004
+   Na+            9.967e-004  9.592e-004    -3.001    -3.018    -0.017     -1.75
+   NaOH           7.922e-021  7.924e-021   -20.101   -20.101     0.000     (0)  
 O(0)         5.351e-004
-   O2             2.675e-004  2.676e-004    -3.573    -3.572     0.000     29.98
+   O2             2.675e-004  2.676e-004    -3.573    -3.573     0.000     29.98
 
 ------------------------------Saturation indices-------------------------------
 
@@ -1333,9 +1328,9 @@ O(0)         5.351e-004
 
   H2(g)           -42.14    -45.22   -3.09  H2
   H2O(g)           -1.63     -0.00    1.63  H2O
-  Halite           -8.10     -6.53    1.57  NaCl
+  Halite           -7.52     -5.96    1.57  NaCl
   O2(g)            -0.72     -3.57   -2.85  O2
-  Sylvite          -7.41     -6.54    0.87  KCl
+  Sylvite          -7.52     -6.65    0.87  KCl
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -1349,7 +1344,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.941 Seconds.
+End of Run after 2.271 Seconds.
 -------------------------------
 
 Time:           10
@@ -1384,17 +1379,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -1402,20 +1397,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -1427,8 +1422,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -1438,9 +1433,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -1466,7 +1461,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.947 Seconds.
+End of Run after 2.277 Seconds.
 -------------------------------
 
 Time:           10
@@ -1501,17 +1496,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -1519,20 +1514,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -1544,8 +1539,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -1555,9 +1550,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -1583,7 +1578,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.953 Seconds.
+End of Run after 2.285 Seconds.
 -------------------------------
 
 Time:           10
@@ -1618,17 +1613,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -1636,20 +1631,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -1661,8 +1656,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -1672,9 +1667,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -1700,7 +1695,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.958 Seconds.
+End of Run after 2.292 Seconds.
 -------------------------------
 
 Time:           10
@@ -1735,17 +1730,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -1753,20 +1748,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -1778,8 +1773,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -1789,9 +1784,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -1817,7 +1812,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.963 Seconds.
+End of Run after 2.299 Seconds.
 -------------------------------
 
 Time:           10
@@ -1852,17 +1847,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -1870,20 +1865,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -1895,8 +1890,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -1906,9 +1901,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -1934,7 +1929,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.968 Seconds.
+End of Run after 2.305 Seconds.
 -------------------------------
 
 Time:           10
@@ -1969,17 +1964,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -1987,20 +1982,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -2012,8 +2007,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -2023,9 +2018,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -2051,7 +2046,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.973 Seconds.
+End of Run after 2.312 Seconds.
 -------------------------------
 
 Time:           10
@@ -2086,17 +2081,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -2104,20 +2099,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -2129,8 +2124,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -2140,9 +2135,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -2168,7 +2163,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.978 Seconds.
+End of Run after 2.318 Seconds.
 -------------------------------
 
 Time:           10
@@ -2203,17 +2198,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -2221,20 +2216,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -2246,8 +2241,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -2257,9 +2252,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -2285,7 +2280,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.984 Seconds.
+End of Run after 2.324 Seconds.
 -------------------------------
 
 Time:           10
@@ -2320,17 +2315,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -2338,20 +2333,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -2363,8 +2358,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -2374,9 +2369,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -2401,9 +2396,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 1.989 Seconds.
--------------------------------
+------------------------------
+End of Run after 2.33 Seconds.
+------------------------------
 
 Time:           10
 Chemistry cell: 19
@@ -2437,17 +2432,17 @@ X               1.100e-003 mol
 	                               Equiv-    Equivalent      Log 
 	Species             Moles      alents      Fraction     Gamma
 
-	KX               5.588e-004  5.588e-004  5.080e-001    -0.017
-	NaX              5.412e-004  5.412e-004  4.920e-001    -0.017
-	NH4X             1.936e-064  1.936e-064  1.760e-061    -0.017
+	KX               5.551e-004  5.551e-004  5.046e-001    -0.017
+	NaX              5.449e-004  5.449e-004  4.954e-001    -0.017
+	NH4X             1.945e-064  1.945e-064  1.768e-061    -0.017
 
 -----------------------------Solution composition------------------------------
 
 	Elements           Molality       Moles
 
-	K                2.000e-004  3.988e-004
-	N                1.200e-003  2.393e-003
-	Na               1.000e-003  1.994e-003
+	K                1.978e-004  3.948e-004
+	N                1.200e-003  2.396e-003
+	Na               1.002e-003  2.001e-003
 
 ----------------------------Description of solution----------------------------
 
@@ -2455,20 +2450,20 @@ X               1.100e-003 mol
                                        pe  =  13.967      Adjusted to redox equilibrium
        Specific Conductance (uS/cm, 20 oC) = 130
                           Density (g/cm3)  =   0.99832
-                               Volume (L)  =   1.99758
+                               Volume (L)  =   2.00000
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.994e+000
-                 Total alkalinity (eq/kg)  = -1.193e-018
+                       Mass of water (kg)  =  1.996e+000
+                 Total alkalinity (eq/kg)  = -1.021e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                       Temperature (deg C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  2.735e-014
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   1
-                                  Total H  = 2.213587e+002
-                                  Total O  = 1.106876e+002
+                  Electrical balance (eq)  = -6.853e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+002
+                                  Total O  = 1.108215e+002
 
 ----------------------------Distribution of species----------------------------
 
@@ -2480,8 +2475,8 @@ X               1.100e-003 mol
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 H(0)         0.000e+000
    H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            2.000e-004
-   K+             2.000e-004  1.924e-004    -3.699    -3.716    -0.017      8.84
+K            1.978e-004
+   K+             1.978e-004  1.903e-004    -3.704    -3.721    -0.017      8.84
 N(-3)        0.000e+000
    NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
    NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
@@ -2491,9 +2486,9 @@ N(3)         1.258e-016
    NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
 N(5)         1.200e-003
    NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.000e-003
-   Na+            1.000e-003  9.624e-004    -3.000    -3.017    -0.017     -1.75
-   NaOH           7.948e-021  7.950e-021   -20.100   -20.100     0.000     (0)  
+Na           1.002e-003
+   Na+            1.002e-003  9.645e-004    -2.999    -3.016    -0.017     -1.75
+   NaOH           7.966e-021  7.968e-021   -20.099   -20.099     0.000     (0)  
 O(0)         5.351e-004
    O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
 
@@ -2519,6 +2514,6 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.994 Seconds.
+End of Run after 2.336 Seconds.
 -------------------------------
 
