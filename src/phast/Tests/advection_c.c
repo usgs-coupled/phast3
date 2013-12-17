@@ -1,6 +1,7 @@
 #include <malloc.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "RM_interface_C.h"
 
 void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
@@ -254,7 +255,29 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		use_gz = 0;
 		status = RM_DumpModule(id, dump_on, use_gz);    // second argument: gz disabled unless compiled with #define USE_GZ
 
-
+		// free space
+		free(cell_vol);
+		free(pv0);
+		free(pv);
+		free(sat);
+		free(print_chemistry_mask);
+		free(grid2chem);
+		for (i = 0; i < ncomps; i++)
+		{
+			free(components[i]);
+		}
+		free(components);
+		free(ic1);
+		free(ic2);
+		free(f1);
+		free(bc1);
+		free(bc2);
+		free(bc_f1);
+		free(bc_conc);
+		free(c);
+		free(density);
+		free(temperature);
+		free(pressure);
 	}
 	void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 	{

@@ -44,6 +44,7 @@
     double precision, dimension(:,:), allocatable :: selected_out
     integer                                       :: col
     character(100)                                :: heading
+    integer                                       :: dump_on, use_gz
 
     nxyz = 40
     nthreads = 2
@@ -56,13 +57,13 @@
     status = RM_OpenFiles(id)
   
     ! Set concentration units
-    call RM_SetUnitsSolution(id, 2)      ! 1, mg/L; 2, mol/L; 3, kg/kgs
-    call RM_SetUnitsPPassemblage(id, 1)  ! 1, mol/L; 2 mol/kg rock
-    call RM_SetUnitsExchange(id, 1)      ! 1, mol/L; 2 mol/kg rock
-    call RM_SetUnitsSurface(id, 1)       ! 1, mol/L; 2 mol/kg rock
-    call RM_SetUnitsGasPhase(id, 1)      ! 1, mol/L; 2 mol/kg rock
-    call RM_SetUnitsSSassemblage(id, 1)  ! 1, mol/L; 2 mol/kg rock
-    call RM_SetUnitsKinetics(id, 1)      ! 1, mol/L; 2 mol/kg rock  
+    status = RM_SetUnitsSolution(id, 2)      ! 1, mg/L; 2, mol/L; 3, kg/kgs
+    status = RM_SetUnitsPPassemblage(id, 1)  ! 1, mol/L; 2 mol/kg rock
+    status = RM_SetUnitsExchange(id, 1)      ! 1, mol/L; 2 mol/kg rock
+    status = RM_SetUnitsSurface(id, 1)       ! 1, mol/L; 2 mol/kg rock
+    status = RM_SetUnitsGasPhase(id, 1)      ! 1, mol/L; 2 mol/kg rock
+    status = RM_SetUnitsSSassemblage(id, 1)  ! 1, mol/L; 2 mol/kg rock
+    status = RM_SetUnitsKinetics(id, 1)      ! 1, mol/L; 2 mol/kg rock  
 
     ! Set conversion from seconds to user units
     status = RM_SetTimeConversion(id, dble(1.0 / 86400.0)) ! days
@@ -70,7 +71,7 @@
     ! Set cell volume
     allocate(cell_vol(nxyz))
     cell_vol = 1.0
-    call RM_SetCellVolume(id, cell_vol(1))
+    status = RM_SetCellVolume(id, cell_vol(1))
     
     ! Set initial pore volume
     allocate(pv0(nxyz))
@@ -90,7 +91,7 @@
     ! Set cells to print chemistry when print chemistry is turned on
     allocate(print_chemistry_mask(nxyz))
     print_chemistry_mask = 1
-    call RM_SetPrintChemistryMask(id, print_chemistry_mask(1))
+    status = RM_SetPrintChemistryMask(id, print_chemistry_mask(1))
     
     ! Set printing of chemistry file to false
     print_chemistry_on = 0
@@ -98,7 +99,7 @@
     
     ! Partitioning of uz solids
     partition_uz_solids = 0
-    call RM_SetPartitionUZSolids(id, partition_uz_solids)
+    status = RM_SetPartitionUZSolids(id, partition_uz_solids)
 
     ! For demonstation, two row, first active, second inactive
     allocate(grid2chem(nxyz))
@@ -164,7 +165,7 @@
     status = RM_SetTime(id, time)
     status = RM_SetTimeStep(id, time_step)
     status = RM_RunCells(id) 
-    call RM_GetConcentrations(id, c(1,1))
+    status = RM_GetConcentrations(id, c(1,1))
     
     ! Transient loop
     nsteps = 10
@@ -196,7 +197,7 @@
         time = time + time_step
         status = RM_SetTime(id, time) 
         status = RM_RunCells(id)  
-        call RM_GetConcentrations(id, c(1,1))
+        status = RM_GetConcentrations(id, c(1,1))
  
         ! Print results at last time step
         if (print_chemistry_on .ne. 0) then
@@ -226,7 +227,28 @@
             deallocate(selected_out)
         endif
     enddo
-    status = RM_DumpModule(1, 0)    ! second argument: gz disabled unless compiled with #define USE_GZ
+    dump_on = 1
+    use_gz = 0
+    status = RM_DumpModule(dump_on, use_gz)    ! second argument: gz disabled unless compiled with #define USE_GZ
+    
+    deallocate(cell_vol);
+    deallocate(pv0);
+    deallocate(pv);
+    deallocate(sat);
+    deallocate(print_chemistry_mask);
+    deallocate(grid2chem);
+    deallocate(components);
+    deallocate(ic1);
+    deallocate(ic2);
+    deallocate(f1);
+    deallocate(bc1);
+    deallocate(bc2);
+    deallocate(bc_f1);
+    deallocate(bc_conc);
+    deallocate(c);
+    deallocate(density);
+    deallocate(temperature);
+    deallocate(pressure);
     return 
     end subroutine advection_f90
 

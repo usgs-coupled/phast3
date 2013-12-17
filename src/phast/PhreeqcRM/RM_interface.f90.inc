@@ -54,11 +54,11 @@
             CHARACTER, INTENT(out) :: comp_name
         END FUNCTION RM_GetComponent 
 
-        SUBROUTINE RM_GetConcentrations(id, c)   
+        INTEGER FUNCTION RM_GetConcentrations(id, c)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: c
-        END SUBROUTINE RM_GetConcentrations 
+        END FUNCTION RM_GetConcentrations 
 
         INTEGER FUNCTION RM_GetDensity(id, d)   
             IMPLICIT NONE
@@ -195,11 +195,11 @@
             CHARACTER :: str
         END SUBROUTINE RM_ScreenMessage   
  		     
-        SUBROUTINE RM_SetCellVolume(id, t)   
+        INTEGER FUNCTION RM_SetCellVolume(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetCellVolume
+        END FUNCTION RM_SetCellVolume
  		     
         INTEGER FUNCTION RM_SetConcentrations(id, t)   
             IMPLICIT NONE
@@ -207,11 +207,11 @@
             DOUBLE PRECISION, OPTIONAL :: t
         END FUNCTION RM_SetConcentrations
 
-        SUBROUTINE RM_SetDensity(id, t)
+        INTEGER FUNCTION RM_SetDensity(id, t)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             DOUBLE PRECISION, OPTIONAL, INTENT(in) :: t
-        END SUBROUTINE RM_SetDensity  
+        END FUNCTION RM_SetDensity  
         
         INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
             IMPLICIT NONE
@@ -219,11 +219,11 @@
             CHARACTER, OPTIONAL, INTENT(in) :: prefix
         END FUNCTION RM_SetFilePrefix  
 				
-        SUBROUTINE RM_SetPartitionUZSolids(id, t)   
+        INTEGER FUNCTION RM_SetPartitionUZSolids(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: t
-        END SUBROUTINE RM_SetPartitionUZSolids 
+        END FUNCTION RM_SetPartitionUZSolids 
 
         INTEGER FUNCTION RM_SetPoreVolume(id, t)   
             IMPLICIT NONE
@@ -249,11 +249,11 @@
             INTEGER, OPTIONAL :: print_chem
         END FUNCTION RM_SetPrintChemistryOn 
 
-        SUBROUTINE RM_SetPrintChemistryMask(id, t)   
+        INTEGER FUNCTION RM_SetPrintChemistryMask(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: t
-        END SUBROUTINE RM_SetPrintChemistryMask 
+        END FUNCTION RM_SetPrintChemistryMask 
         
         INTEGER FUNCTION RM_SetRebalanceByCell(id, method)
             IMPLICIT NONE
@@ -309,46 +309,46 @@
             DOUBLE PRECISION, OPTIONAL :: t
         END FUNCTION RM_SetTimeStep 
 
-        SUBROUTINE RM_SetUnitsExchange(id, u)   
+        INTEGER FUNCTION RM_SetUnitsExchange(id, u)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: u
-        END SUBROUTINE RM_SetUnitsExchange 
+        END FUNCTION RM_SetUnitsExchange 
 
-        SUBROUTINE RM_SetUnitsGasPhase(id, u)   
+        INTEGER FUNCTION RM_SetUnitsGasPhase(id, u)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: u
-        END SUBROUTINE RM_SetUnitsGasPhase 
+        END FUNCTION RM_SetUnitsGasPhase 
 
-        SUBROUTINE RM_SetUnitsKinetics(id, u)   
+        INTEGER FUNCTION RM_SetUnitsKinetics(id, u)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: u
-        END SUBROUTINE RM_SetUnitsKinetics 
+        END FUNCTION RM_SetUnitsKinetics 
 
-        SUBROUTINE RM_SetUnitsPPassemblage(id, u)   
+        INTEGER FUNCTION RM_SetUnitsPPassemblage(id, u)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: u
-        END SUBROUTINE RM_SetUnitsPPassemblage
+        END FUNCTION RM_SetUnitsPPassemblage
 
-        SUBROUTINE RM_SetUnitsSolution(id, u)   
+        INTEGER FUNCTION RM_SetUnitsSolution(id, u)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: u
-        END SUBROUTINE RM_SetUnitsSolution  
+        END FUNCTION RM_SetUnitsSolution  
 
-        SUBROUTINE RM_SetUnitsSSassemblage(id, u)   
+        INTEGER FUNCTION RM_SetUnitsSSassemblage(id, u)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: u
-        END SUBROUTINE RM_SetUnitsSSassemblage  
+        END FUNCTION RM_SetUnitsSSassemblage  
 
-        SUBROUTINE RM_SetUnitsSurface(id, u)   
+        INTEGER FUNCTION RM_SetUnitsSurface(id, u)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: u
-        END SUBROUTINE RM_SetUnitsSurface  
+        END FUNCTION RM_SetUnitsSurface  
 		 
     END INTERFACE

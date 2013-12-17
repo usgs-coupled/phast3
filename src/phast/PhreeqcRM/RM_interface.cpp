@@ -139,7 +139,7 @@ RM_ErrorMessage(const char *err_str, size_t l)
 {
 	if (err_str)
 	{
-		if (l >= 0)
+		if (l > 0)
 		{
 			std::string e_string(err_str, l);
 			trim_right(e_string);
@@ -479,7 +479,7 @@ RM_LogMessage(const char *err_str, size_t l)
 {
 	if (err_str)
 	{
-		if (l >= 0)
+		if (l > 0)
 		{
 			std::string e_string(err_str, l);
 			trim_right(e_string);
@@ -518,7 +518,7 @@ RM_LogScreenMessage(const char *err_str, size_t l)
 // writes to log file and screen
 	if (err_str)
 	{
-		if (l >= 0)
+		if (l > 0)
 		{
 			std::string e_string(err_str, l);
 			trim_right(e_string);
@@ -1007,7 +1007,7 @@ RM_WarningMessage(const char *err_str, size_t l)
 {
 	if (err_str)
 	{
-		if (l >= 0)
+		if (l > 0)
 		{
 			std::string e_string(err_str, l);
 			trim_right(e_string);

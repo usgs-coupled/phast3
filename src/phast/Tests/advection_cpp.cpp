@@ -207,8 +207,10 @@ int advection_cpp()
 				}
 			}
 		}
-	}              
-	phreeqc_rm.DumpModule(true, false);    // gz disabled unless compiled with #define USE_GZ
+	}
+	bool dump_on = true;
+	bool use_gz = false; 
+	phreeqc_rm.DumpModule(dump_on, use_gz);    // gz disabled unless compiled with #define USE_GZ
 	return EXIT_SUCCESS;
 }
 void
