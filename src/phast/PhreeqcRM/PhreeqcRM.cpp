@@ -1599,7 +1599,7 @@ PhreeqcRM::Char2TrimString(const char * str, size_t l)
 	{
 		if (l > 0)
 		{
-			std::string tstr(str, l);
+			std::string tstr(str, (int) l);
 			stdstr = tstr;
 		}
 		else

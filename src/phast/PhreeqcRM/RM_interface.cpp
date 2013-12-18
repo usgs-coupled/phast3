@@ -196,7 +196,7 @@ IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1)
 	{
 		if (chem_name != NULL)
 		{
-			if (l1 >= 0)
+			if (l1 > 0)
 			{
 				strncpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), l1);
 			}
@@ -347,7 +347,7 @@ IRM_RESULT RM_GetSelectedOutputHeading(int * id, int *icol, char *heading, size_
 	{
 		std::string head;
 		IRM_RESULT rtn = Reaction_module_ptr->GetSelectedOutputHeading(icol, head);
-		if (rtn >= 0)
+		if (rtn > 0)
 		{
 			strncpy(heading, head.c_str(), length);
 		}
@@ -520,7 +520,7 @@ RM_LogScreenMessage(const char *err_str, size_t l)
 	{
 		if (l > 0)
 		{
-			std::string e_string(err_str, l);
+			std::string e_string(err_str, (int) l);
 			trim_right(e_string);
 			RM_LogMessage(e_string.c_str());
 			RM_ScreenMessage(e_string.c_str());
@@ -627,9 +627,9 @@ RM_ScreenMessage(const char *err_str, size_t l)
 {
 	if (err_str)
 	{
-		if (l >= 0)
+		if (l > 0)
 		{
-			std::string e_string(err_str, l);
+			std::string e_string(err_str, (int) l);
 			trim_right(e_string);
 			PhreeqcRM::GetRmIo().screen_msg(e_string.c_str());
 			PhreeqcRM::GetRmIo().screen_msg("\n");

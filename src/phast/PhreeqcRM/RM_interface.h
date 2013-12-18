@@ -308,7 +308,7 @@ int        RM_GetChemistryCellCount(int *id);
  */
 IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1);
 IRM_RESULT RM_GetDensity(int *id, double *density);
-IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, long l);
+IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, size_t l);
 /**
  *  Returns the number of grid cells in the user's model.
  *  @param id            The instance id returned from @ref RM_Create.
