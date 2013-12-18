@@ -106,20 +106,20 @@ SUBROUTINE phast_worker
         ! ... Initialize chemistry 
 
         !CALL RM_SetUnits (rm_id)
-        CALL RM_SetUnitsSolution(rm_id)
-        CALL RM_SetUnitsExchange(rm_id)
-        CALL RM_SetUnitsGasPhase(rm_id)
-        CALL RM_SetUnitsKinetics(rm_id)
-        CALL RM_SetUnitsPPassemblage(rm_id)
-        CALL RM_SetUnitsSSassemblage(rm_id)
-        CALL RM_SetUnitsSurface(rm_id)
+        status = RM_SetUnitsSolution(rm_id)
+        status = RM_SetUnitsExchange(rm_id)
+        status = RM_SetUnitsGasPhase(rm_id)
+        status = RM_SetUnitsKinetics(rm_id)
+        status = RM_SetUnitsPPassemblage(rm_id)
+        status = RM_SetUnitsSSassemblage(rm_id)
+        status = RM_SetUnitsSurface(rm_id)
         
         status = RM_SetTimeConversion(rm_id)
         status = RM_SetPoreVolumeZero(rm_id)
         status = RM_SetSaturation(rm_id)
-        CALL RM_SetPrintChemistryMask(rm_id)
-        CALL RM_SetPartitionUZSolids(rm_id)
-        CALL RM_SetCellVolume(rm_id)
+        status = RM_SetPrintChemistryMask(rm_id)
+        status = RM_SetPartitionUZSolids(rm_id)
+        status = RM_SetCellVolume(rm_id)
         !CALL RM_SetRebalance(rm_id)
         status = RM_SetRebalanceFraction(rm_id)
         status = RM_SetRebalanceByCell(rm_id)
@@ -136,7 +136,7 @@ SUBROUTINE phast_worker
         CALL FH_ProcessRestartFiles(rm_id)
         
         ! ... collect solutions for transport
-        CALL RM_GetConcentrations(rm_id)
+        status = RM_GetConcentrations(rm_id)
 !        
 !end  of InitializeRM
 !

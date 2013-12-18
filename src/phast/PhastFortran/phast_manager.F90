@@ -487,27 +487,25 @@ SUBROUTINE InitializeRM
     IF(solute) THEN
 
         ! ... Send data to threads or workers
-        !CALL RM_SetUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
-        CALL RM_SetUnitsSolution(rm_id, 3)
-        CALL RM_SetUnitsExchange(rm_id, exchange_units)
-        CALL RM_SetUnitsGasPhase(rm_id, gasphase_units)
-        CALL RM_SetUnitsKinetics(rm_id, kinetics_units)
-        CALL RM_SetUnitsPPassemblage(rm_id, ppassemblage_units)
-        CALL RM_SetUnitsSSassemblage(rm_id, ssassemblage_units)
-        CALL RM_SetUnitsSurface(rm_id, surface_units)      
+        status = RM_SetUnitsSolution(rm_id, 3)
+        status = RM_SetUnitsExchange(rm_id, exchange_units)
+        status = RM_SetUnitsGasPhase(rm_id, gasphase_units)
+        status = RM_SetUnitsKinetics(rm_id, kinetics_units)
+        status = RM_SetUnitsPPassemblage(rm_id, ppassemblage_units)
+        status = RM_SetUnitsSSassemblage(rm_id, ssassemblage_units)
+        status = RM_SetUnitsSurface(rm_id, surface_units)      
         
         status = RM_SetTimeConversion(rm_id, cnvtmi)
         status = RM_SetPoreVolumeZero(rm_id, pv0(1))
         status = RM_SetSaturation(rm_id, frac(1))
-        CALL RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
+        status = RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
         if (fresur .and. .not. steady_flow) then
             ipartition_uz_solids = 1
         else
             ipartition_uz_solids = 0
         endif
-        CALL RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
-        CALL RM_SetCellVolume(rm_id, volume(1))
-        !CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
+        status = RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
+        status = RM_SetCellVolume(rm_id, volume(1))
         status = RM_SetRebalanceFraction(rm_id, rebalance_fraction_f)
         status = RM_SetRebalanceByCell(rm_id, rebalance_method_f)
 
@@ -545,7 +543,7 @@ SUBROUTINE InitializeRM
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
         ! collect solutions at manager for transport
-        CALL RM_GetConcentrations(rm_id, c(1,1))   
+        status = RM_GetConcentrations(rm_id, c(1,1))   
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
             STAT = a_err)

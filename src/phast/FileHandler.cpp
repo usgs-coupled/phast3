@@ -174,7 +174,7 @@ FileHandler::ProcessRestartFiles(
 				rtn = IRM_FAIL;
 				std::ostringstream errstr;
 				errstr << "File could not be opened: " << it->first.c_str();
-				RM_ErrorMessage(errstr.str().c_str());
+				RM_ErrorMessage(errstr.str().c_str(), 0);
 				continue;
 			}
 			// read file
