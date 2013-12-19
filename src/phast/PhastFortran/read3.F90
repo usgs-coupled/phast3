@@ -20,6 +20,7 @@ SUBROUTINE read3
   USE print_control_mod
   USE rewi_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifrd.inc'
   INTERFACE
      FUNCTION uppercase(string) RESULT(outstring)
@@ -34,6 +35,7 @@ SUBROUTINE read3
        uisolbc1, uisolbc2
   INTEGER, SAVE :: ntd=0
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: read3.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !-----------------------------------------------------------------------
@@ -46,7 +48,7 @@ SUBROUTINE read3
   IF(thru) RETURN
   ntd = ntd+1
   WRITE(logline1,'(a,i2)') 'Reading transient data for simulation: Set ',ntd
-    CALL RM_LogMessage(logline1)
+    status = RM_LogMessage(rm_id, logline1)
   prtbc=.FALSE.
   prtslm=.FALSE.
   prtwel=.FALSE.

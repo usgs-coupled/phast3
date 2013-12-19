@@ -16,10 +16,12 @@ SUBROUTINE error4
   USE mcw_m
   USE mg2_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX
   CHARACTER(LEN=9) :: cibc
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   REAL(KIND=kdp) :: cnv
   INTEGER :: a_err, da_err, i, ic, ipmz, iwel, j, k, ks, m, m1, mks, mt
   LOGICAL :: allout
@@ -48,7 +50,7 @@ SUBROUTINE error4
 !!              ierr(148) = .true.       !   warning not fatal error
               WRITE(logline1,'(a)') 'Multiple free surfaces in column of cells;'//  &
                    ' Check initial condition on head field.'
-                    CALL RM_WarningMessage(logline1)
+                    status = RM_WarningMessage(rm_id, logline1)
               EXIT chk_fs
            END IF
         END DO
@@ -83,7 +85,7 @@ SUBROUTINE error4
         WRITE(logline1,9001) '** Active Cell Not In Defined Zone;'//  &
              ' Cell I,J,K:M -',i,j,k,m
 9001    FORMAT(a,4I5)
-        CALL RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
      END IF
   END DO
   DEALLOCATE (inzone, &

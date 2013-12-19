@@ -13,12 +13,14 @@ SUBROUTINE wbbal
   USE mcw
   USE mcw_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INTRINSIC int  
   REAL(KIND=kdp) :: uqhw, uqwm, uqwmi
   INTEGER :: a_err, da_err, iis, iwel, iwfss, ks, m, mkt, nks, nsa
   LOGICAL :: erflg, florev
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  uqsw
   CHARACTER(LEN=130) :: logline1, logline2
+  integer :: status
   ! ... Set string for use with rcs ident command
   CHARACTER(LEN=80) :: ident_string='$id: wbbal.f90,v 1.2 2009/08/10 23:41:00 klkipp exp $'
   !     ------------------------------------------------------------------
@@ -99,8 +101,8 @@ SUBROUTINE wbbal
 9012          FORMAT(a,i4,a,i2,a,i2,a,i4)
               WRITE(logline2,9022) ' Flow Rate =', uqwm
 9022          FORMAT(a,1pg10.2)
-                CALL RM_WarningMessage(logline1)
-                CALL RM_WarningMessage(logline2)
+                status = RM_WarningMessage(rm_id, logline1)
+                status = RM_WarningMessage(rm_id, logline2)
               WRITE(fuwel,9002) 'Production Well No. ', iwel, &
                    ' has down bore flow from level ', ks + 1, ' to ', ks, &
                    '; time plane n =', itime-1, ' Flow Rate =', uqwm
@@ -148,8 +150,8 @@ SUBROUTINE wbbal
                    ' has up bore flow from level ', ks + 1, ' to ', ks, &
                    '; time plane n =', itime-1
               WRITE(logline2,9022) ' Flow Rate =', uqwm
-                CALL RM_WarningMessage(logline1)
-                CALL RM_WarningMessage(logline2)
+                status = RM_WarningMessage(rm_id, logline1)
+                status = RM_WarningMessage(rm_id, logline2)
               WRITE(fuwel, 9002) 'Injection Well No. ', iwel,  &
                    ' has up bore flow from level ', ks - 1, ' to ', ks,  &
                    '; time plane n =', itime,' Flow Rate =',uqwm
@@ -162,8 +164,8 @@ SUBROUTINE wbbal
                 ' has >1% residual flow through well bottom',  &
                    '; time plane n =', itime-1
               WRITE(logline2,9022) ' Flow Rate =',uqwm
-                CALL RM_ErrorMessage(logline1)
-                CALL RM_ErrorMessage(logline2)
+                status = RM_ErrorMessage(rm_id, logline1)
+                status = RM_ErrorMessage(rm_id, logline2)
            WRITE(fuwel, 9002) 'Injection Well No. ', iwel, ' has >1% residual'//  &
                 'flow through well bottom', '; time plane n =', itime-1,  &
                 ' Flow Rate =', uqwm
@@ -171,7 +173,7 @@ SUBROUTINE wbbal
      ENDIF
      IF(florev) THEN
         logline1 =  'Well solute concentrations may be poor approximations (wbbal)'
-        CALL RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
         WRITE(fuwel,9003) 'Well solute concentrations may be poor approximations (wbbal)'
 9003    FORMAT(tr10,a)  
         ierr(142) = .TRUE.

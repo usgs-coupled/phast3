@@ -9,23 +9,7 @@ extern "C" {
 #endif
 
 void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
-/**
- *  Closes the output file and log file. 
- *  @see                 @ref RM_OpenFiles
- *  MPI:
- *       Has effect only for root process.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      SUBROUTINE RM_CloseFiles()
- *          IMPLICIT NONE
- *      END SUBROUTINE RM_CloseFiles
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-void       RM_CloseFiles(void);
+int        RM_CloseFiles(int id);
 void       RM_convert_to_molal(int id, double *c, int n, int dim);
 /**
  *  Creates a reaction module. 
@@ -119,45 +103,8 @@ int RM_Destroy(int id);
  *  @endhtmlonly
  */
 int RM_DumpModule(int id, int dump_on, int use_gz);
-/**
- *  Aborts reaction all modules and stops program execution. 
- *  @param id                   The instance id returned from @ref RM_Create (optional).
- *  @see                 @ref RM_ErrorMessage
- *  @par Fortran90 Interface:
- *  MPI:
- *       Aborts program when called from any process.
- *  @htmlonly
- *  <CODE>
- *  <PRE>    
- *      SUBROUTINE RM_Error(id)
- *          IMPLICIT NONE
- *          INTEGER, OPTIONAL, INTENT(in) :: id
- *      END SUBROUTINE RM_Error
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-void       RM_Error(const char * err_str);
-/**
- *  Send an error message to the screen, output file, and log file. 
- *  @param str           String to be sent.
- *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_Error, RM_LogMessage, RM_LogScreenMessage, RM_ScreenMessage, RM_WarningMessage. 
- *  MPI:
- *       Can be called from any process.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>        
- *      SUBROUTINE RM_ErrorMessage(errstr)
- *          IMPLICIT NONE
- *          CHARACTER(*), INTENT(in) :: errstr
- *      END SUBROUTINE RM_ErrorMessage
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-void       RM_ErrorMessage(const char *err_str);
+int       RM_Error(const char * err_str);
+int       RM_ErrorMessage(int id, const char *err_str);
 /**
  *  Returns the number of items in the list of elements included in solutions and reactants in the IPhreeqcPhast workers.
  *  @param id            The instance id returned from @ref RM_Create.
@@ -362,44 +309,7 @@ int RM_InitialPhreeqc2Module(int id,
  *  @endhtmlonly
  */
 int        RM_LoadDatabase(int id, const char *db_name);
-/**
- *  Send a message to the log file. 
- *  @param str           String to be sent.
- *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogScreenMessage, RM_ScreenMessage, RM_WarningMessage. 
- *  MPI:
- *     Can be called by any process.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>
- *      SUBROUTINE RM_LogMessage(str) 
- *          IMPLICIT NONE
- *          CHARACTER :: str
- *      END SUBROUTINE RM_LogMessage  
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-void       RM_LogMessage(const char *str);
-/**
- *  Send a message to the screen and the log file. 
- *  @param str           String to be sent.
- *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogMessage, RM_ScreenMessage, RM_WarningMessage. 
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>
- *      SUBROUTINE RM_LogMessage(str) 
- *          IMPLICIT NONE
- *          CHARACTER :: str
- *      END SUBROUTINE RM_LogMessage  
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-void       RM_LogScreenMessage(const char *str);
+int        RM_LogMessage(int id, const char *str);
 /**
  *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
  *  @param id                   The instance id returned from @ref RM_Create.
@@ -443,6 +353,7 @@ int       RM_GetConcentrations(int id, double *c);
  *  @endhtmlonly
  */
 int RM_OpenFiles(int id);
+int RM_OutputMessage(int id, const char *str);
 /**
  *  Transfer array of concentrations to the reaction module workers. 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -513,24 +424,7 @@ int        RM_RunFile(int id, int initial_phreeqc, int workers, int utility, con
  *  @endhtmlonly
  */
 int RM_RunString(int id, int initial_phreeqc, int workers, int utility, const char * input_string);
-/**
- *  Send a message to the screen. 
- *  @param str           String to be sent to the screen.
- *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogMessage, RM_LogScreenMessage, RM_WarningMessage. 
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>
- *      SUBROUTINE RM_ScreenMessage(str) 
- *          IMPLICIT NONE
- *          CHARACTER :: str
- *      END SUBROUTINE RM_ScreenMessage     
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-void RM_ScreenMessage(const char *str);
+int RM_ScreenMessage(int id, const char *str);
 int RM_SetCellVolume(int id, double *t);
 int RM_SetConcentrations(int id, double *t);
 int RM_SetCurrentSelectedOutputUserNumber(int id, int i);
@@ -578,7 +472,7 @@ int RM_SetUnitsSurface(int id, int i);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_WarningMessage(const char *warn_str);
+int        RM_WarningMessage(int id, const char *warn_str);
 void       RM_write_bc_raw(int id, 
                 int *solution_list, 
                 int bc_solution_count, 

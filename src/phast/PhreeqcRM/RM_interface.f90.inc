@@ -1,7 +1,8 @@
     INTERFACE
-        SUBROUTINE RM_CloseFiles()
+        INTEGER FUNCTION RM_CloseFiles(id)
             IMPLICIT NONE
-        END SUBROUTINE RM_CloseFiles
+            INTEGER :: id
+        END FUNCTION RM_CloseFiles
         
         SUBROUTINE RM_convert_to_molal(id, c, n, dim)
             IMPLICIT NONE
@@ -33,15 +34,17 @@
             INTEGER, OPTIONAL, INTENT(in) :: dump_on, use_gz
         END FUNCTION RM_DumpModule
         
-        SUBROUTINE RM_Error(str)
+        INTEGER FUNCTION RM_Error(id, str)
             IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
             CHARACTER, OPTIONAL, INTENT(in) :: str
-        END SUBROUTINE RM_Error
+        END FUNCTION RM_Error
         
-        SUBROUTINE RM_ErrorMessage(errstr)
+        INTEGER FUNCTION RM_ErrorMessage(id, errstr)
             IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
             CHARACTER(*), INTENT(in) :: errstr
-        END SUBROUTINE RM_ErrorMessage
+        END FUNCTION RM_ErrorMessage
         
         INTEGER FUNCTION RM_FindComponents(id) 
             IMPLICIT NONE
@@ -156,15 +159,17 @@
             CHARACTER, OPTIONAL, INTENT(in) :: db
         END FUNCTION RM_LoadDatabase 
         
-        SUBROUTINE RM_LogMessage(str) 
+        INTEGER FUNCTION RM_LogMessage(id, str) 
             IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
             CHARACTER :: str
-        END SUBROUTINE RM_LogMessage
+        END FUNCTION RM_LogMessage
         
-        SUBROUTINE RM_LogScreenMessage(str) 
-            IMPLICIT NONE
-            CHARACTER :: str
-        END SUBROUTINE RM_LogScreenMessage 
+        !INTEGER FUNCTION RM_LogScreenMessage(id, str) 
+        !    IMPLICIT NONE
+        !    INTEGER, INTENT(in) :: id
+        !    CHARACTER :: str
+        !END FUNCTION RM_LogScreenMessage 
         
         INTEGER FUNCTION RM_OpenFiles(id) 
             IMPLICIT NONE
@@ -190,10 +195,11 @@
             CHARACTER, OPTIONAL, INTENT(in) :: input_string
         END FUNCTION RM_RunString   
         
-        SUBROUTINE RM_ScreenMessage(str) 
+        INTEGER FUNCTION RM_ScreenMessage(id, str) 
             IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
             CHARACTER :: str
-        END SUBROUTINE RM_ScreenMessage   
+        END FUNCTION RM_ScreenMessage   
  		     
         INTEGER FUNCTION RM_SetCellVolume(id, t)   
             IMPLICIT NONE
@@ -350,5 +356,11 @@
             INTEGER :: id
             INTEGER, OPTIONAL :: u
         END FUNCTION RM_SetUnitsSurface  
+        
+        INTEGER FUNCTION RM_WarningMessage(id, str) 
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER :: str
+        END FUNCTION RM_WarningMessage
 		 
     END INTERFACE

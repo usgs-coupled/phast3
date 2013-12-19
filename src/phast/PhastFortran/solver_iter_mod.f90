@@ -3,6 +3,7 @@ MODULE solver_iter_mod
   IMPLICIT NONE
   PRIVATE; PUBLIC :: gcgris
   PUBLIC :: gcgris_thread
+    INCLUDE "RM_interface.f90.inc"
 !$$  PRIVATE :: abmult, armult, dbmult, formr, rfact, rfactm, lsolv, usolv,  &
 !$$       vpsv
 !$$  PRIVATE :: ident_string
@@ -17,7 +18,7 @@ CONTAINS
     ! ... Reduced system by red-black or d4 zig-zag reordering
 
     USE f_units, ONLY: fuclog
-    USE mcc,     only: milu, ierr, errexe
+    USE mcc,     only: milu, ierr, errexe, rm_id
     USE mcc_m,   only: prslm
     USE mcg,     only: nxyz
     USE mcm,     ONLY:
@@ -25,6 +26,7 @@ CONTAINS
     USE print_control_mod
     USE XP_module, ONLY: Transporter
     IMPLICIT NONE
+    INCLUDE "RM_interface.f90.inc"
     TYPE (Transporter) :: xp
     REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: ap
     REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: bp
@@ -45,6 +47,7 @@ CONTAINS
     CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_r, rhs_b
     REAL(KIND=kdp), DIMENSION(:), TARGET, INTENT(IN OUT) :: rhs
+    integer :: status
 
     !REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, TARGET :: red, black
     !ALLOCATE(red(1:nrn), black(1:nxyz - nrnp1 + 1))
@@ -160,7 +163,7 @@ CONTAINS
     WRITE(logline1,9001) 'Restarted Conjugate-Gradient Solver Reached Maximum Iterations: ',maxit2
 9001 FORMAT(A,i5)
 !!$  WRITE(fulp,'(/tr10,A)') logline1
-    CALL RM_ErrorMessage(logline1)
+    status = RM_ErrorMessage(rm_id, logline1)
     ierr(139) = .TRUE.
     errexe = .TRUE.
     ! ... Convergence achieved
@@ -169,11 +172,11 @@ CONTAINS
 !!$     WRITE(*,9002) 'No. of solver iterations, Relative residual: ',icount,rat
        WRITE(logline1,9002) '          No. of solver iterations, Relative residual: ',icount,rat
 9002   FORMAT(a,i4,tr4,1pe15.7)
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
     ENDIF
     IF(icount < 2) THEN
        logline1 = '  Number of iterations is too few (<2); check convergence tolerance'
-        CALL RM_WarningMessage(logline1)
+        status = RM_WarningMessage(rm_id, logline1)
     ENDIF
     ! ... Backsolve for the red solution from the black half
     CALL abmult_thread(w,xx_b,xp)
@@ -317,7 +320,7 @@ CONTAINS
     USE mcm
     USE mcs
     USE f_units, ONLY: fuclog
-    USE mcc, only: milu, ierr, errexe
+    USE mcc, only: milu, ierr, errexe, rm_id
     USE mcc_m, only: prslm
     USE mcg, only: nxyz
     USE print_control_mod
@@ -337,6 +340,7 @@ CONTAINS
     REAL(KIND=kdp), DIMENSION(:), POINTER :: xx_b
     REAL(KIND=kdp), DIMENSION(:), POINTER :: apv, bpv, bpvlp, bpvj
     CHARACTER(LEN=130) :: logline1
+    integer :: status
     ! ... Set string for use with RCS ident command
     CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
@@ -451,7 +455,7 @@ CONTAINS
     WRITE(logline1,9001) 'Restarted Conjugate-Gradient Solver Reached Maximum Iterations: ',maxit2
 9001 FORMAT(A,i5)
 !!$  WRITE(fulp,'(/tr10,A)') logline1
-    CALL RM_ErrorMessage(logline1)
+    status = RM_ErrorMessage(rm_id, logline1)
     ierr(139) = .TRUE.
     errexe = .TRUE.
     ! ... Convergence achieved
@@ -460,11 +464,11 @@ CONTAINS
 !!$     WRITE(*,9002) 'No. of solver iterations, Relative residual: ',icount,rat
        WRITE(logline1,9002) '          No. of solver iterations, Relative residual: ',icount,rat
 9002   FORMAT(a,i4,tr4,1pe15.7)
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
     ENDIF
     IF(icount < 2) THEN
        logline1 = '  Number of iterations is too few (<2); check convergence tolerance'
-        CALL RM_WarningMessage(logline1)
+        status = RM_WarningMessage(rm_id, logline1)
     ENDIF
     ! ... Backsolve for the red solution from the black half
     CALL abmult(w,xx_b)

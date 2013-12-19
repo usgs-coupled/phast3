@@ -18,6 +18,7 @@ SUBROUTINE sumcal_ss_flow
   USE mcw_m
   USE mg2_m, ONLY: hdprnt, wt_elev
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   CHARACTER(LEN=9) :: cibc
   REAL(KIND=kdp) :: denmfs, frac_flowresid, p1, pmfs, qfbc,  &
        qlim, qm_net, qn, qnp, u0, u1, u2, u6, uc,  &
@@ -27,6 +28,7 @@ SUBROUTINE sumcal_ss_flow
        l, l1, lc, ls, m, m0, m1, m1kp, mfs, mpmax, mt
   LOGICAL :: ierrw
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: sumcal_ss_flow.f90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
@@ -66,12 +68,12 @@ SUBROUTINE sumcal_ss_flow
         END IF
         WRITE(logline1,2001) '     Current time step length '//dots, cnvtmi*deltim,' ('//unittm//')'
 2001    FORMAT(a60,1PG12.3,A)
-        CALL RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
         WRITE(logline1,3001) 'Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,' ('//unitl//')',' at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',unitl//')'
 3001    FORMAT(A45,1PE14.4,A8,A,3(1PG10.3,A),A)
-        CALL RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
         DEALLOCATE (zfsn, &
              STAT = da_err)
         IF (da_err /= 0) THEN  
@@ -430,22 +432,22 @@ SUBROUTINE sumcal_ss_flow
            CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
            WRITE(logline1,'(a)') &
                 'WARNING: Free surface has moved more than one layer of cells in sumcal_ss_flow'
-           CALL RM_ScreenMessage(logline1)
-           CALL RM_LogMessage(logline1)
+           status = RM_ScreenMessage(rm_id, logline1)
+           status = RM_LogMessage(rm_id, logline1)
            WRITE(logline1,'(tr5,a,i6,a,i5,a,i5)')   &
                 'Cell column:', mt,' (i,j):', icol, ',', jcol
-           CALL RM_ScreenMessage(logline1)
-           CALL RM_LogMessage(logline1)                      
+           status = RM_ScreenMessage(rm_id, logline1)
+           status = RM_LogMessage(rm_id, logline1)                      
         END IF
         IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
            CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
            WRITE(logline1,'(a)') 'WARNING: A column of cells has gone dry in sumcal_ss_flow'
-           CALL RM_ScreenMessage(logline1)
-           CALL RM_LogMessage(logline1)
+           status = RM_ScreenMessage(rm_id, logline1)
+           status = RM_LogMessage(rm_id, logline1)
            WRITE(logline1,'(tr5,a,i6,a,i5,a,i5)')   &
                 'Cell column:', mt,' (i,j):', icol, ',', jcol
-           CALL RM_ScreenMessage(logline1)
-           CALL RM_LogMessage(logline1)           
+           status = RM_ScreenMessage(rm_id, logline1)
+           status = RM_LogMessage(rm_id, logline1)           
            print_dry_col(mt) = .TRUE.
         END IF
      END DO
@@ -767,10 +769,10 @@ SUBROUTINE sumcal_ss_flow
        cnvpi*dhmax,' ('//TRIM(unitl)//')',' at location (',  &
        cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl)//')'
   WRITE(logline2,3001) '     Fractional flow residual '//dots,frac_flowresid
-    CALL RM_LogMessage(logline1)
-    CALL RM_LogMessage(logline2)
-    CALL RM_ScreenMessage(logline1)
-    CALL RM_ScreenMessage(logline2)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_ScreenMessage(rm_id, logline1)
+    status = RM_ScreenMessage(rm_id, logline2)
   IF((ABS(dpmax) <= eps_p) .AND. ABS(frac_flowresid) <= eps_flow) converge_ss = .TRUE.
   ! ... Convert step total flow rates to step total amounts
   stotfi=stotfi*deltim

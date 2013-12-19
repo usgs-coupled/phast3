@@ -312,9 +312,11 @@ SUBROUTINE read2_xfer_w
   USE mg2_m
   USE mpi_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INTEGER :: a_err
   INTEGER :: nr
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   INTEGER, DIMENSION(1:4) :: array_recv_i
   REAL(KIND=kdp), DIMENSION(1:10) :: array_recv_r
   ! ... set string for use with rcs ident command
@@ -323,7 +325,7 @@ SUBROUTINE read2_xfer_w
   !...
   nr = nx
   WRITE(logline1,'(a)') 'Receiving static data for flow and transport simulation'
-  CALL RM_LogMessage(logline1)
+  status = RM_LogMessage(rm_id, logline1)
 
   ! *** 0 broadcast npmz
   ! ... receive broadcast of b.c. integer counts

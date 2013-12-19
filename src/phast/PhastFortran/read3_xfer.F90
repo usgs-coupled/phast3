@@ -88,12 +88,14 @@ SUBROUTINE read3_xfer_w
   USE print_control_mod
   USE rewi_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INTEGER :: a_err, ic, icall, isegbc, iis, iwel, uwelseqno, uisolw,  &
        uisolbc1, uisolbc2
   INTEGER, SAVE :: ntd=0
   INTEGER, DIMENSION(2) :: array_recv_i
   REAL(KIND=kdp), DIMENSION(2) :: array_recv_r
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   !-----------------------------------------------------------------------
   !...
   ! ... Component number is iis_no
@@ -110,7 +112,7 @@ SUBROUTINE read3_xfer_w
   ntd = ntd+1
   !***** Progress output message
   WRITE(logline1,'(a,i2)') 'Receiving transient data for simulation: Set ',ntd
-  CALL RM_LogMessage(logline1)
+  status = RM_LogMessage(rm_id, logline1)
 
   ! ... 2 receive the flag for rdwtd
   IF(nwel > 0) THEN

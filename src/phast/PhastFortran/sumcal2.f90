@@ -17,6 +17,8 @@ SUBROUTINE sumcal2
   USE mcw_m
   USE mg2_m, ONLY: hdprnt
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
+  INTEGER :: status
   !
   !$$  CHARACTER(LEN=50) :: aform = '(TR5,A45,T47,1PE12.4,TR1,A7,T66,A,3(1PG10.3,A),2A)'
   !$$  CHARACTER(LEN=46) :: aformt = '(TR5,A43,1PE12.4,TR1,A7,TR1,A,3(1PG10.3,A),2A)'
@@ -355,23 +357,23 @@ SUBROUTINE sumcal2
                CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
                WRITE(logline1,'(a)')  &
                     'WARNING: Free surface has moved more than one layer of cells in sumcal2'
-               CALL RM_ScreenMessage(logline1)
-               CALL RM_LogMessage(logline1)
+               status = RM_ScreenMessage(rm_id, logline1)
+               status = RM_LogMessage(rm_id, logline1)
                WRITE(logline1,'(tr5,a,i6,a,i5,a,i5)')   &
                     'Cell column:', mt,' (i,j):', icol, ',', jcol
-               CALL RM_ScreenMessage(logline1)
-               CALL RM_LogMessage(logline1)
+               status = RM_ScreenMessage(rm_id, logline1)
+               status = RM_LogMessage(rm_id, logline1)
             END IF
             IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
                CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
                WRITE(logline1,'(a)')  &
                     'WARNING: A column of cells has gone dry in sumcal2'
-               CALL RM_ScreenMessage(logline1)
-               CALL RM_LogMessage(logline1)
+               status = RM_ScreenMessage(rm_id, logline1)
+               status = RM_LogMessage(rm_id, logline1)
                WRITE(logline1,'(tr5,a,i6,a,i5,a,i5)')  &
                     'Cell column:', mt,' (i,j):', icol, ',', jcol
-               CALL RM_ScreenMessage(logline1)
-               CALL RM_LogMessage(logline1)
+               status = RM_ScreenMessage(rm_id, logline1)
+               status = RM_LogMessage(rm_id, logline1)
                print_dry_col(mt) = .TRUE.
             END IF
          END DO

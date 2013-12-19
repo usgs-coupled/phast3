@@ -15,6 +15,7 @@ SUBROUTINE read2
   USE rewi_mod
   USE hdf_media_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifrd.inc'
   INTERFACE
      SUBROUTINE incidx(x1,x2,nx,xs,i1,i2,erflg)
@@ -55,6 +56,7 @@ SUBROUTINE read2
   INTEGER, DIMENSION(:), ALLOCATABLE :: uzmbc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uabc, ubbbc, ukbc, uzebc
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: status
   INTEGER :: ii
   ! ... set string for use with rcs ident command
   CHARACTER(LEN=80) :: ident_string='$Id: read2.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
@@ -71,7 +73,7 @@ SUBROUTINE read2
   nsa = MAX(ns,1)
   nr = nx
   WRITE(logline1,'(a)') 'Reading static data for flow and transport simulation'
-    CALL RM_LogMessage(logline1)
+    status = RM_LogMessage(rm_id, logline1)
   IF(.NOT.cylind) THEN  
      ! ... read aquifer description - spatial mesh data
      ! ...      rectangular coordinates
@@ -230,11 +232,11 @@ SUBROUTINE read2
   uk2z(ipmz) = uk2z(ipmz) + 1
   IF(erflg) THEN
      logline1 = 'incidx interpolation error in read2, porous media zones'
-        CALL RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
      WRITE(logline2, 9002) cnvli*x1z, cnvli*x2z, cnvli*y1z, cnvli*y2z,  &
           cnvli*z1z, cnvli*z2z
 9002 FORMAT(6(1pg13.4))
-        CALL RM_ErrorMessage(logline2)
+        status = RM_ErrorMessage(rm_id, logline2)
      ierr(138) = .TRUE.
      errexe = .TRUE.
   ENDIF

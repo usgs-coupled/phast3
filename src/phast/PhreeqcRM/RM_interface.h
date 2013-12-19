@@ -44,8 +44,8 @@
 #define RM_InitialPhreeqc2Module           FC_FUNC_ (rm_initialphreeqc2module,         RM_INITIALPHREEQC2MODULE)
 #define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
-#define RM_LogScreenMessage                FC_FUNC_ (rm_logscreenmessage,              RM_LOGSCREENMESSAGE)
 #define RM_OpenFiles                       FC_FUNC_ (rm_openfiles,                     RM_OPENFILES)
+#define RM_OutputMessage                   FC_FUNC_ (rm_outputmessage,                 RM_OUTPUTMESSAGE)
 #define RM_RunCells                        FC_FUNC_ (rm_runcells,                      RM_RUNCELLS)
 #define RM_RunFile                         FC_FUNC_ (rm_runfile,                          RM_RUNFILE)
 #define RM_RunString                       FC_FUNC_ (rm_runstring,                     RM_RUNSTRING)
@@ -80,7 +80,7 @@
 #define RM_SetUnitsSSassemblage            FC_FUNC_ (rm_setunitsssassemblage,          RM_SETUNITSSSASSEMBLAGE)
 #define RM_SetUnitsSurface                 FC_FUNC_ (rm_setunitssurface,               RM_SETUNITSSURFACE)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
-#define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
+//#define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
 #endif
 
@@ -105,7 +105,7 @@ void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkali
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_CloseFiles(void);
+IRM_RESULT RM_CloseFiles(int *id);
 void       RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 /**
  *  Creates a reaction module. 
@@ -217,12 +217,12 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_Error(const char * err_str = NULL, size_t l = 0);
+IRM_RESULT RM_Error(int *id, const char * err_str = NULL, size_t l = 0);
 /**
  *  Send an error message to the screen, output file, and log file. 
  *  @param str           String to be sent.
  *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_Error, RM_LogMessage, RM_LogScreenMessage, RM_ScreenMessage, RM_WarningMessage. 
+ *  @see                 RM_Error, RM_LogMessage, RM_ScreenMessage, RM_WarningMessage. 
  *  MPI:
  *       Can be called from any process.
  *  @par Fortran90 Interface:
@@ -237,7 +237,7 @@ void       RM_Error(const char * err_str = NULL, size_t l = 0);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_ErrorMessage(const char *err_str, size_t l);
+IRM_RESULT RM_ErrorMessage(int *id, const char *err_str, size_t l);
 /**
  *  Returns the number of items in the list of elements included in solutions and reactants in the IPhreeqcPhast workers.
  *  @param id            The instance id returned from @ref RM_Create.
@@ -446,7 +446,7 @@ IRM_RESULT RM_LoadDatabase(int *id, const char *db_name = NULL, size_t l = 0);
  *  Send a message to the log file. 
  *  @param str           String to be sent.
  *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogScreenMessage, RM_ScreenMessage, RM_WarningMessage. 
+ *  @see                 RM_ErrorMessage, RM_ScreenMessage, RM_WarningMessage. 
  *  MPI:
  *     Can be called by any process.
  *  @par Fortran90 Interface:
@@ -461,7 +461,8 @@ IRM_RESULT RM_LoadDatabase(int *id, const char *db_name = NULL, size_t l = 0);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_LogMessage(const char *str, size_t l = 0);
+IRM_RESULT RM_LogMessage(int * id, const char *str, size_t l = 0);
+#ifdef SKIP
 /**
  *  Send a message to the screen and the log file. 
  *  @param str           String to be sent.
@@ -479,7 +480,8 @@ void       RM_LogMessage(const char *str, size_t l = 0);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_LogScreenMessage(const char *str, size_t l);
+IRM_RESULT RM_LogScreenMessage(int * id, const char *str, size_t l);
+#endif
 /**
  *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
  *  @param id                   The instance id returned from @ref RM_Create.
@@ -544,6 +546,7 @@ IRM_RESULT RM_OpenFiles(int * id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_RunCells(int *id);
+IRM_RESULT RM_OutputMessage(int *id, const char * err_str = NULL, size_t l = 0);
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -597,7 +600,7 @@ IRM_RESULT RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utili
  *  Send a message to the screen. 
  *  @param str           String to be sent to the screen.
  *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogMessage, RM_LogScreenMessage, RM_WarningMessage. 
+ *  @see                 RM_ErrorMessage, RM_LogMessage, RM_WarningMessage. 
  *  @par Fortran90 Interface:
  *  @htmlonly
  *  <CODE>
@@ -610,7 +613,7 @@ IRM_RESULT RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utili
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_ScreenMessage(const char *str, size_t l = 0);
+IRM_RESULT RM_ScreenMessage(int *id, const char *str, size_t l = 0);
 IRM_RESULT RM_SetCellVolume(int *id, double *t = NULL);
 IRM_RESULT RM_SetConcentrations(int *id, double *t = NULL);
 IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int *id, int *i = NULL);
@@ -643,7 +646,7 @@ IRM_RESULT RM_SetUnitsSurface(int *id, int *i = NULL);
  *  Send an warning message to the screen and log file. 
  *  @param str           String to be sent.
  *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogMessage, RM_LogScreenMessage, RM_ScreenMessage. 
+ *  @see                 RM_ErrorMessage, RM_LogMessage, RM_ScreenMessage. 
  *  MPI:
  *       Can be called from any process.
  *  @par Fortran90 Interface:
@@ -658,14 +661,14 @@ IRM_RESULT RM_SetUnitsSurface(int *id, int *i = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_WarningMessage(const char *warn_str, size_t l);
+IRM_RESULT RM_WarningMessage(int *id, const char *warn_str, size_t l);
 void       RM_write_bc_raw(int *id, 
                 int *solution_list, 
                 int * bc_solution_count, 
                 int * solution_number, 
                 char *prefix, 
                 size_t prefix_l);
-void RM_write_output(int *id);
+//void RM_write_output(int *id);
 
 #if defined(__cplusplus)
 }

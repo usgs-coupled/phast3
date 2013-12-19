@@ -24,10 +24,12 @@ SUBROUTINE closef
   USE mcw_m
   USE mg2_m, ONLY: hdprnt, wt_elev
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"  
   !$$  INTEGER, INTENT(IN) :: mpi_myself     !*** always 0
   CHARACTER(LEN=6), DIMENSION(50) :: st
   INTEGER :: da_err, i1p, i2p, ifu, ip, izn  
   CHARACTER(LEN=130) :: logline1, logline2, logline3
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: closef.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -37,7 +39,7 @@ SUBROUTINE closef
     IF(errexi) THEN
         logline1 = '          *** Simulation Aborted Due to Input Errors ***'
         logline2 = '               Please examine log file'
-        CALL RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
         CALL errprt(1,200)  
         RETURN  
     ENDIF
@@ -45,8 +47,8 @@ SUBROUTINE closef
         logline1 = '          *** Simulation Aborted Due to Execution Errors ***'
         WRITE(logline2,3101) '               Time ..... ',cnvtmi*time,' ('//TRIM(unittm)//')'
 3101    FORMAT(a,1pg12.4,a)
-        CALL RM_ErrorMessage(logline1)
-        CALL RM_ErrorMessage(logline2)
+        status = RM_ErrorMessage(rm_id, logline1)
+        status = RM_ErrorMessage(rm_id, logline2)
         CALL errprt(1,200)  
         RETURN  
     ENDIF
@@ -66,10 +68,10 @@ SUBROUTINE closef
     WRITE(fuzf,2003) TRIM(logline1)
     WRITE(fuzf,2004) TRIM(logline2)
     WRITE(fuzf,2004) TRIM(logline3)
-    CALL RM_LogMessage(' ')
-    CALL RM_LogMessage(logline1)
-    CALL RM_LogMessage(logline2)
-    CALL RM_LogMessage(logline3)
+    status = RM_LogMessage(rm_id, ' ')
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_LogMessage(rm_id, logline3)
     WRITE(fulp,2003) TRIM(logline1)
     WRITE(fulp,2004) TRIM(logline2)
     WRITE(fulp,2004) TRIM(logline3)
@@ -77,14 +79,14 @@ SUBROUTINE closef
         WRITE(logline1,5005) '     Number of map records written '//dots, &
             nmapr
  5005   FORMAT(A70,I8)
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
     ENDIF
 
     IF(chkptd) THEN  
         IF(ABS(pricpd) > 0._kdp) THEN
             logline1 = '     Check point dump made at the following times ('//TRIM(unittm)//')'
             WRITE(FULP,2004) TRIM(logline1)
-            CALL RM_LogMessage(logline1)
+            status = RM_LogMessage(rm_id, logline1)
             i1p = - 9  
 20          i1p = i1p + 10  
             i2p = MIN(i1p+9,nrsttp)  
@@ -98,15 +100,15 @@ SUBROUTINE closef
             logline1 = '     Check point dump made at last time step'
             WRITE(fulp,2009) TRIM(logline1)
 2009        FORMAT(tr10,2a)  
-            CALL RM_LogMessage(logline1)
+            status = RM_LogMessage(rm_id, logline1)
         ENDIF
         WRITE(logline1,5005) '     Number of restart time planes written '//dots,nrsttp
         WRITE(fulp,2009) TRIM(logline1)
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
         IF(savldo) THEN  
             logline1 = '     Only the most recent dump has been saved'
             WRITE(fulp,2009) TRIM(logline1)
-            CALL RM_LogMessage(logline1)
+            status = RM_LogMessage(rm_id, logline1)
         ENDIF
     ENDIF
     ! ... delete file 'fuplt' if no plot data written

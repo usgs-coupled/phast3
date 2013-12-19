@@ -14,9 +14,11 @@ SUBROUTINE error3
   USE mcw_m
   USE print_control_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INTRINSIC INDEX
   CHARACTER(LEN=9) :: cibc
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   INTEGER :: i, ic, iis, iwel, l, l2, ls, m, m1, mt, warnflag
   REAL(KIND=kdp) :: udeltim
   ! ... Set string for use with RCS ident command
@@ -47,7 +49,7 @@ SUBROUTINE error3
               !!              ierr(148) = .true.       !   warning not fatal error
               WRITE(logline1,'(a)') 'Multiple free surfaces in column of cells;'//  &
                    ' Check boundary condition on head field.'
-                CALL RM_WarningMessage(logline1)
+                status = RM_WarningMessage(rm_id, logline1)
               EXIT chk_fs
            END IF
         END DO
@@ -127,7 +129,7 @@ SUBROUTINE error3
   IF(warnflag > 0) THEN
      WRITE(logline1,'(i2,a)') warnflag,' print control intervals are less than '//  &
           'defined time step length.'
-            CALL RM_WarningMessage(logline1)
+            status = RM_WarningMessage(rm_id, logline1)
   END IF
   DO  i=70,170
      IF(ierr(i)) errexi=.TRUE.

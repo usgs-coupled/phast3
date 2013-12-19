@@ -21,7 +21,9 @@ SUBROUTINE dump_hst
   USE mcw
   USE mcw_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   CHARACTER(LEN=130) :: logline1, logline2, logline3
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: dump.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -118,11 +120,11 @@ SUBROUTINE dump_hst
 2001 FORMAT(a,1PG12.4,A)
   WRITE(fulp,2011) trim(logline1)
 2011 FORMAT(/tr10,a)
-     CALL RM_LogMessage(logline1)
+     status = RM_LogMessage(rm_id, logline1)
   IF(savldo) THEN
      logline1 = 'Dump File from Previous Time was Overwritten'
      WRITE(fulp,2012) trim(logline1)
 2012 FORMAT(tr15,2A)
-    CALL RM_LogMessage(logline1)
+    status = RM_LogMessage(rm_id, logline1)
   END IF
 END SUBROUTINE dump_hst

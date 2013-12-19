@@ -13,9 +13,11 @@ SUBROUTINE write1
   USE mcv
   USE mcv_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INTEGER :: i
   CHARACTER(LEN=11) :: fmt1
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: write1.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -51,8 +53,8 @@ SUBROUTINE write1
   WRITE(logline1,5013) title(1:80)
   WRITE(logline2,5013) title(81:160)
 5013 FORMAT(a80)
-    CALL RM_LogMessage(logline1)
-    CALL RM_LogMessage(logline2)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
   WRITE(fulp,2004)
 2004 FORMAT(/tr25,'*** Fundamental Information ***')
 !!$  IF(heat) THEN
@@ -114,11 +116,11 @@ SUBROUTINE write1
 !!$  WRITE(logline3,5009) 'Number of nodes in y-direction '//dots,' NY ... ',ny
 !!$  WRITE(logline4,5009) 'Number of nodes in z-direction '//dots,' NZ ... ',nz
 !!$  WRITE(logline5,5009) 'Total number of nodes '//dots,' NXYZ . ',nxyz
-!!$  call RM_LogMessage(logline1)
-!!$  call RM_LogMessage(logline2)
-!!$  call RM_LogMessage(logline3)
-!!$  call RM_LogMessage(logline4)
-!!$  call RM_LogMessage(logline5)
+!!$  status = RM_LogMessage(rm_id, logline1)
+!!$  status = RM_LogMessage(rm_id, logline2)
+!!$  status = RM_LogMessage(rm_id, logline3)
+!!$  status = RM_LogMessage(rm_id, logline4)
+!!$  status = RM_LogMessage(rm_id, logline5)
   IF(solute) THEN
      ! ... Write static data to file 'FUPMAP' for screen or plotter maps
      ! ... Write header to file 'Fupmap' for component xyz field plots

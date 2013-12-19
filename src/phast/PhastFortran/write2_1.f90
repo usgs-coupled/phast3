@@ -23,6 +23,7 @@ SUBROUTINE write2_1
   USE phys_const
   USE ld_seg_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
   CHARACTER(LEN=7) :: cw1
@@ -58,6 +59,7 @@ SUBROUTINE write2_1
   INTEGER :: a_err, da_err
   !!  type(rbc_indices), dimension(:), pointer :: ptr
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: write2_1.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -100,12 +102,12 @@ SUBROUTINE write2_1
 !!$  WRITE(logline5,5009) 'Number of drain leakage cells '//dots,' NDBC . ',ndbc
 !!$  WRITE(logline6,5009) 'Number of wells '//dots,' NWEL . ',nwel
 !!$5009 format(a65,a,i6)
-!!$  call RM_LogMessage(logline1)
-!!$  call RM_LogMessage(logline2)
-!!$  call RM_LogMessage(logline3)
-!!$  call RM_LogMessage(logline4)
-!!$  call RM_LogMessage(logline5)
-!!$  call RM_LogMessage(logline6)
+!!$  status = RM_LogMessage(rm_id, logline1)
+!!$  status = RM_LogMessage(rm_id, logline2)
+!!$  status = RM_LogMessage(rm_id, logline3)
+!!$  status = RM_LogMessage(rm_id, logline4)
+!!$  status = RM_LogMessage(rm_id, logline5)
+!!$  status = RM_LogMessage(rm_id, logline6)
   IF(.NOT.restrt) THEN
      IF(slmeth == 1) THEN
         WRITE(fulp,2002) 'Linear solver array dimension requirement (D4 direct solver)'//  &
@@ -116,9 +118,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (D4 direct solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        CALL RM_LogMessage(logline1)
-        CALL RM_LogMessage(logline2)
-        CALL RM_LogMessage(logline3)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_LogMessage(rm_id, logline2)
+        status = RM_LogMessage(rm_id, logline3)
      ELSE IF(slmeth == 3) THEN
         WRITE(fulp,2002) 'Linear solver array dimension requirement (RBGCG iterative solver)'//  &
              dots,' NSTSLV ',nstslv,' elements'
@@ -128,9 +130,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (RBGCG iterative solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        CALL RM_LogMessage(logline1)
-        CALL RM_LogMessage(logline2)
-        CALL RM_LogMessage(logline3)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_LogMessage(rm_id, logline2)
+        status = RM_LogMessage(rm_id, logline3)
      ELSE IF(slmeth >= 5) THEN
         WRITE(fulp,2002) 'Linear solver array dimension requirement (D4ZGCG iterative '//  &
              'solver)'//dots,' NSTSLV ',nstslv,' elements'
@@ -140,9 +142,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (D4ZGCG iterative solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        CALL RM_LogMessage(logline1)
-        CALL RM_LogMessage(logline2)
-        CALL RM_LogMessage(logline3)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_LogMessage(rm_id, logline2)
+        status = RM_LogMessage(rm_id, logline3)
      END IF
   END IF
 2002 FORMAT(/(tr10,a70,a,i8,a))
@@ -154,7 +156,7 @@ SUBROUTINE write2_1
 2003 FORMAT(tr1,a120)
 !!$  WRITE(logline3,5103) dash
 !!$5103 FORMAT(a120)
-!!$  call RM_LogMessage(logline3)
+!!$  status = RM_LogMessage(rm_id, logline3)
   WRITE(fulp,2004) '***  Static Data ***'
 2004 FORMAT(//tr30,a)
   ! ... Spatial mesh information
@@ -761,7 +763,7 @@ SUBROUTINE write2_1
 2063 FORMAT(/tr40,a)
      WRITE(logline1,5053) '                    *** Calculation Information ***'
 5053 FORMAT(a)
-     CALL RM_LogMessage(logline1)
+     status = RM_LogMessage(rm_id, logline1)
      ! ...    Iteration parameters
      !      IF(HEAT.OR.SOLUTE) THEN
      !         WRITE(FULP,2054)
@@ -782,13 +784,13 @@ SUBROUTINE write2_1
 2064    FORMAT(tr10,a)
 !!$     WRITE(logline1,5053) 'Backwards-in-time (implicit) differencing for '//  &
 !!$          'temporal derivative'
-!!$     call RM_LogMessage(logline1)
+!!$     status = RM_LogMessage(rm_id, logline1)
      ELSE
         WRITE(fulp,2064) 'Centered-in-time (Crank-Nicholson) differencing '//  &
              'for temporal derivative'
 !!$     WRITE(logline1,5053) 'Centered-in-time (Crank-Nicholson) differencing '//  &
 !!$          'for temporal derivative'
-!!$     call RM_LogMessage(logline1)
+!!$     status = RM_LogMessage(rm_id, logline1)
      END IF
      IF(heat .OR. solute) THEN
         IF(fdsmth < 0.5) THEN
@@ -800,7 +802,7 @@ SUBROUTINE write2_1
            WRITE(fulp,2064) 'Centered-in-space differencing for advective terms'
 !!$        WRITE(logline1,5053) 'Centered-in-space differencing for advective terms'
         END IF
-!!$     call RM_LogMessage(logline1)
+!!$     status = RM_LogMessage(rm_id, logline1)
         IF(crosd) THEN
            WRITE(fulp,2064) 'The cross-derivative solute flux terms '//  &
                 'will be calculated explicitly'
@@ -812,7 +814,7 @@ SUBROUTINE write2_1
 !!$        WRITE(logline1,5053) 'The cross-derivative solute flux terms '//  &
 !!$             'will NOT BE calculated'
         ENDIF
-!!$     call RM_LogMessage(logline1)
+!!$     status = RM_LogMessage(rm_id, logline1)
      END IF
      IF(row_scale .AND. col_scale) THEN
         WRITE(fulp,2159) 'Row and column scaling, using L-inf norm, will be done'
@@ -820,17 +822,17 @@ SUBROUTINE write2_1
         WRITE(logline1,5201)  &
              '          Row and column scaling, using L-inf norm, will be done'
 5201    FORMAT(a)
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
      ELSEIF(row_scale .AND. .NOT.col_scale) THEN
         WRITE(fulp,2159) 'Row scaling only, using L-inf norm, will be done'
         WRITE(logline1,5201)  &
              '          Row scaling only, using L-inf norm, will be done'
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
      ELSEIF(.NOT.row_scale .AND. col_scale) THEN
         WRITE(fulp,2159) 'Column scaling only, using L-inf norm, will be done'
         WRITE(logline1,5201)  &
              '          Column scaling only, using L-inf norm, will be done'
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
      END IF
      IF(slmeth == 3) THEN
         WRITE(fulp,2059) 'Direction index for red-black renumbering '//dots,' IDIR..',idir,  &
@@ -849,10 +851,10 @@ SUBROUTINE write2_1
         WRITE(logline4,5060)  &
              '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
 5060    FORMAT(a65,a,1pe8.1)
-        CALL RM_LogMessage(logline1)
-        CALL RM_LogMessage(logline2)
-        CALL RM_LogMessage(logline3)
-        CALL RM_LogMessage(logline4)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_LogMessage(rm_id, logline2)
+        status = RM_LogMessage(rm_id, logline3)
+        status = RM_LogMessage(rm_id, logline4)
      ELSE IF(slmeth == 5) THEN
         WRITE(fulp,2059) 'Direction index for d4 zig-zag renumbering '//dots,' IDIR..',idir,  &
              'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU..',milu,  &
@@ -866,10 +868,10 @@ SUBROUTINE write2_1
              '          Number of search directions before restart '//dots,' NSDR..',nsdr
         WRITE(logline4,5060)  &
              '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
-        CALL RM_LogMessage(logline1)
-        CALL RM_LogMessage(logline2)
-        CALL RM_LogMessage(logline3)
-        CALL RM_LogMessage(logline4)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_LogMessage(rm_id, logline2)
+        status = RM_LogMessage(rm_id, logline3)
+        status = RM_LogMessage(rm_id, logline4)
      END IF
   ENDIF
   WRITE(fulp,'(/tr1,a120)') dash

@@ -5,7 +5,7 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
   ! ...       temperatures
   USE machine_constants, ONLY: kdp
   USE f_units, ONLY: fuwel
-  USE mcc, ONLY: heat, errexe
+  USE mcc, ONLY: heat, errexe, rm_id
   USE mcc_m, ONLY: prtwel
   USE mcch, ONLY: dots, dash
   USE mcch_m, ONLY: 
@@ -19,6 +19,7 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
   USE phys_const
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   TYPE (Transporter) :: xp
   INTEGER, INTENT(IN) :: iwel
   INTEGER, INTENT(IN) :: iwfss
@@ -33,6 +34,7 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: welris.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   REAL(KIND=kdp) :: gcosth
+  integer :: status
   !     ------------------------------------------------------------------
   !...
   ! ... Initialize
@@ -98,11 +100,11 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
 5004 FORMAT(a,0pf10.1)
      WRITE(logline5,5005) 'Total Fluid Flow Rate (kg/s) .....',xp%qwr
 5005 FORMAT(a,1pg10.2)
-    call RM_LogMessage(logline1)
-    call RM_LogMessage(logline2)
-    call RM_LogMessage(logline3)
-    call RM_LogMessage(logline4)
-    call RM_LogMessage(logline5)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_LogMessage(rm_id, logline3)
+    status = RM_LogMessage(rm_id, logline4)
+    status = RM_LogMessage(rm_id, logline5)
      WRITE(fuwel,2002)  'Distance    Well Riser    Well Riser  ',  &
           'Porous Medium', 'along Well   Pressure   Temperature   Temperature',  &
           '(m)           (Pa)       (Deg.C)        (Deg.C)',dash
@@ -115,10 +117,10 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
      WRITE(logline3,5006) '(m)           (Pa)       (Deg.C)        (Deg.C)'
      WRITE(logline4,5007) dash
 5007 FORMAT(a60)
-    call RM_LogMessage(logline1)
-    call RM_LogMessage(logline2)
-    call RM_LogMessage(logline3)
-    call RM_LogMessage(logline4)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_LogMessage(rm_id, logline3)
+    status = RM_LogMessage(rm_id, logline4)
      WRITE(fuwel,2003) zwk,xp%p00,xp%t00,tambk
 2003 FORMAT(tr15,f10.2,1PG15.3,2(0PF10.1))
      WRITE(logline1,5008) zwk,xp%p00,xp%t00,tambk
@@ -134,12 +136,12 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
 9001 FORMAT(/tr10,2A)
      WRITE(logline1,5001) 'Well Riser Integration Step Reached ',  &
           'Minimum DZ Without Reaching Desired Accuracy'
-        call RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
      RETURN
   END IF
   IF(prtwel) THEN
      WRITE(logline1,5008) zwk,yy(1),yy(2),tambk
-        call RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
      WRITE(fuwel,2003) zwk,yy(1),yy(2),tambk
   ENDIF
   IF(zwk > wrisl(iwel) .OR. zwk < 0.) GO TO 20
@@ -150,7 +152,7 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
 9002 FORMAT(tr2,a,i4,a)
   WRITE(logline1,5012) 'Failed to Complete the Well Riser Calculation in ',kmax,' Steps'
 5012 FORMAT(a,i4,a)
-        call RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
   ! ... Finished the calculation
   ! ... Linearly extrapolate the pressure, temperature to the end
   ! ...      of the riser pipe
@@ -437,6 +439,7 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
   USE mcw_m
   USE phys_const
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INTEGER, INTENT(IN) :: iwel
   INTEGER, INTENT(IN) :: iwfss
   REAL(KIND=kdp), INTENT(IN) :: uqwmr
@@ -447,6 +450,7 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
   LOGICAL :: erflg
   INTEGER, PARAMETER :: kmax=200
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
+  integer :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: welris.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -514,11 +518,11 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
 5004 FORMAT(a,0pf10.1)
      WRITE(logline5,5005) 'Total Fluid Flow Rate (kg/s) .....',qwr
 5005 FORMAT(a,1pg10.2)
-    call RM_LogMessage(logline1)
-    call RM_LogMessage(logline2)
-    call RM_LogMessage(logline3)
-    call RM_LogMessage(logline4)
-    call RM_LogMessage(logline5)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_LogMessage(rm_id, logline3)
+    status = RM_LogMessage(rm_id, logline4)
+    status = RM_LogMessage(rm_id, logline5)
      WRITE(fuwel,2002)  'Distance    Well Riser    Well Riser  ',  &
           'Porous Medium', 'along Well   Pressure   Temperature   Temperature',  &
           '(m)           (Pa)       (Deg.C)        (Deg.C)',dash
@@ -531,10 +535,10 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
      WRITE(logline3,5006) '(m)           (Pa)       (Deg.C)        (Deg.C)'
      WRITE(logline4,5007) dash
 5007 FORMAT(a60)
-    call RM_LogMessage(logline1)
-    call RM_LogMessage(logline2)
-    call RM_LogMessage(logline3)
-    call RM_LogMessage(logline4)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_LogMessage(rm_id, logline3)
+    status = RM_LogMessage(rm_id, logline4)
      WRITE(fuwel,2003) zwk,p00,t00,tambk
 2003 FORMAT(tr15,f10.2,1PG15.3,2(0PF10.1))
      WRITE(logline1,5008) zwk,p00,t00,tambk
@@ -550,12 +554,12 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
 9001 FORMAT(/tr10,2A)
      WRITE(logline1,5001) 'Well Riser Integration Step Reached ',  &
           'Minimum DZ Without Reaching Desired Accuracy'
-        call RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
      RETURN
   END IF
   IF(prtwel) THEN
      WRITE(logline1,5008) zwk,yy(1),yy(2),tambk
-        call RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
      WRITE(fuwel,2003) zwk,yy(1),yy(2),tambk
   ENDIF
   IF(zwk > wrisl(iwel) .OR. zwk < 0.) GO TO 20
@@ -566,7 +570,7 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
 9002 FORMAT(tr2,a,i4,a)
   WRITE(logline1,5012) 'Failed to Complete the Well Riser Calculation in ',kmax,' Steps'
 5012 FORMAT(a,i4,a)
-        call RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
   ! ... Finished the calculation
   ! ... Linearly extrapolate the pressure, temperature to the end
   ! ...      of the riser pipe

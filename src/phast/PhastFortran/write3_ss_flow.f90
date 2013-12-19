@@ -13,12 +13,14 @@ SUBROUTINE write3_ss_flow
   USE mcw_m
   USE mg3_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=11) :: blank = '           ', ucc, up1c, up2c, uqc, utc
   CHARACTER(LEN=4) :: limit
 !!$  REAL(KIND=kdp), PARAMETER :: cnv = 1._kdp
   INTEGER :: iwel, ls, m
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: write3_ss_flow.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -74,8 +76,8 @@ SUBROUTINE write3_ss_flow
           tr10,a65,a,1PG10.2,tr2,a/tr10,a65,a,1PG10.2,tr2,a)
 5014 format(a)
 5114 FORMAT(a65,a,1PG10.2,a)
-    call RM_LogMessage(logline1)
-    call RM_LogMessage(logline2)
-    call RM_LogMessage(logline3)
-    call RM_LogMessage(logline4)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_LogMessage(rm_id, logline3)
+    status = RM_LogMessage(rm_id, logline4)
 END SUBROUTINE write3_ss_flow

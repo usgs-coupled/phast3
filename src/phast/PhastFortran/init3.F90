@@ -216,8 +216,8 @@ SUBROUTINE init3
         WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
              'WARNING: A column of cells is dry in init3',  &
              'Cell column:', mt,' (i,j):', icol, ',', jcol
-        CALL RM_ScreenMessage(logline1)
-        CALL RM_LogMessage(logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
+        status = RM_LogMessage(rm_id, logline1)
         print_dry_col(mt) = .TRUE.
      END IF
   END DO

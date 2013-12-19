@@ -21,6 +21,7 @@ SUBROUTINE write3
   USE mcw_m
   USE mg3_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX
   CHARACTER(LEN=11) :: blank = '           ', ucc, up1c, up2c, uqc, utc
@@ -33,6 +34,7 @@ SUBROUTINE write3
   INTEGER, DIMENSION(:), ALLOCATABLE :: solmask
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: c_mol_bc
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: write3.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -92,7 +94,7 @@ SUBROUTINE write3
                     c_mol(l,iis) = csbc(l,iis)              
                  END DO
               END DO
-              CALL RM_convert_to_molal(rm_id, c_mol,nsbc,nxyz)
+              CALL RM_convert_to_molal(rm_id, c_mol(1,1), nsbc, nxyz)
               CALL ldchar_bc(indx1_sbc, indx2_sbc, mxf_sbc, 1, csolmask, solmask, msbc)
               prthd=.FALSE.
               DO  l=1,nsbc
@@ -204,7 +206,7 @@ SUBROUTINE write3
                     c_mol_bc(ls,iis) = cfbc(ls,iis)
                  END DO
               END DO
-              CALL RM_convert_to_molal(rm_id, c_mol_bc,nfbc_seg,nfbc_seg)
+              CALL RM_convert_to_molal(rm_id, c_mol_bc(1,1), nfbc_seg, nfbc_seg)
               WRITE(fulp,2324) 'Specified Flux B.C.: Solute Component Data',dash,  &
                    'Segment','Cell','Associated Concentration',  &
                    'No.','No.','(mol/kg)', dash
@@ -273,7 +275,7 @@ SUBROUTINE write3
                     c_mol_bc(ls,iis) = clbc(ls,iis)
                  END DO
               END DO
-              CALL RM_convert_to_molal(rm_id, c_mol_bc,nlbc_seg,nlbc_seg)
+              CALL RM_convert_to_molal(rm_id, c_mol_bc(1,1), nlbc_seg, nlbc_seg)
               WRITE(fulp,2324) 'Aquifer Leakage B.C.: Solute Component Data',  &
                    dash,  &
                    'Segment','Cell','Associated Concentration',  &
@@ -335,7 +337,7 @@ SUBROUTINE write3
                     c_mol_bc(ls,iis) = crbc(ls,iis)
                  END DO
               END DO
-              CALL RM_convert_to_molal(rm_id, c_mol_bc,nrbc_seg,nrbc_seg)
+              CALL RM_convert_to_molal(rm_id, c_mol_bc(1,1), nrbc_seg, nrbc_seg)
               ! ... Load and print solution indices ****** not built yet for segments
 !!$           CALL ldchar_bc(indx1_rbc, indx2_rbc, mxf_rbc, 4, csolmask, solmask, mrbc)
 !!$           WRITE(fulp,2004) 'River leakage B.C.: Associated solution indices'
@@ -434,11 +436,11 @@ SUBROUTINE write3
           cnvtmi*dtimmn,'  ('//TRIM(unittm)//')'
      WRITE(logline5,5114) 'Maximum time step allowed '//dots,' DTIMMX ',  &
           cnvtmi*dtimmx,'('//TRIM(unittm)//')'
-     CALL RM_LogMessage(logline1)
-     CALL RM_LogMessage(logline2)
-     CALL RM_LogMessage(logline3)
-     CALL RM_LogMessage(logline4)
-     CALL RM_LogMessage(logline5)
+     status = RM_LogMessage(rm_id, logline1)
+     status = RM_LogMessage(rm_id, logline2)
+     status = RM_LogMessage(rm_id, logline3)
+     status = RM_LogMessage(rm_id, logline4)
+     status = RM_LogMessage(rm_id, logline5)
   END IF
   !....***replace with ht type time step reasons
 !!$  IF(primin > 0) THEN
@@ -450,7 +452,7 @@ SUBROUTINE write3
 !!$          'Maximum time step determined by print frequency '//dots,  &
 !!$          'PRIMIN',ABS(primin),'  ('//unittm//')'
 !!$5015 FORMAT(a65,a,i8,a)
-!!$     call RM_LogMessage(logline1)
+!!$     status = RM_LogMessage(rm_id, logline1)
 !!$  END IF
 300 WRITE(fulp,2016) 'Time at which next set of transient',  &
        'parameters will be read '//dots,' TIMCHG ', cnvtmi*timchg,  &
@@ -460,12 +462,12 @@ SUBROUTINE write3
        'parameters will be read '//dots,' TIMCHG ', cnvtmi*timchg,  &
        '  ('//TRIM(unittm)//')'
 5116 FORMAT(a75,a,1PG10.3,a)
-  CALL RM_LogMessage(logline1)
+  status = RM_LogMessage(rm_id, logline1)
   WRITE(fulp,2017) dash
 2017 FORMAT(/tr1,a120)
   WRITE(logline1,5017) dash
 5017 FORMAT(a95)
-  !**  ! call RM_LogMessage(logline1)
+  !**  ! status = RM_LogMessage(rm_id, logline1)
   DEALLOCATE (csolmask, solmask, &
        stat = da_err)
   IF (da_err /= 0) THEN  

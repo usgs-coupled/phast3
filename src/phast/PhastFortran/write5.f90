@@ -23,6 +23,7 @@ SUBROUTINE write5
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE print_control_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX, INT
   CHARACTER(LEN=39) :: fmt2, fmt4
@@ -45,6 +46,7 @@ SUBROUTINE write5
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: cwkt_mol
   REAL(KIND=kdp) :: ph, alk
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: write5.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -70,9 +72,9 @@ SUBROUTINE write5
   END IF
   IF(itime == 0) RETURN     ! ... error exit; no results to print
   IF (solute) THEN
-     CALL RM_convert_to_molal(rm_id, dcmax,1,1)
+     CALL RM_convert_to_molal(rm_id, dcmax(1), 1, 1)
      c_mol = c
-     CALL RM_convert_to_molal(rm_id, c_mol,nxyz,nxyz)
+     CALL RM_convert_to_molal(rm_id, c_mol(1,1), nxyz, nxyz)
   ENDIF
 !!$  !  WRITE(*,3001) 'Finished time step no. ',itime,'; Time '//dots(1:30),cnvtmi*time,'('//TRIM(unittm)//')'
 !!$  !3001 FORMAT(tr5,a,I6,a,1PG12.3,tr2,a)
@@ -82,32 +84,32 @@ SUBROUTINE write5
 5001 FORMAT(a,i5)
   WRITE(logline2,5002) '     Time '//dots,cnvtmi*time,' ('//TRIM(TRIM(unittm))//')'
 5002 FORMAT(a60,1PG15.6,a)
-  CALL RM_LogMessage(logline1)
-  CALL RM_LogMessage(logline2)
+  status = RM_LogMessage(rm_id, logline1)
+  status = RM_LogMessage(rm_id, logline2)
   IF(prslm) THEN
 !!$     IF(heat .OR. solute) WRITE(logline1,5003) '     No. of P,T,C loop iterations used ',dots,itrn
 !!$5003 format(a,a26,i4)
 !!$2003 FORMAT(/tr5,'No. of P,T,C loop iterations used ',26('.'),i4)
-!!$     call RM_LogMessage(logline1)
+!!$     status = RM_LogMessage(rm_id, logline1)
      IF(autots .AND. ntsfal > 0) THEN 
         WRITE(logline1,5007)  &
              'Number of repeats of time step to achieve ','truncation error'//dots,ntsfal
 5007    FORMAT(a42,a23,i4)
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
      ENDIF
      IF(.NOT.steady_flow) THEN
         WRITE(logline1,5027) '     Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,' ('//unitl//')',' at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl)//')'
 5027    FORMAT(A43,1PE12.4,A10,A,3(1PG10.3,A),A)
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
 !!$        !      WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
 !!$        !           cnvpi*dhmax,'('//unitl//')','at location (',  &
 !!$        !           cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
         WRITE(logline1,aformt) 'Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,'('//unitl//')','at (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
-        CALL RM_ScreenMessage(logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
      END IF
      IF (solute) THEN
         DO  is=1,ns
@@ -115,11 +117,11 @@ SUBROUTINE write5
            WRITE(logline1,5027) '     Maximum change in '//TRIM(comp_name(is))//' '//  &
                 dots, u6,' (mol/kgw)',' at location (',  &
                 cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',', cnvli*z(kcmax(is)),')(',TRIM(unitl)//')'
-           CALL RM_LogMessage(logline1)
+           status = RM_LogMessage(rm_id, logline1)
            WRITE(logline1,aformt) 'Maximum change in '//TRIM(comp_name(is))  &
                 //dots, u6,'(mol/kgw)','at (',  &
                 cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',', cnvli*z(kcmax(is)),')(',TRIM(unitl),')'
-           CALL RM_ScreenMessage(logline1)
+           status = RM_ScreenMessage(rm_id, logline1)
         END DO
      END IF
   END IF
@@ -469,7 +471,7 @@ SUBROUTINE write5
      ENDIF
      IF (solute) THEN
         cwkt_mol = cwkt
-        CALL RM_convert_to_molal(rm_id, cwkt_mol,nwel,nwel)
+        CALL RM_convert_to_molal(rm_id, cwkt_mol(1,1), nwel, nwel)
      ENDIF
      IF(prwel) THEN
         ! ... Well summary tables
@@ -1326,7 +1328,7 @@ SUBROUTINE write5
 !!$        !.. ** not implemented in PHAST
   WRITE(logline1,3001) 'Finished time step no. ',itime,'; Time '//dots(1:30),cnvtmi*time,'('//TRIM(unittm)//')'
 3001 FORMAT(a,I6,a,1PG18.9,tr2,a)
-  CALL RM_ScreenMessage(logline1)
+  status = RM_ScreenMessage(rm_id, logline1)
 !!$     IF(nhcbc > 0) THEN
 !!$        !... ** not implemented in PHAST
   ! ... Set the next time for printout if by user time units
