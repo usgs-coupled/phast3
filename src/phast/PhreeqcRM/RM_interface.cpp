@@ -13,28 +13,6 @@
 #include "mpi.h"
 #endif
 
-
-//class RM_interface
-//{
-//public:
-	//static int CreateReactionModule(int *nxyz, int *nthreads = NULL);
-	//static IRM_RESULT DestroyReactionModule(int *n);
-	//static PhreeqcRM* GetInstance(int *n);
-	//static void CleanupReactionModuleInstances(void);
-//	static PHRQ_io phast_io;
-//
-//private:
-//	friend class PhreeqcRM;
-//	static std::map<size_t, PhreeqcRM*> Instances;
-//	static size_t InstancesIndex;
-//};
-
-//std::map<size_t, PhreeqcRM*> RM_interface::Instances;
-//size_t RM_interface::InstancesIndex = 0;
-//PHRQ_io RM_interface::phast_io;
-
-
-
 /* ---------------------------------------------------------------------- */
 void
 RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
@@ -59,26 +37,10 @@ RM_CloseFiles(int *id)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->CloseFiles();
+		return Reaction_module_ptr->CloseFiles();
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_CloseFiles(void)
-/* ---------------------------------------------------------------------- */
-{
-	// error_file is stderr
-	
-	// open echo and log file, prefix.log.txt
-	PhreeqcRM::GetRmIo().log_close();
-
-	// output_file is prefix.chem.txt
-	PhreeqcRM::GetRmIo().output_close();
-}
-#endif
-
 /* ---------------------------------------------------------------------- */
 void
 RM_convert_to_molal(int *id, double *c, int *n, int *dim)
@@ -148,6 +110,7 @@ IRM_RESULT RM_Error(int *id, const char * str, size_t l)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->ErrorStop(str, l);
+		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 }
@@ -163,40 +126,10 @@ RM_ErrorMessage(int *id, const char *err_str, size_t l)
 		trim_right(e_string);
 		e_string.append("\n");
 		Reaction_module_ptr->ErrorMessage(e_string);
+		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_ErrorMessage(const char *err_str, size_t l)
-/* ---------------------------------------------------------------------- */
-{
-	if (err_str)
-	{
-		if (l > 0)
-		{
-			std::string e_string(err_str, l);
-			trim_right(e_string);
-			std::ostringstream estr;
-			estr << "ERROR: " << e_string << std::endl;
-			PhreeqcRM::GetRmIo().output_msg(estr.str().c_str());
-			PhreeqcRM::GetRmIo().error_msg(estr.str().c_str());
-			PhreeqcRM::GetRmIo().log_msg(estr.str().c_str());
-		}
-		else
-		{
-			std::string e_string(err_str);
-			trim_right(e_string);
-			std::ostringstream estr;
-			estr << "ERROR: " << e_string << std::endl;
-			PhreeqcRM::GetRmIo().output_msg(estr.str().c_str());
-			PhreeqcRM::GetRmIo().error_msg(estr.str().c_str());
-			PhreeqcRM::GetRmIo().log_msg(estr.str().c_str());
-		} 
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int
 RM_FindComponents(int *id)
@@ -267,7 +200,11 @@ RM_GetDensity(int *id, double * d)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		memcpy(d, Reaction_module_ptr->GetDensity().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+		Reaction_module_ptr->GetDensity();
+		if (Reaction_module_ptr->GetMpiMyself() == 0)
+		{
+			memcpy(d, Reaction_module_ptr->GetDensity().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+		}
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -506,31 +443,6 @@ RM_InitialPhreeqc2Module(int *id,
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_LogMessage(const char *err_str, size_t l)
-/* ---------------------------------------------------------------------- */
-{
-	if (err_str)
-	{
-		if (l > 0)
-		{
-			std::string e_string(err_str, l);
-			trim_right(e_string);
-			PhreeqcRM::GetRmIo().log_msg(e_string.c_str());
-			PhreeqcRM::GetRmIo().log_msg("\n");
-		}
-		else
-		{
-			std::string e_string(err_str);
-			trim_right(e_string);
-			PhreeqcRM::GetRmIo().log_msg(e_string.c_str());
-			PhreeqcRM::GetRmIo().log_msg("\n");
-		}
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_LoadDatabase(int * id, const char *db_name, size_t l)
@@ -557,39 +469,10 @@ RM_LogMessage(int *id, const char *err_str, size_t l)
 		trim_right(e_string);
 		e_string.append("\n");
 		Reaction_module_ptr->LogMessage(e_string);
+		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
-
-	//PhreeqcRM::GetRmIo().log_msg(e_string.c_str());
-	//PhreeqcRM::GetRmIo().log_msg("\n");
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_LogScreenMessage(int * id, const char *err_str, size_t l)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		std::string e_string(err_str, (int) l);
-		trim_right(e_string);
-		RM_LogMessage(id, e_string.c_str());
-		RM_ScreenMessage(id, e_string.c_str());
-	}
-	return IRM_BADINSTANCE;
-
-}
-#endif
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_open_error_file(void)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM::GetRmIo().Set_error_ostream(&std::cerr);
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_OpenFiles(int *id)
@@ -607,42 +490,6 @@ RM_OpenFiles(int *id)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_OpenFiles(int *id)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		
-		IRM_RESULT rtn = IRM_OK;
-
-		// Files opened by root
-		if (Reaction_module_ptr->GetMpiMyself() == 0)
-		{
-			// error_file is stderr
-			PhreeqcRM::GetRmIo().Set_error_ostream(&std::cerr);
-
-			// open echo and log file, prefix.log.txt
-			std::string ln = Reaction_module_ptr->GetFilePrefix();
-			ln.append(".log.txt");
-			if (!PhreeqcRM::GetRmIo().log_open(ln.c_str()))
-				rtn = IRM_FAIL;
-
-			// prefix.chem.txt
-			std::string cn = Reaction_module_ptr->GetFilePrefix();
-			cn.append(".chem.txt");
-			if(PhreeqcRM::GetRmIo().output_open(cn.c_str()))
-				rtn = IRM_FAIL;
-		}
-		return rtn;
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
-
 /* 
 --------------------------------------------------------------------- */
 IRM_RESULT
@@ -656,6 +503,7 @@ RM_OutputMessage(int *id, const char *str, size_t l)
 		trim_right(e_string);
 		e_string.append("\n");
 		Reaction_module_ptr->WarningMessage(e_string);
+		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 
@@ -673,6 +521,7 @@ RM_RunCells(int *id)
 			// Run chemistry calculations
 			return Reaction_module_ptr->RunCells(); 
 		}
+		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 }
@@ -716,8 +565,7 @@ RM_ScreenMessage(int *id, const char *err_str, size_t l)
 		trim_right(e_string);
 		Reaction_module_ptr->ScreenMessage(e_string);
 		Reaction_module_ptr->ScreenMessage("\n");
-		//Reaction_module_ptr->GetPhreeqcRmIo().screen_msg(e_string.c_str());
-		//Reaction_module_ptr->GetPhreeqcRmIo().screen_msg("\n");
+		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 }
@@ -1089,40 +937,11 @@ RM_WarningMessage(int *id, const char *err_str, size_t l)
 		trim_right(e_string);
 		e_string.append("\n");
 		Reaction_module_ptr->WarningMessage(e_string);
+		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 
 }
-#ifdef SKIP
-/* 
---------------------------------------------------------------------- */
-void
-RM_WarningMessage(const char *err_str, size_t l)
-/* ---------------------------------------------------------------------- */
-{
-	if (err_str)
-	{
-		if (l > 0)
-		{
-			std::string e_string(err_str, l);
-			trim_right(e_string);
-			std::ostringstream estr;
-			estr << "WARNING: " << e_string << std::endl;
-			PhreeqcRM::GetRmIo().error_msg(estr.str().c_str());
-			PhreeqcRM::GetRmIo().log_msg(estr.str().c_str());
-		}
-		else
-		{
-			std::string e_string(err_str);
-			trim_right(e_string);
-			std::ostringstream estr;
-			estr << "WARNING: " << e_string << std::endl;
-			PhreeqcRM::GetRmIo().error_msg(estr.str().c_str());
-			PhreeqcRM::GetRmIo().log_msg(estr.str().c_str());
-		}
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void RM_write_bc_raw(
 			int *id,
@@ -1144,22 +963,3 @@ void RM_write_bc_raw(
 					fn);
 	}
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void RM_write_output(int *id)
-/* ---------------------------------------------------------------------- */
-{
-	if (GetOutputStringOn(*id))
-	{
-		PhreeqcRM::GetRmIo().output_msg(GetOutputString(*id));
-	}
-	PhreeqcRM::GetRmIo().output_msg(GetWarningString(*id));
-	PhreeqcRM::GetRmIo().output_msg(GetErrorString(*id));
-	PhreeqcRM::GetRmIo().screen_msg(GetWarningString(*id));
-	PhreeqcRM::GetRmIo().screen_msg(GetErrorString(*id));
-	if (GetSelectedOutputStringOn(*id))
-	{
-		PhreeqcRM::GetRmIo().punch_msg(GetSelectedOutputString(*id));
-	}
-}
-#endif
