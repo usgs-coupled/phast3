@@ -9,6 +9,15 @@
 
 class PHRQ_io;
 class IPhreeqc;
+/**
+ * @class PhreeqcRMStop
+ *
+ * @brief This class is derived from std::exception and is thrown
+ * when an unrecoverable error has occured.
+ */
+class IPQ_DLL_EXPORT PhreeqcRMStop : std::exception
+{
+};
 
 /*! @brief Enumeration used to return error codes.
 */
@@ -29,16 +38,19 @@ public:
 	static void             CleanupReactionModuleInstances(void);
 	static int              CreateReactionModule(int *nxyz, int *nthreads = NULL);
 	static IRM_RESULT       DestroyReactionModule(int *n);
-    static void             ErrorStop(const char * str = NULL, size_t l = 0);
+    //static void             ErrorStop(const char * str = NULL, size_t l = 0);
 	static PhreeqcRM      * GetInstance(int *n);
-	static PHRQ_io &        GetRmIo(void) {return PhreeqcRM::phast_io;};
+	//static PHRQ_io &        GetRmIo(void) {return PhreeqcRM::phast_io;};
 
 	PhreeqcRM(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
 	
 	// Key methods	
+	IRM_RESULT                                CloseFiles(void);
 	IRM_RESULT                                CreateMapping(int *grid2chem);
 	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
+	void                                      ErrorMessage(const std::string &error_string);
+    void                                      ErrorStop(const char * str = NULL, size_t l = 0);
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c);
 	IRM_RESULT                                InitialPhreeqc2Concentrations( 
@@ -53,9 +65,14 @@ public:
                                                    int *initial_conditions2 = NULL,	
                                                    double *fraction1 = NULL);
 	IRM_RESULT                                LoadDatabase(const char * database);
+	void                                      LogMessage(const std::string &str);
+	IRM_RESULT                                OpenFiles(void);
+	void                                      OutputMessage(const std::string &str);
 	IRM_RESULT                                RunFile(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name);
 	IRM_RESULT                                RunString(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name);
 	IRM_RESULT                                RunCells(void);
+	void                                      ScreenMessage(const std::string &str);
+	void                                      WarningMessage(const std::string &str);
 
 	// Utilities
 	static std::string                        Char2TrimString(const char * str, size_t l = 0);
@@ -92,6 +109,7 @@ public:
 	int                                       GetNthreads() {return this->nthreads;}
 	int                                       GetNthSelectedOutputUserNumber(int *i);
 	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
+	//PHRQ_io &                                 GetPhreeqcRmIo(void) {return phreeqcrm_io;};
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
 	std::vector<double> &                     GetPoreVolumeZero(void) {return this->pore_volume_zero;} 
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
@@ -169,8 +187,8 @@ protected:
 	void                                      SetEndCells(void);
 	//void                                      Temperatures2Solutions(int n, std::vector<double> &t);
 	void                                      TransferCells(cxxStorageBin &t_bin, int old, int nnew);
-	void                                      WriteError(const char * item);
-	void                                      WriteOutput(const char * item);
+	//void                                      WriteError(const char * item);
+	//void                                      WriteOutput(const char * item);
 
 protected:
 	std::string database_file_name;
@@ -222,10 +240,11 @@ protected:
 	std::vector<IPhreeqcPhast *> workers;
 	std::vector<int> start_cell;
 	std::vector<int> end_cell;
+	PHRQ_io phreeqcrm_io;
 
 private:
 	friend class RM_interface;
-	static PHRQ_io phast_io;
+	//static PHRQ_io phast_io;
 	static std::map<size_t, PhreeqcRM*> Instances;
 	static size_t InstancesIndex;
 

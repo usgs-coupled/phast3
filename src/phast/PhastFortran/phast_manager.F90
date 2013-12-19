@@ -104,7 +104,8 @@ SUBROUTINE phast_manager
 !
     IF(solute .OR. .NOT.steady_flow) THEN
         logline1 = 'Beginning transient simulation.'
-        CALL RM_LogScreenMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
         DO
             CALL time_parallel(0)
@@ -169,10 +170,12 @@ SUBROUTINE phast_manager
             ! ... At this point, worker and manager do transport calculations
             IF (solute) THEN
                 logline1 =  '     Beginning solute-transport calculation.'
-                CALL RM_LogScreenMessage(logline1)
+                status = RM_LogMessage(rm_id, logline1)
+                status = RM_ScreenMessage(rm_id, logline1)
                 DO i = 1, ns
                     logline1 =  '          '//comp_name(i)
-                    CALL RM_LogScreenMessage(logline1)
+                    status = RM_LogMessage(rm_id, logline1)
+                    status = RM_ScreenMessage(rm_id, logline1)
                 ENDDO
             ENDIF
             IF (local_ns > 0) THEN 
@@ -230,39 +233,47 @@ SUBROUTINE phast_manager
 50  CONTINUE   ! ... Exit, could be error
 
     ! ...  Cleanup and shutdown
-    CALL RM_LogScreenMessage('Done with transient flow and transport simulation.')
-    IF(errexe .OR. errexi) CALL RM_LogScreenMessage('ERROR exit.')
+    status = RM_LogMessage(rm_id, 'Done with transient flow and transport simulation.')
+    status = RM_ScreenMessage(rm_id, 'Done with transient flow and transport simulation.')
+    IF(errexe .OR. errexi) then
+        status = RM_LogMessage(rm_id, 'ERROR exit.')
+        status = RM_ScreenMessage(rm_id, 'ERROR exit.')
+        endif
 
 #ifdef USE_MPI
     CALL MPI_Barrier(MPI_COMM_WORLD, ierrmpi)
-    CALL RM_LogScreenMessage('Exit manager process.')
+    status = RM_LogMessage(rm_id, 'Exit manager process.')
+    status = RM_ScreenMessage(rm_id, 'Exit manager process.')
 #endif
 
     ! ... Cleanup reaction module
 	CALL FH_FinalizeFiles();
     IF (solute) THEN  
         if (RM_Destroy(rm_id) < 0) then
-            CALL RM_error('RM_Destroy failed.') 
+            write (*,*) 'RM_Destroy failed.'
         endif
     ENDIF
-    CALL RM_CloseFiles()
+    status = RM_CloseFiles(rm_id)
 
     ! ... Cleanup PHAST
     CALL terminate_phast
 END SUBROUTINE phast_manager
 
 SUBROUTINE time_parallel(i)
+    USE mcc, only: rm_id
 #if defined(USE_MPI)
     USE mpi_mod
     USE mpi
 #endif
-    IMPLICIT none   
+    IMPLICIT none  
+    INCLUDE "RM_interface.f90.inc"
     integer :: i, ierr
     DOUBLE PRECISION t
     DOUBLE PRECISION, DIMENSION(0:15), save :: times
     DOUBLE PRECISION, save :: time_flow=0, time_transfer, time_transport, time_chemistry
     DOUBLE PRECISION, save :: cum_flow=0, cum_transfer=0, cum_transport=0, cum_chemistry
     CHARACTER(LEN=130) :: logline
+  INTEGER :: status
 #ifndef USE_MPI
     INTEGER t_ticks, clock_rate, clock_max
 #endif
@@ -318,13 +329,17 @@ SUBROUTINE time_parallel(i)
         cum_chemistry = cum_chemistry + time_chemistry
 
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time flow:               ", time_flow, " Cumulative:", cum_flow
-        CALL RM_LogScreenMessage(logline)
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time transport:          ", time_transport, " Cumulative:", cum_transport
-        CALL RM_LogScreenMessage(logline)
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Transport data transfer: ", time_transfer, " Cumulative:", cum_transfer
-        CALL RM_LogScreenMessage(logline)
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time chemistry:          ", time_chemistry, " Cumulative:", cum_chemistry
-        CALL RM_LogScreenMessage(logline)     
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)  
     endif
 END SUBROUTINE time_parallel
 
@@ -346,7 +361,7 @@ SUBROUTINE transport_component(i)
     CALL XP_aplbce(xp_list(i))
     CALL XP_asmslc(xp_list(i))
     CALL XP_sumcal1(xp_list(i))
-    IF(errexe .OR. errexi) CALL RM_error("transport_component failed.")
+    IF(errexe .OR. errexi) write (*,*) "transport_component failed."
 END SUBROUTINE transport_component
     
 SUBROUTINE transport_component_thread(i)
@@ -369,7 +384,7 @@ SUBROUTINE transport_component_thread(i)
     CALL XP_asmslc_thread(xp_list(i))
     CALL XP_sumcal1(xp_list(i))
     CALL XP_free_thread(xp_list(i))
-    IF(errexe .OR. errexi) CALL RM_error("transport_component_thread failed.")
+    IF(errexe .OR. errexi) write(*,*) "transport_component_thread failed."
     END SUBROUTINE transport_component_thread
     
 SUBROUTINE CreateRM 
@@ -395,7 +410,8 @@ SUBROUTINE CreateRM
   
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
-        CALL RM_LogScreenMessage("Initial PHREEQC run.")  
+        status = RM_LogMessage(rm_id, "Initial PHREEQC run.") 
+        status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
         ! Set components
         ns = RM_FindComponents(rm_id)
@@ -409,7 +425,8 @@ SUBROUTINE CreateRM
             comp_name(i) = ' '
             status = RM_GetComponent(rm_id, i, comp_name(i))
         ENDDO   
-        CALL RM_LogScreenMessage("Done with Initial PHREEQC run.")
+        status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
+        status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
     ENDIF
 END SUBROUTINE CreateRM
   
@@ -433,7 +450,8 @@ SUBROUTINE InitialEquilibrationRM
         deltim_dummy = 0._kdp
         ! ... Equilibrate the initial conditions for component concentrations
         WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
-        CALL RM_LogScreenMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
         stop_msg = 0
         deltim_dummy = 0._kdp
         status = RM_SetPoreVolume(rm_id, pv(1))
@@ -571,7 +589,8 @@ SUBROUTINE TimeStepRM
     stop_msg = 0
     IF (solute) THEN
         WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
-        CALL RM_LogScreenMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
         status = RM_SetPoreVolume(rm_id, pv(1))
         status = RM_SetSaturation(rm_id, frac(1))
         

@@ -2,7 +2,7 @@ SUBROUTINE XP_asmslc_thread(xp)
   ! ... Performs the assembly and solution of the concentration for the
   ! ...     solute transport equations for one selected component
   USE machine_constants, ONLY: kdp
-  USE mcc, only: slmeth, errexe, ierr, crosd, cylind
+  USE mcc, only: slmeth, errexe, ierr, crosd, cylind, rm_id
   USE mcg, only: nxyz
   USE mcm, only:
   USE mcs, only: col_scale, row_scale, ci, ident_diagc, mrno
@@ -13,9 +13,11 @@ SUBROUTINE XP_asmslc_thread(xp)
   USE solver_direct_mod, only: tfrds_thread
   USE solver_iter_mod, only: gcgris_thread
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"  
   TYPE (Transporter) :: xp
   INTEGER :: m, ma, norm, iierr  
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: XP_asmslc.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   integer j, itrn
@@ -24,13 +26,13 @@ SUBROUTINE XP_asmslc_thread(xp)
   IF (errexe) RETURN
 ! ***** some progress output
 !  logline1 =  '     Beginning solute-transport calculation.'
-!  CALL RM_LogMessage(logline1)
-!  CALL RM_ScreenMessage(logline1)
+!  status = RM_LogMessage(rm_id, logline1)
+!  status = RM_ScreenMessage(rm_id, logline1)
   xp%dc = 0._kdp
   xp%ieq = 3
 !  logline1 =  '          '//xp%comp_name
-!  CALL RM_LogMessage(logline1)
-!  CALL RM_ScreenMessage(logline1)
+!  status = RM_LogMessage(rm_id, logline1)
+!  status = RM_ScreenMessage(rm_id, logline1)
   itrn = 0
 30   itrn = itrn + 1
   CALL XP_asembl_thread(xp)
@@ -44,7 +46,7 @@ SUBROUTINE XP_asmslc_thread(xp)
   IF(iierr /= 0) THEN
      ierr(81) = .TRUE.
      WRITE(logline1,*) 'Error in scaling; component:',xp%iis_no,'  equation:', iierr
-    CALL RM_ErrorMessage(logline1)
+    status = RM_ErrorMessage(rm_id, logline1)
      RETURN
   END IF
   IF(col_scale) THEN
@@ -103,9 +105,11 @@ SUBROUTINE XP_asmslc(xp)
   USE solver_direct_mod
   USE solver_iter_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"  
   TYPE (Transporter) :: xp
   INTEGER :: m, ma, norm, iierr  
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: XP_asmslc.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   integer j
@@ -114,13 +118,13 @@ SUBROUTINE XP_asmslc(xp)
   IF (errexe) RETURN
 ! ***** some progress output
 !  logline1 =  '     Beginning solute-transport calculation.'
-!  CALL RM_LogMessage(logline1)
-!  CALL RM_ScreenMessage(logline1)
+!  status = RM_LogMessage(rm_id, logline1)
+!  status = RM_ScreenMessage(rm_id, logline1)
   xp%dc = 0._kdp
   ieq = 3
 !  logline1 =  '          '//xp%comp_name
-!  CALL RM_LogMessage(logline1)
-!  CALL RM_ScreenMessage(logline1)
+!  status = RM_LogMessage(rm_id, logline1)
+!  status = RM_ScreenMessage(rm_id, logline1)
   itrn = 0
 30   itrn = itrn + 1
   CALL XP_asembl(xp)
@@ -134,7 +138,7 @@ SUBROUTINE XP_asmslc(xp)
   IF(iierr /= 0) THEN
      ierr(81) = .TRUE.
      WRITE(logline1,*) 'Error in scaling; component:',xp%iis_no,'  equation:', iierr
-    CALL RM_ErrorMessage(logline1)
+    status = RM_ErrorMessage(rm_id, logline1)
      RETURN
   END IF
   IF(col_scale) THEN

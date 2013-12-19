@@ -23,6 +23,7 @@ SUBROUTINE write5_ss_flow
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE print_control_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX, INT
   CHARACTER(LEN=46) :: aformt = '(TR5,A43,1PE12.4,TR1,A7,TR1,A,3(1PG10.3,A),2A)'
@@ -41,6 +42,7 @@ SUBROUTINE write5_ss_flow
   LOGICAL :: erflg, prthd, prthd2, prthd3
   REAL(KIND=kdp), PARAMETER :: cnv=1._kdp
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: write5_ss_flow.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -118,19 +120,19 @@ SUBROUTINE write5_ss_flow
 !!$5001 FORMAT(a,i5,a)
 !!$     WRITE(logline2,5002) 'Time '//dots,cnvtmi*time,'  ('//TRIM(unittm)//')'
 !!$5002 FORMAT(a60,1PG12.3,a)
-!!$     call RM_LogMessage(logline1)
-!!$     call RM_LogMessage(logline2)
+!!$     status = RM_LogMessage(rm_id, logline1)
+!!$     status = RM_LogMessage(rm_id, logline2)
      IF(ntsfal > 0) THEN 
         WRITE(logline1,5007) 'Number of repeats of time step to achieve ','truncation error'//dots,ntsfal
 5007    FORMAT(a42,a23,i4)
-        CALL RM_LogMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
      ENDIF
      !       Already printed in sumcal_ss_flow
 !!$     WRITE(logline1,5027) 'Maximum change in potentiometric head '//dots,  &
 !!$          cnvpi*dhmax,' ('//TRIM(unitl)//')',' at location (',  &
 !!$          cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl)//')'
 !!$5027 format(A43,1PE12.4,A10,A,3(1PG10.3,A),A)
-!!$     call RM_LogMessage(logline1)
+!!$     status = RM_LogMessage(rm_id, logline1)
 !!$     WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
 !!$          cnvpi*dhmax,'('//unitl//')','at location (',  &
 !!$          cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'

@@ -146,7 +146,7 @@ FileHandler::ProcessRestartFiles(
 				initial_conditions2_in == NULL ||
 				fraction1_in == NULL)
 			{
-				RM_Error("NULL pointer in call to DistributeInitialConditions");
+				RM_Error(id, "NULL pointer in call to DistributeInitialConditions");
 			}
 			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
 			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
@@ -174,7 +174,7 @@ FileHandler::ProcessRestartFiles(
 				rtn = IRM_FAIL;
 				std::ostringstream errstr;
 				errstr << "File could not be opened: " << it->first.c_str();
-				RM_ErrorMessage(errstr.str().c_str(), 0);
+				RM_ErrorMessage(id, errstr.str().c_str(), 0);
 				continue;
 			}
 			// read file
@@ -192,7 +192,7 @@ FileHandler::ProcessRestartFiles(
 				myfile.close();
 				std::ostringstream errstr;
 				errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
-				RM_Error(errstr.str().c_str());
+				RM_Error(id, errstr.str().c_str());
 			}
 
 			// points are x, y, z, cell_no
@@ -391,7 +391,7 @@ FileHandler::ProcessRestartFiles(
 					Reaction_module_ptr->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
 					delete_command << i << "\n";
 				}
-				if (Reaction_module_ptr->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(0);
+				if (Reaction_module_ptr->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(id);
 			}
 #endif
 		}
@@ -453,7 +453,7 @@ FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *pr
 				xyz_mask == 0 ||
 				print_restart_in == 0)
 			{
-				RM_Error("Null pointer in WriteFiles");
+				RM_Error(id, "Null pointer in WriteFiles");
 			}
 			print_media = *print_media_in;		
 			print_hdf = *print_hdf_in;
@@ -759,7 +759,7 @@ FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 							filename << prefix << "_" << n_user << ".chem.xyz.tsv";
 							if (!this->Get_io()->punch_open(filename.str().c_str()))
 							{
-								RM_Error("Could not open xyz file.");
+								RM_Error(id, "Could not open xyz file.");
 							}
 							this->GetXYZOstreams().push_back(this->Get_io()->Get_punch_ostream());
 							// write first headings

@@ -24,6 +24,7 @@ SUBROUTINE asmslp_flow
   USE solver_direct_mod
   USE solver_iter_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INTERFACE
      SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
        USE machine_constants, ONLY: kdp
@@ -41,6 +42,7 @@ SUBROUTINE asmslp_flow
   REAL(KIND=kdp) :: fddp, sum1, sum2, timenp, udpwkt, upwkt
   LOGICAL :: convp
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: asmslp_flow.F90,v 1.1 2013/09/19 23:15:13 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -58,8 +60,8 @@ SUBROUTINE asmslp_flow
   is = 1
   if (.not. steady_flow) then
      logline1 =  '     Beginning flow calculation.'
-     CALL RM_LogMessage(logline1)
-     CALL RM_ScreenMessage(logline1)
+     status = RM_LogMessage(rm_id, logline1)
+     status = RM_ScreenMessage(rm_id, logline1)
   endif
 40 CONTINUE
   CALL asembl_flow  
@@ -75,7 +77,7 @@ SUBROUTINE asmslp_flow
      WRITE(logline1,*) 'Error in scaling; equation:', iierr
      !$$        WRITE(*,3001) TRIM(logline1)
      !$$3001    FORMAT(/a)
-     !***     CALL RM_ErrorMessage(logline1)
+     !***     status = RM_ErrorMessage(rm_id, logline1)
      RETURN
   END IF
   IF(col_scale) THEN
@@ -161,15 +163,15 @@ SUBROUTINE asmslp_flow
         WRITE(logline2,5013) '          Calculating for Time ..... ',cnvtmi*timenp,'  ('//unittm//')'
 5013    FORMAT(a,1PG12.5,a)
 !!$        WRITE(*,'(//TR10,a/TR15,a/)') logline1,logline2
-        CALL RM_ErrorMessage(logline1)
-        CALL RM_ErrorMessage(logline2)
+        status = RM_ErrorMessage(rm_id, logline1)
+        status = RM_ErrorMessage(rm_id, logline2)
 !!$        WRITE(FULP, 9003) MAXITN, CNVTMI* TIMENP, UNITTM  
 !!$        9003 FORMAT(//TR10, 'Maximum No.(',I4,') of Iterations Reached', &
 !!$             ' for Well Bore Pressure Loop'/TR15, &
 !!$             'Calculating for Time =',1PG12.5,'  (',A,')'/)
         logline1 =  '          A printout of current data was done.'
 !!$        WRITE(*,'(a)') logline1
-        CALL RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
         ERREXE = .TRUE.  
         RETURN  
      ENDIF

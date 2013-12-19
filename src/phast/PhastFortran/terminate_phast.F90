@@ -4,7 +4,7 @@ SUBROUTINE terminate_phast
   USE f_units, ONLY: fuich
   USE machine_constants, ONLY: kdp
   USE mcb, ONLY: ibc
-  USE mcc, ONLY: iprint_chem, iprint_xyz, oldstyle_head_file, prslmi
+  USE mcc, ONLY: iprint_chem, iprint_xyz, oldstyle_head_file, prslmi, rm_id
   USE mcc_m, ONLY: prtichead
   USE mcch, ONLY: f3name
   USE mcg, ONLY: nxyz, nxy
@@ -18,9 +18,11 @@ SUBROUTINE terminate_phast
   USE mpi_mod
 #endif
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   !
   CHARACTER(LEN=160) :: fname
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   INTEGER :: length
   INTEGER :: m, imod, k
   INTEGER :: ios
@@ -69,12 +71,12 @@ SUBROUTINE terminate_phast
   IF(col_scale) THEN
      IF (ident_diagc) THEN
         logline1 = '***INFORMATION: all flow column scaling was unnecessary.'
-        CALL RM_LogMessage(logline1)
-        CALL RM_ScreenMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
      ELSE
         logline1 = '***INFORMATION: flow column scaling was necessary!'
-        CALL RM_LogMessage(logline1)
-        CALL RM_ScreenMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
      ENDIF
   END IF
   CALL closef

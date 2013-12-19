@@ -16,21 +16,10 @@ int advection_cpp()
 
 	// Create reaction module
 	PhreeqcRM phreeqc_rm(&nxyz, &nthreads);
-	phreeqc_rm.SetFilePrefix("Advect");
+	phreeqc_rm.SetFilePrefix("Advect_cpp");
 	if (phreeqc_rm.GetMpiMyself() == 0)
 	{
-		// error_file is stderr
-		PhreeqcRM::GetRmIo().Set_error_ostream(&std::cerr);
-
-		// open echo and log file, prefix.log.txt
-		std::string ln = phreeqc_rm.GetFilePrefix();
-		ln.append(".log.txt");
-		PhreeqcRM::GetRmIo().log_open(ln.c_str());
-
-		// prefix.chem.txt
-		std::string cn = phreeqc_rm.GetFilePrefix();
-		cn.append(".chem.txt");
-		PhreeqcRM::GetRmIo().output_open(cn.c_str());
+		phreeqc_rm.OpenFiles();
 	}
 
 	// Set concentration units

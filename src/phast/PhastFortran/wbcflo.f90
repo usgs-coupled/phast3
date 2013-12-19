@@ -16,6 +16,7 @@ SUBROUTINE wbcflo
   USE mcw
   USE mcw_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   REAL(KIND=kdp) :: uqhw, uqwm
   INTEGER :: a_err, da_err, i, iis, iwel, iwfss, j, k, ks, m, nsa
   LOGICAL :: florev
@@ -23,6 +24,7 @@ SUBROUTINE wbcflo
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uqsw
   INTEGER, PARAMETER :: icxm=3, icxp=4, icym=2, icyp=5, iczm=1, iczp=6
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: wbcflo.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -69,8 +71,8 @@ SUBROUTINE wbcflo
 9012          FORMAT(A,I4,A,I2,A,I2,A,I4)
               WRITE(logline2,9022) ' Flow rate =',uqwm
 9022          format(A,1PG10.2)  
-                call RM_WarningMessage(logline1)
-                call RM_WarningMessage(logline2)
+                status = RM_WarningMessage(rm_id, logline1)
+                status = RM_WarningMessage(rm_id, logline2)
               WRITE(fuwel,9002) 'Production well no. ',iwel,  &
                    ' has down bore flow from level ',k+1,' to ',  &
                    k,'; Time plane N =',itime-1,'Well flow =',uqwm
@@ -97,8 +99,8 @@ SUBROUTINE wbcflo
                 ' has up bore flow from level ',Ks-1,' to ',Ks, &
                 '; Time plane N =',itime-1
            WRITE(logline2,9022) ' Flow rate =',uqwm
-            call RM_WarningMessage(logline1)
-            call RM_WarningMessage(logline2)
+            status = RM_WarningMessage(rm_id, logline1)
+            status = RM_WarningMessage(rm_id, logline2)
            WRITE(fuwel,9002) 'Injection Well No. ',iwel,  &
                 ' has up bore flow from level ',k-1,' to ',k,  &
                 '; Time plane N =',itime-1,'Well flow =',uqwm
@@ -107,7 +109,7 @@ SUBROUTINE wbcflo
   END IF
   IF(florev) THEN
      logline1 =  'Well solute concentrations may be poor approximations (WBBAL)'
-        CALL RM_ErrorMessage(logline1)
+        status = RM_ErrorMessage(rm_id, logline1)
      WRITE(fuwel,9003) 'Well solute concentrations may be poor approximations (WBBAL)'
 9003 FORMAT(tr10,a)  
   END IF

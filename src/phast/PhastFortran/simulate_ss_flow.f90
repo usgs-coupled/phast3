@@ -12,7 +12,9 @@ SUBROUTINE simulate_ss_flow
   USE mcw
   USE mcw_m
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: simulate_ss_flow.f90,v 1.2 2013/09/19 23:15:13 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -21,10 +23,10 @@ SUBROUTINE simulate_ss_flow
   time = 0.0_kdp
   logline1 = '     '
   logline2 = 'Beginning flow calculation for steady-state i.c.'
-    CALL RM_LogMessage(logline1)
-    CALL RM_LogMessage(logline2)
-    CALL RM_ScreenMessage(logline1)
-    CALL RM_ScreenMessage(logline2)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_ScreenMessage(rm_id, logline1)
+    status = RM_ScreenMessage(rm_id, logline2)
   fdtmth = fdtmth_ssflow     ! ... set time differencing method to flow ss 
   DO
      CALL coeff_flow
@@ -64,13 +66,13 @@ SUBROUTINE simulate_ss_flow
      IF(errexe) EXIT
   END DO
   logline2 = 'Done with steady-state flow.'
-    CALL RM_LogMessage(' ')
-    CALL RM_LogMessage(logline2)
-    CALL RM_ScreenMessage(logline2)
+    status = RM_LogMessage(rm_id, ' ')
+    status = RM_LogMessage(rm_id, logline2)
+    status = RM_ScreenMessage(rm_id, logline2)
   IF(errexe .OR. errexi) THEN
      logline1 = 'ERROR exit.'
-        CALL RM_LogMessage(logline1)
-        CALL RM_ScreenMessage(logline1)
+        status = RM_LogMessage(rm_id, logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
   END IF
   ! CALL write4               ! ... calculate and print velocity fields if requested
   CALL init2_post_ss

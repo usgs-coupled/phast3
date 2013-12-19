@@ -24,6 +24,8 @@ SUBROUTINE init2_1
   USE phys_const
   USE reorder_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
+  INTEGER :: status
   !
   INTRINSIC index
   INTERFACE
@@ -1385,12 +1387,12 @@ SUBROUTINE init2_1
         some_dry = .TRUE.
         CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
         WRITE(logline1,'(a)')  'WARNING: A column of cells is dry in init2_1'
-        CALL RM_ScreenMessage(logline1)
-        CALL RM_LogMessage(logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
+        status = RM_LogMessage(rm_id, logline1)
         WRITE(logline1,'(tr5,a,i6,a,i5,a,i5,i5)')   &
              'Cell column:', mt,' (i,j):', icol, ',', jcol
-        CALL RM_ScreenMessage(logline1)
-        CALL RM_LogMessage(logline1)
+        status = RM_ScreenMessage(rm_id, logline1)
+        status = RM_LogMessage(rm_id, logline1)
         print_dry_col(mt) = .TRUE.
      ELSE
         all_dry = .FALSE.
@@ -1398,7 +1400,7 @@ SUBROUTINE init2_1
   END DO
   IF (all_dry) ierr(40) = .TRUE.
   IF (some_dry) THEN
-     CALL RM_WarningMessage('One or more cell columns are dry.')
+     status = RM_WarningMessage(rm_id, 'One or more cell columns are dry.')
   ENDIF
   DO m = 1,nxyz  
      IF(ibc(m) == - 1) THEN

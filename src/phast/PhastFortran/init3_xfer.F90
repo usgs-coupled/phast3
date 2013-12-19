@@ -224,12 +224,14 @@ SUBROUTINE init3_bcast_w
   USE mpi_mod
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   TYPE (Transporter) :: xp
   INTEGER :: ls
   INTEGER, SAVE :: ntd=0
   INTEGER, DIMENSION(2) :: array_recv_i
   REAL(KIND=kdp), DIMENSION(2) :: array_recv_r
   CHARACTER(LEN=130) :: logline1
+  INTEGER :: status
   !     ------------------------------------------------------------------
   !
 
@@ -245,7 +247,7 @@ SUBROUTINE init3_bcast_w
   ntd = ntd+1
   !***** Progress output message
   WRITE(logline1,'(a,i2)') 'Receiving transient data for simulation: Set ',ntd
-  CALL RM_LogMessage(logline1)
+  status = RM_LogMessage(rm_id, logline1)
 
   ! ... 2 receive the flag for rdwtd
   IF(nwel > 0) THEN

@@ -11,9 +11,11 @@ SUBROUTINE timestep_ss_flow
   USE mcv_m
   USE print_control_mod
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   INTRINSIC NINT
   REAL(KIND=kdp) :: adp, uctc, udtim, uptc, utime, utimchg, uttc
   CHARACTER(LEN=130) :: logline1, logline0='    '
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: timestep_ss_flow.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -22,10 +24,10 @@ SUBROUTINE timestep_ss_flow
   itime = itime+1
   WRITE(logline1,5011) 'Beginning steady state time step no. ',itime
 5011 FORMAT(a,i6)
-    CALL RM_LogMessage(logline0)
-    CALL RM_LogMessage(logline1)
-    CALL RM_ScreenMessage(logline0)
-    CALL RM_ScreenMessage(logline1)
+    status = RM_LogMessage(rm_id, logline0)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_ScreenMessage(rm_id, logline0)
+    status = RM_ScreenMessage(rm_id, logline1)
   jtime = jtime+1
   tsfail=.FALSE.
   ! ... Adjust the time step if automatic or print time control
@@ -103,7 +105,7 @@ SUBROUTINE timestep_ss_flow
      WRITE(logline1,5001) '     Current time step length .........................'//  &
           '..........',cnvtmi*deltim,' ('//TRIM(unittm)//')'
 5001 FORMAT(a,1PG12.3,a)
-    CALL RM_LogMessage(logline1)
-    CALL RM_ScreenMessage(logline1)
+    status = RM_LogMessage(rm_id, logline1)
+    status = RM_ScreenMessage(rm_id, logline1)
   ENDIF
 END SUBROUTINE timestep_ss_flow

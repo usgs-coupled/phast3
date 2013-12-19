@@ -19,9 +19,11 @@ SUBROUTINE init2_post_ss
   USE print_control_mod
   USE phys_const
   IMPLICIT NONE
+  INCLUDE "RM_interface.f90.inc"
   REAL(KIND=kdp) :: u0, u1, uc, ut
   INTEGER :: imod, iis, iwel, k, l, m, mt, nr, nsa
   CHARACTER(LEN=130) error_line
+  INTEGER :: status
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: init2_post_ss.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -169,9 +171,9 @@ SUBROUTINE init2_post_ss
 !     ENDIF
      if (pv(m) < 0) then
         WRITE( error_line, *) "Negative pore volume after steady-state calculation, cell ", m
-        CALL RM_ErrorMessage(error_line)
+        status = RM_ErrorMessage(rm_id, error_line)
         WRITE( error_line, *) "Increase porosity, decrease specific storage, or use free surface boundary."
-        CALL RM_ErrorMessage(error_line)
+        status = RM_ErrorMessage(rm_id, error_line)
         ERREXE = .TRUE.  
         RETURN        
      endif
