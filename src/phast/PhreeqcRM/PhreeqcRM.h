@@ -38,9 +38,7 @@ public:
 	static void             CleanupReactionModuleInstances(void);
 	static int              CreateReactionModule(int *nxyz, int *nthreads = NULL);
 	static IRM_RESULT       DestroyReactionModule(int *n);
-    //static void             ErrorStop(const char * str = NULL, size_t l = 0);
 	static PhreeqcRM      * GetInstance(int *n);
-	//static PHRQ_io &        GetRmIo(void) {return PhreeqcRM::phast_io;};
 
 	PhreeqcRM(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
@@ -109,7 +107,6 @@ public:
 	int                                       GetNthreads() {return this->nthreads;}
 	int                                       GetNthSelectedOutputUserNumber(int *i);
 	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
-	//PHRQ_io &                                 GetPhreeqcRmIo(void) {return phreeqcrm_io;};
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
 	std::vector<double> &                     GetPoreVolumeZero(void) {return this->pore_volume_zero;} 
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
@@ -177,7 +174,6 @@ protected:
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
-	//void                                      Pressures2Solutions(int n, std::vector<double> &t);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);
 	void                                      RunCellsThread(int i);
@@ -185,10 +181,7 @@ protected:
 	IRM_RESULT                                RunStringThread(int n, std::string & input);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
 	void                                      SetEndCells(void);
-	//void                                      Temperatures2Solutions(int n, std::vector<double> &t);
 	void                                      TransferCells(cxxStorageBin &t_bin, int old, int nnew);
-	//void                                      WriteError(const char * item);
-	//void                                      WriteOutput(const char * item);
 
 protected:
 	std::string database_file_name;
@@ -207,7 +200,6 @@ protected:
 	double time;						    // time from transport, sec 
 	double time_step;					    // time step from transport, sec
 	double time_conversion;					// time conversion factor, multiply to convert to preferred time unit for output
-	//std::vector<double> concentration;		// nxyz by ncomps concentrations nxyz:components
 	std::vector <double> old_saturation;	// saturation fraction from previous step
 	std::vector<double> saturation;	        // nxyz saturation fraction
 	std::vector<double> pressure;			// nxyz current pressure
@@ -244,10 +236,8 @@ protected:
 
 private:
 	friend class RM_interface;
-	//static PHRQ_io phast_io;
 	static std::map<size_t, PhreeqcRM*> Instances;
 	static size_t InstancesIndex;
 
-	
 };
 #endif // !defined(PHREEQCRM_H_INCLUDED)

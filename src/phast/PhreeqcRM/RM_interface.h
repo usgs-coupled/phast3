@@ -462,26 +462,6 @@ IRM_RESULT RM_LoadDatabase(int *id, const char *db_name = NULL, size_t l = 0);
  *  @endhtmlonly
  */
 IRM_RESULT RM_LogMessage(int * id, const char *str, size_t l = 0);
-#ifdef SKIP
-/**
- *  Send a message to the screen and the log file. 
- *  @param str           String to be sent.
- *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogMessage, RM_ScreenMessage, RM_WarningMessage. 
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>
- *      SUBROUTINE RM_LogMessage(str) 
- *          IMPLICIT NONE
- *          CHARACTER :: str
- *      END SUBROUTINE RM_LogMessage  
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-IRM_RESULT RM_LogScreenMessage(int * id, const char *str, size_t l);
-#endif
 /**
  *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
  *  @param id                   The instance id returned from @ref RM_Create.
