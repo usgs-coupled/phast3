@@ -46,6 +46,7 @@ public:
 	// Key methods	
 	IRM_RESULT                                CloseFiles(void);
 	IRM_RESULT                                CreateMapping(int *grid2chem);
+	void                                      DecodeError(IRM_RESULT r);
 	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
 	void                                      ErrorMessage(const std::string &error_string);
     void                                      ErrorStop(const char * str = NULL, size_t l = 0);
@@ -168,15 +169,17 @@ protected:
 		                                          int *initial_conditions1,
 		                                          int *initial_conditions2, 
 		                                          double *fraction1,
-		                                          std::set<std::string> error_set);
+		                                          std::set<std::string> &error_set);
 	int                                       CheckSelectedOutput();
 	void                                      Concentrations2Solutions(int n, std::vector<double> &c);
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
+	int                                       HandleErrors(std::vector< IRM_RESULT > & r);
+	int                                       HandleErrorsMpi(IRM_RESULT r);
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);
-	void                                      RunCellsThread(int i);
+	IRM_RESULT                                      RunCellsThread(int i);
 	IRM_RESULT                                RunFileThread(int n);
 	IRM_RESULT                                RunStringThread(int n, std::string & input);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
@@ -226,6 +229,7 @@ protected:
 	bool selected_output_on;				// create selected output
 
 	bool stop_message;
+	int error_count;
 
 	// threading
 	int nthreads;
