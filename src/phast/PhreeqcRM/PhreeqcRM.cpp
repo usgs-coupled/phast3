@@ -1386,10 +1386,7 @@ PhreeqcRM::GetConcentrations(double * c)
 	std::vector<double> solns;
 	cxxNameDouble::iterator it;
 
-	if (mpi_myself == 0)
-	{
-		if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
-	}
+	// Put solutions into a vector
 	int n = this->mpi_myself;
 	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 	{
@@ -1406,8 +1403,7 @@ PhreeqcRM::GetConcentrations(double * c)
 	// make buffer to recv solutions
 	double * recv_solns = new double[(size_t) this->count_chemistry * this->components.size()];
 
-	// each process has its own vector of solution components
-	// gather vectors to root
+	// gather solution vectors to root
 	for (int n = 1; n < this->mpi_tasks; n++)
 	{
 		int count = this->end_cell[n] - this->start_cell[n] + 1;
@@ -1428,6 +1424,13 @@ PhreeqcRM::GetConcentrations(double * c)
 	
 	// delete recv buffer
 	delete recv_solns;
+	
+	if (mpi_myself == 0 && c == NULL)
+	{
+		//if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
+		this->ErrorMessage("NULL pointer in GetConcentrations");
+		return IRM_FAIL;
+	}
 
 	// Write vector into c
 	if (this->mpi_myself == 0)
@@ -1467,30 +1470,34 @@ PhreeqcRM::GetConcentrations(double * c)
 	cxxNameDouble::iterator it;
 
 	int j; 
-	if (c == NULL) ErrorStop("NULL pointer in Module2Concentrations");
-	for (int n = 0; n < this->nthreads; n++)
+	if (c != NULL) 
 	{
-		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		for (int n = 0; n < this->nthreads; n++)
 		{
-			// load fractions into d
-			cxxSolution * cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
-			assert (cxxsoln_ptr);
-			this->cxxSolution2concentration(cxxsoln_ptr, d);
-
-			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
-			std::vector<int>::iterator it;
-			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 			{
-				double *d_ptr = &c[*it];
-				size_t i;
-				for (i = 0; i < this->components.size(); i++)
+				// load fractions into d
+				cxxSolution * cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
+				assert (cxxsoln_ptr);
+				this->cxxSolution2concentration(cxxsoln_ptr, d);
+
+				// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+				std::vector<int>::iterator it;
+				for (it = this->back[j].begin(); it != this->back[j].end(); it++)
 				{
-					d_ptr[this->nxyz * i] = d[i];
+					double *d_ptr = &c[*it];
+					size_t i;
+					for (i = 0; i < this->components.size(); i++)
+					{
+						d_ptr[this->nxyz * i] = d[i];
+					}
 				}
 			}
 		}
+		return IRM_OK;
 	}
-	return IRM_OK;
+	ErrorMessage("NULL pointer in GetConcentrations");
+	return IRM_INVALIDARG;
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -1917,6 +1924,7 @@ PhreeqcRM::InitialPhreeqc2Concentrations(
 	}
 	return IRM_OK;
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Module(
@@ -2066,7 +2074,6 @@ PhreeqcRM::InitialPhreeqc2Module(
 #endif
 	return rtn;
 }
-
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::LoadDatabase(const char * database)
@@ -3493,7 +3500,10 @@ PhreeqcRM::RunCellsThread(int n)
 								// Make a dummy run to fill in headings of selected output
 								std::ostringstream input;
 								input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
-								if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
+								if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
+								{
+									throw PhreeqcRMStop();
+								}
 								add_to_cselectedoutputmap = true;
 								break;
 							}
@@ -3575,7 +3585,6 @@ PhreeqcRM::RunFile(int *initial_phreeqc, int * workers, int * utility, const cha
 	{
 		if (initial_phreeqc == NULL || workers == NULL || utility == NULL || chemistry_name == NULL)
 		{
-			//PhreeqcRM::ErrorStop("NULL pointer in PhreeqcRM::RunFile");
 			this->ErrorMessage("NULL pointer in PhreeqcRM::RunFile");
 			this->error_count++;
 		}
@@ -3649,6 +3658,8 @@ IRM_RESULT
 PhreeqcRM::RunFileThread(int n)
 /* ---------------------------------------------------------------------- */
 {
+	try
+	{
 		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
 
 		iphreeqc_phast_worker->SetOutputFileOn(false);
@@ -3667,7 +3678,10 @@ PhreeqcRM::RunFileThread(int n)
 		}
 
 		// Run chemistry file
-		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) ErrorStop("RunFile failed\n");
+		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0)
+		{
+			throw PhreeqcRMStop();
+		}
 
 		// Create a StorageBin with initial PHREEQC for boundary conditions
 		if (n == this->nthreads)
@@ -3676,7 +3690,19 @@ PhreeqcRM::RunFileThread(int n)
 			//this->Get_phreeqc_bin().Clear();
 			//this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 		}
-		return IRM_OK;
+	}
+	catch (PhreeqcRMStop)
+	{
+		return IRM_FAIL;
+	}
+	catch (...)
+	{
+		std::ostringstream e_stream;
+		e_stream << "RunFile failed in worker " << n << "from an unhandled exception.\n";
+		this->ErrorMessage(e_stream.str());
+		return IRM_FAIL;
+	}
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -3765,6 +3791,8 @@ IRM_RESULT
 PhreeqcRM::RunStringThread(int n, std::string & input)
 /* ---------------------------------------------------------------------- */
 {
+	try
+	{
 		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
 
 		iphreeqc_phast_worker->SetOutputFileOn(false);
@@ -3783,16 +3811,29 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 		}
 
 		// Run chemistry file
-		if (iphreeqc_phast_worker->RunString(input.c_str()) > 0) ErrorStop("RunString failed\n");
+		if (iphreeqc_phast_worker->RunString(input.c_str()) > 0) 
+		{
+			throw PhreeqcRMStop();
+		}
 
 		// Create a StorageBin with initial PHREEQC for boundary conditions
 		if (n == this->nthreads)
 		{
 			this->OutputMessage(iphreeqc_phast_worker->GetOutputString());
-			//this->Get_phreeqc_bin().Clear();
-			//this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
-		}
-		return IRM_OK;
+		}	
+	}
+	catch (PhreeqcRMStop)
+	{
+		return IRM_FAIL;
+	}
+	catch (...)
+	{
+		std::ostringstream e_stream;
+		e_stream << "RunString failed in worker " << n << "from an unhandled exception.\n";
+		this->ErrorMessage(e_stream.str());
+		return IRM_FAIL;
+	}
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 void
