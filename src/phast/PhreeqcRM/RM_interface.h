@@ -14,7 +14,8 @@
 #if defined(FC_FUNC_)
 // Called from Fortran or C++
 #define RM_calculate_well_ph               FC_FUNC_ (rm_calculate_well_ph,             RM_CALCULATE_WELL_PH)
-#define RM_CloseFiles                      FC_FUNC_ (rm_closefiles,                    RM_CLOSEFILES)    
+#define RM_CloseFiles                      FC_FUNC_ (rm_closefiles,                    RM_CLOSEFILES)  
+#define RM_Concentrations2Utility          FC_FUNC_ (rm_concentrations2utility,        RM_CONCENTRATIONS2UTILITY)  
 #define RM_convert_to_molal                FC_FUNC_ (rm_convert_to_molal,              RM_CONVERT_TO_MOLAL)   
 #define RM_Create                          FC_FUNC_ (rm_create,                        RM_CREATE)
 #define RM_CreateMapping                   FC_FUNC_ (rm_createmapping,                 RM_CREATEMAPPING)
@@ -107,6 +108,7 @@ void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkali
  */
 IRM_RESULT RM_CloseFiles(int *id);
 void       RM_convert_to_molal(int *id, double *c, int *n, int *dim);
+int        RM_Concentrations2Utility(int *id, double *c, int *n, int *dim, double *tc, double *p_atm);
 /**
  *  Creates a reaction module. 
  *  @param nxyz                   The number of cells in the in the user's model.

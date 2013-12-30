@@ -42,6 +42,37 @@ RM_CloseFiles(int *id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
+int
+RM_Concentrations2Utility(int *id, double *c, int *n, int *dim, double *tc, double *p_atm)
+/* ---------------------------------------------------------------------- */
+{
+	// error_file is stderr
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> c_vector, tc_vector, p_atm_vector;
+		size_t ncomps = Reaction_module_ptr->GetComponents().size();
+		c_vector.resize(*n * ncomps, 0.0);
+
+		for (size_t i = 0; i < (size_t) *n; i++)
+		{
+			for (size_t j = 0; j < ncomps; j++)
+			{
+				c_vector[j * (*n) + i] = c[j * (*dim) + i];
+			}
+			tc_vector.push_back(tc[i]);
+			p_atm_vector.push_back(p_atm[i]);
+		}
+		IPhreeqc * util_ptr = Reaction_module_ptr->Concentrations2Utility(c_vector, tc_vector, p_atm_vector);
+		if (util_ptr != NULL)
+		{
+			return util_ptr->GetId();
+		}
+		return IRM_FAIL;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
 void
 RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 /* ---------------------------------------------------------------------- */
@@ -535,7 +566,7 @@ RM_RunFile(int *id, int *initial_phreeqc, int *workers, int *utility, const char
 	if (Reaction_module_ptr)
 	{
 		std::string str = PhreeqcRM::Char2TrimString(chem_name, l);
-		return Reaction_module_ptr->RunFile(initial_phreeqc, workers, utility, str.c_str());
+		return Reaction_module_ptr->RunFile(*initial_phreeqc, *workers, *utility, str.c_str());
 	}
 	return IRM_BADINSTANCE;
 }
@@ -549,7 +580,7 @@ RM_RunString(int *id, int *initial_phreeqc, int *workers, int *utility, const ch
 	if (Reaction_module_ptr)
 	{
 		std::string str = PhreeqcRM::Char2TrimString(input_string, l);
-		return Reaction_module_ptr->RunString(initial_phreeqc, workers, utility, input_string);
+		return Reaction_module_ptr->RunString(*initial_phreeqc, *workers, *utility, input_string);
 	}
 	return IRM_BADINSTANCE;
 }

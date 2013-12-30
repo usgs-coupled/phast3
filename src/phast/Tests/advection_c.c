@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "RM_interface_C.h"
+#include "IPhreeqc.h"
 
 void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
@@ -41,6 +42,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		double * selected_out;
 		int col;
 		char heading[100];
+		double * tc;
+		double * p_atm;
+		int iphreeqc_id;
 		int dump_on, use_gz;
 
 		nxyz = 40;
@@ -251,6 +255,25 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 				free(selected_out);
 			}
 		}
+
+		// Use utility instance of PhreeqcRM
+		tc = (double *) malloc((size_t) (nxyz * sizeof(double)));
+		p_atm = (double *) malloc((size_t) (nxyz * sizeof(double)));
+		for (i = 0; i < nxyz; i++)
+		{
+			tc[i] = 15.0;
+			p_atm[i] = 3.0;
+		}
+		iphreeqc_id = RM_Concentrations2Utility(id, c, nxyz, nxyz, tc, p_atm);
+		strcpy(str, "RUN_CELLS; -cells 0-19");
+		// Option 1
+		SetOutputFileName(iphreeqc_id, "utility_c.txt");
+		SetOutputFileOn(iphreeqc_id, 1);
+		status = RunString(iphreeqc_id, str);
+		// Option 2
+		status = RM_RunString(id, 0, 0, 1, str); 
+
+		// Dump results
 		dump_on = 1;
 		use_gz = 0;
 		status = RM_DumpModule(id, dump_on, use_gz);    // second argument: gz disabled unless compiled with #define USE_GZ
@@ -283,7 +306,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 	{
 		int i, j;
 		// Advect
-		for (i = nxyz - 1; i > 0; i--)
+		for (i = nxyz/2 - 1; i > 0; i--)
 		{
 			for (j = 0; j < ncomps; j++)
 			{

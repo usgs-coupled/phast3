@@ -4,6 +4,14 @@
             INTEGER :: id
         END FUNCTION RM_CloseFiles
         
+        INTEGER FUNCTION RM_Concentrations2Utility(id, c, n, dim, tc, p_atm)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, INTENT(in) :: c
+            INTEGER, INTENT(in) :: n, dim
+            DOUBLE PRECISION, INTENT(in) :: tc, p_atm
+        END FUNCTION RM_Concentrations2Utility  
+        
         SUBROUTINE RM_convert_to_molal(id, c, n, dim)
             IMPLICIT NONE
             INTEGER :: id

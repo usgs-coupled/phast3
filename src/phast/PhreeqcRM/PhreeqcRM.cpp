@@ -911,7 +911,7 @@ PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 		cxxNameDouble nd;
 		for (k = 3; k < (int) components.size(); k++)
 		{
-			if (d[k] <= 1e-14) d[k] = 0.0;
+			if (d[k] < 0.0) d[k] = 0.0;
 			nd.add(components[k].c_str(), d[k]);
 		}	
 
@@ -919,13 +919,75 @@ PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 		if (soln_ptr)
 		{
 			soln_ptr->Update(d[0], d[1], d[2], nd);
-			//soln_ptr->Set_patm(this->pressure[i]);
-			//soln_ptr->Set_tc(this->tempc[i]);
 		}
 	}
 	return;
 }
+/* ---------------------------------------------------------------------- */
+IPhreeqc * 
+PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
+/* ---------------------------------------------------------------------- */
+{
+	size_t ncomps = this->components.size();
+	size_t nsolns = c.size() / ncomps;
+	size_t nutil= this->nthreads + 1;
 
+	for (size_t i = 0; i < nsolns; i++)
+	{
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		switch (this->input_units_Solution)
+		{
+		case 1:  // mg/L to mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (size_t k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[nsolns * k] * 1e-3 / this->gfw[k]);
+				}	
+			}
+			break;
+		case 2:  // mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (size_t k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[nsolns * k]);
+				}	
+			}
+			break;
+		case 3:  // mass fraction, kg/kg solution to mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (size_t k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
+				}	
+			}
+			break;
+		}
+
+		// update solution 
+		cxxNameDouble nd;
+		for (size_t k = 3; k < (int) components.size(); k++)
+		{
+			if (d[k] < 0.0) d[k] = 0.0;
+			nd.add(components[k].c_str(), d[k]);
+		}	
+		cxxSolution soln;
+		if (d[0] > 0.0 && d[1] > 0.0)
+		{
+			soln.Update(d[0], d[1], d[2], nd);
+		}
+		soln.Set_tc(tc[i]);
+		soln.Set_patm(p_atm[i]);
+		this->workers[nutil]->PhreeqcPtr->Rxn_solution_map[(int) i] = soln;
+	}
+	//return this->workers[nutil]->GetId();
+	return (dynamic_cast< IPhreeqc *> (this->workers[nutil]));
+}
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::Convert_to_molal(double *c, int n, int dim)
@@ -3577,18 +3639,18 @@ PhreeqcRM::RunCellsThread(int n)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunFile(int *initial_phreeqc, int * workers, int * utility, const char * chemistry_name)
+PhreeqcRM::RunFile(int initial_phreeqc, int workers, int utility, const char * chemistry_name)
 /* ---------------------------------------------------------------------- */
 {
 	this->error_count = 0;
-	if (mpi_myself == 0)
-	{
-		if (initial_phreeqc == NULL || workers == NULL || utility == NULL || chemistry_name == NULL)
-		{
-			this->ErrorMessage("NULL pointer in PhreeqcRM::RunFile");
-			this->error_count++;
-		}
-	}
+	//if (mpi_myself == 0)
+	//{
+	//	if (initial_phreeqc == NULL || workers == NULL || utility == NULL || chemistry_name == NULL)
+	//	{
+	//		this->ErrorMessage("NULL pointer in PhreeqcRM::RunFile");
+	//		this->error_count++;
+	//	}
+	//}
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
@@ -3597,9 +3659,9 @@ PhreeqcRM::RunFile(int *initial_phreeqc, int * workers, int * utility, const cha
 	this->SetChemistryFileName(chemistry_name);
 	if (mpi_myself == 0)
 	{
-		flags[0] = *initial_phreeqc;
-		flags[1] = *workers;
-		flags[2] = *utility;
+		flags[0] = initial_phreeqc;
+		flags[1] = workers;
+		flags[2] = utility;
 		flags[3] = this->error_count;
 	}
 #ifdef USE_MPI
@@ -3706,19 +3768,19 @@ PhreeqcRM::RunFileThread(int n)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunString(int *initial_phreeqc, int * workers, int * utility, const char * input_string)
+PhreeqcRM::RunString(int initial_phreeqc, int  workers, int utility, const char * input_string)
 /* ---------------------------------------------------------------------- */
 {
 	this->error_count = 0;
-	if (mpi_myself == 0)
-	{
-		if (initial_phreeqc == NULL || workers == NULL || utility == NULL || input_string == NULL)
-		{
-			//PhreeqcRM::ErrorStop("NULL pointer in PhreeqcRM::RunFile");
-			this->ErrorMessage("NULL pointer in PhreeqcRM::RunFile");
-			this->error_count++;
-		}
-	}
+	//if (mpi_myself == 0)
+	//{
+	//	if (initial_phreeqc == NULL || workers == NULL || utility == NULL || input_string == NULL)
+	//	{
+	//		//PhreeqcRM::ErrorStop("NULL pointer in PhreeqcRM::RunFile");
+	//		this->ErrorMessage("NULL pointer in PhreeqcRM::RunFile");
+	//		this->error_count++;
+	//	}
+	//}
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
@@ -3727,9 +3789,9 @@ PhreeqcRM::RunString(int *initial_phreeqc, int * workers, int * utility, const c
 	flags.resize(5);
 	if (mpi_myself == 0)
 	{
-		flags[0] = *initial_phreeqc;
-		flags[1] = *workers;
-		flags[2] = *utility;
+		flags[0] = initial_phreeqc;
+		flags[1] = workers;
+		flags[2] = utility;
 		flags[3] = (int) input.size();
 		flags[4] = this->error_count;
 	}
@@ -3799,7 +3861,7 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 		iphreeqc_phast_worker->SetErrorFileOn(false);
 		iphreeqc_phast_worker->SetLogFileOn(false);
 		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
-		if (n == this->nthreads)
+		if (n >= this->nthreads)
 		{
 			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
 			iphreeqc_phast_worker->SetOutputStringOn(true);
@@ -3813,11 +3875,11 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 		// Run chemistry file
 		if (iphreeqc_phast_worker->RunString(input.c_str()) > 0) 
 		{
+			this->OutputMessage(iphreeqc_phast_worker->GetOutputString());
 			throw PhreeqcRMStop();
 		}
 
-		// Create a StorageBin with initial PHREEQC for boundary conditions
-		if (n == this->nthreads)
+		if (iphreeqc_phast_worker->GetOutputStringOn())
 		{
 			this->OutputMessage(iphreeqc_phast_worker->GetOutputString());
 		}	

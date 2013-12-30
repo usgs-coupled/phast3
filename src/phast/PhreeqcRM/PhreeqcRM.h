@@ -45,6 +45,8 @@ public:
 	
 	// Key methods	
 	IRM_RESULT                                CloseFiles(void);
+	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c_in, 
+		                                           std::vector<double> t_in, std::vector<double> p_in);
 	IRM_RESULT                                CreateMapping(int *grid2chem);
 	void                                      DecodeError(IRM_RESULT r);
 	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
@@ -67,8 +69,8 @@ public:
 	void                                      LogMessage(const std::string &str);
 	IRM_RESULT                                OpenFiles(void);
 	void                                      OutputMessage(const std::string &str);
-	IRM_RESULT                                RunFile(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name);
-	IRM_RESULT                                RunString(int *initial_phreeqc, int * workers, int *utility, const char *chemistry_name);
+	IRM_RESULT                                RunFile(int initial_phreeqc, int workers, int utility, const char *chemistry_name);
+	IRM_RESULT                                RunString(int initial_phreeqc, int workers, int utility, const char *chemistry_name);
 	IRM_RESULT                                RunCells(void);
 	void                                      ScreenMessage(const std::string &str);
 	void                                      WarningMessage(const std::string &str);
@@ -178,7 +180,7 @@ protected:
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);
-	IRM_RESULT                                      RunCellsThread(int i);
+	IRM_RESULT                                RunCellsThread(int i);
 	IRM_RESULT                                RunFileThread(int n);
 	IRM_RESULT                                RunStringThread(int n, std::string & input);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
