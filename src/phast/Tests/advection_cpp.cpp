@@ -6,7 +6,7 @@
 void AdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int nxyz, int dim);
 void HandleError(PhreeqcRM &rm, IRM_RESULT r, const char *str);
 
-int AdvectionCpp()
+int advection_cpp()
 {
 	// Based on PHREEQC Example 11
 
@@ -102,14 +102,14 @@ int AdvectionCpp()
 	int workers = 1;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
 	int utility = 1;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a 
 	                             // mixture for a well
-    status = phreeqc_rm.RunFile(&initial_phreeqc, &workers, &utility, "advect.pqi"); 
+    status = phreeqc_rm.RunFile(initial_phreeqc, workers, utility, "advect.pqi"); 
 	HandleError(phreeqc_rm, status, "RunFile");
 
 	// For demonstration, clear contents of workers and utility
 	// Worker initial conditions are defined below
 	initial_phreeqc = 0; 
 	std::string input = "DELETE; -all";
-    status = phreeqc_rm.RunString(&initial_phreeqc, &workers, &utility, input.c_str()); 
+    status = phreeqc_rm.RunString(initial_phreeqc, workers, utility, input.c_str()); 
 	HandleError(phreeqc_rm, status, "RunString");
 
 	// Set reference to components
@@ -132,7 +132,7 @@ int AdvectionCpp()
 		ic1[5*nxyz + i] = -1;    // Solid solutions none
 		ic1[6*nxyz + i] = -1;    // Kinetics none
 	}
-	ic1[0] = 100;
+	//ic1[0] = 100;
 	status = phreeqc_rm.InitialPhreeqc2Module(ic1.data(), ic2.data(), f1.data());
 	HandleError(phreeqc_rm, status, "InitialPhreeqc2Module");
 
@@ -236,6 +236,22 @@ int AdvectionCpp()
 			}
 		}
 	}
+
+	// Use utility instance of PhreeqcRM
+	std::vector<double> tc, p_atm;
+	tc.resize(nxyz, 15.0);
+	p_atm.resize(nxyz, 3.0);
+	IPhreeqc * util_ptr = phreeqc_rm.Concentrations2Utility(c, tc, p_atm);
+	input = "RUN_CELLS; -cells 0-19";
+	// Option 1
+	int iphreeqc_result;
+	util_ptr->SetOutputFileName("utility_cpp.txt");
+	util_ptr->SetOutputFileOn(true);
+	iphreeqc_result = util_ptr->RunString(input.c_str());
+	// Option 2
+    status = phreeqc_rm.RunString(0, 0, 1, input.c_str()); 
+
+	// Dump results
 	bool dump_on = true;
 	bool use_gz = false; 
 	status = phreeqc_rm.DumpModule(dump_on, use_gz);    // gz disabled unless compiled with #define USE_GZ
@@ -245,7 +261,7 @@ int AdvectionCpp()
 void
 AdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int nxyz, int dim)
 {
-	for (int i = nxyz - 1 ; i > 0; i--)
+	for (int i = nxyz/2 - 1 ; i > 0; i--)
 	{
 		for (int j = 0; j < ncomps; j++)
 		{

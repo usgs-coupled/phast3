@@ -3,6 +3,7 @@
     subroutine advection_f90()
     implicit none
     INCLUDE 'RM_interface.f90.inc'
+    INCLUDE 'IPhreeqc.f90.inc'
     interface
         subroutine advect_f90(c, bc_conc, ncomps, nxyz, dim)
             implicit none
@@ -44,6 +45,8 @@
     double precision, dimension(:,:), allocatable :: selected_out
     integer                                       :: col
     character(100)                                :: heading
+    double precision, dimension(:), allocatable   :: tc, p_atm
+    integer                                       :: iphreeqc_id
     integer                                       :: dump_on, use_gz
 
     nxyz = 40
@@ -121,7 +124,7 @@
  
     ! For demonstration, clear contents of workers and utility
     ! Worker initial conditions are defined below
-    string = "DELETE -all"
+    string = "DELETE; -all"
     status = RM_RunString(id, 0, 1, 1, string)
  
     ! Set get list of components
@@ -227,6 +230,23 @@
             deallocate(selected_out)
         endif
     enddo
+    
+ 	! Use utility instance of PhreeqcRM
+    allocate(tc(nxyz), p_atm(nxyz))
+	do i = 1, nxyz
+		tc(i) = 15.0
+		p_atm(i) = 3.0
+	enddo
+	iphreeqc_id = RM_Concentrations2Utility(id, c(1,1), nxyz, nxyz, tc(1), p_atm(1))
+	string = "RUN_CELLS; -cells 0-19"
+	! Option 1
+	status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")
+	status = SetOutputFileOn(iphreeqc_id, .true.)
+	status = RunString(iphreeqc_id, string)
+	! Option 2
+	status = RM_RunString(id, 0, 0, 1, string) 
+
+	! Dump results   
     dump_on = 1
     use_gz = 0
     status = RM_DumpModule(dump_on, use_gz)    ! second argument: gz disabled unless compiled with #define USE_GZ
@@ -249,6 +269,8 @@
     deallocate(density);
     deallocate(temperature);
     deallocate(pressure);
+    deallocate(tc);
+    deallocate(p_atm);
     return 
     end subroutine advection_f90
 
@@ -259,7 +281,7 @@
     integer                                       :: ncomps, nxyz, dim
     integer                                       :: i, j
     ! Advect
-    do i = nxyz, 2, -1
+    do i = nxyz/2, 2, -1
         do j = 1, ncomps
             c(i,j) = c(i-1,j)
         enddo

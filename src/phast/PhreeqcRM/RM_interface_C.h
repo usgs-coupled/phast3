@@ -11,6 +11,7 @@ extern "C" {
 void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 int        RM_CloseFiles(int id);
 void       RM_convert_to_molal(int id, double *c, int n, int dim);
+int        RM_Concentrations2Utility(int id, double *c, int n, int dim, double *tc, double *p_atm);
 /**
  *  Creates a reaction module. 
  *  @param nxyz                   The number of cells in the in the user's model.
