@@ -124,7 +124,7 @@ FileHandler::ProcessRestartFiles(
 	*   
 	*      saves results in restart_bin and then the reaction module
 	*/
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		IRM_RESULT rtn = IRM_OK;
@@ -445,7 +445,7 @@ IRM_RESULT
 FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *print_xyz_in, int *xyz_mask, int *print_restart_in)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
 		IRM_RESULT rtn = IRM_OK;
@@ -505,7 +505,7 @@ IRM_RESULT
 FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -601,7 +601,7 @@ IRM_RESULT
 FileHandler::WriteRestart(int *id, int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
@@ -735,7 +735,7 @@ IRM_RESULT
 FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);

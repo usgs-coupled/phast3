@@ -36,11 +36,11 @@ class PhreeqcRM: public PHRQ_base
 {
 public:
 	static void             CleanupReactionModuleInstances(void);
-	static int              CreateReactionModule(int *nxyz, int *nthreads = NULL);
-	static IRM_RESULT       DestroyReactionModule(int *n);
-	static PhreeqcRM      * GetInstance(int *n);
+	static int              CreateReactionModule(int nxyz, int nthreads = -1);
+	static IRM_RESULT       DestroyReactionModule(int n);
+	static PhreeqcRM      * GetInstance(int n);
 
-	PhreeqcRM(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
+	PhreeqcRM(int nxyz = 0, int thread_count = -1, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
 	
 	// Key methods	
