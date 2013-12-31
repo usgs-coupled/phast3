@@ -3,9 +3,6 @@
 */
 #ifndef RM_INTERFACE_H
 #define RM_INTERFACE_H
-//#include "IPhreeqc.h"
-//#include "Var.h"
-
 
 #if defined(_MSC_VER)
 #define FC_FUNC_(name,NAME) NAME
@@ -13,7 +10,6 @@
 
 #if defined(FC_FUNC_)
 // Called from Fortran or C++
-//#define RM_calculate_well_ph               FC_FUNC_ (rm_calculate_well_ph,             RM_CALCULATE_WELL_PH)
 #define RM_CloseFiles                      FC_FUNC_ (rm_closefiles,                    RM_CLOSEFILES)  
 #define RM_Concentrations2Utility          FC_FUNC_ (rm_concentrations2utility,        RM_CONCENTRATIONS2UTILITY)  
 #define RM_convert_to_molal                FC_FUNC_ (rm_convert_to_molal,              RM_CONVERT_TO_MOLAL)   
@@ -21,7 +17,6 @@
 #define RM_CreateMapping                   FC_FUNC_ (rm_createmapping,                 RM_CREATEMAPPING)
 #define RM_Destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
 #define RM_DumpModule                      FC_FUNC_ (rm_dumpmodule,                    RM_DUMPMODULE)
-//#define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_ErrorHandler                    FC_FUNC_ (rm_errorhandler,                  RM_ERRORHANDLER)
 #define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
@@ -75,7 +70,6 @@
 #define RM_SetTime                         FC_FUNC_ (rm_settime,                       RM_SETTIME)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
 #define RM_SetTimeStep                     FC_FUNC_ (rm_settimestep,                   RM_SETTIMESTEP)
-//#define RM_SetUnits                        FC_FUNC_ (rm_setunits,                      RM_SETUNITS)
 #define RM_SetUnitsExchange                FC_FUNC_ (rm_setunitsexchange,              RM_SETUNITSEXCHANGE)
 #define RM_SetUnitsGasPhase                FC_FUNC_ (rm_setunitsgasphase,              RM_SETUNITSGASPHASE)
 #define RM_SetUnitsKinetics                FC_FUNC_ (rm_setunitskinetics,              RM_SETUNITSKINETICS)
@@ -85,7 +79,6 @@
 #define RM_SetUnitsSSassemblage            FC_FUNC_ (rm_setunitsssassemblage,          RM_SETUNITSSSASSEMBLAGE)
 #define RM_SetUnitsSurface                 FC_FUNC_ (rm_setunitssurface,               RM_SETUNITSSURFACE)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
-//#define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
 #endif
 
@@ -93,7 +86,6 @@
 extern "C" {
 #endif
 
-//void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 /**
  *  Closes the output file and log file. 
  *  @see                 @ref RM_OpenFiles
@@ -223,7 +215,6 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-//IRM_RESULT RM_Error(int *id, const char * err_str = NULL, size_t l = 0);
 int RM_ErrorHandler(int *id, int *result, const char * err_str = NULL, size_t l = 0);
 /**
  *  Send an error message to the screen, output file, and log file. 

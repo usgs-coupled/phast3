@@ -12,23 +12,7 @@
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *  Converts data in c from mass fraction to molal
- *  Assumes c(dim, ncomps) and only first n rows are converted
- */
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
-	}
-}
-#endif
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_CloseFiles(int *id)
