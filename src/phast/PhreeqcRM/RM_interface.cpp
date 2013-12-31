@@ -559,28 +559,38 @@ RM_RunCells(int *id)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
-RM_RunFile(int *id, int *initial_phreeqc, int *workers, int *utility, const char *chem_name, size_t l)
+RM_RunFile(int *id, int *workers, int *initial_phreeqc, int *utility, const char *chem_name, size_t l)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
+		std::vector <int> args;
+		args.resize(3,0);
+		args[0] = (workers == NULL) ? 0 : *workers;
+		args[1] = (initial_phreeqc == NULL) ? 0 : *initial_phreeqc;
+		args[2] = (utility == NULL) ? 0 : *utility;
 		std::string str = PhreeqcRM::Char2TrimString(chem_name, l);
-		return Reaction_module_ptr->RunFile(*initial_phreeqc, *workers, *utility, str.c_str());
+		return Reaction_module_ptr->RunFile(args[0], args[1], args[2], str.c_str());
 	}
 	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
-RM_RunString(int *id, int *initial_phreeqc, int *workers, int *utility, const char *input_string, size_t l)
+RM_RunString(int *id, int *workers, int *initial_phreeqc, int *utility, const char *input_string, size_t l)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
-	{
+	{	
+		std::vector <int> args;
+		args.resize(3,0);
+		args[0] = (workers == NULL) ? 0 : *workers;
+		args[1] = (initial_phreeqc == NULL) ? 0 : *initial_phreeqc;
+		args[2] = (utility == NULL) ? 0 : *utility;
 		std::string str = PhreeqcRM::Char2TrimString(input_string, l);
-		return Reaction_module_ptr->RunString(*initial_phreeqc, *workers, *utility, input_string);
+		return Reaction_module_ptr->RunString(args[0], args[1], args[2], input_string);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -716,17 +726,18 @@ IRM_RESULT RM_SetPressure(int *id, double *t)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-RM_SetPrintChemistryOn(int *id,	 int *print_chem)
+RM_SetPrintChemistryOn(int *id,	 int *worker, int *ip, int *utility)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		bool tf = (print_chem == NULL) ? false : (*print_chem != 0);
-		return Reaction_module_ptr->SetPrintChemistryOn(tf);
+		bool tf_w = (worker == NULL) ? false : (*worker != 0);
+		bool tf_ip = (ip == NULL) ? false : (*ip != 0);
+		bool tf_utility = (utility == NULL) ? false : (*utility != 0);
+		return Reaction_module_ptr->SetPrintChemistryOn(tf_w, tf_ip, tf_utility);
 	}
 	return IRM_BADINSTANCE;
-
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t)

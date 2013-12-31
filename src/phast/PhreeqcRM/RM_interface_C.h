@@ -389,7 +389,7 @@ int RM_RunCells(int id);
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, chem_name)
+ *      INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, chem_name)
  *          IMPLICIT NONE
  *          INTEGER, INTENT(in) :: id
  *          INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
@@ -399,7 +399,7 @@ int RM_RunCells(int id);
  *  </CODE>
  *  @endhtmlonly
  */
-int        RM_RunFile(int id, int initial_phreeqc, int workers, int utility, const char *chem_name);
+int        RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *chem_name);
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -414,7 +414,7 @@ int        RM_RunFile(int id, int initial_phreeqc, int workers, int utility, con
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, input_string)
+ *      INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, input_string)
  *          IMPLICIT NONE
  *          INTEGER, INTENT(in) :: id
  *          INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
@@ -424,7 +424,7 @@ int        RM_RunFile(int id, int initial_phreeqc, int workers, int utility, con
  *  </CODE>
  *  @endhtmlonly
  */
-int RM_RunString(int id, int initial_phreeqc, int workers, int utility, const char * input_string);
+int RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char * input_string);
 int RM_ScreenMessage(int id, const char *str);
 int RM_SetCellVolume(int id, double *t);
 int RM_SetConcentrations(int id, double *t);
@@ -435,7 +435,7 @@ int RM_SetFilePrefix(int id, const char *prefix);
 int RM_SetPartitionUZSolids(int id, int t);
 int RM_SetPoreVolume(int id, double *t);
 int RM_SetPoreVolumeZero(int id, double *t);
-int RM_SetPrintChemistryOn(int id, int print_chem);
+int RM_SetPrintChemistryOn(int id, int worker, int ip, int utility);
 int RM_SetPrintChemistryMask(int id, int *t);
 int RM_SetPressure(int id, double *t);
 int RM_SetRebalanceFraction(int id, double *f);

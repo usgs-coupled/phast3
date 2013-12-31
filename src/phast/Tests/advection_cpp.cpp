@@ -75,10 +75,6 @@ int advection_cpp()
 	status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask.data());
 	HandleError(phreeqc_rm, status, "SetPrintChemistryMask");
 
-	// Set printing of chemistry file
-	status = phreeqc_rm.SetPrintChemistryOn(false);
-	HandleError(phreeqc_rm, status, "SetPrintChemistryOn");
-
 	// Partitioning of uz solids
 	status = phreeqc_rm.SetPartitionUZSolids(false);
 	HandleError(phreeqc_rm, status, "SetPartitionUZSolids");
@@ -93,23 +89,27 @@ int advection_cpp()
 	status = phreeqc_rm.CreateMapping(grid2chem.data());
 	HandleError(phreeqc_rm, status, "CreateMapping");
 
+	// Set printing of chemistry file
+	status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
+	HandleError(phreeqc_rm, status, "SetPrintChemistryOn");
+
 	// Load database
 	status = phreeqc_rm.LoadDatabase("phreeqc.dat");
 	HandleError(phreeqc_rm, status, "LoadDatabase");
 
 	// Run file to define solutions and reactants for initial conditions, selected output
-	int initial_phreeqc = 1;     // This is an IPhreeqc for accumulating initial and boundary conditions
 	int workers = 1;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
+	int initial_phreeqc = 1;     // This is an IPhreeqc for accumulating initial and boundary conditions
 	int utility = 1;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a 
 	                             // mixture for a well
-    status = phreeqc_rm.RunFile(initial_phreeqc, workers, utility, "advect.pqi"); 
+    status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "advect.pqi"); 
 	HandleError(phreeqc_rm, status, "RunFile");
 
 	// For demonstration, clear contents of workers and utility
 	// Worker initial conditions are defined below
 	initial_phreeqc = 0; 
 	std::string input = "DELETE; -all";
-    status = phreeqc_rm.RunString(initial_phreeqc, workers, utility, input.c_str()); 
+    status = phreeqc_rm.RunString(workers, initial_phreeqc, utility, input.c_str()); 
 	HandleError(phreeqc_rm, status, "RunString");
 
 	// Set reference to components
@@ -179,7 +179,7 @@ int advection_cpp()
 
 		// Send new conditions to module
 		bool print_chemistry_on = (steps == nsteps - 1) ? true : false;
-		status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on);
+		status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); // workers, initial_phreeqc, utility
 		HandleError(phreeqc_rm, status, "SetPrintChemistryOn");
 		status = phreeqc_rm.SetPoreVolume(pv.data());            // If pore volume changes due to compressibility
 		HandleError(phreeqc_rm, status, "SetPoreVolume");
@@ -243,13 +243,16 @@ int advection_cpp()
 	p_atm.resize(nxyz, 3.0);
 	IPhreeqc * util_ptr = phreeqc_rm.Concentrations2Utility(c, tc, p_atm);
 	input = "RUN_CELLS; -cells 0-19";
-	// Option 1
+	// Option 1, output goes to new file
 	int iphreeqc_result;
 	util_ptr->SetOutputFileName("utility_cpp.txt");
 	util_ptr->SetOutputFileOn(true);
 	iphreeqc_result = util_ptr->RunString(input.c_str());
-	// Option 2
+	// Option 2, output goes to chem.txt file
+	status = phreeqc_rm.SetPrintChemistryOn(false, false, true); // workers, initial_phreeqc, utility
+	HandleError(phreeqc_rm, status, "SetPrintChemistryOn");
     status = phreeqc_rm.RunString(0, 0, 1, input.c_str()); 
+	HandleError(phreeqc_rm, status, "RunString");
 
 	// Dump results
 	bool dump_on = true;

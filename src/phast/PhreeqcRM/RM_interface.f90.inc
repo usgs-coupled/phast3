@@ -189,10 +189,10 @@
             INTEGER :: id
         END FUNCTION RM_RunCells  
         
-        INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, chem_name)
+        INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, chem_name)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
+            INTEGER, OPTIONAL, INTENT(in) :: workers, initial_phreeqc, utility
             CHARACTER, OPTIONAL, INTENT(in) :: chem_name
         END FUNCTION RM_RunFile   
         
@@ -257,10 +257,10 @@
             DOUBLE PRECISION, OPTIONAL :: t
         END FUNCTION RM_SetPressure        
         
-        INTEGER FUNCTION RM_SetPrintChemistryOn(id, print_chem)   
+        INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, ip, utility)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER, OPTIONAL :: print_chem
+            INTEGER, OPTIONAL :: worker, ip, utility
         END FUNCTION RM_SetPrintChemistryOn 
 
         INTEGER FUNCTION RM_SetPrintChemistryMask(id, t)   
