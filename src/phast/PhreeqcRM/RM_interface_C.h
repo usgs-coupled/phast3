@@ -105,7 +105,7 @@ int RM_Destroy(int id);
  */
 int RM_DumpModule(int id, int dump_on, int use_gz);
 //int RM_Error(const char * err_str);
-int RM_ErrorHandler(int id, int result, int stop, const char * err_str);
+int RM_ErrorHandler(int id, int result, const char * err_str);
 int RM_ErrorMessage(int id, const char *err_str);
 /**
  *  Returns the number of items in the list of elements included in solutions and reactants in the IPhreeqcPhast workers.
@@ -446,6 +446,7 @@ int RM_SetRebalanceByCell(int id, int method);
 int RM_SetSaturation(int id, double *t);
 int RM_SetSelectedOutputOn(int id, int selected_output);
 int RM_SetStopMessage(int id, int stop_flag);
+int RM_SetStopOnError(int id, int tf);
 int RM_SetTemperature(int id, double *t);
 int RM_SetTime(int id, double t);
 int RM_SetTimeConversion(int id, double t);

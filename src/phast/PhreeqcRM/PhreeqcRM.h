@@ -52,7 +52,7 @@ public:
 	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
 	void                                      ErrorMessage(const std::string &error_string);
     //void                                      ErrorStop(const char * str = NULL, size_t l = 0);
-	void                                      ErrorHandler(int result, int stop = 1, const char * str = NULL, size_t l = 0);
+	void                                      ErrorHandler(int result, const char * str = NULL, size_t l = 0);
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c);
 	IRM_RESULT                                InitialPhreeqc2Concentrations( 
@@ -154,6 +154,7 @@ public:
 	IRM_RESULT                                SetSaturation(double * t = NULL); 
 	IRM_RESULT                                SetSelectedOutputOn(bool t = false);
 	IRM_RESULT                                SetStopMessage(bool t = false); 
+	IRM_RESULT                                SetStopOnError(bool t = true);
 	IRM_RESULT                                SetTemperature(double * t = NULL);
 	IRM_RESULT                                SetTime(double t = 0.0);
 	IRM_RESULT                                SetTimeConversion(double t = 1.0);
@@ -233,6 +234,7 @@ protected:
 
 	bool stop_message;
 	int error_count;
+	bool stop_on_error;
 
 	// threading
 	int nthreads;

@@ -135,16 +135,14 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_ErrorHandler(int *id, int *result, int *stop, const char * str, size_t l)
+int RM_ErrorHandler(int *id, int *result, const char * str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		//Reaction_module_ptr->ErrorStop(str, l);
-		Reaction_module_ptr->ErrorHandler(*result, *stop, str, l);
+		Reaction_module_ptr->ErrorHandler(*result, str, l);
 		return *result;
-		//return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 }
@@ -843,6 +841,20 @@ RM_SetStopMessage(int *id, int *stop_flag)
 	return IRM_BADINSTANCE;
 }
 
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_SetStopOnError(int *id, int *tf)
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		bool s = (tf == NULL) ? true : (*tf != 0);
+		return Reaction_module_ptr->SetStopOnError(s);
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetTemperature(int *id, double *t)
 /* ---------------------------------------------------------------------- */

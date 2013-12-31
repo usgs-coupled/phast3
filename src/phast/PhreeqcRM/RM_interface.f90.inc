@@ -42,10 +42,10 @@
             INTEGER, OPTIONAL, INTENT(in) :: dump_on, use_gz
         END FUNCTION RM_DumpModule
         
-        INTEGER FUNCTION RM_ErrorHandler(id, result, stop, str)
+        INTEGER FUNCTION RM_ErrorHandler(id, result, str)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: result, stop
+            INTEGER, INTENT(in) :: result
             CHARACTER, OPTIONAL, INTENT(in) :: str
         END FUNCTION RM_ErrorHandler
         

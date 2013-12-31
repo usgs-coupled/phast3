@@ -91,7 +91,7 @@ PhreeqcRM::DestroyReactionModule(int *id)
 }
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::ErrorHandler(int result, int stop, const char *err_str, size_t l)
+PhreeqcRM::ErrorHandler(int result, const char *err_str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
 	if (result < 0)
@@ -104,10 +104,13 @@ PhreeqcRM::ErrorHandler(int result, int stop, const char *err_str, size_t l)
 			error_string.append(Char2TrimString(err_str, l));
 		}
 		this->ErrorMessage(error_string);
+		if (this->stop_on_error)
+		{
 #ifdef MPI
-		MPI_Abort(MPI_COMM_WORLD);
+			MPI_Abort(MPI_COMM_WORLD);
 #endif
-		throw PhreeqcRMStop();
+			throw PhreeqcRMStop();
+		}
 	}
 }
 #ifdef SKIP
@@ -287,6 +290,7 @@ if( numCPU < 1 )
 
 	this->stop_message = false;
 	this->error_count = 0;
+	this->stop_on_error = true;
 
 	// initialize arrays
 	for (int i = 0; i < this->nxyz; i++)
@@ -1250,7 +1254,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 				{
 					std::ostringstream errstr;
 					errstr << "Temporary restart file could not be opened: " << temp_name;
-					this->ErrorHandler(IRM_FAIL, 1, errstr.str().c_str());
+					this->ErrorHandler(IRM_FAIL, errstr.str().c_str());
 					//this->ErrorMessage(errstr.str().c_str());
 					//ErrorStop();
 				}
@@ -1263,7 +1267,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 				{
 					std::ostringstream errstr;
 					errstr << "Temporary restart file could not be opened: " << temp_name;
-					this->ErrorHandler(IRM_FAIL, 1, errstr.str().c_str());
+					this->ErrorHandler(IRM_FAIL, errstr.str().c_str());
 					//this->ErrorMessage(errstr.str().c_str());
 					//ErrorStop();
 				}
@@ -2157,7 +2161,7 @@ PhreeqcRM::InitialPhreeqc2Module(
 			delete_command << i << "\n";
 		}
 		rtn = (IRM_RESULT) this->GetWorkers()[0]->RunString(delete_command.str().c_str());	
-		this->ErrorHandler(rtn, 0, "InitialPhreeqc2Module"); 
+		this->ErrorHandler(rtn, "InitialPhreeqc2Module"); 
 		//if (this->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) ErrorStop("RunString failed");
 	}
 #endif
@@ -4130,7 +4134,7 @@ PhreeqcRM::SetConcentrations(double *t)
 	if (mpi_myself == 0)
 	{
 		if (t == NULL) 
-			this->ErrorHandler(IRM_FAIL, 1, "NULL pointer in SetConcentrations");
+			this->ErrorHandler(IRM_FAIL, "NULL pointer in SetConcentrations");
 		memcpy(c.data(), t, (size_t) (this->nxyz * ncomps * sizeof(double)));
 	}
 #ifdef USE_MPI
@@ -4456,6 +4460,20 @@ PhreeqcRM::SetStopMessage(bool t)
 	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
+IRM_RESULT 
+PhreeqcRM::SetStopOnError(bool t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		this->stop_on_error = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->stop_on_error, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+	return IRM_OK;
+}
+/* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetTemperature(double *t)
 /* ---------------------------------------------------------------------- */
@@ -4712,7 +4730,6 @@ PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count,
 	if (*solution_number == 0) return;
 	MPI_Bcast(bc_solution_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-
 	// Broadcast solution list
 	std::vector<int> my_solution_list;
 	if (mpi_myself == 0)
@@ -4734,9 +4751,7 @@ PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count,
 		{
 			std::ostringstream e_msg;
 			e_msg << "Could not open file. " << fn;
-			this->ErrorHandler(IRM_FAIL, 1, e_msg.str().c_str());
-			//this->ErrorMessage(e_msg.str().c_str());
-			//ErrorStop();
+			this->ErrorHandler(IRM_FAIL, e_msg.str().c_str());
 		}
 	}
 
@@ -4818,7 +4833,7 @@ PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count,
 	{
 		std::ostringstream e_msg;
 		e_msg << "Could not open file. " << fn;
-		this->ErrorHandler(IRM_FAIL, 1, e_msg.str().c_str());
+		this->ErrorHandler(IRM_FAIL, e_msg.str().c_str());
 		//this->ErrorMessage(e_msg.str().c_str());
 		//ErrorStop();
 	}
