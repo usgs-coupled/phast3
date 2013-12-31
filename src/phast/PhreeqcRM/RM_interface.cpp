@@ -22,7 +22,7 @@ RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
  *  Converts data in c from mass fraction to molal
  *  Assumes c(dim, ncomps) and only first n rows are converted
  */
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
@@ -35,7 +35,7 @@ RM_CloseFiles(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	// error_file is stderr
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->CloseFiles();
@@ -48,7 +48,7 @@ RM_Concentrations2Utility(int *id, double *c, int *n, int *dim, double *tc, doub
 /* ---------------------------------------------------------------------- */
 {
 	// error_file is stderr
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::vector<double> c_vector, tc_vector, p_atm_vector;
@@ -82,7 +82,7 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
  *  Converts data in c from mass fraction to molal
  *  Assumes c(dim, ncomps) and only first n rows are converted
  */
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Convert_to_molal(c, *n, *dim);
@@ -93,7 +93,7 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 int RM_Create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
-	return PhreeqcRM::CreateReactionModule(nxyz, nthreads);
+	return PhreeqcRM::CreateReactionModule(*nxyz, *nthreads);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -105,7 +105,7 @@ IRM_RESULT RM_CreateMapping(int *id, int *grid2chem)
 	// Excludes inactive cells and cells that are redundant by symmetry
 	// (1D or 2D chemistry)
 	//
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->CreateMapping(grid2chem);
@@ -117,14 +117,14 @@ IRM_RESULT RM_CreateMapping(int *id, int *grid2chem)
 IRM_RESULT RM_Destroy(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	return PhreeqcRM::DestroyReactionModule(id);
+	return PhreeqcRM::DestroyReactionModule(*id);
 }
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 /* ---------------------------------------------------------------------- */
 {	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		bool dump = (dump_on != 0);
@@ -138,7 +138,7 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 int RM_ErrorHandler(int *id, int *result, const char * str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->ErrorHandler(*result, str, l);
@@ -151,7 +151,7 @@ IRM_RESULT
 RM_ErrorMessage(int *id, const char *err_str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string e_string(err_str, (int) l);
@@ -167,7 +167,7 @@ int
 RM_FindComponents(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return (Reaction_module_ptr->FindComponents());
@@ -179,7 +179,7 @@ RM_FindComponents(int *id)
 int RM_GetChemistryCellCount(int * id)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetChemistryCellCount();
@@ -191,7 +191,7 @@ int RM_GetChemistryCellCount(int * id)
 IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		if (chem_name != NULL)
@@ -216,7 +216,7 @@ IRM_RESULT
 RM_GetConcentrations(int *id, double * c)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetConcentrations(c);
@@ -229,7 +229,7 @@ IRM_RESULT
 RM_GetDensity(int *id, double * d)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->GetDensity();
@@ -246,7 +246,7 @@ IRM_RESULT
 RM_GetFilePrefix(int * id, char *prefix, size_t l)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		strncpy(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), l);
@@ -259,7 +259,7 @@ RM_GetFilePrefix(int * id, char *prefix, size_t l)
 int RM_GetGridCellCount(int * id)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetGridCellCount();
@@ -271,7 +271,7 @@ int
 RM_GetIPhreeqcId(int * id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetIPhreeqcId(*i);
@@ -284,7 +284,7 @@ int
 RM_GetMpiMyself(int * id)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetMpiMyself();
@@ -297,7 +297,7 @@ int
 RM_GetMpiTasks(int * id)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetMpiTasks();
@@ -310,7 +310,7 @@ int
 RM_GetNThreads(int * id)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetNThreads();
@@ -323,7 +323,7 @@ int
 RM_GetNthSelectedOutputUserNumber(int * id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetNthSelectedOutputUserNumber(i);
@@ -335,7 +335,7 @@ RM_GetNthSelectedOutputUserNumber(int * id, int * i)
 IRM_RESULT RM_GetSelectedOutput(int * id, double * so)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutput(so);
@@ -348,7 +348,7 @@ int
 RM_GetSelectedOutputColumnCount(int * id)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutputColumnCount();
@@ -360,7 +360,7 @@ RM_GetSelectedOutputColumnCount(int * id)
 int RM_GetSelectedOutputCount(int * id)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutputCount();
@@ -372,7 +372,7 @@ int RM_GetSelectedOutputCount(int * id)
 IRM_RESULT RM_GetSelectedOutputHeading(int * id, int *icol, char *heading, size_t length)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string head;
@@ -390,7 +390,7 @@ IRM_RESULT RM_GetSelectedOutputHeading(int * id, int *icol, char *heading, size_
 int RM_GetSelectedOutputRowCount(int * id)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutputRowCount();
@@ -402,7 +402,7 @@ int RM_GetSelectedOutputRowCount(int * id)
 double RM_GetTime(int * id)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetTime();
@@ -414,7 +414,7 @@ double RM_GetTime(int * id)
 double RM_GetTimeConversion(int * id)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetTimeConversion();
@@ -426,7 +426,7 @@ double RM_GetTimeConversion(int * id)
 double RM_GetTimeStep(int * id)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetTimeStep();
@@ -462,7 +462,7 @@ RM_InitialPhreeqc2Concentrations(
  *
  */
 	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 			return Reaction_module_ptr->InitialPhreeqc2Concentrations(
@@ -491,7 +491,7 @@ RM_InitialPhreeqc2Module(int *id,
 		// 4 gas phase
 		// 5 ss_assemblage
 		// 6 kinetics
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->InitialPhreeqc2Module(
@@ -506,7 +506,7 @@ IRM_RESULT
 RM_LoadDatabase(int * id, const char *db_name, size_t l)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string db = PhreeqcRM::Char2TrimString(db_name, l);
@@ -520,7 +520,7 @@ IRM_RESULT
 RM_LogMessage(int *id, const char *err_str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string e_string(err_str, (int) l);
@@ -536,7 +536,7 @@ IRM_RESULT
 RM_OpenFiles(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		// Files opened by root
@@ -554,7 +554,7 @@ IRM_RESULT
 RM_OutputMessage(int *id, const char *str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string e_string(str, (int) l);
@@ -571,7 +571,7 @@ IRM_RESULT
 RM_RunCells(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		if (!Reaction_module_ptr->GetStopMessage())
@@ -589,7 +589,7 @@ IRM_RESULT
 RM_RunFile(int *id, int *workers, int *initial_phreeqc, int *utility, const char *chem_name, size_t l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::vector <int> args;
@@ -608,7 +608,7 @@ IRM_RESULT
 RM_RunString(int *id, int *workers, int *initial_phreeqc, int *utility, const char *input_string, size_t l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
 		std::vector <int> args;
@@ -626,7 +626,7 @@ IRM_RESULT
 RM_ScreenMessage(int *id, const char *err_str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string e_string(err_str, (int) l);
@@ -643,7 +643,7 @@ IRM_RESULT
 RM_SetCellVolume(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetCellVolume(t);
@@ -656,7 +656,7 @@ IRM_RESULT
 RM_SetConcentrations(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetConcentrations(t);
@@ -668,7 +668,7 @@ RM_SetConcentrations(int *id, double *t)
 IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int * id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetCurrentSelectedOutputUserNumber(*i);
@@ -681,7 +681,7 @@ IRM_RESULT
 RM_SetDensity(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetDensity(t);
@@ -694,7 +694,7 @@ IRM_RESULT
 RM_SetFilePrefix(int *id, const char *name, size_t nchar)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string str = PhreeqcRM::Char2TrimString(name, nchar);
@@ -708,7 +708,7 @@ IRM_RESULT
 RM_SetPartitionUZSolids(int *id, int *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int tf = (t == NULL) ? 0 : 1;
@@ -720,7 +720,7 @@ RM_SetPartitionUZSolids(int *id, int *t)
 IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetPoreVolume(t);
@@ -732,7 +732,7 @@ IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetPoreVolumeZero(t);
@@ -744,7 +744,7 @@ IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t)
 IRM_RESULT RM_SetPressure(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetPressure(t);
@@ -756,7 +756,7 @@ IRM_RESULT
 RM_SetPrintChemistryOn(int *id,	 int *worker, int *ip, int *utility)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		bool tf_w = (worker == NULL) ? false : (*worker != 0);
@@ -770,7 +770,7 @@ RM_SetPrintChemistryOn(int *id,	 int *worker, int *ip, int *utility)
 IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetPrintChemistryMask(t);
@@ -781,7 +781,7 @@ IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t)
 IRM_RESULT RM_SetRebalanceFraction(int *id, double *f)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		double d = (f == NULL) ? 0.0 : *f;
@@ -793,7 +793,7 @@ IRM_RESULT RM_SetRebalanceFraction(int *id, double *f)
 IRM_RESULT RM_SetRebalanceByCell(int *id, int *method)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		bool m = (method == NULL) ? false : (*method != 0);
@@ -805,7 +805,7 @@ IRM_RESULT RM_SetRebalanceByCell(int *id, int *method)
 IRM_RESULT RM_SetSaturation(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetSaturation(t);
@@ -818,7 +818,7 @@ RM_SetSelectedOutputOn(int *id, int *selected_output_on)
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		bool so = (selected_output_on == NULL) ? false : (*selected_output_on != 0);
@@ -832,7 +832,7 @@ RM_SetStopMessage(int *id, int *stop_flag)
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		bool s = (stop_flag == NULL) ? true : (*stop_flag != 0);
@@ -847,7 +847,7 @@ RM_SetStopOnError(int *id, int *tf)
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		bool s = (tf == NULL) ? true : (*tf != 0);
@@ -859,7 +859,7 @@ RM_SetStopOnError(int *id, int *tf)
 IRM_RESULT RM_SetTemperature(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetTemperature(t);
@@ -875,7 +875,7 @@ RM_SetTime(int *id, double *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		double d = (t == NULL) ? 0.0 : *t;
@@ -891,7 +891,7 @@ IRM_RESULT RM_SetTimeConversion(int *id, double *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		double d = (t == NULL) ? 1.0 : *t;
@@ -908,7 +908,7 @@ RM_SetTimeStep(int *id, double *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		double d = (t == NULL) ? 0.0 : *t;
@@ -921,7 +921,7 @@ IRM_RESULT
 RM_SetUnitsExchange (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int t = (u == NULL) ? 1 : *u;
@@ -934,7 +934,7 @@ IRM_RESULT
 RM_SetUnitsGasPhase (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int t = (u == NULL) ? 1 : *u;
@@ -947,7 +947,7 @@ IRM_RESULT
 RM_SetUnitsKinetics (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int t = (u == NULL) ? 1 : *u;
@@ -960,7 +960,7 @@ IRM_RESULT
 RM_SetUnitsPPassemblage (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int t = (u == NULL) ? 1 : *u;
@@ -973,7 +973,7 @@ IRM_RESULT
 RM_SetUnitsSolution (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int t = (u == NULL) ? 1 : *u;
@@ -986,7 +986,7 @@ IRM_RESULT
 RM_SetUnitsSSassemblage (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int t = (u == NULL) ? 1 : *u;
@@ -999,7 +999,7 @@ IRM_RESULT
 RM_SetUnitsSurface (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		int t = (u == NULL) ? 1 : *u;
@@ -1013,7 +1013,7 @@ IRM_RESULT
 RM_WarningMessage(int *id, const char *err_str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string e_string(err_str, (int) l);
@@ -1035,7 +1035,7 @@ void RM_write_bc_raw(
 			size_t prefix_l)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string fn(prefix, prefix_l);

@@ -52,7 +52,7 @@ void PhreeqcRM::CleanupReactionModuleInstances(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-PhreeqcRM::CreateReactionModule(int *nxyz, int *nthreads)
+PhreeqcRM::CreateReactionModule(int nxyz, int nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	int n = IRM_OUTOFMEMORY;
@@ -74,19 +74,19 @@ PhreeqcRM::CreateReactionModule(int *nxyz, int *nthreads)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::DestroyReactionModule(int *id)
+PhreeqcRM::DestroyReactionModule(int id)
 /* ---------------------------------------------------------------------- */
 {
 	IRM_RESULT retval = IRM_BADINSTANCE;
-	if (id)
-	{
-		std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(size_t(*id));
+	//if (id)
+	//{
+		std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(size_t(id));
 		if (it != PhreeqcRM::Instances.end())
 		{
 			delete (*it).second;
 			retval = IRM_OK;
 		}
-	}
+	//}
 	return retval;
 }
 /* ---------------------------------------------------------------------- */
@@ -145,17 +145,17 @@ PhreeqcRM::ErrorStop(const char *err_str, size_t l)
 #endif
 /* ---------------------------------------------------------------------- */
 PhreeqcRM*
-PhreeqcRM::GetInstance(int *id)
+PhreeqcRM::GetInstance(int id)
 /* ---------------------------------------------------------------------- */
 {
-	if (id != NULL)
-	{
-		std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(size_t(*id));
+	//if (id != NULL)
+	//{
+		std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(size_t(id));
 		if (it != PhreeqcRM::Instances.end())
 		{
 			return (*it).second;
 		}
-	}
+	//}
 	return 0;
 }
 /*
@@ -164,7 +164,7 @@ PhreeqcRM::GetInstance(int *id)
 //
 */
 
-PhreeqcRM::PhreeqcRM(int *nxyz_arg, int *thread_count, PHRQ_io *io)
+PhreeqcRM::PhreeqcRM(int nxyz_arg, int thread_count, PHRQ_io *io)
 	//
 	// constructor
 	//
@@ -237,17 +237,13 @@ if( numCPU < 1 )
 			errstr << "Number of grid cells (nxyz) not defined in creating PhreeqcRM"; 
 			error_msg(errstr.str().c_str(), 1);
 		}
-		this->nxyz = *nxyz_arg;
+		this->nxyz = nxyz_arg;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->nxyz, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	this->nthreads = 1;
 #else
-	this->nthreads = n;
-	if (thread_count != NULL)
-	{
-		this->nthreads = (*thread_count > 0) ? *thread_count : n;
-	}
+	this->nthreads = (thread_count > 0) ? thread_count : n;
 #endif
 
 	// last one is to calculate well pH

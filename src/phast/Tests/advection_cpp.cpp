@@ -16,7 +16,7 @@ int advection_cpp()
 	IRM_RESULT status;
 
 	// Create reaction module
-	PhreeqcRM phreeqc_rm(&nxyz, &nthreads);
+	PhreeqcRM phreeqc_rm(nxyz, nthreads);
 	status = phreeqc_rm.SetFilePrefix("Advect_cpp");
 	HandleError(phreeqc_rm, status, "SetFilePrefix");
 	if (phreeqc_rm.GetMpiMyself() == 0)
