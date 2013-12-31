@@ -12,23 +12,7 @@
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_calculate_well_ph(int id, double *c, double * ph, double * alkalinity)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *  Converts data in c from mass fraction to molal
- *  Assumes c(dim, ncomps) and only first n rows are converted
- */
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
-	}
-}
-#endif
+
 /* ---------------------------------------------------------------------- */
 int
 RM_CloseFiles(int id)
@@ -756,21 +740,6 @@ RM_SetPrintChemistryOn(int id,	 int worker, int ip, int utility)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int
-RM_SetPrintChemistryOn(int id,	 int print_chem)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->SetPrintChemistryOn(print_chem != 0);
-	}
-	return IRM_BADINSTANCE;
-
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int RM_SetPrintChemistryMask(int id, int *t)
 /* ---------------------------------------------------------------------- */

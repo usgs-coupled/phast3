@@ -8,7 +8,6 @@
 extern "C" {
 #endif
 
-//void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 int        RM_CloseFiles(int id);
 void       RM_convert_to_molal(int id, double *c, int n, int dim);
 int        RM_Concentrations2Utility(int id, double *c, int n, int dim, double *tc, double *p_atm);
@@ -104,7 +103,6 @@ int RM_Destroy(int id);
  *  @endhtmlonly
  */
 int RM_DumpModule(int id, int dump_on, int use_gz);
-//int RM_Error(const char * err_str);
 int RM_ErrorHandler(int id, int result, const char * err_str);
 int RM_ErrorMessage(int id, const char *err_str);
 /**
