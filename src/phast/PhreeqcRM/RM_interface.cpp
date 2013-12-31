@@ -12,7 +12,7 @@
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
@@ -28,6 +28,7 @@ RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
 		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
 	}
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_CloseFiles(int *id)
@@ -134,14 +135,16 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_Error(int *id, const char * str, size_t l)
+int RM_ErrorHandler(int *id, int *result, int *stop, const char * str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->ErrorStop(str, l);
-		return IRM_OK;
+		//Reaction_module_ptr->ErrorStop(str, l);
+		Reaction_module_ptr->ErrorHandler(*result, *stop, str, l);
+		return *result;
+		//return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
 }
@@ -265,6 +268,18 @@ int RM_GetGridCellCount(int * id)
 	}
 	return IRM_BADINSTANCE;
 }
+/* ---------------------------------------------------------------------- */
+int 
+RM_GetIPhreeqcId(int * id, int * i)
+	/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetIPhreeqcId(*i);
+	}
+	return IRM_BADINSTANCE;
+}
 
 /* ---------------------------------------------------------------------- */
 int 
@@ -291,6 +306,20 @@ RM_GetMpiTasks(int * id)
 	}
 	return IRM_BADINSTANCE;
 }
+
+/* ---------------------------------------------------------------------- */
+int 
+RM_GetNThreads(int * id)
+	/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetNThreads();
+	}
+	return IRM_BADINSTANCE;
+}
+
 /* ---------------------------------------------------------------------- */
 int 
 RM_GetNthSelectedOutputUserNumber(int * id, int * i)

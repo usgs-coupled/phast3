@@ -23,6 +23,7 @@ SUBROUTINE write5
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE print_control_mod
   IMPLICIT NONE
+  INCLUDE 'IPhreeqc.f90.inc'
   INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX, INT
@@ -47,6 +48,10 @@ SUBROUTINE write5
   REAL(KIND=kdp) :: ph, alk
   CHARACTER(LEN=130) :: logline1, logline2
   INTEGER :: status
+  CHARACTER(LEN=100) :: string, svalue
+  INTEGER :: iphreeqc_id, vtype
+  DOUBLE PRECISION :: tc, p_atm
+  DOUBLE PRECISION :: c_well(100)
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: write5.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -749,6 +754,7 @@ SUBROUTINE write5
         ntprwel = ntprwel+1
      END IF
      IF(prtem) THEN
+        string = "RUN_CELLS; -cell 0"
         DO  iwel=1,nwel
            mkt=mwel(iwel,nkswel(iwel))
            u2=0.d0
@@ -761,6 +767,7 @@ SUBROUTINE write5
               !              u2=pwkt(iwel)/(den0*gz)+zwt(iwel)  !***incorrect
               DO  is=1,ns
                  u10(is)=cwkt_mol(iwel,is)
+                 c_well(is) = c(mkt,is)
               END DO
            ELSE
               ! ... Observation well Q=0 ,WQMETH=0
@@ -768,13 +775,20 @@ SUBROUTINE write5
               IF (solute) THEN
                  DO  is=1,ns
                     u10(is)=c_mol(mkt,is)
+                    c_well(is) = c(mkt,is)
                  END DO
               ENDIF
            END IF
            ! ... Write to file 'FUPLT' for post processing to temporal plots
            ! Calculate pH of well mixture
            IF (solute) THEN
-              CALL RM_calculate_well_ph(u10, ph, alk)
+              !CALL RM_calculate_well_ph(u10, ph, alk)
+              tc = 25.0
+              p_atm = 1.0
+              iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well(1), 1, 1, tc, p_atm)
+              status = RunString(iphreeqc_id, string)
+              status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
+              status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, alk, svalue)              
               WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+2,'(1pe15.7,a))'
               WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
                    cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &

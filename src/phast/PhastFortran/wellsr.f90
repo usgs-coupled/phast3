@@ -670,7 +670,7 @@ SUBROUTINE wellsr
 200 CONTINUE
   WRITE(fuwel,9005) 'Well no. ',iwel,' has all zero mobility factors; WELLSR, ITIME =',itime
   WRITE(logline1,9015) 'Well no. ',iwel,' has all zero mobility factors; WELLSR, ITIME =',itime
-!**  status = RM_ErrorMessage(rm_id, logline1)
+  status = RM_ErrorMessage(rm_id, logline1)
   DEALLOCATE (jwell, mobw, ucwkt, uqsw, &
        stat = da_err)
   IF (da_err /= 0) THEN  

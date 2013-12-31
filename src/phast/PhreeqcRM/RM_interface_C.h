@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
+//void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 int        RM_CloseFiles(int id);
 void       RM_convert_to_molal(int id, double *c, int n, int dim);
 int        RM_Concentrations2Utility(int id, double *c, int n, int dim, double *tc, double *p_atm);
@@ -104,8 +104,9 @@ int RM_Destroy(int id);
  *  @endhtmlonly
  */
 int RM_DumpModule(int id, int dump_on, int use_gz);
-int       RM_Error(const char * err_str);
-int       RM_ErrorMessage(int id, const char *err_str);
+//int RM_Error(const char * err_str);
+int RM_ErrorHandler(int id, int result, int stop, const char * err_str);
+int RM_ErrorMessage(int id, const char *err_str);
 /**
  *  Returns the number of items in the list of elements included in solutions and reactants in the IPhreeqcPhast workers.
  *  @param id            The instance id returned from @ref RM_Create.
@@ -200,8 +201,10 @@ int RM_GetFilePrefix(int id, char *prefix, size_t l);
  *  @endhtmlonly
  */
 int        RM_GetGridCellCount(int id);
+int        RM_GetIPhreeqcId(int id, int i);
 int        RM_GetMpiMyself(int id);
 int        RM_GetMpiTasks(int id);
+int        RM_GetNThreads(int id);
 int        RM_GetNthSelectedOutputUserNumber(int id, int i);
 int        RM_GetSelectedOutput(int id, double *so);
 int        RM_GetSelectedOutputColumnCount(int id);

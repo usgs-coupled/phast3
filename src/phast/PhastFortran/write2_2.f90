@@ -21,6 +21,8 @@ SUBROUTINE write2_2
   USE mg2_m
   USE phys_const
   IMPLICIT NONE
+  INCLUDE 'IPhreeqc.f90.inc'
+  INCLUDE 'RM_interface.f90.inc'
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
 !!$  CHARACTER(LEN=11) :: chu2, chu3, fmt1
@@ -50,6 +52,10 @@ SUBROUTINE write2_2
   REAL(KIND=kdp) :: ph, alk
   INTEGER :: da_err
   INTEGER :: a_err
+  CHARACTER(LEN=100) :: string, svalue
+  INTEGER :: iphreeqc_id, nthreads, status, vtype
+  DOUBLE PRECISION, DIMENSION(100) :: c_well
+  DOUBLE PRECISION :: tc, p_atm
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: write2_2.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -65,8 +71,13 @@ SUBROUTINE write2_2
   nr = nx
   ! ... Load and compute molal concentrations
   c_mol = c
-    CALL RM_convert_to_molal(rm_id, c_mol, nxyz, nxyz)
+  CALL RM_convert_to_molal(rm_id, c_mol(1,1), nxyz, nxyz)
   IF(nwel > 0) THEN
+     nthreads = RM_GetNThreads(rm_id)
+     iphreeqc_id = RM_GetIPhreeqcId(rm_id, nthreads + 1)
+     string = "SELECTED_OUTPUT; -reset false; -pH; -alkalinity"
+     status = RunString(iphreeqc_id, string)
+     string = "RUN_CELLS; -cell 0"
      IF(solute .AND. prtic_well_timser) THEN
         ! ... Write static data to file 'FUPLT' for temporal plots
         WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+2,'(1pe15.7,a)) '
@@ -78,7 +89,17 @@ SUBROUTINE write2_2
            u2=p(m)/(den0*gz)+zwt(iwel)
            ! ... Well has ambient cell concentrations at initial conditions
            iis = 1
-            CALL RM_calculate_well_ph(c(m,iis), ph, alk)
+           !CALL RM_calculate_well_ph(c(m,iis), ph, alk)
+           tc = 25.0
+           p_atm = 1.0
+           do i = 1, ns
+               c_well(i) = c(m,i)
+           enddo       
+           iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well(1), 1, 1, tc, p_atm)
+           status = RM_ErrorHandler(rm_id, iphreeqc_id, 1, "write2_2, RM_Concentrations2Utility");
+           status = RunString(iphreeqc_id, string)
+           status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
+           status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, alk, svalue)
            WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
                 cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
                 (c(m,iis),ACHAR(9),iis=1,ns),ph,ACHAR(9), alk, ACHAR(9)
