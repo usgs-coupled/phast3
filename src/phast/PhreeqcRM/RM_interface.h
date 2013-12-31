@@ -13,7 +13,7 @@
 
 #if defined(FC_FUNC_)
 // Called from Fortran or C++
-#define RM_calculate_well_ph               FC_FUNC_ (rm_calculate_well_ph,             RM_CALCULATE_WELL_PH)
+//#define RM_calculate_well_ph               FC_FUNC_ (rm_calculate_well_ph,             RM_CALCULATE_WELL_PH)
 #define RM_CloseFiles                      FC_FUNC_ (rm_closefiles,                    RM_CLOSEFILES)  
 #define RM_Concentrations2Utility          FC_FUNC_ (rm_concentrations2utility,        RM_CONCENTRATIONS2UTILITY)  
 #define RM_convert_to_molal                FC_FUNC_ (rm_convert_to_molal,              RM_CONVERT_TO_MOLAL)   
@@ -21,7 +21,8 @@
 #define RM_CreateMapping                   FC_FUNC_ (rm_createmapping,                 RM_CREATEMAPPING)
 #define RM_Destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
 #define RM_DumpModule                      FC_FUNC_ (rm_dumpmodule,                    RM_DUMPMODULE)
-#define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
+//#define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
+#define RM_ErrorHandler                    FC_FUNC_ (rm_errorhandler,                  RM_ERRORHANDLER)
 #define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
 #define RM_GetChemistryCellCount           FC_FUNC_ (rm_getchemistrycellcount,         RM_GETNCHEMISTRYCELLCOUNT)
@@ -32,6 +33,8 @@
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
 #define RM_GetMpiTasks                     FC_FUNC_ (rm_getmpitasks,                   RM_GETMPITASKS)
 #define RM_GetGridCellCount                FC_FUNC_ (rm_getgridcellcount,              RM_GETGRIDCELLCOUNT)
+#define RM_GetIPhreeqcId                   FC_FUNC_ (rm_getiphreeqcid,                 RM_GETIPHREEQCID)
+#define RM_GetNThreads                     FC_FUNC_ (rm_getnthreads,                   RM_GETNTHREADS)
 #define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
 #define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
 #define RM_GetSelectedOutputColumnCount    FC_FUNC_ (rm_getselectedoutputcolumncount,  RM_GETSELECTEDOUTPUTCOLUMNCOUNT)
@@ -89,7 +92,7 @@
 extern "C" {
 #endif
 
-void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
+//void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 /**
  *  Closes the output file and log file. 
  *  @see                 @ref RM_OpenFiles
@@ -219,7 +222,8 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_Error(int *id, const char * err_str = NULL, size_t l = 0);
+//IRM_RESULT RM_Error(int *id, const char * err_str = NULL, size_t l = 0);
+int RM_ErrorHandler(int *id, int *result, int *stop, const char * err_str = NULL, size_t l = 0);
 /**
  *  Send an error message to the screen, output file, and log file. 
  *  @param str           String to be sent.
@@ -334,8 +338,10 @@ IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, size_t l);
  *  @endhtmlonly
  */
 int        RM_GetGridCellCount(int *id);
+int        RM_GetIPhreeqcId(int *id, int *i);
 int        RM_GetMpiMyself(int *id);
 int        RM_GetMpiTasks(int *id);
+int        RM_GetNThreads(int *id);
 int        RM_GetNthSelectedOutputUserNumber(int *id, int *i);
 IRM_RESULT RM_GetSelectedOutput(int *id, double *so = NULL);
 int        RM_GetSelectedOutputColumnCount(int *id);

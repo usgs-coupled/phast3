@@ -48,10 +48,11 @@ public:
 	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c_in, 
 		                                           std::vector<double> t_in, std::vector<double> p_in);
 	IRM_RESULT                                CreateMapping(int *grid2chem);
-	void                                      DecodeError(IRM_RESULT r);
+	void                                      DecodeError(int r);
 	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
 	void                                      ErrorMessage(const std::string &error_string);
-    void                                      ErrorStop(const char * str = NULL, size_t l = 0);
+    //void                                      ErrorStop(const char * str = NULL, size_t l = 0);
+	void                                      ErrorHandler(int result, int stop = 1, const char * str = NULL, size_t l = 0);
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c);
 	IRM_RESULT                                InitialPhreeqc2Concentrations( 
@@ -82,7 +83,7 @@ public:
 		                                           const std::string &backup_name);
 
 	// TODO ///////////////////////////
-	void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
+	//void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void                           Convert_to_molal(double *c, int n, int dim);
 	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                         int * solution_number, 
@@ -105,9 +106,10 @@ public:
 	int                                       GetInputUnitsGasPhase(void) {return this->input_units_GasPhase;}
 	int                                       GetInputUnitsSSassemblage(void) {return this->input_units_SSassemblage;}
 	int                                       GetInputUnitsKinetics(void) {return this->input_units_Kinetics;}
+	int                                       GetIPhreeqcId(int i) {return (i > 0 && i < this->nthreads + 2) ? this->workers[i]->GetId() : -1;};
 	const int                                 GetMpiMyself(void) const {return this->mpi_myself;}
 	const int                                 GetMpiTasks(void) const {return this->mpi_tasks;}
-	int                                       GetNthreads() {return this->nthreads;}
+	int                                       GetNThreads() {return this->nthreads;}
 	int                                       GetNthSelectedOutputUserNumber(int *i);
 	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
@@ -176,7 +178,7 @@ protected:
 	void                                      Concentrations2Solutions(int n, std::vector<double> &c);
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
-	int                                       HandleErrors(std::vector< int > & r);
+	int                                       HandleErrorsInternal(std::vector< int > & r);
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);

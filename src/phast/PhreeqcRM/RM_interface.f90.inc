@@ -42,11 +42,12 @@
             INTEGER, OPTIONAL, INTENT(in) :: dump_on, use_gz
         END FUNCTION RM_DumpModule
         
-        INTEGER FUNCTION RM_Error(id, str)
+        INTEGER FUNCTION RM_ErrorHandler(id, result, stop, str)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
+            INTEGER, INTENT(in) :: result, stop
             CHARACTER, OPTIONAL, INTENT(in) :: str
-        END FUNCTION RM_Error
+        END FUNCTION RM_ErrorHandler
         
         INTEGER FUNCTION RM_ErrorMessage(id, errstr)
             IMPLICIT NONE
@@ -88,6 +89,12 @@
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetGridCellCount
         
+        INTEGER FUNCTION RM_GetIPhreeqcId(id, i)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, INTENT(in) :: i
+        END FUNCTION RM_GetIPhreeqcId
+        
         INTEGER FUNCTION RM_GetMpiMyself(id)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
@@ -97,6 +104,11 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetMpiTasks
+        
+        INTEGER FUNCTION RM_GetNThreads(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetNThreads
         
         INTEGER FUNCTION RM_GetNthSelectedOutputUserNumber(id, n)
             IMPLICIT NONE

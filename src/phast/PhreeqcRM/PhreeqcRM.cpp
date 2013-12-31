@@ -89,7 +89,28 @@ PhreeqcRM::DestroyReactionModule(int *id)
 	}
 	return retval;
 }
-
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::ErrorHandler(int result, int stop, const char *err_str, size_t l)
+/* ---------------------------------------------------------------------- */
+{
+	if (result < 0)
+	{
+		this->DecodeError(result);
+		std::string error_string;
+		error_string = "Stopping in PhreeqcRM::ErrorHandler\n";
+		if (err_str)
+		{
+			error_string.append(Char2TrimString(err_str, l));
+		}
+		this->ErrorMessage(error_string);
+#ifdef MPI
+		MPI_Abort(MPI_COMM_WORLD);
+#endif
+		throw PhreeqcRMStop();
+	}
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::ErrorStop(const char *err_str, size_t l)
@@ -118,6 +139,7 @@ PhreeqcRM::ErrorStop(const char *err_str, size_t l)
 	//exit(4);
 	throw PhreeqcRMStop();
 }
+#endif
 /* ---------------------------------------------------------------------- */
 PhreeqcRM*
 PhreeqcRM::GetInstance(int *id)
@@ -291,7 +313,7 @@ PhreeqcRM::~PhreeqcRM(void)
 {
 	std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(this->GetWorkers()[0]->Get_Index());
 
-	for (int i = 0; i <= it->second->GetNthreads(); i++)
+	for (int i = 0; i < it->second->GetNThreads() + 2; i++)
 	{
 		delete it->second->GetWorkers()[i];
 	}
@@ -303,7 +325,7 @@ PhreeqcRM::~PhreeqcRM(void)
 }
 
 // PhreeqcRM methods
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::Calculate_well_ph(double *c, double * pH, double * alkalinity)
@@ -349,6 +371,7 @@ PhreeqcRM::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 	//	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->mass_water_aq_x;
 	return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::CellInitialize(
@@ -1146,7 +1169,7 @@ PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<doub
 
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::DecodeError(IRM_RESULT r)
+PhreeqcRM::DecodeError(int r)
 /* ---------------------------------------------------------------------- */
 {
 	if (r < 0)
@@ -1227,8 +1250,9 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 				{
 					std::ostringstream errstr;
 					errstr << "Temporary restart file could not be opened: " << temp_name;
-					this->ErrorMessage(errstr.str().c_str());
-					ErrorStop();
+					this->ErrorHandler(IRM_FAIL, 1, errstr.str().c_str());
+					//this->ErrorMessage(errstr.str().c_str());
+					//ErrorStop();
 				}
 #endif
 			}
@@ -1239,8 +1263,9 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 				{
 					std::ostringstream errstr;
 					errstr << "Temporary restart file could not be opened: " << temp_name;
-					this->ErrorMessage(errstr.str().c_str());
-					ErrorStop();
+					this->ErrorHandler(IRM_FAIL, 1, errstr.str().c_str());
+					//this->ErrorMessage(errstr.str().c_str());
+					//ErrorStop();
 				}
 			}
 		}
@@ -1831,7 +1856,7 @@ PhreeqcRM::GetSelectedOutputRowCount()
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 int
-PhreeqcRM::HandleErrors(std::vector <int> & r_vector)
+PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 /* ---------------------------------------------------------------------- */
 {
 	// Check for errors
@@ -1900,7 +1925,7 @@ PhreeqcRM::HandleErrors(std::vector <int> & r_vector)
 #else
 /* ---------------------------------------------------------------------- */
 int
-PhreeqcRM::HandleErrors(std::vector< int > &rtn)
+PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 /* ---------------------------------------------------------------------- */
 {
 	// Check for errors
@@ -2131,7 +2156,9 @@ PhreeqcRM::InitialPhreeqc2Module(
 			this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
 			delete_command << i << "\n";
 		}
-		if (this->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) ErrorStop("RunString failed");
+		rtn = (IRM_RESULT) this->GetWorkers()[0]->RunString(delete_command.str().c_str());	
+		this->ErrorHandler(rtn, 0, "InitialPhreeqc2Module"); 
+		//if (this->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) ErrorStop("RunString failed");
 	}
 #endif
 	return rtn;
@@ -2145,7 +2172,7 @@ PhreeqcRM::LoadDatabase(const char * database)
 	r_vector.resize(1);
 
 	r_vector[0] = this->SetDatabaseFileName(database);
-	if (this->HandleErrors(r_vector) > 0)
+	if (this->HandleErrorsInternal(r_vector) > 0)
 	{
 		return IRM_FAIL;
 	}
@@ -2165,7 +2192,7 @@ PhreeqcRM::LoadDatabase(const char * database)
 	} 	
 
 	// Check errors
-	if (this->HandleErrors(r_vector) > 0)
+	if (this->HandleErrorsInternal(r_vector) > 0)
 	{
 		return IRM_FAIL;
 	}
@@ -3331,7 +3358,7 @@ PhreeqcRM::RunCells()
 	} 	
 
 	// Count errors and write error messages
-	if (HandleErrors(r_vector) > 0)
+	if (HandleErrorsInternal(r_vector) > 0)
 	{
 		return IRM_FAIL;
 	}
@@ -3382,7 +3409,7 @@ PhreeqcRM::RunCells()
 	} 
 
 	// Count errors and write error messages
-	if (HandleErrors(rtn) > 0)
+	if (HandleErrorsInternal(rtn) > 0)
 	{
 		return IRM_FAIL;
 	}
@@ -3726,7 +3753,7 @@ PhreeqcRM::RunFile(int workers, int initial_phreeqc, int utility, const char * c
 	} 
 
 	// Check errors
-	if (HandleErrors(r_vector) > 0)
+	if (HandleErrorsInternal(r_vector) > 0)
 	{
 		return IRM_FAIL;
 	}
@@ -3874,7 +3901,7 @@ PhreeqcRM::RunString(int  workers, int initial_phreeqc, int utility, const char 
 	} 
 
 	// Check errors
-	if (HandleErrors(r_vector) > 0)
+	if (HandleErrorsInternal(r_vector) > 0)
 	{
 		return IRM_FAIL;
 	}
@@ -4102,7 +4129,8 @@ PhreeqcRM::SetConcentrations(double *t)
 	c.resize(ncomps * nxyz, INACTIVE_CELL_VALUE);
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) ErrorStop("NULL pointer in SetConcentrations");
+		if (t == NULL) 
+			this->ErrorHandler(IRM_FAIL, 1, "NULL pointer in SetConcentrations");
 		memcpy(c.data(), t, (size_t) (this->nxyz * ncomps * sizeof(double)));
 	}
 #ifdef USE_MPI
@@ -4706,8 +4734,9 @@ PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count,
 		{
 			std::ostringstream e_msg;
 			e_msg << "Could not open file. " << fn;
-			this->ErrorMessage(e_msg.str().c_str());
-			ErrorStop();
+			this->ErrorHandler(IRM_FAIL, 1, e_msg.str().c_str());
+			//this->ErrorMessage(e_msg.str().c_str());
+			//ErrorStop();
 		}
 	}
 
@@ -4789,8 +4818,9 @@ PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count,
 	{
 		std::ostringstream e_msg;
 		e_msg << "Could not open file. " << fn;
-		this->ErrorMessage(e_msg.str().c_str());
-		ErrorStop();
+		this->ErrorHandler(IRM_FAIL, 1, e_msg.str().c_str());
+		//this->ErrorMessage(e_msg.str().c_str());
+		//ErrorStop();
 	}
 
 	int raw_number = *solution_number;
