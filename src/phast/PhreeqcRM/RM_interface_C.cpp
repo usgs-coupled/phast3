@@ -132,7 +132,7 @@ int RM_DumpModule(int id, int dump_on, int use_gz)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_ErrorHandler(int id, int result, int stop, const char * str)
+int RM_ErrorHandler(int id, int result, const char * str)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
@@ -145,9 +145,7 @@ int RM_ErrorHandler(int id, int result, int stop, const char * str)
 			std::string e_string(str);
 			trim_right(e_string);
 		}
-		//Reaction_module_ptr->ErrorStop(str);
-		Reaction_module_ptr->ErrorHandler(result, stop, str);
-		//return IRM_OK;
+		Reaction_module_ptr->ErrorHandler(result, str);
 		return result;
 	}
 	return IRM_BADINSTANCE;
@@ -840,6 +838,20 @@ RM_SetStopMessage(int id, int stop_flag)
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetStopMessage(stop_flag != 0);
+	}
+	return IRM_BADINSTANCE;
+}
+
+/* ---------------------------------------------------------------------- */
+int
+RM_SetStopOnError(int id, int tf)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
+	if (Reaction_module_ptr)
+	{
+		bool s = (tf != 0);
+		return Reaction_module_ptr->SetStopOnError(s);
 	}
 	return IRM_BADINSTANCE;
 }

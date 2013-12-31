@@ -148,7 +148,7 @@ FileHandler::ProcessRestartFiles(
 			{
 				int result = IRM_FAIL;
 				int stop = 1; 
-				RM_ErrorHandler(id, &result, &stop, "NULL pointer in call to DistributeInitialConditions");
+				RM_ErrorHandler(id, &result, "NULL pointer in call to DistributeInitialConditions");
 			}
 			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
 			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
@@ -196,7 +196,7 @@ FileHandler::ProcessRestartFiles(
 				errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
 				int result = IRM_FAIL;
 				int stop = 1; 
-				RM_ErrorHandler(id, &result, &stop, errstr.str().c_str());
+				RM_ErrorHandler(id, &result, errstr.str().c_str());
 			}
 
 			// points are x, y, z, cell_no
@@ -396,7 +396,7 @@ FileHandler::ProcessRestartFiles(
 					delete_command << i << "\n";
 				}
 				int status = Reaction_module_ptr->GetWorkers()[0]->RunString(delete_command.str().c_str());
-				Reaction_module_ptr->ErrorHandler(status, 1, "ProcessRestartFiles, RunString");
+				Reaction_module_ptr->ErrorHandler(status, "ProcessRestartFiles, RunString");
 				//if (Reaction_module_ptr->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(id);
 			}
 #endif
@@ -459,7 +459,7 @@ FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *pr
 				xyz_mask == 0 ||
 				print_restart_in == 0)
 			{
-				Reaction_module_ptr->ErrorHandler(IRM_FAIL, 1, "NULL pointer in FileHandler::WriteFiles");
+				Reaction_module_ptr->ErrorHandler(IRM_FAIL, "NULL pointer in FileHandler::WriteFiles");
 				//RM_Error(id, "Null pointer in WriteFiles");
 			}
 			print_media = *print_media_in;		
@@ -767,7 +767,7 @@ FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 							if (!this->Get_io()->punch_open(filename.str().c_str()))
 							{
 								//RM_Error(id, "Could not open xyz file.");
-								Reaction_module_ptr->ErrorHandler(IRM_FAIL, 1, "Could not open xyz file.");
+								Reaction_module_ptr->ErrorHandler(IRM_FAIL, "Could not open xyz file.");
 							}
 							this->GetXYZOstreams().push_back(this->Get_io()->Get_punch_ostream());
 							// write first headings
