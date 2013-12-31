@@ -542,7 +542,7 @@ IRM_RESULT RM_OutputMessage(int *id, const char * err_str = NULL, size_t l = 0);
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, chem_name)
+ *      INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc,utility, chem_name)
  *          IMPLICIT NONE
  *          INTEGER, INTENT(in) :: id
  *          INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
@@ -552,7 +552,7 @@ IRM_RESULT RM_OutputMessage(int *id, const char * err_str = NULL, size_t l = 0);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility, const char *chem_name = NULL, size_t l = 0);
+IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility, const char *chem_name = NULL, size_t l = 0);
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -567,7 +567,7 @@ IRM_RESULT RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      INTEGER FUNCTION RM_RunFile(id, initial_phreeqc, workers, utility, input_string)
+ *      INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, input_string)
  *          IMPLICIT NONE
  *          INTEGER, INTENT(in) :: id
  *          INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
@@ -577,7 +577,7 @@ IRM_RESULT RM_RunFile(int *id, int *initial_phreeqc, int * workers, int *utility
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_RunString(int *id, int *initial_phreeqc, int * workers, int *utility, const char * input_string = NULL, size_t l = 0);
+IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string = NULL, size_t l = 0);
 /**
  *  Send a message to the screen. 
  *  @param str           String to be sent to the screen.
@@ -605,7 +605,7 @@ IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, size_t l = 0);
 IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t = NULL);
 IRM_RESULT RM_SetPoreVolume(int *id, double *t = NULL);
 IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t = NULL);
-IRM_RESULT RM_SetPrintChemistryOn(int *id, int *print_chem = NULL);
+IRM_RESULT RM_SetPrintChemistryOn(int *id, int *worker = NULL, int *ip = NULL, int *utility = NULL);
 IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t = NULL);
 IRM_RESULT RM_SetPressure(int *id, double *t = NULL);
 IRM_RESULT RM_SetRebalanceFraction(int *id, double *f = NULL);

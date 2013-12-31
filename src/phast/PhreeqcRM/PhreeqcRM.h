@@ -69,8 +69,8 @@ public:
 	void                                      LogMessage(const std::string &str);
 	IRM_RESULT                                OpenFiles(void);
 	void                                      OutputMessage(const std::string &str);
-	IRM_RESULT                                RunFile(int initial_phreeqc, int workers, int utility, const char *chemistry_name);
-	IRM_RESULT                                RunString(int initial_phreeqc, int workers, int utility, const char *chemistry_name);
+	IRM_RESULT                                RunFile(int workers, int initial_phreeqc, int utility, const char *chemistry_name);
+	IRM_RESULT                                RunString(int workers, int initial_phreeqc, int utility, const char *str);
 	IRM_RESULT                                RunCells(void);
 	void                                      ScreenMessage(const std::string &str);
 	void                                      WarningMessage(const std::string &str);
@@ -114,7 +114,7 @@ public:
 	std::vector<double> &                     GetPoreVolumeZero(void) {return this->pore_volume_zero;} 
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
 	std::vector<int> &                        GetPrintChemistryMask (void) {return this->print_chem_mask;}
-	const bool                                GetPrintChemistryOn(void) const {return this->print_chemistry_on;}  
+	const std::vector <bool> &                GetPrintChemistryOn(void) const {return this->print_chemistry_on;}  
 	bool                                      GetRebalanceMethod(void) const {return this->rebalance_by_cell;}
 	double                                    GetRebalanceFraction(void) const {return this->rebalance_fraction;}
 	std::vector<double> &                     GetSaturation(void) {return this->saturation;}
@@ -145,7 +145,7 @@ public:
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
 	IRM_RESULT                                SetPoreVolumeZero(double * t = NULL);
 	IRM_RESULT                                SetPrintChemistryMask(int * t = NULL);
-	IRM_RESULT                                SetPrintChemistryOn(bool t = false);
+	IRM_RESULT                                SetPrintChemistryOn(bool worker = false, bool ip = false, bool utility = false);
 	IRM_RESULT                                SetPressure(double * t = NULL);  
 	IRM_RESULT                                SetRebalanceFraction(double t = 0.0); 
 	IRM_RESULT                                SetRebalanceByCell(bool t = false); 
@@ -226,7 +226,7 @@ protected:
 	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 
 
 	// print flags
-	bool print_chemistry_on;				// print flag for chemistry output file 
+	std::vector<bool> print_chemistry_on;	// print flag for chemistry output file 
 	bool selected_output_on;				// create selected output
 
 	bool stop_message;

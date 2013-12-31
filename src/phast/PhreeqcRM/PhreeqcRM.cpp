@@ -253,7 +253,7 @@ if( numCPU < 1 )
 	this->rebalance_fraction = 0.5;				// parameter for rebalancing process load for parallel	
 
 	// print flags
-	this->print_chemistry_on = false;			// print flag for chemistry output file 
+	this->print_chemistry_on.resize(3, false);  // print flag for chemistry output file 	
 	this->selected_output_on = true;			// Create selected output
 	this->input_units_Solution = 3;				// 1 mg/L, 2 mmol/L, 3 kg/kgs
 	this->input_units_PPassemblage = 1;			// water 1, rock 2
@@ -3299,7 +3299,7 @@ PhreeqcRM::RunCells()
 	{
 
 		// write output results
-		if (this->print_chemistry_on)
+		if (this->print_chemistry_on[0])
 		{		
 			// Need to transfer output stream to root and print
 			if (this->mpi_myself == n)
@@ -3390,7 +3390,7 @@ PhreeqcRM::RunCells()
 	// write output results
 	for (int n = 0; n < this->nthreads; n++)
 	{
-		if (this->print_chemistry_on)
+		if (this->print_chemistry_on[0])
 		{
 			this->OutputMessage(this->workers[n]->Get_out_stream().str().c_str());
 		}
@@ -3445,6 +3445,23 @@ PhreeqcRM::RunCellsThread(int n)
 		int end = this->end_cell[n];
 #endif
 		phast_iphreeqc_worker->Get_cell_clock_times().clear();
+
+		// Find the print flag
+		bool pr_chemistry_on;
+		if (n < this->nthreads)
+		{
+			pr_chemistry_on = print_chemistry_on[0];
+		}
+		else if (n == this->nthreads)
+		{
+			pr_chemistry_on = print_chemistry_on[1];
+		}
+		else
+		{
+			pr_chemistry_on = print_chemistry_on[2];
+		}
+
+		// run the cells
 		for (i = start; i <= end; i++)
 		{							/* i is count_chem number */
 			j = back[i][0];			/* j is nxyz number */
@@ -3454,7 +3471,7 @@ PhreeqcRM::RunCellsThread(int n)
 			phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) clock());
 #endif
 			// Set local print flags
-			bool pr_chem = this->print_chemistry_on && (this->print_chem_mask[j] != 0);
+			bool pr_chem = pr_chemistry_on && (this->print_chem_mask[j] != 0);
 
 			// partition solids between UZ and SZ
 			if (this->partition_uz_solids)
@@ -3639,7 +3656,7 @@ PhreeqcRM::RunCellsThread(int n)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunFile(int initial_phreeqc, int workers, int utility, const char * chemistry_name)
+PhreeqcRM::RunFile(int workers, int initial_phreeqc, int utility, const char * chemistry_name)
 /* ---------------------------------------------------------------------- */
 {
 	this->error_count = 0;
@@ -3659,8 +3676,8 @@ PhreeqcRM::RunFile(int initial_phreeqc, int workers, int utility, const char * c
 	this->SetChemistryFileName(chemistry_name);
 	if (mpi_myself == 0)
 	{
-		flags[0] = initial_phreeqc;
-		flags[1] = workers;
+		flags[0] = workers;
+		flags[1] = initial_phreeqc;
 		flags[2] = utility;
 		flags[3] = this->error_count;
 	}
@@ -3681,14 +3698,14 @@ PhreeqcRM::RunFile(int initial_phreeqc, int workers, int utility, const char * c
 	// Set flag for each IPhreeqc instance
 	if (flags[0] != 0)
 	{
-		run[this->nthreads] = true;
-	}
-	if (flags[1] != 0)
-	{
 		for (int i = 0; i < this->nthreads; i++)
 		{
 			run[i] = true;
 		}
+	}
+	if (flags[1] != 0)
+	{
+		run[this->nthreads] = true;
 	}
 	if (flags[2] != 0)
 	{
@@ -3728,6 +3745,22 @@ PhreeqcRM::RunFileThread(int n)
 		iphreeqc_phast_worker->SetErrorFileOn(false);
 		iphreeqc_phast_worker->SetLogFileOn(false);
 		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
+		iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
+
+		// Set output string on
+		if (n < this->nthreads)
+		{
+			iphreeqc_phast_worker->SetOutputStringOn(this->print_chemistry_on[0]);
+		}
+		else if (n == this->nthreads)
+		{
+			iphreeqc_phast_worker->SetOutputStringOn(this->print_chemistry_on[1]);
+		}
+		else
+		{
+			iphreeqc_phast_worker->SetOutputStringOn(this->print_chemistry_on[2]);
+		}
+#ifdef SKIP
 		if (n == this->nthreads)
 		{
 			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
@@ -3738,7 +3771,7 @@ PhreeqcRM::RunFileThread(int n)
 			iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
 			iphreeqc_phast_worker->SetOutputStringOn(false);
 		}
-
+#endif
 		// Run chemistry file
 		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0)
 		{
@@ -3768,7 +3801,7 @@ PhreeqcRM::RunFileThread(int n)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunString(int initial_phreeqc, int  workers, int utility, const char * input_string)
+PhreeqcRM::RunString(int  workers, int initial_phreeqc, int utility, const char * input_string)
 /* ---------------------------------------------------------------------- */
 {
 	this->error_count = 0;
@@ -3789,8 +3822,8 @@ PhreeqcRM::RunString(int initial_phreeqc, int  workers, int utility, const char 
 	flags.resize(5);
 	if (mpi_myself == 0)
 	{
-		flags[0] = initial_phreeqc;
-		flags[1] = workers;
+		flags[0] = workers;
+		flags[1] = initial_phreeqc;
 		flags[2] = utility;
 		flags[3] = (int) input.size();
 		flags[4] = this->error_count;
@@ -3814,14 +3847,14 @@ PhreeqcRM::RunString(int initial_phreeqc, int  workers, int utility, const char 
 	r_vector.resize(this->nthreads + 2, 0);
 	if (flags[0] != 0)
 	{
-		run[this->nthreads] = true;
-	}
-	if (flags[1] != 0)
-	{
 		for (int i = 0; i < this->nthreads; i++)
 		{
 			run[i] = true;
 		}
+	}
+	if (flags[1] != 0)
+	{
+		run[this->nthreads] = true;
 	}
 	if (flags[2] != 0)
 	{
@@ -3861,6 +3894,22 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 		iphreeqc_phast_worker->SetErrorFileOn(false);
 		iphreeqc_phast_worker->SetLogFileOn(false);
 		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
+		iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
+
+		// Set output string on
+		if (n < this->nthreads)
+		{
+			iphreeqc_phast_worker->SetOutputStringOn(this->print_chemistry_on[0]);
+		}
+		else if (n == this->nthreads)
+		{
+			iphreeqc_phast_worker->SetOutputStringOn(this->print_chemistry_on[1]);
+		}
+		else
+		{
+			iphreeqc_phast_worker->SetOutputStringOn(this->print_chemistry_on[2]);
+		}
+#ifdef SKIP
 		if (n >= this->nthreads)
 		{
 			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
@@ -3871,7 +3920,7 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 			iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
 			iphreeqc_phast_worker->SetOutputStringOn(false);
 		}
-
+#endif
 		// Run chemistry file
 		if (iphreeqc_phast_worker->RunString(input.c_str()) > 0) 
 		{
@@ -4264,16 +4313,23 @@ PhreeqcRM::SetPressure(double *t)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
-PhreeqcRM::SetPrintChemistryOn(bool t)
+PhreeqcRM::SetPrintChemistryOn(bool worker, bool ip, bool utility)
 /* ---------------------------------------------------------------------- */
 {
+	std::vector<int> l;
+	l.resize(3);
 	if (mpi_myself == 0)
 	{
-		this->print_chemistry_on = t;
+		l[0] = worker ? 1 : 0;
+		l[1] = ip ? 1 : 0;
+		l[2] = utility ? 1 : 0;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->print_chemistry_on, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+	MPI_Bcast(l.data(), 3, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
+	this->print_chemistry_on[0] = l[0] != 0;
+	this->print_chemistry_on[1] = l[1] != 0;
+	this->print_chemistry_on[2] = l[2] != 0;
 	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */

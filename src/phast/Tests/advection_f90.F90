@@ -19,7 +19,6 @@
     integer :: nthreads
     integer :: id
     integer :: status
-    integer :: print_chemistry_on
     integer :: partition_uz_solids
     double precision, dimension(:), allocatable   :: cell_vol
     double precision, dimension(:), allocatable   :: pv0
@@ -97,8 +96,7 @@
     status = RM_SetPrintChemistryMask(id, print_chemistry_mask(1))
     
     ! Set printing of chemistry file to false
-    print_chemistry_on = 0
-    status = RM_SetPrintChemistryOn(id, print_chemistry_on)
+    status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
     
     ! Partitioning of uz solids
     partition_uz_solids = 0
@@ -125,7 +123,7 @@
     ! For demonstration, clear contents of workers and utility
     ! Worker initial conditions are defined below
     string = "DELETE; -all"
-    status = RM_RunString(id, 0, 1, 1, string)
+    status = RM_RunString(id, 1, 0, 1, string)  ! workers, initial_phreeqc, utility
  
     ! Set get list of components
     ncomps = RM_FindComponents(id)
@@ -189,13 +187,12 @@
         status = RM_SetPressure(id, pressure(1))        ! If pressure changes
         status = RM_SetConcentrations(id, c(1,1))
         
-        ! Set print flag
-        print_chemistry_on = 1
+        ! print at last time step
  		if (isteps == nsteps - 1) then
-            ! print at last time step
-            print_chemistry_on = 1
+            status = RM_SetPrintChemistryOn(id, 1, 0, 0)  ! workers, initial_phreeqc, utility
+        else
+            status = RM_SetPrintChemistryOn(id, 0, 0, 0)  ! workers, initial_phreeqc, utility
         endif
-        status = RM_SetPrintChemistryOn(id, print_chemistry_on)
         ! Run cells with new conditions
         time = time + time_step
         status = RM_SetTime(id, time) 
@@ -203,7 +200,7 @@
         status = RM_GetConcentrations(id, c(1,1))
  
         ! Print results at last time step
-        if (print_chemistry_on .ne. 0) then
+        if (isteps == nsteps - 1) then
  			! Get current density
             status = RM_GetDensity(id, density(1))
 
@@ -239,11 +236,12 @@
 	enddo
 	iphreeqc_id = RM_Concentrations2Utility(id, c(1,1), nxyz, nxyz, tc(1), p_atm(1))
 	string = "RUN_CELLS; -cells 0-19"
-	! Option 1
+	! Option 1, output goes to new file
 	status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")
 	status = SetOutputFileOn(iphreeqc_id, .true.)
 	status = RunString(iphreeqc_id, string)
-	! Option 2
+	! Option 2, output goes to chem.txt file
+    status = RM_SetPrintChemistryOn(id, 0, 0, 1)  ! workers, initial_phreeqc, utility
 	status = RM_RunString(id, 0, 0, 1, string) 
 
 	! Dump results   

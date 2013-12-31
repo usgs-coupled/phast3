@@ -560,14 +560,14 @@ int RM_RunCells(int id)
 
 /* ---------------------------------------------------------------------- */
 int 
-RM_RunFile(int id, int initial_phreeqc, int workers, int utility, const char *chem_name)
+RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *chem_name)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
 	if (Reaction_module_ptr)
 	{
 		std::string str = PhreeqcRM::Char2TrimString(chem_name);
-		return Reaction_module_ptr->RunFile(initial_phreeqc, workers, utility, str.c_str());
+		return Reaction_module_ptr->RunFile(workers, initial_phreeqc, utility, str.c_str());
 	}
 	return IRM_BADINSTANCE;
 }
@@ -716,6 +716,23 @@ int RM_SetPressure(int id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
+
+/* ---------------------------------------------------------------------- */
+int
+RM_SetPrintChemistryOn(int id,	 int worker, int ip, int utility)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(&id);
+	if (Reaction_module_ptr)
+	{
+		bool tf_w = (worker != 0);
+		bool tf_ip = (ip != 0);
+		bool tf_utility = (utility != 0);
+		return Reaction_module_ptr->SetPrintChemistryOn(tf_w, tf_ip, tf_utility);
+	}
+	return IRM_BADINSTANCE;
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int
 RM_SetPrintChemistryOn(int id,	 int print_chem)
@@ -729,6 +746,7 @@ RM_SetPrintChemistryOn(int id,	 int print_chem)
 	return IRM_BADINSTANCE;
 
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int RM_SetPrintChemistryMask(int id, int *t)
 /* ---------------------------------------------------------------------- */

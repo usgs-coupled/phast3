@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
 {
 	int mpi_tasks;
 	int mpi_myself;
-
+	
 #if defined(USE_MPI)
 	if (MPI_Init(&argc, &argv) != MPI_SUCCESS)
 	{
@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
 	///*tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;*/
 	//_CrtSetDbgFlag(tmpDbgFlag);
 	//_crtBreakAlloc = 198;
-
+	
 	PHAST_SUB(&mpi_tasks, &mpi_myself);
 
 #if defined(USE_MPI)

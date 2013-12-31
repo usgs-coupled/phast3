@@ -403,7 +403,7 @@ SUBROUTINE CreateRM
     IF (rm_id.LT.0) THEN
         STOP
     END IF
-    
+    status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
     status = RM_LoadDatabase(rm_id, f2name);
     status = RM_SetFilePrefix(rm_id, f3name)
     status = RM_OpenFiles(rm_id)
@@ -456,7 +456,7 @@ SUBROUTINE InitialEquilibrationRM
         deltim_dummy = 0._kdp
         status = RM_SetPoreVolume(rm_id, pv(1))
         status = RM_SetSaturation(rm_id, frac(1))
-        status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi)
+        status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi, 0, 0)
 	    status = 0
 	    if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)
@@ -594,7 +594,7 @@ SUBROUTINE TimeStepRM
         status = RM_SetPoreVolume(rm_id, pv(1))
         status = RM_SetSaturation(rm_id, frac(1))
         
-        status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer)
+        status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer, 0, 0)
 	    status = 0
         if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)

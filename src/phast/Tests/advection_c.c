@@ -15,7 +15,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int nthreads;
 		int id;
 		int status;
-		int print_chemistry_on;
 		double * cell_vol;
 		double * pv0;
 		double * pv;
@@ -91,11 +90,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		print_chemistry_mask = (int *) malloc((size_t) (nxyz * sizeof(int)));
 		for (i = 0; i < nxyz; i++) print_chemistry_mask[i] = 1;
 		status = RM_SetPrintChemistryMask(id, print_chemistry_mask);
-		
-		// Set printing of chemistry file to false
-		print_chemistry_on = 0;
-		status = RM_SetPrintChemistryOn(id, print_chemistry_on);
-		
+				
 		// Partitioning of uz solids
 		status = RM_SetPartitionUZSolids(id, 0);
 
@@ -105,6 +100,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		status = RM_CreateMapping(id, grid2chem);
 		
 		// Load database
+		status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
 		status = RM_LoadDatabase(id, "phreeqc.dat"); 
 
 		// Run file to define solutions and reactants for initial conditions, selected output
@@ -117,7 +113,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		// For demonstration, clear contents of workers and utility
 		// Worker initial conditions are defined below
 		strcpy(str, "DELETE; -all");
-		status = RM_RunString(id, 0, 1, 1, str);	 
+		status = RM_RunString(id, 1, 0, 1, str);	// workers, initial_phreeqc, utility 
  
 		// Set get list of components
 		ncomps = RM_FindComponents(id);
@@ -211,12 +207,14 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			status = RM_SetConcentrations(id, c);
         
 			// Set print flag
-			print_chemistry_on = 0;
  			if (isteps == nsteps - 1) 
 			{
-				print_chemistry_on = 1;                   // print at last time step
+				status = RM_SetPrintChemistryOn(id, 1, 0, 0); // print at last time step, workers, initial_phreeqc, utility
 			}
-			status = RM_SetPrintChemistryOn(id, print_chemistry_on);
+			else
+			{
+				status = RM_SetPrintChemistryOn(id, 0, 0, 0); // workers, initial_phreeqc, utility
+			}
 			// Run cells with new conditions
 			time = time + time_step;
 			status = RM_SetTime(id, time); 
@@ -224,7 +222,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			status = RM_GetConcentrations(id, c);
  
 			// Print results at last time step
-			if (print_chemistry_on != 0) 
+			if (isteps == nsteps - 1) 
 			{
  				// Get current density
 				status = RM_GetDensity(id, density);
@@ -271,6 +269,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		SetOutputFileOn(iphreeqc_id, 1);
 		status = RunString(iphreeqc_id, str);
 		// Option 2
+		status = RM_SetPrintChemistryOn(id, 0, 0, 1);  // workers, initial_phreeqc, utility
 		status = RM_RunString(id, 0, 0, 1, str); 
 
 		// Dump results
