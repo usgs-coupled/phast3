@@ -1046,7 +1046,7 @@ PhreeqcRM::CreateMapping(int *t)
 	// Distribute work with new count_chemistry
 	SetEndCells();
 
-	return return_value;
+	return this->ReturnHandler(return_value, "PhreeqcRM::CreateMapping");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1152,64 +1152,81 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 	IRM_RESULT return_value = IRM_OK;
-	if (dump)
-	{
-		std::string char_buffer;
-		bool use_gz;
-		use_gz = use_gz_in;
+
+	// return if dump is false
+	if (!dump) return return_value;
+
+	// open dump file
+	std::string char_buffer;
+	bool use_gz;
+	use_gz = use_gz_in;
 #ifdef USE_GZ
-		ogzstream ofs_restart_gz;
+	ogzstream ofs_restart_gz;
 #else
-		use_gz = 0;
+	use_gz = 0;
 #endif
-		ofstream ofs_restart;
+	ofstream ofs_restart;
 
-		std::string temp_name("temp_dump_file");
-		std::string name(this->file_prefix);
-		std::string backup_name(this->file_prefix);
+	std::string temp_name("temp_dump_file");
+	std::string name(this->file_prefix);
+	std::string backup_name(this->file_prefix);
 
-		if (mpi_myself == 0)
+	if (mpi_myself == 0)
+	{
+		name.append(".dump");
+		backup_name.append(".dump.backup");
+		if (use_gz)
 		{
-			name.append(".dump");
-			backup_name.append(".dump.backup");
-			if (use_gz)
-			{
 #ifdef USE_GZ
-				temp_name.append(".gz");
-				name.append(".gz");
-				backup_name.append(".gz");
-				ofs_restart_gz.open(temp_name.c_str());
-				if (!ofs_restart_gz.good())
-				{
-					std::ostringstream errstr;
-					errstr << "Temporary restart file could not be opened: " << temp_name;
-					this->ErrorHandler(IRM_FAIL, errstr.str());
-				}
-#endif
-			}
-			else
+			temp_name.append(".gz");
+			name.append(".gz");
+			backup_name.append(".gz");
+			ofs_restart_gz.open(temp_name.c_str());
+			if (!ofs_restart_gz.good())
 			{
-				ofs_restart.open(temp_name.c_str(), std::ofstream::out);  // ::app for append
-				if (!ofs_restart.good())
-				{
-					std::ostringstream errstr;
-					errstr << "Temporary restart file could not be opened: " << temp_name;
-					this->ErrorHandler(IRM_FAIL, errstr.str());
-					return_value = IRM_FAIL;
-				}
+				std::ostringstream errstr;
+				errstr << "Temporary restart file could not be opened: " << temp_name;
+				this->ErrorHandler(IRM_FAIL, errstr.str());
+			}
+#endif
+		}
+		else
+		{
+			ofs_restart.open(temp_name.c_str(), std::ofstream::out);  // ::app for append
+			if (!ofs_restart.good())
+			{
+				std::ostringstream errstr;
+				errstr << "Temporary restart file could not be opened: " << temp_name;
+				this->ErrorHandler(IRM_FAIL, errstr.str());
+				return_value = IRM_FAIL;
 			}
 		}
-		if (return_value != IRM_OK)
-		{
-			return return_value;
-		}
-		// write data
+	}
+	
+	// Return on error
+#ifdef USE_MPI
+	MPI_Bcast(&return_value, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+	if (return_value != IRM_OK)
+	{
+		return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
+	}
+
+	// Try for dumping data
+	try
+	{
+		// write dump data
 #ifdef USE_MPI
 		this->workers[0]->SetDumpStringOn(true); 
 		std::ostringstream in;
 
 		in << "DUMP; -cells " << this->start_cell[this->mpi_myself] << "-" << this->end_cell[this->mpi_myself] << "\n";
-		this->workers[0]->RunString(in.str().c_str());
+
+		std::vector<int> r_values;
+		r_values.push_back(this->workers[0]->RunString(in.str().c_str()));
+		this->HandleErrorsInternal(r_values);
+
+		r_values.clear();
 		for (int n = 0; n < this->mpi_tasks; n++)
 		{
 			// Need to transfer output stream to root and print
@@ -1257,15 +1274,20 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 			// Clear dump string to save space
 			std::ostringstream clr;
 			clr << "END\n";
-			this->GetWorkers()[0]->RunString(clr.str().c_str());
+			r_values.push_back(this->GetWorkers()[0]->RunString(clr.str().c_str()));
 		}
+		this->HandleErrorsInternal(r_values);
 #else
+
+		std::vector<int> r_values;
+		r_values.resize(nthreads, 0);
 		for (int n = 0; n < (int) this->nthreads; n++)
 		{
 			this->workers[n]->SetDumpStringOn(true); 
 			std::ostringstream in;
 			in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
-			this->workers[n]->RunString(in.str().c_str());
+			r_values[n] = this->workers[n]->RunString(in.str().c_str());
+
 			if (use_gz)
 			{
 #ifdef USE_GZ
@@ -1276,26 +1298,38 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 			{
 				ofs_restart << this->GetWorkers()[n]->GetDumpString();
 			}
+		}
+		this->HandleErrorsInternal(r_values);
+		r_values.clear();
+		for (int n = 0; n < (int) this->nthreads; n++)
+		{
 			// Clear dump string to save space
-			std::ostringstream clr;
-			clr << "END\n";
-			this->GetWorkers()[n]->RunString(clr.str().c_str());
+			std::string clr = "END\n";
+			r_values.push_back(this->workers[n]->RunString(clr.c_str()));
 		}
+		this->HandleErrorsInternal(r_values);
 #endif
-		if (use_gz)
+		if (mpi_myself == 0)
 		{
+			if (use_gz)
+			{
 #ifdef USE_GZ
-			ofs_restart_gz.close();
+				ofs_restart_gz.close();
 #endif
+			}
+			else
+			{
+				ofs_restart.close();
+			}
+			// rename files
+			PhreeqcRM::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 		}
-		else
-		{
-			ofs_restart.close();
-		}
-		// rename files
-		PhreeqcRM::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 	}
-	return return_value;
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1352,133 +1386,150 @@ PhreeqcRM::FindComponents(void)
  *		n_comp, which is total, including H, O, elements, and Charge
  *      names, which contains character strings with names of components
  */
-	// Always include H, O, Charge
-	this->components.clear();
-	this->components.push_back("H");
-	this->components.push_back("O");
-	this->components.push_back("Charge");
+	try
+	{
+		// Always include H, O, Charge
+		this->components.clear();
+		this->components.push_back("H");
+		this->components.push_back("O");
+		this->components.push_back("Charge");
 
-	// Get other components
-	IPhreeqcPhast * phast_iphreeqc_worker = this->GetWorkers()[this->nthreads];
-	size_t count_components = phast_iphreeqc_worker->GetComponentCount();
-	size_t i;
-	for (i = 0; i < count_components; i++)
-	{
-		std::string comp(phast_iphreeqc_worker->GetComponent((int) i));
-		assert (comp != "H");
-		assert (comp != "O");
-		assert (comp != "Charge");
-		assert (comp != "charge");
+		// Get other components
+		IPhreeqcPhast * phast_iphreeqc_worker = this->GetWorkers()[this->nthreads];
+		size_t count_components = phast_iphreeqc_worker->GetComponentCount();
 
-		this->components.push_back(comp);
+		size_t i;
+		for (i = 0; i < count_components; i++)
+		{
+			std::string comp(phast_iphreeqc_worker->GetComponent((int) i));
+			assert (comp != "H");
+			assert (comp != "O");
+			assert (comp != "Charge");
+			assert (comp != "charge");
+
+			this->components.push_back(comp);
+		}
+		// Calculate gfw for components
+		for (i = 0; i < components.size(); i++)
+		{
+			if (components[i] == "Charge")
+			{
+				this->gfw.push_back(1.0);
+			}
+			else
+			{
+				this->gfw.push_back(phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
+			}
+		}
+		if (this->mpi_myself == 0)
+		{
+			std::ostringstream outstr;
+			outstr << "List of Components:\n" << std::endl;
+			for (i = 0; i < this->components.size(); i++)
+			{
+				outstr << "\t" << i + 1 << "\t" << this->components[i].c_str() << std::endl;
+			}
+			this->OutputMessage(outstr.str());
+		}
 	}
-	// Calculate gfw for components
-	for (i = 0; i < components.size(); i++)
+	catch (...)
 	{
-		if (components[i] == "Charge")
-		{
-			this->gfw.push_back(1.0);
-		}
-		else
-		{
-			this->gfw.push_back(phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
-		}
-	}
-	if (this->mpi_myself == 0)
-	{
-		std::ostringstream outstr;
-		outstr << "List of Components:\n" << std::endl;
-		for (i = 0; i < this->components.size(); i++)
-		{
-			outstr << "\t" << i + 1 << "\t" << this->components[i].c_str() << std::endl;
-		}
-		this->OutputMessage(outstr.str());
+		return this->ReturnHandler(IRM_FAIL, "PhreeqcRM::FindComponents"); 
 	}
 	return (int) this->components.size();
 }
+
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::GetConcentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
-	// convert Reaction module solution data to concentrations for transport
-	MPI_Status mpi_status;
-	std::vector<double> d;  // scratch space to convert from moles to mass fraction
-	std::vector<double> solns;
-	cxxNameDouble::iterator it;
-
-	// Put solutions into a vector
-	int n = this->mpi_myself;
-	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+	IRM_RESULT return_value = IRM_OK;
+	try
 	{
-		// load fractions into d
-		cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
-		assert (cxxsoln_ptr);
-		this->cxxSolution2concentration(cxxsoln_ptr, d);
-		for (int i = 0; i < (int) this->components.size(); i++)
-		{
-			solns.push_back(d[i]);
-		}
-	}
+		// convert Reaction module solution data to concentrations for transport
+		MPI_Status mpi_status;
+		std::vector<double> d;  // scratch space to convert from moles to mass fraction
+		std::vector<double> solns;
+		cxxNameDouble::iterator it;
 
-	// make buffer to recv solutions
-	double * recv_solns = new double[(size_t) this->count_chemistry * this->components.size()];
-
-	// gather solution vectors to root
-	for (int n = 1; n < this->mpi_tasks; n++)
-	{
-		int count = this->end_cell[n] - this->start_cell[n] + 1;
-		int num_doubles = count * (int) this->components.size();
-		if (this->mpi_myself == n)
+		// Put solutions into a vector
+		int n = this->mpi_myself;
+		for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 		{
-			MPI_Send((void *) solns.data(), num_doubles, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-		}
-		else if (this->mpi_myself == 0)
-		{
-			MPI_Recv(recv_solns, num_doubles, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-			for (int i = 0; i < num_doubles; i++)
+			// load fractions into d
+			cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
+			assert (cxxsoln_ptr);
+			this->cxxSolution2concentration(cxxsoln_ptr, d);
+			for (int i = 0; i < (int) this->components.size(); i++)
 			{
-				solns.push_back(recv_solns[i]);
+				solns.push_back(d[i]);
 			}
 		}
-	}
-	
-	// delete recv buffer
-	delete recv_solns;
-	
-	if (mpi_myself == 0 && c == NULL)
-	{
-		//if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
-		this->ErrorMessage("NULL pointer in GetConcentrations");
-		return IRM_FAIL;
-	}
 
-	// Write vector into c
-	if (this->mpi_myself == 0)
-	{
-		assert (solns.size() == this->count_chemistry*this->components.size());
-		int n = 0;
-		for (int j = 0; j < count_chemistry; j++)
+		// make buffer to recv solutions
+		double * recv_solns = new double[(size_t) this->count_chemistry * this->components.size()];
+
+		// gather solution vectors to root
+		for (int n = 1; n < this->mpi_tasks; n++)
 		{
-			std::vector<double> d;
-			for (size_t i = 0; i < this->components.size(); i++)
+			int count = this->end_cell[n] - this->start_cell[n] + 1;
+			int num_doubles = count * (int) this->components.size();
+			if (this->mpi_myself == n)
 			{
-				d.push_back(solns[n++]);
+				MPI_Send((void *) solns.data(), num_doubles, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
 			}
-			std::vector<int>::iterator it;
-			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			else if (this->mpi_myself == 0)
 			{
-				double *d_ptr = &c[*it];
-				size_t i;
-				for (i = 0; i < this->components.size(); i++)
+				MPI_Recv(recv_solns, num_doubles, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+				for (int i = 0; i < num_doubles; i++)
 				{
-					d_ptr[this->nxyz * i] = d[i];
+					solns.push_back(recv_solns[i]);
+				}
+			}
+		}
+
+		// delete recv buffer
+		delete recv_solns;
+
+		if (mpi_myself == 0)
+		{
+			if (c == NULL)
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in GetConcentrations.");
+			}
+			else
+			{
+				// Write vector into c
+				assert (solns.size() == this->count_chemistry*this->components.size());
+				int n = 0;
+				for (int j = 0; j < count_chemistry; j++)
+				{
+					std::vector<double> d;
+					for (size_t i = 0; i < this->components.size(); i++)
+					{
+						d.push_back(solns[n++]);
+					}
+					std::vector<int>::iterator it;
+					for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+					{
+						double *d_ptr = &c[*it];
+						size_t i;
+						for (i = 0; i < this->components.size(); i++)
+						{
+							d_ptr[this->nxyz * i] = d[i];
+						}
+					}
 				}
 			}
 		}
 	}
-	return IRM_OK;
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
 }
 #else
 /* ---------------------------------------------------------------------- */
@@ -1487,13 +1538,20 @@ PhreeqcRM::GetConcentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
-
-	std::vector<double> d;  // scratch space to convert from moles to mass fraction
-	cxxNameDouble::iterator it;
-
-	int j; 
-	if (c != NULL) 
+	IRM_RESULT return_value = IRM_OK;
+	c = NULL;
+	try
 	{
+		if (c == NULL)
+		{
+			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in GetConcentrations.");
+		}
+		std::vector<double> d;  // scratch space to convert from moles to mass fraction
+		cxxNameDouble::iterator it;
+
+		int j; 
+
+
 		for (int n = 0; n < this->nthreads; n++)
 		{
 			for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
@@ -1516,10 +1574,12 @@ PhreeqcRM::GetConcentrations(double * c)
 				}
 			}
 		}
-		return IRM_OK;
 	}
-	ErrorMessage("NULL pointer in GetConcentrations");
-	return IRM_INVALIDARG;
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -1860,7 +1920,8 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 			}
 		}
 	}
-	return this->error_count;
+	throw PhreeqcRMStop();
+	//return this->error_count;
 }
 #else
 /* ---------------------------------------------------------------------- */
@@ -1880,6 +1941,8 @@ PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 			this->error_count++;
 		}
 	}
+	if (error_count > 0)
+		throw PhreeqcRMStop();
 	return this->error_count;
 }
 #endif
