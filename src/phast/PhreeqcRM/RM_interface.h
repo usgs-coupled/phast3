@@ -53,6 +53,8 @@
 #define RM_SetConcentrations			   FC_FUNC_ (rm_setconcentrations,             RM_SETCONCENTRATIONS)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
 #define RM_SetDensity                      FC_FUNC_ (rm_setdensity,                    RM_SETDENSITY)
+#define RM_SetErrorHandlerMode             FC_FUNC_ (rm_seterrorhandlermode,           RM_SETERRORHANDLERMODE)
+//#define RM_SetExitOnError                  FC_FUNC_ (rm_setexitonerror,                RM_SETEXITONERROR)
 #define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
 #define RM_SetPartitionUZSolids            FC_FUNC_ (rm_setpartitionuzsolids,          RM_SETPARTITIONUZSOLIDS)
 #define RM_SetPrintChemistryOn             FC_FUNC_ (rm_setprintchemistryon,           RM_SETPRINTCHEMISTRYON)
@@ -65,7 +67,6 @@
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
 #define RM_SetStopMessage                  FC_FUNC_ (rm_setstopmessage,                RM_SETSTOPMESSAGE)
-#define RM_SetStopOnError                  FC_FUNC_ (rm_setstoponerror,                RM_SETSTOPONERROR)
 #define RM_SetTemperature                  FC_FUNC_ (rm_settemperature,                RM_SETTEMPERATURE)
 #define RM_SetTime                         FC_FUNC_ (rm_settime,                       RM_SETTIME)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
@@ -599,6 +600,8 @@ IRM_RESULT RM_SetConcentrations(int *id, double *t = NULL);
 IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int *id, int *i = NULL);
 IRM_RESULT RM_SetDensity(int *id, double *t = NULL);
 IRM_RESULT RM_SetDumpModuleOn(int *id, int *dump_on = NULL);
+IRM_RESULT RM_SetErrorHandlerMode(int *id, int *mode = NULL);
+//IRM_RESULT RM_SetExitOnError(int *id, int *stop_flag = NULL);
 IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, size_t l = 0);
 IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t = NULL);
 IRM_RESULT RM_SetPoreVolume(int *id, double *t = NULL);
@@ -611,7 +614,6 @@ IRM_RESULT RM_SetRebalanceByCell(int *id, int *method = NULL);
 IRM_RESULT RM_SetSaturation(int *id, double *t = NULL);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
 IRM_RESULT RM_SetStopMessage(int *id, int *stop_flag = NULL);
-IRM_RESULT RM_SetStopOnError(int *id, int *stop_flag = NULL);
 IRM_RESULT RM_SetTemperature(int *id, double *t = NULL);
 IRM_RESULT RM_SetTime(int *id, double *t = NULL);
 IRM_RESULT RM_SetTimeConversion(int *id, double *t = NULL);

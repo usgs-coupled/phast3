@@ -122,15 +122,19 @@ int RM_ErrorHandler(int id, int result, const char * str)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		
-		std::string e_string;
-		if (str)
+		try
 		{
-			std::string e_string(str);
-			trim_right(e_string);
+			Reaction_module_ptr->ErrorHandler(result, PhreeqcRM::Char2TrimString(str));
 		}
-		Reaction_module_ptr->ErrorHandler(result, str);
-		return result;
+		catch (PhreeqcRMStop)
+		{
+			Reaction_module_ptr->ErrorMessage("PhreeqcRM error.");
+		}
+		catch (...)
+		{
+			Reaction_module_ptr->ErrorMessage("Unknown exception.");
+		}
+		return Reaction_module_ptr->ReturnHandler((IRM_RESULT) result, "");
 	}
 	return IRM_BADINSTANCE;
 }
@@ -810,7 +814,7 @@ RM_SetStopMessage(int id, int stop_flag)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int
 RM_SetStopOnError(int id, int tf)
@@ -824,7 +828,7 @@ RM_SetStopOnError(int id, int tf)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 int RM_SetTemperature(int id, double *t)
 /* ---------------------------------------------------------------------- */

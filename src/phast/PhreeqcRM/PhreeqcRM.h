@@ -50,9 +50,10 @@ public:
 	IRM_RESULT                                CreateMapping(int *grid2chem);
 	void                                      DecodeError(int r);
 	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
-	void                                      ErrorMessage(const std::string &error_string);
+	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
     //void                                      ErrorStop(const char * str = NULL, size_t l = 0);
-	void                                      ErrorHandler(int result, const char * str = NULL, size_t l = 0);
+	//void                                      ErrorHandler(int result, const char * str = NULL, size_t l = 0);
+	void                                      ErrorHandler(int result, const std::string &e_string);
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c);
 	IRM_RESULT                                InitialPhreeqc2Concentrations( 
@@ -70,6 +71,7 @@ public:
 	void                                      LogMessage(const std::string &str);
 	IRM_RESULT                                OpenFiles(void);
 	void                                      OutputMessage(const std::string &str);
+	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
 	IRM_RESULT                                RunFile(int workers, int initial_phreeqc, int utility, const char *chemistry_name);
 	IRM_RESULT                                RunString(int workers, int initial_phreeqc, int utility, const char *str);
 	IRM_RESULT                                RunCells(void);
@@ -96,7 +98,9 @@ public:
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
 	const std::string                         GetDatabaseFileName(void) const {return this->database_file_name;}
 	std::vector<double> &                     GetDensity(void); 
-	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;} 
+	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;}
+	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
+	//bool                                      GetExitOnError(void) {return this->stop_on_error;} 
 	const std::string                         GetFilePrefix(void) const {return this->file_prefix;}
 	const int                                 GetGridCellCount(void) const {return this->nxyz;}
 	int                                       GetInputUnitsSolution(void) {return this->input_units_Solution;}
@@ -127,7 +131,7 @@ public:
 	const bool                                GetSelectedOutputOn(void) const {return this->selected_output_on;}
 	int                                       GetSelectedOutputRowCount(void);	
 	const std::vector < int> &                GetStartCell(void) const {return this->start_cell;} 
-	const bool                                GetStopMessage(void) const {return this->stop_message;}
+	bool                                      GetStopMessage(void) const {return this->stop_message;}
 	std::vector<double> &                     GetTemperature(void) {return this->tempc;}
 	double                                    GetTime(void) const {return this->time;} 
 	double                                    GetTimeStep(void) const {return this->time_step;}
@@ -141,6 +145,8 @@ public:
 	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
 	IRM_RESULT                                SetCellVolume(double * t = NULL);
 	IRM_RESULT                                SetDensity(double * t = NULL); 
+	IRM_RESULT                                SetErrorHandlerMode(int i); 
+	IRM_RESULT                                SetExitOnError(bool t = true);
 	IRM_RESULT                                SetFilePrefix(std::string &fn); 
 	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL);
 	IRM_RESULT                                SetPartitionUZSolids(int t = -1);
@@ -154,7 +160,6 @@ public:
 	IRM_RESULT                                SetSaturation(double * t = NULL); 
 	IRM_RESULT                                SetSelectedOutputOn(bool t = false);
 	IRM_RESULT                                SetStopMessage(bool t = false); 
-	IRM_RESULT                                SetStopOnError(bool t = true);
 	IRM_RESULT                                SetTemperature(double * t = NULL);
 	IRM_RESULT                                SetTime(double t = 0.0);
 	IRM_RESULT                                SetTimeConversion(double t = 1.0);
@@ -234,7 +239,8 @@ protected:
 
 	bool stop_message;
 	int error_count;
-	bool stop_on_error;
+	//bool stop_on_error;
+	int error_handler_mode;
 
 	// threading
 	int nthreads;

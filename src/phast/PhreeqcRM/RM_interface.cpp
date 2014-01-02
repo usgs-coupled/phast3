@@ -125,8 +125,19 @@ int RM_ErrorHandler(int *id, int *result, const char * str, size_t l)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->ErrorHandler(*result, str, l);
-		return *result;
+		try
+		{
+			Reaction_module_ptr->ErrorHandler(*result, PhreeqcRM::Char2TrimString(str, l));
+		}
+		catch (PhreeqcRMStop)
+		{
+			Reaction_module_ptr->ErrorMessage("PhreeqcRM error.");
+		}
+		catch (...)
+		{
+			Reaction_module_ptr->ErrorMessage("Unknown exception.");
+		}
+		return Reaction_module_ptr->ReturnHandler((IRM_RESULT) *result, "");
 	}
 	return IRM_BADINSTANCE;
 }
@@ -827,7 +838,22 @@ RM_SetStopMessage(int *id, int *stop_flag)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-RM_SetStopOnError(int *id, int *tf)
+RM_SetErrorHandlerMode(int *id, int *mode)
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		int m = mode ? *mode : 0;
+		return Reaction_module_ptr->SetErrorHandlerMode(m);
+	}
+	return IRM_BADINSTANCE;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_SetExitOnError(int *id, int *tf)
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
@@ -835,10 +861,11 @@ RM_SetStopOnError(int *id, int *tf)
 	if (Reaction_module_ptr)
 	{
 		bool s = (tf == NULL) ? true : (*tf != 0);
-		return Reaction_module_ptr->SetStopOnError(s);
+		return Reaction_module_ptr->SetExitOnError(s);
 	}
 	return IRM_BADINSTANCE;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetTemperature(int *id, double *t)
 /* ---------------------------------------------------------------------- */

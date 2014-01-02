@@ -53,11 +53,12 @@ SUBROUTINE phast_worker
         STOP 
     END IF
  
+    status = RM_SetErrorHandlerMode(rm_id)
     status = RM_SetPrintChemistryOn(rm_id)
-    status = RM_LoadDatabase(rm_id, f2name);
     ! ... Open C files 
     status = RM_SetFilePrefix(rm_id)
     status = RM_OpenFiles(rm_id)
+    status = RM_LoadDatabase(rm_id, f2name);
     
     IF (solute) THEN
         ! ... initial PHREEQC run to define reactants 
