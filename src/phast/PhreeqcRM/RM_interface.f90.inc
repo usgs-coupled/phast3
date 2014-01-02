@@ -238,6 +238,12 @@
             INTEGER, INTENT(in) :: id
             DOUBLE PRECISION, OPTIONAL, INTENT(in) :: t
         END FUNCTION RM_SetDensity  
+
+        INTEGER FUNCTION RM_SetErrorHandlerMode(id, i)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, OPTIONAL, INTENT(in) :: i
+        END FUNCTION RM_SetErrorHandlerMode 
         
         INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
             IMPLICIT NONE

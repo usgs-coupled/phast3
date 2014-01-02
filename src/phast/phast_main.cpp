@@ -61,51 +61,82 @@ int main(int argc, char* argv[])
 {
 	int mpi_tasks;
 	int mpi_myself;
-	
+	try
+	{
 #if defined(USE_MPI)
-	if (MPI_Init(&argc, &argv) != MPI_SUCCESS)
-	{
-		return EXIT_FAILURE;
-	}
+		if (MPI_Init(&argc, &argv) != MPI_SUCCESS)
+		{
+			return EXIT_FAILURE;
+		}
 
-	if (MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks) != MPI_SUCCESS)
-	{
-		return EXIT_FAILURE;
-	}
+		if (MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks) != MPI_SUCCESS)
+		{
+			return EXIT_FAILURE;
+		}
 
-	if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
-	{
-		return EXIT_FAILURE;
-	}
+		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+		{
+			return EXIT_FAILURE;
+		}
 #else
-	mpi_tasks = 1;
-	mpi_myself = 0;
+		mpi_tasks = 1;
+		mpi_myself = 0;
 #endif
 #ifdef SKIP_REWRITE_PHAST //-------------------------------------------------------------------------
 #if WIN32
-	SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE);
+		SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE);
 #endif
 #endif // SKIP_REWRITE_PHAST
-	//int tmpDbgFlag;
+		//int tmpDbgFlag;
 
- //  _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
- //  _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
- //  _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
- //  _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
- //  _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
- //  _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
+		//  _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+		//  _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
+		//  _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+		//  _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
+		//  _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+		//  _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-	//tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-	///*tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;*/
-	//tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
-	///*tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;*/
-	//_CrtSetDbgFlag(tmpDbgFlag);
-	//_crtBreakAlloc = 198;
-	
-	PHAST_SUB(&mpi_tasks, &mpi_myself);
+		//tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+		///*tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;*/
+		//tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
+		///*tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;*/
+		//_CrtSetDbgFlag(tmpDbgFlag);
+		//_crtBreakAlloc = 198;
+		
+		PHAST_SUB(&mpi_tasks, &mpi_myself);
 
 #if defined(USE_MPI)
-	MPI_Finalize();
+		MPI_Finalize();
 #endif
+	}
+	catch (PhreeqcRMStop)
+	{
+		std::string e_string = "PHAST is closing due to an error in PhreeqcRM.";
+		std::cerr << e_string << std::endl;
+#ifdef USE_MPI
+		std::cerr << "Aborting MPI." << std::endl;
+		int i;
+		if (MPI_Initialized(&i))
+		{
+			MPI_Abort(MPI_COMM_WORLD, i);
+		}
+#endif
+		return IRM_FAIL;
+	}
+	catch (...)
+	{
+		std::string e_string = "PHAST is closing due to an unhandled exception.";
+		std::cerr << e_string << std::endl;
+#ifdef USE_MPI
+		std::cerr << "Aborting MPI." << std::endl;
+		int i;
+		if (MPI_Initialized(&i))
+		{
+			MPI_Abort(MPI_COMM_WORLD, i);
+		}
+#endif
+		return IRM_FAIL;
+	}
+
 	return EXIT_SUCCESS;
 }

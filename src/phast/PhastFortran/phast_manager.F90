@@ -403,10 +403,11 @@ SUBROUTINE CreateRM
     IF (rm_id.LT.0) THEN
         STOP
     END IF
+    status = RM_SetErrorHandlerMode(rm_id, 1)   ! throw exception on error
     status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
-    status = RM_LoadDatabase(rm_id, f2name);
     status = RM_SetFilePrefix(rm_id, f3name)
     status = RM_OpenFiles(rm_id)
+    status = RM_LoadDatabase(rm_id, f2name);
   
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN

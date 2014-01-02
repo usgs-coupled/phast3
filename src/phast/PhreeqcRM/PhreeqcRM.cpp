@@ -86,7 +86,20 @@ PhreeqcRM::DestroyReactionModule(int id)
 	return retval;
 }
 /* ---------------------------------------------------------------------- */
-void
+inline void
+PhreeqcRM::ErrorHandler(int result, const std::string & e_string)
+/* ---------------------------------------------------------------------- */
+{
+	if (result < 0)
+	{
+		this->DecodeError(result);
+		this->ErrorMessage(e_string);
+		throw PhreeqcRMStop();
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+inline void
 PhreeqcRM::ErrorHandler(int result, const char *err_str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
@@ -94,22 +107,21 @@ PhreeqcRM::ErrorHandler(int result, const char *err_str, size_t l)
 	{
 		this->DecodeError(result);
 		std::string error_string;
-		error_string = "Stopping in PhreeqcRM::ErrorHandler\n";
 		if (err_str)
 		{
-			error_string.append(Char2TrimString(err_str, l));
+			error_string = Char2TrimString(err_str, l);
 		}
 		this->ErrorMessage(error_string);
-		if (this->stop_on_error)
-		{
+		//if (this->stop_on_error)
+		//{
 #ifdef MPI
-			MPI_Abort(MPI_COMM_WORLD);
+//			MPI_Abort(MPI_COMM_WORLD);
 #endif
 			throw PhreeqcRMStop();
-		}
+		//}
 	}
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 PhreeqcRM*
 PhreeqcRM::GetInstance(int id)
@@ -248,7 +260,8 @@ if( numCPU < 1 )
 
 	this->stop_message = false;
 	this->error_count = 0;
-	this->stop_on_error = true;
+	//this->stop_on_error = true;
+	this->error_handler_mode = 0;
 
 	// initialize arrays
 	for (int i = 0; i < this->nxyz; i++)
@@ -572,8 +585,9 @@ int
 PhreeqcRM::CheckSelectedOutput()
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 #ifdef USE_MPI
-	if (this->mpi_tasks <= 1) return VR_OK;
+	if (this->mpi_tasks <= 1) return return_value;
 	
 	// check number of selected output
 	{
@@ -586,7 +600,7 @@ PhreeqcRM::CheckSelectedOutput()
 		{
 			if (recv_buffer[i] != recv_buffer[0])
 			{
-				error_msg("MPI processes have different number of selected output definitions.", STOP);
+				this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, MPI processes have different number of selected output definitions.");
 			}
 		}
 	}
@@ -605,7 +619,7 @@ PhreeqcRM::CheckSelectedOutput()
 			{
 				if (recv_buffer[i] != recv_buffer[0])
 				{
-					error_msg("MPI processes have different number of selected output columns.", STOP);
+					this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, MPI processes have different number of selected output columns.");
 				}
 			}
 		}
@@ -630,7 +644,7 @@ PhreeqcRM::CheckSelectedOutput()
 				}
 				else
 				{
-					error_msg("MPI processes has selected output column that is not a string.", STOP);
+					this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, MPI processes has selected output column that is not a string.");
 				}
 			}
 			
@@ -661,7 +675,7 @@ PhreeqcRM::CheckSelectedOutput()
 				{
 					if (recv_buffer[i] == 0)
 					{
-						error_msg("MPI processes have different column headings.", STOP);
+						this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, MPI processes have different column headings.");
 					}
 				}
 			}
@@ -685,7 +699,7 @@ PhreeqcRM::CheckSelectedOutput()
 				}
 				if (count != this->count_chemistry)
 				{
-					error_msg("Sum of rows is not equal to count_chem.", STOP);
+					this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, Sum of rows is not equal to count_chem.");
 				}
 			}
 		}
@@ -699,7 +713,8 @@ PhreeqcRM::CheckSelectedOutput()
 		{
 			if (this->workers[i]->CSelectedOutputMap.size() != this->workers[0]->CSelectedOutputMap.size())
 			{
-				error_msg("Threads have different number of selected output definitions.", STOP);
+				this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, Threads have different number of selected output definitions.");
+				return IRM_FAIL;
 			}
 		}
 	}
@@ -714,7 +729,8 @@ PhreeqcRM::CheckSelectedOutput()
 			{
 				if (root_it->second.GetColCount() != n_it->second.GetColCount())
 				{
-					error_msg("Threads have different number of selected output columns.", STOP);
+					this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, Threads have different number of selected output columns.");
+				    return IRM_FAIL;
 				}
 			}
 		}
@@ -736,11 +752,13 @@ PhreeqcRM::CheckSelectedOutput()
 					n_it->second.Get(0, i, &n_cvar);
 					if (root_cvar.type != TT_STRING || n_cvar.type != TT_STRING)
 					{
-						error_msg("Threads has selected output column that is not a string.", STOP);
+						this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, Threads has selected output column that is not a string.");
+				        return IRM_FAIL;
 					}
 					if (strcmp(root_cvar.sVal, n_cvar.sVal) != 0)
 					{
-						error_msg("Threads have different column headings.", STOP);
+						this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, Threads have different column headings.");
+				        return IRM_FAIL;
 					}
 				}
 			}
@@ -760,12 +778,13 @@ PhreeqcRM::CheckSelectedOutput()
 			}
 			if (count != this->count_chemistry)
 			{
-				error_msg("Sum of rows is not equal to count_chem.", STOP);
+				this->ErrorHandler(IRM_FAIL, "CheckSelectedOutput, Sum of rows is not equal to count_chem.");
+				return IRM_FAIL;
 			}
 		}
 	}
 #endif
-	return IRM_OK;
+	return return_value;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -923,7 +942,6 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 		soln.Set_patm(p_atm[i]);
 		this->workers[nutil]->PhreeqcPtr->Rxn_solution_map[(int) i] = soln;
 	}
-	//return this->workers[nutil]->GetId();
 	return (dynamic_cast< IPhreeqc *> (this->workers[nutil]));
 }
 /* ---------------------------------------------------------------------- */
@@ -955,7 +973,7 @@ IRM_RESULT
 PhreeqcRM::CreateMapping(int *t)
 /* ---------------------------------------------------------------------- */
 {
-	IRM_RESULT rtn = IRM_OK;
+	IRM_RESULT return_value = IRM_OK;
 	std::vector<int> grid2chem;
 	grid2chem.resize(this->nxyz);
 	if (mpi_myself == 0)
@@ -991,8 +1009,8 @@ PhreeqcRM::CreateMapping(int *t)
 		int n = grid2chem[i];
 		if (n >= count_chemistry)
 		{
-			error_msg("Error in cell out of range in mapping (grid to chem).", 0);
-			rtn = IRM_INVALIDARG;
+			this->ErrorHandler(IRM_INVALIDARG, "PhreeqcRM::CreateMapping, cell out of range in mapping (grid to chem).");
+			return_value = IRM_INVALIDARG;
 		}
 
 		// copy to forward
@@ -1020,15 +1038,15 @@ PhreeqcRM::CreateMapping(int *t)
 	{
 		if (back[i].size() == 0)
 		{
-			error_msg("Error in building inverse mapping (chem to grid).", 0);
-			rtn = IRM_INVALIDARG;
+			this->ErrorHandler(IRM_INVALIDARG, "PhreeqcRM::CreateMapping, building inverse mapping (chem to grid).");
+			return_value = IRM_INVALIDARG;
 		}
 	}
 	
 	// Distribute work with new count_chemistry
 	SetEndCells();
 
-	return rtn;
+	return return_value;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1133,7 +1151,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 #ifdef USE_MPI
 	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
-
+	IRM_RESULT return_value = IRM_OK;
 	if (dump)
 	{
 		std::string char_buffer;
@@ -1165,7 +1183,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 				{
 					std::ostringstream errstr;
 					errstr << "Temporary restart file could not be opened: " << temp_name;
-					this->ErrorHandler(IRM_FAIL, errstr.str().c_str());
+					this->ErrorHandler(IRM_FAIL, errstr.str());
 				}
 #endif
 			}
@@ -1176,11 +1194,15 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 				{
 					std::ostringstream errstr;
 					errstr << "Temporary restart file could not be opened: " << temp_name;
-					this->ErrorHandler(IRM_FAIL, errstr.str().c_str());
+					this->ErrorHandler(IRM_FAIL, errstr.str());
+					return_value = IRM_FAIL;
 				}
 			}
 		}
-
+		if (return_value != IRM_OK)
+		{
+			return return_value;
+		}
 		// write data
 #ifdef USE_MPI
 		this->workers[0]->SetDumpStringOn(true); 
@@ -1273,16 +1295,18 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 		// rename files
 		PhreeqcRM::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 	}
-	return IRM_OK;
+	return return_value;
 }
 
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::ErrorMessage(const std::string &error_string)
+PhreeqcRM::ErrorMessage(const std::string &error_string, bool prepend)
 /* ---------------------------------------------------------------------- */
 {
 	std::ostringstream estr;
-	estr << "ERROR: " << error_string << std::endl;
+	if (prepend)
+		estr << "ERROR: "; 
+	estr << error_string << std::endl;
 	this->phreeqcrm_io.output_msg(estr.str().c_str());
 	this->phreeqcrm_io.error_msg(estr.str().c_str());
 	this->phreeqcrm_io.log_msg(estr.str().c_str());
@@ -1777,15 +1801,18 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 
 	// Determine whether there were errors
 	this->error_count = 0;
-	for (int n = 0; n < this->mpi_tasks; n++)
+	if (mpi_myself == 0)
 	{
-		if (mpi_myself == 0)
+		for (int n = 0; n < this->mpi_tasks; n++)
 		{
 			if (recv_buffer[n] != 0) 
 				this->error_count++;
 		}
 	}
 	MPI_Bcast(&this->error_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	// return if no errors
+	if (error_count == 0) return 0;
 
 	// Root write any error messages
 	for (int n = 0; n < this->mpi_tasks; n++)
@@ -1797,8 +1824,10 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 				if (recv_buffer[n] != 0)
 				{
 					// print error
-					this->ErrorMessage("RunCells failed for worker 0");
-					this->ErrorMessage(this->workers[0]->GetErrorString());
+					std::ostringstream e_stream;
+				    e_stream << "Process " << n << std::endl;
+					this->ErrorMessage(e_stream.str());
+					this->ErrorMessage(this->workers[0]->GetErrorString(), false);
 				}
 			}
 			else
@@ -1816,6 +1845,9 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 		{
 			if (recv_buffer[n] != 0)
 			{
+				std::ostringstream e_stream;
+				e_stream << "Process " << n << std::endl;
+				this->ErrorMessage(e_stream.str());
 				MPI_Status mpi_status;
 				// receive and print error
 				int size; 
@@ -1824,7 +1856,7 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 				char_buffer.resize(size + 1);
 				MPI_Recv((void *) char_buffer.data(), size, MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
 				char_buffer[size] = '\0';
-				this->ErrorMessage(char_buffer);
+				this->ErrorMessage(char_buffer, false);
 			}
 		}
 	}
@@ -1844,7 +1876,7 @@ PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 	{
 		if (rtn[n] != 0)
 		{
-			this->ErrorMessage(this->workers[n]->GetErrorString());
+			this->ErrorMessage(this->workers[n]->GetErrorString(), false);
 			this->error_count++;
 		}
 	}
@@ -2071,6 +2103,56 @@ IRM_RESULT
 PhreeqcRM::LoadDatabase(const char * database)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		std::vector <int> r_vector;
+		r_vector.resize(1);
+
+		r_vector[0] = this->SetDatabaseFileName(database);
+		if (this->HandleErrorsInternal(r_vector) > 0)
+		{
+			throw PhreeqcRMStop();
+		}
+
+		// vector for return values
+		r_vector.resize(this->nthreads + 2);
+
+		// Load database for all IPhreeqc instances
+#ifdef THREADED_PHAST
+		omp_set_num_threads(this->nthreads+1);
+#pragma omp parallel 
+#pragma omp for
+#endif
+		for (int n = 0; n < this->nthreads + 2; n++)
+		{
+			r_vector[n] = this->workers[n]->LoadDatabase(this->database_file_name.c_str());
+		} 	
+
+		// Check errors
+		if (this->HandleErrorsInternal(r_vector) > 0)
+		{
+			throw PhreeqcRMStop();
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+#ifdef USE_MPI
+	IRM_RESULT global_return_value;
+	MPI_Allreduce(&return_value, &global_return_value, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
+	return_value = global_return_value;
+#endif
+
+	return this->ReturnHandler(return_value, "PhreeqcRM::LoadDatabase");
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::LoadDatabase(const char * database)
+/* ---------------------------------------------------------------------- */
+{
 	std::vector <int> r_vector;
 	r_vector.resize(1);
 
@@ -2102,7 +2184,7 @@ PhreeqcRM::LoadDatabase(const char * database)
 
 	return IRM_OK;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::LogMessage(const std::string &str)
@@ -3199,7 +3281,33 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	return;
 }
 #endif
-
+/* ---------------------------------------------------------------------- */
+inline IRM_RESULT
+PhreeqcRM::ReturnHandler(IRM_RESULT result, const std::string & e_string)
+/* ---------------------------------------------------------------------- */
+{
+	if (result < 0)
+	{
+		this->DecodeError(result);
+		this->ErrorMessage(e_string);
+		switch (this->error_handler_mode)
+		{
+		case 0:
+			return result;
+			break;
+		case 1:
+			throw PhreeqcRMStop();
+			break;
+		case 2:
+			exit(result);
+			break;
+		default:
+			return result;
+			break;
+		}
+	}
+	return result;
+}
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -3650,7 +3758,7 @@ PhreeqcRM::RunFile(int workers, int initial_phreeqc, int utility, const char * c
 	// Check errors
 	if (HandleErrorsInternal(r_vector) > 0)
 	{
-		return IRM_FAIL;
+		return this->ReturnHandler(IRM_FAIL, "PhreeqcRM::RunFile");
 	}
 	return IRM_OK;
 }
@@ -4083,6 +4191,36 @@ PhreeqcRM::SetEndCells(void)
 }
 
 /* ---------------------------------------------------------------------- */
+IRM_RESULT 
+PhreeqcRM::SetErrorHandlerMode(int i)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		this->error_handler_mode = i;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->error_handler_mode, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+	return IRM_OK;
+}
+#ifdef SKIP	
+/* ---------------------------------------------------------------------- */
+IRM_RESULT 
+PhreeqcRM::SetExitOnError(bool t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		this->stop_on_error = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->stop_on_error, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+	return IRM_OK;
+}
+#endif
+/* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetFilePrefix(std::string &prefix)
 /* ---------------------------------------------------------------------- */
@@ -4317,19 +4455,30 @@ PhreeqcRM::SetStopMessage(bool t)
 	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_SetErrorHandlerMode(int id, int mode)
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->SetErrorHandlerMode(mode);
+	}
+	return IRM_BADINSTANCE;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
 IRM_RESULT 
 PhreeqcRM::SetStopOnError(bool t)
 /* ---------------------------------------------------------------------- */
 {
-	if (mpi_myself == 0)
-	{
-		this->stop_on_error = t;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&this->stop_on_error, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#if !(defined USE_MPI)
+	this->stop_on_error = t;
 #endif
 	return IRM_OK;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetTemperature(double *t)
@@ -4606,7 +4755,7 @@ PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count,
 		{
 			std::ostringstream e_msg;
 			e_msg << "Could not open file. " << fn;
-			this->ErrorHandler(IRM_FAIL, e_msg.str().c_str());
+			this->ErrorHandler(IRM_FAIL, e_msg.str());
 		}
 	}
 
