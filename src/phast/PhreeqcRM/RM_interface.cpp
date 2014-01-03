@@ -227,12 +227,24 @@ RM_GetDensity(int *id, double * d)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
+		IRM_RESULT return_value = IRM_OK;
 		Reaction_module_ptr->GetDensity();
 		if (Reaction_module_ptr->GetMpiMyself() == 0)
 		{
-			memcpy(d, Reaction_module_ptr->GetDensity().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+			if (Reaction_module_ptr->GetDensity().size() == Reaction_module_ptr->GetGridCellCount())
+			{
+				memcpy(d, Reaction_module_ptr->GetDensity().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+			}
+			else
+			{
+				for (int i = 0; i < Reaction_module_ptr->GetGridCellCount(); i++)
+				{
+					d[i] = INACTIVE_CELL_VALUE;
+				}
+				return_value = IRM_FAIL;
+			}
 		}
-		return IRM_OK;
+		return return_value;
 	}
 	return IRM_BADINSTANCE;
 }

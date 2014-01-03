@@ -216,6 +216,36 @@ int RM_GetConcentrations(int id, double * c)
 }
 
 /* ---------------------------------------------------------------------- */
+int
+RM_GetDensity(int id, double * d)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		IRM_RESULT return_value = IRM_OK;
+		Reaction_module_ptr->GetDensity();
+		if (Reaction_module_ptr->GetMpiMyself() == 0)
+		{
+			if (Reaction_module_ptr->GetDensity().size() == Reaction_module_ptr->GetGridCellCount())
+			{
+				memcpy(d, Reaction_module_ptr->GetDensity().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+			}
+			else
+			{
+				for (int i = 0; i < Reaction_module_ptr->GetGridCellCount(); i++)
+				{
+					d[i] = INACTIVE_CELL_VALUE;
+				}
+				return_value = IRM_FAIL;
+			}
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
 int RM_GetDensity(int id, double * d)
 /* ---------------------------------------------------------------------- */
 {
@@ -231,6 +261,7 @@ int RM_GetDensity(int id, double * d)
 	}
 	return IRM_BADINSTANCE;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int 
 RM_GetFilePrefix(int id, char *prefix, long l)

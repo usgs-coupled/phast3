@@ -53,8 +53,8 @@ int main(int argc, char* argv[])
 #endif
 
 	advection_cpp();
-	//advection_f90();
-	//advection_c();
+	advection_f90();
+	advection_c();
 
 #if defined(USE_MPI)
 	MPI_Finalize();
