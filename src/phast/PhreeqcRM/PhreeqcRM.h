@@ -51,8 +51,6 @@ public:
 	void                                      DecodeError(int r);
 	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
 	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
-    //void                                      ErrorStop(const char * str = NULL, size_t l = 0);
-	//void                                      ErrorHandler(int result, const char * str = NULL, size_t l = 0);
 	void                                      ErrorHandler(int result, const std::string &e_string);
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c);
@@ -83,6 +81,9 @@ public:
 	static bool                               FileExists(const std::string &name);
 	static void                               FileRename(const std::string &temp_name, const std::string &name, 
 		                                           const std::string &backup_name);
+	static IRM_RESULT                         Int2IrmResult(int r, bool positive_ok);
+	//static IRM_RESULT                         IpqResult2IrmResult(int r);
+
 
 	// TODO ///////////////////////////
 	//void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
