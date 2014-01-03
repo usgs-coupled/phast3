@@ -1821,6 +1821,30 @@ int
 PhreeqcRM::GetSelectedOutputColumnCount()
 /* ---------------------------------------------------------------------- */
 {	
+	try
+	{
+		if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
+		{
+			std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(
+				this->workers[0]->CurrentSelectedOutputUserNumber);
+			if (it != this->workers[0]->CSelectedOutputMap.end())
+			{
+				return (int) it->second.GetColCount();
+			}
+		}
+		this->ErrorHandler(IRM_INVALIDARG, "Selected output not found.");
+	}
+	catch (...)
+	{
+	}
+	return this->ReturnHandler(IRM_INVALIDARG, "PhreeqcRM::GetSelectedOutputColumnCount");
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+int
+PhreeqcRM::GetSelectedOutputColumnCount()
+/* ---------------------------------------------------------------------- */
+{	
 	if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
 	{
 		std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(
@@ -1832,6 +1856,7 @@ PhreeqcRM::GetSelectedOutputColumnCount()
 	}
 	return IRM_INVALIDARG;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int 
 PhreeqcRM::GetSelectedOutputCount(void)
@@ -1844,25 +1869,35 @@ IRM_RESULT
 PhreeqcRM::GetSelectedOutputHeading(int *icol, std::string &heading)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
+	try
 	{
-		std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(
-			this->workers[0]->CurrentSelectedOutputUserNumber);
-		if (it != this->workers[0]->CSelectedOutputMap.end())
+		if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
 		{
-			VAR pVar;
-			VarInit(&pVar);
-			if (icol != NULL && it->second.Get(0, *icol, &pVar) == VR_OK)
+			std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(
+				this->workers[0]->CurrentSelectedOutputUserNumber);
+			if (it != this->workers[0]->CSelectedOutputMap.end())
 			{
-				if (pVar.type == TT_STRING)
+				VAR pVar;
+				VarInit(&pVar);
+				if (icol != NULL && it->second.Get(0, *icol, &pVar) == VR_OK)
 				{
-					heading = pVar.sVal;
-					return IRM_OK;
+					if (pVar.type == TT_STRING)
+					{
+						heading = pVar.sVal;
+						return IRM_OK;
+					}
 				}
 			}
 		}
+		else
+		{
+			this->ErrorHandler(IRM_INVALIDARG, "Selected output not found.");
+		}
 	}
-	return IRM_INVALIDARG;
+	catch (...)
+	{
+	}
+	return this->ReturnHandler(IRM_INVALIDARG, "PhreeqcRM::GetSelectedOutputHeading");
 }
 /* ---------------------------------------------------------------------- */
 int
