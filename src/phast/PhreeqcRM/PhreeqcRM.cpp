@@ -974,78 +974,93 @@ PhreeqcRM::CreateMapping(int *t)
 /* ---------------------------------------------------------------------- */
 {
 	IRM_RESULT return_value = IRM_OK;
-	std::vector<int> grid2chem;
-	grid2chem.resize(this->nxyz);
-	if (mpi_myself == 0)
+	try
 	{
-		if (t == NULL) error_msg("NULL pointer in CreateMapping", 1);
-		memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
-	}
+		std::vector<int> grid2chem;
+		grid2chem.resize(this->nxyz);
+		if (mpi_myself == 0)
+		{
+			if (t != NULL)
+			{
+				memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
+			}
+			else
+			{
+				grid2chem.clear();
+				grid2chem.resize(this->nxyz, -999999);
+			}
+		}
+
 #ifdef USE_MPI
-	MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-
-	back.clear();
-	forward.clear();
-
-	// find count_chem
-	this->count_chemistry = 0;
-	for (int i = 0; i < this->nxyz; i++)
-	{
-		if (grid2chem[i] > count_chemistry)
+		if (grid2chem[0] == -999999)
 		{
-			count_chemistry = grid2chem[i];
+			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in CreateMapping");
 		}
-	}
-	count_chemistry ++; 
+		back.clear();
+		forward.clear();
 
-	for (int i = 0; i < count_chemistry; i++)
-	{
-		std::vector<int> temp;
-		back.push_back(temp);
-	}
-	for (int i = 0; i < this->nxyz; i++)
-	{
-		int n = grid2chem[i];
-		if (n >= count_chemistry)
+		// find count_chem
+		this->count_chemistry = 0;
+		for (int i = 0; i < this->nxyz; i++)
 		{
-			this->ErrorHandler(IRM_INVALIDARG, "PhreeqcRM::CreateMapping, cell out of range in mapping (grid to chem).");
-			return_value = IRM_INVALIDARG;
+			if (grid2chem[i] > count_chemistry)
+			{
+				count_chemistry = grid2chem[i];
+			}
+		}
+		count_chemistry ++; 
+
+		for (int i = 0; i < count_chemistry; i++)
+		{
+			std::vector<int> temp;
+			back.push_back(temp);
+		}
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			int n = grid2chem[i];
+			if (n >= count_chemistry)
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "PhreeqcRM::CreateMapping, cell out of range in mapping (grid to chem).");
+			}
+
+			// copy to forward
+			forward.push_back(n);
+
+			// add to back
+			if (n >= 0) 
+			{
+				back[n].push_back(i);
+			}
 		}
 
-		// copy to forward
-		forward.push_back(n);
+		// set -1 for back items > 0
+		for (int i = 0; i < this->count_chemistry; i++)
+		{
+			// add to back
+			for (size_t j = 1; j < back[i].size(); j++)
+			{
+				int n = back[i][j];
+				forward[n] = -1;
+			}
+		}
+		// check that all count_chem have at least 1 cell
+		for (int i = 0; i < this->count_chemistry; i++)
+		{
+			if (back[i].size() == 0)
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "PhreeqcRM::CreateMapping, building inverse mapping (chem to grid).");
+			}
+		}
 
-		// add to back
-		if (n >= 0) 
-		{
-			back[n].push_back(i);
-		}
+		// Distribute work with new count_chemistry
+		SetEndCells();
 	}
-	
-	// set -1 for back items > 0
-	for (int i = 0; i < this->count_chemistry; i++)
+	catch (...)
 	{
-		// add to back
-		for (size_t j = 1; j < back[i].size(); j++)
-		{
-			int n = back[i][j];
-			forward[n] = -1;
-		}
+		return_value = IRM_FAIL;
 	}
-	// check that all count_chem have at least 1 cell
-	for (int i = 0; i < this->count_chemistry; i++)
-	{
-		if (back[i].size() == 0)
-		{
-			this->ErrorHandler(IRM_INVALIDARG, "PhreeqcRM::CreateMapping, building inverse mapping (chem to grid).");
-			return_value = IRM_INVALIDARG;
-		}
-	}
-	
-	// Distribute work with new count_chemistry
-	SetEndCells();
-
 	return this->ReturnHandler(return_value, "PhreeqcRM::CreateMapping");
 }
 
@@ -1144,6 +1159,8 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 /* ---------------------------------------------------------------------- */
 {
 	bool dump = false;
+	
+	// return if dump_on is false
 	if (this->mpi_myself == 0)
 	{
 		dump = dump_on;
@@ -1151,10 +1168,9 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 #ifdef USE_MPI
 	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
+	if (!dump) return IRM_OK;
+	
 	IRM_RESULT return_value = IRM_OK;
-
-	// return if dump is false
-	if (!dump) return return_value;
 
 	// open dump file
 	std::string char_buffer;
@@ -1166,11 +1182,9 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 	use_gz = 0;
 #endif
 	ofstream ofs_restart;
-
 	std::string temp_name("temp_dump_file");
 	std::string name(this->file_prefix);
 	std::string backup_name(this->file_prefix);
-
 	if (mpi_myself == 0)
 	{
 		name.append(".dump");
@@ -1202,8 +1216,8 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 			}
 		}
 	}
-	
-	// Return on error
+
+	// Return on error opening dump file
 #ifdef USE_MPI
 	MPI_Bcast(&return_value, 1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
@@ -1278,7 +1292,6 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 		}
 		this->HandleErrorsInternal(r_values);
 #else
-
 		std::vector<int> r_values;
 		r_values.resize(nthreads, 0);
 		for (int n = 0; n < (int) this->nthreads; n++)
@@ -1674,8 +1687,7 @@ PhreeqcRM::GetNthSelectedOutputUserNumber(int *i)
 	{
 		return_value = IRM_FAIL;
 	}
-	if (return_value < 0)
-		this->ReturnHandler((IRM_RESULT) return_value, "PhreeqcRM::GetNthSelectedOutputUserNumber");
+	this->ReturnHandler(PhreeqcRM::Int2IrmResult(return_value, true), "PhreeqcRM::GetNthSelectedOutputUserNumber");
 	return return_value;
 }
 
@@ -1980,7 +1992,6 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 		}
 	}
 	throw PhreeqcRMStop();
-	//return this->error_count;
 }
 #else
 /* ---------------------------------------------------------------------- */
@@ -2005,6 +2016,79 @@ PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 	return this->error_count;
 }
 #endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::InitialPhreeqc2Concentrations(
+					double *c, 
+					int n_boundary, 
+					int dim,
+					int *boundary_solution1,
+					int *boundary_solution2, 
+					double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   concentrations
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          dim - leading dimension of array boundary mass fractions
+ *                must be >= to n_boundary
+ *
+ *   Output: c - concentrations for boundary conditions
+ *             - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		if (this->mpi_myself == 0) 
+		{
+			if (c != NULL && n_boundary > 0 && dim > 0 && boundary_solution1 != NULL)
+			{
+				int	i, n_old1, n_old2;
+				double f1, f2;
+
+				for (i = 0; i < n_boundary; i++)
+				{
+					cxxMix mixmap;
+					n_old1 = boundary_solution1[i];
+					n_old2 = (boundary_solution2) ? -1 : boundary_solution2[i];
+					f1 = (fraction1) ? 1.0 : fraction1[i];
+					f2 = 1 - f1;
+					mixmap.Add(n_old1, f1);
+					if (f2 > 0.0)
+					{
+						mixmap.Add(n_old2, f2);
+					}
+
+					// Make mass fractions in d
+					cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
+					std::vector<double> d;
+					cxxSolution2concentration(&cxxsoln, d);
+
+					// Put mass fractions in c
+					double *d_ptr = &c[i];
+					size_t j;
+					for (j = 0; j < components.size(); j++)
+					{
+						d_ptr[dim * j] = d[j];
+					}
+				}
+				return IRM_OK;
+			}
+			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer or dimension of zero in arguments.");
+		}
+	}
+	catch (...)
+	{
+			return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Concentrations");
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Concentrations(
@@ -2069,7 +2153,177 @@ PhreeqcRM::InitialPhreeqc2Concentrations(
 	}
 	return IRM_OK;
 }
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::InitialPhreeqc2Module(
+					int *initial_conditions1_in,
+					int *initial_conditions2_in, 
+					double *fraction1_in)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	 *      nxyz - number of cells
+	 *      initial_conditions1 - Fortran, 7 x nxyz integer array, containing
+	 *      entity numbers for
+	 *           solution number
+	 *           pure_phases number
+	 *           exchange number
+	 *           surface number
+	 *           gas number
+	 *           solid solution number
+	 *           kinetics number
+	 *      initial_conditions2 - Fortran, 7 x nxyz integer array, containing
+	 *			 entity numbers
+	 *      fraction1 - Fortran 7 x n_cell  double array, fraction for entity 1  
+	 *
+	 *      Routine mixes solutions, pure_phase assemblages,
+	 *      exchangers, surface complexers, gases, solid solution assemblages,
+	 *      and kinetics for each cell.
+	 */
+	int i, j;
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		this->Get_phreeqc_bin().Clear();
+		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 
+		std::vector < int > initial_conditions1, initial_conditions2;
+		std::vector < double > fraction1;
+		initial_conditions1.resize(7 * this->nxyz);
+		initial_conditions2.resize(7 * this->nxyz, -1);
+		fraction1.resize(7 * this->nxyz, 1.0);
+		size_t array_size = (size_t) (7 * this->nxyz);
+		if (this->mpi_myself == 0)
+		{
+			try
+			{
+				if (initial_conditions1_in == NULL)
+				{
+					throw PhreeqcRMStop();
+				}
+
+				memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
+				if (initial_conditions2_in != NULL)
+				{
+					memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
+				}
+				if (fraction1_in != NULL)
+				{
+					memcpy(fraction1.data(), fraction1_in, array_size * sizeof(double));
+				}
+			}
+			catch (...)
+			{
+				return_value = IRM_FAIL;
+			}
+		}
+
+		// Check error
+#ifdef USE_MPI
+		MPI_Bcast(&return_value, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+		if (return_value < 0)
+			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in argument to DistributeInitialConditions");
+
+#ifdef USE_MPI
+		//
+		// Transfer arrays
+		//
+		MPI_Bcast(initial_conditions1.data(), 7 * (this->nxyz), MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(initial_conditions2.data(), 7 * (this->nxyz), MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(fraction1.data(),           7 * (this->nxyz), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+		/*
+		*  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+		*  Does nothing for indexes less than 0 (i.e. restart files)
+		*/
+
+		size_t count_negative_porosity = 0;
+		std::ostringstream errstr;
+
+#ifdef USE_MPI
+		int begin = this->start_cell[this->mpi_myself];
+		int end = this->end_cell[this->mpi_myself] + 1;
+#else
+		int begin = 0;
+		int end = this->nxyz;
+#endif
+
+		for (int k = begin; k < end; k++)
+		{	
+			std::set<std::string> error_set;
+#ifdef USE_MPI
+			i = this->back[k][0];           /* i is ixyz number */
+			j = k;                          /* j is count_chem number */
+#else
+			i = k;                          /* i is ixyz number */   
+			j = this->forward[i];			/* j is count_chem number */
+			if (j < 0)	continue;
+#endif
+			assert(forward[i] >= 0);
+			assert (cell_volume[i] > 0.0);
+			if (pore_volume_zero[i] < 0 || cell_volume[i] <= 0)
+			{
+				errstr << "Nonpositive volume in cell " << i << ": volume, " << cell_volume[i]; 
+				errstr << "\t initial volume, " << this->pore_volume_zero[i] << ".",
+					count_negative_porosity++;
+				//error_msg(errstr.str().c_str());
+				return_value = IRM_FAIL;
+				continue;
+			}
+			if (this->CellInitialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
+				fraction1.data(), error_set) != IRM_OK)
+			{
+				std::set<std::string>::iterator it = error_set.begin();
+				for (; it != error_set.end(); it++)
+				{
+					errstr << it->c_str() << "\n";
+				}
+				return_value = IRM_FAIL;
+			}
+		}
+
+		if (count_negative_porosity > 0)
+		{
+			return_value = IRM_FAIL;
+			errstr << "Negative initial volumes may be due to initial head distribution.\n"
+				"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
+				"Increase porosity, decrease specific storage, or use free surface boundary.";
+		}
+
+#ifdef USE_MPI	
+		std::vector<int> r_values;
+		r_values.push_back(return_value);
+		this->HandleErrorsInternal(r_values);
+#else
+		this->ErrorHandler(return_value, "Processing initial conditions.");
+		// distribute to thread IPhreeqcs
+		std::vector<int> r_values;
+		r_values.resize(this->nthreads, 0);
+		for (int n = 1; n < this->nthreads; n++)
+		{
+			std::ostringstream delete_command;
+			delete_command << "DELETE; -cells\n";
+			for (i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+			{
+				cxxStorageBin sz_bin;
+				this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(sz_bin, i);
+				this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
+				delete_command << i << "\n";
+			}
+			r_values[n] = this->GetWorkers()[0]->RunString(delete_command.str().c_str());	
+		}
+		this->HandleErrorsInternal(r_values);
+#endif
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Module");
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Module(
@@ -2220,6 +2474,81 @@ PhreeqcRM::InitialPhreeqc2Module(
 #endif
 	return rtn;
 }
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::Int2IrmResult(int i, bool positive_ok)
+/* ---------------------------------------------------------------------- */
+{
+	IRM_RESULT return_value = IRM_OK;
+	if (i < 0)
+	{
+		switch(i)
+		{
+		case IRM_OUTOFMEMORY:
+			return_value = IRM_OUTOFMEMORY;
+			break;
+		case IRM_BADVARTYPE:
+			return_value = IRM_BADVARTYPE;
+			break;
+		case IRM_INVALIDARG:
+			return_value = IRM_INVALIDARG;
+			break;
+		case IRM_INVALIDROW:
+			return_value = IRM_INVALIDROW;
+			break;
+		case IRM_INVALIDCOL:
+			return_value = IRM_INVALIDCOL;
+			break;
+		case IRM_BADINSTANCE:
+			return_value = IRM_BADINSTANCE;
+			break;
+		default:
+			return_value = IRM_FAIL;
+			break;
+		}
+	}
+	if (!positive_ok && i > 0)
+		return_value = IRM_FAIL;
+	return return_value;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::IpqResult2IrmResult(int i)
+/* ---------------------------------------------------------------------- */
+{
+	IRM_RESULT return_value = IRM_OK;
+	if (i < 0)
+	{
+		switch(i)
+		{
+		case IRM_OUTOFMEMORY:
+			return_value = IRM_OUTOFMEMORY;
+			break;
+		case IRM_BADVARTYPE:
+			return_value = IRM_BADVARTYPE;
+			break;
+		case IRM_INVALIDARG:
+			return_value = IRM_INVALIDARG;
+			break;
+		case IRM_INVALIDROW:
+			return_value = IRM_INVALIDROW;
+			break;
+		case IRM_INVALIDCOL:
+			return_value = IRM_INVALIDCOL;
+			break;
+		case IRM_BADINSTANCE:
+			return_value = IRM_BADINSTANCE;
+			break;
+		default:
+			return_value = IRM_FAIL;
+			break;
+		}
+	}
+	return return_value;
+}
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::LoadDatabase(const char * database)
