@@ -1529,7 +1529,7 @@ PhreeqcRM::GetConcentrations(double * c)
 	{
 		return_value = IRM_FAIL;
 	}
-	this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
 }
 #else
 /* ---------------------------------------------------------------------- */
@@ -1539,7 +1539,6 @@ PhreeqcRM::GetConcentrations(double * c)
 {
 	// convert Reaction module solution data to hst mass fractions
 	IRM_RESULT return_value = IRM_OK;
-	c = NULL;
 	try
 	{
 		if (c == NULL)
@@ -1587,63 +1586,70 @@ std::vector<double> &
 PhreeqcRM::GetDensity(void)
 /* ---------------------------------------------------------------------- */
 {
-
-	this->density.clear();
-	this->density.resize(this->nxyz, INACTIVE_CELL_VALUE);
-	std::vector<double> dbuffer;
+	try
+	{
+		this->density.clear();
+		this->density.resize(this->nxyz, INACTIVE_CELL_VALUE);
+		std::vector<double> dbuffer;
 
 #ifdef USE_MPI
-	int n = this->mpi_myself;
-	for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
-	{
-		double d = this->workers[0]->Get_solution(i)->Get_density();
-		for(size_t j = 0; j < back[i].size(); j++)
+		int n = this->mpi_myself;
+		for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
 		{
-			int n = back[i][j];
-			this->density[n] = d;
-		}
-	}
-	for (int n = 0; n < this->mpi_tasks; n++)
-	{
-		if (this->mpi_myself == n)
-		{
-			if (this->mpi_myself = 0)
-			{
-				continue;
-			}
-			else
-			{
-				int l = this->end_cell[n] - this->start_cell[n] + 1;
-				MPI_Send((void *) &this->density[this->start_cell[n]], l, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-			}
-		}
-		else if (this->mpi_myself == 0)
-		{	
-			std::vector<double> dbuffer;
-			MPI_Status mpi_status;
-			int l = this->end_cell[n] - this->start_cell[n] + 1;
-			dbuffer.resize(l);
-			MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-			for (int i = 0; i < l; i++)
-			{
-				this->density[this->start_cell[n] +i] = dbuffer[i];
-			}
-		}
-	}
-#else
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
-		{
-			double d = this->workers[n]->Get_solution(i)->Get_density();
+			double d = this->workers[0]->Get_solution(i)->Get_density();
 			for(size_t j = 0; j < back[i].size(); j++)
 			{
 				int n = back[i][j];
 				this->density[n] = d;
 			}
 		}
-	}
+		for (int n = 0; n < this->mpi_tasks; n++)
+		{
+			if (this->mpi_myself == n)
+			{
+				if (this->mpi_myself = 0)
+				{
+					continue;
+				}
+				else
+				{
+					int l = this->end_cell[n] - this->start_cell[n] + 1;
+					MPI_Send((void *) &this->density[this->start_cell[n]], l, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+				}
+			}
+			else if (this->mpi_myself == 0)
+			{	
+				std::vector<double> dbuffer;
+				MPI_Status mpi_status;
+				int l = this->end_cell[n] - this->start_cell[n] + 1;
+				dbuffer.resize(l);
+				MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+				for (int i = 0; i < l; i++)
+				{
+					this->density[this->start_cell[n] +i] = dbuffer[i];
+				}
+			}
+		}
+#else
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
+			{
+				double d = this->workers[n]->Get_solution(i)->Get_density();
+				for(size_t j = 0; j < back[i].size(); j++)
+				{
+					int n = back[i][j];
+					this->density[n] = d;
+				}
+			}
+		}
 #endif
+	}
+	catch (...)
+	{
+		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetDensity");
+		this->density.clear();
+	}
 	return this->density;
 }
 /* ---------------------------------------------------------------------- */
@@ -1651,11 +1657,26 @@ int
 PhreeqcRM::GetNthSelectedOutputUserNumber(int *i)
 /* ---------------------------------------------------------------------- */
 {
-	if (i != NULL && *i >= 0) 
+	int return_value = IRM_OK;
+	try
 	{
-		return this->workers[0]->GetNthSelectedOutputUserNumber(*i);
+		if (i != NULL && *i >= 0) 
+		{
+			return_value = this->workers[0]->GetNthSelectedOutputUserNumber(*i);
+			this->ErrorHandler(return_value, "GetNthSelectedOutputUserNumber");
+		}
+		else
+		{
+			this->ErrorHandler(IRM_INVALIDARG, "GetNthSelectedOutputUserNumber");
+		}
 	}
-	return IRM_INVALIDARG;
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	if (return_value < 0)
+		this->ReturnHandler((IRM_RESULT) return_value, "PhreeqcRM::GetNthSelectedOutputUserNumber");
+	return return_value;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1664,16 +1685,25 @@ PhreeqcRM::GetSelectedOutput(double *so)
 /* ---------------------------------------------------------------------- */
 {
 	
-	IRM_RESULT rtn = IRM_OK;
-	int n_user = this->workers[0]->GetCurrentSelectedOutputUserNumber();
-#ifdef USE_MPI
-	MPI_Bcast(&n_user,  1, MPI_INT, 0, MPI_COMM_WORLD);
-	if (n_user >= 0)
+	IRM_RESULT return_value = IRM_OK;
+	try
 	{
-		std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(n_user);
-		if (it != this->workers[0]->CSelectedOutputMap.end())
+		int n_user = this->workers[0]->GetCurrentSelectedOutputUserNumber();
+#ifdef USE_MPI
+		MPI_Bcast(&n_user,  1, MPI_INT, 0, MPI_COMM_WORLD);
+		if (n_user < 0)
 		{
-			this->SetCurrentSelectedOutputUserNumber(n_user);
+			this->ErrorHandler(IRM_INVALIDARG, "No selected output defined");
+		}			
+		std::vector<int> r_values;
+		r_values.resize(1,0);
+		try
+		{
+			std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(n_user);
+			if (it == this->workers[0]->CSelectedOutputMap.end())
+				this->ErrorHandler(IRM_INVALIDARG, "Selected output not found");
+			if (this->SetCurrentSelectedOutputUserNumber(n_user) < 0)
+				this->ErrorHandler(IRM_INVALIDARG, "Selected output not found");;
 			int ncol = this->GetSelectedOutputColumnCount();
 			int local_start_cell = 0;
 			std::vector<double> dbuffer;
@@ -1728,24 +1758,23 @@ PhreeqcRM::GetSelectedOutput(double *so)
 					}
 					else
 					{
-						error_msg("NULL pointer in argument to GetSelectedOutput", 0);
-						rtn = IRM_INVALIDARG;
+						this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in argument to GetSelectedOutput");
 					}
 				}
 			}
 		}
-		else
+		catch (...)
 		{
-			error_msg("Did not find current selected output in CSelectedOutputMap in  GetSelectedOutput", 0);
-			rtn = IRM_INVALIDARG;
+			r_values[0] = 1;
 		}
-		return rtn;
-	}
+		this->HandleErrorsInternal(r_values);
 #else
-
-	if (n_user >= 0)
-	{
-		this->SetCurrentSelectedOutputUserNumber(n_user);
+		if (so == NULL)
+			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in GetSelectedOutput.");
+		if (n_user < 0)
+			this->ErrorHandler(IRM_INVALIDARG, "Selected output not defined.");
+		if (this->SetCurrentSelectedOutputUserNumber(n_user) < 0)
+			this->ErrorHandler(IRM_INVALIDARG, "Selected output not found.");
 		int ncol = this->GetSelectedOutputColumnCount();
 		std::vector<double> dbuffer;
 		int local_start_cell = 0;
@@ -1753,44 +1782,39 @@ PhreeqcRM::GetSelectedOutput(double *so)
 		{
 			int nrow_x, ncol_x;
 			std::map< int, CSelectedOutput>::iterator cso_it = this->workers[n]->CSelectedOutputMap.find(n_user);
-			if (cso_it != this->workers[n]->CSelectedOutputMap.end())
+			if (cso_it == this->workers[n]->CSelectedOutputMap.end())
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "Did not find current selected output in CSelectedOutputMap");
+			}
+			else
 			{
 				cso_it->second.Doublize(nrow_x, ncol_x, dbuffer);
 				//assert(nrow_x == nrow);
 				assert(ncol_x = ncol);
 
 				// Now write data from thread to so
-				if (so)
+				for (size_t icol = 0; icol < (size_t) ncol; icol++)
 				{
-					for (size_t icol = 0; icol < (size_t) ncol; icol++)
+					for (size_t irow = 0; irow < (size_t) nrow_x; irow++)
 					{
-						for (size_t irow = 0; irow < (size_t) nrow_x; irow++)
+						int ichem = local_start_cell + (int) irow;
+						for (size_t k = 0; k < back[ichem].size(); k++)
 						{
-							int ichem = local_start_cell + (int) irow;
-							for (size_t k = 0; k < back[ichem].size(); k++)
-							{
-								int ixyz = back[ichem][k];
-								so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow_x + irow];
-							}
+							int ixyz = back[ichem][k];
+							so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow_x + irow];
 						}
 					}
 				}
-				else
-				{
-					error_msg("NULL pointer in argument to GetSelectedOutput", 0);
-					rtn = IRM_INVALIDARG;
-				}
-			}
-			else
-			{
-				return IRM_INVALIDARG;
 			}
 			local_start_cell += nrow_x;
 		}
-		return rtn;
-	}
 #endif
-	return IRM_INVALIDARG;
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetSelectedOutput");
 }
 /* ---------------------------------------------------------------------- */
 int
