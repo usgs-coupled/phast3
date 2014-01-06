@@ -49,6 +49,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		nxyz = 40;
 		nthreads = 2;
 		id = RM_Create(nxyz, nthreads);
+		status = RM_SetErrorHandlerMode(id, 2);
 		status = RM_SetFilePrefix(id, "Advect_c");
 
 		// Open error, log, and output files
