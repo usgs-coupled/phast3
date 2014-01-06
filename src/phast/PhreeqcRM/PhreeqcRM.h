@@ -82,15 +82,13 @@ public:
 	static void                               FileRename(const std::string &temp_name, const std::string &name, 
 		                                           const std::string &backup_name);
 	static IRM_RESULT                         Int2IrmResult(int r, bool positive_ok);
-	//static IRM_RESULT                         IpqResult2IrmResult(int r);
 
 
 	// TODO ///////////////////////////
-	//void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
-	void                           Convert_to_molal(double *c, int n, int dim);
-	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
-                                        int * solution_number, 
-                                        const std::string &prefix);
+	void                                      Convert_to_molal(double *c, int n, int dim);
+	void                                      Write_bc_raw(int *solution_list, int * bc_solution_count, 
+                                                  int * solution_number, 
+                                                  const std::string &prefix);
 
 	// Getters 
 	const std::vector < std::vector <int> > & GetBack(void) {return this->back;}
@@ -101,7 +99,6 @@ public:
 	std::vector<double> &                     GetDensity(void); 
 	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;}
 	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
-	//bool                                      GetExitOnError(void) {return this->stop_on_error;} 
 	const std::string                         GetFilePrefix(void) const {return this->file_prefix;}
 	const int                                 GetGridCellCount(void) const {return this->nxyz;}
 	int                                       GetInputUnitsSolution(void) {return this->input_units_Solution;}
@@ -240,7 +237,6 @@ protected:
 
 	bool stop_message;
 	int error_count;
-	//bool stop_on_error;
 	int error_handler_mode;
 
 	// threading

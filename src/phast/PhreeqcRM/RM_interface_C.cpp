@@ -697,7 +697,19 @@ RM_SetDensity(int id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-
+/* ---------------------------------------------------------------------- */
+int
+RM_SetErrorHandlerMode(int id, int mode)
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->SetErrorHandlerMode(mode);
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 int
 RM_SetFilePrefix(int id, const char *name)
@@ -845,21 +857,6 @@ RM_SetStopMessage(int id, int stop_flag)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int
-RM_SetStopOnError(int id, int tf)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		bool s = (tf != 0);
-		return Reaction_module_ptr->SetStopOnError(s);
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int RM_SetTemperature(int id, double *t)
 /* ---------------------------------------------------------------------- */

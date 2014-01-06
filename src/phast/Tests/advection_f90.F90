@@ -54,7 +54,7 @@
     ! Create reaction module
     id = RM_create(nxyz, nthreads)
     status = RM_SetFilePrefix(id, "Advect_f90")
-    
+    status = RM_SetErrorHandlerMode(id, 2)
     ! Open error, log, and output files
     status = RM_OpenFiles(id)
   
@@ -219,8 +219,7 @@
                 enddo
                 write(*,*) "     Selected output: "
                 do j = 1, col
-                    
-                    status = RM_GetSelectedOutputHeading(id, j, heading)    
+                    status = RM_GetSelectedOutputHeading(id, j-1, heading)    
                     write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading),": ", selected_out(i,j)
                 enddo
             enddo

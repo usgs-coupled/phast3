@@ -384,7 +384,7 @@ IRM_RESULT RM_GetSelectedOutputHeading(int * id, int *icol, char *heading, size_
 	{
 		std::string head;
 		IRM_RESULT rtn = Reaction_module_ptr->GetSelectedOutputHeading(icol, head);
-		if (rtn > 0)
+		if (rtn == IRM_OK)
 		{
 			strncpy(heading, head.c_str(), length);
 		}
@@ -862,22 +862,7 @@ RM_SetErrorHandlerMode(int *id, int *mode)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_SetExitOnError(int *id, int *tf)
-/* ---------------------------------------------------------------------- */
-{
-	// pass pointers from Fortran to the Reaction module
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		bool s = (tf == NULL) ? true : (*tf != 0);
-		return Reaction_module_ptr->SetExitOnError(s);
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetTemperature(int *id, double *t)
 /* ---------------------------------------------------------------------- */
