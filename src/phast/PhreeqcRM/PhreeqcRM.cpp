@@ -2268,10 +2268,7 @@ PhreeqcRM::LoadDatabase(const char * database)
 		r_vector.resize(1);
 
 		r_vector[0] = this->SetDatabaseFileName(database);
-		if (this->HandleErrorsInternal(r_vector) > 0)
-		{
-			throw PhreeqcRMStop();
-		}
+		this->HandleErrorsInternal(r_vector);
 
 		// vector for return values
 		r_vector.resize(this->nthreads + 2);
@@ -2288,10 +2285,7 @@ PhreeqcRM::LoadDatabase(const char * database)
 		} 	
 
 		// Check errors
-		if (this->HandleErrorsInternal(r_vector) > 0)
-		{
-			throw PhreeqcRMStop();
-		}
+		this->HandleErrorsInternal(r_vector);
 	}
 	catch (...)
 	{
@@ -2494,7 +2488,6 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 
 	this->old_saturation[ihst] = new_frac;
 }
-
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
@@ -2505,7 +2498,15 @@ PhreeqcRM::RebalanceLoad(void)
 	if (this->mpi_tasks > count_chemistry) return;
 	if (this->rebalance_by_cell)
 	{
-		return RebalanceLoadPerCell();
+		try
+		{
+			RebalanceLoadPerCell();
+		}
+		catch (...)
+		{
+			this->ErrorHandler(IRM_FAIL, "PhreeqcRM::RebalanceLoad");
+		}
+		return;
 	}
 #include <time.h>
 
@@ -2531,229 +2532,274 @@ PhreeqcRM::RebalanceLoad(void)
 	recv_buffer.resize(this->mpi_tasks);
 	MPI_Gather(&time_per_cell, 1, MPI_DOUBLE, recv_buffer.data(), 1, MPI_DOUBLE, 0,
 			   MPI_COMM_WORLD);
-	
-	if (this->mpi_myself == 0)
+
+	IRM_RESULT return_value = IRM_OK;
+	try
 	{
-		double total = 0;
-		for (int i = 0; i < this->mpi_tasks; i++)
+		if (this->mpi_myself == 0)
 		{
-			total += recv_buffer[i];
-		}
-		double avg = total / (double) this->mpi_tasks;
-		// Normalize
-		total = 0;
-		for (int i = 0; i < this->mpi_tasks; i++)
-		{
-			assert(recv_buffer[i] >= 0);
-			if (recv_buffer[i] == 0) recv_buffer[i] = 0.25*avg;
-			total += recv_buffer[0] / recv_buffer[i];
-		}
-
-		// Set first and last cells
-		double new_n = this->count_chemistry / total; /* new_n is number of cells for root */
-
-
-		// Calculate number of cells per process, rounded to lower number
-		int	total_cells = 0;
-		int n = 0;
-		for (int i = 0; i < this->mpi_tasks; i++)
-		{
-			n = (int) floor(new_n * recv_buffer[0] / recv_buffer[i]);
-			if (n < 1)
-				n = 1;
-			cells_v.push_back(n);
-			total_cells += n;
-		}
-
-		// Distribute cells from rounding down
-		int diff_cells = this->count_chemistry - total_cells;
-		if (diff_cells > 0)
-		{
-			for (int j = 0; j < diff_cells; j++)
+			double total = 0;
+			for (int i = 0; i < this->mpi_tasks; i++)
 			{
-				int min_cell = 0;
-				double min_time = (cells_v[0] + 1) * recv_buffer[0];
-				for (int i = 1; i < this->mpi_tasks; i++)
-				{
-					if ((cells_v[i] + 1) * recv_buffer[i] < min_time)
-					{
-						min_cell = i;
-						min_time = (cells_v[i] + 1) * recv_buffer[i];
-					}
-				}
-				cells_v[min_cell] += 1;
+				total += recv_buffer[i];
 			}
-		}
-		else if (diff_cells < 0)
-		{
-			for (int j = 0; j < -diff_cells; j++)
+			double avg = total / (double) this->mpi_tasks;
+			// Normalize
+			total = 0;
+			for (int i = 0; i < this->mpi_tasks; i++)
 			{
-				int max_cell = -1;
-				double max_time = 0;
-				for (int i = 0; i < this->mpi_tasks; i++)
+				assert(recv_buffer[i] >= 0);
+				if (recv_buffer[i] == 0) recv_buffer[i] = 0.25*avg;
+				total += recv_buffer[0] / recv_buffer[i];
+			}
+
+			// Set first and last cells
+			double new_n = this->count_chemistry / total; /* new_n is number of cells for root */
+
+
+			// Calculate number of cells per process, rounded to lower number
+			int	total_cells = 0;
+			int n = 0;
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				n = (int) floor(new_n * recv_buffer[0] / recv_buffer[i]);
+				if (n < 1)
+					n = 1;
+				cells_v.push_back(n);
+				total_cells += n;
+			}
+
+			// Distribute cells from rounding down
+			int diff_cells = this->count_chemistry - total_cells;
+			if (diff_cells > 0)
+			{
+				for (int j = 0; j < diff_cells; j++)
 				{
-					if (cells_v[i] > 1)
+					int min_cell = 0;
+					double min_time = (cells_v[0] + 1) * recv_buffer[0];
+					for (int i = 1; i < this->mpi_tasks; i++)
 					{
-						if ((cells_v[i] - 1) * recv_buffer[i] > max_time)
+						if ((cells_v[i] + 1) * recv_buffer[i] < min_time)
 						{
-							max_cell = i;
-							max_time = (cells_v[i] - 1) * recv_buffer[i];
+							min_cell = i;
+							min_time = (cells_v[i] + 1) * recv_buffer[i];
 						}
 					}
+					cells_v[min_cell] += 1;
 				}
-				cells_v[max_cell] -= 1;
 			}
-		}
+			else if (diff_cells < 0)
+			{
+				for (int j = 0; j < -diff_cells; j++)
+				{
+					int max_cell = -1;
+					double max_time = 0;
+					for (int i = 0; i < this->mpi_tasks; i++)
+					{
+						if (cells_v[i] > 1)
+						{
+							if ((cells_v[i] - 1) * recv_buffer[i] > max_time)
+							{
+								max_cell = i;
+								max_time = (cells_v[i] - 1) * recv_buffer[i];
+							}
+						}
+					}
+					cells_v[max_cell] -= 1;
+				}
+			}
 
-		// Fill in subcolumn ends
-		int last = -1;
-		for (int i = 0; i < this->mpi_tasks; i++)
-		{
-			start_cell_new[i] = last + 1;
-			end_cell_new[i] = start_cell_new[i] + cells_v[i] - 1;
-			last = end_cell_new[i];
-		}
-
-		// Check that all cells are distributed
-		if (end_cell_new[this->mpi_tasks - 1] != this->count_chemistry - 1)
-		{
-			error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chemistry << ", last cell "
-				<< end_cell_new[this->mpi_tasks - 1] << "\n";
+			// Fill in subcolumn ends
+			int last = -1;
 			for (int i = 0; i < this->mpi_tasks; i++)
 			{
-				error_stream << i << ": first " << start_cell_new[i] << "\tlast " << end_cell_new[i] << "\n";
+				start_cell_new[i] = last + 1;
+				end_cell_new[i] = start_cell_new[i] + cells_v[i] - 1;
+				last = end_cell_new[i];
 			}
-			error_stream << "Failed to redistribute cells." << "\n";
-			error_msg(error_stream.str().c_str(), STOP);
-		}
 
-		// Compare old and new times
-		double max_old = 0.0;
-		double max_new = 0.0;
-		for (int i = 0; i < this->mpi_tasks; i++)
-		{
-			double t = cells_v[i] * recv_buffer[i];
-			if (t > max_new)
-				max_new = t;
-			t = (end_cell[i] - start_cell[i] + 1) * recv_buffer[i];
-			if (t > max_old)
-				max_old = t;
-		}
-		std::cerr << "          Estimated efficiency of chemistry " << (float) ((LDBLE) 100. * max_new / max_old) << "\n";
+			// Check that all cells are distributed
+			if (end_cell_new[this->mpi_tasks - 1] != this->count_chemistry - 1)
+			{
+				error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chemistry << ", last cell "
+					<< end_cell_new[this->mpi_tasks - 1] << "\n";
+				for (int i = 0; i < this->mpi_tasks; i++)
+				{
+					error_stream << i << ": first " << start_cell_new[i] << "\tlast " << end_cell_new[i] << "\n";
+				}
+				error_stream << "Failed to redistribute cells." << "\n";
+				this->ErrorHandler(IRM_FAIL, error_stream.str().c_str());
+			}
 
-
-		if ((max_old - max_new) / max_old < 0.05)
-		{
+			// Compare old and new times
+			double max_old = 0.0;
+			double max_new = 0.0;
 			for (int i = 0; i < this->mpi_tasks; i++)
 			{
-				start_cell_new[i] = start_cell[i];
-				end_cell_new[i] = end_cell[i];
+				double t = cells_v[i] * recv_buffer[i];
+				if (t > max_new)
+					max_new = t;
+				t = (end_cell[i] - start_cell[i] + 1) * recv_buffer[i];
+				if (t > max_old)
+					max_old = t;
 			}
-			good_enough = true;
-		}
-		else
-		{
-			for (int i = 0; i < this->mpi_tasks - 1; i++)
+			std::cerr << "          Estimated efficiency of chemistry " << (float) ((LDBLE) 100. * max_new / max_old) << "\n";
+
+
+			if ((max_old - max_new) / max_old < 0.05)
 			{
-				int icells = (int) ((end_cell_new[i] - end_cell[i]) * this->rebalance_fraction);
-				end_cell_new[i] = end_cell[i] + icells;
-				start_cell_new[i + 1] = end_cell_new[i] + 1;
+				for (int i = 0; i < this->mpi_tasks; i++)
+				{
+					start_cell_new[i] = start_cell[i];
+					end_cell_new[i] = end_cell[i];
+				}
+				good_enough = true;
+			}
+			else
+			{
+				for (int i = 0; i < this->mpi_tasks - 1; i++)
+				{
+					int icells = (int) ((end_cell_new[i] - end_cell[i]) * this->rebalance_fraction);
+					end_cell_new[i] = end_cell[i] + icells;
+					start_cell_new[i + 1] = end_cell_new[i] + 1;
+				}
 			}
 		}
 	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+
+	// Broadcast error condition
+	MPI_Bcast(&return_value, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
 	/*
 	 *   Broadcast new subcolumns
 	 */
 	
-	MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
-	
-	/*
-	 *   Redefine columns
-	 */
-	int nnew = 0;
-	int old = 0;
-	int change = 0;
-	std::vector<std::vector<int> > change_list;
-
-	for (int k = 0; k < this->count_chemistry; k++)
+	if (return_value == 0)
 	{
-		int i = k;
-		//int iphrq = i;			/* iphrq is 1 to count_chem */
-		int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
-		old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
-		while (k > end_cell[old])
+		try
 		{
-			old++;
-		}
-		while (k > end_cell_new[nnew])
-		{
-			nnew++;
-		}
+			std::vector<int> r_vector;
+			r_vector.push_back(IRM_OK);
 
-		if (old == nnew)
-			continue;
-		change++;
+			MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
 
-		// Need to send cell from old task to nnew task
-		std::vector<int> ints;
-		ints.push_back(k);
-		ints.push_back(old);
-		ints.push_back(nnew);
-		change_list.push_back(ints);
-	}
+			/*
+			*   Redefine columns
+			*/
+			int nnew = 0;
+			int old = 0;
+			int change = 0;
+			std::vector<std::vector<int> > change_list;
 
-	// Transfer cells
-	int transfers = 0;
-	int count=0;
-	if (change_list.size() > 0)
-	{
-		std::vector<std::vector<int> >::const_iterator it = change_list.begin();
-		int pold = (*it)[1];
-		int pnew = (*it)[2];
-		cxxStorageBin t_bin;
-		for (; it != change_list.end(); it++)
-		{
-			int n = (*it)[0];
-			int old = (*it)[1];
-			int nnew = (*it)[2];
-			if (old != pold || nnew != pnew)
+			for (int k = 0; k < this->count_chemistry; k++)
 			{
-				transfers++;
-				this->TransferCells(t_bin, pold, pnew);
-				t_bin.Clear();
-				pold = old;
-				pnew = nnew;
-				
-			}	
-			count++;
-			// Put cell in t_bin
-			if (this->mpi_myself == pold)
-			{
-				phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, n);
-				std::ostringstream del;
-				del << "DELETE; -cell " << n << "\n";
-				phast_iphreeqc_worker->RunString(del.str().c_str());
+				int i = k;
+				int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
+				old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
+				while (k > end_cell[old])
+				{
+					old++;
+				}
+				while (k > end_cell_new[nnew])
+				{
+					nnew++;
+				}
+
+				if (old == nnew)
+					continue;
+				change++;
+
+				// Need to send cell from old task to nnew task
+				std::vector<int> ints;
+				ints.push_back(k);
+				ints.push_back(old);
+				ints.push_back(nnew);
+				change_list.push_back(ints);
 			}
-		}
-		// Last transfer
-		transfers++;
-		this->TransferCells(t_bin, pold, pnew);
-	}
-	
-	for (int i = 0; i < this->mpi_tasks; i++)
-	{
-		start_cell[i] = start_cell_new[i];
-		end_cell[i] = end_cell_new[i];
-	}
 
-	if (this->mpi_myself == 0)
-	{
-		std::cerr << "          Cells shifted between threads     " << change << "\n";
-		//std::cerr << "          Number of mpi cell transfers      " << transfers << "\n";
+			// Transfer cells
+			int transfers = 0;
+			int count=0;
+			if (change_list.size() > 0)
+			{
+				std::vector<std::vector<int> >::const_iterator it = change_list.begin();
+				int pold = (*it)[1];
+				int pnew = (*it)[2];
+				cxxStorageBin t_bin;
+				for (; it != change_list.end(); it++)
+				{
+					int n = (*it)[0];
+					int old = (*it)[1];
+					int nnew = (*it)[2];
+					if (old != pold || nnew != pnew)
+					{
+						transfers++;
+						try
+						{
+								this->TransferCells(t_bin, pold, pnew);
+						}
+						catch (...)
+						{
+							r_vector[0] = IRM_FAIL;
+						}
+						t_bin.Clear();
+						pold = old;
+						pnew = nnew;
+
+					}	
+					count++;
+					// Put cell in t_bin
+					if (this->mpi_myself == pold)
+					{
+						phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, n);
+						std::ostringstream del;
+						del << "DELETE; -cell " << n << "\n";
+						try
+						{
+							int status = phast_iphreeqc_worker->RunString(del.str().c_str());
+							this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+						}
+						catch (...)
+						{
+							r_vector[0] = IRM_FAIL;
+						}
+					}
+				}
+				// Last transfer
+				transfers++;
+				try
+				{
+					this->TransferCells(t_bin, pold, pnew);
+				}
+				catch (...)
+				{
+					r_vector[0] = IRM_FAIL;
+				}
+			}
+
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				start_cell[i] = start_cell_new[i];
+				end_cell[i] = end_cell_new[i];
+			}
+
+			if (this->mpi_myself == 0)
+			{
+				std::cerr << "          Cells shifted between processes     " << change << "\n";
+			}
+			this->HandleErrorsInternal(r_vector);
+		}
+		catch (...)
+		{
+			return_value = IRM_FAIL;
+		}
 	}
-	return;
+	this->ErrorHandler(return_value, "PhreeqcRM::RebalanceLoad");
 }
 #else
 /* ---------------------------------------------------------------------- */
@@ -2767,7 +2813,14 @@ PhreeqcRM::RebalanceLoad(void)
 #include <time.h>
 	if (this->rebalance_by_cell)
 	{
-		RebalanceLoadPerCell();
+		try
+		{
+			RebalanceLoadPerCell();
+		}
+		catch (...)
+		{
+			this->ErrorHandler(IRM_FAIL, "PhreeqcRM::RebalanceLoad");
+		}
 		return; 
 	}
 	std::vector<int> start_cell_new;
@@ -2779,41 +2832,36 @@ PhreeqcRM::RebalanceLoad(void)
 	}
 
 	std::vector<int> cells_v;
-	bool error = false;
 	std::ostringstream error_stream;
 	/*
 	 *  Gather times of all tasks
 	 */
 	std::vector<double> recv_buffer;
-
 	double total = 0;
 	for (int i = 0; i < this->nthreads; i++)
 	{
 		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[i];
-		int cells = this->end_cell[i] - this->start_cell[i] + 1;
-		//std::cerr << "Time: " << i << "  " << phast_iphreeqc_worker->Get_thread_clock_time() << 
-		//	"Time per cell: " << phast_iphreeqc_worker->Get_thread_clock_time()/ ((double) cells)  << "\n";
-		recv_buffer.push_back(phast_iphreeqc_worker->Get_thread_clock_time()/((double) cells));
-		if (recv_buffer.back() <= 0)
-		{
-			error_stream << "Time for cell " << i << ": " << recv_buffer.back() << "\n";
-			recv_buffer.back() = 1;
-			//error = true;
-			break;
-		}
-		total += recv_buffer[0] / recv_buffer.back();
-		//std::cerr << "Total: " << total << "  " << recv_buffer[0] / recv_buffer.back() << "\n";
+		recv_buffer.push_back(phast_iphreeqc_worker->Get_thread_clock_time());
+		total += recv_buffer[i];
 	}
+	double avg = total / (double) this->nthreads;
+
+	// Normalize
 	for (int i = 0; i < this->nthreads; i++)
 	{
+		assert(recv_buffer[i] >= 0);
+		if (recv_buffer[i] == 0) recv_buffer[i] = 0.25*avg;
+		int cells = this->end_cell[i] - this->start_cell[i] + 1;
+		recv_buffer[i] /= (double) cells;
+	}
 
+	// Calculate total
+	total = 0;
+	for (int i = 0; i < this->nthreads; i++)
+	{
+		total += recv_buffer[0] / recv_buffer[i];
 	}
 	
-	if (error)
-	{
-		error_msg(error_stream.str().c_str(), STOP);
-	}
-
 	/*
 	 *  Set first and last cells
 	 */
@@ -2885,96 +2933,101 @@ PhreeqcRM::RebalanceLoad(void)
 	/*
 	*  Check that all cells are distributed
 	*/
-	if (end_cell_new[this->nthreads - 1] != this->count_chemistry - 1)
+	try
 	{
-		error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chemistry << ", last cell "
-			<< end_cell_new[this->nthreads - 1] << "\n";
+		if (end_cell_new[this->nthreads - 1] != this->count_chemistry - 1)
+		{
+			error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chemistry << ", last cell "
+				<< end_cell_new[this->nthreads - 1] << "\n";
+			for (int i = 0; i < this->nthreads; i++)
+			{
+				error_stream << i << ": first " << start_cell_new[i] << "\tlast " << end_cell_new[i] << "\n";
+			}
+			error_stream << "Failed to redistribute cells." << "\n";
+			this->ErrorHandler(IRM_FAIL, error_stream.str().c_str());
+		}
+		/*
+		*   Compare old and new times
+		*/
+		double max_old = 0.0;
+		double max_new = 0.0;
 		for (int i = 0; i < this->nthreads; i++)
 		{
-			error_stream << i << ": first " << start_cell_new[i] << "\tlast " << end_cell_new[i] << "\n";
+			double t = cells_v[i] * recv_buffer[i];
+			if (t > max_new)
+				max_new = t;
+			t = (end_cell[i] - start_cell[i] + 1) * recv_buffer[i];
+			if (t > max_old)
+				max_old = t;
 		}
-		error_stream << "Failed to redistribute cells." << "\n";
-		error_msg(error_stream.str().c_str(), STOP);
-	}
-	/*
-	*   Compare old and new times
-	*/
-	double max_old = 0.0;
-	double max_new = 0.0;
-	for (int i = 0; i < this->nthreads; i++)
-	{
-		double t = cells_v[i] * recv_buffer[i];
-		if (t > max_new)
-			max_new = t;
-		t = (end_cell[i] - start_cell[i] + 1) * recv_buffer[i];
-		if (t > max_old)
-			max_old = t;
-	}
-	std::cerr << "          Estimated efficiency of chemistry " << (float) ((LDBLE) 100. * max_new / max_old) << "\n";
+		std::cerr << "          Estimated efficiency of chemistry " << (float) ((LDBLE) 100. * max_new / max_old) << "\n";
 
 
-	if ((max_old - max_new) / max_old < 0.05)
-	{
+		if ((max_old - max_new) / max_old < 0.05)
+		{
+			for (int i = 0; i < this->nthreads; i++)
+			{
+				start_cell_new[i] = start_cell[i];
+				end_cell_new[i] = end_cell[i];
+			}
+		}
+		else
+		{
+			for (int i = 0; i < this->nthreads - 1; i++)
+			{
+				int icells = (int) ((end_cell_new[i] - end_cell[i]) * this->rebalance_fraction);
+				end_cell_new[i] = end_cell[i] + icells;
+				start_cell_new[i + 1] = end_cell_new[i] + 1;
+			}
+		}
+		/*
+		*   Redefine columns
+		*/
+		int nnew = 0;
+		int old = 0;
+		int change = 0;
+
+		for (int k = 0; k < this->count_chemistry; k++)
+		{
+			int i = k;
+			int iphrq = i;			/* iphrq is 1 to count_chem */
+			while (k > end_cell[old])
+			{
+				old++;
+			}
+			while (k > end_cell_new[nnew])
+			{
+				nnew++;
+			}
+
+			if (old == nnew)
+				continue;
+			change++;
+			IPhreeqcPhast * old_worker = this->workers[old];
+			IPhreeqcPhast * new_worker = this->workers[nnew];
+			cxxStorageBin temp_bin; 
+			old_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, iphrq);
+			new_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, iphrq);
+			std::ostringstream del;
+			del << "DELETE; -cell " << iphrq << "\n";
+			int status = old_worker->RunString(del.str().c_str());
+			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+		}
+
 		for (int i = 0; i < this->nthreads; i++)
 		{
-			start_cell_new[i] = start_cell[i];
-			end_cell_new[i] = end_cell[i];
+			start_cell[i] = start_cell_new[i];
+			end_cell[i] = end_cell_new[i];
+			IPhreeqcPhast * worker = this->workers[i];
+			worker->Set_start_cell(start_cell_new[i]);
+			worker->Set_end_cell(end_cell_new[i]);
 		}
+		std::cerr << "          Cells shifted between threads     " << change << "\n";
 	}
-	else
+	catch (...)
 	{
-		for (int i = 0; i < this->nthreads - 1; i++)
-		{
-			int icells = (int) ((end_cell_new[i] - end_cell[i]) * this->rebalance_fraction);
-			end_cell_new[i] = end_cell[i] + icells;
-			start_cell_new[i + 1] = end_cell_new[i] + 1;
-		}
+		this->ErrorHandler(IRM_FAIL, "PhreeqcRM::RebalanceLoad");
 	}
-	/*
-	 *   Redefine columns
-	 */
-	int nnew = 0;
-	int old = 0;
-	int change = 0;
-
-	for (int k = 0; k < this->count_chemistry; k++)
-	{
-		int i = k;
-		int iphrq = i;			/* iphrq is 1 to count_chem */
-		//int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
-		while (k > end_cell[old])
-		{
-			old++;
-		}
-		while (k > end_cell_new[nnew])
-		{
-			nnew++;
-		}
-
-		if (old == nnew)
-			continue;
-		change++;
-		IPhreeqcPhast * old_worker = this->workers[old];
-		IPhreeqcPhast * new_worker = this->workers[nnew];
-		cxxStorageBin temp_bin; 
-		old_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, iphrq);
-		new_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, iphrq);
-		std::ostringstream del;
-		del << "DELETE; -cell " << iphrq << "\n";
-		old_worker->RunString(del.str().c_str());
-	}
-
-	for (int i = 0; i < this->nthreads; i++)
-	{
-		start_cell[i] = start_cell_new[i];
-		end_cell[i] = end_cell_new[i];
-		IPhreeqcPhast * worker = this->workers[i];
-		worker->Set_start_cell(start_cell_new[i]);
-		worker->Set_end_cell(end_cell_new[i]);
-	}
-	std::cerr << "          Cells shifted between threads     " << change << "\n";
-
-	return;
 }
 #endif
 #ifdef USE_MPI
@@ -2983,6 +3036,7 @@ void
 PhreeqcRM::RebalanceLoadPerCell(void)
 /* ---------------------------------------------------------------------- */
 {
+	// Throws on error
 	if (this->mpi_tasks <= 1) return;
 	if (this->mpi_tasks > count_chemistry) return;
 #include <time.h>
@@ -3174,53 +3228,84 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	// Transfer cells
 	int transfers = 0;
 	int count=0;
-	if (change_list.size() > 0)
+	try
 	{
-		std::vector<std::vector<int> >::const_iterator it = change_list.begin();
-		int pold = (*it)[1];
-		int pnew = (*it)[2];
-		cxxStorageBin t_bin;
-		for (; it != change_list.end(); it++)
+		std::vector<int> r_vector;
+		r_vector.push_back(IRM_OK);
+		if (change_list.size() > 0)
 		{
-			int n = (*it)[0];
-			int old = (*it)[1];
-			int nnew = (*it)[2];
-			if (old != pold || nnew != pnew)
+			std::vector<std::vector<int> >::const_iterator it = change_list.begin();
+			int pold = (*it)[1];
+			int pnew = (*it)[2];
+			cxxStorageBin t_bin;
+			for (; it != change_list.end(); it++)
 			{
-				transfers++;
+				int n = (*it)[0];
+				int old = (*it)[1];
+				int nnew = (*it)[2];
+				if (old != pold || nnew != pnew)
+				{
+					transfers++;
+					try
+					{
+						this->TransferCells(t_bin, pold, pnew);
+					}
+					catch (...)
+					{
+						r_vector[0] = IRM_FAIL;
+					}
+					t_bin.Clear();
+					pold = old;
+					pnew = nnew;
+
+				}	
+				count++;
+				// Put cell in t_bin
+				if (this->mpi_myself == pold)
+				{
+					phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, n);
+					std::ostringstream del;
+					del << "DELETE; -cell " << n << "\n";
+					try
+					{
+						int status = phast_iphreeqc_worker->RunString(del.str().c_str());
+						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+					}
+					catch (...)
+					{
+						r_vector[0] = IRM_FAIL;
+					}
+				}
+			}
+			// Last transfer
+			transfers++;
+			try
+			{
 				this->TransferCells(t_bin, pold, pnew);
-				t_bin.Clear();
-				pold = old;
-				pnew = nnew;
-				
-			}	
-			count++;
-			// Put cell in t_bin
-			if (this->mpi_myself == pold)
+			}
+			catch (...)
 			{
-				phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, n);
-				std::ostringstream del;
-				del << "DELETE; -cell " << n << "\n";
-				phast_iphreeqc_worker->RunString(del.str().c_str());
+				r_vector[0] = IRM_FAIL;
 			}
 		}
-		// Last transfer
-		transfers++;
-		this->TransferCells(t_bin, pold, pnew);
-	}
-	
-	for (int i = 0; i < this->mpi_tasks; i++)
-	{
-		start_cell[i] = start_cell_new[i];
-		end_cell[i] = end_cell_new[i];
-	}
+		
+		// Throws on error
+		this->HandleErrorsInternal(r_vector);
 
-	if (this->mpi_myself == 0)
-	{
-		std::cerr << "          Cells shifted between processes   " << change << "\n";
-		//std::cerr << "          Number of mpi cell transfers      " << transfers << "\n";
+		for (int i = 0; i < this->mpi_tasks; i++)
+		{
+			start_cell[i] = start_cell_new[i];
+			end_cell[i] = end_cell_new[i];
+		}
+		if (this->mpi_myself == 0)
+		{
+			std::cerr << "          Cells shifted between processes   " << change << "\n";
+		}
 	}
-	return;
+	catch (...)
+	{
+		this->ErrorHandler(IRM_FAIL, "PhreeqcRM::RebalanceLoadPerCell");
+	}
 }
 #else
 /* ---------------------------------------------------------------------- */
@@ -3276,88 +3361,86 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	start_cell_new.resize(this->nthreads, 0);
 	end_cell_new.resize(this->nthreads, 0);
 
-	//if (mpi_myself == 0)
+
+	// Normalize times
+	max_task_time = 0;
+	for (size_t i = 0; i < (size_t) this->nthreads; i++)
+	{		
+		double task_sum = 0;
+		// normalize cell_times with standard_time
+		for (size_t j = (size_t) start_cell[i]; j <= (size_t) end_cell[i]; j++)
+		{
+			task_sum += recv_cell_times[j];
+			normalized_cell_times.push_back(recv_cell_times[j]/standard_time[i]);
+			normalized_total_time += normalized_cell_times.back();
+		}
+		task_time.push_back(task_sum);
+		max_task_time = (task_sum > max_task_time) ? task_sum : max_task_time;
+	}
+
+	// calculate efficiency
+	double efficiency = 0;
+	for (size_t i = 0; i < (size_t) this->nthreads; i++)
 	{
-		// Normalize times
-		max_task_time = 0;
-		for (size_t i = 0; i < (size_t) this->nthreads; i++)
-		{		
-			double task_sum = 0;
-			// normalize cell_times with standard_time
-			for (size_t j = (size_t) start_cell[i]; j <= (size_t) end_cell[i]; j++)
-			{
-				task_sum += recv_cell_times[j];
-				normalized_cell_times.push_back(recv_cell_times[j]/standard_time[i]);
-				normalized_total_time += normalized_cell_times.back();
-			}
-			task_time.push_back(task_sum);
-			max_task_time = (task_sum > max_task_time) ? task_sum : max_task_time;
-		}
+		efficiency += task_time[i] / max_task_time * task_fraction[i];
+	}
+	std::cerr << "          Estimated efficiency of chemistry without communication: " << 
+		(float) (100. * efficiency) << "\n";;
 
-		// calculate efficiency
-		double efficiency = 0;
-		for (size_t i = 0; i < (size_t) this->nthreads; i++)
+	// Split up work
+	double f_low, f_high;
+	f_high = 1 + 0.5 / ((double) this->nthreads);
+	f_low = 1;
+	int j = 0;
+	for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
+	{
+		if (i > 0)
 		{
-			efficiency += task_time[i] / max_task_time * task_fraction[i];
+			start_cell_new[i] = end_cell_new[i - 1] + 1;
 		}
-		std::cerr << "          Estimated efficiency of chemistry without communication: " << 
-					   (float) (100. * efficiency) << "\n";;
-
-		// Split up work
-		double f_low, f_high;
-		f_high = 1 + 0.5 / ((double) this->nthreads);
-		f_low = 1;
-		int j = 0;
-		for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
+		double sum_work = 0;
+		double temp_sum_work = 0;
+		bool next = true;
+		while (next)
 		{
-			if (i > 0)
+			temp_sum_work += normalized_cell_times[j] / normalized_total_time;
+			if ((temp_sum_work < task_fraction[i]) && ((count_chemistry - (int) j) > (this->nthreads - (int) i)))
 			{
-				start_cell_new[i] = end_cell_new[i - 1] + 1;
+				sum_work = temp_sum_work;
+				j++;
+				next = true;
 			}
-			double sum_work = 0;
-			double temp_sum_work = 0;
-			bool next = true;
-			while (next)
+			else
 			{
-				temp_sum_work += normalized_cell_times[j] / normalized_total_time;
-				if ((temp_sum_work < task_fraction[i]) && ((count_chemistry - (int) j) > (this->nthreads - (int) i)))
+				if (j == start_cell_new[i])
 				{
-					sum_work = temp_sum_work;
+					end_cell_new[i] = j;
 					j++;
-					next = true;
 				}
 				else
 				{
-					if (j == start_cell_new[i])
-					{
-						end_cell_new[i] = j;
-						j++;
-					}
-					else
-					{
-						end_cell_new[i] = j - 1;
-					}
-					next = false;
+					end_cell_new[i] = j - 1;
 				}
+				next = false;
 			}
 		}
-		assert(j < count_chemistry);
-		assert(this->nthreads > 1);
-		start_cell_new[this->nthreads - 1] = end_cell_new[this->nthreads - 2] + 1;
-		end_cell_new[this->nthreads - 1] = count_chemistry - 1;
+	}
+	assert(j < count_chemistry);
+	assert(this->nthreads > 1);
+	start_cell_new[this->nthreads - 1] = end_cell_new[this->nthreads - 2] + 1;
+	end_cell_new[this->nthreads - 1] = count_chemistry - 1;
 
-		// Apply rebalance fraction
-		for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
+	// Apply rebalance fraction
+	for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
+	{
+		int	icells;
+		icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (this->rebalance_fraction) );
+		if (icells == 0)
 		{
-			int	icells;
-			icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (this->rebalance_fraction) );
-			if (icells == 0)
-			{
-				icells = end_cell_new[i] - end_cell[i];
-			}
-			end_cell_new[i] = end_cell[i] + icells;
-			start_cell_new[i + 1] = end_cell_new[i] + 1;
+			icells = end_cell_new[i] - end_cell[i];
 		}
+		end_cell_new[i] = end_cell[i] + icells;
+		start_cell_new[i + 1] = end_cell_new[i] + 1;
 	}
 	
 	
@@ -3367,47 +3450,52 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	int nnew = 0;
 	int old = 0;
 	int change = 0;
-
-	for (int k = 0; k < this->count_chemistry; k++)
+	try
 	{
-		int i = k;
-		int iphrq = i;			/* iphrq is 1 to count_chem */
-		//int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
-		while (k > end_cell[old])
+		for (int k = 0; k < this->count_chemistry; k++)
 		{
-			old++;
-		}
-		while (k > end_cell_new[nnew])
-		{
-			nnew++;
+			int i = k;
+			int iphrq = i;			/* iphrq is 1 to count_chem */
+			while (k > end_cell[old])
+			{
+				old++;
+			}
+			while (k > end_cell_new[nnew])
+			{
+				nnew++;
+			}
+
+			if (old == nnew)
+				continue;
+			change++;
+			IPhreeqcPhast * old_worker = this->workers[old];
+			IPhreeqcPhast * new_worker = this->workers[nnew];
+			cxxStorageBin temp_bin; 
+			old_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, iphrq);
+			new_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, iphrq);
+			std::ostringstream del;
+			del << "DELETE; -cell " << iphrq << "\n";
+			int status = old_worker->RunString(del.str().c_str());
+			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in RebalanceLoadPerCell");
 		}
 
-		if (old == nnew)
-			continue;
-		change++;
-		IPhreeqcPhast * old_worker = this->workers[old];
-		IPhreeqcPhast * new_worker = this->workers[nnew];
-		cxxStorageBin temp_bin; 
-		old_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, iphrq);
-		new_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, iphrq);
-		std::ostringstream del;
-		del << "DELETE; -cell " << iphrq << "\n";
-		old_worker->RunString(del.str().c_str());
+		for (int i = 0; i < this->nthreads; i++)
+		{
+			start_cell[i] = start_cell_new[i];
+			end_cell[i] = end_cell_new[i];
+			IPhreeqcPhast * worker = this->workers[i];
+			worker->Set_start_cell(start_cell_new[i]);
+			worker->Set_end_cell(end_cell_new[i]);
+		}
+		std::cerr << "          Cells shifted between threads     " << change << "\n";
 	}
-
-	for (int i = 0; i < this->nthreads; i++)
+	catch (...)
 	{
-		start_cell[i] = start_cell_new[i];
-		end_cell[i] = end_cell_new[i];
-		IPhreeqcPhast * worker = this->workers[i];
-		worker->Set_start_cell(start_cell_new[i]);
-		worker->Set_end_cell(end_cell_new[i]);
+		this->ErrorHandler(IRM_FAIL, "PhreeqcRM::RebalanceLoadPerCell");
 	}
-	std::cerr << "          Cells shifted between threads     " << change << "\n";
-
-	return;
 }
 #endif
+
 /* ---------------------------------------------------------------------- */
 inline IRM_RESULT
 PhreeqcRM::ReturnHandler(IRM_RESULT result, const std::string & e_string)
@@ -3444,6 +3532,7 @@ PhreeqcRM::RunCells()
 /*
  *   Routine runs reactions for each cell
  */
+	IRM_RESULT return_value = IRM_OK;
 	/*
 	*   Update solution compositions in sz_bin
 	*/
@@ -3456,7 +3545,14 @@ PhreeqcRM::RunCells()
 	// Run cells in each process
 	std::vector<int> r_vector;
 	r_vector.resize(1);
-	r_vector[0] = RunCellsThread(0);
+	try
+	{
+		r_vector[0] = RunCellsThread(0);
+	}
+	catch (...)
+	{
+		r_vector[0] = IRM_FAIL;
+	}
 
 	std::vector<char> char_buffer;
 	std::vector<double> double_buffer;
@@ -3496,20 +3592,23 @@ PhreeqcRM::RunCells()
 	} 	
 
 	// Count errors and write error messages
-	if (HandleErrorsInternal(r_vector) > 0)
+	try
 	{
-		return IRM_FAIL;
-	}
+		HandleErrorsInternal(r_vector);
 
 	// Debugging selected output
 #ifndef _NDEBUG
-	this->CheckSelectedOutput();
+		this->CheckSelectedOutput();
+
 #endif
-
 	// Rebalance load
-	this->RebalanceLoad();
-
-	return IRM_OK;
+		this->RebalanceLoad();
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::RunCells");
 }
 #else
 /* ---------------------------------------------------------------------- */
@@ -3526,47 +3625,50 @@ PhreeqcRM::RunCells()
  *   Update solution compositions in sz_bin
  */
 	//clock_t t0 = clock();
-
-
-	for (int n = 0; n < this->nthreads; n++)
+	IRM_RESULT return_value = IRM_OK;
+	try
 	{
-		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
-		phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
-		phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
-	}
-	std::vector < int > rtn;
-	rtn.resize(this->nthreads);
-#ifdef THREADED_PHAST
-	omp_set_num_threads(this->nthreads);
-	#pragma omp parallel 
-	#pragma omp for
-#endif
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		rtn[n] = RunCellsThread(n);
-	} 
-
-	// Count errors and write error messages
-	if (HandleErrorsInternal(rtn) > 0)
-	{
-		return IRM_FAIL;
-	}
-
-	// write output results
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		if (this->print_chemistry_on[0])
+		for (int n = 0; n < this->nthreads; n++)
 		{
-			this->OutputMessage(this->workers[n]->Get_out_stream().str().c_str());
+			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
+			phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
+			phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
 		}
-		delete &this->workers[n]->Get_out_stream();
-	} 	
-	this->CheckSelectedOutput();
+		std::vector < int > rtn;
+		rtn.resize(this->nthreads);
+#ifdef THREADED_PHAST
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel 
+#pragma omp for
+#endif
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			rtn[n] = RunCellsThread(n);
+		} 
 
-	// Rebalance load
-	this->RebalanceLoad();
+		// Count errors and write error messages
+		HandleErrorsInternal(rtn);
 
-	return IRM_OK;
+		// write output results
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			if (this->print_chemistry_on[0])
+			{
+				this->OutputMessage(this->workers[n]->Get_out_stream().str().c_str());
+			}
+			delete &this->workers[n]->Get_out_stream();
+		} 	
+#if !(_NDEBUG)
+		this->CheckSelectedOutput();
+#endif
+		// Rebalance load
+		this->RebalanceLoad();
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::RunCells");
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -3881,13 +3983,17 @@ PhreeqcRM::RunFile(int workers, int initial_phreeqc, int utility, const char * c
 			r_vector[n] = RunFileThread(n);
 		}
 	} 
-
 	// Check errors
-	if (HandleErrorsInternal(r_vector) > 0)
+	IRM_RESULT return_value = IRM_OK;
+	try
 	{
-		return this->ReturnHandler(IRM_FAIL, "PhreeqcRM::RunFile");
+		HandleErrorsInternal(r_vector);
 	}
-	return IRM_OK;
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::RunFile");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -4009,11 +4115,16 @@ PhreeqcRM::RunString(int  workers, int initial_phreeqc, int utility, const char 
 	} 
 
 	// Check errors
-	if (HandleErrorsInternal(r_vector) > 0)
+	IRM_RESULT return_value = IRM_OK;
+	try
 	{
-		return IRM_FAIL;
+		HandleErrorsInternal(r_vector);
 	}
-	return IRM_OK;
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::RunString");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -4787,33 +4898,47 @@ PhreeqcRM::SetUnitsSurface(int u)
 }
 
 #ifdef USE_MPI
-void
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
 PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
+/* ---------------------------------------------------------------------- */
 {
-	if (this->mpi_myself == old)
+	// Throws on error
+	IRM_RESULT return_value;
+	try
 	{
-		std::ostringstream raw_stream;
-		t_bin.dump_raw(raw_stream, 0);
+		if (this->mpi_myself == old)
+		{
+			std::ostringstream raw_stream;
+			t_bin.dump_raw(raw_stream, 0);
 
-		int size = (int) raw_stream.str().size();
-		MPI_Send(&size, 1, MPI_INT, nnew, 0, MPI_COMM_WORLD);
-		MPI_Send((void *) raw_stream.str().c_str(), size, MPI_CHARACTER, nnew, 0, MPI_COMM_WORLD);	
-	}
-	else if (this->mpi_myself == nnew)
-	{	
-		MPI_Status mpi_status;
-		// Transfer cells		
-		int size;
-		MPI_Recv(&size, 1, MPI_INT, old, 0, MPI_COMM_WORLD, &mpi_status);
-		std::vector<char> raw_buffer;
-		raw_buffer.resize(size + 1);
-		MPI_Recv((void *) raw_buffer.data(), size, MPI_CHARACTER, old, 0, MPI_COMM_WORLD, &mpi_status);
-		raw_buffer[size] = '\0';
+			int size = (int) raw_stream.str().size();
+			MPI_Send(&size, 1, MPI_INT, nnew, 0, MPI_COMM_WORLD);
+			MPI_Send((void *) raw_stream.str().c_str(), size, MPI_CHARACTER, nnew, 0, MPI_COMM_WORLD);	
+		}
+		else if (this->mpi_myself == nnew)
+		{	
+			MPI_Status mpi_status;
+			// Transfer cells		
+			int size;
+			MPI_Recv(&size, 1, MPI_INT, old, 0, MPI_COMM_WORLD, &mpi_status);
+			std::vector<char> raw_buffer;
+			raw_buffer.resize(size + 1);
+			MPI_Recv((void *) raw_buffer.data(), size, MPI_CHARACTER, old, 0, MPI_COMM_WORLD, &mpi_status);
+			raw_buffer[size] = '\0';
 
-		// RunString to enter in module
-		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
-		phast_iphreeqc_worker->RunString(raw_buffer.data());
+			// RunString to enter in module
+			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+			int status = phast_iphreeqc_worker->RunString(raw_buffer.data());
+			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
+		}
 	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	this->ErrorHandler(return_value, "PhreeqcRM::TransferCells");
+	return return_value;
 }
 #endif
 /* ---------------------------------------------------------------------- */

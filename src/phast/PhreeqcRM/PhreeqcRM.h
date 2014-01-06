@@ -191,7 +191,7 @@ protected:
 	IRM_RESULT                                RunStringThread(int n, std::string & input);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
 	void                                      SetEndCells(void);
-	void                                      TransferCells(cxxStorageBin &t_bin, int old, int nnew);
+	IRM_RESULT                                TransferCells(cxxStorageBin &t_bin, int old, int nnew);
 
 protected:
 	std::string database_file_name;
