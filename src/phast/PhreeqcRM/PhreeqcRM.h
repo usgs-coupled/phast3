@@ -137,7 +137,6 @@ public:
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
 
 	// Setters 
-	IRM_RESULT                                SetChemistryFileName(const char * prefix = NULL);
 	IRM_RESULT                                SetConcentrations(double * t = NULL); 
 	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i = -1);
 	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
@@ -190,6 +189,7 @@ protected:
 	IRM_RESULT                                RunFileThread(int n);
 	IRM_RESULT                                RunStringThread(int n, std::string & input);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
+	IRM_RESULT                                SetChemistryFileName(const char * prefix = NULL);
 	void                                      SetEndCells(void);
 	IRM_RESULT                                TransferCells(cxxStorageBin &t_bin, int old, int nnew);
 
