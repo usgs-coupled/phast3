@@ -4549,40 +4549,66 @@ IRM_RESULT
 PhreeqcRM::SetPoreVolumeZero(double *t)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->pore_volume_zero.size() < this->nxyz)
 	{
 		this->pore_volume_zero.resize(this->nxyz);
 	}
-	if (mpi_myself == 0)
+	try
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_pv0", 1);
-		memcpy(this->pore_volume_zero.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		if (mpi_myself == 0)
+		{
+			if (t == NULL) 
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetPoreVolumeZero");
+			}
+			memcpy(this->pore_volume_zero.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_INVALIDARG;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(pore_volume_zero.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetPoreVolumeZero");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetPressure(double *t)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->pressure.size() < this->nxyz)
 	{
 		this->pressure.resize(this->nxyz);
 	}
-	if (mpi_myself == 0)
+	try
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_tempc", 1);
-		memcpy(this->pressure.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		if (mpi_myself == 0)
+		{
+			if (t == NULL) 
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetPressure");
+			}
+			memcpy(this->pressure.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_INVALIDARG;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(this->pressure.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+#ifdef THREADED_PHAST
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel 
+#pragma omp for
+#endif
 	for (int n = 0; n < nthreads; n++)
 	{
-		//this->Pressures2Solutions(n, this->pressure);
 #ifdef USE_MPI
 		int start = this->start_cell[this->mpi_myself];
 		int end = this->end_cell[this->mpi_myself];
@@ -4604,7 +4630,7 @@ PhreeqcRM::SetPressure(double *t)
 			}
 		}
 	}
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetPressure");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
@@ -4632,19 +4658,30 @@ IRM_RESULT
 PhreeqcRM::SetPrintChemistryMask(int * t)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->print_chem_mask.size() < this->nxyz)
 	{
 		this->print_chem_mask.resize(this->nxyz);
 	}
-	if (this->mpi_myself == 0)
+	try
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_print_chem_mask", 1);
-		memcpy(this->print_chem_mask.data(), t, (size_t) (this->nxyz * sizeof(int)));
+		if (this->mpi_myself == 0)
+		{
+			if (t == NULL)
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetPrintChemistryMask");
+			}
+			memcpy(this->print_chem_mask.data(), t, (size_t) (this->nxyz * sizeof(int)));
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_INVALIDARG;
 	}
 #ifdef USE_MPI	
 	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetPrintChemistryMask");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -4678,20 +4715,31 @@ PhreeqcRM::SetRebalanceByCell(bool t)
 IRM_RESULT
 PhreeqcRM::SetSaturation(double *t)
 /* ---------------------------------------------------------------------- */
-{
+{	
+	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->saturation.size() < this->nxyz)
 	{
 		this->saturation.resize(this->nxyz);
 	}
-	if (mpi_myself == 0)
+	try
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_saturation", 1);
-		memcpy(this->saturation.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		if (mpi_myself == 0)
+		{
+			if (t == NULL)
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetSaturation");
+			}
+			memcpy(this->saturation.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_INVALIDARG;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(this->saturation.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetSaturation");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -4724,34 +4772,36 @@ PhreeqcRM::SetStopMessage(bool t)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-RM_SetErrorHandlerMode(int id, int mode)
-/* ---------------------------------------------------------------------- */
-{
-	// pass pointers from Fortran to the Reaction module
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->SetErrorHandlerMode(mode);
-	}
-	return IRM_BADINSTANCE;
-}
-
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
 PhreeqcRM::SetTemperature(double *t)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->tempc.size() < this->nxyz)
 	{
 		this->tempc.resize(this->nxyz);
 	}
-	if (mpi_myself == 0)
+	try
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_tempc", 1);
-		memcpy(this->tempc.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		if (mpi_myself == 0)
+		{
+			if (t == NULL) 
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetTemperature");
+			}
+			memcpy(this->tempc.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_INVALIDARG;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(this->tempc.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+#ifdef THREADED_PHAST
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel 
+#pragma omp for
 #endif
 	for (int n = 0; n < nthreads; n++)
 	{
@@ -4762,7 +4812,6 @@ PhreeqcRM::SetTemperature(double *t)
 		int start = this->start_cell[n];
 		int end = this->end_cell[n];
 #endif
-
 		for (int j = start; j <= end; j++)
 		{		
 			// j is count_chem number
@@ -4776,7 +4825,7 @@ PhreeqcRM::SetTemperature(double *t)
 			}
 		}
 	}
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetTemperature");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -4827,119 +4876,154 @@ IRM_RESULT
 PhreeqcRM::SetUnitsExchange(int u)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		if (u > 0 && u < 3)
 		{
 			this->input_units_Exchange  = u;
 		}
+		else
+		{
+			return_value = IRM_INVALIDARG;
+		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_Exchange,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsExchange");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetUnitsGasPhase(int u)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		if (u > 0 && u < 3)
 		{
 			this->input_units_GasPhase  = u;
 		}
+		else
+		{
+			return_value = IRM_INVALIDARG;
+		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_GasPhase,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsGasPhase");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetUnitsKinetics(int u)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		if (u > 0 && u < 3)
 		{
 			this->input_units_Kinetics  = u;
 		}
+		else
+		{
+			return_value = IRM_INVALIDARG;
+		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_Kinetics,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsKinetics");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetUnitsPPassemblage(int u)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		if (u > 0 && u < 3)
 		{
 			this->input_units_PPassemblage  = u;
 		}
+		else
+		{
+			return_value = IRM_INVALIDARG;
+		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_PPassemblage,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsPPassemblage");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetUnitsSolution(int u)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		if (u > 0 && u < 4)
 		{
 			this->input_units_Solution  = u;
 		}
+		else
+		{
+			return_value = IRM_INVALIDARG;
+		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_Solution,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsSolution");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetUnitsSSassemblage(int u)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		if (u > 0 && u < 3)
 		{
 			this->input_units_SSassemblage  = u;
 		}
+		else
+		{
+			return_value = IRM_INVALIDARG;
+		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_SSassemblage,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsSSassemblage");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetUnitsSurface(int u)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		if (u > 0 && u < 3)
 		{
 			this->input_units_Surface  = u;
 		}
+		else
+		{
+			return_value = IRM_INVALIDARG;
+		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->input_units_Surface,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsSurface");
 }
 
 #ifdef USE_MPI
