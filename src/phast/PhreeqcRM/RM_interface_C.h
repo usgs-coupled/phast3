@@ -209,6 +209,7 @@ int        RM_GetSelectedOutputColumnCount(int id);
 int        RM_GetSelectedOutputCount(int id);
 int        RM_GetSelectedOutputHeading(int id, int icol, char * heading, size_t length);
 int        RM_GetSelectedOutputRowCount(int id);
+int        RM_GetSolutionVolume(int id, double *v);
 double     RM_GetTime(int id);
 double     RM_GetTimeConversion(int id);
 double     RM_GetTimeStep(int id);

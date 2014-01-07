@@ -36,6 +36,7 @@
 #define RM_GetSelectedOutputCount          FC_FUNC_ (rm_getselectedoutputcount,        RM_GETSELECTEDOUTPUTCOUNT)
 #define RM_GetSelectedOutputHeading        FC_FUNC_ (rm_getselectedoutputheading,      RM_GETSELECTEDOUTPUTHEADING)
 #define RM_GetSelectedOutputRowCount       FC_FUNC_ (rm_getselectedoutputrowcount,     RM_GETSELECTEDOUTPUTROWCOUNT)
+#define RM_GetSolutionVolume               FC_FUNC_ (rm_getsolutionvolume,             RM_GETSOLUTIONVOLUME)
 #define RM_GetTime                         FC_FUNC_ (rm_gettime,                       RM_GETTIME)
 #define RM_GetTimeConversion               FC_FUNC_ (rm_gettimeconversion,             RM_GETTIMECONVERSION)
 #define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
@@ -341,6 +342,7 @@ int        RM_GetSelectedOutputColumnCount(int *id);
 int        RM_GetSelectedOutputCount(int *id);
 IRM_RESULT RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, size_t length);
 int        RM_GetSelectedOutputRowCount(int *id);
+IRM_RESULT RM_GetSolutionVolume(int *id, double *solution_volume);
 double     RM_GetTime(int *id);
 double     RM_GetTimeConversion(int *id);
 double     RM_GetTimeStep(int *id);
