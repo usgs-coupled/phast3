@@ -3545,14 +3545,7 @@ PhreeqcRM::RunCells()
 	// Run cells in each process
 	std::vector<int> r_vector;
 	r_vector.resize(1);
-	try
-	{
-		r_vector[0] = RunCellsThread(0);
-	}
-	catch (...)
-	{
-		r_vector[0] = IRM_FAIL;
-	}
+	r_vector[0] = RunCellsThread(0);
 
 	std::vector<char> char_buffer;
 	std::vector<double> double_buffer;
@@ -3634,8 +3627,8 @@ PhreeqcRM::RunCells()
 			phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
 			phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
 		}
-		std::vector < int > rtn;
-		rtn.resize(this->nthreads);
+		std::vector < int > r_vector;
+		r_vector.resize(this->nthreads);
 #ifdef THREADED_PHAST
 		omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
@@ -3643,11 +3636,11 @@ PhreeqcRM::RunCells()
 #endif
 		for (int n = 0; n < this->nthreads; n++)
 		{
-			rtn[n] = RunCellsThread(n);
+			r_vector[n] = RunCellsThread(n);
 		} 
 
 		// Count errors and write error messages
-		HandleErrorsInternal(rtn);
+		HandleErrorsInternal(r_vector);
 
 		// write output results
 		for (int n = 0; n < this->nthreads; n++)
@@ -4259,6 +4252,7 @@ IRM_RESULT
 PhreeqcRM::SetFilePrefix(const char * prefix)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (this->mpi_myself == 0)
 	{	
 		this->file_prefix = Char2TrimString(prefix);
@@ -4273,11 +4267,11 @@ PhreeqcRM::SetFilePrefix(const char * prefix)
 	this->file_prefix.resize(l1);
 	MPI_Bcast((void *) this->file_prefix.c_str(), l1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
 #endif
-	if (this->file_prefix.size() > 0)
+	if (this->file_prefix.size() == 0)
 	{
-		return IRM_OK;
+		return_value = IRM_INVALIDARG;
 	}
-	return IRM_INVALIDARG;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetFilePrefix"); 
 }
 
 /* ---------------------------------------------------------------------- */
@@ -4285,19 +4279,30 @@ IRM_RESULT
 PhreeqcRM::SetCellVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if ((int) this->cell_volume.size() < this->nxyz)
+	IRM_RESULT return_value = IRM_OK;
+	try
 	{
-		this->cell_volume.resize(this->nxyz);
+		if ((int) this->cell_volume.size() < this->nxyz)
+		{
+			this->cell_volume.resize(this->nxyz);
+		}
+		if (mpi_myself == 0)
+		{
+			if (t == NULL) 
+			{
+					this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetCellVolume");
+			}
+			memcpy(this->cell_volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		}
 	}
-	if (mpi_myself == 0)
+	catch (...)
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_volume", 1);
-		memcpy(this->cell_volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		return_value = IRM_FAIL;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(this->cell_volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetCellVolume");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -4305,25 +4310,26 @@ IRM_RESULT
 PhreeqcRM::SetChemistryFileName(const char * cn)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
+	int l = 0;
 	if (this->mpi_myself == 0)
 	{	
 		this->chemistry_file_name = Char2TrimString(cn);
+		l = (int) this->chemistry_file_name.size();
 	}
 #ifdef USE_MPI
-	int l1 = 0;
-	if (mpi_myself == 0)
+	MPI_Bcast(&l, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (l > 0)
 	{
-		l1 = (int) this->chemistry_file_name.size();
+		this->chemistry_file_name.resize(l);
+		MPI_Bcast((void *) this->chemistry_file_name.c_str(), l, MPI_CHARACTER, 0, MPI_COMM_WORLD);
 	}
-	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	this->chemistry_file_name.resize(l1);
-	MPI_Bcast((void *) this->chemistry_file_name.c_str(), l1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
 #endif
-	if (this->chemistry_file_name.size() > 0)
+	if (l == 0)
 	{
-		return IRM_OK;
+		return_value = IRM_INVALIDARG;
 	}
-	return IRM_INVALIDARG;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetChemistryFileName");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -4343,6 +4349,11 @@ PhreeqcRM::SetConcentrations(double *t)
 #ifdef USE_MPI
 	MPI_Bcast(c.data(), this->nxyz * (int) ncomps, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+#ifdef THREADED_PHAST
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel 
+#pragma omp for
+#endif
 	for (int n = 0; n < nthreads; n++)
 	{
 		this->Concentrations2Solutions(n, c);
@@ -4355,25 +4366,26 @@ IRM_RESULT
 PhreeqcRM::SetDatabaseFileName(const char * db)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
+	int l = 0;
 	if (this->mpi_myself == 0)
 	{	
 		this->database_file_name = Char2TrimString(db);
+		l = (int) this->database_file_name.size();
 	}
 #ifdef USE_MPI
-	int l1 = 0;
-	if (mpi_myself == 0)
+	MPI_Bcast(&l, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (l > 0)
 	{
-		l1 = (int) this->database_file_name.size();
+		this->database_file_name.resize(l);
+		MPI_Bcast((void *) this->database_file_name.c_str(), l, MPI_CHARACTER, 0, MPI_COMM_WORLD);
 	}
-	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	this->database_file_name.resize(l1);
-	MPI_Bcast((void *) this->database_file_name.c_str(), l1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
 #endif
-	if (this->database_file_name.size() > 0)
+	if (l == 0)
 	{
-		return IRM_OK;
+		return_value = IRM_INVALIDARG;
 	}
-	return IRM_INVALIDARG;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetDatabaseFileName");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -4381,19 +4393,30 @@ IRM_RESULT
 PhreeqcRM::SetDensity(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if ((int) this->density.size() < this->nxyz)
+	IRM_RESULT return_value = IRM_OK;
+	try
 	{
-		this->density.resize((size_t) (this->nxyz), 0.0);
+		if ((int) this->density.size() < this->nxyz)
+		{
+			this->density.resize((size_t) (this->nxyz), 0.0);
+		}
+		if (mpi_myself == 0)
+		{
+			if (t == NULL) 
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetDensity");
+			}
+			memcpy(this->density.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		}
 	}
-	if (mpi_myself == 0)
+	catch (...)
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_density", 1);
-		memcpy(this->density.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		return_value = IRM_FAIL;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(this->density.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetDensity");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -4433,6 +4456,7 @@ IRM_RESULT
 PhreeqcRM::SetErrorHandlerMode(int i)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		this->error_handler_mode = i;
@@ -4440,7 +4464,12 @@ PhreeqcRM::SetErrorHandlerMode(int i)
 #ifdef USE_MPI
 	MPI_Bcast(&this->error_handler_mode, 1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	if (this->error_handler_mode < 0 || this->error_handler_mode > 2)
+	{
+		return_value = IRM_INVALIDARG;
+		this->error_handler_mode = 0;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetErrorHandlerMode");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -4448,22 +4477,27 @@ IRM_RESULT
 PhreeqcRM::SetFilePrefix(std::string &prefix)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	this->file_prefix.clear();
-	if (mpi_myself == 0)
-	{
-		this->file_prefix = trim(prefix);
-	}
-#ifdef USE_MPI
 	int l = 0;
 	if (mpi_myself == 0)
 	{
+		this->file_prefix = trim(prefix);
 		l = (int) prefix.size();
 	}
+#ifdef USE_MPI
 	MPI_Bcast(&l, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	this->file_prefix.resize(l);
-	MPI_Bcast((void *) this->file_prefix.c_str(), l, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+	if (l > 0)
+	{
+		this->file_prefix.resize(l);
+		MPI_Bcast((void *) this->file_prefix.c_str(), l, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+	}
 #endif
-	return IRM_OK;
+	if (l == 0)
+	{
+		return_value = IRM_INVALIDARG;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetFilePrefix");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -4485,19 +4519,30 @@ IRM_RESULT
 PhreeqcRM::SetPoreVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->pore_volume.size() < this->nxyz)
 	{
 		this->pore_volume.resize(this->nxyz);
 	}
-	if (mpi_myself == 0)
+	try
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_pv", 1);
-		memcpy(this->pore_volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		if (mpi_myself == 0)
+		{
+			if (t == NULL)
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetPoreVolume");
+			}
+			memcpy(this->pore_volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_INVALIDARG;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(this->pore_volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetPoreVolume");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
