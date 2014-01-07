@@ -128,6 +128,7 @@ public:
 	IRM_RESULT                                GetSelectedOutputHeading(int *icol, std::string &heading);
 	const bool                                GetSelectedOutputOn(void) const {return this->selected_output_on;}
 	int                                       GetSelectedOutputRowCount(void);	
+	std::vector<double> &                     GetSolutionVolume(void); 
 	const std::vector < int> &                GetStartCell(void) const {return this->start_cell;} 
 	bool                                      GetStopMessage(void) const {return this->stop_message;}
 	std::vector<double> &                     GetTemperature(void) {return this->tempc;}
@@ -218,6 +219,7 @@ protected:
 	std::vector<double> cell_volume;		// nxyz geometric cell volumes
 	std::vector<double> tempc;				// nxyz temperature Celsius
 	std::vector<double> density;			// nxyz density
+	std::vector<double> solution_volume;	// nxyz density
 	std::vector<int> print_chem_mask;		// nxyz print flags for output file
 	bool rebalance_by_cell;                 // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	

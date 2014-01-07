@@ -421,6 +421,35 @@ int RM_GetSelectedOutputRowCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
+int
+RM_GetSolutionVolume(int id, double * v)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		IRM_RESULT return_value = IRM_OK;
+		Reaction_module_ptr->GetSolutionVolume();
+		if (Reaction_module_ptr->GetMpiMyself() == 0)
+		{
+			if (Reaction_module_ptr->GetSolutionVolume().size() == Reaction_module_ptr->GetGridCellCount())
+			{
+				memcpy(v, Reaction_module_ptr->GetSolutionVolume().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+			}
+			else
+			{
+				for (int i = 0; i < Reaction_module_ptr->GetGridCellCount(); i++)
+				{
+					v[i] = INACTIVE_CELL_VALUE;
+				}
+				return_value = IRM_FAIL;
+			}
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
 double RM_GetTime(int id)
 	/* ---------------------------------------------------------------------- */
 {

@@ -255,6 +255,7 @@ if( numCPU < 1 )
 		density.push_back(1.0);
 		pressure.push_back(1.0);
 		tempc.push_back(25.0);
+		solution_volume.push_back(1.0);
 	}
 
 	// set work for each thread or process
@@ -1877,7 +1878,76 @@ PhreeqcRM::GetSelectedOutputRowCount()
 {
 	return this->nxyz;
 }
+/* ---------------------------------------------------------------------- */
+std::vector<double> &
+PhreeqcRM::GetSolutionVolume(void)
+/* ---------------------------------------------------------------------- */
+{
+	try
+	{
+		this->solution_volume.resize(this->nxyz, INACTIVE_CELL_VALUE);
+		std::vector<double> dbuffer;
 
+#ifdef USE_MPI
+		int n = this->mpi_myself;
+		for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+		{
+			double d = this->workers[0]->Get_solution(i)->Get_soln_vol();
+			for(size_t j = 0; j < back[i].size(); j++)
+			{
+				int n = back[i][j];
+				this->solution_volume[n] = d;
+			}
+		}
+		for (int n = 0; n < this->mpi_tasks; n++)
+		{
+			if (this->mpi_myself == n)
+			{
+				if (this->mpi_myself = 0)
+				{
+					continue;
+				}
+				else
+				{
+					int l = this->end_cell[n] - this->start_cell[n] + 1;
+					MPI_Send((void *) &this->solution_volume[this->start_cell[n]], l, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+				}
+			}
+			else if (this->mpi_myself == 0)
+			{	
+				std::vector<double> dbuffer;
+				MPI_Status mpi_status;
+				int l = this->end_cell[n] - this->start_cell[n] + 1;
+				dbuffer.resize(l);
+				MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+				for (int i = 0; i < l; i++)
+				{
+					this->solution_volume[this->start_cell[n] +i] = dbuffer[i];
+				}
+			}
+		}
+#else
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
+			{
+				double d = this->workers[n]->Get_solution(i)->Get_soln_vol();
+				for(size_t j = 0; j < back[i].size(); j++)
+				{
+					int n = back[i][j];
+					this->solution_volume[n] = d;
+				}
+			}
+		}
+#endif
+	}
+	catch (...)
+	{
+		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetSolutionVolume");
+		this->solution_volume.clear();
+	}
+	return this->solution_volume;
+}
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 int
