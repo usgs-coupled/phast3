@@ -1,7 +1,9 @@
 #include <stdlib.h>
+#include <iostream>
 #include <string>
 #include <vector>
 #include "hdf.h"
+#include "PhreeqcRM.h"
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
 #if defined(USE_MPI)

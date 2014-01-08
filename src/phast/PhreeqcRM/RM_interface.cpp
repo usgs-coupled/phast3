@@ -231,7 +231,7 @@ RM_GetDensity(int *id, double * d)
 		Reaction_module_ptr->GetDensity();
 		if (Reaction_module_ptr->GetMpiMyself() == 0)
 		{
-			if (Reaction_module_ptr->GetDensity().size() == Reaction_module_ptr->GetGridCellCount())
+			if ((int) Reaction_module_ptr->GetDensity().size() == Reaction_module_ptr->GetGridCellCount())
 			{
 				memcpy(d, Reaction_module_ptr->GetDensity().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
 			}
@@ -417,7 +417,7 @@ RM_GetSolutionVolume(int *id, double * v)
 		Reaction_module_ptr->GetSolutionVolume();
 		if (Reaction_module_ptr->GetMpiMyself() == 0)
 		{
-			if (Reaction_module_ptr->GetSolutionVolume().size() == Reaction_module_ptr->GetGridCellCount())
+			if ((int) Reaction_module_ptr->GetSolutionVolume().size() == Reaction_module_ptr->GetGridCellCount())
 			{
 				memcpy(v, Reaction_module_ptr->GetSolutionVolume().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
 			}
