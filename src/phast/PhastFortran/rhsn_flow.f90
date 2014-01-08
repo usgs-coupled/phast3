@@ -27,6 +27,36 @@ SUBROUTINE rhsn_flow
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp-fdtmth
+  ! ... Initialize the step b.c. flow accumulators
+  stotfi = 0._kdp
+  stothi = 0._kdp
+  stotfp = 0._kdp
+  stothp = 0._kdp
+  stotsi = 0._kdp
+  stotsp = 0._kdp
+  stffbc = 0._kdp
+  stflbc = 0._kdp
+  stfrbc = 0._kdp
+  stfdbc = 0._kdp
+  stfsbc = 0._kdp
+  stfwel = 0._kdp
+  sthfbc = 0._kdp
+  sthhcb = 0._kdp
+  sthlbc = 0._kdp
+  sthsbc = 0._kdp
+  sthwel = 0._kdp
+  stssbc = 0._kdp
+  stsfbc = 0._kdp
+  stslbc = 0._kdp
+  stsrbc = 0._kdp
+  stsdbc = 0._kdp
+  stswel = 0._kdp
+  IF (nwel > 0) THEN
+     stfwi = 0._kdp
+     stfwp = 0._kdp
+     stswi = 0._kdp
+     stswp = 0._kdp
+  END IF
   ntsfal=0         ! ... Set number of failed time steps to zero
 
   ! ... Zero r.h.s. arrays in preparation for next time level calculation

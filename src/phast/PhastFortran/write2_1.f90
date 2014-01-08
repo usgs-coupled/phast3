@@ -65,13 +65,19 @@ SUBROUTINE write2_1
   !     ------------------------------------------------------------------
   nsa = MAX(ns,1)
   ! ... Allocate temporary arrays for output: mct_m and local
-  ALLOCATE (aprnt1(nxyz), aprnt2(nxyz), aprnt3(nxyz), aprnt4(nxyz), aprnt5(nxyz),  &
-       c_mol(nxyz,nsa),  &
+  ALLOCATE (aprnt5(nxyz),  &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: write2_1, number 1"
      STOP  
-  ENDIF
+  ENDIF 
+  !ALLOCATE (aprnt1(nxyz), aprnt2(nxyz), aprnt3(nxyz), aprnt4(nxyz), aprnt5(nxyz),  &
+  !     c_mol(nxyz,nsa),  &
+  !     STAT = a_err)
+  !IF (a_err /= 0) THEN  
+  !   PRINT *, "Array allocation failed: write2_1, number 1"
+  !   STOP  
+  !ENDIF
   !...
   mflbl=' mass '
   rxlbl='X'

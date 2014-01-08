@@ -2073,6 +2073,7 @@ PhreeqcRM::InitialPhreeqc2Concentrations(
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
+		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 		if (this->mpi_myself == 0) 
 		{
 			if (c != NULL && n_boundary > 0 && dim > 0 && boundary_solution1 != NULL)
@@ -3708,7 +3709,7 @@ PhreeqcRM::RunCells()
 		{
 			r_vector[n] = RunCellsThread(n);
 		} 
-
+		
 		// Count errors and write error messages
 		HandleErrorsInternal(r_vector);
 
@@ -3806,9 +3807,9 @@ PhreeqcRM::RunCellsThread(int n)
 			// partition solids between UZ and SZ
 			if (this->partition_uz_solids)
 			{
-				this->PartitionUZ(n, i, j, this->saturation[j]);
+				//this->PartitionUZ(n, i, j, this->saturation[j]);
 			}
-
+			
 			// ignore small saturations
 			bool active = true;
 			if (this->saturation[j] <= 1e-10) 
@@ -3816,7 +3817,7 @@ PhreeqcRM::RunCellsThread(int n)
 				this->saturation[j] = 0.0;
 				active = false;
 			}
-
+			
 			if (active)
 			{
 				// set cell number, pore volume got Basic functions

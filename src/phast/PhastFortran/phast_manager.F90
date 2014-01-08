@@ -116,7 +116,7 @@ SUBROUTINE phast_manager
                 CALL coeff_flow
                 CALL rhsn_flow
             ENDIF
-                CALL sumcal0_manager
+            CALL sumcal0_manager
 
             ! ... Read the transient data, if necessary. The first block was read by the steady flow 
             ! ... simulation section
@@ -403,6 +403,7 @@ SUBROUTINE CreateRM
     IF (rm_id.LT.0) THEN
         STOP
     END IF
+    nthreads = RM_GetNThreads(rm_id)
     status = RM_SetErrorHandlerMode(rm_id, 1)   ! throw exception on error
     status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
     status = RM_SetFilePrefix(rm_id, f3name)
@@ -466,7 +467,7 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetConcentrations(rm_id, c(1,1))
         status = RM_SetStopMessage(rm_id, stop_msg)
         
-        status = RM_RunCells(rm_id)        
+        status = RM_RunCells(rm_id)    
         !CALL RM_RunCells(      &
         !    rm_id,              &
         !    time_phreeqc,       &        ! time_hst

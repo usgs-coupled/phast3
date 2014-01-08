@@ -16,6 +16,7 @@ SUBROUTINE init2_1
   USE mcp_m
   USE mcs
   USE mcs2
+  USE mct_m
   USE mcv
   USE mcv_m
   USE mcw
@@ -1439,7 +1440,13 @@ SUBROUTINE init2_1
      call calc_volume
 
   ENDIF
-
+  ALLOCATE (aprnt1(nxyz), aprnt2(nxyz), aprnt3(nxyz), aprnt4(nxyz), &
+       c_mol(nxyz,nsa),  &
+       STAT = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write2_1, number 1"
+     STOP  
+  ENDIF
 ! write char_ibc; apparently WRITE(cibc,...) is not thread safe in IFORT
   DO i = 1, nxyz
     IF (ibc(i) .ne. -1) THEN
