@@ -174,9 +174,9 @@ IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -ls
 
 # The following apply to OpenMPI versions
 OPENMPI_GFORTRAN_32=/usr/lib/openmpi
-OPENMPI_IFORT_32=/lobo02raid/home/charlton/openmpi-1.5.4/lobo07-ifort-static
+OPENMPI_IFORT_32=/raid/home/charlton/openmpi-1.5.4/lobo07-ifort-static
 OPENMPI_GFORTRAN_64=/usr/lib64/openmpi
-OPENMPI_IFORT_64=/lobo02raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
+OPENMPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 
 # -----------------------------------------------------------------------------
 .f90.o :
@@ -215,7 +215,7 @@ HASH_STYLE=$(call ld-option, -Wl$(comma)--hash-style=sysv)
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -229,7 +229,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -257,7 +257,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -271,7 +271,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE 
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
@@ -286,7 +286,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
@@ -302,7 +302,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), OPENMPI_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE -DNO_UNDERSCORES
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
@@ -318,7 +318,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
@@ -334,7 +334,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), SERIAL_INTEL)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -348,7 +348,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -362,7 +362,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -376,7 +376,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -390,7 +390,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE 
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_IFORT_32)/bin/mpif90
@@ -405,7 +405,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_IFORT_32)/bin/mpif90
@@ -420,7 +420,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE 
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_IFORT_64)/bin/mpif90
@@ -435,7 +435,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_IFORT_64)/bin/mpif90
@@ -451,7 +451,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), MPICH_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE 
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES)
   VPATH        = $(PHREEQC_VPATH)
   SZIP_ROOT=/home/dlpark/packages/szip2.0-linux-gcc3.2.3-enc
   SZIP_LIB=${SZIP_ROOT}/lib/libsz.a
@@ -714,7 +714,7 @@ Point.o
 
 HDF_OBJS     =  #hdf.o hdf_f.o
 
-MPI_OBJS     =	xfer_indices.o
+#MPI_OBJS     =	xfer_indices.o
 
 
 PHASTINPUT_FILES = ../KDtree/KDtree.cpp \

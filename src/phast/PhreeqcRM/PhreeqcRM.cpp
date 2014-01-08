@@ -122,9 +122,9 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, int thread_count, PHRQ_io *io)
 	//
 : PHRQ_base(io)
 {
-	int n = 1;
+
 #ifdef THREADED_PHAST
-	
+	int n = 1;	
 #if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo( &sysinfo );
@@ -183,12 +183,12 @@ if( numCPU < 1 )
 #endif
 	if (mpi_myself == 0)
 	{
-		if (nxyz_arg == NULL)
-		{
-			std::ostringstream errstr;
-			errstr << "Number of grid cells (nxyz) not defined in creating PhreeqcRM"; 
-			error_msg(errstr.str().c_str(), 1);
-		}
+	  //		if (nxyz_arg == NULL)
+	  //		{
+	  //			std::ostringstream errstr;
+	  //			errstr << "Number of grid cells (nxyz) not defined in creating PhreeqcRM"; 
+	  //			error_msg(errstr.str().c_str(), 1);
+	  //		}
 		this->nxyz = nxyz_arg;
 	}
 #ifdef USE_MPI
@@ -875,7 +875,7 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 			{
 				double *ptr = &c[i];
 				// convert to mol/L
-				for (size_t k = 0; k < (int) this->components.size(); k++)
+				for (size_t k = 0; k < this->components.size(); k++)
 				{	
 					d.push_back(ptr[nsolns * k] * 1e-3 / this->gfw[k]);
 				}	
@@ -885,7 +885,7 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 			{
 				double *ptr = &c[i];
 				// convert to mol/L
-				for (size_t k = 0; k < (int) this->components.size(); k++)
+				for (size_t k = 0; k < this->components.size(); k++)
 				{	
 					d.push_back(ptr[nsolns * k]);
 				}	
@@ -895,7 +895,7 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 			{
 				double *ptr = &c[i];
 				// convert to mol/L
-				for (size_t k = 0; k < (int) this->components.size(); k++)
+				for (size_t k = 0; k < this->components.size(); k++)
 				{	
 					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
 				}	
@@ -905,7 +905,7 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 
 		// update solution 
 		cxxNameDouble nd;
-		for (size_t k = 3; k < (int) components.size(); k++)
+		for (size_t k = 3; k < components.size(); k++)
 		{
 			if (d[k] < 0.0) d[k] = 0.0;
 			nd.add(components[k].c_str(), d[k]);
@@ -1597,7 +1597,7 @@ PhreeqcRM::GetDensity(void)
 		{
 			if (this->mpi_myself == n)
 			{
-				if (this->mpi_myself = 0)
+				if (this->mpi_myself == 0)
 				{
 					continue;
 				}
@@ -1903,7 +1903,7 @@ PhreeqcRM::GetSolutionVolume(void)
 		{
 			if (this->mpi_myself == n)
 			{
-				if (this->mpi_myself = 0)
+				if (this->mpi_myself == 0)
 				{
 					continue;
 				}
@@ -5104,7 +5104,7 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 /* ---------------------------------------------------------------------- */
 {
 	// Throws on error
-	IRM_RESULT return_value;
+	IRM_RESULT return_value = IRM_OK;
 	try
 	{
 		if (this->mpi_myself == old)

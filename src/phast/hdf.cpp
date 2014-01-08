@@ -143,7 +143,7 @@ HDFBeginCTimeStep(int iso)
 	proc.array.resize(array_count);
 
 	/* init entire array to inactive */
-	for (int i = 0; i < array_count; ++i)
+	for (size_t i = 0; i < array_count; ++i)
 	{
 		proc.array[i] = INACTIVE_CELL_VALUE;
 	}
@@ -197,10 +197,9 @@ HDFFillHyperSlab(int iso, std::vector< double > &d, size_t columns)
 	if (columns > 0)
 	{
 		assert (d.size()%columns == 0);
-		size_t nrow = d.size()/columns;
 		for (size_t icol = 0; icol < columns; icol++)
 		{
-			for (size_t irow = 0; irow < root[iso].nxyz; irow++)
+			for (int irow = 0; irow < root[iso].nxyz; irow++)
 			{
 				int iactive = root[iso].natural_to_active[irow];
 				if (iactive >= 0)
@@ -592,7 +591,7 @@ hdf_finalize_headings(int iso)
 		vector_names =
 			(char *) PHRQ_calloc(root[iso].vector_name_max_len *
 			root[iso].vector_names.size(), sizeof(char));
-		for (i = 0; i < root[iso].vector_names.size(); ++i)
+		for (i = 0; i < (int) root[iso].vector_names.size(); ++i)
 		{
 			strcpy(vector_names + i * root[iso].vector_name_max_len,
 				root[iso].vector_names[i].c_str());
@@ -670,7 +669,7 @@ hdf_finalize_headings(int iso)
 		time_steps =
 			(char *) PHRQ_calloc(root[iso].time_step_max_len *
 			root[iso].time_steps.size(), sizeof(char));
-		for (i = 0; i < root[iso].time_steps.size(); ++i)
+		for (i = 0; i < (int) root[iso].time_steps.size(); ++i)
 		{
 			strcpy(time_steps + i * root[iso].time_step_max_len,
 				root[iso].time_steps[i].c_str());
@@ -1088,7 +1087,7 @@ HDF_VEL(int *iso_in, double vx_node[], double vy_node[], double vz_node[], int v
 		if (strcmp(root[iso].vector_names[i].c_str(), name) == 0)
 			break;
 	}
-	if (i == root[iso].vector_names.size())
+	if (i == (int) root[iso].vector_names.size())
 	{
 		/* new scalar name */
 		size_t len = strlen(name) + 1;
