@@ -111,8 +111,13 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		bool dump = (*dump_on != 0);
-		bool gz = (*use_gz != 0);
+		bool dump = false;
+		bool gz = false;
+		if (Reaction_module_ptr->GetMpiMyself() == 0)
+		{
+			bool dump = (*dump_on != 0);
+			bool gz = (*use_gz != 0);
+		}
 		return Reaction_module_ptr->DumpModule(dump, gz);
 	}
 	return IRM_BADINSTANCE;
