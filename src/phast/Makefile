@@ -179,6 +179,8 @@ OPENMPI_GFORTRAN_64=/usr/lib64/openmpi
 OPENMPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 
 # -----------------------------------------------------------------------------
+.f.o :
+	${FC} -c ${FFLAGS} $<
 .f90.o :
 	${FC} -c ${FFLAGS} $<
 .F90.o :
@@ -481,6 +483,7 @@ endif
 #
 
 COMMON_FOBJS =	\
+	IPhreeqcF.o \
 	aplbce_flow.o \
 	aplbci_flow.o \
 	asembl_flow.o \
@@ -770,6 +773,7 @@ XP_module.o: ../PhastFortran/XP_module.f90 mach_mod.o modules_g.o
 # -----------------------------------------------------------------------------
 # Module dependency list
 # -----------------------------------------------------------------------------
+IPhreeqcF.o: ../IPhreeqcPhast/IPhreeqc/IPhreeqcF.f module_dummy.o
 aplbce_flow.o: ../PhastFortran/aplbce_flow.f90 module_dummy.o
 aplbci_flow.o: ../PhastFortran/aplbci_flow.F90 module_dummy.o
 asembl_flow.o: ../PhastFortran/asembl_flow.f90 module_dummy.o
