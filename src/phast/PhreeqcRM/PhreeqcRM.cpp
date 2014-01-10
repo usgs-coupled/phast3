@@ -122,9 +122,9 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, int thread_count, PHRQ_io *io)
 	//
 : PHRQ_base(io)
 {
-
-#ifdef THREADED_PHAST
+	
 	int n = 1;	
+#ifdef THREADED_PHAST
 #if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo( &sysinfo );
@@ -562,6 +562,7 @@ int
 PhreeqcRM::CheckSelectedOutput()
 /* ---------------------------------------------------------------------- */
 {
+	if (!this->selected_output_on) return IRM_OK;
 	IRM_RESULT return_value = IRM_OK;
 #ifdef USE_MPI
 	if (this->mpi_tasks <= 1) return return_value;
@@ -3722,7 +3723,7 @@ PhreeqcRM::RunCells()
 			}
 			delete &this->workers[n]->Get_out_stream();
 		} 	
-#if !(_NDEBUG)
+#if !(NDEBUG)
 		this->CheckSelectedOutput();
 #endif
 		// Rebalance load
@@ -3768,6 +3769,7 @@ PhreeqcRM::RunCellsThread(int n)
 		phast_iphreeqc_worker->SetDumpStringOn(false);
 		phast_iphreeqc_worker->SetOutputFileOn(false);
 		phast_iphreeqc_worker->SetErrorFileOn(false);
+		phast_iphreeqc_worker->SetSelectedOutputFileOn(this->selected_output_on);
 #ifdef USE_MPI
 		int start = this->start_cell[this->mpi_myself];
 		int end = this->end_cell[this->mpi_myself];
@@ -3807,7 +3809,7 @@ PhreeqcRM::RunCellsThread(int n)
 			// partition solids between UZ and SZ
 			if (this->partition_uz_solids)
 			{
-				//this->PartitionUZ(n, i, j, this->saturation[j]);
+				this->PartitionUZ(n, i, j, this->saturation[j]);
 			}
 			
 			// ignore small saturations
@@ -3913,7 +3915,7 @@ PhreeqcRM::RunCellsThread(int n)
 								if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
 								{
 									throw PhreeqcRMStop();
-								}
+			}
 								add_to_cselectedoutputmap = true;
 								break;
 							}

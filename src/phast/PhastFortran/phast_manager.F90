@@ -481,8 +481,9 @@ SUBROUTINE InitialEquilibrationRM
 END SUBROUTINE InitialEquilibrationRM
     
 SUBROUTINE InitializeRM 
+    USE mcc, ONLY:               iprint_xyz, prcphrqi, prhdfci, rm_id, solute
     USE mcb, ONLY:  fresur
-    USE mcc, ONLY:  iprint_chem, rebalance_fraction_f, rebalance_method_f, rm_id, solute, steady_flow
+    USE mcc, ONLY:  iprint_chem,iprint_xyz, prcphrqi, prhdfci, rebalance_fraction_f, rebalance_method_f, rm_id, solute, steady_flow
     USE mcch, ONLY: num_restart_files, restart_files
     USE mcg, ONLY:  grid2chem, nxyz
     USE mcn, ONLY:  x_node, y_node, z_node, pv0, volume
@@ -519,6 +520,9 @@ SUBROUTINE InitializeRM
         status = RM_SetPoreVolumeZero(rm_id, pv0(1))
         status = RM_SetSaturation(rm_id, frac(1))
         status = RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
+	    status = 0
+        if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
+        status = RM_SetSelectedOutputOn(rm_id, status)
         if (fresur .and. .not. steady_flow) then
             ipartition_uz_solids = 1
         else
