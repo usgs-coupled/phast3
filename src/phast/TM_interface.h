@@ -12,6 +12,7 @@
 #define TM_transport                       FC_FUNC_ (tm_transport,                     TM_TRANSPORT)
 #define TM_zone_flow_write_chem            FC_FUNC_ (tm_zone_flow_write_chem,          TM_ZONE_FLOW_WRITE_CHEM)
 // Calls to Fortran
+#define transport_component                FC_FUNC_ (transport_component,              TRANSPORT_COMPONENT)
 #define transport_component_thread         FC_FUNC_ (transport_component_thread,       TRANSPORT_COMPONENT_THREAD)
 #define zone_flow_write_chem               FC_FUNC_ (zone_flow_write_chem,             ZONE_FLOW_WRITE_CHEM)
 #endif
