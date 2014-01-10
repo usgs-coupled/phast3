@@ -3769,7 +3769,6 @@ PhreeqcRM::RunCellsThread(int n)
 		phast_iphreeqc_worker->SetDumpStringOn(false);
 		phast_iphreeqc_worker->SetOutputFileOn(false);
 		phast_iphreeqc_worker->SetErrorFileOn(false);
-		phast_iphreeqc_worker->SetSelectedOutputFileOn(this->selected_output_on);
 #ifdef USE_MPI
 		int start = this->start_cell[this->mpi_myself];
 		int end = this->end_cell[this->mpi_myself];
