@@ -52,7 +52,7 @@ SUBROUTINE phast_worker
         WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
         STOP 
     END IF
- 
+    nthreads = RM_GetNThreads(rm_id)
     status = RM_SetErrorHandlerMode(rm_id)
     status = RM_SetPrintChemistryOn(rm_id)
     ! ... Open C files 
@@ -106,8 +106,6 @@ SUBROUTINE phast_worker
 ! start of InitializeRM
 !
         ! ... Initialize chemistry 
-
-        !CALL RM_SetUnits (rm_id)
         status = RM_SetUnitsSolution(rm_id)
         status = RM_SetUnitsExchange(rm_id)
         status = RM_SetUnitsGasPhase(rm_id)
@@ -120,9 +118,9 @@ SUBROUTINE phast_worker
         status = RM_SetPoreVolumeZero(rm_id)
         status = RM_SetSaturation(rm_id)
         status = RM_SetPrintChemistryMask(rm_id)
+        status = RM_SetSelectedOutputOn(rm_id, status)
         status = RM_SetPartitionUZSolids(rm_id)
         status = RM_SetCellVolume(rm_id)
-        !CALL RM_SetRebalance(rm_id)
         status = RM_SetRebalanceFraction(rm_id)
         status = RM_SetRebalanceByCell(rm_id)
 
@@ -150,7 +148,7 @@ SUBROUTINE phast_worker
         status = RM_SetPoreVolume(rm_id)
         status = RM_SetSaturation(rm_id)
         status = RM_SetPrintChemistryOn(rm_id)
-        status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
+        status = RM_SetSelectedOutputOn(rm_id)
         
         status = RM_SetTime(rm_id) 
         status = RM_SetTimeStep(rm_id) 
@@ -158,12 +156,6 @@ SUBROUTINE phast_worker
         status = RM_SetStopMessage(rm_id)
         
         status = RM_RunCells(rm_id)  
-        !CALL RM_RunCells(                                &
-        !    rm_id,                                        &
-        !    time_phreeqc,                                 &        ! time_hst
-        !    deltim_dummy,                                 &        ! time_step_hst
-        !    c(1,1),                                       &        ! fraction
-        !    stop_msg) 
         CALL FH_WriteFiles(rm_id)  
 !        
 !end  of InitialEquilibrationRM
@@ -219,20 +211,14 @@ SUBROUTINE phast_worker
             status = RM_SetPoreVolume(rm_id)
             status = RM_SetSaturation(rm_id)
             status = RM_SetPrintChemistryOn(rm_id)
-            status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
+            status = RM_SetSelectedOutputOn(rm_id)
             
             status = RM_SetTime(rm_id) 
             status = RM_SetTimeStep(rm_id) 
             status = RM_SetConcentrations(rm_id)
             status = RM_SetStopMessage(rm_id)
         
-            status = RM_RunCells(rm_id)             
-            !CALL RM_RunCells(                                &
-            !    rm_id,                                        &
-            !    time_phreeqc,                                 &        ! time_hst
-            !    deltim_dummy,                                 &        ! time_step_hst
-            !    c(1,1),                                       &        ! fraction
-            !    stop_msg) 
+            status = RM_RunCells(rm_id)   
             CALL FH_WriteFiles(rm_id)
             status = RM_DumpModule(rm_id)
 !        
