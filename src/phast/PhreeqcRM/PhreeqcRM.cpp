@@ -29,7 +29,7 @@
 #include <mpi.h>
 #endif
 #include "Phreeqc.h"
-
+//#define COMPONENT_H2O
 std::map<size_t, PhreeqcRM*> PhreeqcRM::Instances;
 size_t PhreeqcRM::InstancesIndex = 0;
 
@@ -778,7 +778,96 @@ PhreeqcRM::CloseFiles(void)
 
 	return IRM_OK;
 }
+#ifdef COMPONENT_H2O
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
+/* ---------------------------------------------------------------------- */
+{
+	// assumes total H, total O, and charge are transported
+	int i, j, k;
 
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+
+	for (j = start; j <= end; j++)
+	{		
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		i = this->back[j][0];
+		if (j < 0) continue;
+
+		switch (this->input_units_Solution)
+		{
+		case 1:  // mg/L to mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 1; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
+				}	
+				double h2o_mol = ptr[0] * 1e-3 / this->gfw[0];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;
+			}
+			break;
+		case 2:  // mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 1; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k]);
+				}
+				double h2o_mol = ptr[0];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;	
+			}
+			break;
+		case 3:  // mass fraction, kg/kg solution to mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 1; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
+				}	
+				double h2o_mol = ptr[0] * 1000.0 / this->gfw[0] * density[i];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;
+			}
+			break;
+		}
+
+		// convert mol/L to moles per cell
+		for (k = 0; k < (int) this->components.size() - 1; k++)
+		{	
+			d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
+		}
+				
+		// update solution 
+		cxxNameDouble nd;
+		for (k = 4; k < (int) components.size(); k++)
+		{
+			if (d[k-1] < 0.0) d[k-1] = 0.0;
+			nd.add(components[k].c_str(), d[k-1]);
+		}	
+
+		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
+		if (soln_ptr)
+		{
+			soln_ptr->Update(d[0], d[1], d[2], nd);
+		}
+	}
+	return;
+}
+#else
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
@@ -858,6 +947,82 @@ PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 	}
 	return;
 }
+#endif
+#ifdef COMPONENT_H2O
+/* ---------------------------------------------------------------------- */
+IPhreeqc * 
+PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
+/* ---------------------------------------------------------------------- */
+{
+	size_t ncomps = this->components.size();
+	size_t nsolns = c.size() / ncomps;
+	size_t nutil= this->nthreads + 1;
+
+	for (size_t i = 0; i < nsolns; i++)
+	{
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		switch (this->input_units_Solution)
+		{
+		case 1:  // mg/L to mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (size_t k = 1; k < this->components.size(); k++)
+				{	
+					d.push_back(ptr[nsolns * k] * 1e-3 / this->gfw[k]);
+				}	
+				double h2o_mol = ptr[0] * 1e-3 / this->gfw[0];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;
+			}
+			break;
+		case 2:  // mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (size_t k = 1; k < this->components.size(); k++)
+				{	
+					d.push_back(ptr[nsolns * k]);
+				}	
+				double h2o_mol = ptr[0];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;
+			}
+			break;
+		case 3:  // mass fraction, kg/kg solution to mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (size_t k = 1; k < this->components.size(); k++)
+				{	
+					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
+				}	
+				double h2o_mol = ptr[0] * 1000.0 / this->gfw[0] * density[i];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;
+			}
+			break;
+		}
+
+		// update solution 
+		cxxNameDouble nd;
+		for (size_t k = 4; k < components.size(); k++)
+		{
+			if (d[k-1] < 0.0) d[k-1] = 0.0;
+			nd.add(components[k].c_str(), d[k-1]);
+		}	
+		cxxSolution soln;
+		if (d[0] > 0.0 && d[1] > 0.0)
+		{
+			soln.Update(d[0], d[1], d[2], nd);
+		}
+		soln.Set_tc(tc[i]);
+		soln.Set_patm(p_atm[i]);
+		this->workers[nutil]->PhreeqcPtr->Rxn_solution_map[(int) i] = soln;
+	}
+	return (dynamic_cast< IPhreeqc *> (this->workers[nutil]));
+}
+#else
 /* ---------------------------------------------------------------------- */
 IPhreeqc * 
 PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
@@ -922,6 +1087,7 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 	}
 	return (dynamic_cast< IPhreeqc *> (this->workers[nutil]));
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::Convert_to_molal(double *c, int n, int dim)
@@ -1041,10 +1207,10 @@ PhreeqcRM::CreateMapping(int *t)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::CreateMapping");
 }
-
+#ifdef COMPONENT_H2O
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
+PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
 /* ---------------------------------------------------------------------- */
 {
 	d.clear();
@@ -1056,31 +1222,104 @@ PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<doub
 	}
 
 	// convert units
+	//double vol = cxxsoln_ptr->Get_soln_vol();
+	double vol = v;
 	switch (this->input_units_Solution)
 	{
 	case 1:  // convert to mg/L 
-			d.push_back(cxxsoln_ptr->Get_total_h() * this->gfw[0] * 1000. / cxxsoln_ptr->Get_soln_vol()); 
-			d.push_back(cxxsoln_ptr->Get_total_o() * this->gfw[1] * 1000. / cxxsoln_ptr->Get_soln_vol()); 
-			d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2] * 1000. / cxxsoln_ptr->Get_soln_vol()); 
-			for (size_t i = 3; i < this->components.size(); i++)
+		{
+			d.push_back(cxxsoln_ptr->Get_mass_water() * 1.0e6 / v);
+			double moles_h2o = cxxsoln_ptr->Get_mass_water() * 1.0e3 / this->gfw[0];
+			double excess_h = cxxsoln_ptr->Get_total_h() - 2.0 * moles_h2o;
+			double excess_o = cxxsoln_ptr->Get_total_o() - moles_h2o;
+			d.push_back(excess_h * this->gfw[1] * 1000. / v); 
+			d.push_back(excess_o * this->gfw[2] * 1000. / v); 
+			d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[3] * 1000. / v); 
+			for (size_t i = 4; i < this->components.size(); i++)
 			{
-				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i] / 1000. / cxxsoln_ptr->Get_soln_vol()); 
+				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i] / 1000. / v); 
 			}
+		}
 		break;
 	case 2:  // convert to mol/L
 		{
-			d.push_back(cxxsoln_ptr->Get_total_h() / cxxsoln_ptr->Get_soln_vol()); 
-			d.push_back(cxxsoln_ptr->Get_total_o() / cxxsoln_ptr->Get_soln_vol()); 
-			d.push_back(cxxsoln_ptr->Get_cb()  / cxxsoln_ptr->Get_soln_vol()); 
+			double moles_h2o = cxxsoln_ptr->Get_mass_water() * 1.0e3 / this->gfw[0];
+			d.push_back(moles_h2o / v);
+			double excess_h = cxxsoln_ptr->Get_total_h() - 2.0 * moles_h2o;
+			double excess_o = cxxsoln_ptr->Get_total_o() - moles_h2o;
+			d.push_back(excess_h / v); 
+			d.push_back(excess_o / v); 
+			d.push_back(cxxsoln_ptr->Get_cb()  / v); 
+			for (size_t i = 4; i < this->components.size(); i++)
+			{
+				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str())  / v); 
+			}
+		}
+		break;
+	case 3:  // convert to mass fraction kg/kgs
+		{
+			//double kgs = v * cxxsoln_ptr->Get_density();
+			double kgs = cxxsoln_ptr->Get_density() * cxxsoln_ptr->Get_soln_vol();
+			double moles_h2o = cxxsoln_ptr->Get_mass_water() * 1.0e3 / this->gfw[0];
+			d.push_back(cxxsoln_ptr->Get_mass_water() / kgs);
+			double excess_h = cxxsoln_ptr->Get_total_h() - 2.0 * moles_h2o;
+			double excess_o = cxxsoln_ptr->Get_total_o() - moles_h2o;
+			d.push_back(excess_h * this->gfw[1] / 1000. / kgs); 
+			d.push_back(excess_o * this->gfw[2] / 1000. / kgs); 
+			d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[3] / 1000. / kgs); 
+			for (size_t i = 4; i < this->components.size(); i++)
+			{
+				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i] / 1000. / kgs); 
+			}
+		}
+		break;
+	}
+}
+#else
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
+/* ---------------------------------------------------------------------- */
+{
+	d.clear();
+
+	// Simplify totals
+	{
+	  cxxNameDouble nd = cxxsoln_ptr->Get_totals().Simplify_redox();
+	  cxxsoln_ptr->Set_totals(nd);
+	}
+
+	// convert units
+	//double vol = cxxsoln_ptr->Get_soln_vol();
+	double vol = v;
+	switch (this->input_units_Solution)
+	{
+	case 1:  // convert to mg/L 
+		{
+			d.push_back(cxxsoln_ptr->Get_total_h() * this->gfw[0] * 1000. / v); 
+			d.push_back(cxxsoln_ptr->Get_total_o() * this->gfw[1] * 1000. / v); 
+			d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2] * 1000. / v); 
 			for (size_t i = 3; i < this->components.size(); i++)
 			{
-				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str())  / cxxsoln_ptr->Get_soln_vol()); 
+				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i] / 1000. / v);  
+			}
+		}
+		break;
+	case 2:  // convert to mol/L
+		{
+			d.push_back(cxxsoln_ptr->Get_total_h() / v); 
+			d.push_back(cxxsoln_ptr->Get_total_o() / v); 
+			d.push_back(cxxsoln_ptr->Get_cb()  / v); 
+			for (size_t i = 3; i < this->components.size(); i++)
+			{
+				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str())  / v); 
 			}	
 		}
 		break;
 	case 3:  // convert to mass fraction kg/kgs
 		{
-			double kgs = cxxsoln_ptr->Get_soln_vol() * cxxsoln_ptr->Get_density();
+			//double kgs = v * cxxsoln_ptr->Get_density();
+			double kgs = cxxsoln_ptr->Get_density() * cxxsoln_ptr->Get_soln_vol();
 			d.push_back(cxxsoln_ptr->Get_total_h() * this->gfw[0] / 1000. / kgs); 
 			d.push_back(cxxsoln_ptr->Get_total_o() * this->gfw[1] / 1000. / kgs); 
 			d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2] / 1000. / kgs); 
@@ -1092,7 +1331,7 @@ PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<doub
 		break;
 	}
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::DecodeError(int r)
@@ -1381,6 +1620,10 @@ PhreeqcRM::FindComponents(void)
 	{
 		// Always include H, O, Charge
 		this->components.clear();
+
+#ifdef COMPONENT_H2O
+		this->components.push_back("H2O");
+#endif
 		this->components.push_back("H");
 		this->components.push_back("O");
 		this->components.push_back("Charge");
@@ -1429,7 +1672,6 @@ PhreeqcRM::FindComponents(void)
 	}
 	return (int) this->components.size();
 }
-
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -1452,7 +1694,9 @@ PhreeqcRM::GetConcentrations(double * c)
 			// load fractions into d
 			cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
 			assert (cxxsoln_ptr);
-			this->cxxSolution2concentration(cxxsoln_ptr, d);
+			int i_grid = this->back[j][0];
+			double v = this->pore_volume[i_grid] / this->pore_volume_zero[i_grid] * saturation[i_grid];
+			this->cxxSolution2concentration(cxxsoln_ptr, d, v);
 			for (int i = 0; i < (int) this->components.size(); i++)
 			{
 				solns.push_back(d[i]);
@@ -1549,7 +1793,9 @@ PhreeqcRM::GetConcentrations(double * c)
 				// load fractions into d
 				cxxSolution * cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
 				assert (cxxsoln_ptr);
-				this->cxxSolution2concentration(cxxsoln_ptr, d);
+				int i_grid = this->back[j][0];
+				double v = this->pore_volume[i_grid] / this->pore_volume_zero[i_grid] * saturation[i_grid];
+				this->cxxSolution2concentration(cxxsoln_ptr, d, v);
 
 				// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
 				std::vector<int>::iterator it;
@@ -2098,7 +2344,7 @@ PhreeqcRM::InitialPhreeqc2Concentrations(
 					// Make mass fractions in d
 					cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
 					std::vector<double> d;
-					cxxSolution2concentration(&cxxsoln, d);
+					cxxSolution2concentration(&cxxsoln, d, cxxsoln.Get_soln_vol());
 
 					// Put mass fractions in c
 					double *d_ptr = &c[i];
@@ -3808,7 +4054,7 @@ PhreeqcRM::RunCellsThread(int n)
 			// partition solids between UZ and SZ
 			if (this->partition_uz_solids)
 			{
-				this->PartitionUZ(n, i, j, this->saturation[j]);
+				//this->PartitionUZ(n, i, j, this->saturation[j]);
 			}
 			
 			// ignore small saturations
