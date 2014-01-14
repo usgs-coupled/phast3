@@ -180,7 +180,7 @@ protected:
 		                                          std::set<std::string> &error_set);
 	int                                       CheckSelectedOutput();
 	void                                      Concentrations2Solutions(int n, std::vector<double> &c);
-	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
+	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	int                                       HandleErrorsInternal(std::vector< int > & r);
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
