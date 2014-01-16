@@ -24,8 +24,6 @@ SUBROUTINE XP_asembl_thread(xp)
        wtmz, wtpx, wtpy, wtpz, zkm, zkp
   INTEGER :: a_err, da_err, i, ibckm, ibckp, ic, j, k, m, ma
   INTEGER, PARAMETER :: icxm = 3, icxp = 4, icym = 2, icyp = 5, iczm = 1, iczp = 6
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_asembl.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   integer mimjk, mipjk, mijmk, mijpk, mijkm, mijkp
   !     ------------------------------------------------------------------
   ! ... Dimension rs1 to be for one component
@@ -273,8 +271,6 @@ SUBROUTINE XP_asembl(xp)
        wtmz, wtpx, wtpy, wtpz, zkm, zkp
   INTEGER :: a_err, da_err, i, ibckm, ibckp, ic, j, k, m, ma
   INTEGER, PARAMETER :: icxm = 3, icxp = 4, icym = 2, icyp = 5, iczm = 1, iczp = 6
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_asembl.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   ! ... Dimension rs1 to be for one component
   ALLOCATE (xp%rs1(nxyz),  &

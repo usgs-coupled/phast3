@@ -29,8 +29,6 @@ SUBROUTINE prchar(ndim,carray,lprnt,fu,nnoppr)
   INTEGER :: i, iir2, ior, ir2, ir3, ir3p, m, n1, n2, n3, nnpr, npr2,  &
        npr3, nxpr, nypr, nzpr
   LOGICAL :: prwin
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: prchar.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   iform = blank

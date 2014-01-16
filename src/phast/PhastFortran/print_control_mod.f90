@@ -36,9 +36,6 @@ MODULE print_control_mod
 
   PRIVATE :: print_control_l, print_control_i
 
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80), PRIVATE :: ident_string=  &
-       '$Id: print_control_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
 
 CONTAINS

@@ -24,8 +24,6 @@ SUBROUTINE init2_post_ss
   INTEGER :: imod, iis, iwel, k, l, m, mt, nr, nsa
   CHARACTER(LEN=130) error_line
   INTEGER :: status
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: init2_post_ss.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   nr=nx

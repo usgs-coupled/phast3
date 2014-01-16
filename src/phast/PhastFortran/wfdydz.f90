@@ -15,8 +15,6 @@ SUBROUTINE wfdydz(zwk,yy,dyy)
   !REAL(KIND=kdp) :: viscos
   REAL(KIND=kdp) :: c11, c12, c21, c22, det, ffphl, frfac, lgren,  &
        pwrk, qhwrk, ren, tambk, twrk, velwrk, y1, yo
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: wfdydz.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   pwrk=yy(1)

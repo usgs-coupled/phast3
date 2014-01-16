@@ -17,8 +17,6 @@ SUBROUTINE XP_crsdsp_thread(xp, m, ucrosc)
   REAL(KIND=kdp) :: ftxydm, ftxydp, ftxzdm, ftxzdp, ftyxdm, ftyxdp,  &
        ftyzdm, ftyzdp, ftzxdm, ftzxdp, ftzydm, ftzydp,  &
        dxm, dxp, dym, dyp, dzm, dzp, wtx, wty, wtz
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_crsdsp.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   INTEGER :: mijmk, mijpk, mipjk, mimjk, mijkm, mijkp
   !     ------------------------------------------------------------------
   !...
@@ -171,8 +169,6 @@ SUBROUTINE XP_crsdsp(xp, m, ucrosc)
   REAL(KIND=kdp) :: ftxydm, ftxydp, ftxzdm, ftxzdp, ftyxdm, ftyxdp,  &
        ftyzdm, ftyzdp, ftzxdm, ftzxdp, ftzydm, ftzydp,  &
        dxm, dxp, dym, dyp, dzm, dzp, wtx, wty, wtz
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_crsdsp.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Decode M into I,J,K

@@ -18,8 +18,6 @@ SUBROUTINE XP_asmslc_thread(xp)
   INTEGER :: m, ma, norm, iierr  
   CHARACTER(LEN=130) :: logline1
   INTEGER :: status
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_asmslc.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   integer j, itrn
   !     ------------------------------------------------------------------
   ! ... Assemble and solve the transport equation for one selected component
@@ -110,8 +108,6 @@ SUBROUTINE XP_asmslc(xp)
   INTEGER :: m, ma, norm, iierr  
   CHARACTER(LEN=130) :: logline1
   INTEGER :: status
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_asmslc.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   integer j
   !     ------------------------------------------------------------------
   ! ... Assemble and solve the transport equation for one selected component

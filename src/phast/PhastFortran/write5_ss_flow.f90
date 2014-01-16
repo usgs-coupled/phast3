@@ -43,8 +43,6 @@ SUBROUTINE write5_ss_flow
   REAL(KIND=kdp), PARAMETER :: cnv=1._kdp
   CHARACTER(LEN=130) :: logline1, logline2
   INTEGER :: status
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: write5_ss_flow.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &
        STAT = a_err)

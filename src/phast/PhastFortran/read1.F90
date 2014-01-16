@@ -25,8 +25,6 @@ SUBROUTINE read1
   INTEGER :: ios
   INTEGER, DIMENSION(21) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(1) :: array_bcst_r
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: read1.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   ! ------------------------------------------------------------------------
   !...
   ! ... Pre-read of data file to strip out comments

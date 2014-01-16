@@ -56,8 +56,6 @@ SUBROUTINE write2_2
   INTEGER :: iphreeqc_id, nthreads, status, vtype
   DOUBLE PRECISION, DIMENSION(100) :: c_well
   DOUBLE PRECISION :: tc, p_atm
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: write2_2.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ALLOCATE (lprnt3(nxyz),  &

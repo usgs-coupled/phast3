@@ -13,8 +13,6 @@ FUNCTION nintrp(xarg,nx,xs,erflg)
   INTRINSIC ABS, NINT
   REAL(KIND=kdp) :: a1, xarga
   INTEGER :: i
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: nintrp.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   xarga=xarg

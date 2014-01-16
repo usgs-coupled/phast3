@@ -26,8 +26,6 @@ SUBROUTINE aplbce_flow
   LOGICAL :: erflg  
 !$$  CHARACTER(LEN=9) :: cibc
 !$$  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc, qsbc2
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: aplbce_flow.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   UFDT2 = FDTMTH  

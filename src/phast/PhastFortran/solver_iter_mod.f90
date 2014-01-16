@@ -6,7 +6,6 @@ MODULE solver_iter_mod
     INCLUDE "RM_interface.f90.inc"
 !$$  PRIVATE :: abmult, armult, dbmult, formr, rfact, rfactm, lsolv, usolv,  &
 !$$       vpsv
-!$$  PRIVATE :: ident_string
 
 CONTAINS
 
@@ -43,8 +42,6 @@ CONTAINS
     REAL(KIND=kdp), DIMENSION(:), POINTER :: xx_b
     REAL(KIND=kdp), DIMENSION(:), POINTER :: apv, bpv, bpvlp, bpvj
     CHARACTER(LEN=130) :: logline1
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_r, rhs_b
     REAL(KIND=kdp), DIMENSION(:), TARGET, INTENT(IN OUT) :: rhs
     integer :: status
@@ -208,8 +205,6 @@ CONTAINS
     !
     REAL(KIND=kdp) :: s  
     INTEGER :: irn, jc, jcol  
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  irn=1,nrn  
@@ -234,8 +229,6 @@ CONTAINS
     !
     REAL(KIND=kdp) ::  s  
     INTEGER :: i, ii, j, jcol  
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO i=1,nbn  
@@ -260,8 +253,6 @@ CONTAINS
     REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: y
     !
     INTEGER :: i, j
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  i=1,nbn
@@ -284,8 +275,6 @@ CONTAINS
     !
     REAL(kind=kdp) :: dd
     INTEGER :: i, irow, j, k, nrow
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  k=1,nbn
@@ -341,8 +330,6 @@ CONTAINS
     REAL(KIND=kdp), DIMENSION(:), POINTER :: apv, bpv, bpvlp, bpvj
     CHARACTER(LEN=130) :: logline1
     integer :: status
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     r00 = SQRT(DOT_PRODUCT(rhs,rhs))
@@ -498,8 +485,6 @@ CONTAINS
     !
     REAL(KIND=kdp) :: s  
     INTEGER :: irn, jc, jcol  
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  irn=1,nrn  
@@ -522,8 +507,6 @@ CONTAINS
     !
     REAL(KIND=kdp) ::  s  
     INTEGER :: i, ii, j, jcol  
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO i=1,nbn  
@@ -546,8 +529,6 @@ CONTAINS
     REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: y
     !
     INTEGER :: i, j
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  i=1,nbn
@@ -568,8 +549,6 @@ CONTAINS
     !
     REAL(kind=kdp) :: dd
     INTEGER :: i, irow, j, k, nrow
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  k=1,nbn
@@ -603,8 +582,6 @@ CONTAINS
     !
     REAL(KIND=kdp) :: dd
     INTEGER :: i, ii, irow, j, jj, k, l
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  k=1,nbn-1
@@ -631,8 +608,6 @@ CONTAINS
     !
     REAL(KIND=kdp) :: dd
     INTEGER :: i, ii, irow, j, jj, k, l
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  k=1,nbn-1
@@ -666,8 +641,6 @@ CONTAINS
     !
     REAL(KIND=kdp) :: s
     INTEGER :: j, jcol, jj, k
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     w(1) = rr(1)
@@ -693,8 +666,6 @@ CONTAINS
     !
     REAL(KIND=kdp) :: s
     INTEGER :: j, jcol, jj, k
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     yy(nbn) = w(nbn)/ra(10,nbn)
@@ -719,8 +690,6 @@ CONTAINS
     INTEGER, INTENT(IN) :: n
     !
     INTEGER :: i
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     DO  i=1,n

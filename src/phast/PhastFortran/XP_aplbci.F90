@@ -33,8 +33,6 @@ SUBROUTINE XP_aplbci_thread(xp)
   LOGICAL :: erflg
 !  INTEGER :: dum2, dum3
 !  REAL(KIND=kdp) :: dum1
-  ! ... Set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$id: aplbci.f90,v 1.1 2008/04/01 20:09:59 klkipp exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   erflg = .FALSE.  
@@ -456,8 +454,6 @@ SUBROUTINE XP_aplbci(xp)
   LOGICAL :: erflg
 !  INTEGER :: dum2, dum3
 !  REAL(KIND=kdp) :: dum1
-  ! ... Set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$id: aplbci.f90,v 1.1 2008/04/01 20:09:59 klkipp exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   erflg = .FALSE.  
