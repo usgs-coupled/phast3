@@ -219,7 +219,7 @@ MODULE mcv
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: axsav, aysav, azsav, dzfsdt, dp, dt, &
        sxx, syy, szz, vxx, vyy, vzz,  &
        zfs
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  eh, frac, zfsn, frac_icchem,  &
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  eh, frac, sat, zfsn, frac_icchem,  &
        p, t
   INTEGER :: itime=0
   REAL(KIND=kdp) :: deltim, deltim_sav, deltim_transient, time, time_phreeqc

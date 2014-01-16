@@ -204,7 +204,7 @@ SUBROUTINE init1
   ALLOCATE (dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
        sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
        zfs(nxy),  &
-       eh(1), frac(nxyz), frac_icchem(nxyz),  &
+       eh(1), frac(nxyz), sat(nxyz), frac_icchem(nxyz),  &
        p(nxyz), t(1),  &
        STAT = a_err)
   IF (a_err /= 0) THEN

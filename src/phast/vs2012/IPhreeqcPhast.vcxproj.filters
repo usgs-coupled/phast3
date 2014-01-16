@@ -290,6 +290,36 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.cpp">
       <Filter>Source Files\IPhreeqc</Filter>
     </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap2Phast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap3Phast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap4Phast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap5Phast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap6Phast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap7Phast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap8Phast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrapPhast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhast.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhastLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CVar.hxx">
@@ -482,6 +512,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\Var.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Phreeqc_class.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

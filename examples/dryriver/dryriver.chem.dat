@@ -26,4 +26,11 @@ SELECTED_OUTPUT
 USER_PUNCH
 -heading Cl_mmol Li_mmol Ca_mmol Na_mmol K_mmol 
 10 PUNCH TOT("Cl")*1000, TOT("Li")*1000, TOT("Ca")*1000, TOT("Na")*1000,  TOT("K")*1000
+
+
+SELECTED_OUTPUT 5
+USER_PUNCH 5
+-heading Cl Li Ca Na 
+10 PUNCH TOT("Cl")*1000, TOT("Li")*1000, TOT("Ca")*1000, TOT("Na")*1000
+
 END
