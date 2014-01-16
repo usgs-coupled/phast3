@@ -29,8 +29,6 @@ SUBROUTINE sumcal_ss_flow
   LOGICAL :: ierrw
   CHARACTER(LEN=130) :: logline1, logline2
   INTEGER :: status
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: sumcal_ss_flow.f90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   ufdt1 = fdtmth

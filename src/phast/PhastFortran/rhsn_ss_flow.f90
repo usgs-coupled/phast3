@@ -25,8 +25,6 @@ SUBROUTINE rhsn_ss_flow
   INTEGER :: a_err, da_err, i, iwel, iwfss, j, k, ks, l, lc0, l1, lc, ls,  &
        m, mc0, mfs, mkt, nks
 !!$  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: rhsn_ss_flow.f90 8034 2013-09-13 21:18:23Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp-fdtmth

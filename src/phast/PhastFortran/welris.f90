@@ -31,8 +31,6 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
   LOGICAL :: erflg
   INTEGER, PARAMETER :: kmax=200
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: welris.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   REAL(KIND=kdp) :: gcosth
   integer :: status
   !     ------------------------------------------------------------------
@@ -206,8 +204,6 @@ CONTAINS
     REAL(KIND=kdp), DIMENSION(2,12) ::  ymaxhv, ynhv, ynm1hv
     INTEGER :: i, j, jhvsv, jhvsv1, jodd, k, l, m, m2, mnext, mtwo
     LOGICAL :: convrg
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: welris.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     IF(jstart > 0) THEN
@@ -362,8 +358,6 @@ CONTAINS
     !REAL(KIND=kdp) :: viscos
     REAL(KIND=kdp) :: c11, c12, c21, c22, det, ffphl, frfac, lgren,  &
          pwrk, qhwrk, ren, tambk, twrk, velwrk, y1, yo
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: welris.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     pwrk=yy(1)
@@ -451,8 +445,6 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
   INTEGER, PARAMETER :: kmax=200
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
   integer :: status
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: welris.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Initialize
@@ -622,8 +614,6 @@ CONTAINS
     REAL(KIND=kdp), DIMENSION(2,12) ::  ymaxhv, ynhv, ynm1hv
     INTEGER :: i, j, jhvsv, jhvsv1, jodd, k, l, m, m2, mnext, mtwo
     LOGICAL :: convrg
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: welris.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     IF(jstart > 0) THEN
@@ -776,8 +766,6 @@ CONTAINS
     !REAL(KIND=kdp) :: viscos
     REAL(KIND=kdp) :: c11, c12, c21, c22, det, ffphl, frfac, lgren,  &
          pwrk, qhwrk, ren, tambk, twrk, velwrk, y1, yo
-    ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: welris.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     pwrk=yy(1)

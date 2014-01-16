@@ -21,8 +21,6 @@ SUBROUTINE error3
   INTEGER :: status
   INTEGER :: i, ic, iis, iwel, l, l2, ls, m, m1, mt, warnflag
   REAL(KIND=kdp) :: udeltim
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: error3.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Specified pressure and unconfined b.c.

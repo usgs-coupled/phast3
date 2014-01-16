@@ -30,8 +30,6 @@ SUBROUTINE XP_rhsn_thread(xp)
   INTEGER :: mijpk, mijkp
   REAL(KIND=kdp) :: cavg, sum_cqm_in
   REAL(KIND=kdp) :: qsbc3, qsbc4
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_rhsn.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp-fdtmth
@@ -337,8 +335,6 @@ SUBROUTINE XP_rhsn(xp)
        lc, ls, m, mc0, mfs, mkt, nks
   REAL(KIND=kdp) :: cavg, sum_cqm_in
   REAL(KIND=kdp) :: qsbc3, qsbc4
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_rhsn.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp-fdtmth

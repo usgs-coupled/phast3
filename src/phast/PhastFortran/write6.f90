@@ -18,8 +18,6 @@ SUBROUTINE write6
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
   INTEGER :: m
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: write6.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   IF(prkd) THEN

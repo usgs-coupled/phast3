@@ -57,8 +57,6 @@ SUBROUTINE sumcal1
 !!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
   INTEGER :: s_blk
   INTEGER, DIMENSION(:), ALLOCATABLE :: blks, displs
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: sumcal1.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp - fdtmth

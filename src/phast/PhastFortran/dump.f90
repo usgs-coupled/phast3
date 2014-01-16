@@ -24,8 +24,6 @@ SUBROUTINE dump_hst
   INCLUDE "RM_interface.f90.inc"
   CHARACTER(LEN=130) :: logline1, logline2, logline3
   INTEGER :: status
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: dump.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   IF(savldo) REWIND fuorst

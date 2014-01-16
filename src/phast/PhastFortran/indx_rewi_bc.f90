@@ -41,8 +41,6 @@ SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
   LOGICAL :: erflg
   INTEGER, DIMENSION(:), ALLOCATABLE :: uipar1, uipar2
   REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: upar
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: indx_rewi_bc.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ALLOCATE (uipar1(nxyz), uipar2(nxyz), upar(nxyz), &

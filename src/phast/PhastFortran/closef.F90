@@ -30,8 +30,6 @@ SUBROUTINE closef
   INTEGER :: da_err, i1p, i2p, ifu, ip, izn  
   CHARACTER(LEN=130) :: logline1, logline2, logline3
   INTEGER :: status
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: closef.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file

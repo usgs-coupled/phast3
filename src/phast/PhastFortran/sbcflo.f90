@@ -19,8 +19,6 @@ SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
   CHARACTER(LEN=9) :: cibc
   INTEGER :: l, m, mijkm, mijkp, mijmk, mijpk, mimjk, mipjk
   INTEGER, PARAMETER :: icxm=3, icxp=4, icym=2, icyp=5, iczm=1, iczp=6
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: sbcflo.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   DO  l=1,nsbc

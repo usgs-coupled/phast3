@@ -7,8 +7,6 @@ SUBROUTINE mtoijk(m,i,j,k,nx,ny)
   INTEGER, INTENT(IN) :: nx, ny
   !
   INTEGER :: imod, kr, nxy
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: mtoijk.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   nxy = nx*ny

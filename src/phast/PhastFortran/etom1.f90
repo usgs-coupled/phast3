@@ -19,8 +19,6 @@ SUBROUTINE etom1
   IMPLICIT NONE
 !!$  REAL(KIND=kdp) :: cnv  
   INTEGER :: i, ipmz, iwel, k, m
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: etom1.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Aquifer properties

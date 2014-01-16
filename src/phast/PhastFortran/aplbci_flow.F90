@@ -35,8 +35,6 @@ SUBROUTINE aplbci_flow
   INTEGER :: awqm, i, ic, iczm, iczp, iwel, j, k, ks, l, l1, lc, ls,  &
        m, ma, mac, mks
   LOGICAL :: erflg
-  ! ... Set string for use with rcs ident command
-  CHARACTER(len=80) :: ident_string='$id: aplbci.f90,v 1.1 2008/04/01 20:09:59 klkipp exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   erflg = .FALSE.  

@@ -4,10 +4,7 @@ MODULE scale_jds_mod
   ! ...      (Saad, 2001, p.91)
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: scale_jds_mod.f90,v $//$Revision: 1.1 $'
   PUBLIC :: rowscale, colscale
-  PRIVATE :: ident_string
 
 CONTAINS
 

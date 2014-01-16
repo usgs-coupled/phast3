@@ -25,8 +25,6 @@ SUBROUTINE rhsn_manager
        lc, ls, m, mc0, mfs, mkt, nks, nsa
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: rhsn_manager.F90,v 1.1 2011/01/28 20:37:01 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   rf = 0._kdp

@@ -24,11 +24,9 @@ SUBROUTINE phast_worker
     INTEGER :: stop_msg=0
     INTEGER :: i, a_err
     CHARACTER(LEN=130) :: logline1
-    ! ... Set string for use with RCS ident command
     INTEGER hdf_initialized, hdf_invariant
     INTEGER PR_HDF_MEDIA
     INTEGER status
-    CHARACTER(LEN=80) :: ident_string='$Id: phast_worker.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
 
     !...

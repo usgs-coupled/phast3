@@ -21,8 +21,6 @@ SUBROUTINE wbbal
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  uqsw
   CHARACTER(LEN=130) :: logline1, logline2
   integer :: status
-  ! ... Set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$id: wbbal.f90,v 1.2 2009/08/10 23:41:00 klkipp exp $'
   !     ------------------------------------------------------------------
   !...
   erflg = .FALSE.  

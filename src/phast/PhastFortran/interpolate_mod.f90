@@ -5,9 +5,6 @@ MODULE interpolate_mod
   INTERFACE interp
      MODULE PROCEDURE interp1d, interp2d
   END INTERFACE
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=85), PRIVATE :: ident_string=  &
-       '$RCSfile: interpolate_mod.f90,v $//$Revision: 1.1 $//$Date: 2013/09/19 20:41:58 $'
 
 CONTAINS
 

@@ -34,8 +34,6 @@ SUBROUTINE printar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
        npr2, npr3, nxpr, nypr, nzpr, nxarr, nxyarr
   LOGICAL :: prwin
   ! ... ORENPR: 12 - Areal layers; 13 - Vertical slices
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: printar.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ior=MOD(ABS(orenpr),10)

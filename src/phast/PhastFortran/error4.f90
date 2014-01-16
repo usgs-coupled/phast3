@@ -26,8 +26,6 @@ SUBROUTINE error4
   INTEGER :: a_err, da_err, i, ic, ipmz, iwel, j, k, ks, m, m1, mks, mt
   LOGICAL :: allout
   LOGICAL, DIMENSION(:), ALLOCATABLE :: inzone
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: error4.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   IF(ichwt) THEN

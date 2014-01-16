@@ -52,8 +52,6 @@ SUBROUTINE write5
   INTEGER :: iphreeqc_id, vtype
   DOUBLE PRECISION :: tc, p_atm
   DOUBLE PRECISION :: c_well(100)
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: write5.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &

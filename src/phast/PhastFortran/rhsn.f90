@@ -26,8 +26,6 @@ SUBROUTINE rhsn
        lc, ls, m, mc0, mfs, mkt, nks, nsa
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: rhsn.f90 8034 2013-09-13 21:18:23Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp-fdtmth

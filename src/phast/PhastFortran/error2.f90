@@ -8,8 +8,6 @@ SUBROUTINE error2
   USE mcg_m
   USE mcn
   INTEGER :: i, nr
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: error2.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Cylindrical coordinates
