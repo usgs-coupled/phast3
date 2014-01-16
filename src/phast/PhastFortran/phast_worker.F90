@@ -117,7 +117,7 @@ SUBROUTINE phast_worker
         status = RM_SetTimeConversion(rm_id)
         status = RM_SetPoreVolume(rm_id)
         status = RM_SetPoreVolumeZero(rm_id)
-        status = RM_SetSaturation(rm_id)
+        !!status = RM_SetSaturation(rm_id)
         status = RM_SetPrintChemistryMask(rm_id)
         status = RM_SetSelectedOutputOn(rm_id, status)
         status = RM_SetPartitionUZSolids(rm_id)

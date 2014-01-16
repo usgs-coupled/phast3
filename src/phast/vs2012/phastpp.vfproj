@@ -90,8 +90,8 @@
 		<File RelativePath="..\PhastFortran\ifwr.inc"/>
 		<File RelativePath="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.f90.inc"/>
 		<File RelativePath="..\PhastFortran\mpi_windows.inc">
-			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/></File>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/></File>
 		<File RelativePath="..\PhreeqcRM\RM_interface.f90.inc"/></Filter>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
@@ -151,7 +151,9 @@
 		<File RelativePath="..\PhastFortran\read3_xfer.F90"/>
 		<File RelativePath="..\PhastFortran\reorder_mod.f90"/>
 		<File RelativePath="..\PhastFortran\rewi_mod.f90"/>
-		<File RelativePath="..\PhastFortran\rhsn_flow.f90"/>
+		<File RelativePath="..\PhastFortran\rhsn.f90"/>
+		<File RelativePath="..\PhastFortran\rhsn_manager.F90"/>
+		<File RelativePath="..\PhastFortran\rhsn_ss_flow.f90"/>
 		<File RelativePath="..\PhastFortran\sbcflo.f90"/>
 		<File RelativePath="..\PhastFortran\scale_jds_mod.f90"/>
 		<File RelativePath="..\PhastFortran\set_component_map.F90"/>
@@ -159,7 +161,6 @@
 		<File RelativePath="..\PhastFortran\solver_direct_mod.f90"/>
 		<File RelativePath="..\PhastFortran\solver_iter_mod.f90"/>
 		<File RelativePath="..\PhastFortran\stonb.f90"/>
-		<File RelativePath="..\PhastFortran\sumcal0_manager.F90"/>
 		<File RelativePath="..\PhastFortran\sumcal1.F90"/>
 		<File RelativePath="..\PhastFortran\sumcal1_manager.F90"/>
 		<File RelativePath="..\PhastFortran\sumcal2.f90"/>

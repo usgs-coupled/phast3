@@ -17,7 +17,7 @@ SOLUTION_METHOD
 	#-space_differencing 0.5
 	#-time_differencing  0.5
 	-cross_dispersion   false
-	-rebalance_fraction 0.0
+	-rebalance_fraction 0.5
 	-rebalance_by_cell  false
 	-thread             3
 UNITS
@@ -139,7 +139,19 @@ CHEMISTRY_IC
  		-solution            3
 	-box 800 0 0 4000 1 20
 		-solution            3
-
+		
+WELL 1
+	-xy_coordinate_system GRID
+	-z_coordinate_system GRID
+	-location 1000 0.5
+	-diameter 0.1
+	-elevation -18 -16
+	-allocate_by_head_and_mobility False
+	-pumping_rate
+		0 hours     1e-009
+	-solution
+		0 hours     1
+		
 RIVER 1 High tide
 	-xy_coordinate_system GRID
 	-z_coordinate_system  GRID
@@ -180,12 +192,12 @@ PRINT_INITIAL
 	-media_properties           false
 	-solution_method            false
 	-steady_flow_velocities     false
-	-wells                      false
+	-wells                      true
 	-xyz_chemistry              false
 	-xyz_components             false
 	-xyz_heads                  false
 	-xyz_steady_flow_velocities false
-	-xyz_wells                  false
+	-xyz_wells                  true
 PRINT_FREQUENCY
 	-save_final_heads true
 	0
@@ -208,7 +220,7 @@ PRINT_FREQUENCY
 		-xyz_components         0 step
 		-xyz_heads              0
 		-xyz_velocities         0
-		-xyz_wells              0
+		-xyz_wells              1
 		-zone_flow              0 
 		-zone_flow_xyzt         0  
 		-zone_flow_tsv          0  

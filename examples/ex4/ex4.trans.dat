@@ -151,6 +151,7 @@ SOLUTION_METHOD
      -cross_dispersion                 false
      -rebalance_fraction               0.5
      -rebalance_by_cell                false
+     -thread                           1
 TIME_CONTROL
      -time_step                        0         20000 years
      -time_change                      1000000   years

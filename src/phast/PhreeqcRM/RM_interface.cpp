@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include "hdf.h"
+#include "fwrap.h"
 #ifdef THREADED_PHAST
 #include <omp.h>
 #endif
@@ -198,11 +199,13 @@ IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1)
 		{
 			if (l1 > 0)
 			{
-				strncpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), l1);
+                //padfstring(char *dest, const char *src, unsigned int len)
+				//strncpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), l1);
+				padfstring(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), (unsigned int) l1);
 			}
 			else
 			{
-				strcpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str());
+				return IRM_INVALIDARG;
 			}
 			return IRM_OK;
 		}
@@ -752,7 +755,11 @@ RM_SetPartitionUZSolids(int *id, int *t)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		int tf = (t == NULL) ? 0 : 1;
+		int tf = 0;
+		if (t != NULL)
+		{
+			tf = *t;
+		}
 		return Reaction_module_ptr->SetPartitionUZSolids(tf);
 	}
 	return IRM_BADINSTANCE;

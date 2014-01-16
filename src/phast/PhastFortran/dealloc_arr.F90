@@ -72,7 +72,7 @@ SUBROUTINE dealloc_arr
   DEALLOCATE (dzfsdt, dp, dt,  &
        sxx, syy, szz, vxx, vyy, vzz,  &
        zfs,  &
-       eh, frac, frac_icchem, p, t,  &
+       eh, frac, sat, frac_icchem, p, t,  &
        STAT = da_err)
   IF (da_err /= 0) THEN
      PRINT *, "Array deallocation failed: dealloc_arr, init1, point 6"  

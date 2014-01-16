@@ -2642,7 +2642,10 @@ PhreeqcRM::OpenFiles(void)
 			std::string ln = this->file_prefix;
 			ln.append(".log.txt");
 			if (!this->phreeqcrm_io.log_open(ln.c_str()))
+			{
 				this->ErrorHandler(IRM_FAIL, "Failed to open .log.txt file");
+			}
+			this->phreeqcrm_io.Set_log_on(true);
 
 			// prefix.chem.txt
 			std::string cn = this->file_prefix;
@@ -2676,7 +2679,7 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 	 * repartition solids for partially saturated cells
 	 */
 
-	if ((fabs(this->old_saturation[ihst] - new_frac) > 1e-8) ? true : false)
+	if ((fabs(this->old_saturation[ihst] - new_frac) < 1e-8) ? true : false)
 		return;
 
 	n_user = iphrq;
@@ -4054,7 +4057,7 @@ PhreeqcRM::RunCellsThread(int n)
 			// partition solids between UZ and SZ
 			if (this->partition_uz_solids)
 			{
-				//this->PartitionUZ(n, i, j, this->saturation[j]);
+				this->PartitionUZ(n, i, j, this->saturation[j]);
 			}
 			
 			// ignore small saturations
