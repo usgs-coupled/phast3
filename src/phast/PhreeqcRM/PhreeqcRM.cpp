@@ -4069,19 +4069,21 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 	// set cell number, pore volume got Basic functions
 	//phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
 
-
-	// do the calculation
-	std::ostringstream input;
-	input << "RUN_CELLS\n";
-	input << "  -start_time " << (this->time - this->time_step) << "\n";
-	input << "  -time_step  " << this->time_step << "\n";
-	input << "  -cells      " << soln_list.str(); 
-	input << "END" << "\n";
-
+	
 	clock_t t0 = clock();
-	if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
+	if (count_active > 0)
 	{
-		throw PhreeqcRMStop();
+		std::ostringstream input;
+		input << "RUN_CELLS\n";
+		input << "  -start_time " << (this->time - this->time_step) << "\n";
+		input << "  -time_step  " << this->time_step << "\n";
+		input << "  -cells      " << soln_list.str(); 
+		input << "END" << "\n";
+
+		if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
+		{
+			throw PhreeqcRMStop();
+		}
 	}
 	clock_t t_elapsed = clock() - t0;
 
