@@ -188,7 +188,8 @@ protected:
 	void                                      RebalanceLoadPerCell(void);
 	IRM_RESULT                                RunCellsThread(int i);
 	IRM_RESULT                                RunFileThread(int n);
-	IRM_RESULT                                RunStringThread(int n, std::string & input);
+	IRM_RESULT                                RunStringThread(int n, std::string & input); 
+	IRM_RESULT                                RunCellsThreadNoPrint(int n);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
 	IRM_RESULT                                SetChemistryFileName(const char * prefix = NULL);
 	void                                      SetEndCells(void);
