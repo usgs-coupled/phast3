@@ -3987,12 +3987,152 @@ PhreeqcRM::RunCells()
 #endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
+PhreeqcRM::RunCellsThreadNoPrint(int n)
+/* ---------------------------------------------------------------------- */
+{
+
+	/*
+	*   This routine equilibrates each cell for the given thread
+	*   when there is no printout (SetChemistryOn(false)).
+	*/
+
+	IPhreeqcPhast *phast_iphreeqc_worker = this->GetWorkers()[n];
+
+	// selected output IPhreeqcPhast
+	phast_iphreeqc_worker->CSelectedOutputMap.clear();
+	std::vector<int> types;
+	std::vector<long> longs;
+	std::vector<double> doubles;
+	std::string strings;
+
+	// Do not write to files from phreeqc, run_cells writes files
+	phast_iphreeqc_worker->SetLogFileOn(false);
+	phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
+	phast_iphreeqc_worker->SetDumpFileOn(false);
+	phast_iphreeqc_worker->SetDumpStringOn(false);
+	phast_iphreeqc_worker->SetOutputFileOn(false);
+	phast_iphreeqc_worker->SetErrorFileOn(false);
+	phast_iphreeqc_worker->SetOutputStringOn(false);
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+	phast_iphreeqc_worker->Get_cell_clock_times().clear();
+
+	// Make list of cells with saturation > 0.0
+	std::ostringstream soln_list;
+	int range_start = start;
+    int range_end = start;
+	int count_active = 0;
+	for (int i = start + 1; i <= end; i++)
+	{							/* i is count_chem number */
+		int j = back[i][0];			/* j is nxyz number */
+		if (this->saturation[j] > 1e-10) 
+		{
+			count_active++;
+			if (i == range_end + 1)
+			{
+				range_end++;
+			}
+			else 
+			{
+				if (range_start == range_end)
+				{
+				soln_list << range_start << "\n";
+				}
+				else
+				{
+				soln_list << range_start << "-" << range_end << "\n";
+				}
+				range_start = i;
+				range_end = i;
+			}	
+			// partition solids between UZ and SZ
+			if (this->partition_uz_solids)
+			{
+				this->PartitionUZ(n, i, j, this->saturation[j]);
+			}
+		}
+	}
+	if (range_start == range_end)
+	{
+		soln_list << range_start << "\n";
+	}
+	else
+	{
+		soln_list << range_start << "-" << range_end << "\n";
+	}
+
+	// set cell number, pore volume got Basic functions
+	//phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
+
+
+	// do the calculation
+	std::ostringstream input;
+	input << "RUN_CELLS\n";
+	input << "  -start_time " << (this->time - this->time_step) << "\n";
+	input << "  -time_step  " << this->time_step << "\n";
+	input << "  -cells      " << soln_list.str(); 
+	input << "END" << "\n";
+
+	clock_t t0 = clock();
+	if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
+	{
+		throw PhreeqcRMStop();
+	}
+	clock_t t_elapsed = clock() - t0;
+
+	// Save selected output data
+	if (this->selected_output_on)
+	{
+		// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
+		std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+		for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+		{
+			int n_user = it->first;
+			std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+			if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+			{
+				CSelectedOutput cso;
+				phast_iphreeqc_worker->CSelectedOutputMap[n_user] = cso;
+				ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+			}
+			int counter = 0;
+			for (int i = start; i <= end; i++)
+			{							    /* i is count_chem number */
+				int j = back[i][0];			/* j is nxyz number */
+				if (saturation[j] > 1e-10)
+				{
+					types.clear();
+					longs.clear();
+					doubles.clear();
+					strings.clear();
+					it->second->Serialize(counter, types, longs, doubles, strings);
+					ipp_it->second.DeSerialize(types, longs, doubles, strings);
+					counter++;
+					phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
+				}
+				else
+				{
+					ipp_it->second.EndRow();
+					phast_iphreeqc_worker->Get_cell_clock_times().push_back(0.0);
+				}
+			}
+		}
+	}
+
+	return IRM_OK;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT 
 PhreeqcRM::RunCellsThread(int n)
 /* ---------------------------------------------------------------------- */
 {
 	/*
-	*   Routine takes mass fractions from HST, equilibrates each cell,
-	*   and returns new mass fractions to HST
+	*   Then this routine equilibrates each cell for the given thread
 	*/
 
 	/*
@@ -4004,29 +4144,6 @@ PhreeqcRM::RunCellsThread(int n)
 	IPhreeqcPhast *phast_iphreeqc_worker = this->GetWorkers()[n];
 	try
 	{
-		// selected output IPhreeqcPhast
-		phast_iphreeqc_worker->CSelectedOutputMap.clear();
-		std::vector<int> types;
-		std::vector<long> longs;
-		std::vector<double> doubles;
-		std::string strings;
-
-		// Do not write to files from phreeqc, run_cells writes files
-		phast_iphreeqc_worker->SetLogFileOn(false);
-		phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
-		phast_iphreeqc_worker->SetDumpFileOn(false);
-		phast_iphreeqc_worker->SetDumpStringOn(false);
-		phast_iphreeqc_worker->SetOutputFileOn(false);
-		phast_iphreeqc_worker->SetErrorFileOn(false);
-#ifdef USE_MPI
-		int start = this->start_cell[this->mpi_myself];
-		int end = this->end_cell[this->mpi_myself];
-#else
-		int start = this->start_cell[n];
-		int end = this->end_cell[n];
-#endif
-		phast_iphreeqc_worker->Get_cell_clock_times().clear();
-
 		// Find the print flag
 		bool pr_chemistry_on;
 		if (n < this->nthreads)
@@ -4041,185 +4158,206 @@ PhreeqcRM::RunCellsThread(int n)
 		{
 			pr_chemistry_on = print_chemistry_on[2];
 		}
+		if (!pr_chemistry_on)
+		{
+			RunCellsThreadNoPrint(n);
+		}
+		else
+		{
+			phast_iphreeqc_worker->Get_cell_clock_times().clear();
 
-		// run the cells
-		for (i = start; i <= end; i++)
-		{							/* i is count_chem number */
-			j = back[i][0];			/* j is nxyz number */
+			// selected output IPhreeqcPhast
+			phast_iphreeqc_worker->CSelectedOutputMap.clear();
+			std::vector<int> types;
+			std::vector<long> longs;
+			std::vector<double> doubles;
+			std::string strings;
+
+			// Do not write to files from phreeqc, run_cells writes files
+			phast_iphreeqc_worker->SetLogFileOn(false);
+			phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
+			phast_iphreeqc_worker->SetDumpFileOn(false);
+			phast_iphreeqc_worker->SetDumpStringOn(false);
+			phast_iphreeqc_worker->SetOutputFileOn(false);
+			phast_iphreeqc_worker->SetErrorFileOn(false);
 #ifdef USE_MPI
-			phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) MPI_Wtime());
+			int start = this->start_cell[this->mpi_myself];
+			int end = this->end_cell[this->mpi_myself];
 #else
-			phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) clock());
+			int start = this->start_cell[n];
+			int end = this->end_cell[n];
 #endif
-			// Set local print flags
-			bool pr_chem = pr_chemistry_on && (this->print_chem_mask[j] != 0);
+			// run the cells
+			for (i = start; i <= end; i++)
+			{							/* i is count_chem number */
+				j = back[i][0];			/* j is nxyz number */
+#ifdef USE_MPI
+				phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) MPI_Wtime());
+#else
+				phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) clock());
+#endif
+				// Set local print flags
+				bool pr_chem = pr_chemistry_on && (this->print_chem_mask[j] != 0);
 
-			// partition solids between UZ and SZ
-			if (this->partition_uz_solids)
-			{
-				this->PartitionUZ(n, i, j, this->saturation[j]);
-			}
-			
-			// ignore small saturations
-			bool active = true;
-			if (this->saturation[j] <= 1e-10) 
-			{
-				this->saturation[j] = 0.0;
-				active = false;
-			}
-			
-			if (active)
-			{
-				// set cell number, pore volume got Basic functions
-				phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
-
-				// Set print flags
-				phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
-
-				// do the calculation
-				std::ostringstream input;
-				input << "RUN_CELLS\n";
-				input << "  -start_time " << (this->time - this->time_step) << "\n";
-				input << "  -time_step  " << this->time_step << "\n";
-				input << "  -cells      " << i << "\n";
-				input << "END" << "\n";
-
-				// Write output file
-				if (pr_chem)
+				// partition solids between UZ and SZ
+				if (this->partition_uz_solids)
 				{
-					std::ostringstream line_buff;
-					line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
-					line_buff << "Chemistry cell: " << j << "\n";
-					line_buff << "Grid cell(s):   ";
-					for (size_t ib = 0; ib < this->back[j].size(); ib++)
-					{
-						line_buff << back[j][ib] << " ";
-					}
-					line_buff << "\n";
-					phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
-					phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
-					//std::cerr << phast_iphreeqc_worker->GetOutputString();
+					this->PartitionUZ(n, i, j, this->saturation[j]);
 				}
 
-				if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
+				// ignore small saturations
+				bool active = true;
+				if (this->saturation[j] <= 1e-10) 
 				{
-					throw PhreeqcRMStop();
+					this->saturation[j] = 0.0;
+					active = false;
 				}
-				// Save selected output data
-				if (this->selected_output_on)
+
+				if (active)
 				{
-					// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
-					std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
-					for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+					// set cell number, pore volume got Basic functions
+					phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
+
+					// Set print flags
+					phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
+
+					// do the calculation
+					std::ostringstream input;
+					input << "RUN_CELLS\n";
+					input << "  -start_time " << (this->time - this->time_step) << "\n";
+					input << "  -time_step  " << this->time_step << "\n";
+					input << "  -cells      " << i << "\n";
+					input << "END" << "\n";
+
+					// Write output file
+					if (pr_chem)
 					{
-						int n_user = it->first;
-						std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
-						assert(it->second->GetRowCount() == 2);
-						if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+						std::ostringstream line_buff;
+						line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
+						line_buff << "Chemistry cell: " << j << "\n";
+						line_buff << "Grid cell(s):   ";
+						for (size_t ib = 0; ib < this->back[j].size(); ib++)
 						{
-							CSelectedOutput cso;
-							phast_iphreeqc_worker->CSelectedOutputMap[n_user] = cso;
-							ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+							line_buff << back[j][ib] << " ";
 						}
-						types.clear();
-						longs.clear();
-						doubles.clear();
-						strings.clear();
-						it->second->Serialize(types, longs, doubles, strings);
-						ipp_it->second.DeSerialize(types, longs, doubles, strings);
+						line_buff << "\n";
+						phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
+						phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
+						//std::cerr << phast_iphreeqc_worker->GetOutputString();
 					}
-				}
-			} // end active
-			else
-			{
-				if (pr_chem)
-				{
-					std::ostringstream line_buff;
-					line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
-					line_buff << "Chemistry cell: " << j + 1 << "\n";
-					line_buff << "Grid cell(s):   ";
-					for (size_t ib = 0; ib < this->back[j].size(); ib++)
+
+					if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
 					{
-						line_buff << back[j][ib] << " ";
+						throw PhreeqcRMStop();
 					}
-					line_buff << "\nCell is dry.\n";
-					phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
-				}
-				// Write hdf file
-				if (this->selected_output_on)
-				{
-					bool add_to_cselectedoutputmap = false;
-					// Make dummy run if CSelectedOutputMap not complete	
+					// Save selected output data
+					if (this->selected_output_on)
 					{
+						// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
 						std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
 						for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
 						{
-							std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+							int n_user = it->first;
+							std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+							assert(it->second->GetRowCount() == 2);
 							if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
 							{
-								// Make a dummy run to fill in headings of selected output
-								std::ostringstream input;
-								input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
-								if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
-								{
-									throw PhreeqcRMStop();
-			}
-								add_to_cselectedoutputmap = true;
-								break;
+								CSelectedOutput cso;
+								phast_iphreeqc_worker->CSelectedOutputMap[n_user] = cso;
+								ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
 							}
+							types.clear();
+							longs.clear();
+							doubles.clear();
+							strings.clear();
+							it->second->Serialize(0, types, longs, doubles, strings);
+							ipp_it->second.DeSerialize(types, longs, doubles, strings);
 						}
 					}
-					if (add_to_cselectedoutputmap)
+				} // end active
+				else
+				{
+					if (pr_chem)
 					{
+						std::ostringstream line_buff;
+						line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
+						line_buff << "Chemistry cell: " << j + 1 << "\n";
+						line_buff << "Grid cell(s):   ";
+						for (size_t ib = 0; ib < this->back[j].size(); ib++)
+						{
+							line_buff << back[j][ib] << " ";
+						}
+						line_buff << "\nCell is dry.\n";
+						phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
+					}
+					// Get selected output
+					if (this->selected_output_on)
+					{
+						bool add_to_cselectedoutputmap = false;
+						// Make dummy run if CSelectedOutputMap not complete	
+						{
+							std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+							for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+							{
+								std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+								if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+								{
+									// Make a dummy run to fill in headings of selected output
+									std::ostringstream input;
+									input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
+									if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
+									{
+										throw PhreeqcRMStop();
+									}
+									add_to_cselectedoutputmap = true;
+									break;
+								}
+							}
+						}
+						if (add_to_cselectedoutputmap)
+						{
+							std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+							for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+							{
+								int iso = it->first;
+								std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+								if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+								{
+									// Add new item to CSelectedOutputMap
+									CSelectedOutput cso;
+									// Fill in columns
+									phast_iphreeqc_worker->SetCurrentSelectedOutputUserNumber(iso);
+									int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
+									for (int i = 0; i < columns; i++)
+									{
+										VAR pvar, pvar1;
+										VarInit(&pvar);
+										VarInit(&pvar1);
+										phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
+										cso.PushBack(pvar.sVal, pvar1);
+									}
+									phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
+								}
+							}
+						}
+						// Add selected output values to IPhreeqcPhast CSelectedOutputMap
 						std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
 						for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
 						{
 							int iso = it->first;
-							std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
-							if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
-							{
-								// Add new item to CSelectedOutputMap
-								CSelectedOutput cso;
-								// Fill in columns
-								phast_iphreeqc_worker->SetCurrentSelectedOutputUserNumber(iso);
-								int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
-								for (int i = 0; i < columns; i++)
-								{
-									VAR pvar, pvar1;
-									VarInit(&pvar);
-									VarInit(&pvar1);
-									phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
-									cso.PushBack(pvar.sVal, pvar1);
-								}
-								phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
-							}
+							std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
+							ipp_it->second.EndRow();
 						}
 					}
-					// Add selected output values to IPhreeqcPhast CSelectedOutputMap
-					std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
-					for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
-					{
-						int iso = it->first;
-						std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
-						ipp_it->second.EndRow();
-					}
 				}
-			}
 #ifdef USE_MPI
-			phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) MPI_Wtime();
+				phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) MPI_Wtime();
 #else
-			phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) clock();
+				phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) clock();
 #endif
-		} // end one cell
-#ifndef USE_MPI
-#endif
+			} // end one cell
+		}
 		clock_t t_elapsed = clock() - t0;
-
-#ifdef USE_MPI
-		//std::cerr << "          Process: " << this->mpi_myself << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[this->mpi_myself] - this->start_cell[this->mpi_myself] + 1 << std::endl;
-#else
-		//std::cerr << "          Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << "\n";
-#endif
 		phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
 	}
 	catch (PhreeqcRMStop)

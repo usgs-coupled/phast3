@@ -43,7 +43,6 @@ SUBROUTINE phast_manager
     CALL CreateRM
     ! ... Map components to processes for transport calculations
     CALL set_component_map
-
     !... Call init1
     CALL init1
     CALL error1
@@ -479,13 +478,7 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetConcentrations(rm_id, c(1,1))
         status = RM_SetStopMessage(rm_id, stop_msg)
         
-        status = RM_RunCells(rm_id)    
-        !CALL RM_RunCells(      &
-        !    rm_id,              &
-        !    time_phreeqc,       &        ! time_hst
-        !    deltim_dummy,       &        ! time_step
-        !    c(1,1),             &        ! fraction
-        !    stop_msg) 
+        status = RM_RunCells(rm_id)  
 
         CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
 	        iprint_xyz(1), 0); 
@@ -526,8 +519,7 @@ SUBROUTINE InitializeRM
         status = RM_SetUnitsKinetics(rm_id, kinetics_units)
         status = RM_SetUnitsPPassemblage(rm_id, ppassemblage_units)
         status = RM_SetUnitsSSassemblage(rm_id, ssassemblage_units)
-        status = RM_SetUnitsSurface(rm_id, surface_units)      
-        
+        status = RM_SetUnitsSurface(rm_id, surface_units)            
         status = RM_SetTimeConversion(rm_id, cnvtmi)
         status = RM_SetPoreVolume(rm_id, pv0(1))
         status = RM_SetPoreVolumeZero(rm_id, pv0(1))
@@ -569,12 +561,12 @@ SUBROUTINE InitializeRM
                 f1_reordered(i,j) = ic_mxfrac(j,i)
             enddo
         enddo
-        
+          
         ! ... Distribute chemistry initial conditions
         status = RM_InitialPhreeqc2Module(rm_id, &
             ic1_reordered(1,1),           & ! Fortran nxyz x 7 end-member 1 
             ic2_reordered(1,1),           & ! Fortran nxyz x 7 end-member 2
-            f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1        
+            f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1      
         CALL FH_ProcessRestartFiles(rm_id, &
 	        indx_sol1_ic(1,1),            &
 	        indx_sol2_ic(1,1),            & 
@@ -632,12 +624,7 @@ SUBROUTINE TimeStepRM
         
         status = RM_RunCells(rm_id)  
         status = RM_GetConcentrations(rm_id, c(1,1))
-        !CALL RM_RunCells(                               &
-        !    rm_id,                                      &
-        !    time,                                       &        ! time_hst
-        !    deltim,                                     &        ! time_step_hst
-        !    c(1,1),                                     &        ! fraction
-        !    stop_msg) 
+        
         CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
             iprint_xyz(1), print_restart%print_flag_integer) 
         status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 1)

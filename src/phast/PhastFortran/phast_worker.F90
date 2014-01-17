@@ -95,11 +95,6 @@ SUBROUTINE phast_worker
 
         deltim_dummy = 0._kdp
         time_phreeqc = 0._kdp
-        ! ... steady flow is calculated here
-        IF (steady_flow) THEN
-            ! ... steady flow calculation calls read3 and init3
-            CALL init3_distribute
-        ENDIF
 !
 ! start of InitializeRM
 !
@@ -111,7 +106,7 @@ SUBROUTINE phast_worker
         status = RM_SetUnitsPPassemblage(rm_id)
         status = RM_SetUnitsSSassemblage(rm_id)
         status = RM_SetUnitsSurface(rm_id)
-        
+         
         status = RM_SetTimeConversion(rm_id)
         status = RM_SetPoreVolume(rm_id)
         status = RM_SetPoreVolumeZero(rm_id)
@@ -124,8 +119,7 @@ SUBROUTINE phast_worker
         status = RM_SetRebalanceByCell(rm_id)
 
         ! ... Mapping from full 3D domain to chemistry
-        status = RM_CreateMapping(rm_id)
-        
+        status = RM_CreateMapping(rm_id)  
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files
             CALL FH_SetRestartName(restart_files(i))
@@ -138,7 +132,7 @@ SUBROUTINE phast_worker
         status = RM_GetConcentrations(rm_id)
 !        
 !end  of InitializeRM
-!
+!        
         adj_wr_ratio = 1
 !        
 !start  of InitialEquilibrationRM
@@ -158,7 +152,12 @@ SUBROUTINE phast_worker
         CALL FH_WriteFiles(rm_id)  
 !        
 !end  of InitialEquilibrationRM
-!     
+!   
+        IF (steady_flow) THEN
+            ! ... steady flow calculation calls read3 and init3
+            CALL init3_distribute
+        ENDIF
+
         ! ... Write zone chemistry
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         stop_msg = 0
@@ -170,7 +169,6 @@ SUBROUTINE phast_worker
 
         ! ... Error check
         IF(errexe .OR. errexi) GO TO 50
-
 
         ! ... Transient loop for transport
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
@@ -218,6 +216,7 @@ SUBROUTINE phast_worker
             status = RM_SetStopMessage(rm_id)
         
             status = RM_RunCells(rm_id)   
+            status = RM_GetConcentrations(rm_id)
             CALL FH_WriteFiles(rm_id)
             status = RM_DumpModule(rm_id)
 !        
