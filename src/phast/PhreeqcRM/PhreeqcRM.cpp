@@ -3995,7 +3995,6 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 	*   This routine equilibrates each cell for the given thread
 	*   when there is no printout (SetChemistryOn(false)).
 	*/
-
 	IPhreeqcPhast *phast_iphreeqc_worker = this->GetWorkers()[n];
 
 	// selected output IPhreeqcPhast
@@ -4024,52 +4023,63 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 
 	// Make list of cells with saturation > 0.0
 	std::ostringstream soln_list;
-	int range_start = start;
-    int range_end = start;
 	int count_active = 0;
-	for (int i = start + 1; i <= end; i++)
-	{							/* i is count_chem number */
+	int range_start = -1, range_end = -1;
+	for (int i = start; i <= end; i++)
+	{		
 		int j = back[i][0];			/* j is nxyz number */
 		if (this->saturation[j] > 1e-10) 
 		{
 			count_active++;
-			if (i == range_end + 1)
-			{
-				range_end++;
-			}
-			else 
-			{
-				if (range_start == range_end)
-				{
-				soln_list << range_start << "\n";
-				}
-				else
-				{
-				soln_list << range_start << "-" << range_end << "\n";
-				}
-				range_start = i;
-				range_end = i;
-			}	
-			// partition solids between UZ and SZ
-			if (this->partition_uz_solids)
-			{
-				this->PartitionUZ(n, i, j, this->saturation[j]);
-			}
+			range_start = i;
+			range_end = i;
 		}
 	}
-	if (range_start == range_end)
+	if (count_active > 0)
 	{
-		soln_list << range_start << "\n";
-	}
-	else
-	{
-		soln_list << range_start << "-" << range_end << "\n";
+		for (int i = start + 1; i <= end; i++)
+		{							/* i is count_chem number */
+			int j = back[i][0];			/* j is nxyz number */
+			if (this->saturation[j] > 1e-10) 
+			{
+				count_active++;
+				if (i == range_end + 1)
+				{
+					range_end++;
+				}
+				else 
+				{
+					if (range_start == range_end)
+					{
+						soln_list << range_start << "\n";
+					}
+					else
+					{
+						soln_list << range_start << "-" << range_end << "\n";
+					}
+					range_start = i;
+					range_end = i;
+				}	
+				// partition solids between UZ and SZ
+				if (this->partition_uz_solids)
+				{
+					this->PartitionUZ(n, i, j, this->saturation[j]);
+				}
+			}
+		}
+		if (range_start == range_end)
+		{
+			soln_list << range_start << "\n";
+		}
+		else
+		{
+			soln_list << range_start << "-" << range_end << "\n";
+		}
 	}
 
 	// set cell number, pore volume got Basic functions
 	//phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
 
-	
 	clock_t t0 = clock();
 	if (count_active > 0)
 	{
@@ -4085,19 +4095,77 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 			throw PhreeqcRMStop();
 		}
 	}
+	else
+	{
+		// Make a dummy run to fill in headings of selected output
+		std::ostringstream input;
+		input << "SOLUTION " << this->nxyz + 1 << "; DELETE; -solution " << nxyz + 1 << "\n";
+		if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
+		{
+			std::cerr << "Throw in dummy run" << std::endl;
+			throw PhreeqcRMStop();
+		}
+		bool add_to_cselectedoutputmap = false;
+		// Make dummy run if CSelectedOutputMap not complete	
+		{
+			std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+			for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+			{
+				std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+				if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+				{
+					// Make a dummy run to fill in headings of selected output
+					std::ostringstream input;
+					input << "SOLUTION " << nxyz + 1 << "; DELETE; -solution " << nxyz + 1 << "\n";
+					if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
+					{
+						throw PhreeqcRMStop();
+					}
+					add_to_cselectedoutputmap = true;
+					break;
+				}
+			}
+		}
+		if (add_to_cselectedoutputmap)
+		{
+			std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+			for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+			{
+				int iso = it->first;
+				std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+				if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+				{
+					// Add new item to CSelectedOutputMap
+					CSelectedOutput cso;
+					// Fill in columns
+					phast_iphreeqc_worker->SetCurrentSelectedOutputUserNumber(iso);
+					int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
+					for (int i = 0; i < columns; i++)
+					{
+						VAR pvar, pvar1;
+						VarInit(&pvar);
+						VarInit(&pvar1);
+						phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
+						cso.PushBack(pvar.sVal, pvar1);
+					}
+					phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
+				}
+			}
+		}
+	}
 	clock_t t_elapsed = clock() - t0;
 
 	// Save selected output data
 	if (this->selected_output_on)
-	{
+	{	
 		// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
 		std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
 		for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
-		{
+		{	
 			int n_user = it->first;
 			std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
 			if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
-			{
+			{	
 				CSelectedOutput cso;
 				phast_iphreeqc_worker->CSelectedOutputMap[n_user] = cso;
 				ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
@@ -4125,6 +4193,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 			}
 		}
 	}
+
 
 	return IRM_OK;
 }
@@ -4306,7 +4375,7 @@ PhreeqcRM::RunCellsThread(int n)
 								{
 									// Make a dummy run to fill in headings of selected output
 									std::ostringstream input;
-									input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
+									input << "SOLUTION " << nxyz + 1 << "; DELETE; -solution " << nxyz + 1 << "\n";
 									if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
 									{
 										throw PhreeqcRMStop();
