@@ -3489,9 +3489,8 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		assert(mpi_tasks > 1);
 		start_cell_new[mpi_tasks - 1] = end_cell_new[mpi_tasks - 2] + 1;
 		end_cell_new[mpi_tasks - 1] = count_chemistry - 1;
-
-		// Apply rebalance fraction
 #ifdef SKIP
+		// Apply rebalance fraction
 		for (size_t i = 0; i < (size_t) mpi_tasks - 1; i++)
 		{
 			int	icells;
@@ -3506,7 +3505,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 #endif
 		if (efficiency > 0.95)
 		{
-			for (int i = 0; i < this->nthreads; i++)
+			for (int i = 0; i < this->mpi_tasks; i++)
 			{
 				start_cell_new[i] = start_cell[i];
 				end_cell_new[i] = end_cell[i];
@@ -3514,7 +3513,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		}
 		else
 		{	
-			for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
+			for (size_t i = 0; i < (size_t) this->mpi_tasks - 1; i++)
 			{
 				int	icells;
 				icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (this->rebalance_fraction) );
@@ -3526,6 +3525,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 				start_cell_new[i + 1] = end_cell_new[i] + 1;
 			}
 		}
+
 	}
 	
 	/*

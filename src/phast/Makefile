@@ -542,7 +542,10 @@ COMMON_FOBJS =	\
 	read3_xfer.o \
 	reorder_mod.o \
 	rewi_mod.o \
+	rhsn.o \
 	rhsn_flow.o \
+	rhsn_manager.o \
+	rhsn_ss_flow.o \
 	sbcflo.o \
 	scale_jds_mod.o \
 	set_component_map.o \
@@ -594,7 +597,8 @@ COMMON_FOBJS =	\
 	XP_wbcflo.o \
 	XP_wellsc.o \
 	XP_wellsr.o \
-	zone_flow.o 
+	zone_flow.o \
+	zone_flow_ss.o 
 
 COMMON_CXXOBJS = \
 gzstream.o \
