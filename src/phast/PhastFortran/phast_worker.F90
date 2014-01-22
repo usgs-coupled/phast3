@@ -132,7 +132,11 @@ SUBROUTINE phast_worker
         status = RM_GetConcentrations(rm_id)
 !        
 !end  of InitializeRM
-!        
+!     
+        IF (steady_flow) THEN
+            ! ... steady flow calculation calls read3 and init3
+            CALL init3_distribute
+        ENDIF   
         adj_wr_ratio = 1
 !        
 !start  of InitialEquilibrationRM
@@ -153,10 +157,6 @@ SUBROUTINE phast_worker
 !        
 !end  of InitialEquilibrationRM
 !   
-        IF (steady_flow) THEN
-            ! ... steady flow calculation calls read3 and init3
-            CALL init3_distribute
-        ENDIF
 
         ! ... Write zone chemistry
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)

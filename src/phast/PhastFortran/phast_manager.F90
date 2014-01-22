@@ -73,16 +73,15 @@ SUBROUTINE phast_manager
     ! ... Write initial condition results 
     CALL write2_1
 
-    ! ... Write zone flows 
-    CALL zone_flow_write_heads
 
     IF(errexe .OR. errexi) GO TO 50
-    
     ! ... Calculate steady flow
     IF(steady_flow) THEN
         CALL simulate_ss_flow          ! ... calls read3 and init3
         CALL init3_distribute
     ENDIF
+    ! ... Write zone flows 
+    CALL zone_flow_write_heads
 
     ! ... Use Reaction Module to equilbrate cells    
     CALL InitialEquilibrationRM
