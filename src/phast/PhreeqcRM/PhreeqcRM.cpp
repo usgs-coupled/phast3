@@ -4059,14 +4059,16 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 		int j = back[i][0];			/* j is nxyz number */
 		if (this->saturation[j] > 1e-10) 
 		{
-			count_active++;
 			range_start = i;
 			range_end = i;
+			count_active++;
+			break;
 		}
 	}
 	if (count_active > 0)
 	{
-		for (int i = start + 1; i <= end; i++)
+		int first_active = range_start;
+		for (int i = first_active + 1; i <= end; i++)
 		{							    /* i is count_chem number */
 			int j = back[i][0];			/* j is nxyz number */
 			if (this->saturation[j] > 1e-10) 
