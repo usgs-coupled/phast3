@@ -116,8 +116,8 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 		bool gz = false;
 		if (Reaction_module_ptr->GetMpiMyself() == 0)
 		{
-			bool dump = (*dump_on != 0);
-			bool gz = (*use_gz != 0);
+			dump = (*dump_on != 0);
+			gz = (*use_gz != 0);
 		}
 		return Reaction_module_ptr->DumpModule(dump, gz);
 	}
