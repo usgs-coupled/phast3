@@ -6019,6 +6019,7 @@ PhreeqcRM::SetUnitsSurface(int u)
 }
 
 #ifdef USE_MPI
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
@@ -6052,6 +6053,68 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
 			int status = phast_iphreeqc_worker->RunString(raw_buffer.data());
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	this->ErrorHandler(return_value, "PhreeqcRM::TransferCells");
+	return return_value;
+}
+#endif
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
+/* ---------------------------------------------------------------------- */
+{
+	// Throws on error
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		if (this->mpi_myself == old)
+		{
+			// make raw_stream for transfer
+			std::ostringstream raw_stream;
+			t_bin.dump_raw(raw_stream, 0);
+			size_t string_size = raw_stream.str().size() + 1;
+
+			// compress string into deflated
+			char * deflated = new char[string_size];
+			uLongf deflated_size = (uLongf) string_size;
+			compress((Bytef *)deflated, (uLongf *) &deflated_size, (const Bytef *) raw_stream.str().c_str(), (uLongf) string_size);
+
+			// transfer sizes and compressed string to new process
+			int size[2];
+			size[0] = (int) deflated_size;
+			size[1] = (int) string_size;
+			MPI_Send(&size, 2, MPI_INT, nnew, 0, MPI_COMM_WORLD);
+			MPI_Send((void *) deflated, size[0], MPI_BYTE, nnew, 0, MPI_COMM_WORLD);
+			
+			// delete work space
+			delete deflated;
+		}
+		else if (this->mpi_myself == nnew)
+		{	
+			MPI_Status mpi_status;
+			// Recieve sizes and compressed string		
+			int size[2];
+			MPI_Recv(&size, 2, MPI_INT, old, 0, MPI_COMM_WORLD, &mpi_status);
+			char *deflated = new char[size[0]];
+			MPI_Recv((void *) deflated, size[0], MPI_BYTE, old, 0, MPI_COMM_WORLD, &mpi_status);
+
+			// uncompress string into string_buffer
+			char * string_buffer = new char[size[1]];
+			uLongf uncompressed_length = (uLongf) size[1];
+			uncompress((Bytef *)string_buffer, &uncompressed_length, (const Bytef *) deflated, (uLongf) size[0]);
+
+			// RunString to add cells to module
+			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+			int status = phast_iphreeqc_worker->RunString(string_buffer);
+			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
+			delete deflated;
+			delete string_buffer;
 		}
 	}
 	catch (...)
