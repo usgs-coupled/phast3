@@ -188,7 +188,7 @@
         status = RM_SetConcentrations(id, c(1,1))
         
         ! print at last time step
- 		if (isteps == nsteps - 1) then
+ 		if (isteps == nsteps) then
             status = RM_SetPrintChemistryOn(id, 1, 0, 0)  ! workers, initial_phreeqc, utility
         else
             status = RM_SetPrintChemistryOn(id, 0, 0, 0)  ! workers, initial_phreeqc, utility
@@ -200,7 +200,7 @@
         status = RM_GetConcentrations(id, c(1,1))
  
         ! Print results at last time step
-        if (isteps == nsteps - 1) then
+        if (isteps == nsteps) then
  			! Get current density
             status = RM_GetDensity(id, density(1))
 
@@ -246,7 +246,7 @@
 	! Dump results   
     dump_on = 1
     use_gz = 0
-    status = RM_DumpModule(dump_on, use_gz)    ! second argument: gz disabled unless compiled with #define USE_GZ
+    status = RM_DumpModule(id, dump_on, use_gz)    ! second argument: gz disabled unless compiled with #define USE_GZ
     
     deallocate(cell_vol);
     deallocate(pv0);
