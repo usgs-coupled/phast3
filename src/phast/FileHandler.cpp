@@ -596,142 +596,6 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-FileHandler::WriteRestart(int *id, int *print_restart)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
-		if (print_restart != 0)
-		{
-			int mpi_tasks = Reaction_module_ptr->GetMpiTasks();
-			std::string char_buffer;
-
-			ogzstream ofs_restart;
-
-			std::string temp_name("temp_restart_file.gz");
-			std::string name(Reaction_module_ptr->GetFilePrefix());
-			std::string backup_name(name);
-			if (mpi_myself == 0)
-			{
-				name.append(".restart.gz");
-				backup_name.append(".restart.backup.gz");
-
-				// open file 
-				ofs_restart.open(temp_name.c_str());
-				if (!ofs_restart.good())
-				{
-					std::ostringstream errstr;
-					errstr << "Temporary restart file could not be opened: " << temp_name;
-					error_msg(errstr.str().c_str(), 1);	
-				}
-
-				// write header
-				int count_chemistry = Reaction_module_ptr->GetChemistryCellCount();
-				ofs_restart << "#PHAST restart file" << std::endl;
-				ofs_restart << "#Prefix: " << Reaction_module_ptr->GetFilePrefix() << std::endl;
-				time_t now = ::time(NULL);
-				ofs_restart << "#Date: " << ctime(&now);
-				ofs_restart << "#Current model time: " << Reaction_module_ptr->GetTime() << std::endl;
-				ofs_restart << "#Grid cells: " << Reaction_module_ptr->GetGridCellCount() << std::endl;
-				ofs_restart << "#Chemistry cells: " << count_chemistry << std::endl;
-
-				// write index
-				ofs_restart << Reaction_module_ptr->GetChemistryCellCount() << std::endl;
-				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
-				{
-					int i = Reaction_module_ptr->GetBack()[j][0];			/* i is nxyz number */
-					ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
-					// solution, use -1 if cell is dry
-					if (this->saturation[i] > 0.0)
-					{
-						ofs_restart << this->ic[7 * i] << "  ";
-					}
-					else
-					{
-						ofs_restart << -1 << "  ";
-					}
-					// pp_assemblage
-					ofs_restart << this->ic[7 * i + 1] << "  ";
-					// exchange
-					ofs_restart << this->ic[7 * i + 2] << "  ";
-					// surface
-					ofs_restart << this->ic[7 * i + 3] << "  ";
-					// gas_phase
-					ofs_restart << this->ic[7 * i + 4] << "  ";
-					// solid solution
-					ofs_restart << this->ic[7 * i + 5] << "  ";
-					// kinetics
-					ofs_restart << this->ic[7 * i + 6] << "\n";
-				}
-			}
-			// write data
-#ifdef USE_MPI
-			Reaction_module_ptr->GetWorkers()[0]->SetDumpStringOn(true); 
-			std::ostringstream in;
-			in << "DUMP; -cells " << Reaction_module_ptr->GetStartCell()[mpi_myself] << "-" << Reaction_module_ptr->GetEndCell()[mpi_myself] << "\n";
-			Reaction_module_ptr->GetWorkers()[0]->RunString(in.str().c_str());
-			for (int n = 0; n < mpi_tasks; n++)
-			{
-				// Need to transfer output stream to root and print
-				if (mpi_myself == n)
-				{
-					if (n == 0)
-					{
-						ofs_restart << Reaction_module_ptr->GetWorkers()[0]->GetDumpString();
-					}
-					else
-					{
-						int size = (int) strlen(Reaction_module_ptr->GetWorkers()[0]->GetDumpString());
-						MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-						MPI_Send((void *) Reaction_module_ptr->GetWorkers()[0]->GetDumpString(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
-					}	
-				}
-				else if (mpi_myself == 0)
-				{
-					MPI_Status mpi_status;
-					int size;
-					MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
-					char_buffer.resize(size+1);
-					MPI_Recv((void *) char_buffer.c_str(), size, MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
-					char_buffer[size] = '\0';
-					ofs_restart << char_buffer;
-				}
-			}
-			// Clear dump string to save space
-			std::ostringstream clr;
-			clr << "END\n";
-			Reaction_module_ptr->GetWorkers()[0]->RunString(clr.str().c_str());
-#else
-			for (int n = 0; n < (int) Reaction_module_ptr->GetNThreads(); n++)
-			{
-				// Create DUMP and write
-				Reaction_module_ptr->GetWorkers()[n]->SetDumpStringOn(true); 
-				std::ostringstream in;
-				in << "DUMP; -cells " << Reaction_module_ptr->GetStartCell()[n] << "-" << Reaction_module_ptr->GetEndCell()[n] << "\n";
-				Reaction_module_ptr->GetWorkers()[n]->RunString(in.str().c_str());
-				ofs_restart << Reaction_module_ptr->GetWorkers()[n]->GetDumpString();
-				// Clear dump string to save space
-				std::ostringstream clr;
-				clr << "END\n";
-				Reaction_module_ptr->GetWorkers()[n]->RunString(clr.str().c_str());
-			}
-#endif
-
-			ofs_restart.close();
-			// rename files
-			PhreeqcRM::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
-			return IRM_OK;
-		}
-		return IRM_INVALIDARG;
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::WriteRestart(int *id, int *print_restart)
@@ -747,6 +611,7 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 			//std::string char_buffer;
 
 			ogzstream ofs_restart;
+			//ofstream ofs_restart;
 
 			std::string temp_name("temp_restart_file.gz");
 			std::string name(Reaction_module_ptr->GetFilePrefix());
@@ -885,6 +750,7 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 	}
 	return IRM_BADINSTANCE;
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
