@@ -4,7 +4,6 @@
 #include "PhreeqcRM.h"
 
 void AdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int nxyz, int dim);
-void HandleError(PhreeqcRM &rm, IRM_RESULT r, const char *str);
 
 int advection_cpp()
 {
@@ -70,7 +69,7 @@ int advection_cpp()
 		std::vector<int> grid2chem;
 		grid2chem.resize(nxyz, -1);
 		for (int i = 0; i < nxyz/2; i++)
-		{ 
+		{
 			grid2chem[i] = i;
 		}
 		status = phreeqc_rm.CreateMapping(grid2chem.data());
@@ -84,15 +83,15 @@ int advection_cpp()
 		// Run file to define solutions and reactants for initial conditions, selected output
 		int workers = 1;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
 		int initial_phreeqc = 1;     // This is an IPhreeqc for accumulating initial and boundary conditions
-		int utility = 1;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a 
+		int utility = 1;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
 		// mixture for a well
-		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "advect.pqi"); 
+		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "advect.pqi");
 
 		// For demonstration, clear contents of workers and utility
 		// Worker initial conditions are defined below
-		initial_phreeqc = 0; 
+		initial_phreeqc = 0;
 		std::string input = "DELETE; -all";
-		status = phreeqc_rm.RunString(workers, initial_phreeqc, utility, input.c_str()); 
+		status = phreeqc_rm.RunString(workers, initial_phreeqc, utility, input.c_str());
 
 		// Set reference to components
 		int ncomps = phreeqc_rm.FindComponents();
@@ -126,7 +125,7 @@ int advection_cpp()
 		bc1.resize(nbound, 0);                    // solution 0
 		bc2.resize(nbound, -1);                   // no mixing
 		bc_f1.resize(nbound, 1.0);
-		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc.data(), 
+		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc.data(),
 			nbound, dim, bc1.data(), bc2.data(), bc_f1.data());
 
 		// Initial equilibration of cells
@@ -215,11 +214,11 @@ int advection_cpp()
 		iphreeqc_result = util_ptr->RunString(input.c_str());
 		// Option 2, output goes to chem.txt file
 		status = phreeqc_rm.SetPrintChemistryOn(false, false, true); // workers, initial_phreeqc, utility
-		status = phreeqc_rm.RunString(0, 0, 1, input.c_str()); 
+		status = phreeqc_rm.RunString(0, 0, 1, input.c_str());
 
 		// Dump results
 		bool dump_on = true;
-		bool use_gz = false; 
+		bool use_gz = false;
 		status = phreeqc_rm.DumpModule(dump_on, use_gz);    // gz disabled unless compiled with #define USE_GZ
 	}
 	catch (PhreeqcRMStop)
@@ -250,15 +249,5 @@ AdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int n
 	for (int j = 0; j < ncomps; j++)
 	{
 		c[j * nxyz] = bc_conc[j * dim];                                // component j
-	} 
-}
-void
-HandleError(PhreeqcRM &rm, IRM_RESULT r, const char * str = "")
-{
-	if (r < 0)
-	{
-		rm.ErrorMessage(str);
-		rm.DecodeError(r);
-		throw PhreeqcRMStop();
 	}
 }
