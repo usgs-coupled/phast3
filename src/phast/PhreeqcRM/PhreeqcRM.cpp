@@ -10,7 +10,6 @@
 #ifdef USE_GZ
 #include "gzstream.h"
 #endif
-#include "KDtree/KDtree.h"
 #include "cxxMix.h"
 #include "Solution.h"
 #include "Exchange.h"
@@ -21,7 +20,6 @@
 #include "GasPhase.h"
 #include "CSelectedOutput.hxx"
 #include <time.h>
-#include "hdf.h"
 #ifdef THREADED_PHAST
 #include <omp.h>
 #endif
@@ -1398,7 +1396,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 #else
 	use_gz = 0;
 #endif
-	ofstream ofs_restart;
+	std::ofstream ofs_restart;
 	std::string temp_name("temp_dump_file");
 	std::string name(this->file_prefix);
 	std::string backup_name(this->file_prefix);
@@ -3907,8 +3905,8 @@ PhreeqcRM::RunCells()
 
 	//clock_t t0 = clock();
 	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
-	phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
-	phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
+	phast_iphreeqc_worker->Set_out_stream(new std::ostringstream); 
+	phast_iphreeqc_worker->Set_punch_stream(new std::ostringstream);
 
 	// Run cells in each process
 	std::vector<int> r_vector;
@@ -3991,8 +3989,8 @@ PhreeqcRM::RunCells()
 		for (int n = 0; n < this->nthreads; n++)
 		{
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
-			phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
-			phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
+			phast_iphreeqc_worker->Set_out_stream(new std::ostringstream); 
+			phast_iphreeqc_worker->Set_punch_stream(new std::ostringstream);
 		}
 		std::vector < int > r_vector;
 		r_vector.resize(this->nthreads);
