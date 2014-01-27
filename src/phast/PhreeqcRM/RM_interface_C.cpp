@@ -5,7 +5,6 @@
 #include "PHRQ_io.h"
 #include <string>
 #include <map>
-#include "hdf.h"
 #ifdef THREADED_PHAST
 #include <omp.h>
 #endif
