@@ -44,6 +44,8 @@
 #define RM_InitialPhreeqc2Module           FC_FUNC_ (rm_initialphreeqc2module,         RM_INITIALPHREEQC2MODULE)
 #define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
+#define RM_MpiWorker                       FC_FUNC_ (rm_mpiworker,                     RM_MPIWORKER)
+#define RM_MpiWorkerBreak                  FC_FUNC_ (rm_mpiworkerbreak,                RM_MPIWORKERBREAK)
 #define RM_OpenFiles                       FC_FUNC_ (rm_openfiles,                     RM_OPENFILES)
 #define RM_OutputMessage                   FC_FUNC_ (rm_outputmessage,                 RM_OUTPUTMESSAGE)
 #define RM_RunCells                        FC_FUNC_ (rm_runcells,                      RM_RUNCELLS)
@@ -307,6 +309,30 @@ int        RM_GetChemistryCellCount(int *id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1);
+/**
+ *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
+ *  @param id                   The instance id returned from @ref RM_Create.
+ *  @param c                    Array containing concentrations with dimensions equivalent to Fortran (nxyz, ncomps), where nxyz is the number of user grid cells and ncomps is the result of RM_FindComponents.
+ *  @see                        @ref RM_FindComponents, @ref RM_Concentrations2Module, @ref RM_SetUnits
+ *  Units of concentration for c are defined by the solution definition for RM_SetUnits.
+ *  MPI:
+ *     Called by all processes.
+ *	   Id and c are required for the root process.
+ *     Except for id, arguments are optional for non-root processes. 
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *      SUBROUTINE RM_GetConcentrations(id, c)   
+ *          IMPLICIT NONE
+ *          INTEGER :: id
+ *          DOUBLE PRECISION, OPTIONAL :: c
+ *      END SUBROUTINE RM_GetConcentrations 
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
+IRM_RESULT RM_GetConcentrations(int *id, double *c = NULL);
 IRM_RESULT RM_GetDensity(int *id, double *density);
 IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, size_t l);
 /**
@@ -465,30 +491,9 @@ IRM_RESULT RM_LoadDatabase(int *id, const char *db_name = NULL, size_t l = 0);
  *  @endhtmlonly
  */
 IRM_RESULT RM_LogMessage(int * id, const char *str, size_t l = 0);
-/**
- *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
- *  @param id                   The instance id returned from @ref RM_Create.
- *  @param c                    Array containing concentrations with dimensions equivalent to Fortran (nxyz, ncomps), where nxyz is the number of user grid cells and ncomps is the result of RM_FindComponents.
- *  @see                        @ref RM_FindComponents, @ref RM_Concentrations2Module, @ref RM_SetUnits
- *  Units of concentration for c are defined by the solution definition for RM_SetUnits.
- *  MPI:
- *     Called by all processes.
- *	   Id and c are required for the root process.
- *     Except for id, arguments are optional for non-root processes. 
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      SUBROUTINE RM_GetConcentrations(id, c)   
- *          IMPLICIT NONE
- *          INTEGER :: id
- *          DOUBLE PRECISION, OPTIONAL :: c
- *      END SUBROUTINE RM_GetConcentrations 
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-IRM_RESULT RM_GetConcentrations(int *id, double *c = NULL);
+IRM_RESULT RM_MpiWorker(int * id);
+IRM_RESULT RM_MpiWorkerBreak(int * id);
+
 /**
  *  Opens the output file and log file. 
  *  @see                  @ref RM_SetFilePrefix @ref RM_CloseFiles
