@@ -190,6 +190,16 @@
         !    INTEGER, INTENT(in) :: id
         !    CHARACTER :: str
         !END FUNCTION RM_LogScreenMessage 
+
+        INTEGER FUNCTION RM_MpiWorker(id) 
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_MpiWorker
+
+        INTEGER FUNCTION RM_MpiWorkerBreak(id) 
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_MpiWorkerBreak
         
         INTEGER FUNCTION RM_OpenFiles(id) 
             IMPLICIT NONE

@@ -119,7 +119,8 @@ SUBROUTINE phast_worker
         status = RM_SetRebalanceByCell(rm_id)
 
         ! ... Mapping from full 3D domain to chemistry
-        status = RM_CreateMapping(rm_id)  
+        !status = RM_CreateMapping(rm_id) 
+        status = RM_MpiWorker(rm_id)
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files
             CALL FH_SetRestartName(restart_files(i))
@@ -129,7 +130,8 @@ SUBROUTINE phast_worker
         CALL FH_ProcessRestartFiles(rm_id)
         
         ! ... collect solutions for transport
-        status = RM_GetConcentrations(rm_id)
+        !status = RM_GetConcentrations(rm_id)
+        status = RM_MpiWorker(rm_id)
 !        
 !end  of InitializeRM
 !     
@@ -216,9 +218,11 @@ SUBROUTINE phast_worker
             status = RM_SetStopMessage(rm_id)
         
             status = RM_RunCells(rm_id)   
-            status = RM_GetConcentrations(rm_id)
+            !status = RM_GetConcentrations(rm_id)
+            status = RM_MpiWorker(rm_id)
             CALL FH_WriteFiles(rm_id)
-            status = RM_DumpModule(rm_id)
+            !status = RM_DumpModule(rm_id)
+            status = RM_MpiWorker(rm_id)
 !        
 !Start  of TimeStepRM
 !       

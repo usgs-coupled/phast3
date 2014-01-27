@@ -1122,6 +1122,10 @@ PhreeqcRM::CreateMapping(int *t)
 		grid2chem.resize(this->nxyz);
 		if (mpi_myself == 0)
 		{
+#ifdef USE_MPI
+			int method = METHOD_CREATEMAPPING;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
 			if (t != NULL)
 			{
 				memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
@@ -1378,6 +1382,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 	// return if dump_on is false
 	if (this->mpi_myself == 0)
 	{
+#ifdef USE_MPI
+		int method = METHOD_DUMPMODULE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
 		dump = dump_on;
 	}
 #ifdef USE_MPI
@@ -1679,6 +1687,11 @@ PhreeqcRM::GetConcentrations(double * c)
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETCONCENTRATIONS;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
 		// convert Reaction module solution data to concentrations for transport
 		MPI_Status mpi_status;
 		std::vector<double> d;  // scratch space to convert from moles to mass fraction
@@ -2621,6 +2634,169 @@ PhreeqcRM::LogMessage(const std::string &str)
 /* ---------------------------------------------------------------------- */
 {
 	this->phreeqcrm_io.log_msg(str.c_str());
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::MpiWorker()
+/* ---------------------------------------------------------------------- */
+{
+#ifdef USE_MPI
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		for (;;)
+		{
+			int method;
+			bool loop_break = false;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			switch (method)
+			{
+			case METHOD_CREATEMAPPING:
+				this->CreateMapping();
+				break;
+			case METHOD_DUMPMODULE:
+				this->DumpModule();
+				break;
+			case METHOD_GETCONCENTRATIONS:
+				this->GetConcentrations();
+				break;
+			case METHOD_GETDENSITY:
+				this->GetDensity();
+				break;
+			case METHOD_GETSELECTEDOUTPUT:
+				this->GetSelectedOutput();
+				break;
+			case METHOD_GETSOLUTIONVOLUME:
+				this->GetSolutionVolume();
+				break;
+			case METHOD_INITIALPHREEQC2MODULE:
+				this->InitialPhreeqc2Module();
+				break;
+			case METHOD_LOADDATABASE:
+				this->LoadDatabase();
+				break;
+			case METHOD_MPIWORKERBREAK:
+				loop_break = true;
+				break;
+			case METHOD_RUNCELLS:
+				this->RunCells();
+				break;
+			case METHOD_RUNFILE:
+				this->RunFile();
+				break;
+			case METHOD_RUNSTRING:
+				this->RunString();
+				break;
+			case METHOD_SETCELLVOLUME:
+				this->SetCellVolume();
+				break;
+			case METHOD_SETCHEMISTRYFILENAME:
+				this->SetChemistryFileName();
+				break;
+			case METHOD_SETCONCENTRATIONS:
+				this->SetConcentrations();
+				break;
+			case METHOD_SETDATABASEFILENAME:
+				this->SetDatabaseFileName();
+				break;
+			case METHOD_SETDENSITY:
+				this->SetDensity();
+				break;
+			case METHOD_SETERRORHANDLERMODE:
+				this->SetErrorHandlerMode();
+				break;
+			case METHOD_SETFILEPREFIX:
+				this->SetFilePrefix();
+				break;
+			case METHOD_SETPARTITIONUZSOLIDS:
+				this->SetPartitionUZSolids();
+				break;
+			case METHOD_SETPOREVOLUME:
+				this->SetPoreVolume();
+				break;
+			case METHOD_SETPOREVOLUMEZERO:
+				this->SetPoreVolumeZero();
+				break;
+			case METHOD_SETPRESSURE:
+				this->SetPressure();
+				break;
+			case METHOD_SETPRINTCHEMISTRYON:
+				this->SetPrintChemistryOn();
+				break;
+			case METHOD_SETPRINTCHEMISTRYMASK:
+				this->SetPrintChemistryMask();
+				break;
+			case METHOD_SETREBALANCEFRACTION:
+				this->SetRebalanceFraction();
+				break;
+			case METHOD_SETSATURATION:
+				this->SetSaturation();
+				break;
+			case METHOD_SETSELECTEDOUTPUTON:
+				this->SetSelectedOutputOn();
+				break;
+			case METHOD_SETSTOPMESSAGE:
+				this->SetStopMessage();
+				break;
+			case METHOD_SETTEMPERATURE:
+				this->SetTemperature();
+				break;
+			case METHOD_SETTIME:
+				this->SetTime();
+				break;
+			case METHOD_SETTIMECONVERSION:
+				this->SetTimeConversion();
+				break;
+			case METHOD_SETTIMESTEP:
+				this->SetTimeStep();
+				break;
+			case METHOD_SETUNITSEXCHANGE:
+				this->SetUnitsExchange();
+				break;
+			case METHOD_SETUNITSGASPHASE:
+				this->SetUnitsGasPhase();
+				break;
+			case METHOD_SETUNITSKINETICS:
+				this->SetUnitsKinetics();
+				break;
+			case METHOD_SETUNITSPPASSEMBLAGE:
+				this->SetUnitsPPassemblage();
+				break;
+			case METHOD_SETUNITSSOLUTION:
+				this->SetUnitsSolution();
+				break;
+			case METHOD_SETUNITSSSASSEMBLAGE:
+				this->SetUnitsSSassemblage();
+				break;
+			case METHOD_SETUNITSSURFACE:
+				this->SetUnitsSurface();
+				break;
+			}
+			if (loop_break)
+				break;
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::OpenFiles");
+#else
+	return IRM_OK;
+#endif
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::MpiWorkerBreak()
+{
+#ifdef USE_MPI
+	if (mpi_myself == 0)
+	{
+		int method = METHOD_MPIWORKERBREAK;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT

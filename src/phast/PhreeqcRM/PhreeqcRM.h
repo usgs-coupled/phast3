@@ -31,6 +31,50 @@ typedef enum {
 	IRM_BADINSTANCE   = -6,  /*!< Failure, Invalid rm instance id */
 	IRM_FAIL          = -7,  /*!< Failure, Unspecified */
 } IRM_RESULT;
+/*! @brief Enumeration used to for MPI worker to determine method to call
+*/
+typedef enum {
+	METHOD_CREATEMAPPING,
+	METHOD_DUMPMODULE,
+	METHOD_GETCONCENTRATIONS,
+	METHOD_GETDENSITY,
+	METHOD_GETSELECTEDOUTPUT,
+	METHOD_GETSOLUTIONVOLUME,
+	METHOD_INITIALPHREEQC2MODULE,
+	METHOD_LOADDATABASE,
+	METHOD_MPIWORKERBREAK,
+	METHOD_RUNCELLS,
+	METHOD_RUNFILE,
+	METHOD_RUNSTRING,
+	METHOD_SETCELLVOLUME,
+	METHOD_SETCHEMISTRYFILENAME,
+	METHOD_SETCONCENTRATIONS,
+	METHOD_SETDATABASEFILENAME,
+	METHOD_SETDENSITY,
+	METHOD_SETERRORHANDLERMODE,
+	METHOD_SETFILEPREFIX,
+	METHOD_SETPARTITIONUZSOLIDS,
+	METHOD_SETPOREVOLUME,
+	METHOD_SETPOREVOLUMEZERO,
+	METHOD_SETPRESSURE,
+	METHOD_SETPRINTCHEMISTRYON,
+	METHOD_SETPRINTCHEMISTRYMASK,
+	METHOD_SETREBALANCEFRACTION,
+	METHOD_SETSATURATION,
+	METHOD_SETSELECTEDOUTPUTON,
+	METHOD_SETSTOPMESSAGE,
+	METHOD_SETTEMPERATURE,
+	METHOD_SETTIME,
+	METHOD_SETTIMECONVERSION,
+	METHOD_SETTIMESTEP,
+	METHOD_SETUNITSEXCHANGE,
+	METHOD_SETUNITSGASPHASE,
+	METHOD_SETUNITSKINETICS,
+	METHOD_SETUNITSPPASSEMBLAGE,
+	METHOD_SETUNITSSOLUTION,
+	METHOD_SETUNITSSSASSEMBLAGE,
+	METHOD_SETUNITSSURFACE
+} MPI_METHOD;
 
 class PhreeqcRM: public PHRQ_base
 {
@@ -47,13 +91,13 @@ public:
 	IRM_RESULT                                CloseFiles(void);
 	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c_in, 
 		                                           std::vector<double> t_in, std::vector<double> p_in);
-	IRM_RESULT                                CreateMapping(int *grid2chem);
+	IRM_RESULT                                CreateMapping(int *grid2chem = NULL);
 	void                                      DecodeError(int r);
-	IRM_RESULT                                DumpModule(bool dump_on, bool use_gz = false);
+	IRM_RESULT                                DumpModule(bool dump_on = false, bool use_gz = false);
 	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
 	void                                      ErrorHandler(int result, const std::string &e_string);
 	int                                       FindComponents();
-	IRM_RESULT                                GetConcentrations(double * c);
+	IRM_RESULT                                GetConcentrations(double * c = NULL);
 	IRM_RESULT                                InitialPhreeqc2Concentrations( 
                                                    double *c,
                                                    int n_boundary, 
@@ -65,13 +109,15 @@ public:
                                                    int *initial_conditions1 = NULL,
                                                    int *initial_conditions2 = NULL,	
                                                    double *fraction1 = NULL);
-	IRM_RESULT                                LoadDatabase(const char * database);
+	IRM_RESULT                                LoadDatabase(const char * database = NULL);
 	void                                      LogMessage(const std::string &str);
+	IRM_RESULT                                MpiWorker();
+	IRM_RESULT                                MpiWorkerBreak();	
 	IRM_RESULT                                OpenFiles(void);
 	void                                      OutputMessage(const std::string &str);
 	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
-	IRM_RESULT                                RunFile(int workers, int initial_phreeqc, int utility, const char *chemistry_name);
-	IRM_RESULT                                RunString(int workers, int initial_phreeqc, int utility, const char *str);
+	IRM_RESULT                                RunFile(int workers = -1, int initial_phreeqc = -1, int utility = -1, const char *chemistry_name = NULL);
+	IRM_RESULT                                RunString(int workers = -1, int initial_phreeqc = -1, int utility = -1, const char *str = NULL);
 	IRM_RESULT                                RunCells(void);
 	void                                      ScreenMessage(const std::string &str);
 	void                                      WarningMessage(const std::string &str);
@@ -122,7 +168,7 @@ public:
 	bool                                      GetRebalanceMethod(void) const {return this->rebalance_by_cell;}
 	double                                    GetRebalanceFraction(void) const {return this->rebalance_fraction;}
 	std::vector<double> &                     GetSaturation(void) {return this->saturation;}
-	IRM_RESULT                                GetSelectedOutput(double *so);
+	IRM_RESULT                                GetSelectedOutput(double *so = NULL);
 	int                                       GetSelectedOutputColumnCount(void);
 	int                                       GetSelectedOutputCount(void);
 	IRM_RESULT                                GetSelectedOutputHeading(int *icol, std::string &heading);
@@ -143,7 +189,7 @@ public:
 	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
 	IRM_RESULT                                SetCellVolume(double * t = NULL);
 	IRM_RESULT                                SetDensity(double * t = NULL); 
-	IRM_RESULT                                SetErrorHandlerMode(int i); 
+	IRM_RESULT                                SetErrorHandlerMode(int i = 0); 
 	IRM_RESULT                                SetExitOnError(bool t = true);
 	IRM_RESULT                                SetFilePrefix(std::string &fn); 
 	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL);
@@ -164,11 +210,11 @@ public:
 	IRM_RESULT                                SetTimeStep(double t = 1.0);
 	IRM_RESULT                                SetUnitsExchange(int i = 1);
 	IRM_RESULT                                SetUnitsGasPhase(int i = 1);
-	IRM_RESULT                                SetUnitsKinetics(int i);
-	IRM_RESULT                                SetUnitsPPassemblage(int i);
-	IRM_RESULT                                SetUnitsSolution(int i);
-	IRM_RESULT                                SetUnitsSSassemblage(int i);
-	IRM_RESULT                                SetUnitsSurface(int i);
+	IRM_RESULT                                SetUnitsKinetics(int i = 1);
+	IRM_RESULT                                SetUnitsPPassemblage(int i = 1);
+	IRM_RESULT                                SetUnitsSolution(int i = 1);
+	IRM_RESULT                                SetUnitsSSassemblage(int i = 1);
+	IRM_RESULT                                SetUnitsSurface(int i = 1);
 protected:
 	void                                      BeginTimeStep(void);
 	IRM_RESULT                                CellInitialize(

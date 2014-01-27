@@ -540,6 +540,7 @@ SUBROUTINE InitializeRM
         ! ... Define mapping from 3D domain to chemistry
         CALL CreateMappingFortran(indx_sol1_ic)
         status = RM_CreateMapping(rm_id, grid2chem(1))
+        status = RM_MpiWorkerBreak(rm_id)
         
         DO i = 1, num_restart_files
             CALL FH_SetRestartName(restart_files(i))
@@ -572,6 +573,7 @@ SUBROUTINE InitializeRM
 	        ic_mxfrac(1,1))
         ! collect solutions at manager for transport
         status = RM_GetConcentrations(rm_id, c(1,1))   
+        status = RM_MpiWorkerBreak(rm_id)
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
             STAT = a_err)
@@ -623,10 +625,12 @@ SUBROUTINE TimeStepRM
         
         status = RM_RunCells(rm_id)  
         status = RM_GetConcentrations(rm_id, c(1,1))
+        status = RM_MpiWorkerBreak(rm_id)
         
         CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
             iprint_xyz(1), print_restart%print_flag_integer) 
         status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 1)
+        status = RM_MpiWorkerBreak(rm_id)
         
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM    

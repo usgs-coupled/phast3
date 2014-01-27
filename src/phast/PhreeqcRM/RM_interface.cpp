@@ -576,6 +576,30 @@ RM_LogMessage(int *id, const char *err_str, size_t l)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
+RM_MpiWorker(int *id)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->MpiWorker();
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_MpiWorkerBreak(int *id)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->MpiWorkerBreak();
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
 RM_OpenFiles(int *id)
 /* ---------------------------------------------------------------------- */
 {
