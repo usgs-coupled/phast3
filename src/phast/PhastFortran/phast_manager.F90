@@ -401,28 +401,28 @@ SUBROUTINE CreateRM
     SAVE
     INCLUDE 'RM_interface.f90.inc'
     INTEGER i, a_err, status
-    
-    ! ... make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
-    rm_id = RM_Create(nxyz, nthreads)
-    IF (rm_id.LT.0) THEN
-        STOP
-    END IF
-    nthreads = RM_GetNThreads(rm_id)
-    status = RM_SetErrorHandlerMode(rm_id, 1)   ! throw exception on error
-    status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
-    status = RM_SetFilePrefix(rm_id, f3name)
-    status = RM_OpenFiles(rm_id)
-    status = RM_LoadDatabase(rm_id, f2name);
   
-    !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
-    IF (solute) THEN
+    IF (solute) THEN  
+        ! ... make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
+        rm_id = RM_Create(nxyz, nthreads)
+        IF (rm_id.LT.0) THEN
+            STOP
+        END IF
+        nthreads = RM_GetNThreads(rm_id)
+        status = RM_SetErrorHandlerMode(rm_id, 2)   ! throw exception on error
+        status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
+        status = RM_SetFilePrefix(rm_id, f3name)
+        status = RM_MpiWorkerBreak(rm_id)           ! 1 RM_MpiWorker end
+        status = RM_OpenFiles(rm_id)
+        status = RM_LoadDatabase(rm_id, f2name);
+        !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
         status = RM_LogMessage(rm_id, "Initial PHREEQC run.") 
         status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
-            STAT = a_err)
+        STAT = a_err)
         IF (a_err /= 0) THEN
             PRINT *, "Array allocation failed: phast_manager, point 0"  
             STOP
@@ -475,12 +475,13 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetTime(rm_id, time_phreeqc) 
         status = RM_SetTimeStep(rm_id, deltim_dummy) 
         status = RM_SetConcentrations(rm_id, c(1,1))
-        status = RM_SetStopMessage(rm_id, stop_msg)
+        !status = RM_SetStopMessage(rm_id, stop_msg)
         
         status = RM_RunCells(rm_id)  
+        status = RM_MpiWorkerBreak(rm_id)           ! 6 RM_MpiWorker end   
 
-        CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
-	        iprint_xyz(1), 0); 
+        !CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
+	    !    iprint_xyz(1), 0); 
     ENDIF       
 END SUBROUTINE InitialEquilibrationRM
     
@@ -540,7 +541,7 @@ SUBROUTINE InitializeRM
         ! ... Define mapping from 3D domain to chemistry
         CALL CreateMappingFortran(indx_sol1_ic)
         status = RM_CreateMapping(rm_id, grid2chem(1))
-        status = RM_MpiWorkerBreak(rm_id)
+        status = RM_MpiWorkerBreak(rm_id)           ! 3 RM_MpiWorker end
         
         DO i = 1, num_restart_files
             CALL FH_SetRestartName(restart_files(i))
@@ -566,14 +567,16 @@ SUBROUTINE InitializeRM
         status = RM_InitialPhreeqc2Module(rm_id, &
             ic1_reordered(1,1),           & ! Fortran nxyz x 7 end-member 1 
             ic2_reordered(1,1),           & ! Fortran nxyz x 7 end-member 2
-            f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1      
+            f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1   
+        status = RM_MpiWorkerBreak(rm_id)           ! 4 RM_MpiWorker end   
+        
         CALL FH_ProcessRestartFiles(rm_id, &
 	        indx_sol1_ic(1,1),            &
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
         ! collect solutions at manager for transport
         status = RM_GetConcentrations(rm_id, c(1,1))   
-        status = RM_MpiWorkerBreak(rm_id)
+        status = RM_MpiWorkerBreak(rm_id)           ! 5 RM_MpiWorker end   
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
             STAT = a_err)
@@ -621,16 +624,16 @@ SUBROUTINE TimeStepRM
         status = RM_SetTime(rm_id, time) 
         status = RM_SetTimeStep(rm_id, deltim) 
         status = RM_SetConcentrations(rm_id, c(1,1))
-        status = RM_SetStopMessage(rm_id, stop_msg)
+        !status = RM_SetStopMessage(rm_id, stop_msg)
         
         status = RM_RunCells(rm_id)  
         status = RM_GetConcentrations(rm_id, c(1,1))
-        status = RM_MpiWorkerBreak(rm_id)
+        status = RM_MpiWorkerBreak(rm_id)           ! 7 RM_MpiWorker end 
         
-        CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
-            iprint_xyz(1), print_restart%print_flag_integer) 
-        status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 1)
-        status = RM_MpiWorkerBreak(rm_id)
+        !CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
+        !    iprint_xyz(1), print_restart%print_flag_integer) 
+        !status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 0)
+        status = RM_MpiWorkerBreak(rm_id)           ! 8 RM_MpiWorker end 
         
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM    

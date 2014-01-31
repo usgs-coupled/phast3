@@ -29,6 +29,9 @@
     <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gzstream.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h">
@@ -38,6 +41,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\PhreeqcRM\RM_interface_C.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gzstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

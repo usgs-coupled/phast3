@@ -641,11 +641,11 @@ RM_RunCells(int *id)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		if (!Reaction_module_ptr->GetStopMessage())
-		{
+		//if (!Reaction_module_ptr->GetStopMessage())
+		//{
 			// Run chemistry calculations
 			return Reaction_module_ptr->RunCells(); 
-		}
+		//}
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -659,11 +659,11 @@ RM_RunFile(int *id, int *workers, int *initial_phreeqc, int *utility, const char
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		std::vector <int> args;
+		std::vector <bool> args;
 		args.resize(3,0);
-		args[0] = (workers == NULL) ? 0 : *workers;
-		args[1] = (initial_phreeqc == NULL) ? 0 : *initial_phreeqc;
-		args[2] = (utility == NULL) ? 0 : *utility;
+		args[0] = (workers == NULL) ? false : (*workers != 0);
+		args[1] = (initial_phreeqc == NULL) ? false : (*initial_phreeqc != 0);
+		args[2] = (utility == NULL) ? false : (*utility != NULL);
 		std::string str = PhreeqcRM::Char2TrimString(chem_name, l);
 		return Reaction_module_ptr->RunFile(args[0], args[1], args[2], str.c_str());
 	}
@@ -678,11 +678,11 @@ RM_RunString(int *id, int *workers, int *initial_phreeqc, int *utility, const ch
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
-		std::vector <int> args;
+		std::vector <bool> args;
 		args.resize(3,0);
-		args[0] = (workers == NULL) ? 0 : *workers;
-		args[1] = (initial_phreeqc == NULL) ? 0 : *initial_phreeqc;
-		args[2] = (utility == NULL) ? 0 : *utility;
+		args[0] = (workers == NULL) ? false : (*workers != 0);
+		args[1] = (initial_phreeqc == NULL) ? false : (*initial_phreeqc != 0);
+		args[2] = (utility == NULL) ? false : (*utility != NULL);
 		std::string str = PhreeqcRM::Char2TrimString(input_string, l);
 		return Reaction_module_ptr->RunString(args[0], args[1], args[2], input_string);
 	}
@@ -755,7 +755,19 @@ RM_SetDensity(int *id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_SetDumpFileName(int *id, const char *name, size_t nchar)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::string str = PhreeqcRM::Char2TrimString(name, nchar);
+		return Reaction_module_ptr->SetDumpFileName(str.c_str());
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_SetFilePrefix(int *id, const char *name, size_t nchar)
@@ -897,20 +909,20 @@ RM_SetSelectedOutputOn(int *id, int *selected_output_on)
 	}
 	return IRM_BADINSTANCE;
 }
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_SetStopMessage(int *id, int *stop_flag)
-/* ---------------------------------------------------------------------- */
-{
-	// pass pointers from Fortran to the Reaction module
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		bool s = (stop_flag == NULL) ? true : (*stop_flag != 0);
-		return Reaction_module_ptr->SetStopMessage(s);
-	}
-	return IRM_BADINSTANCE;
-}
+///* ---------------------------------------------------------------------- */
+//IRM_RESULT
+//RM_SetStopMessage(int *id, int *stop_flag)
+///* ---------------------------------------------------------------------- */
+//{
+//	// pass pointers from Fortran to the Reaction module
+//	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+//	if (Reaction_module_ptr)
+//	{
+//		bool s = (stop_flag == NULL) ? true : (*stop_flag != 0);
+//		return Reaction_module_ptr->SetStopMessage(s);
+//	}
+//	return IRM_BADINSTANCE;
+//}
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT

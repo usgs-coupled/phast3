@@ -1,3 +1,5 @@
+
+#ifdef USE_GZ
 // ============================================================================
 // gzstream, C++ iostream classes wrapping the zlib compression library.
 // Copyright (C) 2001  Deepak Bandyopadhyay, Lutz Kettner
@@ -163,3 +165,4 @@ void gzstreambase::close() {
 
 // ============================================================================
 // EOF //
+#endif

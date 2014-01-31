@@ -7,7 +7,15 @@
 #include "FileHandler.h"
 #include "PhreeqcRM.h"
 #include "RM_interface.h"
+#ifdef USE_GZ
 #include "gzstream.h"
+#else
+#define gzFile FILE*
+#define gzclose fclose
+#define gzopen fopen
+#define gzprintf fprintf
+#define igzstream ifstream
+#endif
 #include "KDtree/KDtree.h"
 #include "Phreeqc.h"
 #include "IPhreeqc.h"
@@ -596,6 +604,7 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 	}
 	return IRM_BADINSTANCE;
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::WriteRestart(int *id, int *print_restart)
@@ -750,7 +759,120 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 	}
 	return IRM_BADINSTANCE;
 }
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+FileHandler::WriteRestart(int *id, int *print_restart)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
+		if (print_restart != 0)
+		{
+			int mpi_tasks = Reaction_module_ptr->GetMpiTasks();
+			//ogzstream ofs_restart;
+			gzFile restart_file;
+#ifdef USE_GZ
+			std::string temp_name("temp_restart_file.gz");
+#else
+			std::string temp_name("temp_restart_file");
+#endif
 
+			std::string name(Reaction_module_ptr->GetFilePrefix());
+			std::string backup_name(name);
+			if (mpi_myself == 0)
+			{
+#ifdef USE_GZ
+				name.append(".restart.gz");
+				backup_name.append(".restart.gz~");
+#else
+				name.append(".restart");
+				backup_name.append(".restart~");
+#endif
+
+				// open file 
+				restart_file = gzopen(temp_name.c_str(), "wb");
+				if (restart_file == NULL)
+				{
+					std::ostringstream errstr;
+					errstr << "Temporary restart file could not be opened: " << temp_name;
+					error_msg(errstr.str().c_str(), 1);
+					throw PhreeqcRMStop();
+				}
+
+				// write header
+				int count_chemistry = Reaction_module_ptr->GetChemistryCellCount();
+				//ofs_restart << "#PHAST restart file" << std::endl;
+				gzprintf(restart_file, "%s\n", "#PHAST restart file");
+				//ofs_restart << "#Prefix: " << Reaction_module_ptr->GetFilePrefix() << std::endl;
+				gzprintf(restart_file, "%s%s\n", "#Prefix: ", Reaction_module_ptr->GetFilePrefix().c_str());
+				time_t now = ::time(NULL);
+				//ofs_restart << "#Date: " << ctime(&now);
+				gzprintf(restart_file, "%s%s\n", "#Date: ", ctime(&now));
+				//ofs_restart << "#Current model time: " << Reaction_module_ptr->GetTime() << std::endl;
+				gzprintf(restart_file, "%s%e\n", "#Current model time: ", Reaction_module_ptr->GetTime());
+				//ofs_restart << "#Grid cells: " << Reaction_module_ptr->GetGridCellCount() << std::endl;
+				gzprintf(restart_file, "%s%d\n", "#Grid cells: ", Reaction_module_ptr->GetGridCellCount());
+				//ofs_restart << "#Chemistry cells: " << count_chemistry << std::endl;
+				gzprintf(restart_file, "%s%d\n", "#Chemistry cells: ", count_chemistry);
+
+				// write index
+				//ofs_restart << Reaction_module_ptr->GetChemistryCellCount() << std::endl;
+				gzprintf(restart_file, "%d\n", count_chemistry );
+				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
+				{
+					int i = Reaction_module_ptr->GetBack()[j][0];			/* i is nxyz number */
+					//ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
+					gzprintf(restart_file, "%e %e %e %d ",  x_node[i], y_node[i], z_node[i], j);
+					// solution, use -1 if cell is dry
+					if (this->saturation[i] > 0.0)
+					{
+						//ofs_restart << this->ic[7 * i] << "  ";
+						gzprintf(restart_file, "%d ", this->ic[7 * i]);
+					}
+					else
+					{
+						//ofs_restart << -1 << "  ";
+						gzprintf(restart_file, "-1 ");
+					}
+					// pp_assemblage
+					//ofs_restart << this->ic[7 * i + 1] << "  ";
+					gzprintf(restart_file, "%d ", this->ic[7 * i + 1]);
+					// exchange
+					//ofs_restart << this->ic[7 * i + 2] << "  ";
+					gzprintf(restart_file, "%d ", this->ic[7 * i + 2]);
+					// surface
+					//ofs_restart << this->ic[7 * i + 3] << "  ";
+					gzprintf(restart_file, "%d ", this->ic[7 * i + 3]);
+					// gas_phase
+					//ofs_restart << this->ic[7 * i + 4] << "  ";
+					gzprintf(restart_file, "%d ", this->ic[7 * i + 4]);
+					// solid solution
+					//ofs_restart << this->ic[7 * i + 5] << "  ";
+					gzprintf(restart_file, "%d ", this->ic[7 * i + 5]);
+					// kinetics
+					//ofs_restart << this->ic[7 * i + 6] << "\n";
+					gzprintf(restart_file, "%d \n", this->ic[7 * i + 6]);
+				}
+				gzclose(restart_file);
+			}
+			// write data
+			Reaction_module_ptr->SetDumpFileName(temp_name.c_str());
+			Reaction_module_ptr->DumpModule(true, true);
+
+			// rename files
+			if (mpi_myself == 0)
+			{
+				PhreeqcRM::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+			}
+			return IRM_OK;
+		}
+		return IRM_INVALIDARG;
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)

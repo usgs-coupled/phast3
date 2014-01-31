@@ -247,7 +247,13 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             DOUBLE PRECISION, OPTIONAL, INTENT(in) :: t
-        END FUNCTION RM_SetDensity  
+        END FUNCTION RM_SetDensity 
+        
+        INTEGER FUNCTION RM_SetDumpFileName(id, name) 
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, OPTIONAL, INTENT(in) :: name
+        END FUNCTION RM_SetDumpFileName   
 
         INTEGER FUNCTION RM_SetErrorHandlerMode(id, i)
             IMPLICIT NONE
@@ -321,11 +327,11 @@
             INTEGER, OPTIONAL :: tf
         END FUNCTION RM_SetSelectedOutputOn   
 
-        INTEGER FUNCTION RM_SetStopMessage(id, tf)
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER, OPTIONAL :: tf
-        END FUNCTION RM_SetStopMessage  
+!        INTEGER FUNCTION RM_SetStopMessage(id, tf)
+!            IMPLICIT NONE
+!            INTEGER :: id
+!            INTEGER, OPTIONAL :: tf
+!        END FUNCTION RM_SetStopMessage  
 
         INTEGER FUNCTION RM_SetTemperature(id, t)
             IMPLICIT NONE

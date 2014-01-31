@@ -9,6 +9,12 @@
 #include "System.h"
 #ifdef USE_GZ
 #include "gzstream.h"
+#else
+#define gzFile FILE*
+#define gzclose fclose
+#define gzopen fopen
+#define gzprintf fprintf
+#define ogzstream std::ofstream
 #endif
 #include "cxxMix.h"
 #include "Solution.h"
@@ -211,7 +217,9 @@ if( numCPU < 1 )
 		std::cerr << "Reaction module not created." << std::endl;
 		exit(4);
 	}
-
+	this->file_prefix = "myrun";
+	this->dump_file_name = file_prefix;
+	this->dump_file_name.append(".dump");
 	this->gfw_water = 18.;						// gfw of water
 	this->count_chemistry = this->nxyz;
 	this->partition_uz_solids = false;
@@ -232,7 +240,7 @@ if( numCPU < 1 )
 	this->input_units_SSassemblage = 1;			// water 1, rock 2
 	this->input_units_Kinetics = 1;			    // water 1, rock 2
 
-	this->stop_message = false;
+	//this->stop_message = false;
 	this->error_count = 0;
 	//this->stop_on_error = true;
 	this->error_handler_mode = 0;
@@ -1372,6 +1380,7 @@ PhreeqcRM::DecodeError(int r)
 		}
 	}
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
@@ -1567,7 +1576,503 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
 }
+#endif
 
+#ifdef USE_MPI
+#ifdef SKIP
+// This one writes directly from each MPI process
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::DumpModule(bool dump_on, bool append)
+/* ---------------------------------------------------------------------- */
+{
+	bool dump = false;
+
+	// return if dump_on is false
+	if (this->mpi_myself == 0)
+	{
+		dump = dump_on;
+	}
+	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+	if (!dump) return IRM_OK;
+
+	IRM_RESULT return_value = IRM_OK;
+
+	// Try for dumping data
+	try
+	{
+		try
+		{
+			// write dump file data
+			int n = this->mpi_myself;
+			this->workers[0]->SetDumpStringOn(true); 
+			std::ostringstream in;
+			in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
+			int status = this->workers[0]->RunString(in.str().c_str());
+			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+		}
+		catch (...)
+		{
+			return_value = IRM_FAIL;
+		}
+
+		for (int n = 0; n < this->mpi_tasks; n++)
+		{	
+			// try for one process
+			try
+			{
+				if (this->mpi_myself == n)
+				{
+					this->ErrorHandler(return_value, "Already failed for DumpModule process.");
+					// open dump file
+					gzFile dump_file;
+					std::string name(this->dump_file_name);
+
+					if (append)
+					{
+						dump_file = gzopen(name.c_str(), "ab1");
+					}
+					else
+					{	
+						// rename
+						if (n == 0)
+						{
+							dump_file = gzopen(name.c_str(), "wb1");
+						}
+						else
+						{
+							dump_file = gzopen(name.c_str(), "ab1");
+						}
+					}
+					if (dump_file == NULL)
+					{
+						std::ostringstream errstr;
+						errstr << "Restart file could not be opened: " << name;
+						this->ErrorHandler(IRM_FAIL, errstr.str());
+					}
+
+					size_t dump_length = strlen(this->GetWorkers()[0]->GetDumpString());
+					char buffer[4096];
+					const char * start = this->GetWorkers()[0]->GetDumpString();
+					const char * end = &this->GetWorkers()[0]->GetDumpString()[dump_length];
+					for (const char * ptr = start; ptr <  end; ptr += 4094)
+					{
+						strncpy(buffer, ptr, 4094); 
+						buffer[4094] = '\0';
+						int err = gzprintf(dump_file, "%s", buffer);
+						if (err <= 0)
+						{
+							this->ErrorHandler(IRM_FAIL, "gzprintf");
+						}
+					}
+					gzclose(dump_file);
+				}
+			}
+			catch (...)
+			{
+				return_value = IRM_FAIL;
+			}
+			MPI_Bcast(&return_value,  1, MPI_INT, n, MPI_COMM_WORLD);
+			this->ErrorHandler(return_value, "Dumping data for process.");
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
+}
+#endif
+// This one transfers to root and then writes
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::DumpModule(bool dump_on, bool append)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_DUMPMODULE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
+	bool dump = false;
+
+	// return if dump_on is false
+	if (this->mpi_myself == 0)
+	{
+		dump = dump_on;
+	}
+	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+	if (!dump) return IRM_OK;
+
+	IRM_RESULT return_value = IRM_OK;
+
+	// Open file on root
+	gzFile dump_file;
+	try
+	{
+		if (this->mpi_myself == 0)
+		{
+			// open dump file
+			std::string name(this->dump_file_name);
+			if (append)
+			{
+				dump_file = gzopen(name.c_str(), "ab1");
+			}
+			else
+			{	
+				dump_file = gzopen(name.c_str(), "wb1");
+			}
+			if (dump_file == NULL)
+			{
+				std::ostringstream errstr;
+				errstr << "Restart file could not be opened: " << name;
+				this->ErrorHandler(IRM_FAIL, errstr.str());
+			}
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+
+	// Return on error opening dump file
+	MPI_Bcast(&return_value, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (return_value != IRM_OK)
+	{
+		return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
+	}
+	
+	// Try for dumping data
+	try
+	{
+		// write dump file data
+		int n = this->mpi_myself;
+		this->workers[0]->SetDumpStringOn(true); 
+		std::ostringstream in;
+		in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
+
+		std::vector<int> r_values;
+		r_values.push_back(this->workers[0]->RunString(in.str().c_str()));
+		this->HandleErrorsInternal(r_values);
+		r_values.clear();
+		for (int n = 0; n < this->mpi_tasks; n++)
+		{
+			// Need to transfer output stream to root and print
+			if (this->mpi_myself == n)
+			{
+				if (n == 0)
+				{			
+					size_t dump_length = strlen(this->GetWorkers()[0]->GetDumpString());
+					char buffer[4096];
+					const char * start = this->GetWorkers()[0]->GetDumpString();
+					const char * end = &this->GetWorkers()[0]->GetDumpString()[dump_length];
+					for (const char * ptr = start; ptr <  end; ptr += 4094)
+					{
+						strncpy(buffer, ptr, 4094); 
+						buffer[4094] = '\0';
+						int err = gzprintf(dump_file, "%s", buffer);
+						if (err <= 0)
+						{
+							this->ErrorHandler(IRM_FAIL, "gzprintf");
+						}
+					}
+				}
+				else
+				{
+					int size = (int) strlen(this->workers[0]->GetDumpString());
+					MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+					MPI_Send((void *) this->workers[0]->GetDumpString(), size, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+				}	
+			}
+			else if (this->mpi_myself == 0)
+			{
+				MPI_Status mpi_status;
+				std::vector<char> char_buffer;
+				int size;
+				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+				char_buffer.resize(size+1);
+				MPI_Recv((void *) char_buffer.data(), size, MPI_CHAR, n, 0, MPI_COMM_WORLD, &mpi_status);
+				char_buffer[size] = '\0';
+
+				char buffer[4096];
+				char * start = char_buffer.data();
+				char * end = &char_buffer.data()[size];
+				for (const char * ptr = start; ptr <  end; ptr += 4094)
+				{
+					strncpy(buffer, ptr, 4094); 
+					buffer[4094] = '\0';
+					int err = gzprintf(dump_file, "%s", buffer);
+					if (err <= 0)
+					{
+						this->ErrorHandler(IRM_FAIL, "gzprintf");
+					}
+				}
+			}
+			// Clear dump string to save space
+			std::ostringstream clr;
+			clr << "END\n";
+			r_values.push_back(this->GetWorkers()[0]->RunString(clr.str().c_str()));
+		}
+		this->HandleErrorsInternal(r_values);
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	if (mpi_myself == 0)
+	{
+		gzclose(dump_file);
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
+}
+#else
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::DumpModule(bool dump_on, bool append)
+/* ---------------------------------------------------------------------- */
+{	
+	// return if dump_on is false
+	if (!dump_on) return IRM_OK;
+
+	IRM_RESULT return_value = IRM_OK;
+
+	try
+	{
+		// open dump file
+		gzFile dump_file;
+		std::string name(this->dump_file_name);
+
+		// open
+		if (append)
+		{
+			dump_file = gzopen(name.c_str(), "ab1");
+		}
+		else
+		{	
+			dump_file = gzopen(name.c_str(), "wb1");
+		}
+		if (dump_file == NULL)
+		{
+			std::ostringstream errstr;
+			errstr << "Restart file could not be opened: " << name;
+			this->ErrorHandler(IRM_FAIL, errstr.str());
+		}	
+#ifdef THREADED_PHAST
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel 
+#pragma omp for
+#endif
+		for (int n = 0; n < (int) this->nthreads; n++)
+		{			
+			this->workers[n]->SetDumpStringOn(true); 
+			std::ostringstream in;
+			in << "DUMP; -cells " << start_cell[n] << "-" << end_cell[n] << "\n";
+			int status = this->workers[n]->RunString(in.str().c_str());
+			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+		}
+
+		for (int n = 0; n < (int) this->nthreads; n++)
+		{
+			size_t dump_length = strlen(this->GetWorkers()[n]->GetDumpString());
+			char buffer[4096];
+			const char * start = this->GetWorkers()[n]->GetDumpString();
+			const char * end = &this->GetWorkers()[n]->GetDumpString()[dump_length];
+			for (const char * ptr = start; ptr <  end; ptr += 4094)
+			{
+				strncpy(buffer, ptr, 4094); 
+				buffer[4094] = '\0';
+				int err = gzprintf(dump_file, "%s", buffer);
+				if (err <= 0)
+				{
+					this->ErrorHandler(IRM_FAIL, "gzprintf");
+				}
+			}
+		}
+		gzclose(dump_file);
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
+}
+#endif
+#ifdef THIS_DUMP_MODULE_WILL_WORK_FOR_VERY_LARGE_PROBLEMS
+#ifdef USE_MPI
+// This one generates a strings for a certain number of solutions (block = 1000)
+// tnen writes directly from each MPI process
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::DumpModule(bool dump_on, bool append)
+/* ---------------------------------------------------------------------- */
+{
+	bool dump = false;
+
+	// return if dump_on is false
+	if (this->mpi_myself == 0)
+	{
+		dump = dump_on;
+	}
+	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+	if (!dump) return IRM_OK;
+
+	IRM_RESULT return_value = IRM_OK;
+
+	// Try for dumping data
+	try
+	{
+		for (int n = 0; n < this->mpi_tasks; n++)
+		{	
+			// try for one process
+			try
+			{
+				if (this->mpi_myself == n)
+				{
+					// open dump file
+					gzFile dump_file;
+					std::string name(this->dump_file_name);
+
+					if (append)
+					{
+						dump_file = gzopen(name.c_str(), "ab1");
+					}
+					else
+					{	
+						// rename
+						if (n == 0)
+						{
+							dump_file = gzopen(name.c_str(), "wb1");
+						}
+						else
+						{
+							dump_file = gzopen(name.c_str(), "ab1");
+						}
+					}
+					if (dump_file == NULL)
+					{
+						std::ostringstream errstr;
+						errstr << "Restart file could not be opened: " << name;
+						this->ErrorHandler(IRM_FAIL, errstr.str());
+					}
+
+					// write dump file data
+					this->workers[0]->SetDumpStringOn(true); 
+					std::ostringstream in;
+					int block = 1000;
+					for (int j = this->start_cell[n]; j <= this->end_cell[n]; j += block)
+					{
+						int last = j + block > this->end_cell[n] ? this->end_cell[n] : j + block;
+						in << "DUMP; -cells " << j << "-" << last << "\n";
+						int status = this->workers[0]->RunString(in.str().c_str());
+						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+
+						size_t dump_length = strlen(this->GetWorkers()[0]->GetDumpString());
+						char buffer[4096];
+						const char * start = this->GetWorkers()[0]->GetDumpString();
+						const char * end = &this->GetWorkers()[0]->GetDumpString()[dump_length];
+						for (const char * ptr = start; ptr <  end; ptr += 4094)
+						{
+							strncpy(buffer, ptr, 4094); 
+							buffer[4094] = '\0';
+							int err = gzprintf(dump_file, "%s", buffer);
+							if (err <= 0)
+							{
+								this->ErrorHandler(IRM_FAIL, "gzprintf");
+							}
+						}
+					}
+					gzclose(dump_file);
+				}
+			}
+			catch (...)
+			{
+				return_value = IRM_FAIL;
+			}
+			MPI_Barrier(MPI_COMM_WORLD);
+			MPI_Bcast(&return_value,  1, MPI_INT, n, MPI_COMM_WORLD);
+			this->ErrorHandler(return_value, "Dumping data for process.");
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
+}
+#else
+// This one generates a string for a certain number of solutions (block = 1000)
+// and writes to gz file
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::DumpModule(bool dump_on, bool append)
+/* ---------------------------------------------------------------------- */
+{	
+	// return if dump_on is false
+	if (!dump_on) return IRM_OK;
+
+	IRM_RESULT return_value = IRM_OK;
+
+	try
+	{
+		// open dump file
+		gzFile dump_file;
+		std::string name(this->dump_file_name);
+
+		// open
+		if (append)
+		{
+			dump_file = gzopen(name.c_str(), "ab1");
+		}
+		else
+		{	
+			dump_file = gzopen(name.c_str(), "wb1");
+		}
+		if (dump_file == NULL)
+		{
+			std::ostringstream errstr;
+			errstr << "Restart file could not be opened: " << name;
+			this->ErrorHandler(IRM_FAIL, errstr.str());
+		}	
+
+		for (int n = 0; n < (int) this->nthreads; n++)
+		{			
+			this->workers[n]->SetDumpStringOn(true); 
+			std::ostringstream in;
+			int block = 1000;
+			for (int j = this->start_cell[n]; j <= this->end_cell[n]; j += block)
+			{
+				int last = (j + block) > this->end_cell[n] ? this->end_cell[n] : j + block;
+				in << "DUMP; -cells " << j << "-" << last << "\n";
+				int status = this->workers[n]->RunString(in.str().c_str());
+				this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+				size_t dump_length = strlen(this->GetWorkers()[n]->GetDumpString());
+				char buffer[4096];
+				const char * start = this->GetWorkers()[n]->GetDumpString();
+				const char * end = &this->GetWorkers()[n]->GetDumpString()[dump_length];
+				for (const char * ptr = start; ptr <  end; ptr += 4094)
+				{
+					strncpy(buffer, ptr, 4094); 
+					buffer[4094] = '\0';
+					int err = gzprintf(dump_file, "%s", buffer);
+					if (err <= 0)
+					{
+						this->ErrorHandler(IRM_FAIL, "gzprintf");
+					}
+				}
+			}
+		}
+		gzclose(dump_file);
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
+}
+#endif
+#endif
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::ErrorMessage(const std::string &error_string, bool prepend)
@@ -1609,6 +2114,7 @@ PhreeqcRM::FileRename(const std::string &temp_name, const std::string &name,
 	}
 	rename(temp_name.c_str(), name.c_str());
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int
 PhreeqcRM::FindComponents(void)	
@@ -1671,6 +2177,96 @@ PhreeqcRM::FindComponents(void)
 			}
 			this->OutputMessage(outstr.str());
 		}
+	}
+	catch (...)
+	{
+		return this->ReturnHandler(IRM_FAIL, "PhreeqcRM::FindComponents"); 
+	}
+	return (int) this->components.size();
+}
+#endif
+/* ---------------------------------------------------------------------- */
+int
+PhreeqcRM::FindComponents(void)	
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Counts components in any defined solution, gas_phase, exchanger,
+ *   surface, or pure_phase_assemblage
+ *
+ *   Returns 
+ *		n_comp, which is total, including H, O, elements, and Charge
+ *      names, which contains character strings with names of components
+ */
+	try
+	{
+		// Always include H, O, Charge
+
+		//this->components.clear();
+		std::set<std::string> component_set;
+
+		size_t fixed_components = 3;
+#ifdef COMPONENT_H2O
+		fixed_components = 4;
+#endif
+		// save old components
+		for (size_t i = fixed_components; i < this->components.size(); i++)
+		{
+			component_set.insert(this->components[i]);
+		}
+
+		// Get other components
+		IPhreeqcPhast * phast_iphreeqc_worker = this->GetWorkers()[this->nthreads];
+		size_t count_components = phast_iphreeqc_worker->GetComponentCount();
+
+		size_t i;
+		for (i = 0; i < count_components; i++)
+		{
+			std::string comp(phast_iphreeqc_worker->GetComponent((int) i));
+			assert (comp != "H");
+			assert (comp != "O");
+			assert (comp != "Charge");
+			assert (comp != "charge");
+			
+			component_set.insert(comp);
+		}
+		// clear and refill components in vector
+		this->components.clear();
+		
+		// Always include H, O, Charge
+#ifdef COMPONENT_H2O
+		this->components.push_back("H2O");
+#endif
+		this->components.push_back("H");
+		this->components.push_back("O");
+		this->components.push_back("Charge");
+		for (std::set<std::string>::iterator it = component_set.begin(); it != component_set.end(); it++)
+		{
+			this->components.push_back(*it);
+		}
+		// Calculate gfw for components
+		this->gfw.clear();
+		for (i = 0; i < components.size(); i++)
+		{
+			if (components[i] == "Charge")
+			{
+				this->gfw.push_back(1.0);
+			}
+			else
+			{
+				this->gfw.push_back(phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
+			}
+		}
+		//if (this->mpi_myself == 0)
+		//{
+		//	std::ostringstream outstr;
+		//	outstr << "List of Components:\n" << std::endl;
+		//	for (i = 0; i < this->components.size(); i++)
+		//	{
+		//		outstr << "\t" << i + 1 << "\t" << this->components[i].c_str() << std::endl;
+		//	}
+		//	this->OutputMessage(outstr.str());
+		//}
 	}
 	catch (...)
 	{
@@ -1836,6 +2432,13 @@ PhreeqcRM::GetDensity(void)
 {
 	try
 	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETDENSITY;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+#endif
 		this->density.clear();
 		this->density.resize(this->nxyz, INACTIVE_CELL_VALUE);
 		std::vector<double> dbuffer;
@@ -1935,6 +2538,13 @@ PhreeqcRM::GetSelectedOutput(double *so)
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETSELECTEDOUTPUT;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+#endif
 		int n_user = this->workers[0]->GetCurrentSelectedOutputUserNumber();
 #ifdef USE_MPI
 		MPI_Bcast(&n_user,  1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -2143,6 +2753,13 @@ PhreeqcRM::GetSolutionVolume(void)
 {
 	try
 	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETSOLUTIONVOLUME;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+#endif
 		this->solution_volume.resize(this->nxyz, INACTIVE_CELL_VALUE);
 		std::vector<double> dbuffer;
 
@@ -2408,6 +3025,13 @@ PhreeqcRM::InitialPhreeqc2Module(
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_INITIALPHREEQC2MODULE;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+#endif
 		this->Get_phreeqc_bin().Clear();
 		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 
@@ -2546,7 +3170,101 @@ PhreeqcRM::InitialPhreeqc2Module(
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Module");
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numbers_in)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	 *      Routine finds the last solution in InitialPhreeqc, equilibrates the cell,
+	 *      and copies result to list of cell numbers in the module. 
+	 */
+	IRM_RESULT return_value = IRM_OK;
+	if (this->mpi_myself == 0)
+	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_INITIALPHREEQC2MODULE;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+#endif
+		// determine last solution number
+		if (cell < 0)
+		{
+			int next = this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->next_user_number(Keywords::KEY_SOLUTION);
+			if (next != 0)
+			{
+				cell = next - 1;
+			}
+		}
+		else
+		{
+			cxxSolution *soln = this->GetWorkers()[this->nthreads]->Get_solution(cell);
+			if (soln == NULL)
+				cell = -1;
+		}
+	}
+#ifdef USE_MPI	
+	MPI_Bcast(&cell, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+	// cell not found
+	if (cell < 0)
+	{
+		return_value = IRM_INVALIDARG;
+		return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqcCell2Module");
+	}
+	std::vector< int > cell_numbers;
+	if (this->mpi_myself == 0)
+	{
+		cell_numbers = cell_numbers_in;
+	}
+	// transfer the cell to domain
+#ifdef USE_MPI
+	int n_cells;
+	if (this->mpi_myself == 0)
+	{
+		n_cells = (int) cell_numbers.size();
+	}
+	MPI_Bcast(&n_cells, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	cell_numbers.resize(n_cells);
+	MPI_Bcast((void *) cell_numbers.data(), n_cells, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+	try
+	{
+		std::ostringstream in;
+		in << "RUN_CELLS; -cell " << cell << "; -time_step 0\n";
+		IRM_RESULT status = this->RunString(0, 1, 0, in.str().c_str());
+		this->ErrorHandler(status, "RunString");
+		cxxStorageBin cell_bin;
+		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(cell_bin, cell);
+		for (size_t i = 0; i < cell_numbers.size(); i++)
+		{
+#ifdef USE_MPI
+			int n = this->mpi_myself;
+			if (cell_numbers[i] >= start_cell[n] && cell_numbers[i] <= end_cell[n])
+			{
+				cell_bin.Copy(cell_numbers[i], cell);
+				this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, cell_numbers[i]);
+			}
+#else				
+			for (size_t n = 0; n < nthreads; n++)
+			{
+				if (cell_numbers[i] >= start_cell[n] && cell_numbers[i] <= end_cell[n])
+				{
+					cell_bin.Copy(cell_numbers[i], cell);
+					this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, cell_numbers[i]);
+				}
+			}
+#endif
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqcCell2Module");
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::Int2IrmResult(int i, bool positive_ok)
@@ -2590,6 +3308,13 @@ IRM_RESULT
 PhreeqcRM::LoadDatabase(const char * database)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_LOADDATABASE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
@@ -2640,147 +3365,189 @@ IRM_RESULT
 PhreeqcRM::MpiWorker()
 /* ---------------------------------------------------------------------- */
 {
+	// Called by all workers
 #ifdef USE_MPI
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
-		for (;;)
+		bool loop_break = false;
+		while (!loop_break)
 		{
 			int method;
-			bool loop_break = false;
 			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
 			switch (method)
 			{
 			case METHOD_CREATEMAPPING:
+				std::cerr << "METHOD_CREATEMAPPING" << std::endl;
 				this->CreateMapping();
 				break;
 			case METHOD_DUMPMODULE:
+				std::cerr << "METHOD_DUMPMODULE" << std::endl;
 				this->DumpModule();
 				break;
 			case METHOD_GETCONCENTRATIONS:
+				std::cerr << "METHOD_GETCONCENTRATIONS" << std::endl;
 				this->GetConcentrations();
 				break;
 			case METHOD_GETDENSITY:
+				std::cerr << "METHOD_GETDENSITY" << std::endl;
 				this->GetDensity();
 				break;
 			case METHOD_GETSELECTEDOUTPUT:
+				std::cerr << "METHOD_GETSELECTEDOUTPUT" << std::endl;
 				this->GetSelectedOutput();
 				break;
 			case METHOD_GETSOLUTIONVOLUME:
+				std::cerr << "METHOD_GETSOLUTIONVOLUME" << std::endl;
 				this->GetSolutionVolume();
 				break;
 			case METHOD_INITIALPHREEQC2MODULE:
+				std::cerr << "METHOD_INITIALPHREEQC2MODULE" << std::endl;
 				this->InitialPhreeqc2Module();
 				break;
 			case METHOD_LOADDATABASE:
+				std::cerr << "METHOD_LOADDATABASE" << std::endl;
 				this->LoadDatabase();
 				break;
 			case METHOD_MPIWORKERBREAK:
+				std::cerr << "METHOD_MPIWORKERBREAK" << std::endl;
 				loop_break = true;
 				break;
 			case METHOD_RUNCELLS:
+				std::cerr << "METHOD_RUNCELLS" << std::endl;
 				this->RunCells();
 				break;
 			case METHOD_RUNFILE:
+				std::cerr << "METHOD_RUNFILE" << std::endl;
 				this->RunFile();
+				std::cerr << "done METHOD_RUNFILE" << std::endl;
 				break;
 			case METHOD_RUNSTRING:
+				std::cerr << "METHOD_RUNSTRING" << std::endl;
 				this->RunString();
 				break;
 			case METHOD_SETCELLVOLUME:
+				std::cerr << "METHOD_SETCELLVOLUME" << std::endl;
 				this->SetCellVolume();
 				break;
-			case METHOD_SETCHEMISTRYFILENAME:
-				this->SetChemistryFileName();
-				break;
+			//case METHOD_SETCHEMISTRYFILENAME:
+			//	std::cerr << "METHOD_SETCHEMISTRYFILENAME" << std::endl;
+			//	this->SetChemistryFileName();
+			//	break;
 			case METHOD_SETCONCENTRATIONS:
+				std::cerr << "METHOD_SETCONCENTRATIONS" << std::endl;
 				this->SetConcentrations();
 				break;
-			case METHOD_SETDATABASEFILENAME:
-				this->SetDatabaseFileName();
-				break;
+			//case METHOD_SETDATABASEFILENAME:
+			//	std::cerr << "METHOD_SETDATABASEFILENAME" << std::endl;
+			//	this->SetDatabaseFileName();
+			//	break;
 			case METHOD_SETDENSITY:
+				std::cerr << "METHOD_SETDENSITY" << std::endl;
 				this->SetDensity();
 				break;
 			case METHOD_SETERRORHANDLERMODE:
+				std::cerr << "METHOD_SETERRORHANDLERMODE" << std::endl;
 				this->SetErrorHandlerMode();
 				break;
 			case METHOD_SETFILEPREFIX:
+				std::cerr << "METHOD_SETFILEPREFIX" << std::endl;
 				this->SetFilePrefix();
 				break;
 			case METHOD_SETPARTITIONUZSOLIDS:
+				std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
 				this->SetPartitionUZSolids();
 				break;
 			case METHOD_SETPOREVOLUME:
+				std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
 				this->SetPoreVolume();
 				break;
 			case METHOD_SETPOREVOLUMEZERO:
+				std::cerr << "METHOD_SETPOREVOLUMEZERO" << std::endl;
 				this->SetPoreVolumeZero();
 				break;
 			case METHOD_SETPRESSURE:
+				std::cerr << "METHOD_SETPRESSURE" << std::endl;
 				this->SetPressure();
 				break;
 			case METHOD_SETPRINTCHEMISTRYON:
+				std::cerr << "METHOD_SETPRINTCHEMISTRYON" << std::endl;
 				this->SetPrintChemistryOn();
 				break;
 			case METHOD_SETPRINTCHEMISTRYMASK:
+				std::cerr << "METHOD_SETPRINTCHEMISTRYMASK" << std::endl;
 				this->SetPrintChemistryMask();
 				break;
-			case METHOD_SETREBALANCEFRACTION:
-				this->SetRebalanceFraction();
-				break;
+			//case METHOD_SETREBALANCEFRACTION:
+			//	this->SetRebalanceFraction();
+			//	break;
 			case METHOD_SETSATURATION:
+				std::cerr << "METHOD_SETSATURATION" << std::endl;
 				this->SetSaturation();
 				break;
 			case METHOD_SETSELECTEDOUTPUTON:
+				std::cerr << "METHOD_SETSELECTEDOUTPUTON" << std::endl;
 				this->SetSelectedOutputOn();
 				break;
-			case METHOD_SETSTOPMESSAGE:
-				this->SetStopMessage();
-				break;
+			//case METHOD_SETSTOPMESSAGE:
+			//	this->SetStopMessage();
+			//	break;
 			case METHOD_SETTEMPERATURE:
+				std::cerr << "METHOD_SETTEMPERATURE" << std::endl;
 				this->SetTemperature();
 				break;
 			case METHOD_SETTIME:
+				std::cerr << "METHOD_SETTIME" << std::endl;
 				this->SetTime();
 				break;
 			case METHOD_SETTIMECONVERSION:
+				std::cerr << "METHOD_SETTIMECONVERSION" << std::endl;
 				this->SetTimeConversion();
 				break;
 			case METHOD_SETTIMESTEP:
+				std::cerr << "METHOD_SETTIMESTEP" << std::endl;
 				this->SetTimeStep();
 				break;
 			case METHOD_SETUNITSEXCHANGE:
+				std::cerr << "METHOD_SETUNITSEXCHANGE" << std::endl;
 				this->SetUnitsExchange();
 				break;
 			case METHOD_SETUNITSGASPHASE:
+				std::cerr << "METHOD_SETUNITSGASPHASE" << std::endl;
 				this->SetUnitsGasPhase();
 				break;
 			case METHOD_SETUNITSKINETICS:
+				std::cerr << "METHOD_SETUNITSKINETICS" << std::endl;
 				this->SetUnitsKinetics();
 				break;
 			case METHOD_SETUNITSPPASSEMBLAGE:
+				std::cerr << "METHOD_SETUNITSPPASSEMBLAGE" << std::endl;
 				this->SetUnitsPPassemblage();
 				break;
 			case METHOD_SETUNITSSOLUTION:
+				std::cerr << "METHOD_SETUNITSSOLUTION" << std::endl;
 				this->SetUnitsSolution();
 				break;
 			case METHOD_SETUNITSSSASSEMBLAGE:
+				std::cerr << "METHOD_SETUNITSSSASSEMBLAGE" << std::endl;
 				this->SetUnitsSSassemblage();
 				break;
 			case METHOD_SETUNITSSURFACE:
+				std::cerr << "METHOD_SETUNITSSURFACE" << std::endl;
 				this->SetUnitsSurface();
 				break;
-			}
-			if (loop_break)
+			default:
+				std::cerr << "default " << method << std::endl;
 				break;
+			}
 		}
 	}
 	catch (...)
 	{
+		std::cerr << "Catch in MpiWorker" << std::endl;
 		return_value = IRM_FAIL;
 	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::OpenFiles");
+	return this->ReturnHandler(return_value, "PhreeqcRM::MpiWorker");
 #else
 	return IRM_OK;
 #endif
@@ -3178,7 +3945,7 @@ PhreeqcRM::RebalanceLoad(void)
 		try
 		{
 			std::vector<int> r_vector;
-			r_vector.push_back(IRM_OK);
+			r_vector.push_back(0);
 
 			MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
 			MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
@@ -3189,8 +3956,8 @@ PhreeqcRM::RebalanceLoad(void)
 			int nnew = 0;
 			int old = 0;
 			int change = 0;
-			std::vector<std::vector<int> > change_list;
-
+			//std::vector<std::vector<int> > change_list;
+			std::map< std::string, std::vector<int> > transfer_pair;
 			for (int k = 0; k < this->count_chemistry; k++)
 			{
 				int i = k;
@@ -3208,64 +3975,36 @@ PhreeqcRM::RebalanceLoad(void)
 				if (old == nnew)
 					continue;
 				change++;
-
-				// Need to send cell from old task to nnew task
-				std::vector<int> ints;
-				ints.push_back(k);
-				ints.push_back(old);
-				ints.push_back(nnew);
-				change_list.push_back(ints);
+				std::ostringstream key;
+				key << old << "#" << nnew;
+				std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.find(key.str());
+				if (tp_it == transfer_pair.end())
+				{
+					std::vector<int> v;
+					v.push_back(old);
+					v.push_back(nnew);
+					transfer_pair[key.str()] = v;
+				}
+				transfer_pair[key.str()].push_back(k);
 			}
+			std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.begin();
 
 			// Transfer cells
 			int transfers = 0;
 			int count=0;
-			if (change_list.size() > 0)
+			for ( ; tp_it != transfer_pair.end(); tp_it++)
 			{
-				std::vector<std::vector<int> >::const_iterator it = change_list.begin();
-				int pold = (*it)[1];
-				int pnew = (*it)[2];
 				cxxStorageBin t_bin;
-				for (; it != change_list.end(); it++)
+				int pold = tp_it->second[0];
+				int pnew = tp_it->second[1];
+				if (this->mpi_myself == pold)
 				{
-					int n = (*it)[0];
-					int old = (*it)[1];
-					int nnew = (*it)[2];
-					if (old != pold || nnew != pnew)
+					for (size_t i = 2; i < tp_it->second.size(); i++)
 					{
-						transfers++;
-						try
-						{
-								this->TransferCells(t_bin, pold, pnew);
-						}
-						catch (...)
-						{
-							r_vector[0] = IRM_FAIL;
-						}
-						t_bin.Clear();
-						pold = old;
-						pnew = nnew;
-
-					}	
-					count++;
-					// Put cell in t_bin
-					if (this->mpi_myself == pold)
-					{
-						phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, n);
-						std::ostringstream del;
-						del << "DELETE; -cell " << n << "\n";
-						try
-						{
-							int status = phast_iphreeqc_worker->RunString(del.str().c_str());
-							this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
-						}
-						catch (...)
-						{
-							r_vector[0] = IRM_FAIL;
-						}
-					}
+						int k = tp_it->second[i];
+						phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, k);
+					}			
 				}
-				// Last transfer
 				transfers++;
 				try
 				{
@@ -3273,21 +4012,43 @@ PhreeqcRM::RebalanceLoad(void)
 				}
 				catch (...)
 				{
-					r_vector[0] = IRM_FAIL;
+					r_vector[0] = 1;
 				}
-			}
 
+				// Put cell in t_bin
+				if (this->mpi_myself == pold && r_vector[0] == 0)
+				{
+					std::ostringstream del;
+					del << "DELETE; -cell\n";
+					for (size_t i = 2; i < tp_it->second.size(); i++)
+					{
+						del << tp_it->second[i] << "\n";
+
+					}
+					try
+					{
+						int status = phast_iphreeqc_worker->RunString(del.str().c_str());
+						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+					}
+					catch (...)
+					{
+						r_vector[0] = 1;
+					}
+				}
+				//The gather is sometimes slow for some reason
+				//this->HandleErrorsInternal(r_vector);
+				if (r_vector[0] != 0)
+					throw PhreeqcRMStop();
+			}		
 			for (int i = 0; i < this->mpi_tasks; i++)
 			{
 				start_cell[i] = start_cell_new[i];
 				end_cell[i] = end_cell_new[i];
 			}
-
 			if (this->mpi_myself == 0)
 			{
 				std::cerr << "          Cells shifted between processes     " << change << "\n";
 			}
-			this->HandleErrorsInternal(r_vector);
 		}
 		catch (...)
 		{
@@ -3526,6 +4287,7 @@ PhreeqcRM::RebalanceLoad(void)
 }
 #endif
 #ifdef USE_MPI
+
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::RebalanceLoadPerCell(void)
@@ -3663,20 +4425,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		assert(mpi_tasks > 1);
 		start_cell_new[mpi_tasks - 1] = end_cell_new[mpi_tasks - 2] + 1;
 		end_cell_new[mpi_tasks - 1] = count_chemistry - 1;
-#ifdef SKIP
-		// Apply rebalance fraction
-		for (size_t i = 0; i < (size_t) mpi_tasks - 1; i++)
-		{
-			int	icells;
-			icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (this->rebalance_fraction) );
-			if (icells == 0)
-			{
-				icells = end_cell_new[i] - end_cell[i];
-			}
-			end_cell_new[i] = end_cell[i] + icells;
-			start_cell_new[i + 1] = end_cell_new[i] + 1;
-		}
-#endif
+
 		if (efficiency > 0.95)
 		{
 			for (int i = 0; i < this->mpi_tasks; i++)
@@ -3715,8 +4464,8 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	int nnew = 0;
 	int old = 0;
 	int change = 0;
-	std::vector<std::vector<int> > change_list;
-
+	
+			std::map< std::string, std::vector<int> > transfer_pair;
 	for (int k = 0; k < this->count_chemistry; k++)
 	{
 		int i = k;
@@ -3737,11 +4486,17 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		change++;
 
 		// Need to send cell from old task to nnew task
-		std::vector<int> ints;
-		ints.push_back(k);
-		ints.push_back(old);
-		ints.push_back(nnew);
-		change_list.push_back(ints);
+		std::ostringstream key;
+		key << old << "#" << nnew;
+		std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.find(key.str());
+		if (tp_it == transfer_pair.end())
+		{
+			std::vector<int> v;
+			v.push_back(old);
+			v.push_back(nnew);
+			transfer_pair[key.str()] = v;
+		}
+		transfer_pair[key.str()].push_back(k);
 	}
 
 	// Transfer cells
@@ -3749,54 +4504,22 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	int count=0;
 	try
 	{
+		std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.begin();
 		std::vector<int> r_vector;
 		r_vector.push_back(IRM_OK);
-		if (change_list.size() > 0)
+		for ( ; tp_it != transfer_pair.end(); tp_it++)
 		{
-			std::vector<std::vector<int> >::const_iterator it = change_list.begin();
-			int pold = (*it)[1];
-			int pnew = (*it)[2];
 			cxxStorageBin t_bin;
-			for (; it != change_list.end(); it++)
+			int pold = tp_it->second[0];
+			int pnew = tp_it->second[1];
+			if (this->mpi_myself == pold)
 			{
-				int n = (*it)[0];
-				int old = (*it)[1];
-				int nnew = (*it)[2];
-				if (old != pold || nnew != pnew)
+				for (size_t i = 2; i < tp_it->second.size(); i++)
 				{
-					transfers++;
-					try
-					{
-						this->TransferCells(t_bin, pold, pnew);
-					}
-					catch (...)
-					{
-						r_vector[0] = IRM_FAIL;
-					}
-					t_bin.Clear();
-					pold = old;
-					pnew = nnew;
-
-				}	
-				count++;
-				// Put cell in t_bin
-				if (this->mpi_myself == pold)
-				{
-					phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, n);
-					std::ostringstream del;
-					del << "DELETE; -cell " << n << "\n";
-					try
-					{
-						int status = phast_iphreeqc_worker->RunString(del.str().c_str());
-						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
-					}
-					catch (...)
-					{
-						r_vector[0] = IRM_FAIL;
-					}
-				}
+					int k = tp_it->second[i];
+					phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, k);
+				}			
 			}
-			// Last transfer
 			transfers++;
 			try
 			{
@@ -3804,13 +4527,34 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 			}
 			catch (...)
 			{
-				r_vector[0] = IRM_FAIL;
+				r_vector[0] = 1;
 			}
-		}
-		
-		// Throws on error
-		this->HandleErrorsInternal(r_vector);
 
+			// Delete cells in old
+			if (this->mpi_myself == pold && r_vector[0] == 0)
+			{
+				std::ostringstream del;
+				del << "DELETE; -cell\n";
+				for (size_t i = 2; i < tp_it->second.size(); i++)
+				{
+					del << tp_it->second[i] << "\n";
+
+				}
+				try
+				{
+					int status = phast_iphreeqc_worker->RunString(del.str().c_str());
+					this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+				}
+				catch (...)
+				{
+					r_vector[0] = 1;
+				}
+			}
+			//The gather is sometimes slow for some reason
+			//this->HandleErrorsInternal(r_vector);
+			if (r_vector[0] != 0)
+				throw PhreeqcRMStop();
+		}		
 		for (int i = 0; i < this->mpi_tasks; i++)
 		{
 			start_cell[i] = start_cell_new[i];
@@ -3818,7 +4562,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		}
 		if (this->mpi_myself == 0)
 		{
-			std::cerr << "          Cells shifted between processes   " << change << "\n";
+			std::cerr << "          Cells shifted between processes     " << change << "\n";
 		}
 	}
 	catch (...)
@@ -4074,6 +4818,11 @@ PhreeqcRM::RunCells()
 /*
  *   Routine runs reactions for each cell
  */
+	if (mpi_myself == 0)
+	{
+		int method = METHOD_RUNCELLS;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
 	IRM_RESULT return_value = IRM_OK;
 	/*
 	*   Update solution compositions in sz_bin
@@ -4135,8 +4884,13 @@ PhreeqcRM::RunCells()
 #if !defined(NDEBUG)
 		this->CheckSelectedOutput();
 #endif
-	// Rebalance load
+		// Rebalance load
+		clock_t t0 = clock();
 		this->RebalanceLoad();
+		if (mpi_myself == 0 && mpi_tasks > 1)
+		{ 
+			std::cerr << "          Time rebalancing load             " << double(clock() - t0)/CLOCKS_PER_SEC << "\n";
+		}
 	}
 	catch (...)
 	{
@@ -4196,7 +4950,12 @@ PhreeqcRM::RunCells()
 		this->CheckSelectedOutput();
 #endif
 		// Rebalance load
+		clock_t t0 = clock();
 		this->RebalanceLoad();
+		if (mpi_myself == 0 && nthreads > 1)
+		{ 
+			std::cerr << "          Time rebalancing load             " << double(clock() - t0)/CLOCKS_PER_SEC << "\n";
+		}
 	}
 	catch (...)
 	{
@@ -4621,13 +5380,20 @@ PhreeqcRM::RunCellsThread(int n)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunFile(int workers, int initial_phreeqc, int utility, const char * chemistry_name)
+PhreeqcRM::RunFile(bool workers, bool initial_phreeqc, bool utility, const char * chemistry_name)
 /* ---------------------------------------------------------------------- */
 {
-	this->error_count = 0;
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_RUNFILE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
+	this->error_count = 0;
 	std::vector<int> flags;
 	flags.resize(4);
 	this->SetChemistryFileName(chemistry_name);
@@ -4749,13 +5515,20 @@ PhreeqcRM::RunFileThread(int n)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunString(int  workers, int initial_phreeqc, int utility, const char * input_string)
+PhreeqcRM::RunString(bool workers, bool initial_phreeqc, bool utility, const char * input_string)
 /* ---------------------------------------------------------------------- */
 {
-	this->error_count = 0;
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_RUNSTRING;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
+	this->error_count = 0;
 	std::string input = Char2TrimString(input_string);
 	std::vector<int> flags;
 	flags.resize(5);
@@ -4954,39 +5727,19 @@ PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetFilePrefix(const char * prefix)
-/* ---------------------------------------------------------------------- */
-{
-	IRM_RESULT return_value = IRM_OK;
-	if (this->mpi_myself == 0)
-	{	
-		this->file_prefix = Char2TrimString(prefix);
-	}
-#ifdef USE_MPI
-	int l1 = 0;
-	if (mpi_myself == 0)
-	{
-		l1 = (int) this->file_prefix.size();
-	}
-	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	this->file_prefix.resize(l1);
-	MPI_Bcast((void *) this->file_prefix.c_str(), l1, MPI_CHAR, 0, MPI_COMM_WORLD);
-#endif
-	if (this->file_prefix.size() == 0)
-	{
-		return_value = IRM_INVALIDARG;
-	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetFilePrefix"); 
-}
-
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
 PhreeqcRM::SetCellVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_SETCELLVOLUME;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+#endif
 		if ((int) this->cell_volume.size() < this->nxyz)
 		{
 			this->cell_volume.resize(this->nxyz);
@@ -5015,6 +5768,13 @@ IRM_RESULT
 PhreeqcRM::SetChemistryFileName(const char * cn)
 /* ---------------------------------------------------------------------- */
 {
+//#ifdef USE_MPI
+//	if (this->mpi_myself == 0)
+//	{
+//		int method = METHOD_SETCHEMISTRYFILENAME;
+//		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+//	}
+//#endif
 	IRM_RESULT return_value = IRM_OK;
 	int l = 0;
 	if (this->mpi_myself == 0)
@@ -5041,7 +5801,14 @@ IRM_RESULT
 PhreeqcRM::SetConcentrations(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	// Distribute data
+	// Distribute concentration data
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETCONCENTRATIONS;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	size_t ncomps = this->components.size();
 	std::vector<double> c;
 	c.resize(ncomps * nxyz, INACTIVE_CELL_VALUE);
@@ -5071,6 +5838,13 @@ IRM_RESULT
 PhreeqcRM::SetDatabaseFileName(const char * db)
 /* ---------------------------------------------------------------------- */
 {
+//#ifdef USE_MPI
+//	if (this->mpi_myself == 0)
+//	{
+//		int method = METHOD_SETDATABASEFILENAME;
+//		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+//	}
+//#endif
 	IRM_RESULT return_value = IRM_OK;
 	int l = 0;
 	if (this->mpi_myself == 0)
@@ -5101,6 +5875,13 @@ PhreeqcRM::SetDensity(double *t)
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETDENSITY;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 		if ((int) this->density.size() < this->nxyz)
 		{
 			this->density.resize((size_t) (this->nxyz), 0.0);
@@ -5123,7 +5904,47 @@ PhreeqcRM::SetDensity(double *t)
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetDensity");
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetDumpFileName(const char * cn)
+/* ---------------------------------------------------------------------- */
+{
+//#ifdef USE_MPI
+//	if (this->mpi_myself == 0)
+//	{
+//		int method = METHOD_SETDUMPFILENAME;
+//		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+//	}
+//#endif
+	IRM_RESULT return_value = IRM_OK;
+	int l = 0;
+	if (this->mpi_myself == 0)
+	{	
+		if (cn != NULL)
+		{
+			this->dump_file_name = Char2TrimString(cn);
+			l = (int) this->dump_file_name.size();
+		}
+		else
+		{
+			this->dump_file_name = this->file_prefix;
+			this->dump_file_name.append(".dmp");
+		}
+	}
+//#ifdef USE_MPI
+//	MPI_Bcast(&l, 1, MPI_INT, 0, MPI_COMM_WORLD);
+//	if (l > 0)
+//	{
+//		this->dump_file_name.resize(l);
+//		MPI_Bcast((void *) this->dump_file_name.c_str(), l, MPI_CHAR, 0, MPI_COMM_WORLD);
+//	}
+//#endif
+	if (l == 0)
+	{
+		return_value = IRM_INVALIDARG;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetDumpFileName");
+}
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::SetEndCells(void)
@@ -5161,6 +5982,13 @@ IRM_RESULT
 PhreeqcRM::SetErrorHandlerMode(int i)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_SETERRORHANDLERMODE;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
@@ -5176,12 +6004,52 @@ PhreeqcRM::SetErrorHandlerMode(int i)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetErrorHandlerMode");
 }
-
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetFilePrefix(std::string &prefix)
+PhreeqcRM::SetFilePrefix(const char * prefix)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETFILEPREFIX;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
+	IRM_RESULT return_value = IRM_OK;
+	if (this->mpi_myself == 0)
+	{	
+		this->file_prefix = Char2TrimString(prefix);
+	}
+#ifdef USE_MPI
+	int l1 = 0;
+	if (mpi_myself == 0)
+	{
+		l1 = (int) this->file_prefix.size();
+	}
+	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	this->file_prefix.resize(l1);
+	MPI_Bcast((void *) this->file_prefix.c_str(), l1, MPI_CHAR, 0, MPI_COMM_WORLD);
+#endif
+	if (this->file_prefix.size() == 0)
+	{
+		return_value = IRM_INVALIDARG;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetFilePrefix"); 
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetFilePrefix(std::string prefix)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETFILEPREFIX;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	this->file_prefix.clear();
 	int l = 0;
@@ -5204,12 +6072,19 @@ PhreeqcRM::SetFilePrefix(std::string &prefix)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetFilePrefix");
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 PhreeqcRM::SetPartitionUZSolids(int t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETPARTITIONUZSOLIDS;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	if (mpi_myself == 0)
 	{
 		this->partition_uz_solids = (t != 0);
@@ -5224,6 +6099,13 @@ IRM_RESULT
 PhreeqcRM::SetPoreVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETPOREVOLUME;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->pore_volume.size() < this->nxyz)
 	{
@@ -5254,6 +6136,13 @@ IRM_RESULT
 PhreeqcRM::SetPoreVolumeZero(double *t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETPOREVOLUMEZERO;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->pore_volume_zero.size() < this->nxyz)
 	{
@@ -5284,6 +6173,13 @@ IRM_RESULT
 PhreeqcRM::SetPressure(double *t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETPRESSURE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->pressure.size() < this->nxyz)
 	{
@@ -5342,6 +6238,13 @@ IRM_RESULT
 PhreeqcRM::SetPrintChemistryOn(bool worker, bool ip, bool utility)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETPRINTCHEMISTRYON;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	std::vector<int> l;
 	l.resize(3);
 	if (mpi_myself == 0)
@@ -5363,6 +6266,13 @@ IRM_RESULT
 PhreeqcRM::SetPrintChemistryMask(int * t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETPRINTCHEMISTRYMASK;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->print_chem_mask.size() < this->nxyz)
 	{
@@ -5390,23 +6300,16 @@ PhreeqcRM::SetPrintChemistryMask(int * t)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetRebalanceFraction(double t)
-/* ---------------------------------------------------------------------- */
-{
-	if (mpi_myself == 0)
-	{
-		this->rebalance_fraction = t;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&(this->rebalance_fraction), 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-#endif
-	return IRM_OK;
-}
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
 PhreeqcRM::SetRebalanceByCell(bool t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETREBALANCEBYCELL;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	if (mpi_myself == 0)
 	{
 		this->rebalance_by_cell = t;
@@ -5418,9 +6321,30 @@ PhreeqcRM::SetRebalanceByCell(bool t)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
+PhreeqcRM::SetRebalanceFraction(double t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		this->rebalance_fraction = t;
+	}
+//#ifdef USE_MPI
+//	MPI_Bcast(&(this->rebalance_fraction), 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+//#endif
+	return IRM_OK;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
 PhreeqcRM::SetSaturation(double *t)
 /* ---------------------------------------------------------------------- */
 {	
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETSATURATION;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->saturation.size() < this->nxyz)
 	{
@@ -5452,6 +6376,13 @@ IRM_RESULT
 PhreeqcRM::SetSelectedOutputOn(bool t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETSELECTEDOUTPUTON;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	if (mpi_myself == 0)
 	{
 		this->selected_output_on = t;
@@ -5461,25 +6392,32 @@ PhreeqcRM::SetSelectedOutputOn(bool t)
 #endif
 	return IRM_OK;
 }
-/* ---------------------------------------------------------------------- */
-IRM_RESULT 
-PhreeqcRM::SetStopMessage(bool t)
-/* ---------------------------------------------------------------------- */
-{
-	if (mpi_myself == 0)
-	{
-		this->stop_message = t;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&this->stop_message, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
-#endif
-	return IRM_OK;
-}
+///* ---------------------------------------------------------------------- */
+//IRM_RESULT 
+//PhreeqcRM::SetStopMessage(bool t)
+///* ---------------------------------------------------------------------- */
+//{
+//	if (mpi_myself == 0)
+//	{
+//		this->stop_message = t;
+//	}
+//#ifdef USE_MPI
+//	MPI_Bcast(&this->stop_message, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+//#endif
+//	return IRM_OK;
+//}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetTemperature(double *t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETTEMPERATURE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if ((int) this->tempc.size() < this->nxyz)
 	{
@@ -5537,6 +6475,13 @@ IRM_RESULT
 PhreeqcRM::SetTime(double t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETTIME;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	if (mpi_myself == 0)
 	{
 		this->time = t;
@@ -5552,6 +6497,13 @@ IRM_RESULT
 PhreeqcRM::SetTimeConversion(double t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETTIMECONVERSION;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	if (mpi_myself == 0)
 	{
 		this->time_conversion = t;
@@ -5567,6 +6519,13 @@ IRM_RESULT
 PhreeqcRM::SetTimeStep(double t)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETTIMESTEP;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	if (this->mpi_myself == 0)
 	{
 		this->time_step = t;
@@ -5581,6 +6540,13 @@ IRM_RESULT
 PhreeqcRM::SetUnitsExchange(int u)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETUNITSEXCHANGE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
@@ -5603,6 +6569,13 @@ IRM_RESULT
 PhreeqcRM::SetUnitsGasPhase(int u)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETUNITSGASPHASE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
@@ -5625,6 +6598,13 @@ IRM_RESULT
 PhreeqcRM::SetUnitsKinetics(int u)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETUNITSKINETICS;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
@@ -5647,6 +6627,13 @@ IRM_RESULT
 PhreeqcRM::SetUnitsPPassemblage(int u)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETUNITSPPASSEMBLAGE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
@@ -5669,6 +6656,13 @@ IRM_RESULT
 PhreeqcRM::SetUnitsSolution(int u)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETUNITSSOLUTION;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
@@ -5691,6 +6685,13 @@ IRM_RESULT
 PhreeqcRM::SetUnitsSSassemblage(int u)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETUNITSSSASSEMBLAGE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
@@ -5713,6 +6714,13 @@ IRM_RESULT
 PhreeqcRM::SetUnitsSurface(int u)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETUNITSSURFACE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
@@ -5792,56 +6800,56 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 			std::ostringstream raw_stream;
 			t_bin.dump_raw(raw_stream, 0);
 			size_t string_size = raw_stream.str().size() + 1;
-#ifdef USE_GZ
-			// compress string into deflated
-			char * deflated = new char[string_size];
-			uLongf deflated_size = (uLongf) string_size;
-			compress((Bytef *)deflated, (uLongf *) &deflated_size, (const Bytef *) raw_stream.str().c_str(), (uLongf) string_size);
-
-			// transfer sizes and compressed string to new process
-			int size[2];
-			size[0] = (int) deflated_size;
-			size[1] = (int) string_size;
-			MPI_Send(&size, 2, MPI_INT, nnew, 0, MPI_COMM_WORLD);
-			MPI_Send((void *) deflated, size[0], MPI_BYTE, nnew, 0, MPI_COMM_WORLD);
-		
-			// delete work space
-			delete deflated;
-#else
+//#ifdef USE_GZ
+//			// compress string into deflated
+//			char * deflated = new char[string_size];
+//			uLongf deflated_size = (uLongf) string_size;
+//			compress((Bytef *)deflated, (uLongf *) &deflated_size, (const Bytef *) raw_stream.str().c_str(), (uLongf) string_size);
+//
+//			// transfer sizes and compressed string to new process
+//			int size[2];
+//			size[0] = (int) deflated_size;
+//			size[1] = (int) string_size;
+//			MPI_Send(&size, 2, MPI_INT, nnew, 0, MPI_COMM_WORLD);
+//			MPI_Send((void *) deflated, size[0], MPI_BYTE, nnew, 0, MPI_COMM_WORLD);
+//		
+//			// delete work space
+//			delete deflated;
+//#else
 			MPI_Send(&string_size, 1, MPI_INT, nnew, 0, MPI_COMM_WORLD);
-			MPI_Send((void *) raw_stream.str().c_str(), string_size, MPI_CHAR, nnew, 0, MPI_COMM_WORLD);
-#endif	
+			MPI_Send((void *) raw_stream.str().c_str(), (int) string_size, MPI_CHAR, nnew, 0, MPI_COMM_WORLD);
+//#endif	
 
 		}
 		else if (this->mpi_myself == nnew)
 		{	
 			MPI_Status mpi_status;
 			
-#ifdef USE_GZ
-			// Recieve sizes and compressed string		
-			int size[2];
-			MPI_Recv(&size, 2, MPI_INT, old, 0, MPI_COMM_WORLD, &mpi_status);
-			char *deflated = new char[size[0]];
-			MPI_Recv((void *) deflated, size[0], MPI_BYTE, old, 0, MPI_COMM_WORLD, &mpi_status);
-
-			// uncompress string into string_buffer
-			char * string_buffer = new char[size[1]];
-			uLongf uncompressed_length = (uLongf) size[1];
-			uncompress((Bytef *)string_buffer, &uncompressed_length, (const Bytef *) deflated, (uLongf) size[0]);
-			delete deflated;
-
-			// RunString to add cells to module
-			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
-			int status = phast_iphreeqc_worker->RunString(string_buffer);
-			delete string_buffer;
-#else
+//#ifdef USE_GZ
+//			// Recieve sizes and compressed string		
+//			int size[2];
+//			MPI_Recv(&size, 2, MPI_INT, old, 0, MPI_COMM_WORLD, &mpi_status);
+//			char *deflated = new char[size[0]];
+//			MPI_Recv((void *) deflated, size[0], MPI_BYTE, old, 0, MPI_COMM_WORLD, &mpi_status);
+//
+//			// uncompress string into string_buffer
+//			char * string_buffer = new char[size[1]];
+//			uLongf uncompressed_length = (uLongf) size[1];
+//			uncompress((Bytef *)string_buffer, &uncompressed_length, (const Bytef *) deflated, (uLongf) size[0]);
+//			delete deflated;
+//
+//			// RunString to add cells to module
+//			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+//			int status = phast_iphreeqc_worker->RunString(string_buffer);
+//			delete string_buffer;
+//#else
 			int string_size;;
 			MPI_Recv(&string_size, 1, MPI_INT, old, 0, MPI_COMM_WORLD, &mpi_status);
 			char *string_buffer = new char[string_size];
 			MPI_Recv((void *) string_buffer, string_size, MPI_CHAR, old, 0, MPI_COMM_WORLD, &mpi_status);
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
 			int status = phast_iphreeqc_worker->RunString(string_buffer);
-#endif
+//#endif
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
 		}
 	}
