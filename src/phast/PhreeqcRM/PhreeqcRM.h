@@ -41,15 +41,14 @@ typedef enum {
 	METHOD_GETSELECTEDOUTPUT,
 	METHOD_GETSOLUTIONVOLUME,
 	METHOD_INITIALPHREEQC2MODULE,
+	METHOD_INITIALPHREEQCCELL2MODULE,
 	METHOD_LOADDATABASE,
 	METHOD_MPIWORKERBREAK,
 	METHOD_RUNCELLS,
 	METHOD_RUNFILE,
 	METHOD_RUNSTRING,
 	METHOD_SETCELLVOLUME,
-	METHOD_SETCHEMISTRYFILENAME,
 	METHOD_SETCONCENTRATIONS,
-	METHOD_SETDATABASEFILENAME,
 	METHOD_SETDENSITY,
 	METHOD_SETERRORHANDLERMODE,
 	METHOD_SETFILEPREFIX,
@@ -59,10 +58,9 @@ typedef enum {
 	METHOD_SETPRESSURE,
 	METHOD_SETPRINTCHEMISTRYON,
 	METHOD_SETPRINTCHEMISTRYMASK,
-	METHOD_SETREBALANCEFRACTION,
+	METHOD_SETREBALANCEBYCELL,
 	METHOD_SETSATURATION,
 	METHOD_SETSELECTEDOUTPUTON,
-	METHOD_SETSTOPMESSAGE,
 	METHOD_SETTEMPERATURE,
 	METHOD_SETTIME,
 	METHOD_SETTIMECONVERSION,
@@ -109,6 +107,7 @@ public:
                                                    int *initial_conditions1 = NULL,
                                                    int *initial_conditions2 = NULL,	
                                                    double *fraction1 = NULL);
+	IRM_RESULT                                InitialPhreeqcCell2Module(int i, const std::vector<int> &cell_numbers);
 	IRM_RESULT                                LoadDatabase(const char * database = NULL);
 	void                                      LogMessage(const std::string &str);
 	IRM_RESULT                                MpiWorker();
@@ -116,8 +115,8 @@ public:
 	IRM_RESULT                                OpenFiles(void);
 	void                                      OutputMessage(const std::string &str);
 	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
-	IRM_RESULT                                RunFile(int workers = -1, int initial_phreeqc = -1, int utility = -1, const char *chemistry_name = NULL);
-	IRM_RESULT                                RunString(int workers = -1, int initial_phreeqc = -1, int utility = -1, const char *str = NULL);
+	IRM_RESULT                                RunFile(bool workers = false, bool initial_phreeqc = false, bool utility = false,  const char *chemistry_name = NULL);
+	IRM_RESULT                                RunString(bool workers = false, bool initial_phreeqc = false, bool utility = false, const char *str = NULL);
 	IRM_RESULT                                RunCells(void);
 	void                                      ScreenMessage(const std::string &str);
 	void                                      WarningMessage(const std::string &str);
@@ -176,7 +175,7 @@ public:
 	int                                       GetSelectedOutputRowCount(void);	
 	std::vector<double> &                     GetSolutionVolume(void); 
 	const std::vector < int> &                GetStartCell(void) const {return this->start_cell;} 
-	bool                                      GetStopMessage(void) const {return this->stop_message;}
+	//bool                                      GetStopMessage(void) const {return this->stop_message;}
 	std::vector<double> &                     GetTemperature(void) {return this->tempc;}
 	double                                    GetTime(void) const {return this->time;} 
 	double                                    GetTimeStep(void) const {return this->time_step;}
@@ -186,12 +185,12 @@ public:
 	// Setters 
 	IRM_RESULT                                SetConcentrations(double * t = NULL); 
 	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i = -1);
-	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
 	IRM_RESULT                                SetCellVolume(double * t = NULL);
-	IRM_RESULT                                SetDensity(double * t = NULL); 
+	IRM_RESULT                                SetDensity(double * t = NULL);
+	IRM_RESULT                                SetDumpFileName(const char * db = NULL); 
 	IRM_RESULT                                SetErrorHandlerMode(int i = 0); 
 	IRM_RESULT                                SetExitOnError(bool t = true);
-	IRM_RESULT                                SetFilePrefix(std::string &fn); 
+	//IRM_RESULT                                SetFilePrefix(std::string fn = ""); 
 	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL);
 	IRM_RESULT                                SetPartitionUZSolids(int t = -1);
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
@@ -203,7 +202,7 @@ public:
 	IRM_RESULT                                SetRebalanceByCell(bool t = false); 
 	IRM_RESULT                                SetSaturation(double * t = NULL); 
 	IRM_RESULT                                SetSelectedOutputOn(bool t = false);
-	IRM_RESULT                                SetStopMessage(bool t = false); 
+	//IRM_RESULT                                SetStopMessage(bool t = false); 
 	IRM_RESULT                                SetTemperature(double * t = NULL);
 	IRM_RESULT                                SetTime(double t = 0.0);
 	IRM_RESULT                                SetTimeConversion(double t = 1.0);
@@ -238,12 +237,14 @@ protected:
 	IRM_RESULT                                RunCellsThreadNoPrint(int n);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
 	IRM_RESULT                                SetChemistryFileName(const char * prefix = NULL);
+	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
 	void                                      SetEndCells(void);
 	IRM_RESULT                                TransferCells(cxxStorageBin &t_bin, int old, int nnew);
 
 protected:
 	std::string database_file_name;
 	std::string chemistry_file_name;
+	std::string dump_file_name;
 	std::string file_prefix;
 	cxxStorageBin uz_bin;
 	cxxStorageBin phreeqc_bin;
@@ -284,9 +285,9 @@ protected:
 	std::vector<bool> print_chemistry_on;	// print flag for chemistry output file 
 	bool selected_output_on;				// create selected output
 
-	bool stop_message;
+	//bool stop_message;
 	int error_count;
-	int error_handler_mode;
+	int error_handler_mode;                 // 0, return code; 1, throw; 2 exit;
 
 	// threading
 	int nthreads;

@@ -44,7 +44,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		double * tc;
 		double * p_atm;
 		int iphreeqc_id;
-		int dump_on, use_gz;
+		int dump_on, append;
 
 		nxyz = 40;
 		nthreads = 2;
@@ -275,8 +275,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
 		// Dump results
 		dump_on = 1;
-		use_gz = 0;
-		status = RM_DumpModule(id, dump_on, use_gz);    // second argument: gz disabled unless compiled with #define USE_GZ
+		append = 0;
+		status = RM_SetDumpFileName(id, "advection_c.dmp.gz");
+		status = RM_DumpModule(id, dump_on, append);    // second argument: gz disabled unless compiled with #define USE_GZ
 
 		// free space
 		free(cell_vol);

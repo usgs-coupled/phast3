@@ -46,7 +46,7 @@
     character(100)                                :: heading
     double precision, dimension(:), allocatable   :: tc, p_atm
     integer                                       :: iphreeqc_id
-    integer                                       :: dump_on, use_gz
+    integer                                       :: dump_on, append
 
     nxyz = 40
     nthreads = 2
@@ -245,8 +245,9 @@
 
 	! Dump results   
     dump_on = 1
-    use_gz = 0
-    status = RM_DumpModule(id, dump_on, use_gz)    ! second argument: gz disabled unless compiled with #define USE_GZ
+    append = 0
+	status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")    
+    status = RM_DumpModule(id, dump_on, append)    ! second argument: gz disabled unless compiled with #define USE_GZ
     
     deallocate(cell_vol);
     deallocate(pv0);

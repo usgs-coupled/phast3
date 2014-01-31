@@ -81,15 +81,15 @@ int advection_cpp()
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
 
 		// Run file to define solutions and reactants for initial conditions, selected output
-		int workers = 1;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
-		int initial_phreeqc = 1;     // This is an IPhreeqc for accumulating initial and boundary conditions
-		int utility = 1;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
+		bool workers = true;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
+		bool initial_phreeqc = true;     // This is an IPhreeqc for accumulating initial and boundary conditions
+		bool utility = true;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
 		// mixture for a well
 		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "advect.pqi");
 
 		// For demonstration, clear contents of workers and utility
 		// Worker initial conditions are defined below
-		initial_phreeqc = 0;
+		initial_phreeqc = false;
 		std::string input = "DELETE; -all";
 		status = phreeqc_rm.RunString(workers, initial_phreeqc, utility, input.c_str());
 
@@ -218,8 +218,9 @@ int advection_cpp()
 
 		// Dump results
 		bool dump_on = true;
-		bool use_gz = false;
-		status = phreeqc_rm.DumpModule(dump_on, use_gz);    // gz disabled unless compiled with #define USE_GZ
+		bool append = false;
+		status = phreeqc_rm.SetDumpFileName("advection_cpp.dmp");
+		status = phreeqc_rm.DumpModule(dump_on, append);    // gz disabled unless compiled with #define USE_GZ
 	}
 	catch (PhreeqcRMStop)
 	{

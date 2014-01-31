@@ -45,26 +45,29 @@ SUBROUTINE phast_worker
 ! start CreateRM
 !
     ! ... Make a PhreeqcRM
-    rm_id = RM_Create(nxyz, nthreads)
-    IF (rm_id.LT.0) THEN
-        WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
-        STOP 
-    END IF
-    nthreads = RM_GetNThreads(rm_id)
-    status = RM_SetErrorHandlerMode(rm_id)
-    status = RM_SetPrintChemistryOn(rm_id)
-    ! ... Open C files 
-    status = RM_SetFilePrefix(rm_id)
-    status = RM_OpenFiles(rm_id)
-    status = RM_LoadDatabase(rm_id, f2name);
-    
     IF (solute) THEN
+        rm_id = RM_Create(nxyz, nthreads)
+        IF (rm_id.LT.0) THEN
+            WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
+            STOP 
+        END IF
+        nthreads = RM_GetNThreads(rm_id)
+        !status = RM_SetErrorHandlerMode(rm_id)
+        !status = RM_SetPrintChemistryOn(rm_id)
+        ! ... Open C files 
+        !status = RM_SetFilePrefix(rm_id)
+        status = RM_MpiWorker(rm_id)                           ! 1 RM_MpiWorker
+        status = RM_OpenFiles(rm_id)
+        !status = RM_LoadDatabase(rm_id, f2name);
+        status = RM_MpiWorker(rm_id)                           ! 2 RM_MpiWorker
+
         ! ... initial PHREEQC run to define reactants 
-        status = RM_RunFile(rm_id) 
+        !status = RM_RunFile(rm_id) 
+
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
-            STAT = a_err)
+        STAT = a_err)
         IF (a_err /= 0) THEN
             PRINT *, "Array allocation failed: init1, point 5"  
             STOP
@@ -99,39 +102,38 @@ SUBROUTINE phast_worker
 ! start of InitializeRM
 !
         ! ... Initialize chemistry 
-        status = RM_SetUnitsSolution(rm_id)
-        status = RM_SetUnitsExchange(rm_id)
-        status = RM_SetUnitsGasPhase(rm_id)
-        status = RM_SetUnitsKinetics(rm_id)
-        status = RM_SetUnitsPPassemblage(rm_id)
-        status = RM_SetUnitsSSassemblage(rm_id)
-        status = RM_SetUnitsSurface(rm_id)
-         
-        status = RM_SetTimeConversion(rm_id)
-        status = RM_SetPoreVolume(rm_id)
-        status = RM_SetPoreVolumeZero(rm_id)
+        !status = RM_SetUnitsSolution(rm_id)
+        !status = RM_SetUnitsExchange(rm_id)
+        !status = RM_SetUnitsGasPhase(rm_id)
+        !status = RM_SetUnitsKinetics(rm_id)
+        !status = RM_SetUnitsPPassemblage(rm_id)
+        !status = RM_SetUnitsSSassemblage(rm_id)
+        !status = RM_SetUnitsSurface(rm_id)
+        !status = RM_SetTimeConversion(rm_id)
+        !status = RM_SetPoreVolume(rm_id)
+        !status = RM_SetPoreVolumeZero(rm_id)
         !!status = RM_SetSaturation(rm_id)
-        status = RM_SetPrintChemistryMask(rm_id)
-        status = RM_SetSelectedOutputOn(rm_id, status)
-        status = RM_SetPartitionUZSolids(rm_id)
-        status = RM_SetCellVolume(rm_id)
-        status = RM_SetRebalanceFraction(rm_id)
-        status = RM_SetRebalanceByCell(rm_id)
-
-        ! ... Mapping from full 3D domain to chemistry
+        !status = RM_SetPrintChemistryMask(rm_id)
+        !status = RM_SetSelectedOutputOn(rm_id, status)
+        !status = RM_SetPartitionUZSolids(rm_id)
+        !status = RM_SetCellVolume(rm_id)
+        !status = RM_SetRebalanceFraction(rm_id)
+        !status = RM_SetRebalanceByCell(rm_id)
         !status = RM_CreateMapping(rm_id) 
-        status = RM_MpiWorker(rm_id)
+        status = RM_MpiWorker(rm_id)                               ! 3 RM_MpiWorker
+        
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files
             CALL FH_SetRestartName(restart_files(i))
         ENDDO
         CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1))
-        status = RM_InitialPhreeqc2Module(rm_id)
+        !status = RM_InitialPhreeqc2Module(rm_id)
+        status = RM_MpiWorker(rm_id)                               ! 4 RM_MpiWorker
         CALL FH_ProcessRestartFiles(rm_id)
         
         ! ... collect solutions for transport
         !status = RM_GetConcentrations(rm_id)
-        status = RM_MpiWorker(rm_id)
+        status = RM_MpiWorker(rm_id)                               ! 5 RM_MpiWorker
 !        
 !end  of InitializeRM
 !     
@@ -144,18 +146,18 @@ SUBROUTINE phast_worker
 !start  of InitialEquilibrationRM
 !
         ! ... Initial equilibration
-        status = RM_SetPoreVolume(rm_id)
-        status = RM_SetSaturation(rm_id)
-        status = RM_SetPrintChemistryOn(rm_id)
-        status = RM_SetSelectedOutputOn(rm_id)
+        !status = RM_SetPoreVolume(rm_id)
+        !status = RM_SetSaturation(rm_id)
+        !status = RM_SetPrintChemistryOn(rm_id)
+        !status = RM_SetSelectedOutputOn(rm_id)
+        !status = RM_SetTime(rm_id) 
+        !status = RM_SetTimeStep(rm_id) 
+        !status = RM_SetConcentrations(rm_id)
+        !status = RM_SetStopMessage(rm_id)
+        !status = RM_RunCells(rm_id)  
+        status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
         
-        status = RM_SetTime(rm_id) 
-        status = RM_SetTimeStep(rm_id) 
-        status = RM_SetConcentrations(rm_id)
-        status = RM_SetStopMessage(rm_id)
-        
-        status = RM_RunCells(rm_id)  
-        CALL FH_WriteFiles(rm_id)  
+        !!CALL FH_WriteFiles(rm_id)  
 !        
 !end  of InitialEquilibrationRM
 !   
@@ -207,22 +209,21 @@ SUBROUTINE phast_worker
 !Start  of TimeStepRM
 ! 
             ! ... Chemistry calculation
-            status = RM_SetPoreVolume(rm_id)
-            status = RM_SetSaturation(rm_id)
-            status = RM_SetPrintChemistryOn(rm_id)
-            status = RM_SetSelectedOutputOn(rm_id)
-            
-            status = RM_SetTime(rm_id) 
-            status = RM_SetTimeStep(rm_id) 
-            status = RM_SetConcentrations(rm_id)
-            status = RM_SetStopMessage(rm_id)
-        
-            status = RM_RunCells(rm_id)   
+            !status = RM_SetPoreVolume(rm_id)
+            !status = RM_SetSaturation(rm_id)
+            !status = RM_SetPrintChemistryOn(rm_id)
+            !status = RM_SetSelectedOutputOn(rm_id)
+            !status = RM_SetTime(rm_id) 
+            !status = RM_SetTimeStep(rm_id) 
+            !status = RM_SetConcentrations(rm_id)
+            !status = RM_SetStopMessage(rm_id)
+            !status = RM_RunCells(rm_id)   
             !status = RM_GetConcentrations(rm_id)
-            status = RM_MpiWorker(rm_id)
-            CALL FH_WriteFiles(rm_id)
+            status = RM_MpiWorker(rm_id)                               ! 7 RM_MpiWorker
+
+            !!CALL FH_WriteFiles(rm_id)
             !status = RM_DumpModule(rm_id)
-            status = RM_MpiWorker(rm_id)
+            status = RM_MpiWorker(rm_id)                               ! 8 RM_MpiWorker
 !        
 !Start  of TimeStepRM
 !       
