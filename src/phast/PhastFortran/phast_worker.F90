@@ -1,4 +1,5 @@
-SUBROUTINE phast_worker
+
+    SUBROUTINE phast_worker
 #if defined(USE_MPI)
     ! ... The top level routine for a worker process that does the 
     ! ...     solute transport calculation for one component
@@ -20,6 +21,11 @@ SUBROUTINE phast_worker
     USE mpi_mod
     IMPLICIT NONE
     INCLUDE 'RM_interface.f90.inc'
+    INTERFACE
+        integer function mpi_methods(method)
+            integer, intent(in) :: method
+        end function
+    END INTERFACE
     REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg=0
     INTEGER :: i, a_err
@@ -56,26 +62,26 @@ SUBROUTINE phast_worker
         !status = RM_SetPrintChemistryOn(rm_id)
         ! ... Open C files 
         !status = RM_SetFilePrefix(rm_id)
-        status = RM_MpiWorker(rm_id)                           ! 1 RM_MpiWorker
-        status = RM_OpenFiles(rm_id)
+        !status = RM_MpiWorker(rm_id)                           ! x RM_MpiWorker
+        !status = RM_OpenFiles(rm_id)
         !status = RM_LoadDatabase(rm_id, f2name);
-        status = RM_MpiWorker(rm_id)                           ! 2 RM_MpiWorker
-
         ! ... initial PHREEQC run to define reactants 
         !status = RM_RunFile(rm_id) 
 
         ! Set components
-        ns = RM_FindComponents(rm_id)
-        ALLOCATE(comp_name(ns),  & 
-        STAT = a_err)
-        IF (a_err /= 0) THEN
-            PRINT *, "Array allocation failed: init1, point 5"  
-            STOP
-        ENDIF
-        DO i = 1, ns
-            comp_name(i) = ' '
-            status = RM_GetComponent(rm_id, i, comp_name(i))
-        ENDDO  
+        !ns = RM_FindComponents(rm_id)
+        !ALLOCATE(comp_name(ns),  & 
+        !STAT = a_err)
+        !IF (a_err /= 0) THEN
+        !    PRINT *, "Array allocation failed: init1, point 5"  
+        !    STOP
+        !ENDIF
+        !DO i = 1, ns
+        !    comp_name(i) = ' '
+        !    status = RM_GetComponent(rm_id, i, comp_name(i))
+        status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
+        status = RM_MpiWorker(rm_id)                            ! 1 RM_MpiWorker
+        !ENDDO  
     ENDIF
 !
 ! end CreateRM
@@ -474,4 +480,21 @@ SUBROUTINE worker_closef
 ! end SKIP_TODO
 #endif  
 ! end USE_MPI  
-END SUBROUTINE worker_closef
+    END SUBROUTINE worker_closef
+INTEGER FUNCTION mpi_methods(method)
+    USE mpi_mod
+    IMPLICIT none
+    INTERFACE
+        INTEGER FUNCTION set_components
+        END FUNCTION set_components
+    END INTERFACE
+    integer method, return_value
+    
+    return_value = 0
+#if defined(USE_MPI)
+    if (method == METHOD_SETCOMPONENTS) then
+        return_value = set_components()
+    endif
+#endif
+    mpi_methods = return_value
+END FUNCTION mpi_methods

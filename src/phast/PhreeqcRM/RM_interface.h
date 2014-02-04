@@ -56,9 +56,10 @@
 #define RM_SetConcentrations			   FC_FUNC_ (rm_setconcentrations,             RM_SETCONCENTRATIONS)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
 #define RM_SetDensity                      FC_FUNC_ (rm_setdensity,                    RM_SETDENSITY)
-#define RM_SetDumpFileName                 FC_FUNC_ (rm_setdumpfilename,              RM_SETDUMPFILENAME)
+#define RM_SetDumpFileName                 FC_FUNC_ (rm_setdumpfilename,               RM_SETDUMPFILENAME)
 #define RM_SetErrorHandlerMode             FC_FUNC_ (rm_seterrorhandlermode,           RM_SETERRORHANDLERMODE)
 #define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
+#define RM_SetMpiWorkerCallback            FC_FUNC_ (rm_setmpiworkercallback,          RM_SETMPIWORKERCALLBACK)
 #define RM_SetPartitionUZSolids            FC_FUNC_ (rm_setpartitionuzsolids,          RM_SETPARTITIONUZSOLIDS)
 #define RM_SetPrintChemistryOn             FC_FUNC_ (rm_setprintchemistryon,           RM_SETPRINTCHEMISTRYON)
 #define RM_SetPrintChemistryMask           FC_FUNC_ (rm_setprintchemistrymask,         RM_SETPRINTCHEMISTRYMASK)
@@ -618,6 +619,7 @@ IRM_RESULT RM_SetDensity(int *id, double *t = NULL);
 IRM_RESULT RM_SetDumpFileName(int *id, const char *dump_name = NULL, size_t l = 0);
 IRM_RESULT RM_SetErrorHandlerMode(int *id, int *mode = NULL);
 IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, size_t l = 0);
+IRM_RESULT RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1));
 IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t = NULL);
 IRM_RESULT RM_SetPoreVolume(int *id, double *t = NULL);
 IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t = NULL);

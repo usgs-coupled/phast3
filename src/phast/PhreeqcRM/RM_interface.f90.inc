@@ -259,7 +259,16 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             INTEGER, OPTIONAL, INTENT(in) :: i
-        END FUNCTION RM_SetErrorHandlerMode 
+        END FUNCTION RM_SetErrorHandlerMode        
+		
+        INTEGER FUNCTION RM_SetMpiWorkerCallback(ID, COOKIE)
+			INTEGER(KIND=4),  INTENT(IN) :: ID
+			INTERFACE
+			  INTEGER FUNCTION cookie(x1)
+				INTEGER, INTENT(in) :: x1
+			  END FUNCTION 
+			END INTERFACE
+        END FUNCTION RM_SetMpiWorkerCallback
         
         INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
             IMPLICIT NONE

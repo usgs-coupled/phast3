@@ -215,6 +215,7 @@ public:
 	IRM_RESULT                                SetUnitsSolution(int i = 1);
 	IRM_RESULT                                SetUnitsSSassemblage(int i = 1);
 	IRM_RESULT                                SetUnitsSurface(int i = 1);
+	IRM_RESULT								  SetMpiWorkerFortranCallback(int (*fcn)(int *method));
 protected:
 	void                                      BeginTimeStep(void);
 	IRM_RESULT                                CellInitialize(
@@ -296,6 +297,9 @@ protected:
 	std::vector<int> start_cell;
 	std::vector<int> end_cell;
 	PHRQ_io phreeqcrm_io;
+
+	int (*mpi_worker_fortran_callback) (int *method);
+	void * mpi_worker_cookie;
 
 private:
 	friend class RM_interface;
