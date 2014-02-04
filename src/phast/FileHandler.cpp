@@ -475,34 +475,43 @@ FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *pr
 			print_xyz = *print_xyz_in;
 			print_restart = *print_restart_in;
 		}
-#ifdef USE_MPI	
-		int flags[3];
+//#ifdef USE_MPI	
+//		int flags[3];
+//		if (local_mpi_myself == 0)
+//		{
+//			flags[0] = *print_hdf_in;
+//			flags[1] = *print_xyz_in;
+//			flags[2] = *print_restart_in;
+//		}
+//		MPI_Bcast(flags, 3, MPI_INT, 0, MPI_COMM_WORLD);
+//		print_hdf = flags[0];
+//		print_xyz = flags[1];
+//		print_restart = flags[2];
+//#endif
 		if (local_mpi_myself == 0)
 		{
-			flags[0] = *print_hdf_in;
-			flags[1] = *print_xyz_in;
-			flags[2] = *print_restart_in;
+			if (print_hdf != 0)
+			{
+				IRM_RESULT result = WriteHDF(id, &print_hdf, &print_media);
+				if (result) rtn = result;
+			}
+			if (print_xyz != 0)
+			{
+				IRM_RESULT result = WriteXYZ(id, &print_xyz, xyz_mask);
+				if (result) rtn = result;
+			}		
+			if (print_restart != 0)
+			{
+				IRM_RESULT result = WriteRestart(id, &print_restart);
+				if (result) rtn = result;
+			}	
+			//RM_MpiWorkerBreak(id);
 		}
-		MPI_Bcast(flags, 3, MPI_INT, 0, MPI_COMM_WORLD);
-		print_hdf = flags[0];
-		print_xyz = flags[1];
-		print_restart = flags[2];
-#endif
-		if (print_hdf != 0)
-		{
-			IRM_RESULT result = WriteHDF(id, &print_hdf, &print_media);
-			if (result) rtn = result;
-		}
-		if (print_xyz != 0)
-		{
-			IRM_RESULT result = WriteXYZ(id, &print_xyz, xyz_mask);
-			if (result) rtn = result;
-		}		
-		if (print_restart != 0)
-		{
-			IRM_RESULT result = WriteRestart(id, &print_restart);
-			if (result) rtn = result;
-		}
+		//else
+		//{
+		//	std::cerr << "WriteFiles worker" << std::endl;
+		//	RM_MpiWorker(id);
+		//}
 		return rtn;
 	}
 	return IRM_BADINSTANCE;
@@ -590,10 +599,10 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 							HDFEndCTimeStep(iso);
 							HDF_END_TIME_STEP(&iso);
 						}
-						else
-						{
-							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
-						}
+						//else
+						//{
+						//	int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						//}
 					}
 				}
 			}
@@ -996,10 +1005,10 @@ FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 							}
 
 						}
-						else
-						{
-							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
-						}
+						//else
+						//{
+						//	int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						//}
 					}
 				}
 			}

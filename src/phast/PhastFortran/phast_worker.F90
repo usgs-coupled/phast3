@@ -155,6 +155,7 @@ SUBROUTINE phast_worker
         !status = RM_SetConcentrations(rm_id)
         !status = RM_SetStopMessage(rm_id)
         !status = RM_RunCells(rm_id)  
+        !CALL FH_WriteFiles(rm_id)  
         status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
         
         !!CALL FH_WriteFiles(rm_id)  
@@ -218,10 +219,10 @@ SUBROUTINE phast_worker
             !status = RM_SetConcentrations(rm_id)
             !status = RM_SetStopMessage(rm_id)
             !status = RM_RunCells(rm_id)   
-            !status = RM_GetConcentrations(rm_id)
-            status = RM_MpiWorker(rm_id)                               ! 7 RM_MpiWorker
+            !status = RM_GetConcentrations(rm_id) 
+            !status = RM_MpiWorker(rm_id)                               ! 7 RM_MpiWorker
 
-            !!CALL FH_WriteFiles(rm_id)
+            !CALL FH_WriteFiles(rm_id)
             !status = RM_DumpModule(rm_id)
             status = RM_MpiWorker(rm_id)                               ! 8 RM_MpiWorker
 !        

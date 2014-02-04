@@ -2920,6 +2920,7 @@ PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 	return this->error_count;
 }
 #endif
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Concentrations(
@@ -2993,7 +2994,143 @@ PhreeqcRM::InitialPhreeqc2Concentrations(
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Concentrations");
 }
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::InitialPhreeqc2Concentrations(double *destination_c, 
+					std::vector < int > & boundary_solution1)
+{
+	std::vector< int > dummy;
+	std::vector< double > dummy1;
+	return InitialPhreeqc2Concentrations(destination_c, boundary_solution1, dummy, dummy1);
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::InitialPhreeqc2Concentrations(double *destination_c, 
+					std::vector < int > & boundary_solution1,
+					std::vector < int > & boundary_solution2, 
+					std::vector < double > & fraction1)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   concentrations
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          dim - leading dimension of array boundary mass fractions
+ *                must be >= to n_boundary
+ *
+ *   Output: c - concentrations for boundary conditions
+ *             - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	IRM_RESULT return_value = IRM_OK;
+	this->Get_phreeqc_bin().Clear();
+	try
+	{
+		if (destination_c != NULL && boundary_solution1.size() > 0)
+		{
+			int	n_old1, n_old2;
+			double f1, f2;
+			size_t n_boundary1 = boundary_solution1.size();
+			size_t n_boundary2 = boundary_solution2.size();
+			size_t n_fraction1 = fraction1.size();
+			for (size_t i = 0; i < n_boundary1; i++)
+			{
+				// Find solution 1 number
+				n_old1 = boundary_solution1[i];
+				if (n_old1 < 0)
+				{
+					int next = this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->next_user_number(Keywords::KEY_SOLUTION);
+					if (next != 0)
+					{
+						n_old1 = next - 1;
+					}
+					next = this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->next_user_number(Keywords::KEY_MIX);
+					if (next - 1 > n_old1)
+						n_old1 = next -1;
+				}
 
+				// Put solution 1 in storage bin
+				IRM_RESULT status = IRM_OK;
+				if (this->Get_phreeqc_bin().Get_Solution(n_old1) == NULL)
+				{
+					if (n_old1 >= 0)
+					{
+						std::ostringstream in;
+						in << "RUN_CELLS; -cells " << n_old1;
+						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
+						if (rtn != 0)
+						{
+							status = IRM_FAIL;
+						}
+						else
+						{
+							this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
+						}
+					}
+					else
+					{
+						cxxSolution cxxsoln;
+						this->Get_phreeqc_bin().Set_Solution(n_old1, cxxsoln);
+					}
+				}
+				this->ErrorHandler(status, "First solution for InitialPhreeqc2Concentrations");
+
+				f1 = 1.0;
+				if (i < n_fraction1)
+					f1 = fraction1[i];
+				cxxMix mixmap;
+				mixmap.Add(n_old1, f1);
+
+				// Solution 2
+				n_old2 = -1;
+				if (i < n_boundary2)
+				{
+					n_old2 = boundary_solution2[i]; 
+				}
+				f2 = 1 - f1;
+				status = IRM_OK;
+				if (n_old2 >= 0 && f2 > 0.0)
+				{
+					if (this->Get_phreeqc_bin().Get_Solution(n_old2) == NULL)
+					{
+						std::ostringstream in;
+						in << "RUN_CELLS; -cells " << n_old2;
+						//status = this->RunString(0, 1, 0, in.str().c_str());
+						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
+						if (rtn != 0)
+							status = IRM_FAIL;
+						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old2);
+					}
+					mixmap.Add(n_old2, f2);
+				}
+				this->ErrorHandler(status, "Second solution for InitialPhreeqc2Concentrations");
+				
+				// Make concentrations in destination_c
+				std::vector<double> d;
+				cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
+				cxxSolution2concentration(&cxxsoln, d, cxxsoln.Get_soln_vol());
+
+				// Put concentrations in c
+				double *d_ptr = &destination_c[i];
+				for (size_t j = 0; j < components.size(); j++)
+				{
+					d_ptr[n_boundary1 * j] = d[j];
+				}
+			}
+			return IRM_OK;
+		}
+		this->ErrorHandler(IRM_INVALIDARG, "NULL pointer or dimension of zero in arguments.");
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Concentrations");
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Module(
@@ -3368,6 +3505,7 @@ PhreeqcRM::MpiWorker()
 	// Called by all workers
 #ifdef USE_MPI
 	IRM_RESULT return_value = IRM_OK;
+	bool debug_worker = false;
 	try
 	{
 		bool loop_break = false;
@@ -3378,56 +3516,56 @@ PhreeqcRM::MpiWorker()
 			switch (method)
 			{
 			case METHOD_CREATEMAPPING:
-				std::cerr << "METHOD_CREATEMAPPING" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_CREATEMAPPING" << std::endl;
 				this->CreateMapping();
 				break;
 			case METHOD_DUMPMODULE:
-				std::cerr << "METHOD_DUMPMODULE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_DUMPMODULE" << std::endl;
 				this->DumpModule();
 				break;
 			case METHOD_GETCONCENTRATIONS:
-				std::cerr << "METHOD_GETCONCENTRATIONS" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_GETCONCENTRATIONS" << std::endl;
 				this->GetConcentrations();
 				break;
 			case METHOD_GETDENSITY:
-				std::cerr << "METHOD_GETDENSITY" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_GETDENSITY" << std::endl;
 				this->GetDensity();
 				break;
 			case METHOD_GETSELECTEDOUTPUT:
-				std::cerr << "METHOD_GETSELECTEDOUTPUT" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_GETSELECTEDOUTPUT" << std::endl;
 				this->GetSelectedOutput();
 				break;
 			case METHOD_GETSOLUTIONVOLUME:
-				std::cerr << "METHOD_GETSOLUTIONVOLUME" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_GETSOLUTIONVOLUME" << std::endl;
 				this->GetSolutionVolume();
 				break;
 			case METHOD_INITIALPHREEQC2MODULE:
-				std::cerr << "METHOD_INITIALPHREEQC2MODULE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_INITIALPHREEQC2MODULE" << std::endl;
 				this->InitialPhreeqc2Module();
 				break;
 			case METHOD_LOADDATABASE:
-				std::cerr << "METHOD_LOADDATABASE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_LOADDATABASE" << std::endl;
 				this->LoadDatabase();
 				break;
 			case METHOD_MPIWORKERBREAK:
-				std::cerr << "METHOD_MPIWORKERBREAK" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_MPIWORKERBREAK" << std::endl;
 				loop_break = true;
 				break;
 			case METHOD_RUNCELLS:
-				std::cerr << "METHOD_RUNCELLS" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_RUNCELLS" << std::endl;
 				this->RunCells();
 				break;
 			case METHOD_RUNFILE:
-				std::cerr << "METHOD_RUNFILE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_RUNFILE" << std::endl;
 				this->RunFile();
-				std::cerr << "done METHOD_RUNFILE" << std::endl;
+				if (debug_worker) std::cerr << "done METHOD_RUNFILE" << std::endl;
 				break;
 			case METHOD_RUNSTRING:
-				std::cerr << "METHOD_RUNSTRING" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_RUNSTRING" << std::endl;
 				this->RunString();
 				break;
 			case METHOD_SETCELLVOLUME:
-				std::cerr << "METHOD_SETCELLVOLUME" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETCELLVOLUME" << std::endl;
 				this->SetCellVolume();
 				break;
 			//case METHOD_SETCHEMISTRYFILENAME:
@@ -3435,7 +3573,7 @@ PhreeqcRM::MpiWorker()
 			//	this->SetChemistryFileName();
 			//	break;
 			case METHOD_SETCONCENTRATIONS:
-				std::cerr << "METHOD_SETCONCENTRATIONS" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETCONCENTRATIONS" << std::endl;
 				this->SetConcentrations();
 				break;
 			//case METHOD_SETDATABASEFILENAME:
@@ -3443,101 +3581,105 @@ PhreeqcRM::MpiWorker()
 			//	this->SetDatabaseFileName();
 			//	break;
 			case METHOD_SETDENSITY:
-				std::cerr << "METHOD_SETDENSITY" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETDENSITY" << std::endl;
 				this->SetDensity();
 				break;
 			case METHOD_SETERRORHANDLERMODE:
-				std::cerr << "METHOD_SETERRORHANDLERMODE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETERRORHANDLERMODE" << std::endl;
 				this->SetErrorHandlerMode();
 				break;
 			case METHOD_SETFILEPREFIX:
-				std::cerr << "METHOD_SETFILEPREFIX" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETFILEPREFIX" << std::endl;
 				this->SetFilePrefix();
 				break;
 			case METHOD_SETPARTITIONUZSOLIDS:
-				std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
 				this->SetPartitionUZSolids();
 				break;
 			case METHOD_SETPOREVOLUME:
-				std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
 				this->SetPoreVolume();
 				break;
 			case METHOD_SETPOREVOLUMEZERO:
-				std::cerr << "METHOD_SETPOREVOLUMEZERO" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUMEZERO" << std::endl;
 				this->SetPoreVolumeZero();
 				break;
 			case METHOD_SETPRESSURE:
-				std::cerr << "METHOD_SETPRESSURE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETPRESSURE" << std::endl;
 				this->SetPressure();
 				break;
 			case METHOD_SETPRINTCHEMISTRYON:
-				std::cerr << "METHOD_SETPRINTCHEMISTRYON" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETPRINTCHEMISTRYON" << std::endl;
 				this->SetPrintChemistryOn();
 				break;
 			case METHOD_SETPRINTCHEMISTRYMASK:
-				std::cerr << "METHOD_SETPRINTCHEMISTRYMASK" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETPRINTCHEMISTRYMASK" << std::endl;
 				this->SetPrintChemistryMask();
+				break;
+			case METHOD_SETREBALANCEBYCELL:
+				if (debug_worker) std::cerr << "METHOD_SETREBALANCEBYCELL" << std::endl;
+				this->SetRebalanceByCell();
 				break;
 			//case METHOD_SETREBALANCEFRACTION:
 			//	this->SetRebalanceFraction();
 			//	break;
 			case METHOD_SETSATURATION:
-				std::cerr << "METHOD_SETSATURATION" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETSATURATION" << std::endl;
 				this->SetSaturation();
 				break;
 			case METHOD_SETSELECTEDOUTPUTON:
-				std::cerr << "METHOD_SETSELECTEDOUTPUTON" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETSELECTEDOUTPUTON" << std::endl;
 				this->SetSelectedOutputOn();
 				break;
 			//case METHOD_SETSTOPMESSAGE:
 			//	this->SetStopMessage();
 			//	break;
 			case METHOD_SETTEMPERATURE:
-				std::cerr << "METHOD_SETTEMPERATURE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETTEMPERATURE" << std::endl;
 				this->SetTemperature();
 				break;
 			case METHOD_SETTIME:
-				std::cerr << "METHOD_SETTIME" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETTIME" << std::endl;
 				this->SetTime();
 				break;
 			case METHOD_SETTIMECONVERSION:
-				std::cerr << "METHOD_SETTIMECONVERSION" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETTIMECONVERSION" << std::endl;
 				this->SetTimeConversion();
 				break;
 			case METHOD_SETTIMESTEP:
-				std::cerr << "METHOD_SETTIMESTEP" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETTIMESTEP" << std::endl;
 				this->SetTimeStep();
 				break;
 			case METHOD_SETUNITSEXCHANGE:
-				std::cerr << "METHOD_SETUNITSEXCHANGE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETUNITSEXCHANGE" << std::endl;
 				this->SetUnitsExchange();
 				break;
 			case METHOD_SETUNITSGASPHASE:
-				std::cerr << "METHOD_SETUNITSGASPHASE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETUNITSGASPHASE" << std::endl;
 				this->SetUnitsGasPhase();
 				break;
 			case METHOD_SETUNITSKINETICS:
-				std::cerr << "METHOD_SETUNITSKINETICS" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETUNITSKINETICS" << std::endl;
 				this->SetUnitsKinetics();
 				break;
 			case METHOD_SETUNITSPPASSEMBLAGE:
-				std::cerr << "METHOD_SETUNITSPPASSEMBLAGE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETUNITSPPASSEMBLAGE" << std::endl;
 				this->SetUnitsPPassemblage();
 				break;
 			case METHOD_SETUNITSSOLUTION:
-				std::cerr << "METHOD_SETUNITSSOLUTION" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETUNITSSOLUTION" << std::endl;
 				this->SetUnitsSolution();
 				break;
 			case METHOD_SETUNITSSSASSEMBLAGE:
-				std::cerr << "METHOD_SETUNITSSSASSEMBLAGE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETUNITSSSASSEMBLAGE" << std::endl;
 				this->SetUnitsSSassemblage();
 				break;
 			case METHOD_SETUNITSSURFACE:
-				std::cerr << "METHOD_SETUNITSSURFACE" << std::endl;
+				if (debug_worker) std::cerr << "METHOD_SETUNITSSURFACE" << std::endl;
 				this->SetUnitsSurface();
 				break;
 			default:
-				std::cerr << "default " << method << std::endl;
+				if (debug_worker) std::cerr << "default " << method << std::endl;
 				break;
 			}
 		}

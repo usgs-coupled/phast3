@@ -476,7 +476,7 @@ double RM_GetTimeStep(int * id)
 	}
 	return (double) IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_InitialPhreeqc2Concentrations(
@@ -515,6 +515,60 @@ RM_InitialPhreeqc2Concentrations(
 						boundary_solution1,
 						boundary_solution2,
 						fraction1 );
+	}
+	return IRM_BADINSTANCE;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_InitialPhreeqc2Concentrations(
+			int *id,
+			double *boundary_c,
+			int *n_boundary,
+			int *boundary_solution1,  
+			int *boundary_solution2, 
+			double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   concentrations
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - list of mixing fractions of solution 1
+ *
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          boundary_solution2 and fraction1 may be omitted if no mixing
+ *
+ *
+ *   Output: boundary_c - concentrations for boundary conditions
+ *                      - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
+		std::vector < double > fraction1_vector;
+		boundary_solution1_vector.resize(*n_boundary);
+		memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
+		if (boundary_solution2 != NULL)
+		{
+			boundary_solution2_vector.resize(*n_boundary);
+			memcpy(boundary_solution2_vector.data(), boundary_solution2, (size_t) (*n_boundary * sizeof(int)));
+		}
+		if (fraction1 != NULL)
+		{
+			fraction1_vector.resize(*n_boundary);
+			memcpy(fraction1_vector.data(), fraction1, (size_t) (*n_boundary * sizeof(double)));
+		}
+			return Reaction_module_ptr->InitialPhreeqc2Concentrations(
+						boundary_c,
+						boundary_solution1_vector,
+						boundary_solution2_vector,
+						fraction1_vector);
 	}
 	return IRM_BADINSTANCE;
 }

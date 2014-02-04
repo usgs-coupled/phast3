@@ -249,7 +249,7 @@ int RM_InitialPhreeqc2Concentrations(
                 int id,
                 double *c,
                 int n_boundary,
-                int dim, 
+                //int dim, 
                 int *boundary_solution1,  
                 int *boundary_solution2, 
                 double *fraction1);

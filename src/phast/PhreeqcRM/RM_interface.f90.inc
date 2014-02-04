@@ -157,11 +157,11 @@
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetTimeStep 
 
-        INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, dim, bc_sol1, bc_sol2, f1)   
+        INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1)   
                 IMPLICIT NONE
                 INTEGER :: id
                 DOUBLE PRECISION, INTENT(OUT) :: c
-                INTEGER, INTENT(IN) :: n_boundary, dim, bc_sol1
+                INTEGER, INTENT(IN) :: n_boundary, bc_sol1
                 INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
                 DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
         END FUNCTION RM_InitialPhreeqc2Concentrations    
