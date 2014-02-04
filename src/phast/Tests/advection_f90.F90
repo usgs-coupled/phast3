@@ -5,11 +5,11 @@
     INCLUDE 'RM_interface.f90.inc'
     INCLUDE 'IPhreeqc.f90.inc'
     interface
-        subroutine advect_f90(c, bc_conc, ncomps, nxyz, dim)
+        subroutine advect_f90(c, bc_conc, ncomps, nxyz)
             implicit none
             double precision, dimension(:,:), allocatable :: bc_conc
             double precision, dimension(:,:), allocatable :: c 
-            integer                                       :: ncomps, nxyz, dim
+            integer                                       :: ncomps, nxyz
         end subroutine advect_f90
     end interface
     
@@ -31,7 +31,7 @@
     character(100),   dimension(:), allocatable   :: components
     integer,          dimension(:,:), allocatable :: ic1, ic2
     double precision, dimension(:,:), allocatable :: f1
-    integer                                       :: nbound, ndim
+    integer                                       :: nbound
     integer,          dimension(:), allocatable   :: bc1, bc2
     double precision, dimension(:), allocatable   :: bc_f1
     double precision, dimension(:,:), allocatable :: bc_conc
@@ -151,13 +151,12 @@
 
     ! Get a boundary condition from initial phreeqc
     nbound = 1
-    ndim = 2
-    allocate(bc1(ndim), bc2(ndim), bc_f1(ndim))
+    allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
     bc1 = 0           ! solution 0
     bc2 = -1          ! no mixing
     bc_f1 = 1.0       ! mixing fraction for bc1
-    allocate(bc_conc(ndim, ncomps))   
-    status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, ndim, bc1(1), bc2(1), bc_f1(1))
+    allocate(bc_conc(nbound, ncomps))   
+    status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
     
     ! Initial equilibration of cells
     time = 0.0
@@ -178,7 +177,7 @@
     status = RM_SetTimeStep(id, time_step)
     do isteps = 1, nsteps
         ! Advection calculation
-        call advect_f90(c, bc_conc, ncomps, nxyz, ndim)
+        call advect_f90(c, bc_conc, ncomps, nxyz)
         
         ! Send any new conditions to module
         status = RM_SetPoreVolume(id, pv(1))            ! If pore volume changes due to compressibility
@@ -272,11 +271,11 @@
     return 
     end subroutine advection_f90
 
-    subroutine advect_f90(c, bc_conc, ncomps, nxyz, dim)
+    subroutine advect_f90(c, bc_conc, ncomps, nxyz)
     implicit none
     double precision, dimension(:,:), allocatable :: bc_conc
     double precision, dimension(:,:), allocatable :: c 
-    integer                                       :: ncomps, nxyz, dim
+    integer                                       :: ncomps, nxyz
     integer                                       :: i, j
     ! Advect
     do i = nxyz/2, 2, -1

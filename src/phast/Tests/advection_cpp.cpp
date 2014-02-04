@@ -120,13 +120,13 @@ int advection_cpp()
 		std::vector<double> bc_conc, bc_f1;
 		std::vector<int> bc1, bc2;
 		int nbound = 1;
-		int dim = 2;
-		bc_conc.resize(dim * components.size(), 0.0);
+		bc_conc.resize(nbound * components.size(), 0.0);
 		bc1.resize(nbound, 0);                    // solution 0
-		bc2.resize(nbound, -1);                   // no mixing
-		bc_f1.resize(nbound, 1.0);
-		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc.data(),
-			nbound, dim, bc1.data(), bc2.data(), bc_f1.data());
+		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc.data(), bc1);
+		//bc2.resize(nbound, -1);                   // no mixing
+		//bc_f1.resize(nbound, 1.0);
+		//status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc.data(),
+		//	bc1, bc2, bc_f1);
 
 		// Initial equilibration of cells
 		double time = 0.0;
@@ -150,7 +150,7 @@ int advection_cpp()
 		for (int steps = 0; steps < nsteps; steps++)
 		{
 			// Transport calculation here
-			AdvectCpp(c, bc_conc, ncomps, nxyz, dim);
+			AdvectCpp(c, bc_conc, ncomps, nxyz, nbound);
 
 			// Send new conditions to module
 			bool print_chemistry_on = (steps == nsteps - 1) ? true : false;
