@@ -96,24 +96,15 @@ public:
 	void                                      ErrorHandler(int result, const std::string &e_string);
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c = NULL);
-#ifdef SKIP
-	IRM_RESULT                                InitialPhreeqc2Concentrations( 
-                                                   double *c,
-                                                   int n_boundary, 
-                                                   int dim, 
-                                                   int *boundary_solution1,
-                                                   int *boundary_solution2 = NULL,
-                                                   double *boundary_fraction = NULL);
-#endif
-	IRM_RESULT								InitialPhreeqc2Concentrations(
+	IRM_RESULT								  InitialPhreeqc2Concentrations(
 													double *destination_c, 
 													std::vector < int > & boundary_solution1,
 													std::vector < int > & boundary_solution2, 
 													std::vector < double > & fraction1); 
-	IRM_RESULT                              InitialPhreeqc2Concentrations(
+	IRM_RESULT                                InitialPhreeqc2Concentrations(
 													double *destination_c, 
 													std::vector < int > & boundary_solution1);
-	IRM_RESULT                              InitialPhreeqc2Module(
+	IRM_RESULT                                InitialPhreeqc2Module(
 													int *initial_conditions1 = NULL,
 													int *initial_conditions2 = NULL,	
 													double *fraction1 = NULL);
