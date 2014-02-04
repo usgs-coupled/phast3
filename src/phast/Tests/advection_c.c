@@ -27,7 +27,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int * ic1; 
 		int * ic2;
 		double * f1;
-		int nbound, ndim;
+		int nbound;
 		int * bc1;
 		int * bc2;
 		double * bc_f1;
@@ -160,18 +160,17 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
 		// Get a boundary condition from initial phreeqc
 		nbound = 1;
-		ndim = 2;
-		bc1 = (int *) malloc((size_t) (ndim * sizeof(int)));
-		bc2 = (int *) malloc((size_t) (ndim * sizeof(int)));
-		bc_f1 = (double *) malloc((size_t) (ndim * sizeof(double)));
+		bc1 = (int *) malloc((size_t) (nbound * sizeof(int)));
+		bc2 = (int *) malloc((size_t) (nbound * sizeof(int)));
+		bc_f1 = (double *) malloc((size_t) (nbound * sizeof(double)));
 		for (i = 0; i < nbound; i++) 
 		{
 			bc1[i]          = 0;       // Solution 1
 			bc2[i]          = -1;      // no mixing
 			bc_f1[i]        = 1.0;     // mixing fraction for bc1
 		} 
-		bc_conc = (double *) malloc((size_t) (ncomps * ndim * sizeof(double)));
-		status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, ndim, bc1, bc2, bc_f1);
+		bc_conc = (double *) malloc((size_t) (ncomps * nbound * sizeof(double)));
+		status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
 		
 		// Initial equilibration of cells
 		time = 0.0;
@@ -198,7 +197,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		for (isteps = 0; isteps < nsteps; isteps++)
 		{
 			// Advection calculation
-			advect_c(c, bc_conc, ncomps, nxyz, ndim);
+			advect_c(c, bc_conc, ncomps, nxyz, nbound);
         
 			// Send any new conditions to module
 			status = RM_SetPoreVolume(id, pv);            // If pore volume changes due to compressibility
