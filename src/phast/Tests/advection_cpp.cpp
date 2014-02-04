@@ -120,9 +120,8 @@ int advection_cpp()
 		std::vector<double> bc_conc, bc_f1;
 		std::vector<int> bc1, bc2;
 		int nbound = 1;
-		bc_conc.resize(nbound * components.size(), 0.0);
-		bc1.resize(nbound, 0);                    // solution 0
-		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc.data(), bc1);
+		bc1.resize(nbound, 0);                      // solution 0
+		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc, bc1);
 		//bc2.resize(nbound, -1);                   // no mixing
 		//bc_f1.resize(nbound, 1.0);
 		//status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc.data(),
