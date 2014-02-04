@@ -49,7 +49,8 @@ SUBROUTINE init3
            indx2_wel(iwel) = -1
            mxf_wel(iwel) = 1._kdp
         END DO
-        status = RM_InitialPhreeqc2Concentrations(rm_id, cwkt(1,1), nwel, nwel, &
+        !status = RM_InitialPhreeqc2Concentrations(rm_id, cwkt(1,1), nwel, nwel, &
+        status = RM_InitialPhreeqc2Concentrations(rm_id, cwkt(1,1), nwel, &
             indx1_wel(1), indx2_wel(1), mxf_wel(1))
      END IF
      DO  iwel=1,nwel
@@ -71,8 +72,10 @@ SUBROUTINE init3
      ! ... The following loads the associated and specified concentrations
      IF(solute) THEN
         !$$        CALL load_indx_bc(1,indx1_sbc,indx2_sbc,mxf_sbc,msbc,nsbc)
-        status = RM_InitialPhreeqc2Concentrations(rm_id, csbc(1,1), nsbc, nsbc_seg, &
-            indx1_sbc(1), indx2_sbc(1), mxf_sbc(1))
+        !status = RM_InitialPhreeqc2Concentrations(rm_id, csbc(1,1), nsbc, nsbc_seg, &
+        !    indx1_sbc(1), indx2_sbc(1), mxf_sbc(1))
+        status = RM_InitialPhreeqc2Concentrations(rm_id, csbc(1,1), nsbc, &
+            indx1_sbc(1), indx2_sbc(1), mxf_sbc(1))        
 
         ! ***** special patch for b.c. install for 3 components
         !        csbc(1:nsbc_seg,1) = mxf_sbc(1:nsbc_seg)
@@ -229,7 +232,8 @@ SUBROUTINE init3
      END DO
      IF(solute) THEN                          ! ... Load the associated concentrations
         !$$        CALL load_indx_bc(2, indx1_fbc, indx2_fbc, mxf_fbc, mfbc, nfbc_seg)
-        status = RM_InitialPhreeqc2Concentrations(rm_id, cfbc(1,1), nfbc_seg, nfbc_seg, &
+        !status = RM_InitialPhreeqc2Concentrations(rm_id, cfbc(1,1), nfbc_seg, nfbc_seg, &
+        status = RM_InitialPhreeqc2Concentrations(rm_id, cfbc(1,1), nfbc_seg, &
             indx1_fbc(1), indx2_fbc(1), mxf_fbc(1))
      END IF
   END IF
@@ -241,7 +245,8 @@ SUBROUTINE init3
         vislbc(ls) = vis0
      END DO
      IF(solute) THEN               ! ... Load the associated concentrations
-        status = RM_InitialPhreeqc2Concentrations(rm_id, clbc(1,1), nlbc_seg, nlbc_seg, &
+        !status = RM_InitialPhreeqc2Concentrations(rm_id, clbc(1,1), nlbc_seg, nlbc_seg, &
+        status = RM_InitialPhreeqc2Concentrations(rm_id, clbc(1,1), nlbc_seg, &
             indx1_lbc(1), indx2_lbc(1), mxf_lbc(1))
      END IF
   END IF
@@ -252,7 +257,8 @@ SUBROUTINE init3
         visrbc(ls) = vis0
      END DO
      IF(solute) THEN               ! ... Load the associated concentrations
-        status = RM_InitialPhreeqc2Concentrations(rm_id, crbc(1,1), nrbc_seg, nrbc_seg, &
+        !status = RM_InitialPhreeqc2Concentrations(rm_id, crbc(1,1), nrbc_seg, nrbc_seg, &
+        status = RM_InitialPhreeqc2Concentrations(rm_id, crbc(1,1), nrbc_seg, &
             indx1_rbc(1), indx2_rbc(1), mxf_rbc(1))
      END IF
   END IF

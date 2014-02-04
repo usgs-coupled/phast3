@@ -404,11 +404,20 @@ double     RM_GetTimeStep(int *id);
  *  </CODE>
  *  @endhtmlonly
  */
+#ifdef SKIP
 IRM_RESULT RM_InitialPhreeqc2Concentrations(
                 int *id,
                 double *c,
                 int *n_boundary,
                 int *dim, 
+                int *boundary_solution1,  
+                int *boundary_solution2 = NULL, 
+                double *fraction1 = NULL);
+#endif
+IRM_RESULT RM_InitialPhreeqc2Concentrations(
+                int *id,
+                double *c,
+                int *n_boundary,
                 int *boundary_solution1,  
                 int *boundary_solution2 = NULL, 
                 double *fraction1 = NULL);

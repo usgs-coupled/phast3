@@ -419,6 +419,7 @@ SUBROUTINE CreateRM
         status = RM_LogMessage(rm_id, "Initial PHREEQC run.") 
         status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
+        status = RM_MpiWorkerBreak(rm_id)           ! 2 RM_MpiWorker end
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
@@ -478,10 +479,10 @@ SUBROUTINE InitialEquilibrationRM
         !status = RM_SetStopMessage(rm_id, stop_msg)
         
         status = RM_RunCells(rm_id)  
-        status = RM_MpiWorkerBreak(rm_id)           ! 6 RM_MpiWorker end   
-
-        !CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
-	    !    iprint_xyz(1), 0); 
+        !status = RM_MpiWorkerBreak(rm_id)           ! 6 RM_MpiWorker end   
+        CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
+	        iprint_xyz(1), 0); 
+        status = RM_MpiWorkerBreak(rm_id)           ! 6 RM_MpiWorker end  
     ENDIF       
 END SUBROUTINE InitialEquilibrationRM
     
@@ -628,10 +629,10 @@ SUBROUTINE TimeStepRM
         
         status = RM_RunCells(rm_id)  
         status = RM_GetConcentrations(rm_id, c(1,1))
-        status = RM_MpiWorkerBreak(rm_id)           ! 7 RM_MpiWorker end 
+        !status = RM_MpiWorkerBreak(rm_id)           ! 7 RM_MpiWorker end 
         
-        !CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
-        !    iprint_xyz(1), print_restart%print_flag_integer) 
+        CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
+            iprint_xyz(1), print_restart%print_flag_integer) 
         !status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 0)
         status = RM_MpiWorkerBreak(rm_id)           ! 8 RM_MpiWorker end 
         
