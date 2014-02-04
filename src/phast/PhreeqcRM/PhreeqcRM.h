@@ -97,13 +97,13 @@ public:
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c = NULL);
 	IRM_RESULT								  InitialPhreeqc2Concentrations(
-													double *destination_c, 
-													std::vector < int > & boundary_solution1,
-													std::vector < int > & boundary_solution2, 
+													std::vector < double > & destination_c, 
+													std::vector < int >    & boundary_solution1,
+													std::vector < int >    & boundary_solution2, 
 													std::vector < double > & fraction1); 
 	IRM_RESULT                                InitialPhreeqc2Concentrations(
-													double *destination_c, 
-													std::vector < int > & boundary_solution1);
+													std::vector < double > & destination_c, 
+													std::vector < int >    & boundary_solution1);
 	IRM_RESULT                                InitialPhreeqc2Module(
 													int *initial_conditions1 = NULL,
 													int *initial_conditions2 = NULL,	

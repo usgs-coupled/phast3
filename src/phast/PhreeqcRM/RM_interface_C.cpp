@@ -552,7 +552,7 @@ RM_InitialPhreeqc2Concentrations(
 	if (Reaction_module_ptr)
 	{
 		std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
-		std::vector < double > fraction1_vector;
+		std::vector < double > destination_c, fraction1_vector;
 		boundary_solution1_vector.resize(n_boundary);
 		memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (n_boundary * sizeof(int)));
 		if (boundary_solution2 != NULL)
@@ -565,11 +565,16 @@ RM_InitialPhreeqc2Concentrations(
 			fraction1_vector.resize(n_boundary);
 			memcpy(fraction1_vector.data(), fraction1, (size_t) (n_boundary * sizeof(double)));
 		}
-			return Reaction_module_ptr->InitialPhreeqc2Concentrations(
-						boundary_c,
-						boundary_solution1_vector,
-						boundary_solution2_vector,
-						fraction1_vector);
+		IRM_RESULT return_value = Reaction_module_ptr->InitialPhreeqc2Concentrations(
+			destination_c,
+			boundary_solution1_vector,
+			boundary_solution2_vector,
+			fraction1_vector);		
+		if (return_value == 0)
+		{
+			memcpy(boundary_c, destination_c.data(), destination_c.size() * sizeof(double));
+		}       
+		return return_value;
 	}
 	return IRM_BADINSTANCE;
 }

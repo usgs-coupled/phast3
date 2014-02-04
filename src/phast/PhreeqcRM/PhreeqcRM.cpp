@@ -2851,7 +2851,7 @@ PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 #endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::InitialPhreeqc2Concentrations(double *destination_c, 
+PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c, 
 					std::vector < int > & boundary_solution1)
 {
 	std::vector< int > dummy;
@@ -2860,7 +2860,7 @@ PhreeqcRM::InitialPhreeqc2Concentrations(double *destination_c,
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::InitialPhreeqc2Concentrations(double *destination_c, 
+PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c, 
 					std::vector < int > & boundary_solution1,
 					std::vector < int > & boundary_solution2, 
 					std::vector < double > & fraction1)
@@ -2884,8 +2884,9 @@ PhreeqcRM::InitialPhreeqc2Concentrations(double *destination_c,
 	this->Get_phreeqc_bin().Clear();
 	try
 	{
-		if (destination_c != NULL && boundary_solution1.size() > 0)
+		if (boundary_solution1.size() > 0)
 		{
+			destination_c.resize(this->components.size()*boundary_solution1.size());
 			int	n_old1, n_old2;
 			double f1, f2;
 			size_t n_boundary1 = boundary_solution1.size();
