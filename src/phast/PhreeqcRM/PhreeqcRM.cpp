@@ -242,7 +242,6 @@ if( numCPU < 1 )
 
 	//this->stop_message = false;
 	this->error_count = 0;
-	//this->stop_on_error = true;
 	this->error_handler_mode = 0;
 
 	// initialize arrays
@@ -266,6 +265,9 @@ if( numCPU < 1 )
 
 	// set work for each thread or process
 	SetEndCells();
+
+	mpi_worker_fortran_callback = NULL;
+	mpi_worker_cookie = NULL;
 }
 PhreeqcRM::~PhreeqcRM(void)
 {
@@ -3358,29 +3360,30 @@ PhreeqcRM::MpiWorker()
 /* ---------------------------------------------------------------------- */
 {
 	// Called by all workers
-#ifdef USE_MPI
 	IRM_RESULT return_value = IRM_OK;
+#ifdef USE_MPI
 	bool debug_worker = false;
 	try
 	{
 		bool loop_break = false;
 		while (!loop_break)
 		{
+			return_value = IRM_OK;
 			int method;
 			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
 			switch (method)
 			{
 			case METHOD_CREATEMAPPING:
 				if (debug_worker) std::cerr << "METHOD_CREATEMAPPING" << std::endl;
-				this->CreateMapping();
+				return_value = this->CreateMapping();
 				break;
 			case METHOD_DUMPMODULE:
 				if (debug_worker) std::cerr << "METHOD_DUMPMODULE" << std::endl;
-				this->DumpModule();
+				return_value = this->DumpModule();
 				break;
 			case METHOD_GETCONCENTRATIONS:
 				if (debug_worker) std::cerr << "METHOD_GETCONCENTRATIONS" << std::endl;
-				this->GetConcentrations();
+				return_value = this->GetConcentrations();
 				break;
 			case METHOD_GETDENSITY:
 				if (debug_worker) std::cerr << "METHOD_GETDENSITY" << std::endl;
@@ -3388,7 +3391,7 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_GETSELECTEDOUTPUT:
 				if (debug_worker) std::cerr << "METHOD_GETSELECTEDOUTPUT" << std::endl;
-				this->GetSelectedOutput();
+				return_value = this->GetSelectedOutput();
 				break;
 			case METHOD_GETSOLUTIONVOLUME:
 				if (debug_worker) std::cerr << "METHOD_GETSOLUTIONVOLUME" << std::endl;
@@ -3396,11 +3399,11 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_INITIALPHREEQC2MODULE:
 				if (debug_worker) std::cerr << "METHOD_INITIALPHREEQC2MODULE" << std::endl;
-				this->InitialPhreeqc2Module();
+				return_value = this->InitialPhreeqc2Module();
 				break;
 			case METHOD_LOADDATABASE:
 				if (debug_worker) std::cerr << "METHOD_LOADDATABASE" << std::endl;
-				this->LoadDatabase();
+				return_value = this->LoadDatabase();
 				break;
 			case METHOD_MPIWORKERBREAK:
 				if (debug_worker) std::cerr << "METHOD_MPIWORKERBREAK" << std::endl;
@@ -3408,135 +3411,130 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_RUNCELLS:
 				if (debug_worker) std::cerr << "METHOD_RUNCELLS" << std::endl;
-				this->RunCells();
+				return_value = this->RunCells();
 				break;
 			case METHOD_RUNFILE:
 				if (debug_worker) std::cerr << "METHOD_RUNFILE" << std::endl;
-				this->RunFile();
+				return_value = this->RunFile();
 				if (debug_worker) std::cerr << "done METHOD_RUNFILE" << std::endl;
 				break;
 			case METHOD_RUNSTRING:
 				if (debug_worker) std::cerr << "METHOD_RUNSTRING" << std::endl;
-				this->RunString();
+				return_value = this->RunString();
 				break;
 			case METHOD_SETCELLVOLUME:
 				if (debug_worker) std::cerr << "METHOD_SETCELLVOLUME" << std::endl;
 				this->SetCellVolume();
 				break;
-			//case METHOD_SETCHEMISTRYFILENAME:
-			//	std::cerr << "METHOD_SETCHEMISTRYFILENAME" << std::endl;
-			//	this->SetChemistryFileName();
-			//	break;
 			case METHOD_SETCONCENTRATIONS:
 				if (debug_worker) std::cerr << "METHOD_SETCONCENTRATIONS" << std::endl;
-				this->SetConcentrations();
+				return_value = this->SetConcentrations();
 				break;
-			//case METHOD_SETDATABASEFILENAME:
-			//	std::cerr << "METHOD_SETDATABASEFILENAME" << std::endl;
-			//	this->SetDatabaseFileName();
-			//	break;
 			case METHOD_SETDENSITY:
 				if (debug_worker) std::cerr << "METHOD_SETDENSITY" << std::endl;
 				this->SetDensity();
 				break;
 			case METHOD_SETERRORHANDLERMODE:
 				if (debug_worker) std::cerr << "METHOD_SETERRORHANDLERMODE" << std::endl;
-				this->SetErrorHandlerMode();
+				return_value = this->SetErrorHandlerMode();
 				break;
 			case METHOD_SETFILEPREFIX:
 				if (debug_worker) std::cerr << "METHOD_SETFILEPREFIX" << std::endl;
-				this->SetFilePrefix();
+				return_value = this->SetFilePrefix();
 				break;
 			case METHOD_SETPARTITIONUZSOLIDS:
 				if (debug_worker) std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
-				this->SetPartitionUZSolids();
+				return_value = this->SetPartitionUZSolids();
 				break;
 			case METHOD_SETPOREVOLUME:
 				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
-				this->SetPoreVolume();
+				return_value = this->SetPoreVolume();
 				break;
 			case METHOD_SETPOREVOLUMEZERO:
 				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUMEZERO" << std::endl;
-				this->SetPoreVolumeZero();
+				return_value = this->SetPoreVolumeZero();
 				break;
 			case METHOD_SETPRESSURE:
 				if (debug_worker) std::cerr << "METHOD_SETPRESSURE" << std::endl;
-				this->SetPressure();
+				return_value = this->SetPressure();
 				break;
 			case METHOD_SETPRINTCHEMISTRYON:
 				if (debug_worker) std::cerr << "METHOD_SETPRINTCHEMISTRYON" << std::endl;
-				this->SetPrintChemistryOn();
+				return_value = this->SetPrintChemistryOn();
 				break;
 			case METHOD_SETPRINTCHEMISTRYMASK:
 				if (debug_worker) std::cerr << "METHOD_SETPRINTCHEMISTRYMASK" << std::endl;
-				this->SetPrintChemistryMask();
+				return_value = this->SetPrintChemistryMask();
 				break;
 			case METHOD_SETREBALANCEBYCELL:
 				if (debug_worker) std::cerr << "METHOD_SETREBALANCEBYCELL" << std::endl;
-				this->SetRebalanceByCell();
+				return_value = this->SetRebalanceByCell();
 				break;
-			//case METHOD_SETREBALANCEFRACTION:
-			//	this->SetRebalanceFraction();
-			//	break;
 			case METHOD_SETSATURATION:
 				if (debug_worker) std::cerr << "METHOD_SETSATURATION" << std::endl;
-				this->SetSaturation();
+				return_value = this->SetSaturation();
 				break;
 			case METHOD_SETSELECTEDOUTPUTON:
 				if (debug_worker) std::cerr << "METHOD_SETSELECTEDOUTPUTON" << std::endl;
-				this->SetSelectedOutputOn();
+				return_value = this->SetSelectedOutputOn();
 				break;
-			//case METHOD_SETSTOPMESSAGE:
-			//	this->SetStopMessage();
-			//	break;
 			case METHOD_SETTEMPERATURE:
 				if (debug_worker) std::cerr << "METHOD_SETTEMPERATURE" << std::endl;
-				this->SetTemperature();
+				return_value = this->SetTemperature();
 				break;
 			case METHOD_SETTIME:
 				if (debug_worker) std::cerr << "METHOD_SETTIME" << std::endl;
-				this->SetTime();
+				return_value = this->SetTime();
 				break;
 			case METHOD_SETTIMECONVERSION:
 				if (debug_worker) std::cerr << "METHOD_SETTIMECONVERSION" << std::endl;
-				this->SetTimeConversion();
+				return_value = this->SetTimeConversion();
 				break;
 			case METHOD_SETTIMESTEP:
 				if (debug_worker) std::cerr << "METHOD_SETTIMESTEP" << std::endl;
-				this->SetTimeStep();
+				return_value = this->SetTimeStep();
 				break;
 			case METHOD_SETUNITSEXCHANGE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSEXCHANGE" << std::endl;
-				this->SetUnitsExchange();
+				return_value = this->SetUnitsExchange();
 				break;
 			case METHOD_SETUNITSGASPHASE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSGASPHASE" << std::endl;
-				this->SetUnitsGasPhase();
+				return_value = this->SetUnitsGasPhase();
 				break;
 			case METHOD_SETUNITSKINETICS:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSKINETICS" << std::endl;
-				this->SetUnitsKinetics();
+				return_value = this->SetUnitsKinetics();
 				break;
 			case METHOD_SETUNITSPPASSEMBLAGE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSPPASSEMBLAGE" << std::endl;
-				this->SetUnitsPPassemblage();
+				return_value = this->SetUnitsPPassemblage();
 				break;
 			case METHOD_SETUNITSSOLUTION:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSSOLUTION" << std::endl;
-				this->SetUnitsSolution();
+				return_value = this->SetUnitsSolution();
 				break;
 			case METHOD_SETUNITSSSASSEMBLAGE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSSSASSEMBLAGE" << std::endl;
-				this->SetUnitsSSassemblage();
+				return_value = this->SetUnitsSSassemblage();
 				break;
 			case METHOD_SETUNITSSURFACE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSSURFACE" << std::endl;
-				this->SetUnitsSurface();
+				return_value = this->SetUnitsSurface();
 				break;
 			default:
 				if (debug_worker) std::cerr << "default " << method << std::endl;
+				if (this->mpi_worker_fortran_callback)
+				{
+					int return_int = mpi_worker_fortran_callback(&method);
+					if (return_int != 0)
+					{
+						return_value = IRM_FAIL;
+					}
+				}
 				break;
 			}
+			this->ErrorHandler(return_value, "Task returned error in MpiWorker.");
 		}
 	}
 	catch (...)
@@ -3544,10 +3542,8 @@ PhreeqcRM::MpiWorker()
 		std::cerr << "Catch in MpiWorker" << std::endl;
 		return_value = IRM_FAIL;
 	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::MpiWorker");
-#else
-	return IRM_OK;
 #endif
+	return this->ReturnHandler(return_value, "PhreeqcRM::MpiWorker");
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -6057,6 +6053,14 @@ PhreeqcRM::SetFilePrefix(std::string prefix)
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetFilePrefix");
 }
 #endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetMpiWorkerFortranCallback(int (*fcn)(int *method))
+/* ---------------------------------------------------------------------- */
+{
+	this->mpi_worker_fortran_callback = fcn;
+	return IRM_OK;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 PhreeqcRM::SetPartitionUZSolids(int t)

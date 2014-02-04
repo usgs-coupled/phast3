@@ -400,6 +400,10 @@ SUBROUTINE CreateRM
     IMPLICIT NONE
     SAVE
     INCLUDE 'RM_interface.f90.inc'
+    INTERFACE
+        INTEGER FUNCTION set_components() 
+        END FUNCTION set_components
+    END INTERFACE
     INTEGER i, a_err, status
   
     IF (solute) THEN  
@@ -412,15 +416,16 @@ SUBROUTINE CreateRM
         status = RM_SetErrorHandlerMode(rm_id, 2)   ! throw exception on error
         status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
         status = RM_SetFilePrefix(rm_id, f3name)
-        status = RM_MpiWorkerBreak(rm_id)           ! 1 RM_MpiWorker end
+        !status = RM_MpiWorkerBreak(rm_id)           ! x RM_MpiWorker end
         status = RM_OpenFiles(rm_id)
         status = RM_LoadDatabase(rm_id, f2name);
         !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
         status = RM_LogMessage(rm_id, "Initial PHREEQC run.") 
         status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
-        status = RM_MpiWorkerBreak(rm_id)           ! 2 RM_MpiWorker end
         ! Set components
+        status = set_components()
+#ifdef SKIP        
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
         STAT = a_err)
@@ -432,6 +437,8 @@ SUBROUTINE CreateRM
             comp_name(i) = ' '
             status = RM_GetComponent(rm_id, i, comp_name(i))
         ENDDO   
+#endif        
+        status = RM_MpiWorkerBreak(rm_id)            ! 1 RM_MpiWorker end
         status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
         status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
     ENDIF
@@ -637,4 +644,33 @@ SUBROUTINE TimeStepRM
         status = RM_MpiWorkerBreak(rm_id)           ! 8 RM_MpiWorker end 
         
     ENDIF    ! ... Done with chemistry    
-END SUBROUTINE TimeStepRM    
+END SUBROUTINE TimeStepRM   
+    
+INTEGER FUNCTION set_components 
+    USE mcc, ONLY:               mpi_myself, rm_id, solute
+    USE mcch, ONLY:              comp_name
+    USE mcv, ONLY:               ns
+    USE mpi_mod
+    IMPLICIT NONE 
+    SAVE
+    INCLUDE 'RM_interface.f90.inc'  
+    integer method, a_err, i, status
+    
+#ifdef USE_MPI    
+    if (mpi_myself == 0) then
+        CALL MPI_BCAST(METHOD_SETCOMPONENTS, 1, MPI_INTEGER, manager, world, ierrmpi)  
+    endif
+#endif    
+    ns = RM_FindComponents(rm_id)
+    ALLOCATE(comp_name(ns),  & 
+    STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array allocation failed: phast_manager, point 0"  
+        STOP
+    ENDIF
+    DO i = 1, ns
+        comp_name(i) = ' '
+        status = RM_GetComponent(rm_id, i, comp_name(i))
+    ENDDO  
+END FUNCTION set_components 
+        

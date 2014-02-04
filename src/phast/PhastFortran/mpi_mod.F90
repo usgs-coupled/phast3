@@ -10,6 +10,7 @@ MODULE mpi_mod
   INTEGER :: manager=0, world
   INTEGER :: ierrmpi
   INTEGER :: mpi_xp_group, mpi_xp_comm
+  INTEGER :: METHOD_SETCOMPONENTS = 1000
 CONTAINS  
 
   SUBROUTINE get_mpi_filename(fname)
