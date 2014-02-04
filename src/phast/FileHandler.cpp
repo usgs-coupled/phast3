@@ -457,61 +457,38 @@ FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *pr
 	if (Reaction_module_ptr)
 	{	
 		IRM_RESULT rtn = IRM_OK;
-		int local_mpi_myself = RM_GetMpiMyself(id);
 		int print_hdf, print_media, print_xyz, print_restart;
-		if (local_mpi_myself == 0)
+
+		if (print_hdf_in == 0 || 
+			print_media_in == 0 ||
+			print_xyz_in == 0 ||
+			xyz_mask == 0 ||
+			print_restart_in == 0)
 		{
-			if (print_hdf_in == 0 || 
-				print_media_in == 0 ||
-				print_xyz_in == 0 ||
-				xyz_mask == 0 ||
-				print_restart_in == 0)
-			{
-				Reaction_module_ptr->ErrorHandler(IRM_FAIL, "NULL pointer in FileHandler::WriteFiles");
-				//RM_Error(id, "Null pointer in WriteFiles");
-			}
-			print_media = *print_media_in;		
-			print_hdf = *print_hdf_in;
-			print_xyz = *print_xyz_in;
-			print_restart = *print_restart_in;
+			Reaction_module_ptr->ErrorHandler(IRM_FAIL, "NULL pointer in FileHandler::WriteFiles");
+			//RM_Error(id, "Null pointer in WriteFiles");
 		}
-//#ifdef USE_MPI	
-//		int flags[3];
-//		if (local_mpi_myself == 0)
-//		{
-//			flags[0] = *print_hdf_in;
-//			flags[1] = *print_xyz_in;
-//			flags[2] = *print_restart_in;
-//		}
-//		MPI_Bcast(flags, 3, MPI_INT, 0, MPI_COMM_WORLD);
-//		print_hdf = flags[0];
-//		print_xyz = flags[1];
-//		print_restart = flags[2];
-//#endif
-		if (local_mpi_myself == 0)
+		print_media = *print_media_in;		
+		print_hdf = *print_hdf_in;
+		print_xyz = *print_xyz_in;
+		print_restart = *print_restart_in;
+
+		if (print_hdf != 0)
 		{
-			if (print_hdf != 0)
-			{
-				IRM_RESULT result = WriteHDF(id, &print_hdf, &print_media);
-				if (result) rtn = result;
-			}
-			if (print_xyz != 0)
-			{
-				IRM_RESULT result = WriteXYZ(id, &print_xyz, xyz_mask);
-				if (result) rtn = result;
-			}		
-			if (print_restart != 0)
-			{
-				IRM_RESULT result = WriteRestart(id, &print_restart);
-				if (result) rtn = result;
-			}	
-			//RM_MpiWorkerBreak(id);
+			IRM_RESULT result = WriteHDF(id, &print_hdf, &print_media);
+			if (result) rtn = result;
 		}
-		//else
-		//{
-		//	std::cerr << "WriteFiles worker" << std::endl;
-		//	RM_MpiWorker(id);
-		//}
+		if (print_xyz != 0)
+		{
+			IRM_RESULT result = WriteXYZ(id, &print_xyz, xyz_mask);
+			if (result) rtn = result;
+		}		
+		if (print_restart != 0)
+		{
+			IRM_RESULT result = WriteRestart(id, &print_restart);
+			if (result) rtn = result;
+		}	
+
 		return rtn;
 	}
 	return IRM_BADINSTANCE;
@@ -534,39 +511,36 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 		//
 		if (!this->GetHDFInitialized() && nso > 0 && *print_hdf != 0)
 		{
-			if (local_mpi_myself == 0)
+			for (int iso = 0; iso < nso; iso++)
 			{
-				for (int iso = 0; iso < nso; iso++)
+				int status;
+				int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
+				if (n_user >= 0)
 				{
-					int status;
-					int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
-					if (n_user >= 0)
+					status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+					if (status >= 0)
 					{
-						status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
-						if (status >= 0)
-						{
-							// open file
-							char prefix[256];
-							RM_GetFilePrefix(id, prefix, 256);
-							std::ostringstream filename;
-							filename << prefix << "_" << n_user;
-							HDFInitialize(iso, filename.str().c_str(), (int) strlen(filename.str().c_str()));
+						// open file
+						char prefix[256];
+						RM_GetFilePrefix(id, prefix, 256);
+						std::ostringstream filename;
+						filename << prefix << "_" << n_user;
+						HDFInitialize(iso, filename.str().c_str(), (int) strlen(filename.str().c_str()));
 
-							// Set HDF scalars
-							std::vector < std::string > headings;
-							int ncol = RM_GetSelectedOutputColumnCount(id);
-							for (int icol = 0; icol < ncol; icol++)
-							{
-								char head[100];
-								status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
-								headings.push_back(head);
-							}
-							HDFSetScalarNames(iso, headings);
+						// Set HDF scalars
+						std::vector < std::string > headings;
+						int ncol = RM_GetSelectedOutputColumnCount(id);
+						for (int icol = 0; icol < ncol; icol++)
+						{
+							char head[100];
+							status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
+							headings.push_back(head);
 						}
+						HDFSetScalarNames(iso, headings);
 					}
 				}
-				this->SetHDFInitialized(true);
 			}
+			this->SetHDFInitialized(true);
 		}
 		//	
 		// Write H5 file
@@ -584,25 +558,18 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 					int ncol = RM_GetSelectedOutputColumnCount(id);
 					if (status >= 0)
 					{
-						if (local_mpi_myself == 0)
+						local_selected_out.resize((size_t) (nxyz*ncol));
+						int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						if ( !this->GetHDFInvariant())
 						{
-							local_selected_out.resize((size_t) (nxyz*ncol));
-							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
-							if ( !this->GetHDFInvariant())
-							{
-								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
-							}
-							// Now write HDF file
-							HDF_BEGIN_TIME_STEP(&iso);
-							HDFBeginCTimeStep(iso);
-							HDFFillHyperSlab(iso, local_selected_out, ncol);
-							HDFEndCTimeStep(iso);
-							HDF_END_TIME_STEP(&iso);
+							HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
 						}
-						//else
-						//{
-						//	int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
-						//}
+						// Now write HDF file
+						HDF_BEGIN_TIME_STEP(&iso);
+						HDFBeginCTimeStep(iso);
+						HDFFillHyperSlab(iso, local_selected_out, ncol);
+						HDFEndCTimeStep(iso);
+						HDF_END_TIME_STEP(&iso);
 					}
 				}
 			}
@@ -613,7 +580,6 @@ FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::WriteRestart(int *id, int *print_restart)
@@ -626,162 +592,6 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 		if (print_restart != 0)
 		{
 			int mpi_tasks = Reaction_module_ptr->GetMpiTasks();
-			//std::string char_buffer;
-
-			ogzstream ofs_restart;
-			//ofstream ofs_restart;
-
-			std::string temp_name("temp_restart_file.gz");
-			std::string name(Reaction_module_ptr->GetFilePrefix());
-			std::string backup_name(name);
-			if (mpi_myself == 0)
-			{
-				name.append(".restart.gz");
-				backup_name.append(".restart.backup.gz");
-
-				// open file 
-				ofs_restart.open(temp_name.c_str());
-				if (!ofs_restart.good())
-				{
-					std::ostringstream errstr;
-					errstr << "Temporary restart file could not be opened: " << temp_name;
-					error_msg(errstr.str().c_str(), 1);	
-				}
-
-				// write header
-				int count_chemistry = Reaction_module_ptr->GetChemistryCellCount();
-				ofs_restart << "#PHAST restart file" << std::endl;
-				ofs_restart << "#Prefix: " << Reaction_module_ptr->GetFilePrefix() << std::endl;
-				time_t now = ::time(NULL);
-				ofs_restart << "#Date: " << ctime(&now);
-				ofs_restart << "#Current model time: " << Reaction_module_ptr->GetTime() << std::endl;
-				ofs_restart << "#Grid cells: " << Reaction_module_ptr->GetGridCellCount() << std::endl;
-				ofs_restart << "#Chemistry cells: " << count_chemistry << std::endl;
-
-				// write index
-				ofs_restart << Reaction_module_ptr->GetChemistryCellCount() << std::endl;
-				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
-				{
-					int i = Reaction_module_ptr->GetBack()[j][0];			/* i is nxyz number */
-					ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
-					// solution, use -1 if cell is dry
-					if (this->saturation[i] > 0.0)
-					{
-						ofs_restart << this->ic[7 * i] << "  ";
-					}
-					else
-					{
-						ofs_restart << -1 << "  ";
-					}
-					// pp_assemblage
-					ofs_restart << this->ic[7 * i + 1] << "  ";
-					// exchange
-					ofs_restart << this->ic[7 * i + 2] << "  ";
-					// surface
-					ofs_restart << this->ic[7 * i + 3] << "  ";
-					// gas_phase
-					ofs_restart << this->ic[7 * i + 4] << "  ";
-					// solid solution
-					ofs_restart << this->ic[7 * i + 5] << "  ";
-					// kinetics
-					ofs_restart << this->ic[7 * i + 6] << "\n";
-				}
-			}
-			// write data
-#ifdef USE_MPI
-			Reaction_module_ptr->GetWorkers()[0]->SetDumpStringOn(true); 
-			std::ostringstream in;
-			in << "DUMP; -cells " << Reaction_module_ptr->GetStartCell()[mpi_myself] << "-" << Reaction_module_ptr->GetEndCell()[mpi_myself] << "\n";
-			Reaction_module_ptr->GetWorkers()[0]->RunString(in.str().c_str());
-			for (int n = 0; n < mpi_tasks; n++)
-			{
-				// Need to transfer output stream to root and print
-				if (mpi_myself == n)
-				{
-					if (n == 0)
-					{
-						ofs_restart << Reaction_module_ptr->GetWorkers()[0]->GetDumpString();
-					}
-					else
-					{
-						int size[2];
-						size[1] = (int) (strlen(Reaction_module_ptr->GetWorkers()[0]->GetDumpString()) + 1);
-						
-						// compress string into deflated
-						char * deflated = new char[size[1]];
-						uLongf deflated_size = (uLongf) size[1];
-						compress((Bytef *)deflated, (uLongf *) &deflated_size, (const Bytef *) Reaction_module_ptr->GetWorkers()[0]->GetDumpString(), (uLongf) size[1]);
-						size[0] = (int) deflated_size;
-
-						MPI_Send(&size, 2, MPI_INT, 0, 0, MPI_COMM_WORLD);
-						MPI_Send((void *) deflated, size[0], MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-
-						// delete work space
-						delete deflated;
-					}	
-				}
-				else if (mpi_myself == 0)
-				{
-					MPI_Status mpi_status;
-					int size[2];
-					MPI_Recv(&size, 2, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
-					char *deflated = new char[size[0]];
-					MPI_Recv((void *) deflated, size[0], MPI_BYTE, n, 0, MPI_COMM_WORLD, &mpi_status);
-
-					// uncompress string into string_buffer
-					char * string_buffer = new char[size[1]];
-					uLongf uncompressed_length = (uLongf) size[1];
-					uncompress((Bytef *)string_buffer, &uncompressed_length, (const Bytef *) deflated, (uLongf) size[0]);
-					ofs_restart << string_buffer;
-
-					// delete work space
-					delete deflated;
-					delete string_buffer;
-				}
-			}
-			// Clear dump string to save space
-			std::ostringstream clr;
-			clr << "END\n";
-			Reaction_module_ptr->GetWorkers()[0]->RunString(clr.str().c_str());
-#else
-			for (int n = 0; n < (int) Reaction_module_ptr->GetNThreads(); n++)
-			{
-				// Create DUMP and write
-				Reaction_module_ptr->GetWorkers()[n]->SetDumpStringOn(true); 
-				std::ostringstream in;
-				in << "DUMP; -cells " << Reaction_module_ptr->GetStartCell()[n] << "-" << Reaction_module_ptr->GetEndCell()[n] << "\n";
-				Reaction_module_ptr->GetWorkers()[n]->RunString(in.str().c_str());
-				ofs_restart << Reaction_module_ptr->GetWorkers()[n]->GetDumpString();
-				// Clear dump string to save space
-				std::ostringstream clr;
-				clr << "END\n";
-				Reaction_module_ptr->GetWorkers()[n]->RunString(clr.str().c_str());
-			}
-#endif
-
-			ofs_restart.close();
-			// rename files
-			PhreeqcRM::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
-			return IRM_OK;
-		}
-		return IRM_INVALIDARG;
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-FileHandler::WriteRestart(int *id, int *print_restart)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
-		if (print_restart != 0)
-		{
-			int mpi_tasks = Reaction_module_ptr->GetMpiTasks();
-			//ogzstream ofs_restart;
 			gzFile restart_file;
 #ifdef USE_GZ
 			std::string temp_name("temp_restart_file.gz");
@@ -813,56 +623,40 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 
 				// write header
 				int count_chemistry = Reaction_module_ptr->GetChemistryCellCount();
-				//ofs_restart << "#PHAST restart file" << std::endl;
 				gzprintf(restart_file, "%s\n", "#PHAST restart file");
-				//ofs_restart << "#Prefix: " << Reaction_module_ptr->GetFilePrefix() << std::endl;
 				gzprintf(restart_file, "%s%s\n", "#Prefix: ", Reaction_module_ptr->GetFilePrefix().c_str());
 				time_t now = ::time(NULL);
-				//ofs_restart << "#Date: " << ctime(&now);
 				gzprintf(restart_file, "%s%s\n", "#Date: ", ctime(&now));
-				//ofs_restart << "#Current model time: " << Reaction_module_ptr->GetTime() << std::endl;
 				gzprintf(restart_file, "%s%e\n", "#Current model time: ", Reaction_module_ptr->GetTime());
-				//ofs_restart << "#Grid cells: " << Reaction_module_ptr->GetGridCellCount() << std::endl;
 				gzprintf(restart_file, "%s%d\n", "#Grid cells: ", Reaction_module_ptr->GetGridCellCount());
-				//ofs_restart << "#Chemistry cells: " << count_chemistry << std::endl;
 				gzprintf(restart_file, "%s%d\n", "#Chemistry cells: ", count_chemistry);
 
 				// write index
-				//ofs_restart << Reaction_module_ptr->GetChemistryCellCount() << std::endl;
 				gzprintf(restart_file, "%d\n", count_chemistry );
 				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
 				{
 					int i = Reaction_module_ptr->GetBack()[j][0];			/* i is nxyz number */
-					//ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
 					gzprintf(restart_file, "%e %e %e %d ",  x_node[i], y_node[i], z_node[i], j);
 					// solution, use -1 if cell is dry
 					if (this->saturation[i] > 0.0)
 					{
-						//ofs_restart << this->ic[7 * i] << "  ";
 						gzprintf(restart_file, "%d ", this->ic[7 * i]);
 					}
 					else
 					{
-						//ofs_restart << -1 << "  ";
 						gzprintf(restart_file, "-1 ");
 					}
 					// pp_assemblage
-					//ofs_restart << this->ic[7 * i + 1] << "  ";
 					gzprintf(restart_file, "%d ", this->ic[7 * i + 1]);
 					// exchange
-					//ofs_restart << this->ic[7 * i + 2] << "  ";
 					gzprintf(restart_file, "%d ", this->ic[7 * i + 2]);
 					// surface
-					//ofs_restart << this->ic[7 * i + 3] << "  ";
 					gzprintf(restart_file, "%d ", this->ic[7 * i + 3]);
 					// gas_phase
-					//ofs_restart << this->ic[7 * i + 4] << "  ";
 					gzprintf(restart_file, "%d ", this->ic[7 * i + 4]);
 					// solid solution
-					//ofs_restart << this->ic[7 * i + 5] << "  ";
 					gzprintf(restart_file, "%d ", this->ic[7 * i + 5]);
 					// kinetics
-					//ofs_restart << this->ic[7 * i + 6] << "\n";
 					gzprintf(restart_file, "%d \n", this->ic[7 * i + 6]);
 				}
 				gzclose(restart_file);
@@ -891,7 +685,7 @@ FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
-			
+
 		int nso = RM_GetSelectedOutputCount(id);
 		int nxyz = RM_GetSelectedOutputRowCount(id); 
 		double current_time = RM_GetTimeConversion(id) * RM_GetTime(id);
@@ -900,53 +694,49 @@ FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 		//
 		if (!this->GetXYZInitialized() && nso > 0 && *print_xyz != 0)
 		{
-			if (local_mpi_myself == 0)
+			for (int iso = 0; iso < nso; iso++)
 			{
-				for (int iso = 0; iso < nso; iso++)
+				int status;
+				int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
+				if (n_user >= 0)
 				{
-					int status;
-					int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
-					if (n_user >= 0)
+					status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+					if (status >= 0)
 					{
-						status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
-						if (status >= 0)
+						// open file							
+						char prefix[256];
+						RM_GetFilePrefix(id, prefix, 256);
+						std::ostringstream filename;
+						filename << prefix << "_" << n_user << ".chem.xyz.tsv";
+						if (!this->Get_io()->punch_open(filename.str().c_str()))
 						{
-							// open file							
-							char prefix[256];
-							RM_GetFilePrefix(id, prefix, 256);
-							std::ostringstream filename;
-							filename << prefix << "_" << n_user << ".chem.xyz.tsv";
-							if (!this->Get_io()->punch_open(filename.str().c_str()))
-							{
-								//RM_Error(id, "Could not open xyz file.");
-								Reaction_module_ptr->ErrorHandler(IRM_FAIL, "Could not open xyz file.");
-							}
-							this->GetXYZOstreams().push_back(this->Get_io()->Get_punch_ostream());
-							// write first headings
-							char line_buff[132];
-							sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
-								"z", "time", "in");
-							this->Get_io()->punch_msg(line_buff);
-							
-							// create chemistry headings
-							int ncol = RM_GetSelectedOutputColumnCount(id);
-							std::ostringstream h;
-							for (int icol = 0; icol < ncol; icol++)
-							{
-								char head[100];
-								status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
-								std::string s(head);
-								s.append("\t");
-								h.width(20);
-								h << s;
-							}
-							h << "\n";
-							this->Get_io()->punch_msg(h.str().c_str());
+							Reaction_module_ptr->ErrorHandler(IRM_FAIL, "Could not open xyz file.");
 						}
+						this->GetXYZOstreams().push_back(this->Get_io()->Get_punch_ostream());
+						// write first headings
+						char line_buff[132];
+						sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
+							"z", "time", "in");
+						this->Get_io()->punch_msg(line_buff);
+
+						// create chemistry headings
+						int ncol = RM_GetSelectedOutputColumnCount(id);
+						std::ostringstream h;
+						for (int icol = 0; icol < ncol; icol++)
+						{
+							char head[100];
+							status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
+							std::string s(head);
+							s.append("\t");
+							h.width(20);
+							h << s;
+						}
+						h << "\n";
+						this->Get_io()->punch_msg(h.str().c_str());
 					}
 				}
-				this->SetXYZInitialized(true);
 			}
+			this->SetXYZInitialized(true);
 		}
 		//	
 		// Write XYZ file
@@ -964,51 +754,43 @@ FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 					int ncol = RM_GetSelectedOutputColumnCount(id);
 					if (status >= 0)
 					{
-						if (local_mpi_myself == 0)
+						this->Get_io()->Set_punch_ostream(this->GetXYZOstreams()[iso]);
+						local_selected_out.resize((size_t) (nxyz*ncol));
+						int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+
+						// write xyz file
+						for (int irow = 0; irow < nxyz; irow++)
 						{
-							this->Get_io()->Set_punch_ostream(this->GetXYZOstreams()[iso]);
-							local_selected_out.resize((size_t) (nxyz*ncol));
-							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
-
-							// write xyz file
-							for (int irow = 0; irow < nxyz; irow++)
+							if (xyz_mask[irow] <= 0) continue;
+							int active = 1;
+							if (mapping[irow] < 0 || saturation[irow] <= 0)
 							{
-								if (xyz_mask[irow] <= 0) continue;
-								int active = 1;
-								if (mapping[irow] < 0 || saturation[irow] <= 0)
-								{
-									active = 0;
-								}
-
-								// write x,y,z
-								std::ostringstream ln;
-
-								char line_buff[132];
-								sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
-									x_node[irow], y_node[irow], z_node[irow], current_time,
-									active);
-								ln << line_buff;
-								
-								if (active)
-								{
-									// write chemistry values
-									char token[21];
-									for (int jcol = 0; jcol < ncol; jcol++)
-									{		
-										sprintf(token,"%19.10e\t", local_selected_out[jcol * nxyz + irow]);
-										ln.width(20);
-										ln << token;
-									}
-								}
-								ln << "\n";
-								this->Get_io()->punch_msg(ln.str().c_str());
+								active = 0;
 							}
 
+							// write x,y,z
+							std::ostringstream ln;
+
+							char line_buff[132];
+							sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+								x_node[irow], y_node[irow], z_node[irow], current_time,
+								active);
+							ln << line_buff;
+
+							if (active)
+							{
+								// write chemistry values
+								char token[21];
+								for (int jcol = 0; jcol < ncol; jcol++)
+								{		
+									sprintf(token,"%19.10e\t", local_selected_out[jcol * nxyz + irow]);
+									ln.width(20);
+									ln << token;
+								}
+							}
+							ln << "\n";
+							this->Get_io()->punch_msg(ln.str().c_str());
 						}
-						//else
-						//{
-						//	int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
-						//}
 					}
 				}
 			}

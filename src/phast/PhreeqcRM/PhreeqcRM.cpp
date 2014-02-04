@@ -2114,77 +2114,6 @@ PhreeqcRM::FileRename(const std::string &temp_name, const std::string &name,
 	}
 	rename(temp_name.c_str(), name.c_str());
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int
-PhreeqcRM::FindComponents(void)	
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Counts components in any defined solution, gas_phase, exchanger,
- *   surface, or pure_phase_assemblage
- *
- *   Returns 
- *		n_comp, which is total, including H, O, elements, and Charge
- *      names, which contains character strings with names of components
- */
-	try
-	{
-		// Always include H, O, Charge
-		this->components.clear();
-
-#ifdef COMPONENT_H2O
-		this->components.push_back("H2O");
-#endif
-		this->components.push_back("H");
-		this->components.push_back("O");
-		this->components.push_back("Charge");
-
-		// Get other components
-		IPhreeqcPhast * phast_iphreeqc_worker = this->GetWorkers()[this->nthreads];
-		size_t count_components = phast_iphreeqc_worker->GetComponentCount();
-
-		size_t i;
-		for (i = 0; i < count_components; i++)
-		{
-			std::string comp(phast_iphreeqc_worker->GetComponent((int) i));
-			assert (comp != "H");
-			assert (comp != "O");
-			assert (comp != "Charge");
-			assert (comp != "charge");
-
-			this->components.push_back(comp);
-		}
-		// Calculate gfw for components
-		for (i = 0; i < components.size(); i++)
-		{
-			if (components[i] == "Charge")
-			{
-				this->gfw.push_back(1.0);
-			}
-			else
-			{
-				this->gfw.push_back(phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
-			}
-		}
-		if (this->mpi_myself == 0)
-		{
-			std::ostringstream outstr;
-			outstr << "List of Components:\n" << std::endl;
-			for (i = 0; i < this->components.size(); i++)
-			{
-				outstr << "\t" << i + 1 << "\t" << this->components[i].c_str() << std::endl;
-			}
-			this->OutputMessage(outstr.str());
-		}
-	}
-	catch (...)
-	{
-		return this->ReturnHandler(IRM_FAIL, "PhreeqcRM::FindComponents"); 
-	}
-	return (int) this->components.size();
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int
 PhreeqcRM::FindComponents(void)	
@@ -2918,81 +2847,6 @@ PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 	if (error_count > 0)
 		throw PhreeqcRMStop();
 	return this->error_count;
-}
-#endif
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::InitialPhreeqc2Concentrations(
-					double *c, 
-					int n_boundary, 
-					int dim,
-					int *boundary_solution1,
-					int *boundary_solution2, 
-					double *fraction1)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Routine takes a list of solution numbers and returns a set of
- *   concentrations
- *   Input: n_boundary - number of boundary conditions in list
- *          boundary_solution1 - list of first solution numbers to be mixed
- *          boundary_solution2 - list of second solution numbers to be mixed
- *          fraction1 - fraction of first solution 0 <= f <= 1
- *          dim - leading dimension of array boundary mass fractions
- *                must be >= to n_boundary
- *
- *   Output: c - concentrations for boundary conditions
- *             - dimensions must be >= n_boundary x n_comp
- *
- */
-	IRM_RESULT return_value = IRM_OK;
-	try
-	{
-		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
-		if (this->mpi_myself == 0) 
-		{
-			if (c != NULL && n_boundary > 0 && dim > 0 && boundary_solution1 != NULL)
-			{
-				int	i, n_old1, n_old2;
-				double f1, f2;
-
-				for (i = 0; i < n_boundary; i++)
-				{
-					cxxMix mixmap;
-					n_old1 = boundary_solution1[i];
-					n_old2 = (boundary_solution2) ? -1 : boundary_solution2[i];
-					f1 = (fraction1) ? 1.0 : fraction1[i];
-					f2 = 1 - f1;
-					mixmap.Add(n_old1, f1);
-					if (f2 > 0.0)
-					{
-						mixmap.Add(n_old2, f2);
-					}
-
-					// Make mass fractions in d
-					cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
-					std::vector<double> d;
-					cxxSolution2concentration(&cxxsoln, d, cxxsoln.Get_soln_vol());
-
-					// Put mass fractions in c
-					double *d_ptr = &c[i];
-					size_t j;
-					for (j = 0; j < components.size(); j++)
-					{
-						d_ptr[dim * j] = d[j];
-					}
-				}
-				return IRM_OK;
-			}
-			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer or dimension of zero in arguments.");
-		}
-	}
-	catch (...)
-	{
-			return_value = IRM_FAIL;
-	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Concentrations");
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -4834,20 +4688,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	assert(this->nthreads > 1);
 	start_cell_new[this->nthreads - 1] = end_cell_new[this->nthreads - 2] + 1;
 	end_cell_new[this->nthreads - 1] = count_chemistry - 1;
-#ifdef SKIP
-	// Apply rebalance fraction
-	for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
-	{
-		int	icells;
-		icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (this->rebalance_fraction) );
-		if (icells == 0)
-		{
-			icells = end_cell_new[i] - end_cell[i];
-		}
-		end_cell_new[i] = end_cell[i] + icells;
-		start_cell_new[i + 1] = end_cell_new[i] + 1;
-	}
-#endif
+
 	if (efficiency > 0.95)
 	{
 			for (int i = 0; i < this->nthreads; i++)
