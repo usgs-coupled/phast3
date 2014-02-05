@@ -26,6 +26,10 @@ SUBROUTINE phast_manager
     IMPLICIT NONE 
     SAVE
     INCLUDE 'RM_interface.f90.inc'
+    INTERFACE
+        INTEGER FUNCTION set_fdtmth
+        END FUNCTION set_fdtmth
+    END INTERFACE
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err
     INTEGER status
@@ -106,7 +110,6 @@ SUBROUTINE phast_manager
 
     ! ... distribute  initial p and c_w to workers from manager
     CALL flow_distribute
-    status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
 
     IF(errexe .OR. errexi) GO TO 50
 !
@@ -117,6 +120,8 @@ SUBROUTINE phast_manager
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
+        status = set_fdtmth()
+        status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
         DO
             CALL time_parallel(0)
             CALL c_distribute
@@ -699,4 +704,19 @@ INTEGER FUNCTION process_restart_files
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
     process_restart_files = 0
-END FUNCTION process_restart_files 
+    END FUNCTION process_restart_files 
+    
+INTEGER FUNCTION set_fdtmth
+    USE mcc, ONLY: mpi_myself
+    USE mcp
+    USE mpi_mod
+    IMPLICIT NONE 
+    INTEGER :: i
+#ifdef USE_MPI  
+    if (mpi_myself == 0) then
+        CALL MPI_BCAST(METHOD_SETFDTMTH, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+    endif
+    CALL MPI_BCAST(fdtmth, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+#endif 
+    set_fdtmth = 0
+END FUNCTION set_fdtmth 

@@ -168,14 +168,13 @@
  
         ! ... distribute  initial p and c_w to workers from manager
         !CALL flow_distribute
-        status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
 
         ! ... Error check
         !IF(errexe .OR. errexi) GO TO 50
-        status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
 
         ! ... Transient loop for transport
-        fdtmth = fdtmth_tr     ! ... set time differencing method to transient
+        !fdtmth = fdtmth_tr     ! ... set time differencing method to transient
+        status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
         DO       
             ! ... Transport calculation
             CALL c_distribute
@@ -649,6 +648,8 @@ INTEGER FUNCTION mpi_methods(method)
         END SUBROUTINE worker_init1
         SUBROUTINE set_component_map
         END SUBROUTINE set_component_map
+        INTEGER FUNCTION set_fdtmth
+        END FUNCTION set_fdtmth
     END INTERFACE
     integer method, return_value
     
@@ -681,6 +682,9 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_FLOWDISTRIBUTE) then
         write(*,*) "METHOD_FLOWDISTRIBUTE"
         CALL flow_distribute
+    else if (method == METHOD_SETFDTMTH) then
+        write(*,*) "METHOD_SETFDTMTH"
+        return_value = set_fdtmth()
     endif
 #endif
     mpi_methods = return_value
