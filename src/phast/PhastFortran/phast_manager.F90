@@ -148,7 +148,8 @@ SUBROUTINE phast_manager
                 CALL write3
                 IF(errexi) EXIT
             END DO  
-            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end               
+            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end  
+            !!!!!!TODO fix logic here
             CALL time_parallel(4)
             CALL thru_distribute
             CALL time_parallel(5)
@@ -181,6 +182,7 @@ SUBROUTINE phast_manager
                 CALL flow_distribute
                 CALL time_parallel(7)
             ENDIF
+            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
             CALL time_parallel(8)
 
             ! ... At this point, worker and manager do transport calculations

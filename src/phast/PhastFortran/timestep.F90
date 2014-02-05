@@ -29,6 +29,11 @@ SUBROUTINE timestep
   !     ------------------------------------------------------------------
   !...
   ! ... Update time step counter
+#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_TIMESTEPWORKER, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+#endif   
   itime = itime+1
 
   WRITE(logline1,5011) 'Beginning time step no. ',itime

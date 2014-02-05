@@ -190,11 +190,13 @@
             !    END DO
             !ENDIF
             status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
+            !!!!!!!!!!!TODO fix this logic
             CALL thru_distribute  
             IF (thru) EXIT          ! ... second step of exit
             
-            CALL timestep_worker     ! ... this only receives some data. it is a hold point      
-            IF (.NOT. steady_flow) CALL flow_distribute    
+            !CALL timestep_worker     ! ... this only receives some data. it is a hold point   
+            !IF (.NOT. steady_flow) CALL flow_distribute    
+            status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker   
 
             ! ... Processes do transport
             IF (local_ns > 0) THEN 
@@ -691,6 +693,9 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_PDISTRIBUTE) then
         write(*,*) "METHOD_PDISTRIBUTE"
         CALL p_distribute
+    else if (method == METHOD_TIMESTEPWORKER) then
+        write(*,*) "METHOD_TIMESTEPWORKER"
+        CALL timestep_worker
     endif
 #endif
     mpi_methods = return_value
