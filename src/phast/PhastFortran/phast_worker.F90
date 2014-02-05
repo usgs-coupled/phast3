@@ -26,7 +26,6 @@
             integer, intent(in) :: method
         end function
     END INTERFACE
-    REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg=0
     INTEGER :: i, a_err
     CHARACTER(LEN=130) :: logline1
@@ -57,7 +56,9 @@
             WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
             STOP 
         END IF
+        time_phreeqc = 0._kdp
         nthreads = RM_GetNThreads(rm_id)
+        status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
         !status = RM_SetErrorHandlerMode(rm_id)
         !status = RM_SetPrintChemistryOn(rm_id)
         ! ... Open C files 
@@ -79,8 +80,6 @@
         !DO i = 1, ns
         !    comp_name(i) = ' '
         !    status = RM_GetComponent(rm_id, i, comp_name(i))
-        status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
-        status = RM_MpiWorker(rm_id)                            ! 1 RM_MpiWorker
         !ENDDO  
     !ENDIF
 !
@@ -89,20 +88,19 @@
     !IF (solute) THEN
         
         ! ... Map components to processes for transport calculations
-        ! CALL worker_init1 
-        status = RM_MpiWorker(rm_id)                            ! 1 RM_MpiWorker
-        CALL set_component_map
+        
+        !CALL set_component_map
+        !CALL worker_init1 
 
-        IF(errexi) GO TO 50
+        !IF(errexi) GO TO 50
 
         ! ... transfer read2 and init2 data to worker
-        CALL group2_distribute
+        !CALL group2_distribute
 
         ! ... Create Transporter(s)
-        CALL create_transporters
+        !CALL create_transporters
+        status = RM_MpiWorker(rm_id)                               ! 3 RM_MpiWorker
 
-        deltim_dummy = 0._kdp
-        time_phreeqc = 0._kdp
 !
 ! start of InitializeRM
 !
@@ -171,11 +169,9 @@
         ! ... Write zone chemistry
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         stop_msg = 0
-        deltim_dummy = 0._kdp
  
         ! ... distribute  initial p and c_w to workers from manager
         CALL flow_distribute
-        deltim_dummy = 0._kdp
 
         ! ... Error check
         IF(errexe .OR. errexi) GO TO 50
@@ -653,6 +649,8 @@ INTEGER FUNCTION mpi_methods(method)
         END FUNCTION set_components
         SUBROUTINE worker_init1
         END SUBROUTINE worker_init1
+        SUBROUTINE set_component_map
+        END SUBROUTINE set_component_map
     END INTERFACE
     integer method, return_value
     
@@ -664,6 +662,15 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_WORKERINIT1) then
         write(*,*) "METHOD_WORKERINIT1"
         CALL worker_init1
+    else if (method == METHOD_SETCOMPONENTMAP) then
+        write(*,*) "METHOD_SETCOMPONENTMAP"
+        CALL set_component_map
+    else if (method == METHOD_GROUP2DISTRIBUTE) then
+        write(*,*) "METHOD_GROUP2DISTRIBUTE"
+        CALL group2_distribute
+    else if (method == METHOD_CREATETRANSPORTERS) then
+        write(*,*) "METHOD_CREATETRANSPORTERS"
+        CALL create_transporters
     endif
 #endif
     mpi_methods = return_value

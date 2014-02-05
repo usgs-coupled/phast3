@@ -63,12 +63,7 @@ SUBROUTINE init2_1
   TYPE(cell_subdom), DIMENSION(:), ALLOCATABLE :: cell_sd
   LOGICAL :: all_dry, some_dry
   !     ------------------------------------------------------------------
-!!$  ALLOCATE (axsav(nxyz), aysav(nxyz), azsav(nxyz),  &
-!!$       stat = a_err)
-!!$  IF (a_err /= 0) THEN  
-!!$     PRINT *, "Array allocation failed: init2.1, number 0"  
-!!$     STOP  
-!!$  ENDIF
+
   nr=nx
   nsa = MAX(ns,1)
   ! ... convert the data to s.i. time units if necessary
