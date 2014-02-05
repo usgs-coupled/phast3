@@ -10,11 +10,12 @@ MODULE mpi_mod
   INTEGER :: manager=0, xp_comm, world_comm
   INTEGER :: ierrmpi
   INTEGER :: mpi_xp_group, mpi_xp_comm
-  INTEGER :: METHOD_SETCOMPONENTS      = 1000, &
-             METHOD_WORKERINIT1        = 1001, & 
-             METHOD_SETCOMPONENTMAP    = 1002, &
-             METHOD_GROUP2DISTRIBUTE   = 1003, &
-             METHOD_CREATETRANSPORTERS = 1004
+  INTEGER :: METHOD_SETCOMPONENTS          = 1000, &
+             METHOD_WORKERINIT1            = 1001, & 
+             METHOD_SETCOMPONENTMAP        = 1002, &
+             METHOD_GROUP2DISTRIBUTE       = 1003, &
+             METHOD_CREATETRANSPORTERS     = 1004, &
+             METHOD_RESTARTFILESINITIALIZE = 1005
   
 CONTAINS  
 

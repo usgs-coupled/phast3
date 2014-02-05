@@ -99,7 +99,6 @@
 
         ! ... Create Transporter(s)
         !CALL create_transporters
-        status = RM_MpiWorker(rm_id)                               ! 3 RM_MpiWorker
 
 !
 ! start of InitializeRM
@@ -123,13 +122,13 @@
         !status = RM_SetRebalanceFraction(rm_id)
         !status = RM_SetRebalanceByCell(rm_id)
         !status = RM_CreateMapping(rm_id) 
-        status = RM_MpiWorker(rm_id)                               ! 3 RM_MpiWorker
+        !status = RM_MpiWorker(rm_id)                               ! 3 RM_MpiWorker
         
         ! ... Distribute initial conditions for chemistry    
-        DO i = 1, num_restart_files
-            CALL FH_SetRestartName(restart_files(i))
-        ENDDO
-        CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1))
+        !DO i = 1, num_restart_files
+        !    CALL FH_SetRestartName(restart_files(i))
+        !ENDDO
+        !CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1))
         !status = RM_InitialPhreeqc2Module(rm_id)
         status = RM_MpiWorker(rm_id)                               ! 4 RM_MpiWorker
         CALL FH_ProcessRestartFiles(rm_id)
@@ -671,6 +670,9 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_CREATETRANSPORTERS) then
         write(*,*) "METHOD_CREATETRANSPORTERS"
         CALL create_transporters
+    else if (method == METHOD_RESTARTFILESINITIALIZE) then
+        write(*,*) "METHOD_RESTARTFILESINITIALIZE"
+        CALL restart_files_initialize
     endif
 #endif
     mpi_methods = return_value

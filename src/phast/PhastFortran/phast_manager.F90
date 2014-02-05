@@ -60,7 +60,6 @@ SUBROUTINE phast_manager
   
     ! ... Create transporters
     CALL create_transporters
-    status = RM_MpiWorkerBreak(rm_id)
     CALL init2_2
     IF (.NOT.steady_flow) THEN
         pv0 = pv                       ! pressure corrected pv
@@ -551,12 +550,13 @@ SUBROUTINE InitializeRM
         ! ... Define mapping from 3D domain to chemistry
         CALL CreateMappingFortran(indx_sol1_ic)
         status = RM_CreateMapping(rm_id, grid2chem(1))
-        status = RM_MpiWorkerBreak(rm_id)           ! 3 RM_MpiWorker end
         
-        DO i = 1, num_restart_files
-            CALL FH_SetRestartName(restart_files(i))
-        ENDDO
-        CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
+        !DO i = 1, num_restart_files
+        !    CALL FH_SetRestartName(restart_files(i))
+        !ENDDO
+        !CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
+        CALL restart_files_initialize
+        !status = RM_MpiWorkerBreak(rm_id)           ! 3 RM_MpiWorker end
         
         ! ... Make arrays in the correct order
         ALLOCATE(ic1_reordered(nxyz,7), ic2_reordered(nxyz,7), f1_reordered(nxyz,7),   &
@@ -672,4 +672,22 @@ INTEGER FUNCTION set_components
         status = RM_GetComponent(rm_id, i, comp_name(i))
     ENDDO  
 END FUNCTION set_components 
-        
+INTEGER FUNCTION restart_files_initialize 
+    USE mcc, ONLY: mpi_myself
+    USE mcch
+    USE mcg
+    USE mcn
+    USE mcv
+    USE mpi_mod
+    IMPLICIT NONE 
+    INTEGER :: i
+#ifdef USE_MPI  
+    if (mpi_myself == 0) then
+        CALL MPI_BCAST(METHOD_RESTARTFILESINITIALIZE, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+    endif
+#endif 
+    DO i = 1, num_restart_files
+        CALL FH_SetRestartName(restart_files(i))
+    ENDDO
+    CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
+END FUNCTION restart_files_initialize 
