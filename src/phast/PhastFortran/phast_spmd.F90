@@ -38,7 +38,7 @@ SUBROUTINE phast_sub(l_mpi_tasks, l_mpi_myself)
   version_name = ' @VERSION@'
   !...
 #if defined(USE_MPI)
-  world = MPI_COMM_WORLD
+  world_comm = MPI_COMM_WORLD
   mpi_tasks = l_mpi_tasks
   mpi_myself = l_mpi_myself   
   IF (mpi_myself == manager) THEN

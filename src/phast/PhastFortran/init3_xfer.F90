@@ -106,7 +106,7 @@ SUBROUTINE init3_bcast_m
   i_dummy = 0
   IF (thru) i_dummy = 1
   CALL MPI_BCAST(i_dummy, 1, MPI_INTEGER, manager,  &
-        world, ierrmpi)
+        xp_comm, ierrmpi)
   IF(thru) RETURN
 
   ! ... 2 receive the flag for rdwtd
@@ -114,7 +114,7 @@ SUBROUTINE init3_bcast_m
      array_bcst_i(1) = 0
      IF (rdwtd) array_bcst_i(1) = 1
      CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   !*** 3 broadcast rdspbc, rdscbc
@@ -124,7 +124,7 @@ SUBROUTINE init3_bcast_m
      array_bcst_i(2) = 0
      IF (rdscbc) array_bcst_i(2) = 1
      CALL MPI_BCAST(array_bcst_i(1), 2, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 4 broadcast rdflxq, rdflxs
@@ -134,7 +134,7 @@ SUBROUTINE init3_bcast_m
      array_bcst_i(2) = 0
      IF (rdflxs) array_bcst_i(2) = 1
      CALL MPI_BCAST(array_bcst_i(1), 2, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 5 broadcast rdlbc
@@ -142,7 +142,7 @@ SUBROUTINE init3_bcast_m
      array_bcst_i(1) = 0
      IF (rdlbc) array_bcst_i(1) = 1
      CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 6 broadcast rdrbc
@@ -150,62 +150,62 @@ SUBROUTINE init3_bcast_m
      array_bcst_i(1) = 0
      IF (rdrbc) array_bcst_i(1) = 1
      CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 7 broadcast rdcalc
   array_bcst_i(1) = 0
   IF (rdcalc) array_bcst_i(1) = 1
   CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
-       world, ierrmpi)
+       xp_comm, ierrmpi)
 
   ! ... Data for all workers from init3
   IF(rdwtd) THEN
      ! *** 1 broadcast qwv
      CALL MPI_BCAST(qwv(1), SIZE(qwv), MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   ENDIF
 
   IF(rdspbc .OR. rdscbc) THEN
      ! *** 3 broadcast psbc
      CALL MPI_BCAST(psbc(1), nsbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
 
      IF(fresur) THEN
         ! *** 5 broadcast frac
         CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-             world, ierrmpi)
+             xp_comm, ierrmpi)
      END IF
   ENDIF
 
   ! ... 6 broadcast the pointer array to the free surface cells
   CALL MPI_BCAST(mfsbc(1), nxy, MPI_INTEGER, manager, &
-       world, ierrmpi)
+       xp_comm, ierrmpi)
 
 
   IF(rdflxq) THEN
      ! ... 7 broadcast qfflx
      CALL MPI_BCAST(qfflx(1), nfbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   IF(rdlbc) THEN
      ! *** 9 broadcast philbc
      CALL MPI_BCAST(philbc(1), nlbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! ... River leakage b.c.
   IF(rdrbc) THEN
      ! *** 11 broadcast phirbc
      CALL MPI_BCAST(phirbc(1), nrbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 13 broadcast deltim, timchg
   array_bcst_r(1) = deltim; array_bcst_r(2) = timchg
     CALL MPI_BCAST(array_bcst_r(1), 2, MPI_DOUBLE, manager, &
-        world, ierrmpi)
+        xp_comm, ierrmpi)
 #endif 
 ! end USE_MPI
 END SUBROUTINE init3_bcast_m
@@ -237,7 +237,7 @@ SUBROUTINE init3_bcast_w
 
 !!$! Read Flags From Read3
     CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager,  &
-        world, Ierrmpi)
+        xp_comm, Ierrmpi)
 
   thru = .FALSE.
   IF (array_recv_i(1) == 1) Thru = .TRUE.
@@ -253,7 +253,7 @@ SUBROUTINE init3_bcast_w
   IF(nwel > 0) THEN
      ! ... receive the flag for rdwtd
      CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdwtd = .FALSE.
      IF (array_recv_i(1) == 1) rdwtd = .TRUE.
   END IF
@@ -262,7 +262,7 @@ SUBROUTINE init3_bcast_w
   IF(nsbc > 0) THEN
      ! ... Receive specified pressure b.c. and assoc concentration
      CALL MPI_BCAST(array_recv_i(1), 2, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdspbc = .FALSE.
      IF (array_recv_i(1) == 1) rdspbc = .TRUE.
      rdscbc = .FALSE.
@@ -274,7 +274,7 @@ SUBROUTINE init3_bcast_w
      ! ... Receive specified fluid flux b.c.
      ! ...      volumetric fluxes
      CALL MPI_BCAST(array_recv_i(1), 2, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdflxq = .FALSE.
      IF (array_recv_i(1) == 1) rdflxq = .TRUE.
      ! ... Solute diffusive fluxes for no flow b.c.
@@ -286,7 +286,7 @@ SUBROUTINE init3_bcast_w
   ! *** 5 broadcast rdlbc
   IF(nlbc > 0) THEN
      CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdlbc = .FALSE.
      IF (array_recv_i(1) == 1) rdlbc = .TRUE.
   END IF
@@ -294,14 +294,14 @@ SUBROUTINE init3_bcast_w
   ! *** 6 broadcast rdrbc
   IF(nrbc > 0) THEN
      CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdrbc = .FALSE.
      IF (array_recv_i(1) == 1) rdrbc = .TRUE.
   END IF
 
   ! *** 7 broadcast rdcalc
   CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
-       world, ierrmpi)
+       xp_comm, ierrmpi)
   rdcalc = .FALSE.
   IF (array_recv_i(1) == 1) rdcalc = .TRUE.
 
@@ -312,7 +312,7 @@ SUBROUTINE init3_bcast_w
   IF(rdwtd) THEN
      ! *** 1 broadcast qwv
      CALL MPI_BCAST(qwv(1), SIZE(qwv), MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
   ! ... Specified value b.c.
   IF(rdspbc .OR. rdscbc) THEN
@@ -320,24 +320,24 @@ SUBROUTINE init3_bcast_w
      ! ...      specified pressure nodes into the b.c. arrays
      ! *** 3 broadcast psbc
      CALL MPI_BCAST(psbc(1), nsbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
 
      IF(fresur) THEN
         ! *** 5 broadcast frac
         CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-             world, ierrmpi)
+             xp_comm, ierrmpi)
      END IF
   END IF
 
   ! ... 6 broadcast the pointer array to the free surface cells
   CALL MPI_BCAST(mfsbc(1), nxy, MPI_INTEGER, manager, &
-       world, ierrmpi)
+       xp_comm, ierrmpi)
 
   ! ... Specified flux b.c.
   IF(rdflxq) THEN
      ! ... 7 broadcast qfflx
      CALL MPI_BCAST(qfflx(1), nfbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      DO  ls=1,nfbc_seg
         denfbc(ls) = den0
      END DO
@@ -347,7 +347,7 @@ SUBROUTINE init3_bcast_w
   IF(rdlbc) THEN
      ! *** 9 broadcast philbc
      CALL MPI_BCAST(philbc(1), nlbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      DO  ls=1,nlbc_seg
         denlbc(ls) = den0
         vislbc(ls) = vis0
@@ -358,7 +358,7 @@ SUBROUTINE init3_bcast_w
   IF(rdrbc) THEN
      ! *** 11 broadcast phirbc
      CALL MPI_BCAST(phirbc(1), nrbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      DO  ls=1,nrbc_seg
         denrbc(ls) = den0
         visrbc(ls) = vis0
@@ -385,7 +385,7 @@ SUBROUTINE init3_bcast_w
 
   ! *** 13 broadcast deltim, timchg
   CALL MPI_BCAST(array_recv_r(1), 2, MPI_DOUBLE, manager, &
-        world, ierrmpi)
+        xp_comm, ierrmpi)
 
   jtime = 0
   deltim = array_recv_r(1); timchg = array_recv_r(2)
@@ -416,7 +416,7 @@ SUBROUTINE init3_xfer_m
            ! *** 2 send cwkt concentration array to worker processes; only 1 iis to each worker
            ! ... Send iis component of cwkt array to worker iis using nonblocking MPI send.
            CALL MPI_SEND(cwkt(:,iis), nwel, MPI_DOUBLE_PRECISION, &
-                component_map(iis), tag, world, ierrmpi)
+                component_map(iis), tag, xp_comm, ierrmpi)
         ENDIF
 
         IF(rdspbc .OR. rdscbc) THEN
@@ -424,7 +424,7 @@ SUBROUTINE init3_xfer_m
            ! ... Send iis component of csbc array to worker iis using nonblocking
            ! ...   MPI send.
            CALL MPI_SEND(csbc(:,iis), nsbc_seg, MPI_DOUBLE_PRECISION, &
-                component_map(iis), tag, world, ierrmpi)
+                component_map(iis), tag, xp_comm, ierrmpi)
         ENDIF
 
         IF(rdflxq) THEN
@@ -432,7 +432,7 @@ SUBROUTINE init3_xfer_m
            ! ... Send iis component of cfbc array to worker iis using nonblocking
            ! ...   MPI send.
            CALL MPI_SEND(cfbc(:,iis), nfbc_seg, MPI_DOUBLE_PRECISION, &
-                component_map(iis), tag, world, ierrmpi)
+                component_map(iis), tag, xp_comm, ierrmpi)
         ENDIF
 
         IF(rdlbc) THEN
@@ -440,7 +440,7 @@ SUBROUTINE init3_xfer_m
            ! ... Send iis component of clbc array to worker iis using nonblocking
            ! ...   MPI send.
            CALL MPI_SEND(clbc(:,iis), nlbc_seg, MPI_DOUBLE_PRECISION, &
-                component_map(iis), tag, world, ierrmpi)
+                component_map(iis), tag, xp_comm, ierrmpi)
         ENDIF
 
         ! ... River leakage b.c.
@@ -449,7 +449,7 @@ SUBROUTINE init3_xfer_m
            ! ... Send iis component of crbc array to worker iis using nonblocking
            ! ...   MPI send.
            CALL MPI_SEND(crbc(:,iis), nrbc_seg, MPI_DOUBLE_PRECISION, &
-                component_map(iis), tag, world, ierrmpi)
+                component_map(iis), tag, xp_comm, ierrmpi)
         ENDIF
      ENDIF
   ENDDO
@@ -478,7 +478,7 @@ SUBROUTINE XP_init3_xfer(xp)
   IF(rdwtd) THEN
      ! *** 2 send cwkt concentration array to worker processes; only 1 iis to each worker
      CALL MPI_RECV(xp%cwkt, nwel, MPI_DOUBLE_PRECISION, manager,  &
-          tag, world, MPI_STATUS_IGNORE, ierrmpi)
+          tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
      DO  iwel=1,nwel
         IF(wqmeth(iwel) == 12 .OR. wqmeth(iwel) == 13) THEN
            xp%cwkts(iwel) = xp%cwkt(iwel)
@@ -490,28 +490,28 @@ SUBROUTINE XP_init3_xfer(xp)
   IF(rdspbc .OR. rdscbc) THEN
      ! *** 4 send csbc concentration array to worker processes
      CALL MPI_RECV(xp%csbc, nsbc_seg, MPI_DOUBLE_PRECISION, manager,  &
-          tag, world, MPI_STATUS_IGNORE, ierrmpi)
+          tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
   END IF
 
   ! ... Specified flux b.c.
   IF(rdflxq) THEN
      ! *** 8 send cfbc concentration array to worker processes
      CALL MPI_RECV(xp%cfbc, nfbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          tag, world, MPI_STATUS_IGNORE, ierrmpi)
+          tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
   END IF
 
   ! ... Aquifer leakage b.c.
   IF(rdlbc) THEN
      ! *** 10 send clbc concentration array to worker processes
      CALL MPI_RECV(xp%clbc, nlbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          tag, world, MPI_STATUS_IGNORE, ierrmpi)
+          tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
   END IF
 
   ! ... River leakage b.c.
   IF(rdrbc) THEN
      ! *** 12 send crbc concentration array to worker processes
      CALL MPI_RECV(xp%crbc, nrbc_seg, MPI_DOUBLE_PRECISION, manager, &
-          tag, world, MPI_STATUS_IGNORE, ierrmpi)
+          tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
   END IF
 #endif 
 ! end USE_MPI

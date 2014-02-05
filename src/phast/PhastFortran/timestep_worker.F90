@@ -27,11 +27,11 @@ SUBROUTINE timestep_worker
   jtime = jtime+1
   ! *** receive itime, jtime from manager
     CALL MPI_BCAST(array_recv_i(1), 2, MPI_INTEGER, manager,  &
-        world, ierrmpi)
+        xp_comm, ierrmpi)
 
   itime_m = array_recv_i(1); jtime_m = array_recv_i(2)
-  CALL MPI_BCAST(deltim, 1, MPI_DOUBLE_PRECISION, manager, world, ierrmpi)
-  CALL MPI_BCAST(time, 1, MPI_DOUBLE_PRECISION, manager, world, ierrmpi)
+  CALL MPI_BCAST(deltim, 1, MPI_DOUBLE_PRECISION, manager, xp_comm, ierrmpi)
+  CALL MPI_BCAST(time, 1, MPI_DOUBLE_PRECISION, manager, xp_comm, ierrmpi)
 
   utime=cnvtmi*(time+deltim)*one_plus_eps
   IF(itime /= itime_m) THEN

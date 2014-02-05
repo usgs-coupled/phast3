@@ -50,13 +50,14 @@ SUBROUTINE set_component_map
      ! ... include 
      CALL MPI_GROUP_INCL(mpi_xp_group_world, nmembers, members, mpi_xp_group, ierrmpi) 
      ! ... create subset of world from group
-     CALL MPI_COMM_CREATE(world, mpi_xp_group, mpi_xp_comm, ierrmpi)
+     CALL MPI_COMM_CREATE(world_comm, mpi_xp_group, mpi_xp_comm, ierrmpi)
   ELSE
      ! ...  create comm equal to world
-     CALL MPI_COMM_CREATE(world, mpi_xp_group_world, mpi_xp_comm, ierrmpi)
+     CALL MPI_COMM_CREATE(world_comm, mpi_xp_group_world, mpi_xp_comm, ierrmpi)
   ENDIF
   ! ...  world is transporter world, probably should rename later
-  world = mpi_xp_comm
+  !world = mpi_xp_comm
+  xp_comm = mpi_xp_comm
 #endif
 
   xp_group = .TRUE. 
