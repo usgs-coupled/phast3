@@ -18,11 +18,19 @@ SUBROUTINE init1
   USE mcv_m
   USE mcw_m, ONLY: totwsi, totwsp, tqwsi, tqwsp, u10
   USE print_control_mod
+  USE mpi_mod
   IMPLICIT NONE
   INTEGER :: a_err, iis, nsa
   !CHARACTER(LEN=32), DIMENSION(:), ALLOCATABLE :: ucomp_name
   !     ------------------------------------------------------------------
   !...
+#ifdef USE_MPI
+!    if (mpi_myself == 0) then
+!write(*,*) "Init1 1"
+!        CALL MPI_BCAST(METHOD_WORKERINIT1, 1, MPI_INTEGER, manager, world, ierrmpi)  
+!write(*,*) "Init1 2"
+!    endif    
+#endif
   IF (cylind) ny = 1  
   nxy = nx*ny  
   nxyz = nxy*nz  
