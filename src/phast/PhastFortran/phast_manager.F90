@@ -70,6 +70,7 @@ SUBROUTINE phast_manager
 
     ! ...  Initialize Reaction Module
     CALL InitializeRM
+    status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
     CALL error4
     ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
     ! ... Write initial condition results 
@@ -87,6 +88,7 @@ SUBROUTINE phast_manager
 
     ! ... Use Reaction Module to equilbrate cells    
     CALL InitialEquilibrationRM
+    status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
 
     IF (solute) THEN
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
@@ -210,6 +212,7 @@ SUBROUTINE phast_manager
     
             ! ... Run cells in Reaction Module
             CALL TimeStepRM
+            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
 
             CALL time_parallel(12)
             CALL sumcal2
@@ -418,7 +421,6 @@ SUBROUTINE CreateRM
         status = RM_SetErrorHandlerMode(rm_id, 2)   ! throw exception on error
         status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
         status = RM_SetFilePrefix(rm_id, f3name)
-        !status = RM_MpiWorkerBreak(rm_id)           ! x RM_MpiWorker end
         status = RM_OpenFiles(rm_id)
         status = RM_LoadDatabase(rm_id, f2name);
         !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
@@ -440,7 +442,6 @@ SUBROUTINE CreateRM
             status = RM_GetComponent(rm_id, i, comp_name(i))
         ENDDO   
 #endif        
-        !status = RM_MpiWorkerBreak(rm_id)            ! 1 RM_MpiWorker end
         status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
         status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
     ENDIF
@@ -487,11 +488,9 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetConcentrations(rm_id, c(1,1))
         !status = RM_SetStopMessage(rm_id, stop_msg)
         
-        status = RM_RunCells(rm_id)  
-        !status = RM_MpiWorkerBreak(rm_id)           ! 6 RM_MpiWorker end   
+        status = RM_RunCells(rm_id)    
         CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
-	        iprint_xyz(1), 0); 
-        status = RM_MpiWorkerBreak(rm_id)           ! 6 RM_MpiWorker end  
+	        iprint_xyz(1), 0);  
     ENDIF       
 END SUBROUTINE InitialEquilibrationRM
     
@@ -585,8 +584,7 @@ SUBROUTINE InitializeRM
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
         ! collect solutions at manager for transport
-        status = RM_GetConcentrations(rm_id, c(1,1))   
-        status = RM_MpiWorkerBreak(rm_id)           ! 5 RM_MpiWorker end   
+        status = RM_GetConcentrations(rm_id, c(1,1))      
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
             STAT = a_err)
@@ -638,12 +636,10 @@ SUBROUTINE TimeStepRM
         
         status = RM_RunCells(rm_id)  
         status = RM_GetConcentrations(rm_id, c(1,1))
-        !status = RM_MpiWorkerBreak(rm_id)           ! 7 RM_MpiWorker end 
         
         CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
             iprint_xyz(1), print_restart%print_flag_integer) 
         !status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 0)
-        status = RM_MpiWorkerBreak(rm_id)           ! 8 RM_MpiWorker end 
         
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM   
