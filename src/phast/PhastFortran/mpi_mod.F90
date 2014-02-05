@@ -21,7 +21,8 @@ MODULE mpi_mod
              METHOD_FLOWDISTRIBUTE         = 1008, &
              METHOD_SETFDTMTH              = 1009, &
              METHOD_CDISTRIBUTE            = 1010, &
-             METHOD_PDISTRIBUTE            = 1011
+             METHOD_PDISTRIBUTE            = 1011, &
+             METHOD_TIMESTEPWORKER         = 1012
   
 CONTAINS  
 
