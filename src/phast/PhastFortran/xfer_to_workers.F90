@@ -11,7 +11,10 @@ SUBROUTINE p_distribute
   USE mpi_mod
   IMPLICIT NONE
   !     ------------------------------------------------------------------
-  ! ... Transfer p, frac, mfsbc
+  ! ... Transfer p, frac, mfsbc#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_PDISTRIBUTE, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
   IF (.NOT. xp_group) RETURN
   IF (mpi_tasks > 1) THEN
      IF (itime <= 0) THEN
@@ -56,6 +59,11 @@ SUBROUTINE c_distribute
   INTEGER tag
   INTEGER :: iis
   !     ------------------------------------------------------------------
+#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_CDISTRIBUTE, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+#endif 
   IF (.NOT. solute .OR. .NOT. xp_group) RETURN
 
   ! ... Send concentration array to worker processes

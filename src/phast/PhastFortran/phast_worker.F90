@@ -174,22 +174,22 @@
 
         ! ... Transient loop for transport
         !fdtmth = fdtmth_tr     ! ... set time differencing method to transient
-        status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
         DO       
             ! ... Transport calculation
-            CALL c_distribute
-            CALL p_distribute
+            !CALL c_distribute
+            !CALL p_distribute
 
             ! ... manager calculates flow
 
             ! ... Receive the transient data, if necessary
-            IF (xp_group) THEN    
-                DO WHILE(time*one_plus_eps >= timchg)  
-                    CALL init3_distribute      
-                    IF(thru) EXIT        ! ... Normal exit from time step loop
-                    IF(errexi) EXIT
-                END DO
-            ENDIF
+            !IF (xp_group) THEN    
+            !    DO WHILE(time*one_plus_eps >= timchg)  
+            !        CALL init3_distribute      
+            !        IF(thru) EXIT        ! ... Normal exit from time step loop
+            !        IF(errexi) EXIT
+            !    END DO
+            !ENDIF
+            status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
             CALL thru_distribute  
             IF (thru) EXIT          ! ... second step of exit
             
@@ -685,6 +685,12 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_SETFDTMTH) then
         write(*,*) "METHOD_SETFDTMTH"
         return_value = set_fdtmth()
+    else if (method == METHOD_CDISTRIBUTE) then
+        write(*,*) "METHOD_CDISTRIBUTE"
+        CALL c_distribute
+    else if (method == METHOD_PDISTRIBUTE) then
+        write(*,*) "METHOD_PDISTRIBUTE"
+        CALL p_distribute
     endif
 #endif
     mpi_methods = return_value

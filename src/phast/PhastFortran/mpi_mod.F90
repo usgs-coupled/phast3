@@ -19,7 +19,9 @@ MODULE mpi_mod
              METHOD_INIT3DISTRIBUTE        = 1006, &
              METHOD_ZONEFLOWWRITECHEM      = 1007, &
              METHOD_FLOWDISTRIBUTE         = 1008, &
-             METHOD_SETFDTMTH              = 1009
+             METHOD_SETFDTMTH              = 1009, &
+             METHOD_CDISTRIBUTE            = 1010, &
+             METHOD_PDISTRIBUTE            = 1011
   
 CONTAINS  
 
