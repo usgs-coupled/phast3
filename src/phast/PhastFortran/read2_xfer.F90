@@ -2,11 +2,13 @@
 SUBROUTINE group2_distribute
   USE mcc
   USE mcv
+  USE mpi_mod
   IMPLICIT NONE
   !-------------------------------------------------------------------------------
   IF (.NOT. solute .OR. .NOT. xp_group) RETURN
 #if defined(USE_MPI)
   IF (mpi_myself == 0) THEN
+     CALL MPI_BCAST(METHOD_GROUP2DISTRIBUTE, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
      CALL read2_xfer_m
      CALL init2_1_xfer_m
   ELSE

@@ -676,10 +676,16 @@ SUBROUTINE create_transporters
   USE mcc            ! ... Get sizes from modules
   USE mcv
   USE XP_module, only: xp_list, XP_create
+  USE mpi_mod
   IMPLICIT NONE
   INTEGER :: a_err, i
   !     ------------------------------------------------------------------
   IF (solute) THEN
+#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_CREATETRANSPORTERS, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+#endif        
      IF (local_ns > 0) THEN
         ALLOCATE (xp_list(local_ns),  &
              STAT = a_err)

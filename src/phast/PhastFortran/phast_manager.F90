@@ -41,17 +41,11 @@ SUBROUTINE phast_manager
 
     ! Create Reaction Module(s)
     CALL CreateRM   
-    status = RM_MpiWorkerBreak(rm_id)
-#ifdef USE_MPI
-    CALL MPI_BCAST(METHOD_WORKERINIT1, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
-    status = RM_MpiWorkerBreak(rm_id)   
-#endif     
+    
     ! ... Map components to processes for transport calculations
     CALL set_component_map
 
-   
-    !... Call init1
-    
+    !... Process read1 
     CALL init1
     CALL error1
     IF(errexi) GO TO 50
@@ -66,6 +60,7 @@ SUBROUTINE phast_manager
   
     ! ... Create transporters
     CALL create_transporters
+    status = RM_MpiWorkerBreak(rm_id)
     CALL init2_2
     IF (.NOT.steady_flow) THEN
         pv0 = pv                       ! pressure corrected pv

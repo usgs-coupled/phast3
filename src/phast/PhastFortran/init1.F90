@@ -21,15 +21,11 @@ SUBROUTINE init1
   USE mpi_mod
   IMPLICIT NONE
   INTEGER :: a_err, iis, nsa
-  !CHARACTER(LEN=32), DIMENSION(:), ALLOCATABLE :: ucomp_name
   !     ------------------------------------------------------------------
-  !...
 #ifdef USE_MPI
-!    if (mpi_myself == 0) then
-!write(*,*) "Init1 1"
-!        CALL MPI_BCAST(METHOD_WORKERINIT1, 1, MPI_INTEGER, manager, world, ierrmpi)  
-!write(*,*) "Init1 2"
-!    endif    
+    if (mpi_myself == 0) then
+        CALL MPI_BCAST(METHOD_WORKERINIT1, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
+    endif    
 #endif
   IF (cylind) ny = 1  
   nxy = nx*ny  
@@ -172,33 +168,8 @@ SUBROUTINE init1
   cnvmfi = cnvmfi*cnvl2i  
   cnvt2i = 0._kdp
   IF (eeunit) cnvt2i = 32.0_kdp
-  ! ... Allocate scratch space for component names
-!  ALLOCATE (ucomp_name(100),  &
-!       STAT = a_err)
-!  IF (a_err /= 0) THEN
-!     PRINT *, "Array allocation failed: init1, point 4"  
-!     STOP  
-!  ENDIF
-!  ucomp_name=" "
-  ! ... Start phreeqec and count number of components
-  ! CALL PHREEQC_MAIN(SOLUTE, F1NAME, F2NAME, F3NAME)
-!  IF (solute) then
-!    !CALL count_all_components (ns, ucomp_name)
-!    CALL GetComponentCount(rm_id, ns)
-!    do i = 1, ns
-!       CALL GetComponent(rm_id, ucomp_name(i))
-!    enddo
-!  endif
     
   nsa = MAX(ns,1)
-  ! ... Allocate character strings for output: mcch
-!  ALLOCATE(caprnt(nxyz), comp_name(nsa),  & 
-!       STAT = a_err)
-!  IF (a_err /= 0) THEN
-!     PRINT *, "Array allocation failed: init1, point 5"  
-!     STOP
-!  ENDIF
-! allocate comp_name in phast_manager
   ALLOCATE(caprnt(nxyz), & 
        STAT = a_err)
   IF (a_err /= 0) THEN

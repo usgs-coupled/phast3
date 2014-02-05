@@ -39,6 +39,9 @@ SUBROUTINE set_component_map
   ENDIF
 
 #if defined(USE_MPI)
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_SETCOMPONENTMAP, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
+  endif
   ! ... make a world group
   CALL MPI_COMM_GROUP(MPI_COMM_WORLD, mpi_xp_group_world, ierrmpi)
   IF (ns < mpi_tasks) THEN
