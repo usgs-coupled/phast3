@@ -134,15 +134,14 @@
         
         ! ... collect solutions for transport
         !status = RM_GetConcentrations(rm_id)
-        status = RM_MpiWorker(rm_id)                               ! 5 RM_MpiWorker
 !        
 !end  of InitializeRM
 !     
-        IF (steady_flow) THEN
-            ! ... steady flow calculation calls read3 and init3
-            CALL init3_distribute
-        ENDIF   
-        adj_wr_ratio = 1
+        !IF (steady_flow) THEN
+        !    ! ... steady flow calculation calls read3 and init3
+        !    CALL init3_distribute
+        !ENDIF   
+        !adj_wr_ratio = 1
 !        
 !start  of InitialEquilibrationRM
 !
@@ -157,7 +156,6 @@
         !status = RM_SetStopMessage(rm_id)
         !status = RM_RunCells(rm_id)  
         !CALL FH_WriteFiles(rm_id)  
-        status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
         
         !!CALL FH_WriteFiles(rm_id)  
 !        
@@ -165,14 +163,16 @@
 !   
 
         ! ... Write zone chemistry
-        CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
-        stop_msg = 0
+        !CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+        !stop_msg = 0
  
         ! ... distribute  initial p and c_w to workers from manager
-        CALL flow_distribute
+        !CALL flow_distribute
+        status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
 
         ! ... Error check
-        IF(errexe .OR. errexi) GO TO 50
+        !IF(errexe .OR. errexi) GO TO 50
+        status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
 
         ! ... Transient loop for transport
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
@@ -223,11 +223,11 @@
 
             !CALL FH_WriteFiles(rm_id)
             !status = RM_DumpModule(rm_id)
-            status = RM_MpiWorker(rm_id)                               ! 8 RM_MpiWorker
 !        
 !Start  of TimeStepRM
 !       
-            CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+            !CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+            status = RM_MpiWorker(rm_id)                               ! 8 RM_MpiWorker
 
             ! ... Save values for next time step
             CALL time_step_save
@@ -672,6 +672,15 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_PROCESSRESTARTFILES) then
         write(*,*) "METHOD_PROCESSRESTARTFILES"
         CALL process_restart_files
+    else if (method == METHOD_INIT3DISTRIBUTE) then
+        write(*,*) "METHOD_INIT3DISTRIBUTE"
+        CALL init3_distribute
+    else if (method == METHOD_ZONEFLOWWRITECHEM) then
+        write(*,*) "METHOD_ZONEFLOWWRITECHEM"
+        CALL zone_flow_write_chem
+    else if (method == METHOD_FLOWDISTRIBUTE) then
+        write(*,*) "METHOD_FLOWDISTRIBUTE"
+        CALL flow_distribute
     endif
 #endif
     mpi_methods = return_value

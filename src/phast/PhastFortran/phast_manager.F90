@@ -70,7 +70,6 @@ SUBROUTINE phast_manager
 
     ! ...  Initialize Reaction Module
     CALL InitializeRM
-    status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
     CALL error4
     ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
     ! ... Write initial condition results 
@@ -83,15 +82,18 @@ SUBROUTINE phast_manager
         CALL simulate_ss_flow          ! ... calls read3 and init3
         CALL init3_distribute
     ENDIF
+    
     ! ... Write zone flows 
     CALL zone_flow_write_heads
 
     ! ... Use Reaction Module to equilbrate cells    
     CALL InitialEquilibrationRM
-    status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
 
     IF (solute) THEN
-        CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+	    if (print_zone_flows_xyzt%print_flag_integer .ne. 0) then
+		    CALL zone_flow_write_chem();
+	    endif
+        !CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
     ENDIF
 
@@ -104,6 +106,7 @@ SUBROUTINE phast_manager
 
     ! ... distribute  initial p and c_w to workers from manager
     CALL flow_distribute
+    status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
 
     IF(errexe .OR. errexi) GO TO 50
 !
@@ -221,7 +224,7 @@ SUBROUTINE phast_manager
             IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
                 CALL zone_flow_write_heads
             ENDIF
-            CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+            !!!! need to fix CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
             IF (.NOT.steady_flow) THEN
                 CALL write4
             ENDIF
@@ -671,6 +674,7 @@ INTEGER FUNCTION set_components
         comp_name(i) = ' '
         status = RM_GetComponent(rm_id, i, comp_name(i))
     ENDDO  
+    set_components = 0
 END FUNCTION set_components 
 INTEGER FUNCTION process_restart_files 
     USE mcc, ONLY: mpi_myself, rm_id
@@ -694,4 +698,5 @@ INTEGER FUNCTION process_restart_files
 	        indx_sol1_ic(1,1),            &
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
+    process_restart_files = 0
 END FUNCTION process_restart_files 

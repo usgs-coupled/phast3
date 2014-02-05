@@ -15,7 +15,10 @@ MODULE mpi_mod
              METHOD_SETCOMPONENTMAP        = 1002, &
              METHOD_GROUP2DISTRIBUTE       = 1003, &
              METHOD_CREATETRANSPORTERS     = 1004, &
-             METHOD_PROCESSRESTARTFILES    = 1005
+             METHOD_PROCESSRESTARTFILES    = 1005, &
+             METHOD_INIT3DISTRIBUTE        = 1006, &
+             METHOD_ZONEFLOWWRITECHEM      = 1007, &
+             METHOD_FLOWDISTRIBUTE         = 1008
   
 CONTAINS  
 

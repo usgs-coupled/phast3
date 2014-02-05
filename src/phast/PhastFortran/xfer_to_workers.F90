@@ -103,6 +103,9 @@ SUBROUTINE flow_distribute
     USE mpi_mod
     IMPLICIT NONE
     !     ------------------------------------------------------------------
+    if (mpi_myself == 0) then
+        CALL MPI_BCAST(METHOD_FLOWDISTRIBUTE, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+    endif
     IF (.NOT. solute .OR. .NOT. xp_group) RETURN
     IF (mpi_tasks > 1) THEN
         ! ... Other data sent from steady_state result

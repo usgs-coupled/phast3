@@ -3,11 +3,17 @@ SUBROUTINE init3_distribute
   ! ... Send or receive data from transient read3 group 
   USE mcc              ! ... get sizes from modules
   USE mcv
+  USE mpi_mod
   USE XP_module, ONLY: Transporter, xp_list
   IMPLICIT NONE
   INTEGER :: i
   !     ------------------------------------------------------------------
   !...
+#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_INIT3DISTRIBUTE, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+#endif 
   IF (.NOT. solute) RETURN
   IF (.NOT. xp_group) RETURN
 #if defined (USE_MPI)

@@ -686,6 +686,7 @@ SUBROUTINE zone_flow_write_chem
   USE mcn, ONLY: x, y, z
   USE mcp
   USE mcv
+  USE mpi_mod
   IMPLICIT NONE
   !LOGICAL ex
   !INTEGER, INTENT(IN) :: mpi_myself, mpi_tasks
@@ -702,7 +703,11 @@ SUBROUTINE zone_flow_write_chem
   IF (.not. solute) RETURN
   !IF(.not. przf_xyzt .and. .not. force_print) RETURN
   !IF(.not. przf_xyzt) RETURN
-
+#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_ZONEFLOWWRITECHEM, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+#endif 
   current_time = cnvtmi*time
   if (counter == 1) then
     solution_number_start = 10000000
