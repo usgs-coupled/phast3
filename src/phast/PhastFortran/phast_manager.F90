@@ -41,10 +41,12 @@ SUBROUTINE phast_manager
 
     ! Create Reaction Module(s)
     CALL CreateRM
+    status = RM_MpiWorkerBreak(rm_id)
     ! ... Map components to processes for transport calculations
     CALL set_component_map
     !... Call init1
     CALL init1
+    status = RM_MpiWorkerBreak(rm_id)
     CALL error1
     IF(errexi) GO TO 50
     CALL write1
@@ -438,7 +440,7 @@ SUBROUTINE CreateRM
             status = RM_GetComponent(rm_id, i, comp_name(i))
         ENDDO   
 #endif        
-        status = RM_MpiWorkerBreak(rm_id)            ! 1 RM_MpiWorker end
+        !status = RM_MpiWorkerBreak(rm_id)            ! 1 RM_MpiWorker end
         status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
         status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
     ENDIF
