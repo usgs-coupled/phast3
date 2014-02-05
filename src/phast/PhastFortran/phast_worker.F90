@@ -130,8 +130,7 @@
         !ENDDO
         !CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1))
         !status = RM_InitialPhreeqc2Module(rm_id)
-        status = RM_MpiWorker(rm_id)                               ! 4 RM_MpiWorker
-        CALL FH_ProcessRestartFiles(rm_id)
+        !CALL FH_ProcessRestartFiles(rm_id)
         
         ! ... collect solutions for transport
         !status = RM_GetConcentrations(rm_id)
@@ -670,9 +669,9 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_CREATETRANSPORTERS) then
         write(*,*) "METHOD_CREATETRANSPORTERS"
         CALL create_transporters
-    else if (method == METHOD_RESTARTFILESINITIALIZE) then
-        write(*,*) "METHOD_RESTARTFILESINITIALIZE"
-        CALL restart_files_initialize
+    else if (method == METHOD_PROCESSRESTARTFILES) then
+        write(*,*) "METHOD_PROCESSRESTARTFILES"
+        CALL process_restart_files
     endif
 #endif
     mpi_methods = return_value
