@@ -121,7 +121,6 @@ SUBROUTINE phast_manager
         status = RM_ScreenMessage(rm_id, logline1)
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
         status = set_fdtmth()
-        status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
         DO
             CALL time_parallel(0)
             CALL c_distribute
@@ -148,7 +147,8 @@ SUBROUTINE phast_manager
                 CALL error3
                 CALL write3
                 IF(errexi) EXIT
-            END DO                
+            END DO  
+            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end               
             CALL time_parallel(4)
             CALL thru_distribute
             CALL time_parallel(5)
