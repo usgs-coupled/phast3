@@ -7,7 +7,7 @@ MODULE mpi_mod
   USE MPI
   IMPLICIT NONE
   SAVE
-  INTEGER :: manager=0, world
+  INTEGER :: manager=0, xp_comm, world_comm
   INTEGER :: ierrmpi
   INTEGER :: mpi_xp_group, mpi_xp_comm
   INTEGER :: METHOD_SETCOMPONENTS = 1000, &

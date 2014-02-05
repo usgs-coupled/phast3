@@ -45,7 +45,7 @@ SUBROUTINE timestep
   IF (solute) THEN   
      array_bcst_i(1) = itime; array_bcst_i(2) = jtime     
      CALL MPI_BCAST(array_bcst_i, 2, MPI_INTEGER, manager,  &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   ENDIF
 #endif
   tsfail=.FALSE.
@@ -132,8 +132,8 @@ SUBROUTINE timestep
   ENDIF
 #ifdef USE_MPI
   if (solute) then
-     CALL MPI_BCAST(deltim, 1, MPI_DOUBLE_PRECISION, manager, world, ierrmpi)
-     CALL MPI_BCAST(time, 1, MPI_DOUBLE_PRECISION, manager, world, ierrmpi)
+     CALL MPI_BCAST(deltim, 1, MPI_DOUBLE_PRECISION, manager, xp_comm, ierrmpi)
+     CALL MPI_BCAST(time, 1, MPI_DOUBLE_PRECISION, manager, xp_comm, ierrmpi)
   endif
 #endif
   utime=cnvtmi*(time+deltim)*one_plus_eps

@@ -16,26 +16,26 @@ SUBROUTINE p_distribute
   IF (mpi_tasks > 1) THEN
      IF (itime <= 0) THEN
         CALL MPI_BCAST(p(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-             world, ierrmpi)   
+             xp_comm, ierrmpi)   
         CALL MPI_BCAST(pv(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-             world, ierrmpi)   
+             xp_comm, ierrmpi)   
         CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-             world, ierrmpi)   
+             xp_comm, ierrmpi)   
         IF (fresur) THEN
            CALL MPI_BCAST(mfsbc(1), nxy, MPI_INTEGER, manager, &
-                world, ierrmpi)   
+                xp_comm, ierrmpi)   
         ENDIF
      ELSE
         IF (.NOT. steady_flow) THEN
            CALL MPI_BCAST(p(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-                world, ierrmpi)   
+                xp_comm, ierrmpi)   
            CALL MPI_BCAST(pv(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-                world, ierrmpi)   
+                xp_comm, ierrmpi)   
            IF (fresur) THEN
               CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-                   world, ierrmpi)   
+                   xp_comm, ierrmpi)   
               CALL MPI_BCAST(mfsbc(1), nxy, MPI_INTEGER, manager, &
-                   world, ierrmpi)   
+                   xp_comm, ierrmpi)   
            ENDIF
         ENDIF
      ENDIF
@@ -62,17 +62,17 @@ SUBROUTINE c_distribute
   ! ...     Send iis component of c array to worker process iis using nonblocking
   ! ...         MPI send.
 #if defined(USE_MPI)
-  CALL MPI_BCAST(time, 1, MPI_DOUBLE_PRECISION, manager, world, ierrmpi)
+  CALL MPI_BCAST(time, 1, MPI_DOUBLE_PRECISION, manager, xp_comm, ierrmpi)
   ! ... worker to managet transfer
   tag = 0
   DO iis=1,ns
      IF (component_map(iis) > 0) THEN
         IF (mpi_myself == 0) THEN
            CALL MPI_SEND(c(:,iis), nxyz, MPI_DOUBLE_PRECISION, &
-                component_map(iis), tag, world, ierrmpi)
+                component_map(iis), tag, xp_comm, ierrmpi)
         ELSE IF (mpi_myself == component_map(iis)) THEN
            CALL MPI_RECV(xp_list(local_component_map(iis))%c_w, nxyz, MPI_DOUBLE_PRECISION, manager,  &
-                tag, world, MPI_STATUS_IGNORE, ierrmpi) 
+                tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi) 
         ENDIF
      ENDIF
   ENDDO
@@ -110,45 +110,45 @@ SUBROUTINE flow_distribute
         ! ... create MPI structure for three real arrays
 
         CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
-            world, ierrmpi)
+            xp_comm, ierrmpi)
         CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
-            world, ierrmpi)
+            xp_comm, ierrmpi)
         CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE, manager, &
-            world, ierrmpi)
+            xp_comm, ierrmpi)
         IF (.NOT. steady_flow) THEN
             ! *** broadcast dp
             CALL MPI_BCAST(dp(0), nxyz + 1, MPI_DOUBLE_PRECISION, manager, &
-                world, ierrmpi)
+                xp_comm, ierrmpi)
         ENDIF
 
         IF (nsbc > 0) THEN 
             ! *** broadcast qfsbc from flow solution
             CALL MPI_BCAST(qfsbc(1), nsbc, MPI_DOUBLE_PRECISION, manager, &
-                world, ierrmpi)
+                xp_comm, ierrmpi)
         ENDIF
         IF (nfbc > 0) THEN 
             ! *** broadcast qffbc from flow solution
             CALL MPI_BCAST(qffbc(1), nfbc, MPI_DOUBLE_PRECISION, manager, &
-                world, ierrmpi)
+                xp_comm, ierrmpi)
         ENDIF
         IF (nlbc > 0) THEN 
             ! *** broadcast qflbc from flow solution
             CALL MPI_BCAST(qflbc(1), nlbc, MPI_DOUBLE_PRECISION, manager, &
-                world, ierrmpi)
+                xp_comm, ierrmpi)
         ENDIF
         IF (nrbc > 0) THEN 
             ! *** broadcast qfrbc from flow solution
             CALL MPI_BCAST(qfrbc(1), nrbc, MPI_DOUBLE_PRECISION, manager, &
-                world, ierrmpi)
+                xp_comm, ierrmpi)
         ENDIF
         IF (ndbc > 0) THEN 
             ! *** broadcast qfdbc from flow solution
             CALL MPI_BCAST(qfdbc(1), ndbc, MPI_DOUBLE_PRECISION, manager, &
-                world, ierrmpi) 
+                xp_comm, ierrmpi) 
         ENDIF
         ! *** broadcast transient time step as reset
         CALL MPI_BCAST(deltim, 1, MPI_DOUBLE_PRECISION, manager, &
-            world, ierrmpi) 
+            xp_comm, ierrmpi) 
     ENDIF
 #endif     
 END SUBROUTINE flow_distribute
@@ -168,11 +168,11 @@ SUBROUTINE tfx_distribute
         ! ... create MPI structure for three real arrays
 
         CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
-            world, ierrmpi)
+            xp_comm, ierrmpi)
         CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
-            world, ierrmpi)
+            xp_comm, ierrmpi)
         CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE, manager, &
-            world, ierrmpi)
+            xp_comm, ierrmpi)
     END IF
 #endif
 END SUBROUTINE tfx_distribute

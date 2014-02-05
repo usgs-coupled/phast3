@@ -15,7 +15,7 @@ SUBROUTINE read3_xfer_m
   array_bcst_i(1) = 0
   IF (thru) array_bcst_i(1) = 1 
   CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager,  &
-       world, ierrmpi)
+       xp_comm, ierrmpi)
   IF(thru) RETURN
 
   ! ... 2 receive? broadcast? the flag for rdwtd
@@ -23,7 +23,7 @@ SUBROUTINE read3_xfer_m
      array_bcst_i(1) = 0
      IF (rdwtd) array_bcst_i(1) = 1
      CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   !*** 3 broadcast rdspbc, rdscbc
@@ -33,7 +33,7 @@ SUBROUTINE read3_xfer_m
      array_bcst_i(2) = 0
      IF (rdscbc) array_bcst_i(2) = 1
      CALL MPI_BCAST(array_bcst_i(1), 2, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 4 broadcast rdflxq, rdflxs
@@ -43,7 +43,7 @@ SUBROUTINE read3_xfer_m
      array_bcst_i(2) = 0
      IF (rdflxs) array_bcst_i(2) = 1
      CALL MPI_BCAST(array_bcst_i(1), 2, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 5 broadcast rdlbc
@@ -51,7 +51,7 @@ SUBROUTINE read3_xfer_m
      array_bcst_i(1) = 0
      IF (rdlbc) array_bcst_i(1) = 1
      CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 6 broadcast rdrbc
@@ -59,14 +59,14 @@ SUBROUTINE read3_xfer_m
      array_bcst_i(1) = 0
      IF (rdrbc) array_bcst_i(1) = 1
      CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
   END IF
 
   ! *** 7 broadcast rdcalc
   array_bcst_i(1) = 0
   IF (rdcalc) array_bcst_i(1) = 1
   CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
-       world, ierrmpi)
+       xp_comm, ierrmpi)
 
 #endif 
 ! end USE_MPI
@@ -103,7 +103,7 @@ SUBROUTINE read3_xfer_w
   ! ... receive the flag for thru 
   ! *** 1 broadcast receive thru
     CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager,  &
-        world, ierrmpi)
+        xp_comm, ierrmpi)
 
   thru = .FALSE.
   IF (array_recv_i(1) == 1) thru = .TRUE.
@@ -118,7 +118,7 @@ SUBROUTINE read3_xfer_w
   IF(nwel > 0) THEN
      ! ... receive the flag for rdwtd
      CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdwtd = .FALSE.
      IF (array_recv_i(1) == 1) rdwtd = .TRUE.
   END IF
@@ -127,7 +127,7 @@ SUBROUTINE read3_xfer_w
   IF(nsbc > 0) THEN
      ! ... Receive specified pressure b.c. and assoc concentration
      CALL MPI_BCAST(array_recv_i(1), 2, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdspbc = .FALSE.
      IF (array_recv_i(1) == 1) rdspbc = .TRUE.
      rdscbc = .FALSE.
@@ -139,7 +139,7 @@ SUBROUTINE read3_xfer_w
      ! ... Receive specified fluid flux b.c.
      ! ...      volumetric fluxes
      CALL MPI_BCAST(array_recv_i(1), 2, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
 
      rdflxq = .FALSE.
      IF (array_recv_i(1) == 1) rdflxq = .TRUE.
@@ -152,7 +152,7 @@ SUBROUTINE read3_xfer_w
   ! *** 5 broadcast rdlbc
   IF(nlbc > 0) THEN
      CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdlbc = .FALSE.
      IF (array_recv_i(1) == 1) rdlbc = .TRUE.
   END IF
@@ -160,14 +160,14 @@ SUBROUTINE read3_xfer_w
   ! *** 6 broadcast rdrbc
   IF(nrbc > 0) THEN
      CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
-          world, ierrmpi)
+          xp_comm, ierrmpi)
      rdrbc = .FALSE.
      IF (array_recv_i(1) == 1) rdrbc = .TRUE.
   END IF
 
   ! *** 7 broadcast rdcalc
   CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
-       world, ierrmpi)
+       xp_comm, ierrmpi)
   rdcalc = .FALSE.
   IF (array_recv_i(1) == 1) rdcalc = .TRUE.
 #endif 

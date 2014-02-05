@@ -33,7 +33,7 @@ SUBROUTINE read1_distribute
      array_bcst_i(17) = slmeth; array_bcst_i(18) = nral
   ENDIF
     CALL MPI_BCAST(array_bcst_i(1), 18, MPI_INTEGER, manager, &
-        world, jerr)
+        world_comm, jerr)
 
   IF (mpi_myself > 0) THEN
      ! ... Load the scalar variables

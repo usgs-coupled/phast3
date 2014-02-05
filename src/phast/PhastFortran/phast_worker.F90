@@ -89,10 +89,10 @@
     !IF (solute) THEN
         
         ! ... Map components to processes for transport calculations
-        CALL worker_init1 
+        ! CALL worker_init1 
+        status = RM_MpiWorker(rm_id)                            ! 1 RM_MpiWorker
         CALL set_component_map
 
-        status = RM_MpiWorker(rm_id)                            ! 1 RM_MpiWorker
         IF(errexi) GO TO 50
 
         ! ... transfer read2 and init2 data to worker
@@ -206,7 +206,7 @@
             ! ... Processes do transport
             IF (local_ns > 0) THEN 
                 CALL TM_transport(rm_id, local_ns, nthreads)
-                if (mpi_tasks > 1) CALL MPI_Barrier(world, ierrmpi)
+                if (mpi_tasks > 1) CALL MPI_Barrier(xp_comm, ierrmpi)
                 CALL sbc_gather
                 CALL c_gather
             ENDIF

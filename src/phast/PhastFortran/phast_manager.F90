@@ -40,13 +40,19 @@ SUBROUTINE phast_manager
     CALL read1_distribute
 
     ! Create Reaction Module(s)
-    CALL CreateRM
+    CALL CreateRM   
     status = RM_MpiWorkerBreak(rm_id)
+#ifdef USE_MPI
+    CALL MPI_BCAST(METHOD_WORKERINIT1, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
+    status = RM_MpiWorkerBreak(rm_id)   
+#endif     
     ! ... Map components to processes for transport calculations
     CALL set_component_map
+
+   
     !... Call init1
+    
     CALL init1
-    status = RM_MpiWorkerBreak(rm_id)
     CALL error1
     IF(errexi) GO TO 50
     CALL write1
@@ -192,7 +198,7 @@ SUBROUTINE phast_manager
 
             IF(errexe .OR. errexi) GO TO 50
 #if defined USE_MPI      
-            if (solute) CALL MPI_Barrier(world, ierrmpi)
+            if (solute) CALL MPI_Barrier(xp_comm, ierrmpi)
 #endif
             CALL time_parallel(9)
             CALL sbc_gather
@@ -656,7 +662,7 @@ INTEGER FUNCTION set_components
     
 #ifdef USE_MPI    
     if (mpi_myself == 0) then
-        CALL MPI_BCAST(METHOD_SETCOMPONENTS, 1, MPI_INTEGER, manager, world, ierrmpi)  
+        CALL MPI_BCAST(METHOD_SETCOMPONENTS, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
     endif
 #endif    
     ns = RM_FindComponents(rm_id)

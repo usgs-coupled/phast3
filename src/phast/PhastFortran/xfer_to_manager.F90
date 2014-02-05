@@ -21,14 +21,14 @@ SUBROUTINE sbc_gather
      IF (component_map(i) > 0) THEN
         IF (mpi_myself == component_map(i)) THEN
            CALL MPI_SEND(xp_list(local_component_map(i))%vassbc, 7*nsbc, MPI_DOUBLE_PRECISION, &
-                manager, tag, world, ierrmpi)
+                manager, tag, xp_comm, ierrmpi)
            CALL MPI_SEND(xp_list(local_component_map(i))%rhssbc, nsbc, MPI_DOUBLE_PRECISION, &
-                manager, tag, world, ierrmpi)
+                manager, tag, xp_comm, ierrmpi)
         ELSE IF (mpi_myself == manager) THEN
            CALL MPI_RECV(vassbc(:,:,i), 7*nsbc, MPI_DOUBLE_PRECISION, &
-                component_map(i), tag, world, MPI_STATUS_IGNORE, ierrmpi)
+                component_map(i), tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
            CALL MPI_RECV(rhssbc(:,i), nsbc, MPI_DOUBLE_PRECISION, &
-                component_map(i), tag, world, MPI_STATUS_IGNORE, ierrmpi)
+                component_map(i), tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
         ENDIF
      ENDIF
   ENDDO
@@ -65,14 +65,14 @@ SUBROUTINE c_gather
      IF (component_map(i) > 0) THEN
         IF (mpi_myself == component_map(i)) THEN
            CALL MPI_SEND(xp_list(local_component_map(i))%c_w, nxyz, MPI_DOUBLE_PRECISION, &
-                manager, tag, world, ierrmpi)
+                manager, tag, xp_comm, ierrmpi)
            CALL MPI_SEND(xp_list(local_component_map(i))%dc, nxyz + 1, MPI_DOUBLE_PRECISION, &
-                manager, tag, world, ierrmpi)
+                manager, tag, xp_comm, ierrmpi)
         ELSE IF (mpi_myself == manager) THEN
            CALL MPI_RECV(c(:,i), nxyz, MPI_DOUBLE_PRECISION, &
-                component_map(i), tag, world, MPI_STATUS_IGNORE, ierrmpi)
+                component_map(i), tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
            CALL MPI_RECV(dc(:,i), nxyz + 1, MPI_DOUBLE_PRECISION, &
-                component_map(i), tag, world, MPI_STATUS_IGNORE, ierrmpi)
+                component_map(i), tag, xp_comm, MPI_STATUS_IGNORE, ierrmpi)
         ENDIF
      ENDIF
   ENDDO
