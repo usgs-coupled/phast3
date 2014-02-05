@@ -555,7 +555,7 @@ SUBROUTINE InitializeRM
         !    CALL FH_SetRestartName(restart_files(i))
         !ENDDO
         !CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
-        CALL restart_files_initialize
+        !CALL restart_files_initialize
         !status = RM_MpiWorkerBreak(rm_id)           ! 3 RM_MpiWorker end
         
         ! ... Make arrays in the correct order
@@ -578,12 +578,12 @@ SUBROUTINE InitializeRM
             ic1_reordered(1,1),           & ! Fortran nxyz x 7 end-member 1 
             ic2_reordered(1,1),           & ! Fortran nxyz x 7 end-member 2
             f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1   
-        status = RM_MpiWorkerBreak(rm_id)           ! 4 RM_MpiWorker end   
         
-        CALL FH_ProcessRestartFiles(rm_id, &
-	        indx_sol1_ic(1,1),            &
-	        indx_sol2_ic(1,1),            & 
-	        ic_mxfrac(1,1))
+        CALL process_restart_files
+        !CALL FH_ProcessRestartFiles(rm_id, &
+	       ! indx_sol1_ic(1,1),            &
+	       ! indx_sol2_ic(1,1),            & 
+	       ! ic_mxfrac(1,1))
         ! collect solutions at manager for transport
         status = RM_GetConcentrations(rm_id, c(1,1))      
         
@@ -672,8 +672,8 @@ INTEGER FUNCTION set_components
         status = RM_GetComponent(rm_id, i, comp_name(i))
     ENDDO  
 END FUNCTION set_components 
-INTEGER FUNCTION restart_files_initialize 
-    USE mcc, ONLY: mpi_myself
+INTEGER FUNCTION process_restart_files 
+    USE mcc, ONLY: mpi_myself, rm_id
     USE mcch
     USE mcg
     USE mcn
@@ -683,11 +683,15 @@ INTEGER FUNCTION restart_files_initialize
     INTEGER :: i
 #ifdef USE_MPI  
     if (mpi_myself == 0) then
-        CALL MPI_BCAST(METHOD_RESTARTFILESINITIALIZE, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+        CALL MPI_BCAST(METHOD_PROCESSRESTARTFILES, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
     endif
 #endif 
     DO i = 1, num_restart_files
         CALL FH_SetRestartName(restart_files(i))
     ENDDO
     CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
-END FUNCTION restart_files_initialize 
+    CALL FH_ProcessRestartFiles(rm_id, &
+	        indx_sol1_ic(1,1),            &
+	        indx_sol2_ic(1,1),            & 
+	        ic_mxfrac(1,1))
+END FUNCTION process_restart_files 
