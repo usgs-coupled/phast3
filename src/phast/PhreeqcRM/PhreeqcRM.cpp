@@ -3232,6 +3232,10 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 		this->ErrorHandler(status, "RunString");
 		cxxStorageBin cell_bin;
 		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(cell_bin, cell);
+		cell_bin.Remove_Mix(cell);
+		cell_bin.Remove_Reaction(cell);
+		cell_bin.Remove_Temperature(cell);
+		cell_bin.Remove_Pressure(cell);
 		for (size_t i = 0; i < cell_numbers.size(); i++)
 		{
 #ifdef USE_MPI
