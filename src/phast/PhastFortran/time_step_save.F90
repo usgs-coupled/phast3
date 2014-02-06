@@ -8,10 +8,16 @@ SUBROUTINE time_step_save
   USE mcv
   USE mcw
   USE mcw_m
+  USE mpi_mod
   USE XP_module, ONLY: xp_list
   IMPLICIT NONE
   INTEGER :: i
   !     ------------------------------------------------------------------
+#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_TIMESTEPSAVE, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+#endif   
   IF (.NOT. xp_group) RETURN
   IF (nwel > 0) THEN
      qwv_n = qwv

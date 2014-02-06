@@ -227,10 +227,10 @@
 !Start  of TimeStepRM
 !       
             !CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
-            status = RM_MpiWorker(rm_id)                               ! 8 RM_MpiWorker
 
             ! ... Save values for next time step
-            CALL time_step_save
+            !CALL time_step_save
+            status = RM_MpiWorker(rm_id)                               ! 8 RM_MpiWorker
         ENDDO
         ! ... End of transient loop
      
@@ -704,6 +704,9 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_CGATHER) then
         write(*,*) "METHOD_CGATHER"
         CALL c_gather
+    else if (method == METHOD_TIMESTEPSAVE) then
+        write(*,*) "METHOD_TIMESTEPSAVE"
+        CALL time_step_save
     endif
 #endif
     mpi_methods = return_value
