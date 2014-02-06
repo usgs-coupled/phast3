@@ -18,7 +18,7 @@ extern void transport_component_thread(int *i);
 void
 TM_transport(int *id, int *ncomps, int *nthreads)
 /* ---------------------------------------------------------------------- */
-{
+{ 
 	// Used for MPI transport calculations
 	for (int i = 1; i <= *ncomps; i++)
 	{

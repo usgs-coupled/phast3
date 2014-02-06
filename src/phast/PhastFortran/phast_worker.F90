@@ -195,17 +195,16 @@
             IF (thru) EXIT          ! ... second step of exit
             
             !CALL timestep_worker     ! ... this only receives some data. it is a hold point   
-            !IF (.NOT. steady_flow) CALL flow_distribute    
-            status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker   
+            !IF (.NOT. steady_flow) CALL flow_distribute     
 
             ! ... Processes do transport
-            IF (local_ns > 0) THEN 
-                CALL TM_transport(rm_id, local_ns, nthreads)
-                if (mpi_tasks > 1) CALL MPI_Barrier(xp_comm, ierrmpi)
-                CALL sbc_gather
-                CALL c_gather
-            ENDIF
-            IF(errexe .OR. errexi) GO TO 50
+            !IF (local_ns > 0) THEN 
+            !    CALL TM_transport(rm_id, local_ns, nthreads)
+            !    if (mpi_tasks > 1) CALL MPI_Barrier(xp_comm, ierrmpi)
+            !    CALL sbc_gather
+            !    CALL c_gather
+            !ENDIF
+            !IF(errexe .OR. errexi) GO TO 50
 !        
 !Start  of TimeStepRM
 ! 
@@ -696,6 +695,15 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_TIMESTEPWORKER) then
         write(*,*) "METHOD_TIMESTEPWORKER"
         CALL timestep_worker
+    else if (method == METHOD_RUNTRANSPORT) then
+        write(*,*) "METHOD_RUNTRANSPORT"
+        CALL run_transport
+    else if (method == METHOD_SBCGATHER) then
+        write(*,*) "METHOD_SBCGATHER"
+        CALL sbc_gather
+    else if (method == METHOD_CGATHER) then
+        write(*,*) "METHOD_CGATHER"
+        CALL c_gather
     endif
 #endif
     mpi_methods = return_value

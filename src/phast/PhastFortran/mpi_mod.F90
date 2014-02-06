@@ -22,7 +22,10 @@ MODULE mpi_mod
              METHOD_SETFDTMTH              = 1009, &
              METHOD_CDISTRIBUTE            = 1010, &
              METHOD_PDISTRIBUTE            = 1011, &
-             METHOD_TIMESTEPWORKER         = 1012
+             METHOD_TIMESTEPWORKER         = 1012, &
+             METHOD_RUNTRANSPORT           = 1013, &
+             METHOD_SBCGATHER              = 1014, &
+             METHOD_CGATHER                = 1015
   
 CONTAINS  
 
