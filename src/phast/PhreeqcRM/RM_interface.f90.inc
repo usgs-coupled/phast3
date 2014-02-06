@@ -30,6 +30,12 @@
             INTEGER, INTENT(in) :: id
             INTEGER, OPTIONAL :: grid2chem
         END FUNCTION RM_CreateMapping
+
+		INTEGER FUNCTION RM_DecodeError(id, e)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER :: e
+        END FUNCTION RM_DecodeError
         
         INTEGER FUNCTION RM_Destroy(id)
             IMPLICIT NONE

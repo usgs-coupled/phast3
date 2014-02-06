@@ -59,6 +59,7 @@ int RM_Create(int nxyz, int nthreads);
  *  @endhtmlonly
  */
 int RM_CreateMapping (int id, int *grid2chem);
+int RM_DecodeError (int id, int e); 
 /**
  *  Destroys a reaction module. 
  *  @param id               The instance id returned from @ref RM_Create.
@@ -174,6 +175,30 @@ int        RM_GetChemistryCellCount(int id);
  *  @endhtmlonly
  */
 int RM_GetComponent(int id, int num, char *chem_name, size_t l);
+/**
+ *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
+ *  @param id                   The instance id returned from @ref RM_Create.
+ *  @param c                    Array containing concentrations with dimensions equivalent to Fortran (nxyz, ncomps), where nxyz is the number of user grid cells and ncomps is the result of RM_FindComponents.
+ *  @see                        @ref RM_FindComponents, @ref RM_Concentrations2Module, @ref RM_SetUnits
+ *  Units of concentration for c are defined by the solution definition for RM_SetUnits.
+ *  MPI:
+ *     Called by all processes.
+ *	   Id and c are required for the root process.
+ *     Except for id, arguments are optional for non-root processes. 
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *      SUBROUTINE RM_GetConcentrations(id, c)   
+ *          IMPLICIT NONE
+ *          INTEGER :: id
+ *          DOUBLE PRECISION, OPTIONAL :: c
+ *      END SUBROUTINE RM_GetConcentrations 
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
+int RM_GetConcentrations(int id, double *c);
 int RM_GetDensity(int id, double *density);
 int RM_GetFilePrefix(int id, char *prefix, size_t l);
 /**
@@ -287,8 +312,12 @@ int RM_InitialPhreeqc2Concentrations(
  */
 int RM_InitialPhreeqc2Module(int id,
                 int *initial_conditions1,		// 7 x nxyz end-member 1
-                int *initial_conditions2L,		// 7 x nxyz end-member 2
+                int *initial_conditions2,		// 7 x nxyz end-member 2
                 double *fraction1);			    // 7 x nxyz fraction of end-member 1
+int RM_InitialPhreeqcCell2Module(int id,
+                int n,		                            // InitialPhreeqc cell number
+                int *module_numbers,		            // Module cell numbers
+                int dim_module_numbers);			    // Number of module cell numbers
 /**
  *  Load a database for the InitialPhreeqc and all worker IPhreeqc instances. 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -311,32 +340,10 @@ int RM_InitialPhreeqc2Module(int id,
  *  </CODE>
  *  @endhtmlonly
  */
-int        RM_LoadDatabase(int id, const char *db_name);
-int        RM_LogMessage(int id, const char *str);
-/**
- *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
- *  @param id                   The instance id returned from @ref RM_Create.
- *  @param c                    Array containing concentrations with dimensions equivalent to Fortran (nxyz, ncomps), where nxyz is the number of user grid cells and ncomps is the result of RM_FindComponents.
- *  @see                        @ref RM_FindComponents, @ref RM_Concentrations2Module, @ref RM_SetUnits
- *  Units of concentration for c are defined by the solution definition for RM_SetUnits.
- *  MPI:
- *     Called by all processes.
- *	   Id and c are required for the root process.
- *     Except for id, arguments are optional for non-root processes. 
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      SUBROUTINE RM_GetConcentrations(id, c)   
- *          IMPLICIT NONE
- *          INTEGER :: id
- *          DOUBLE PRECISION, OPTIONAL :: c
- *      END SUBROUTINE RM_GetConcentrations 
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-int       RM_GetConcentrations(int id, double *c);
+int RM_LoadDatabase(int id, const char *db_name);
+int RM_LogMessage(int id, const char *str);
+int RM_MpiWorker(int id);
+int RM_MpiWorkerBreak(int id);
 /**
  *  Opens the output file and log file. 
  *  @see                  @ref RM_SetFilePrefix @ref RM_CloseFiles
@@ -435,6 +442,7 @@ int RM_SetDensity(int id, double *t);
 int RM_SetDumpFileName(int id, const char *dump_name);
 int RM_SetErrorHandlerMode(int id, int mode);
 int RM_SetFilePrefix(int id, const char *prefix);
+int RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1));
 int RM_SetPartitionUZSolids(int id, int t);
 int RM_SetPoreVolume(int id, double *t);
 int RM_SetPoreVolumeZero(int id, double *t);
@@ -445,8 +453,6 @@ int RM_SetRebalanceFraction(int id, double *f);
 int RM_SetRebalanceByCell(int id, int method);
 int RM_SetSaturation(int id, double *t);
 int RM_SetSelectedOutputOn(int id, int selected_output);
-//int RM_SetStopMessage(int id, int stop_flag);
-//int RM_SetStopOnError(int id, int tf);
 int RM_SetTemperature(int id, double *t);
 int RM_SetTime(int id, double t);
 int RM_SetTimeConversion(int id, double t);
@@ -477,35 +483,15 @@ int RM_SetUnitsSurface(int id, int i);
  *  </CODE>
  *  @endhtmlonly
  */
-int        RM_WarningMessage(int id, const char *warn_str);
-void       RM_write_bc_raw(int id, 
+int RM_WarningMessage(int id, const char *warn_str);
+void RM_write_bc_raw(int id, 
                 int *solution_list, 
                 int bc_solution_count, 
                 int solution_number, 
                 const char *prefix);
-void RM_write_output(int id);
-
-// Global functions
-//inline std::string trim_right(const std::string &source , const std::string& t = " \t")
-//{
-//	std::string str = source;
-//	return str.erase( str.find_last_not_of(t) + 1);
-//}
-//
-//inline std::string trim_left( const std::string& source, const std::string& t = " \t")
-//{
-//	std::string str = source;
-//	return str.erase(0 , source.find_first_not_of(t) );
-//}
-//
-//inline std::string trim(const std::string& source, const std::string& t = " \t")
-//{
-//	std::string str = source;
-//	return trim_left( trim_right( str , t) , t );
-//} 
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif // RM_INTERFACE__C_H
+#endif // RM_INTERFACE_C_H

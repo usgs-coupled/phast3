@@ -92,8 +92,8 @@ public:
 	IRM_RESULT                                CreateMapping(int *grid2chem = NULL);
 	void                                      DecodeError(int r);
 	IRM_RESULT                                DumpModule(bool dump_on = false, bool use_gz = false);
-	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
 	void                                      ErrorHandler(int result, const std::string &e_string);
+	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
 	int                                       FindComponents();
 	IRM_RESULT                                GetConcentrations(double * c = NULL);
 	IRM_RESULT								  InitialPhreeqc2Concentrations(
@@ -115,10 +115,9 @@ public:
 	IRM_RESULT                                MpiWorkerBreak();	
 	IRM_RESULT                                OpenFiles(void);
 	void                                      OutputMessage(const std::string &str);
-	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
+	IRM_RESULT                                RunCells(void);
 	IRM_RESULT                                RunFile(bool workers = false, bool initial_phreeqc = false, bool utility = false,  const char *chemistry_name = NULL);
 	IRM_RESULT                                RunString(bool workers = false, bool initial_phreeqc = false, bool utility = false, const char *str = NULL);
-	IRM_RESULT                                RunCells(void);
 	void                                      ScreenMessage(const std::string &str);
 	void                                      WarningMessage(const std::string &str);
 
@@ -128,6 +127,7 @@ public:
 	static void                               FileRename(const std::string &temp_name, const std::string &name, 
 		                                           const std::string &backup_name);
 	static IRM_RESULT                         Int2IrmResult(int r, bool positive_ok);
+	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
 
 
 	// TODO ///////////////////////////
@@ -137,7 +137,7 @@ public:
                                                   const std::string &prefix);
 
 	// Getters 
-	const std::vector < std::vector <int> > & GetBack(void) {return this->back;}
+	const std::vector < std::vector <int> > & GetBackwardMapping(void) {return this->backward_mapping;}
 	std::vector<double> &                     GetCellVolume(void) {return this->cell_volume;}
 	const int                                 GetChemistryCellCount(void) const {return this->count_chemistry;}
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
@@ -146,6 +146,7 @@ public:
 	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;}
 	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
 	const std::string                         GetFilePrefix(void) const {return this->file_prefix;}
+	const std::vector < int > &               GetForwardMapping(void) {return this->forward_mapping;}
 	const int                                 GetGridCellCount(void) const {return this->nxyz;}
 	int                                       GetInputUnitsSolution(void) {return this->input_units_Solution;}
 	int                                       GetInputUnitsPPassemblage(void) {return this->input_units_PPassemblage;}
@@ -184,15 +185,14 @@ public:
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
 
 	// Setters 
+	IRM_RESULT                                SetCellVolume(double * t = NULL);
 	IRM_RESULT                                SetConcentrations(double * t = NULL); 
 	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i = -1);
-	IRM_RESULT                                SetCellVolume(double * t = NULL);
 	IRM_RESULT                                SetDensity(double * t = NULL);
 	IRM_RESULT                                SetDumpFileName(const char * db = NULL); 
-	IRM_RESULT                                SetErrorHandlerMode(int i = 0); 
-	IRM_RESULT                                SetExitOnError(bool t = true);
-	//IRM_RESULT                                SetFilePrefix(std::string fn = ""); 
-	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL);
+	IRM_RESULT                                SetErrorHandlerMode(int i = 0);
+	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL); 
+	IRM_RESULT								  SetMpiWorkerFortranCallback(int (*fcn)(int *method));
 	IRM_RESULT                                SetPartitionUZSolids(int t = -1);
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
 	IRM_RESULT                                SetPoreVolumeZero(double * t = NULL);
@@ -203,7 +203,6 @@ public:
 	IRM_RESULT                                SetRebalanceByCell(bool t = false); 
 	IRM_RESULT                                SetSaturation(double * t = NULL); 
 	IRM_RESULT                                SetSelectedOutputOn(bool t = false);
-	//IRM_RESULT                                SetStopMessage(bool t = false); 
 	IRM_RESULT                                SetTemperature(double * t = NULL);
 	IRM_RESULT                                SetTime(double t = 0.0);
 	IRM_RESULT                                SetTimeConversion(double t = 1.0);
@@ -215,7 +214,6 @@ public:
 	IRM_RESULT                                SetUnitsSolution(int i = 1);
 	IRM_RESULT                                SetUnitsSSassemblage(int i = 1);
 	IRM_RESULT                                SetUnitsSurface(int i = 1);
-	IRM_RESULT								  SetMpiWorkerFortranCallback(int (*fcn)(int *method));
 protected:
 	void                                      BeginTimeStep(void);
 	IRM_RESULT                                CellInitialize(
@@ -290,8 +288,8 @@ protected:
 	int input_units_GasPhase;               // water 1, rock 2
 	int input_units_SSassemblage;           // water 1, rock 2
 	int input_units_Kinetics;               // water 1, rock 2
-	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells
-	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 
+	std::vector <int> forward_mapping;					// mapping from nxyz cells to count_chem chemistry cells
+	std::vector <std::vector <int> > backward_mapping;	// mapping from count_chem chemistry cells to nxyz cells 
 
 	// print flags
 	std::vector<bool> print_chemistry_on;	// print flag for chemistry output file 

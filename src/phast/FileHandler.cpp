@@ -258,7 +258,7 @@ FileHandler::ProcessRestartFiles(
 
 			for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
 			{
-				int i = Reaction_module_ptr->GetBack()[j][0];   /* i is nxyz number */
+				int i = Reaction_module_ptr->GetBackwardMapping()[j][0];   /* i is nxyz number */
 				Point p(x_node[i], y_node[i], z_node[i]);
 				int	k = (int) index_tree.Interpolate3d(p);	            // k is index number in tempBin
 				int	k_soln = (int) index_tree_soln.Interpolate3d(p);	// k is index number in tempBin
@@ -635,7 +635,7 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 				gzprintf(restart_file, "%d\n", count_chemistry );
 				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
 				{
-					int i = Reaction_module_ptr->GetBack()[j][0];			/* i is nxyz number */
+					int i = Reaction_module_ptr->GetBackwardMapping()[j][0];			/* i is nxyz number */
 					gzprintf(restart_file, "%e %e %e %d ",  x_node[i], y_node[i], z_node[i], j);
 					// solution, use -1 if cell is dry
 					if (this->saturation[i] > 0.0)

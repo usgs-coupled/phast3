@@ -96,7 +96,18 @@ IRM_RESULT RM_CreateMapping(int *id, int *grid2chem)
 	}
 	return IRM_BADINSTANCE;
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT RM_DecodeError(int *id, int *e)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->DecodeError(*e);
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_Destroy(int *id)
 /* ---------------------------------------------------------------------- */
@@ -476,49 +487,6 @@ double RM_GetTimeStep(int * id)
 	}
 	return (double) IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_InitialPhreeqc2Concentrations(
-			int *id,
-			double *boundary_c,
-			int *n_boundary,
-			int *dim,
-			int *boundary_solution1,  
-			int *boundary_solution2, 
-			double *fraction1)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Routine takes a list of solution numbers and returns a set of
- *   mass fractions
- *   Input: n_boundary - number of boundary conditions in list
- *          boundary_solution1 - list of first solution numbers to be mixed
- *          boundary_solution2 - list of second solution numbers to be mixed
- *          fraction1 - fraction of first solution 0 <= f <= 1
- *          boundary_c - n_boundary x ncomps concentrations
- *          dim - leading dimension of concentrations
- *                must be >= to n_boundary
- *
- *   Output: boundary_c - concentrations for boundary conditions
- *                      - dimensions must be >= n_boundary x n_comp
- *
- */
-	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-			return Reaction_module_ptr->InitialPhreeqc2Concentrations(
-						boundary_c,
-						*n_boundary, 
-						*dim,
-						boundary_solution1,
-						boundary_solution2,
-						fraction1 );
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_InitialPhreeqc2Concentrations(
@@ -604,6 +572,26 @@ RM_InitialPhreeqc2Module(int *id,
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_InitialPhreeqcCell2Module(int *id,
+                int *n,		                            // InitialPhreeqc cell number
+                int *module_numbers,		            // Module cell numbers
+                int *dim_module_numbers)			    // Number of module cell numbers
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector <int> module_numbers_vector;
+		module_numbers_vector.resize(*dim_module_numbers);
+		memcpy(module_numbers_vector.data(), module_numbers, (size_t) (*dim_module_numbers) * sizeof(int));
+		return Reaction_module_ptr->InitialPhreeqcCell2Module(
+			*n,
+			module_numbers_vector);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_LoadDatabase(int * id, const char *db_name, size_t l)
 	/* ---------------------------------------------------------------------- */
@@ -654,18 +642,6 @@ RM_MpiWorkerBreak(int *id)
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->MpiWorkerBreak();
-	}
-	return IRM_BADINSTANCE;
-}
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1))
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->SetMpiWorkerFortranCallback(fcn);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -841,6 +817,20 @@ RM_SetDumpFileName(int *id, const char *name, size_t nchar)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
+RM_SetErrorHandlerMode(int *id, int *mode)
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		int m = mode ? *mode : 0;
+		return Reaction_module_ptr->SetErrorHandlerMode(m);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
 RM_SetFilePrefix(int *id, const char *name, size_t nchar)
 /* ---------------------------------------------------------------------- */
 {
@@ -852,7 +842,18 @@ RM_SetFilePrefix(int *id, const char *name, size_t nchar)
 	}
 	return IRM_BADINSTANCE;
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1))
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->SetMpiWorkerFortranCallback(fcn);
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_SetPartitionUZSolids(int *id, int *t)
@@ -980,36 +981,6 @@ RM_SetSelectedOutputOn(int *id, int *selected_output_on)
 	}
 	return IRM_BADINSTANCE;
 }
-///* ---------------------------------------------------------------------- */
-//IRM_RESULT
-//RM_SetStopMessage(int *id, int *stop_flag)
-///* ---------------------------------------------------------------------- */
-//{
-//	// pass pointers from Fortran to the Reaction module
-//	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-//	if (Reaction_module_ptr)
-//	{
-//		bool s = (stop_flag == NULL) ? true : (*stop_flag != 0);
-//		return Reaction_module_ptr->SetStopMessage(s);
-//	}
-//	return IRM_BADINSTANCE;
-//}
-
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_SetErrorHandlerMode(int *id, int *mode)
-/* ---------------------------------------------------------------------- */
-{
-	// pass pointers from Fortran to the Reaction module
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		int m = mode ? *mode : 0;
-		return Reaction_module_ptr->SetErrorHandlerMode(m);
-	}
-	return IRM_BADINSTANCE;
-}
-
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetTemperature(int *id, double *t)
 /* ---------------------------------------------------------------------- */
