@@ -59,6 +59,7 @@
         time_phreeqc = 0._kdp
         nthreads = RM_GetNThreads(rm_id)
         status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
+        status = RM_MpiWorker(rm_id)                               ! loop until calculation is done
         !status = RM_SetErrorHandlerMode(rm_id)
         !status = RM_SetPrintChemistryOn(rm_id)
         ! ... Open C files 
@@ -174,7 +175,7 @@
 
         ! ... Transient loop for transport
         !fdtmth = fdtmth_tr     ! ... set time differencing method to transient
-        DO       
+        !DO       
             ! ... Transport calculation
             !CALL c_distribute
             !CALL p_distribute
@@ -189,10 +190,9 @@
             !        IF(errexi) EXIT
             !    END DO
             !ENDIF
-            status = RM_MpiWorker(rm_id)                               ! 6 RM_MpiWorker
             !!!!!!!!!!!TODO fix this logic
-            CALL thru_distribute  
-            IF (thru) EXIT          ! ... second step of exit
+            !CALL thru_distribute  
+            !IF (thru) EXIT          ! ... second step of exit
             
             !CALL timestep_worker     ! ... this only receives some data. it is a hold point   
             !IF (.NOT. steady_flow) CALL flow_distribute     
@@ -230,19 +230,19 @@
 
             ! ... Save values for next time step
             !CALL time_step_save
-            status = RM_MpiWorker(rm_id)                               ! 8 RM_MpiWorker
-        ENDDO
+            !status = RM_MpiWorker(rm_id)                               ! 8 RM_MpiWorker
+        !ENDDO
         ! ... End of transient loop
      
-50      CONTINUE      ! Errors jump to here
+!50      CONTINUE      ! Errors jump to here
 
         ! ... Cleanup and stop
 
-        IF(errexe .OR. errexi) THEN
-            logline1 = 'ERROR exit.'
-            status = RM_LogMessage(rm_id, logline1)
-            status = RM_ScreenMessage(rm_id, logline1)
-        END IF
+        !IF(errexe .OR. errexi) THEN
+        !    logline1 = 'ERROR exit.'
+        !    status = RM_LogMessage(rm_id, logline1)
+        !    status = RM_ScreenMessage(rm_id, logline1)
+        !END IF
      
     ENDIF        ! ... solute
 
