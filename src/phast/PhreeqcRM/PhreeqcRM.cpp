@@ -33,7 +33,6 @@
 #include <mpi.h>
 #endif
 #include "Phreeqc.h"
-//#define COMPONENT_H2O
 std::map<size_t, PhreeqcRM*> PhreeqcRM::Instances;
 size_t PhreeqcRM::InstancesIndex = 0;
 
@@ -120,7 +119,7 @@ PhreeqcRM::GetInstance(int id)
 //
 */
 
-PhreeqcRM::PhreeqcRM(int nxyz_arg, int thread_count, PHRQ_io *io)
+PhreeqcRM::PhreeqcRM(int nxyz_arg, int thread_count, bool water_as_component, PHRQ_io *io)
 	//
 	// constructor
 	//
@@ -195,8 +194,10 @@ if( numCPU < 1 )
 	  //		}
 		this->nxyz = nxyz_arg;
 	}
+	this->component_h2o = water_as_component;
 #ifdef USE_MPI
 	MPI_Bcast(&this->nxyz, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&this->component_h2o, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 	this->nthreads = 1;
 #else
 	this->nthreads = (thread_count > 0) ? thread_count : n;
@@ -786,13 +787,23 @@ PhreeqcRM::CloseFiles(void)
 
 	return IRM_OK;
 }
-#ifdef COMPONENT_H2O
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 /* ---------------------------------------------------------------------- */
 {
-	// assumes total H, total O, and charge are transported
+	if (this->component_h2o)
+	{
+		return Concentrations2SolutionsH2O(n, c);
+	}
+	return Concentrations2SolutionsNoH2O(n, c);
+}
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
+/* ---------------------------------------------------------------------- */
+{
+	// assumes H2O, total H, total O, and charge are transported
 	int i, j, k;
 
 #ifdef USE_MPI
@@ -875,10 +886,10 @@ PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 	}
 	return;
 }
-#else
+
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
+PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 /* ---------------------------------------------------------------------- */
 {
 	// assumes total H, total O, and charge are transported
@@ -955,11 +966,21 @@ PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 	}
 	return;
 }
-#endif
-#ifdef COMPONENT_H2O
+
 /* ---------------------------------------------------------------------- */
 IPhreeqc * 
 PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->component_h2o)
+	{
+		return Concentrations2UtilityH2O(c, tc, p_atm);
+	}
+	return Concentrations2UtilityNoH2O(c, tc, p_atm);
+}
+/* ---------------------------------------------------------------------- */
+IPhreeqc * 
+PhreeqcRM::Concentrations2UtilityH2O(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
 /* ---------------------------------------------------------------------- */
 {
 	size_t ncomps = this->components.size();
@@ -1030,10 +1051,10 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 	}
 	return (dynamic_cast< IPhreeqc *> (this->workers[nutil]));
 }
-#else
+
 /* ---------------------------------------------------------------------- */
 IPhreeqc * 
-PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
+PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
 /* ---------------------------------------------------------------------- */
 {
 	size_t ncomps = this->components.size();
@@ -1095,7 +1116,7 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 	}
 	return (dynamic_cast< IPhreeqc *> (this->workers[nutil]));
 }
-#endif
+
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::Convert_to_molal(double *c, int n, int dim)
@@ -1219,10 +1240,20 @@ PhreeqcRM::CreateMapping(int *t)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::CreateMapping");
 }
-#ifdef COMPONENT_H2O
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->component_h2o)
+	{
+		return cxxSolution2concentrationH2O(cxxsoln_ptr, d, v);
+	}
+	return cxxSolution2concentrationNoH2O(cxxsoln_ptr, d, v);
+}
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
 /* ---------------------------------------------------------------------- */
 {
 	d.clear();
@@ -1287,10 +1318,10 @@ PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<doub
 		break;
 	}
 }
-#else
+
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
+PhreeqcRM::cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
 /* ---------------------------------------------------------------------- */
 {
 	d.clear();
@@ -1343,7 +1374,7 @@ PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<doub
 		break;
 	}
 }
-#endif
+
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::DecodeError(int r)
@@ -2137,9 +2168,9 @@ PhreeqcRM::FindComponents(void)
 		std::set<std::string> component_set;
 
 		size_t fixed_components = 3;
-#ifdef COMPONENT_H2O
-		fixed_components = 4;
-#endif
+		if (this->component_h2o)
+			fixed_components = 4;
+
 		// save old components
 		for (size_t i = fixed_components; i < this->components.size(); i++)
 		{
@@ -2165,9 +2196,8 @@ PhreeqcRM::FindComponents(void)
 		this->components.clear();
 		
 		// Always include H, O, Charge
-#ifdef COMPONENT_H2O
-		this->components.push_back("H2O");
-#endif
+		if (this->component_h2o)
+			this->components.push_back("H2O");
 		this->components.push_back("H");
 		this->components.push_back("O");
 		this->components.push_back("Charge");

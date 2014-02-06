@@ -82,7 +82,7 @@ public:
 	static IRM_RESULT       DestroyReactionModule(int n);
 	static PhreeqcRM      * GetInstance(int n);
 
-	PhreeqcRM(int nxyz = 0, int thread_count = -1, PHRQ_io * io=NULL);
+	PhreeqcRM(int nxyz = 0, int thread_count = -1, bool water_as_component = false, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
 	
 	// Key methods	
@@ -226,8 +226,16 @@ protected:
 		                                          double *fraction1,
 		                                          std::set<std::string> &error_set);
 	int                                       CheckSelectedOutput();
+	IPhreeqc *                                Concentrations2UtilityH2O(std::vector<double> &c_in, 
+		                                           std::vector<double> t_in, std::vector<double> p_in);
+	IPhreeqc *                                Concentrations2UtilityNoH2O(std::vector<double> &c_in, 
+		                                           std::vector<double> t_in, std::vector<double> p_in);
 	void                                      Concentrations2Solutions(int n, std::vector<double> &c);
+	void                                      Concentrations2SolutionsH2O(int n, std::vector<double> &c);
+	void                                      Concentrations2SolutionsNoH2O(int n, std::vector<double> &c);
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v);
+	void                                      cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v);
+	void                                      cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	int                                       HandleErrorsInternal(std::vector< int > & r);
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
@@ -244,6 +252,8 @@ protected:
 	IRM_RESULT                                TransferCells(cxxStorageBin &t_bin, int old, int nnew);
 
 protected:
+	bool component_h2o;                      // true: use H2O, excess H, excess O, and charge; 
+	                                         // false total H, total O, and charge
 	std::string database_file_name;
 	std::string chemistry_file_name;
 	std::string dump_file_name;
@@ -298,6 +308,7 @@ protected:
 	std::vector<int> end_cell;
 	PHRQ_io phreeqcrm_io;
 
+	// mpi worker callback
 	int (*mpi_worker_fortran_callback) (int *method);
 	void * mpi_worker_cookie;
 
