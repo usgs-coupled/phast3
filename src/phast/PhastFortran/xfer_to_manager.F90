@@ -10,6 +10,11 @@ SUBROUTINE sbc_gather
   IMPLICIT NONE
   INTEGER :: i, tag
   !     ------------------------------------------------------------------
+#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_SBCGATHER, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+#endif   
   IF ((.NOT. solute) .OR. (nsbc <= 0)) RETURN
   IF (.NOT. xp_group) RETURN
 
@@ -56,6 +61,11 @@ SUBROUTINE c_gather
   IMPLICIT NONE
   INTEGER :: i, tag
   !     ------------------------------------------------------------------
+#ifdef USE_MPI  
+  if (mpi_myself == 0) then
+    CALL MPI_BCAST(METHOD_CGATHER, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+#endif   
   IF (.NOT. solute) RETURN
   IF (.NOT. xp_group) RETURN
 

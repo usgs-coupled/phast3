@@ -182,7 +182,6 @@ SUBROUTINE phast_manager
                 CALL flow_distribute
                 CALL time_parallel(7)
             ENDIF
-            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
             CALL time_parallel(8)
 
             ! ... At this point, worker and manager do transport calculations
@@ -196,13 +195,15 @@ SUBROUTINE phast_manager
                     status = RM_ScreenMessage(rm_id, logline1)
                 ENDDO
             ENDIF
-            IF (local_ns > 0) THEN 
-                CALL TM_transport(rm_id, local_ns, nthreads)
-            ENDIF
+            !IF (local_ns > 0) THEN 
+        
+            !CALL TM_transport(rm_id, local_ns, nthreads)
+            CALL run_transport
+            !ENDIF
 
             IF(errexe .OR. errexi) GO TO 50
 #if defined USE_MPI      
-            if (solute) CALL MPI_Barrier(xp_comm, ierrmpi)
+!            if (solute) CALL MPI_Barrier(xp_comm, ierrmpi)
 #endif
             CALL time_parallel(9)
             CALL sbc_gather
@@ -721,4 +722,20 @@ INTEGER FUNCTION set_fdtmth
     CALL MPI_BCAST(fdtmth, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
 #endif 
     set_fdtmth = 0
-END FUNCTION set_fdtmth 
+    END FUNCTION set_fdtmth 
+    
+INTEGER FUNCTION run_transport
+    USE mcc, ONLY: mpi_myself, rm_id
+    USE mcs, ONLY: nthreads
+    USE mcv, ONLY: local_ns
+    USE mpi_mod
+    IMPLICIT NONE 
+    INTEGER :: i
+#ifdef USE_MPI  
+    if (mpi_myself == 0) then
+        CALL MPI_BCAST(METHOD_RUNTRANSPORT, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+    endif 
+#endif 
+    CALL TM_transport(rm_id, local_ns, nthreads)
+    run_transport = 0
+END FUNCTION run_transport     
