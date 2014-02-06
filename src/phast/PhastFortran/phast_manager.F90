@@ -40,75 +40,58 @@ SUBROUTINE phast_manager
 ! ... static data, group 1
 !
     CALL openf
-    CALL read1              ! ... Read fundamental information, dimensioning data
-    CALL read1_distribute
-
-    ! Create Reaction Module(s)
-    CALL CreateRM   
-    
-    ! ... Map components to processes for transport calculations
-    CALL set_component_map
-
-    !... Process read1 
-    CALL init1
-    CALL error1
+    CALL read1                                             ! Read fundamental information, dimensioning data
+    CALL read1_distribute                                  ! Distribute for MPI
+    CALL CreateRM                                          ! Create Reaction Module(s)
+    CALL set_component_map                                 ! Map components to thread/process for parallel transport calculations
+    CALL init1                                             ! Initialize and allocate arrays, root and workers
+    CALL error1                                            ! Check for errors
     IF(errexi) GO TO 50
     CALL write1
 !
 ! ... time-invariant data, group 2
 !    
-    CALL read2
-    CALL init2_1
-    pv0 = pv     
-    CALL group2_distribute             ! Tranfer data to workers
-  
-    ! ... Create transporters
-    CALL create_transporters
-    CALL init2_2
-    IF (.NOT.steady_flow) THEN
-        pv0 = pv                       ! pressure corrected pv
-    ENDIF
-    CALL error2
-
+    CALL read2                                             ! Read time invariant data
+    CALL init2_1                                           ! Read time invariant data (root)
+    CALL group2_distribute                                 ! Distribute for MPI
+    CALL create_transporters                               ! Create transporters for each component
+    CALL init2_2                                           ! Initialize (root)
+    IF (.NOT.steady_flow) pv0 = pv                         ! pressure corrected pv
+    CALL error2                                            ! Check for errors
     IF(errexi) GO TO 50 
-
-    ! ...  Initialize Reaction Module
-    CALL InitializeRM
-    CALL error4
-    ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
-    ! ... Write initial condition results 
-    CALL write2_1
-
-
+!
+! ...  Initialize Reaction Module
+!
+    CALL InitializeRM                                      ! Initializes RM, runs file, distributes initial conditions
+    CALL error4                                            ! Check for errors
+                                                           ! write2_1 must be called after distribute_initial_conditions and equilibrate
+    CALL write2_1                                          ! Write initial condition results 
     IF(errexe .OR. errexi) GO TO 50
-    ! ... Calculate steady flow
+!    
+! ... Calculate steady flow
+!
     IF(steady_flow) THEN
-        CALL simulate_ss_flow          ! ... calls read3 and init3
-        CALL init3_distribute
+        CALL simulate_ss_flow                              ! calls read3 and init3
+        CALL init3_distribute                              ! Distribute for MPI
     ENDIF
-    
-    ! ... Write zone flows 
-    CALL zone_flow_write_heads
-
-    ! ... Use Reaction Module to equilbrate cells    
+    CALL zone_flow_write_heads                             ! Write zone flows 
+!
+! ... Use Reaction Module to equilbrate cells  
+!
     CALL InitialEquilibrationRM
-
+	CALL zone_flow_write_chem()
     IF (solute) THEN
-	    CALL zone_flow_write_chem()
-        !CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
     ENDIF
-
-    ! ...  Write initial results
-    CALL write2_2
+!
+! ... Write initial results, distribute flow results  
+!
+    CALL write2_2                             
     IF (steady_flow) THEN
         CALL write3
         CALL write4
     ENDIF
-
-    ! ... distribute  initial p and c_w to workers from manager
-    CALL flow_distribute
-
+    CALL flow_distribute                                  ! distribute  initial p and c_w to workers from manager
     IF(errexe .OR. errexi) GO TO 50
 !
 ! ...  Transient loop
@@ -117,10 +100,10 @@ SUBROUTINE phast_manager
         logline1 = 'Beginning transient simulation.'
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
-        fdtmth = fdtmth_tr     ! ... set time differencing method to transient
-        status = set_fdtmth()
+        fdtmth = fdtmth_tr                                ! set time differencing method to transient
+        status = set_fdtmth()                             ! send differencing method to workers
         DO
-            CALL time_parallel(0)
+            CALL time_parallel(0)                         ! Timing
             CALL c_distribute
             CALL p_distribute
             CALL time_parallel(1)
@@ -130,33 +113,31 @@ SUBROUTINE phast_manager
             ELSE
                 CALL rhsn_manager
             ENDIF
-
+            !
             ! ... Read the transient data, if necessary. The first block was read by the steady flow 
             ! ... simulation section
-            
-            DO WHILE(time*one_plus_eps >= timchg)       ! ... skip past data blocks until
+            !           
+            DO WHILE(time*one_plus_eps >= timchg)          ! skip past data blocks until
                 ! ...         restart time is reached
                 CALL read3
                 CALL init3
-                CALL time_parallel(2)                   ! ... only for timing
+                CALL time_parallel(2)                      ! only for timing
                 CALL init3_distribute
                 CALL time_parallel(3)
-                IF(thru) EXIT                           ! ... Normal exit from time step loop
+                IF(thru) EXIT                              ! Normal exit from time step loop
                 CALL error3
                 CALL write3
                 IF(errexi) EXIT
             END DO  
-            !status = RM_MpiWorkerBreak(rm_id)          ! ? RM_MpiWorker end  
             CALL time_parallel(4)
-            !CALL thru_distribute
             CALL time_parallel(5)
             IF (thru) then
-                write(*,*) "Manager is thru"
-                status = RM_MpiWorkerBreak(rm_id)            ! stop loop in worker
-                EXIT        ! ... second step of exit
+                status = RM_MpiWorkerBreak(rm_id)          ! stop loop in worker
+                EXIT                                       ! ... second step of exit
             endif
-
-            ! ... Calculate transient flow
+            !
+            ! ... Root calculates transient flow
+            !
             IF (.NOT. steady_flow) THEN
                 IF (nwel > 0) THEN
                     IF (cylind) THEN
@@ -167,16 +148,15 @@ SUBROUTINE phast_manager
                 ENDIF
                 CALL aplbce_flow
             ENDIF
-
-            ! ... Check for errors
             IF(errexe) THEN
-                CALL write5
+                CALL write5                                ! Check for errors
                 EXIT
             END IF
-20          CALL timestep
-            CALL write6           ! ... print conductance values
-
+20          CALL timestep                                  ! Update time step
+            CALL write6                                    ! print conductance values
+            !
             ! .... Send transient flow to workers
+            !
             IF(.NOT.steady_flow) THEN
                 CALL asmslp_flow
                 CALL time_parallel(6)
@@ -184,8 +164,9 @@ SUBROUTINE phast_manager
                 CALL time_parallel(7)
             ENDIF
             CALL time_parallel(8)
-
-            ! ... At this point, worker and manager do transport calculations
+            !
+            ! ... Root and workers do transport calculations
+            !
             IF (solute) THEN
                 logline1 =  '     Beginning solute-transport calculation.'
                 status = RM_LogMessage(rm_id, logline1)
@@ -196,16 +177,11 @@ SUBROUTINE phast_manager
                     status = RM_ScreenMessage(rm_id, logline1)
                 ENDDO
             ENDIF
-            !IF (local_ns > 0) THEN 
-        
-            !CALL TM_transport(rm_id, local_ns, nthreads)
             CALL run_transport
-            !ENDIF
-
             IF(errexe .OR. errexi) GO TO 50
-#if defined USE_MPI      
-!            if (solute) CALL MPI_Barrier(xp_comm, ierrmpi)
-#endif
+            !
+            ! Gather results from workers to root, process results
+            !
             CALL time_parallel(9)
             CALL sbc_gather
             CALL c_gather
@@ -216,42 +192,33 @@ SUBROUTINE phast_manager
                 CALL sumcal1
             ENDIF
             IF(tsfail .AND. .NOT.errexe) GO TO 20
-            ! ... Done with transport for time step
-
-            ! ... Equilibrate the solutions with PHREEQC
-            ! ... This is the connection to the equilibration step after transport
+            !
+            ! ... React cells with PhreeqcRM, process and write results
+            !
             CALL time_parallel(11) 
-    
-            ! ... Run cells in Reaction Module
-            CALL TimeStepRM
-
+            CALL TimeStepRM                                ! Run cells in Reaction Module, return concentrations
             CALL time_parallel(12)
-            CALL sumcal2
+            CALL sumcal2                                   ! Calculate summary fluxes
             CALL time_parallel(13)
-            CALL write5
+            CALL write5                                    ! Write results
             IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
                 CALL zone_flow_write_heads
             ENDIF
-            !CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
 	        CALL zone_flow_write_chem()
             IF (.NOT.steady_flow) THEN
                 CALL write4
             ENDIF
-
             IF (prhdfii == 1) THEN
                 CALL write_hdf_intermediate     
             ENDIF
             
-            CALL update_print_flags          ! ... Update times for next printouts
-
-            ! ... Save values for next time step
-            CALL time_step_save
-            !status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
+            CALL update_print_flags                        ! Update times for next printouts
+            CALL time_step_save                            ! Save values for next time step 
 
             IF(errexe) EXIT
-            IF(prcpd) CALL dump_hst        
-        ENDDO  ! ... End transient loop
-    ENDIF
+            IF(prcpd) CALL dump_hst                        ! not functional        
+        ENDDO                                              ! End transient time step
+    ENDIF                                                  ! End transient loop
 50  CONTINUE   ! ... Exit, could be error
 
     ! ...  Cleanup and shutdown
@@ -499,8 +466,6 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetTime(rm_id, time_phreeqc) 
         status = RM_SetTimeStep(rm_id, deltim_dummy) 
         status = RM_SetConcentrations(rm_id, c(1,1))
-        !status = RM_SetStopMessage(rm_id, stop_msg)
-        
         status = RM_RunCells(rm_id)    
         CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
 	        iprint_xyz(1), 0);  
@@ -562,15 +527,7 @@ SUBROUTINE InitializeRM
 
         ! ... Define mapping from 3D domain to chemistry
         CALL CreateMappingFortran(indx_sol1_ic)
-        status = RM_CreateMapping(rm_id, grid2chem(1))
-        
-        !DO i = 1, num_restart_files
-        !    CALL FH_SetRestartName(restart_files(i))
-        !ENDDO
-        !CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
-        !CALL restart_files_initialize
-        !status = RM_MpiWorkerBreak(rm_id)           ! 3 RM_MpiWorker end
-        
+        status = RM_CreateMapping(rm_id, grid2chem(1))        
         ! ... Make arrays in the correct order
         ALLOCATE(ic1_reordered(nxyz,7), ic2_reordered(nxyz,7), f1_reordered(nxyz,7),   &
         STAT = a_err)
@@ -593,11 +550,6 @@ SUBROUTINE InitializeRM
             f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1   
         
         CALL process_restart_files
-        !CALL FH_ProcessRestartFiles(rm_id, &
-	       ! indx_sol1_ic(1,1),            &
-	       ! indx_sol2_ic(1,1),            & 
-	       ! ic_mxfrac(1,1))
-        ! collect solutions at manager for transport
         status = RM_GetConcentrations(rm_id, c(1,1))      
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
@@ -646,15 +598,11 @@ SUBROUTINE TimeStepRM
         status = RM_SetTime(rm_id, time) 
         status = RM_SetTimeStep(rm_id, deltim) 
         status = RM_SetConcentrations(rm_id, c(1,1))
-        !status = RM_SetStopMessage(rm_id, stop_msg)
-        
         status = RM_RunCells(rm_id)  
         status = RM_GetConcentrations(rm_id, c(1,1))
         
         CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
             iprint_xyz(1), print_restart%print_flag_integer) 
-        !status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 0)
-        
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM   
     

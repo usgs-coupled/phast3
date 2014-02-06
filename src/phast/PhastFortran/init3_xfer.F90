@@ -51,44 +51,6 @@ SUBROUTINE init3_distribute
   ENDDO
 END SUBROUTINE init3_distribute
 
-SUBROUTINE thru_distribute
-#if defined(USE_MPI)
-  USE machine_constants, ONLY: kdp
-  USE mcb
-  USE mcc
-  USE mcg
-  USE mcv
-  USE mcw
-  USE mpi_mod
-  IMPLICIT NONE
-  INTEGER, DIMENSION(2) :: array_bcst_i
-  REAL(KIND=kdp), DIMENSION(2) :: array_bcst_r
-  INTEGER :: i_dummy;
-  !--------------------------------------------------------------------------
-  !
-  if (solute) then
-
-        ! thru
-        IF (mpi_myself == 0) THEN
-            IF (thru) THEN
-                i_dummy = 1 
-            ELSE
-                i_dummy = 0
-            ENDIF 
-        ENDIF
-        CALL MPI_BCAST(i_dummy, 1, MPI_INT, manager,  &
-            MPI_COMM_WORLD, ierrmpi)          
-        IF (mpi_myself > 0) THEN
-            IF (i_dummy .ne. 0) THEN
-                thru = .true.
-            ELSE
-                thru = .false.
-            ENDIF 
-        ENDIF        
-  endif
-#endif
-END SUBROUTINE thru_distribute
-
 SUBROUTINE init3_bcast_m
   ! ... Send group 3 data from manager to workers
 #if defined(USE_MPI)
