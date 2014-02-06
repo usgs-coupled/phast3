@@ -15,6 +15,7 @@
 #define RM_convert_to_molal                FC_FUNC_ (rm_convert_to_molal,              RM_CONVERT_TO_MOLAL)   
 #define RM_Create                          FC_FUNC_ (rm_create,                        RM_CREATE)
 #define RM_CreateMapping                   FC_FUNC_ (rm_createmapping,                 RM_CREATEMAPPING)
+#define RM_DecodeError                     FC_FUNC_ (rm_decodeerror,                   RM_DECODEERROR)
 #define RM_Destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
 #define RM_DumpModule                      FC_FUNC_ (rm_dumpmodule,                    RM_DUMPMODULE)
 #define RM_ErrorHandler                    FC_FUNC_ (rm_errorhandler,                  RM_ERRORHANDLER)
@@ -25,10 +26,10 @@
 #define RM_GetConcentrations               FC_FUNC_ (rm_getconcentrations,             RM_GETCONCENTRATIONS)
 #define RM_GetDensity                      FC_FUNC_ (rm_getdensity,                    RM_GETDENSITY)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
-#define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
-#define RM_GetMpiTasks                     FC_FUNC_ (rm_getmpitasks,                   RM_GETMPITASKS)
 #define RM_GetGridCellCount                FC_FUNC_ (rm_getgridcellcount,              RM_GETGRIDCELLCOUNT)
 #define RM_GetIPhreeqcId                   FC_FUNC_ (rm_getiphreeqcid,                 RM_GETIPHREEQCID)
+#define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
+#define RM_GetMpiTasks                     FC_FUNC_ (rm_getmpitasks,                   RM_GETMPITASKS)
 #define RM_GetNThreads                     FC_FUNC_ (rm_getnthreads,                   RM_GETNTHREADS)
 #define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
 #define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
@@ -42,6 +43,7 @@
 #define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
 #define RM_InitialPhreeqc2Concentrations   FC_FUNC_ (rm_initialphreeqc2concentrations, RM_INITIALPHREEQC2CONCENTRATIONS)
 #define RM_InitialPhreeqc2Module           FC_FUNC_ (rm_initialphreeqc2module,         RM_INITIALPHREEQC2MODULE)
+#define RM_InitialPhreeqcCell2Module       FC_FUNC_ (rm_initialphreeqccell2module,     RM_INITIALPHREEQCCELL2MODULE)
 #define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
 #define RM_MpiWorker                       FC_FUNC_ (rm_mpiworker,                     RM_MPIWORKER)
@@ -61,16 +63,15 @@
 #define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
 #define RM_SetMpiWorkerCallback            FC_FUNC_ (rm_setmpiworkercallback,          RM_SETMPIWORKERCALLBACK)
 #define RM_SetPartitionUZSolids            FC_FUNC_ (rm_setpartitionuzsolids,          RM_SETPARTITIONUZSOLIDS)
-#define RM_SetPrintChemistryOn             FC_FUNC_ (rm_setprintchemistryon,           RM_SETPRINTCHEMISTRYON)
-#define RM_SetPrintChemistryMask           FC_FUNC_ (rm_setprintchemistrymask,         RM_SETPRINTCHEMISTRYMASK)
-#define RM_SetPressure                     FC_FUNC_ (rm_setpressure,                   RM_SETPRESSURE)
 #define RM_SetPoreVolume                   FC_FUNC_ (rm_setporevolume,                 RM_SETPOREVOLUME)
 #define RM_SetPoreVolumeZero               FC_FUNC_ (rm_setporevolumezero,             RM_SETPOREVOLUMEZERO)
+#define RM_SetPrintChemistryMask           FC_FUNC_ (rm_setprintchemistrymask,         RM_SETPRINTCHEMISTRYMASK)
+#define RM_SetPrintChemistryOn             FC_FUNC_ (rm_setprintchemistryon,           RM_SETPRINTCHEMISTRYON)
+#define RM_SetPressure                     FC_FUNC_ (rm_setpressure,                   RM_SETPRESSURE)
 #define RM_SetRebalanceFraction            FC_FUNC_ (rm_setrebalancefraction,          RM_SETREBALANCEFRACTION)
 #define RM_SetRebalanceByCell              FC_FUNC_ (rm_setrebalancebycell,            RM_SETREBALANCEBYCELL)
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
-//#define RM_SetStopMessage                  FC_FUNC_ (rm_setstopmessage,                RM_SETSTOPMESSAGE)
 #define RM_SetTemperature                  FC_FUNC_ (rm_settemperature,                RM_SETTEMPERATURE)
 #define RM_SetTime                         FC_FUNC_ (rm_settime,                       RM_SETTIME)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
@@ -158,6 +159,7 @@ int RM_Create(int *nxyz, int *nthreads = NULL);
  *  @endhtmlonly
  */
 IRM_RESULT RM_CreateMapping (int *id, int *grid2chem = NULL); 
+IRM_RESULT RM_DecodeError (int *id, int *e); 
 /**
  *  Destroys a reaction module. 
  *  @param id               The instance id returned from @ref RM_Create.
@@ -455,9 +457,13 @@ IRM_RESULT RM_InitialPhreeqc2Concentrations(
  *  @endhtmlonly
  */
 IRM_RESULT RM_InitialPhreeqc2Module(int *id,
-                int *initial_conditions1 = NULL,		// 7 x nxyz end-member 1
+                int *initial_conditions1,		        // 7 x nxyz end-member 1
                 int *initial_conditions2 = NULL,		// 7 x nxyz end-member 2
                 double *fraction1 = NULL);			    // 7 x nxyz fraction of end-member 1
+IRM_RESULT RM_InitialPhreeqcCell2Module(int *id,
+                int *n,		                            // InitialPhreeqc cell number
+                int *module_numbers,		            // Module cell numbers
+                int *dim_module_numbers);			    // Number of module cell numbers
 /**
  *  Load a database for the InitialPhreeqc and all worker IPhreeqc instances. 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -523,6 +529,7 @@ IRM_RESULT RM_MpiWorkerBreak(int * id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_OpenFiles(int * id);
+IRM_RESULT RM_OutputMessage(int *id, const char * err_str = NULL, size_t l = 0);
 /**
  *  Transfer array of concentrations to the reaction module workers. 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -544,7 +551,6 @@ IRM_RESULT RM_OpenFiles(int * id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_RunCells(int *id);
-IRM_RESULT RM_OutputMessage(int *id, const char * err_str = NULL, size_t l = 0);
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -630,7 +636,6 @@ IRM_RESULT RM_SetRebalanceFraction(int *id, double *f = NULL);
 IRM_RESULT RM_SetRebalanceByCell(int *id, int *method = NULL);
 IRM_RESULT RM_SetSaturation(int *id, double *t = NULL);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
-//IRM_RESULT RM_SetStopMessage(int *id, int *stop_flag = NULL);
 IRM_RESULT RM_SetTemperature(int *id, double *t = NULL);
 IRM_RESULT RM_SetTime(int *id, double *t = NULL);
 IRM_RESULT RM_SetTimeConversion(int *id, double *t = NULL);
@@ -668,28 +673,9 @@ void       RM_write_bc_raw(int *id,
                 int * solution_number, 
                 char *prefix, 
                 size_t prefix_l);
-//void RM_write_output(int *id);
 
 #if defined(__cplusplus)
 }
 #endif
 
-// Global functions
-//inline std::string trim_right(const std::string &source , const std::string& t = " \t")
-//{
-//	std::string str = source;
-//	return str.erase( str.find_last_not_of(t) + 1);
-//}
-//
-//inline std::string trim_left( const std::string& source, const std::string& t = " \t")
-//{
-//	std::string str = source;
-//	return str.erase(0 , source.find_first_not_of(t) );
-//}
-//
-//inline std::string trim(const std::string& source, const std::string& t = " \t")
-//{
-//	std::string str = source;
-//	return trim_left( trim_right( str , t) , t );
-//} 
 #endif // RM_INTERFACE_H
