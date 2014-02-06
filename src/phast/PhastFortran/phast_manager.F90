@@ -134,24 +134,27 @@ SUBROUTINE phast_manager
             ! ... Read the transient data, if necessary. The first block was read by the steady flow 
             ! ... simulation section
             
-            DO WHILE(time*one_plus_eps >= timchg)     ! ... skip past data blocks until
+            DO WHILE(time*one_plus_eps >= timchg)       ! ... skip past data blocks until
                 ! ...         restart time is reached
                 CALL read3
                 CALL init3
-                CALL time_parallel(2)                 ! ... only for timing
+                CALL time_parallel(2)                   ! ... only for timing
                 CALL init3_distribute
                 CALL time_parallel(3)
-                IF(thru) EXIT                         ! ... Normal exit from time step loop
+                IF(thru) EXIT                           ! ... Normal exit from time step loop
                 CALL error3
                 CALL write3
                 IF(errexi) EXIT
             END DO  
-            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end  
-            !!!!!!TODO fix logic here
+            !status = RM_MpiWorkerBreak(rm_id)          ! ? RM_MpiWorker end  
             CALL time_parallel(4)
-            CALL thru_distribute
+            !CALL thru_distribute
             CALL time_parallel(5)
-            IF (thru) EXIT        ! ... second step of exit
+            IF (thru) then
+                write(*,*) "Manager is thru"
+                status = RM_MpiWorkerBreak(rm_id)            ! stop loop in worker
+                EXIT        ! ... second step of exit
+            endif
 
             ! ... Calculate transient flow
             IF (.NOT. steady_flow) THEN
@@ -243,7 +246,7 @@ SUBROUTINE phast_manager
 
             ! ... Save values for next time step
             CALL time_step_save
-            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
+            !status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
 
             IF(errexe) EXIT
             IF(prcpd) CALL dump_hst        
