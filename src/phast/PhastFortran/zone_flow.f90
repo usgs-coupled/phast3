@@ -687,10 +687,8 @@ SUBROUTINE zone_flow_write_chem
   USE mcp
   USE mcv
   USE mpi_mod
+  USE print_control_mod
   IMPLICIT NONE
-  !LOGICAL ex
-  !INTEGER, INTENT(IN) :: mpi_myself, mpi_tasks
-  !LOGICAL, INTENT(IN) :: force_print
   INTEGER ios
   INTEGER i, ii, jj, kk, m, izn
   REAL(KIND=kdp) :: current_time = 0
@@ -701,8 +699,7 @@ SUBROUTINE zone_flow_write_chem
   INTEGER solution_list(nxyz), pos
  
   IF (.not. solute) RETURN
-  !IF(.not. przf_xyzt .and. .not. force_print) RETURN
-  !IF(.not. przf_xyzt) RETURN
+  if (mpi_myself == 0 .and. print_zone_flows_xyzt%print_flag_integer == 0) return
 #ifdef USE_MPI  
   if (mpi_myself == 0) then
     CALL MPI_BCAST(METHOD_ZONEFLOWWRITECHEM, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 

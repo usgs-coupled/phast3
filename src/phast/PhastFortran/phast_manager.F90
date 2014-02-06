@@ -94,9 +94,7 @@ SUBROUTINE phast_manager
     CALL InitialEquilibrationRM
 
     IF (solute) THEN
-	    if (print_zone_flows_xyzt%print_flag_integer .ne. 0) then
-		    CALL zone_flow_write_chem();
-	    endif
+	    CALL zone_flow_write_chem()
         !CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
     ENDIF
@@ -223,7 +221,6 @@ SUBROUTINE phast_manager
     
             ! ... Run cells in Reaction Module
             CALL TimeStepRM
-            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
 
             CALL time_parallel(12)
             CALL sumcal2
@@ -232,7 +229,8 @@ SUBROUTINE phast_manager
             IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
                 CALL zone_flow_write_heads
             ENDIF
-            !!!! need to fix CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+            !CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+	        CALL zone_flow_write_chem()
             IF (.NOT.steady_flow) THEN
                 CALL write4
             ENDIF
@@ -245,6 +243,7 @@ SUBROUTINE phast_manager
 
             ! ... Save values for next time step
             CALL time_step_save
+            status = RM_MpiWorkerBreak(rm_id)           ! ? RM_MpiWorker end 
 
             IF(errexe) EXIT
             IF(prcpd) CALL dump_hst        
