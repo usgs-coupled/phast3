@@ -783,7 +783,7 @@ SUBROUTINE write5
               !CALL RM_calculate_well_ph(u10, ph, alk)
               tc = 25.0
               p_atm = 1.0
-              iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well(1), 1, 1, tc, p_atm)
+              iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well(1), 1, tc, p_atm)
               status = RunString(iphreeqc_id, string)
               status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
               status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, alk, svalue)              

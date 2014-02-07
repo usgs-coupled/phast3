@@ -96,7 +96,7 @@ extern "C" {
  *  Closes the output file and log file. 
  *  @see                 @ref RM_OpenFiles
  *  MPI:
- *       Has effect only for root process.
+ *       Root process only.
  *  @par Fortran90 Interface:
  *  @htmlonly
  *  <CODE>
@@ -110,7 +110,7 @@ extern "C" {
  */
 IRM_RESULT RM_CloseFiles(int *id);
 void       RM_convert_to_molal(int *id, double *c, int *n, int *dim);
-int        RM_Concentrations2Utility(int *id, double *c, int *n, int *dim, double *tc, double *p_atm);
+int        RM_Concentrations2Utility(int *id, double *c, int *n, double *tc, double *p_atm);
 /**
  *  Creates a reaction module. 
  *  @param nxyz                   The number of cells in the in the user's model.
@@ -158,7 +158,7 @@ int RM_Create(int *nxyz, int *nthreads = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_CreateMapping (int *id, int *grid2chem = NULL); 
+IRM_RESULT RM_CreateMapping (int *id, int *grid2chem); 
 IRM_RESULT RM_DecodeError (int *id, int *e); 
 /**
  *  Destroys a reaction module. 
@@ -335,7 +335,7 @@ IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_GetConcentrations(int *id, double *c = NULL);
+IRM_RESULT RM_GetConcentrations(int *id, double *c);
 IRM_RESULT RM_GetDensity(int *id, double *density);
 IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, size_t l);
 /**
@@ -366,7 +366,7 @@ int        RM_GetMpiMyself(int *id);
 int        RM_GetMpiTasks(int *id);
 int        RM_GetNThreads(int *id);
 int        RM_GetNthSelectedOutputUserNumber(int *id, int *i);
-IRM_RESULT RM_GetSelectedOutput(int *id, double *so = NULL);
+IRM_RESULT RM_GetSelectedOutput(int *id, double *so);
 int        RM_GetSelectedOutputColumnCount(int *id);
 int        RM_GetSelectedOutputCount(int *id);
 IRM_RESULT RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, size_t length);
@@ -407,16 +407,6 @@ double     RM_GetTimeStep(int *id);
  *  </CODE>
  *  @endhtmlonly
  */
-#ifdef SKIP
-IRM_RESULT RM_InitialPhreeqc2Concentrations(
-                int *id,
-                double *c,
-                int *n_boundary,
-                int *dim, 
-                int *boundary_solution1,  
-                int *boundary_solution2 = NULL, 
-                double *fraction1 = NULL);
-#endif
 IRM_RESULT RM_InitialPhreeqc2Concentrations(
                 int *id,
                 double *c,
@@ -486,7 +476,7 @@ IRM_RESULT RM_InitialPhreeqcCell2Module(int *id,
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_LoadDatabase(int *id, const char *db_name = NULL, size_t l = 0);
+IRM_RESULT RM_LoadDatabase(int *id, const char *db_name, size_t l);
 /**
  *  Send a message to the log file. 
  *  @param str           String to be sent.
@@ -506,7 +496,7 @@ IRM_RESULT RM_LoadDatabase(int *id, const char *db_name = NULL, size_t l = 0);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_LogMessage(int * id, const char *str, size_t l = 0);
+IRM_RESULT RM_LogMessage(int * id, const char *str, size_t l);
 IRM_RESULT RM_MpiWorker(int * id);
 IRM_RESULT RM_MpiWorkerBreak(int * id);
 
@@ -529,7 +519,7 @@ IRM_RESULT RM_MpiWorkerBreak(int * id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_OpenFiles(int * id);
-IRM_RESULT RM_OutputMessage(int *id, const char * err_str = NULL, size_t l = 0);
+IRM_RESULT RM_OutputMessage(int *id, const char * err_str, size_t l);
 /**
  *  Transfer array of concentrations to the reaction module workers. 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -574,7 +564,7 @@ IRM_RESULT RM_RunCells(int *id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility, const char *chem_name = NULL, size_t l = 0);
+IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility, const char *chem_name, size_t l);
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -599,7 +589,7 @@ IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string = NULL, size_t l = 0);
+IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string, size_t l);
 /**
  *  Send a message to the screen. 
  *  @param str           String to be sent to the screen.
@@ -617,36 +607,36 @@ IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utili
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_ScreenMessage(int *id, const char *str, size_t l = 0);
-IRM_RESULT RM_SetCellVolume(int *id, double *t = NULL);
-IRM_RESULT RM_SetConcentrations(int *id, double *t = NULL);
-IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int *id, int *i = NULL);
-IRM_RESULT RM_SetDensity(int *id, double *t = NULL);
-IRM_RESULT RM_SetDumpFileName(int *id, const char *dump_name = NULL, size_t l = 0);
-IRM_RESULT RM_SetErrorHandlerMode(int *id, int *mode = NULL);
-IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, size_t l = 0);
+IRM_RESULT RM_ScreenMessage(int *id, const char *str, size_t l);
+IRM_RESULT RM_SetCellVolume(int *id, double *t);
+IRM_RESULT RM_SetConcentrations(int *id, double *t);
+IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
+IRM_RESULT RM_SetDensity(int *id, double *t);
+IRM_RESULT RM_SetDumpFileName(int *id, const char *dump_name, size_t l);
+IRM_RESULT RM_SetErrorHandlerMode(int *id, int *mode);
+IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix, size_t l);
 IRM_RESULT RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1));
-IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t = NULL);
-IRM_RESULT RM_SetPoreVolume(int *id, double *t = NULL);
-IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t = NULL);
-IRM_RESULT RM_SetPrintChemistryOn(int *id, int *worker = NULL, int *ip = NULL, int *utility = NULL);
-IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t = NULL);
-IRM_RESULT RM_SetPressure(int *id, double *t = NULL);
-IRM_RESULT RM_SetRebalanceFraction(int *id, double *f = NULL);
-IRM_RESULT RM_SetRebalanceByCell(int *id, int *method = NULL);
-IRM_RESULT RM_SetSaturation(int *id, double *t = NULL);
-IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
-IRM_RESULT RM_SetTemperature(int *id, double *t = NULL);
-IRM_RESULT RM_SetTime(int *id, double *t = NULL);
-IRM_RESULT RM_SetTimeConversion(int *id, double *t = NULL);
-IRM_RESULT RM_SetTimeStep(int *id, double *t = NULL);
-IRM_RESULT RM_SetUnitsExchange(int *id, int *i = NULL);
-IRM_RESULT RM_SetUnitsGasPhase(int *id, int *i = NULL);
-IRM_RESULT RM_SetUnitsKinetics(int *id, int *i = NULL);
-IRM_RESULT RM_SetUnitsPPassemblage(int *id, int *i = NULL);
-IRM_RESULT RM_SetUnitsSolution(int *id, int *i = NULL);
-IRM_RESULT RM_SetUnitsSSassemblage(int *id, int *i = NULL);
-IRM_RESULT RM_SetUnitsSurface(int *id, int *i = NULL);
+IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t);
+IRM_RESULT RM_SetPoreVolume(int *id, double *t);
+IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t);
+IRM_RESULT RM_SetPrintChemistryOn(int *id, int *worker, int *ip, int *utility);
+IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t);
+IRM_RESULT RM_SetPressure(int *id, double *t);
+IRM_RESULT RM_SetRebalanceFraction(int *id, double *f);
+IRM_RESULT RM_SetRebalanceByCell(int *id, int *method);
+IRM_RESULT RM_SetSaturation(int *id, double *t);
+IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output);
+IRM_RESULT RM_SetTemperature(int *id, double *t);
+IRM_RESULT RM_SetTime(int *id, double *t);
+IRM_RESULT RM_SetTimeConversion(int *id, double *t);
+IRM_RESULT RM_SetTimeStep(int *id, double *t);
+IRM_RESULT RM_SetUnitsExchange(int *id, int *i);
+IRM_RESULT RM_SetUnitsGasPhase(int *id, int *i);
+IRM_RESULT RM_SetUnitsKinetics(int *id, int *i);
+IRM_RESULT RM_SetUnitsPPassemblage(int *id, int *i);
+IRM_RESULT RM_SetUnitsSolution(int *id, int *i);
+IRM_RESULT RM_SetUnitsSSassemblage(int *id, int *i);
+IRM_RESULT RM_SetUnitsSurface(int *id, int *i);
 /**
  *  Send an warning message to the screen and log file. 
  *  @param str           String to be sent.

@@ -232,7 +232,7 @@
 		tc(i) = 15.0
 		p_atm(i) = 3.0
 	enddo
-	iphreeqc_id = RM_Concentrations2Utility(id, c(1,1), nxyz, nxyz, tc(1), p_atm(1))
+	iphreeqc_id = RM_Concentrations2Utility(id, c(1,1), nxyz, tc(1), p_atm(1))
 	string = "RUN_CELLS; -cells 0-19"
 	! Option 1, output goes to new file
 	status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")

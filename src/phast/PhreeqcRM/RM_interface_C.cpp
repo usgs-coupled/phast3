@@ -26,7 +26,7 @@ RM_CloseFiles(int id)
 }
 /* ---------------------------------------------------------------------- */
 int
-RM_Concentrations2Utility(int id, double *c, int n, int dim, double *tc, double *p_atm)
+RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm)
 /* ---------------------------------------------------------------------- */
 {
 	// error_file is stderr
@@ -41,7 +41,7 @@ RM_Concentrations2Utility(int id, double *c, int n, int dim, double *tc, double 
 		{
 			for (size_t j = 0; j < ncomps; j++)
 			{
-				c_vector[j * n + i] = c[j * dim + i];
+				c_vector[j * n + i] = c[j * n + i];
 			}
 			tc_vector.push_back(tc[i]);
 			p_atm_vector.push_back(p_atm[i]);
