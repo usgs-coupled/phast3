@@ -10,7 +10,7 @@ extern "C" {
 
 int        RM_CloseFiles(int id);
 void       RM_convert_to_molal(int id, double *c, int n, int dim);
-int        RM_Concentrations2Utility(int id, double *c, int n, int dim, double *tc, double *p_atm);
+int        RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm);
 /**
  *  Creates a reaction module. 
  *  @param nxyz                   The number of cells in the in the user's model.
