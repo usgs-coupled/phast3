@@ -54,7 +54,6 @@ typedef enum {
 	METHOD_SETFILEPREFIX,
 	METHOD_SETPARTITIONUZSOLIDS,
 	METHOD_SETPOREVOLUME,
-	METHOD_SETPOREVOLUMEZERO,
 	METHOD_SETPRESSURE,
 	METHOD_SETPRINTCHEMISTRYON,
 	METHOD_SETPRINTCHEMISTRYMASK,
@@ -162,7 +161,7 @@ public:
 	int                                       GetNthSelectedOutputUserNumber(int *i);
 	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
-	std::vector<double> &                     GetPoreVolumeZero(void) {return this->pore_volume_zero;} 
+	//std::vector<double> &                     GetPoreVolumeZero(void) {return this->pore_volume_zero;} 
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
 	std::vector<int> &                        GetPrintChemistryMask (void) {return this->print_chem_mask;}
 	const std::vector <bool> &                GetPrintChemistryOn(void) const {return this->print_chemistry_on;}  
@@ -177,7 +176,6 @@ public:
 	int                                       GetSelectedOutputRowCount(void);	
 	std::vector<double> &                     GetSolutionVolume(void); 
 	const std::vector < int> &                GetStartCell(void) const {return this->start_cell;} 
-	//bool                                      GetStopMessage(void) const {return this->stop_message;}
 	std::vector<double> &                     GetTemperature(void) {return this->tempc;}
 	double                                    GetTime(void) const {return this->time;} 
 	double                                    GetTimeStep(void) const {return this->time_step;}
@@ -192,7 +190,9 @@ public:
 	IRM_RESULT                                SetDumpFileName(const char * db = NULL); 
 	IRM_RESULT                                SetErrorHandlerMode(int i = 0);
 	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL); 
-	IRM_RESULT								  SetMpiWorkerFortranCallback(int (*fcn)(int *method));
+	IRM_RESULT								  SetMpiWorker(int (*fcn)(int *method, void *cookie));
+	IRM_RESULT								  SetMpiWorkerCallbackC(int (*fcn)(int *method, void * cookie));
+	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
 	IRM_RESULT                                SetPartitionUZSolids(int t = -1);
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
 	IRM_RESULT                                SetPoreVolumeZero(double * t = NULL);
@@ -273,7 +273,7 @@ protected:
 	std::vector<double> saturation;	        // nxyz saturation fraction
 	std::vector<double> pressure;			// nxyz current pressure
 	std::vector<double> pore_volume;		// nxyz current pore volumes 
-	std::vector<double> pore_volume_zero;	// nxyz initial pore volumes
+	//std::vector<double> pore_volume_zero;	// nxyz initial pore volumes
 	std::vector<double> cell_volume;		// nxyz geometric cell volumes
 	std::vector<double> tempc;				// nxyz temperature Celsius
 	std::vector<double> density;			// nxyz density
@@ -282,12 +282,12 @@ protected:
 	bool rebalance_by_cell;                 // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
 	int input_units_Solution;               // 1 mg/L, 2 mmol/L, 3 kg/kgs
-	int input_units_PPassemblage;           // water 1, rock 2
-	int input_units_Exchange;               // water 1, rock 2
-	int input_units_Surface;                // water 1, rock 2
-	int input_units_GasPhase;               // water 1, rock 2
-	int input_units_SSassemblage;           // water 1, rock 2
-	int input_units_Kinetics;               // water 1, rock 2
+	int input_units_PPassemblage;           // cell 0, water 1, rock 2
+	int input_units_Exchange;               // cell 0, water 1, rock 2
+	int input_units_Surface;                // cell 0, water 1, rock 2
+	int input_units_GasPhase;               // cell 0, water 1, rock 2
+	int input_units_SSassemblage;           // cell 0, water 1, rock 2
+	int input_units_Kinetics;               // cell 0, water 1, rock 2
 	std::vector <int> forward_mapping;					// mapping from nxyz cells to count_chem chemistry cells
 	std::vector <std::vector <int> > backward_mapping;	// mapping from count_chem chemistry cells to nxyz cells 
 
@@ -307,8 +307,9 @@ protected:
 	PHRQ_io phreeqcrm_io;
 
 	// mpi worker callback
-	int (*mpi_worker_fortran_callback) (int *method);
-	void * mpi_worker_cookie;
+	int (*mpi_worker_callback_fortran) (int *method);
+	int (*mpi_worker_callback_c) (int *method, void *cookie);
+	void *mpi_worker_c_cookie;
 
 private:
 	friend class RM_interface;

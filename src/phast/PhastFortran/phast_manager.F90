@@ -509,7 +509,7 @@ SUBROUTINE InitializeRM
         status = RM_SetUnitsSurface(rm_id, surface_units)            
         status = RM_SetTimeConversion(rm_id, cnvtmi)
         status = RM_SetPoreVolume(rm_id, pv0(1))
-        status = RM_SetPoreVolumeZero(rm_id, pv0(1))
+        !status = RM_SetPoreVolumeZero(rm_id, pv0(1))
         !status = RM_SetSaturation(rm_id, sat(1))
         status = RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
 	    status = 0

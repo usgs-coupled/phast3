@@ -43,9 +43,9 @@ int advection_cpp()
 		status = phreeqc_rm.SetCellVolume(cell_vol.data());
 
 		// Set initial pore volume
-		std::vector<double> pv0;
-		pv0.resize(nxyz, 0.2);
-		status = phreeqc_rm.SetPoreVolumeZero(pv0.data());
+		//std::vector<double> pv0;
+		//pv0.resize(nxyz, 0.2);
+		//status = phreeqc_rm.SetPoreVolumeZero(pv0.data());
 
 		// Set current pore volume
 		std::vector<double> pv;
@@ -250,4 +250,117 @@ AdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int n
 	{
 		c[j * nxyz] = bc_conc[j * dim];                                // component j
 	}
+}
+int units_tester()
+{
+	// Based on PHREEQC Example 11
+
+	try
+	{
+		int nxyz = 3;
+		int nthreads = 3;
+		IRM_RESULT status;
+
+		// Create reaction module
+		PhreeqcRM phreeqc_rm(nxyz, nthreads);
+		status = phreeqc_rm.SetErrorHandlerMode(1);        // throw exception on error
+		status = phreeqc_rm.SetFilePrefix("Units_iphreeqc");
+		if (phreeqc_rm.GetMpiMyself() == 0)
+		{
+			phreeqc_rm.OpenFiles();
+		}
+
+		// Set concentration units
+		status = phreeqc_rm.SetUnitsSolution(1);      // 1, mg/L; 2, mol/L; 3, kg/kgs
+		status = phreeqc_rm.SetUnitsPPassemblage(1);  // 1, mol/L; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsExchange(1);      // 1, mol/L; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsSurface(1);       // 1, mol/L; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsGasPhase(1);      // 1, mol/L; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsSSassemblage(1);  // 1, mol/L; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsKinetics(1);      // 1, mol/L; 2 mol/kg rock
+
+		// Set cell volume
+		std::vector<double> cell_vol;
+		cell_vol.resize(nxyz, 1);
+		status = phreeqc_rm.SetCellVolume(cell_vol.data());
+
+		// Set initial pore volume
+		//std::vector<double> pv0;
+		//pv0.resize(nxyz, 0.2);
+		//status = phreeqc_rm.SetPoreVolumeZero(pv0.data());
+
+		// Set current pore volume
+		std::vector<double> pv;
+		pv.resize(nxyz, 0.2);
+		status = phreeqc_rm.SetPoreVolume(pv.data());
+
+		// Set saturation
+		std::vector<double> sat;
+		sat.resize(nxyz, 1.0);
+		status = phreeqc_rm.SetSaturation(sat.data());
+
+		// Set printing of chemistry file
+		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
+
+		// Load database
+		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
+
+		// Run file to define solutions and reactants for initial conditions, selected output
+		bool workers = false;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
+		bool initial_phreeqc = true;      // This is an IPhreeqc for accumulating initial and boundary conditions
+		bool utility = false;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
+		// mixture for a well
+		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "units.pqi");
+
+		status = phreeqc_rm.SetFilePrefix("Units_dummy");
+		if (phreeqc_rm.GetMpiMyself() == 0)
+		{
+			phreeqc_rm.OpenFiles();
+		}
+
+		// Set reference to components
+		int ncomps = phreeqc_rm.FindComponents();
+		const std::vector<std::string> &components = phreeqc_rm.GetComponents();
+		
+		std::vector < int > cell_numbers;
+		cell_numbers.push_back(0);
+		status = phreeqc_rm.InitialPhreeqcCell2Module(1, cell_numbers);
+		cell_numbers[0] = 1;
+		status = phreeqc_rm.InitialPhreeqcCell2Module(2, cell_numbers);
+		cell_numbers[0] = 2;
+		status = phreeqc_rm.InitialPhreeqcCell2Module(3, cell_numbers);
+		
+		// Retrieve concentrations
+		std::vector<double> c;
+		c.resize(nxyz * components.size());
+		status = phreeqc_rm.RunCells();
+		status = phreeqc_rm.GetConcentrations(c.data());
+
+		// Use utility instance of PhreeqcRM
+		std::vector<double> tc, p_atm;
+		tc.resize(nxyz, 25.0);
+		p_atm.resize(nxyz, 1.0);
+		IPhreeqc * util_ptr = phreeqc_rm.Concentrations2Utility(c, tc, p_atm);
+		std::string input;
+		input = "RUN_CELLS; -cells 0-2";
+		// Option 1, output goes to new file
+		int iphreeqc_result;
+		util_ptr->SetOutputFileName("Units_utility.out");
+		util_ptr->SetOutputFileOn(true);
+		iphreeqc_result = util_ptr->RunString(input.c_str());
+
+	}
+	catch (PhreeqcRMStop)
+	{
+		std::string e_string = "Advection_cpp failed with an error in PhreeqcRM.";
+		std::cerr << e_string << std::endl;
+		return IRM_FAIL;
+	}
+	catch (...)
+	{
+		std::string e_string = "Advection_cpp failed with an unhandled exception.";
+		std::cerr << e_string << std::endl;
+		return IRM_FAIL;
+	}
+	return EXIT_SUCCESS;
 }

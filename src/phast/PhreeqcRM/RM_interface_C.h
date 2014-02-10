@@ -445,7 +445,7 @@ int RM_SetFilePrefix(int id, const char *prefix);
 int RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1));
 int RM_SetPartitionUZSolids(int id, int t);
 int RM_SetPoreVolume(int id, double *t);
-int RM_SetPoreVolumeZero(int id, double *t);
+//int RM_SetPoreVolumeZero(int id, double *t);
 int RM_SetPrintChemistryOn(int id, int worker, int ip, int utility);
 int RM_SetPrintChemistryMask(int id, int *t);
 int RM_SetPressure(int id, double *t);
