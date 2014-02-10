@@ -949,7 +949,7 @@ RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1))
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetMpiWorkerFortranCallback(fcn);
+		return Reaction_module_ptr->SetMpiWorkerCallbackFortran(fcn);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -986,7 +986,7 @@ IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t)
 /* ---------------------------------------------------------------------- */
@@ -1004,7 +1004,7 @@ IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetPressure(int *id, double *t)
 /* ---------------------------------------------------------------------- */

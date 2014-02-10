@@ -817,13 +817,13 @@ RM_SetFilePrefix(int id, const char *name)
 }
 /* ---------------------------------------------------------------------- */
 int
-RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1))
+RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie))
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetMpiWorkerFortranCallback(fcn);
+		return Reaction_module_ptr->SetMpiWorkerCallbackC(fcn);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -851,7 +851,7 @@ int RM_SetPoreVolume(int id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int RM_SetPoreVolumeZero(int id, double *t)
 /* ---------------------------------------------------------------------- */
@@ -863,7 +863,7 @@ int RM_SetPoreVolumeZero(int id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 int RM_SetPressure(int id, double *t)
 /* ---------------------------------------------------------------------- */

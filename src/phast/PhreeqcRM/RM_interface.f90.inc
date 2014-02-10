@@ -294,11 +294,11 @@
             DOUBLE PRECISION, OPTIONAL :: t
         END FUNCTION RM_SetPoreVolume 
         
-        INTEGER FUNCTION RM_SetPoreVolumeZero(id, t)
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION, OPTIONAL :: t
-        END FUNCTION RM_SetPoreVolumeZero
+        !INTEGER FUNCTION RM_SetPoreVolumeZero(id, t)
+        !    IMPLICIT NONE
+        !    INTEGER :: id
+        !    DOUBLE PRECISION, OPTIONAL :: t
+        !END FUNCTION RM_SetPoreVolumeZero
 
         INTEGER FUNCTION RM_SetPressure(id, t)   
             IMPLICIT NONE

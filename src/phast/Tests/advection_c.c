@@ -73,9 +73,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		status = RM_SetCellVolume(id, cell_vol);
     
 		// Set initial pore volume
-		pv0 = (double *) malloc((size_t) (nxyz * sizeof(double)));
-		for (i = 0; i < nxyz; i++) pv0[i] = 0.2;
-		status = RM_SetPoreVolumeZero(id, pv0);
+		//pv0 = (double *) malloc((size_t) (nxyz * sizeof(double)));
+		//for (i = 0; i < nxyz; i++) pv0[i] = 0.2;
+		//status = RM_SetPoreVolumeZero(id, pv0);
     
 		// Set current pore volume
 		pv = (double *) malloc((size_t) (nxyz * sizeof(double)));

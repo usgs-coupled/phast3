@@ -76,9 +76,9 @@
     status = RM_SetCellVolume(id, cell_vol(1))
     
     ! Set initial pore volume
-    allocate(pv0(nxyz))
-    pv0 = 0.2
-    status = RM_SetPoreVolumeZero(id, pv0(1))
+    !allocate(pv0(nxyz))
+    !pv0 = 0.2
+    !status = RM_SetPoreVolumeZero(id, pv0(1))
     
     ! Set current pore volume
     allocate(pv(nxyz))
