@@ -827,6 +827,18 @@ RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie))
 	}
 	return IRM_BADINSTANCE;
 }
+/* ---------------------------------------------------------------------- */
+int
+RM_SetMpiWorkerCallbackCookie(int id, void *cookie)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->SetMpiWorkerCallbackCookie(cookie);
+	}
+	return IRM_BADINSTANCE;
+}
 
 /* ---------------------------------------------------------------------- */
 int 

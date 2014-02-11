@@ -836,8 +836,6 @@ RM_SetCellVolume(int *id, double *t)
 {
 	// Sets the pore volume of a cell, can be an absolute volume
 	// or a relative volume
-	// porosity is determined by the ratio of the initial pore volume
-	// (RM_SetPoreVolumeZero) to the cell volume
 	// size of t is number of grid nodes
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
@@ -986,25 +984,6 @@ IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	// Sets the pore volume at the beginning of the simulation
-	// it is used with the cell volume to calculate porosity
-	// and porosity is used to determine the moles of reactants
-	// in contact with water, depending on the values for
-	// RM_SetInputUnitsPPassemblage, etc
-	// size of t is the number of grid cells
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->SetPoreVolumeZero(t);
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetPressure(int *id, double *t)
 /* ---------------------------------------------------------------------- */
