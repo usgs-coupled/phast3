@@ -56,22 +56,6 @@ RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-void
-RM_convert_to_molal(int id, double *c, int n, int dim)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *  Converts data in c from mass fraction to molal
- *  Assumes c(dim, ncomps) and only first n rows are converted
- */
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Convert_to_molal(c, n, dim);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
 int RM_Create(int nxyz, int nthreads)
 /* ---------------------------------------------------------------------- */
 {

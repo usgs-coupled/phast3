@@ -12,13 +12,6 @@
             DOUBLE PRECISION, INTENT(in) :: tc, p_atm
         END FUNCTION RM_Concentrations2Utility  
         
-        SUBROUTINE RM_convert_to_molal(id, c, n, dim)
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION :: c
-            INTEGER :: n, dim
-        END SUBROUTINE RM_convert_to_molal  
-        
         INTEGER FUNCTION RM_Create(nxyz, nthreads) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: nxyz
@@ -72,6 +65,11 @@
             INTEGER, INTENT(in) :: id, num
             CHARACTER, INTENT(out) :: comp_name
         END FUNCTION RM_GetComponent 
+        
+        INTEGER FUNCTION RM_GetComponentCount(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetComponentCount 
 
         INTEGER FUNCTION RM_GetConcentrations(id, c)   
             IMPLICIT NONE

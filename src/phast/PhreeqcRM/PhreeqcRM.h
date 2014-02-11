@@ -130,7 +130,6 @@ public:
 
 
 	// TODO ///////////////////////////
-	void                                      Convert_to_molal(double *c, int n, int dim);
 	void                                      Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                                   int * solution_number, 
                                                   const std::string &prefix);
@@ -138,7 +137,8 @@ public:
 	// Getters 
 	const std::vector < std::vector <int> > & GetBackwardMapping(void) {return this->backward_mapping;}
 	std::vector<double> &                     GetCellVolume(void) {return this->cell_volume;}
-	const int                                 GetChemistryCellCount(void) const {return this->count_chemistry;}
+	int                                       GetChemistryCellCount(void) const {return this->count_chemistry;}
+	int                                       GetComponentCount(void) const {return (int) this->components.size();}
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
 	const std::string                         GetDatabaseFileName(void) const {return this->database_file_name;}
 	std::vector<double> &                     GetDensity(void); 

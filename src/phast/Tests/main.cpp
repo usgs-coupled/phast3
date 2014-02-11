@@ -54,9 +54,9 @@ int main(int argc, char* argv[])
 #endif
 
 	units_tester();
-	//advection_cpp();
-	//advection_f90();
-	//advection_c();
+	advection_cpp();
+	advection_f90();
+	advection_c();
 
 #if defined(USE_MPI)
 	MPI_Finalize();
