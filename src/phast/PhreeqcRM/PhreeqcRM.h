@@ -90,7 +90,7 @@ public:
 		                                           std::vector<double> t_in, std::vector<double> p_in);
 	IRM_RESULT                                CreateMapping(int *grid2chem = NULL);
 	void                                      DecodeError(int r);
-	IRM_RESULT                                DumpModule(bool dump_on = false, bool use_gz = false);
+	IRM_RESULT                                DumpModule(bool dump_on = false, bool append = false);
 	void                                      ErrorHandler(int result, const std::string &e_string);
 	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
 	int                                       FindComponents();

@@ -203,7 +203,7 @@ IRM_RESULT RM_Destroy(int *id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
+IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *append);
 /**
  *  Aborts reaction all modules and stops program execution. 
  *  @param id                   The instance id returned from @ref RM_Create (optional).
@@ -222,7 +222,7 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-int RM_ErrorHandler(int *id, int *result, const char * err_str = NULL, size_t l = 0);
+int RM_ErrorHandler(int *id, int *result, const char * err_str, size_t l = 0);
 /**
  *  Send an error message to the screen, output file, and log file. 
  *  @param str           String to be sent.
@@ -242,7 +242,7 @@ int RM_ErrorHandler(int *id, int *result, const char * err_str = NULL, size_t l 
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_ErrorMessage(int *id, const char *err_str, size_t l);
+IRM_RESULT RM_ErrorMessage(int *id, const char *err_str, size_t l = 0);
 /**
  *  Returns the number of items in the list of elements included in solutions and reactants in the IPhreeqcPhast workers.
  *  @param id            The instance id returned from @ref RM_Create.
@@ -477,7 +477,7 @@ IRM_RESULT RM_InitialPhreeqcCell2Module(int *id,
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_LoadDatabase(int *id, const char *db_name, size_t l);
+IRM_RESULT RM_LoadDatabase(int *id, const char *db_name, size_t l = 0);
 /**
  *  Send a message to the log file. 
  *  @param str           String to be sent.
@@ -497,7 +497,7 @@ IRM_RESULT RM_LoadDatabase(int *id, const char *db_name, size_t l);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_LogMessage(int * id, const char *str, size_t l);
+IRM_RESULT RM_LogMessage(int * id, const char *str, size_t l = 0);
 IRM_RESULT RM_MpiWorker(int * id);
 IRM_RESULT RM_MpiWorkerBreak(int * id);
 
@@ -520,7 +520,7 @@ IRM_RESULT RM_MpiWorkerBreak(int * id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_OpenFiles(int * id);
-IRM_RESULT RM_OutputMessage(int *id, const char * err_str, size_t l);
+IRM_RESULT RM_OutputMessage(int *id, const char * err_str, size_t l = 0);
 /**
  *  Transfer array of concentrations to the reaction module workers. 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -565,7 +565,7 @@ IRM_RESULT RM_RunCells(int *id);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility, const char *chem_name, size_t l);
+IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility, const char *chem_name, size_t l = 0);
 /**
  *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
  *  @param id            The instance id returned from @ref RM_Create.
@@ -590,7 +590,7 @@ IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string, size_t l);
+IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string, size_t l = 0);
 /**
  *  Send a message to the screen. 
  *  @param str           String to be sent to the screen.
@@ -608,14 +608,14 @@ IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utili
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_ScreenMessage(int *id, const char *str, size_t l);
+IRM_RESULT RM_ScreenMessage(int *id, const char *str, size_t l = 0);
 IRM_RESULT RM_SetCellVolume(int *id, double *t);
 IRM_RESULT RM_SetConcentrations(int *id, double *t);
 IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 IRM_RESULT RM_SetDensity(int *id, double *t);
-IRM_RESULT RM_SetDumpFileName(int *id, const char *dump_name, size_t l);
+IRM_RESULT RM_SetDumpFileName(int *id, const char *dump_name, size_t l = 0);
 IRM_RESULT RM_SetErrorHandlerMode(int *id, int *mode);
-IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix, size_t l);
+IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix, size_t l = 0);
 IRM_RESULT RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1));
 IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t);
 IRM_RESULT RM_SetPoreVolume(int *id, double *t);
@@ -656,7 +656,7 @@ IRM_RESULT RM_SetUnitsSurface(int *id, int *i);
  *  </CODE>
  *  @endhtmlonly
  */
-IRM_RESULT RM_WarningMessage(int *id, const char *warn_str, size_t l);
+IRM_RESULT RM_WarningMessage(int *id, const char *warn_str, size_t l = 0);
 void       RM_write_bc_raw(int *id, 
                 int *solution_list, 
                 int * bc_solution_count, 
