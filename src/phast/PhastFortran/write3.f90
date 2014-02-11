@@ -21,6 +21,13 @@ SUBROUTINE write3
   USE mcw_m
   USE mg3_m
   IMPLICIT NONE
+  INTERFACE
+      SUBROUTINE convert_to_moles(id, c, n)
+          IMPLICIT NONE 
+          DOUBLE PRECISION, INTENT(inout), DIMENSION(:,:) :: c
+          INTEGER, INTENT(in) :: id, n
+      END SUBROUTINE
+  END INTERFACE
   INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX
@@ -92,7 +99,7 @@ SUBROUTINE write3
                     c_mol(l,iis) = csbc(l,iis)              
                  END DO
               END DO
-              CALL RM_convert_to_molal(rm_id, c_mol(1,1), nsbc, nxyz)
+              CALL convert_to_moles(rm_id, c_mol, nsbc)
               CALL ldchar_bc(indx1_sbc, indx2_sbc, mxf_sbc, 1, csolmask, solmask, msbc)
               prthd=.FALSE.
               DO  l=1,nsbc
@@ -139,7 +146,7 @@ SUBROUTINE write3
 !!$     END IF
         IF(solute .AND. rdscbc) THEN
            lprnt1 = -1
-           ! CALL convert_to_molal(csbc, nsbc, nxyz)
+           !!! CALL convert_to_molal(csbc, nsbc, nxyz)
            CALL ldchar_bc(indx1_sbc, indx2_sbc, mxf_sbc, 1, csolmask, solmask, msbc)
            prthd=.FALSE.
            DO  l=1,nsbc
@@ -204,7 +211,7 @@ SUBROUTINE write3
                     c_mol_bc(ls,iis) = cfbc(ls,iis)
                  END DO
               END DO
-              CALL RM_convert_to_molal(rm_id, c_mol_bc(1,1), nfbc_seg, nfbc_seg)
+              CALL convert_to_moles(rm_id, c_mol_bc, nfbc_seg)
               WRITE(fulp,2324) 'Specified Flux B.C.: Solute Component Data',dash,  &
                    'Segment','Cell','Associated Concentration',  &
                    'No.','No.','(mol/kg)', dash
@@ -273,7 +280,7 @@ SUBROUTINE write3
                     c_mol_bc(ls,iis) = clbc(ls,iis)
                  END DO
               END DO
-              CALL RM_convert_to_molal(rm_id, c_mol_bc(1,1), nlbc_seg, nlbc_seg)
+              CALL convert_to_moles(rm_id, c_mol_bc, nlbc_seg)
               WRITE(fulp,2324) 'Aquifer Leakage B.C.: Solute Component Data',  &
                    dash,  &
                    'Segment','Cell','Associated Concentration',  &
@@ -335,7 +342,7 @@ SUBROUTINE write3
                     c_mol_bc(ls,iis) = crbc(ls,iis)
                  END DO
               END DO
-              CALL RM_convert_to_molal(rm_id, c_mol_bc(1,1), nrbc_seg, nrbc_seg)
+              CALL convert_to_moles(rm_id, c_mol_bc, nrbc_seg)
               ! ... Load and print solution indices ****** not built yet for segments
 !!$           CALL ldchar_bc(indx1_rbc, indx2_rbc, mxf_rbc, 4, csolmask, solmask, mrbc)
 !!$           WRITE(fulp,2004) 'River leakage B.C.: Associated solution indices'

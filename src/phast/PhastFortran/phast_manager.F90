@@ -408,20 +408,7 @@ SUBROUTINE CreateRM
         status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
         ! Set components
-        status = set_components()
-#ifdef SKIP        
-        ns = RM_FindComponents(rm_id)
-        ALLOCATE(comp_name(ns),  & 
-        STAT = a_err)
-        IF (a_err /= 0) THEN
-            PRINT *, "Array allocation failed: phast_manager, point 0"  
-            STOP
-        ENDIF
-        DO i = 1, ns
-            comp_name(i) = ' '
-            status = RM_GetComponent(rm_id, i, comp_name(i))
-        ENDDO   
-#endif        
+        status = set_components()       
         status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
         status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
     ENDIF
@@ -688,4 +675,33 @@ INTEGER FUNCTION run_transport
 #endif 
     CALL TM_transport(rm_id, local_ns, nthreads)
     run_transport = 0
-END FUNCTION run_transport     
+END FUNCTION run_transport    
+    
+SUBROUTINE convert_to_moles(id, c, n)
+    IMPLICIT NONE 
+    INCLUDE "RM_interface.f90.inc"
+    DOUBLE PRECISION, INTENT(inout), DIMENSION(:,:) :: c
+    INTEGER, INTENT(in) :: id, n
+    DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: gfw
+    INTEGER :: a_err, i, k, ncomps, status
+    
+    ! converts c from kg/kgs to mol/kgs
+    ncomps = RM_GetComponentCount(id)
+    if (ncomps > 0) then
+        ALLOCATE (gfw(ncomps),  &
+        STAT = a_err)
+        IF (a_err /= 0) THEN  
+            PRINT *, "Array allocation failed: convert_to_moles"
+            STOP
+        ENDIF 
+        status = RM_GetGfw(id, gfw(1))
+        DO i = 1, n        
+            DO k = 1, ncomps    
+                ! kg/kgs * 1000 / gfw = mol/kgs
+                c(i,k) = c(i,k) * 1000.0 / gfw(k)
+            ENDDO
+        ENDDO
+        DEALLOCATE (gfw)
+    ENDIF
+    
+END SUBROUTINE convert_to_moles  

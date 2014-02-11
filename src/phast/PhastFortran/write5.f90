@@ -23,6 +23,13 @@ SUBROUTINE write5
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE print_control_mod
   IMPLICIT NONE
+  INTERFACE
+      SUBROUTINE convert_to_moles(id, c, n)
+          IMPLICIT NONE 
+          DOUBLE PRECISION, INTENT(inout), DIMENSION(:,:) :: c
+          INTEGER, INTENT(in) :: id, n
+      END SUBROUTINE
+  END INTERFACE 
   INCLUDE 'IPhreeqc.f90.inc'
   INCLUDE "RM_interface.f90.inc"
   INCLUDE 'ifwr.inc'
@@ -52,6 +59,7 @@ SUBROUTINE write5
   INTEGER :: iphreeqc_id, vtype
   DOUBLE PRECISION :: tc, p_atm
   DOUBLE PRECISION :: c_well(100)
+  DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: dcmax_temp
   !     ------------------------------------------------------------------
   !...
   ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &
@@ -75,9 +83,17 @@ SUBROUTINE write5
   END IF
   IF(itime == 0) RETURN     ! ... error exit; no results to print
   IF (solute) THEN
-     CALL RM_convert_to_molal(rm_id, dcmax(1), 1, 1)
+     allocate (dcmax_temp(1,ns))
+     do i = 1, ns
+         dcmax_temp(1,i) = dcmax(i)
+     enddo
+     CALL convert_to_moles(rm_id, dcmax_temp, 1)
+     do i = 1, ns
+         dcmax(i) = dcmax_temp(1,i)
+     enddo   
+     deallocate (dcmax_temp)
      c_mol = c
-     CALL RM_convert_to_molal(rm_id, c_mol(1,1), nxyz, nxyz)
+     CALL convert_to_moles(rm_id, c_mol, nxyz)
   ENDIF
 !!$  !  WRITE(*,3001) 'Finished time step no. ',itime,'; Time '//dots(1:30),cnvtmi*time,'('//TRIM(unittm)//')'
 !!$  !3001 FORMAT(tr5,a,I6,a,1PG12.3,tr2,a)
@@ -474,7 +490,7 @@ SUBROUTINE write5
      ENDIF
      IF (solute) THEN
         cwkt_mol = cwkt
-        CALL RM_convert_to_molal(rm_id, cwkt_mol(1,1), nwel, nwel)
+        CALL convert_to_moles(rm_id, cwkt_mol, nwel)
      ENDIF
      IF(prwel) THEN
         ! ... Well summary tables

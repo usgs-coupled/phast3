@@ -1374,30 +1374,6 @@ PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<doubl
 }
 
 /* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::Convert_to_molal(double *c, int n, int dim)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *  convert c from mass fraction to moles
- *  The c array is dimensioned c(dim,ns).
- *  n is the number of rows that are used.
- *  In f90 dim = n and is often the number of
- *    cells in the domain.
- */
-	int i;
-	for (i = 0; i < n; i++)
-	{
-		double *ptr = &c[i];
-		size_t k;
-		for (k = 0; k < this->components.size(); k++)
-		{	
-			ptr[k * dim] *= 1000.0/this->gfw[k];
-		}
-	}
-}
-
-/* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::CreateMapping(int *t)
 /* ---------------------------------------------------------------------- */

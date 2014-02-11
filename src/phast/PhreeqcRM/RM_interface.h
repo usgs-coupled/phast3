@@ -11,8 +11,7 @@
 #if defined(FC_FUNC_)
 // Called from Fortran or C++
 #define RM_CloseFiles                      FC_FUNC_ (rm_closefiles,                    RM_CLOSEFILES)  
-#define RM_Concentrations2Utility          FC_FUNC_ (rm_concentrations2utility,        RM_CONCENTRATIONS2UTILITY)  
-#define RM_convert_to_molal                FC_FUNC_ (rm_convert_to_molal,              RM_CONVERT_TO_MOLAL)   
+#define RM_Concentrations2Utility          FC_FUNC_ (rm_concentrations2utility,        RM_CONCENTRATIONS2UTILITY)    
 #define RM_Create                          FC_FUNC_ (rm_create,                        RM_CREATE)
 #define RM_CreateMapping                   FC_FUNC_ (rm_createmapping,                 RM_CREATEMAPPING)
 #define RM_DecodeError                     FC_FUNC_ (rm_decodeerror,                   RM_DECODEERROR)
@@ -23,6 +22,7 @@
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
 #define RM_GetChemistryCellCount           FC_FUNC_ (rm_getchemistrycellcount,         RM_GETNCHEMISTRYCELLCOUNT)
 #define RM_GetComponent                    FC_FUNC_ (rm_getcomponent,                  RM_GETCOMPONENT)
+#define RM_GetComponentCount               FC_FUNC_ (rm_getcomponentcount,             RM_GETCOMPONENTCOUNT)
 #define RM_GetConcentrations               FC_FUNC_ (rm_getconcentrations,             RM_GETCONCENTRATIONS)
 #define RM_GetDensity                      FC_FUNC_ (rm_getdensity,                    RM_GETDENSITY)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
@@ -109,7 +109,6 @@ extern "C" {
  *  @endhtmlonly
  */
 IRM_RESULT RM_CloseFiles(int *id);
-void       RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int        RM_Concentrations2Utility(int *id, double *c, int *n, double *tc, double *p_atm);
 /**
  *  Creates a reaction module. 
@@ -312,6 +311,7 @@ int        RM_GetChemistryCellCount(int *id);
  *  @endhtmlonly
  */
 IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1);
+int RM_GetComponentCount(int * id);
 /**
  *  Transfer concentrations from the module workers to the concentration an array of concentrations (c). 
  *  @param id                   The instance id returned from @ref RM_Create.

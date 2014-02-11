@@ -21,7 +21,6 @@
     integer :: status
     integer :: partition_uz_solids
     double precision, dimension(:), allocatable   :: cell_vol
-    double precision, dimension(:), allocatable   :: pv0
     double precision, dimension(:), allocatable   :: pv
     double precision, dimension(:), allocatable   :: sat
     integer,          dimension(:), allocatable   :: print_chemistry_mask
@@ -244,7 +243,6 @@
     status = RM_DumpModule(id, dump_on, append)    ! second argument: gz disabled unless compiled with #define USE_GZ
     
     deallocate(cell_vol);
-    deallocate(pv0);
     deallocate(pv);
     deallocate(sat);
     deallocate(print_chemistry_mask);

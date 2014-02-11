@@ -21,6 +21,13 @@ SUBROUTINE write2_2
   USE mg2_m
   USE phys_const
   IMPLICIT NONE
+  INTERFACE
+      SUBROUTINE convert_to_moles(id, c, n)
+          IMPLICIT NONE 
+          DOUBLE PRECISION, INTENT(inout), DIMENSION(:,:) :: c
+          INTEGER, INTENT(in) :: id, n
+      END SUBROUTINE
+  END INTERFACE 
   INCLUDE 'IPhreeqc.f90.inc'
   INCLUDE 'RM_interface.f90.inc'
   INCLUDE 'ifwr.inc'
@@ -69,7 +76,7 @@ SUBROUTINE write2_2
   nr = nx
   ! ... Load and compute molal concentrations
   c_mol = c
-  CALL RM_convert_to_molal(rm_id, c_mol(1,1), nxyz, nxyz)
+  CALL convert_to_moles(rm_id, c_mol, nxyz)
   IF(nwel > 0) THEN
      nthreads = RM_GetNThreads(rm_id)
      iphreeqc_id = RM_GetIPhreeqcId(rm_id, nthreads + 1)

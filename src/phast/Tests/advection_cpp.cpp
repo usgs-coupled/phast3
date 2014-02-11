@@ -346,7 +346,7 @@ int units_tester()
 		util_ptr->SetOutputFileName("Units_utility.out");
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
-
+		
 	}
 	catch (PhreeqcRMStop)
 	{
