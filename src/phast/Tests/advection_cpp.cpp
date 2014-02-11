@@ -42,11 +42,6 @@ int advection_cpp()
 		cell_vol.resize(nxyz, 1);
 		status = phreeqc_rm.SetCellVolume(cell_vol.data());
 
-		// Set initial pore volume
-		//std::vector<double> pv0;
-		//pv0.resize(nxyz, 0.2);
-		//status = phreeqc_rm.SetPoreVolumeZero(pv0.data());
-
 		// Set current pore volume
 		std::vector<double> pv;
 		pv.resize(nxyz, 0.2);
@@ -283,11 +278,6 @@ int units_tester()
 		std::vector<double> cell_vol;
 		cell_vol.resize(nxyz, 1);
 		status = phreeqc_rm.SetCellVolume(cell_vol.data());
-
-		// Set initial pore volume
-		//std::vector<double> pv0;
-		//pv0.resize(nxyz, 0.2);
-		//status = phreeqc_rm.SetPoreVolumeZero(pv0.data());
 
 		// Set current pore volume
 		std::vector<double> pv;

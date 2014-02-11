@@ -146,6 +146,7 @@ public:
 	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
 	const std::string                         GetFilePrefix(void) const {return this->file_prefix;}
 	const std::vector < int > &               GetForwardMapping(void) {return this->forward_mapping;}
+	const std::vector < double > &            GetGfw(void) {return this->gfw;}
 	const int                                 GetGridCellCount(void) const {return this->nxyz;}
 	int                                       GetInputUnitsSolution(void) {return this->input_units_Solution;}
 	int                                       GetInputUnitsPPassemblage(void) {return this->input_units_PPassemblage;}
