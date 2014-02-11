@@ -90,6 +90,12 @@
             CHARACTER, INTENT(out) :: prefix
         END FUNCTION RM_GetFilePrefix
 
+        INTEGER FUNCTION RM_GetGfw(id, gfw)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, INTENT(out) :: gfw
+        END FUNCTION RM_GetGfw 
+
         INTEGER FUNCTION RM_GetGridCellCount(id)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id

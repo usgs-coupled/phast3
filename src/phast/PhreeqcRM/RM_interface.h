@@ -26,6 +26,7 @@
 #define RM_GetConcentrations               FC_FUNC_ (rm_getconcentrations,             RM_GETCONCENTRATIONS)
 #define RM_GetDensity                      FC_FUNC_ (rm_getdensity,                    RM_GETDENSITY)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
+#define RM_GetGfw                          FC_FUNC_ (rm_getgfw,                        RM_GETGFW)
 #define RM_GetGridCellCount                FC_FUNC_ (rm_getgridcellcount,              RM_GETGRIDCELLCOUNT)
 #define RM_GetIPhreeqcId                   FC_FUNC_ (rm_getiphreeqcid,                 RM_GETIPHREEQCID)
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
@@ -337,6 +338,7 @@ IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1);
 IRM_RESULT RM_GetConcentrations(int *id, double *c);
 IRM_RESULT RM_GetDensity(int *id, double *density);
 IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, size_t l);
+IRM_RESULT RM_GetGfw(int *id, double * gfw);
 /**
  *  Returns the number of grid cells in the user's model.
  *  @param id            The instance id returned from @ref RM_Create.

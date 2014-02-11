@@ -274,6 +274,26 @@ RM_GetFilePrefix(int id, char *prefix, long l)
 }
 
 /* ---------------------------------------------------------------------- */
+int
+RM_GetGfw(int id, double * gfw)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves gram formula weights
+	// size of d must be the number of components
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		size_t ncomps = Reaction_module_ptr->GetComponents().size();
+		if (ncomps > 0)
+		{
+			memcpy(gfw, Reaction_module_ptr->GetGfw().data(), ncomps * sizeof(double));
+			return IRM_OK;
+		}
+		return IRM_FAIL;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
 int RM_GetGridCellCount(int id)
 /* ---------------------------------------------------------------------- */
 {
@@ -863,19 +883,6 @@ int RM_SetPoreVolume(int id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int RM_SetPoreVolumeZero(int id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->SetPoreVolumeZero(t);
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int RM_SetPressure(int id, double *t)
 /* ---------------------------------------------------------------------- */

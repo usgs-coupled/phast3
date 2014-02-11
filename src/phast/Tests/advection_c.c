@@ -16,7 +16,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int id;
 		int status;
 		double * cell_vol;
-		double * pv0;
 		double * pv;
 		double * sat;
 		int * print_chemistry_mask;
@@ -71,11 +70,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		cell_vol = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		for (i = 0; i < nxyz; i++) cell_vol[i] = 1.0;
 		status = RM_SetCellVolume(id, cell_vol);
-    
-		// Set initial pore volume
-		//pv0 = (double *) malloc((size_t) (nxyz * sizeof(double)));
-		//for (i = 0; i < nxyz; i++) pv0[i] = 0.2;
-		//status = RM_SetPoreVolumeZero(id, pv0);
     
 		// Set current pore volume
 		pv = (double *) malloc((size_t) (nxyz * sizeof(double)));
@@ -280,7 +274,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
 		// free space
 		free(cell_vol);
-		free(pv0);
 		free(pv);
 		free(sat);
 		free(print_chemistry_mask);

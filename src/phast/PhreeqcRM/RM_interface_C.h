@@ -201,6 +201,7 @@ int RM_GetComponent(int id, int num, char *chem_name, size_t l);
 int RM_GetConcentrations(int id, double *c);
 int RM_GetDensity(int id, double *density);
 int RM_GetFilePrefix(int id, char *prefix, size_t l);
+int RM_GetGfw(int id, double * gfw);
 /**
  *  Returns the number of grid cells in the user's model.
  *  @param id            The instance id returned from @ref RM_Create.
