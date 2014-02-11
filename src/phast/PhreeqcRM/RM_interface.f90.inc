@@ -267,11 +267,11 @@
             INTEGER, OPTIONAL, INTENT(in) :: i
         END FUNCTION RM_SetErrorHandlerMode        
 		
-        INTEGER FUNCTION RM_SetMpiWorkerCallback(ID, COOKIE)
-			INTEGER(KIND=4),  INTENT(IN) :: ID
+        INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
+			INTEGER(KIND=4),  INTENT(IN) :: id
 			INTERFACE
-			  INTEGER FUNCTION cookie(x1)
-				INTEGER, INTENT(in) :: x1
+			  INTEGER FUNCTION fcn(message)
+				INTEGER, INTENT(in) :: message
 			  END FUNCTION 
 			END INTERFACE
         END FUNCTION RM_SetMpiWorkerCallback
@@ -293,12 +293,6 @@
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
         END FUNCTION RM_SetPoreVolume 
-        
-        !INTEGER FUNCTION RM_SetPoreVolumeZero(id, t)
-        !    IMPLICIT NONE
-        !    INTEGER :: id
-        !    DOUBLE PRECISION, OPTIONAL :: t
-        !END FUNCTION RM_SetPoreVolumeZero
 
         INTEGER FUNCTION RM_SetPressure(id, t)   
             IMPLICIT NONE

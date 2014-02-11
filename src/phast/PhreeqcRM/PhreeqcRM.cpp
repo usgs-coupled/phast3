@@ -269,7 +269,7 @@ if( numCPU < 1 )
 
 	mpi_worker_callback_fortran = NULL;
 	mpi_worker_callback_c = NULL;
-	mpi_worker_c_cookie = NULL;
+	mpi_worker_callback_cookie = NULL;
 }
 PhreeqcRM::~PhreeqcRM(void)
 {
@@ -3919,10 +3919,6 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
 				return_value = this->SetPoreVolume();
 				break;
-			//case METHOD_SETPOREVOLUMEZERO:
-			//	if (debug_worker) std::cerr << "METHOD_SETPOREVOLUMEZERO" << std::endl;
-			//	return_value = this->SetPoreVolumeZero();
-			//	break;
 			case METHOD_SETPRESSURE:
 				if (debug_worker) std::cerr << "METHOD_SETPRESSURE" << std::endl;
 				return_value = this->SetPressure();
@@ -4003,7 +3999,7 @@ PhreeqcRM::MpiWorker()
 				}
 				if (this->mpi_worker_callback_c)
 				{
-					int return_int = mpi_worker_callback_c(&method, this->mpi_worker_c_cookie);
+					int return_int = mpi_worker_callback_c(&method, this->mpi_worker_callback_cookie);
 					if (return_int != 0)
 					{
 						return_value = IRM_FAIL;
@@ -6541,6 +6537,14 @@ PhreeqcRM::SetMpiWorkerCallbackC(int (*fcn)(int *method, void *cookie))
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
+PhreeqcRM::SetMpiWorkerCallbackCookie( void *cookie)
+/* ---------------------------------------------------------------------- */
+{
+	this->mpi_worker_callback_cookie = cookie;
+	return IRM_OK;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
 PhreeqcRM::SetMpiWorkerCallbackFortran(int (*fcn)(int *method))
 /* ---------------------------------------------------------------------- */
 {
@@ -6605,43 +6609,6 @@ PhreeqcRM::SetPoreVolume(double *t)
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetPoreVolume");
 }
-///* ---------------------------------------------------------------------- */
-//IRM_RESULT
-//PhreeqcRM::SetPoreVolumeZero(double *t)
-///* ---------------------------------------------------------------------- */
-//{
-//#ifdef USE_MPI
-//	if (this->mpi_myself == 0)
-//	{
-//		int method = METHOD_SETPOREVOLUMEZERO;
-//		MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
-//	}
-//#endif
-//	IRM_RESULT return_value = IRM_OK;
-//	if ((int) this->pore_volume_zero.size() < this->nxyz)
-//	{
-//		this->pore_volume_zero.resize(this->nxyz);
-//	}
-//	try
-//	{
-//		if (mpi_myself == 0)
-//		{
-//			if (t == NULL) 
-//			{
-//				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetPoreVolumeZero");
-//			}
-//			memcpy(this->pore_volume_zero.data(), t, (size_t) (this->nxyz * sizeof(double)));
-//		}
-//	}
-//	catch (...)
-//	{
-//		return_value = IRM_INVALIDARG;
-//	}
-//#ifdef USE_MPI
-//	MPI_Bcast(pore_volume_zero.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-//#endif
-//	return this->ReturnHandler(return_value, "PhreeqcRM::SetPoreVolumeZero");
-//}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetPressure(double *t)

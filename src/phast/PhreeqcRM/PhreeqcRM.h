@@ -161,7 +161,6 @@ public:
 	int                                       GetNthSelectedOutputUserNumber(int *i);
 	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
-	//std::vector<double> &                     GetPoreVolumeZero(void) {return this->pore_volume_zero;} 
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
 	std::vector<int> &                        GetPrintChemistryMask (void) {return this->print_chem_mask;}
 	const std::vector <bool> &                GetPrintChemistryOn(void) const {return this->print_chemistry_on;}  
@@ -192,10 +191,10 @@ public:
 	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL); 
 	IRM_RESULT								  SetMpiWorker(int (*fcn)(int *method, void *cookie));
 	IRM_RESULT								  SetMpiWorkerCallbackC(int (*fcn)(int *method, void * cookie));
+	IRM_RESULT								  SetMpiWorkerCallbackCookie(void * cookie);
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
 	IRM_RESULT                                SetPartitionUZSolids(int t = -1);
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
-	IRM_RESULT                                SetPoreVolumeZero(double * t = NULL);
 	IRM_RESULT                                SetPrintChemistryMask(int * t = NULL);
 	IRM_RESULT                                SetPrintChemistryOn(bool worker = false, bool ip = false, bool utility = false);
 	IRM_RESULT                                SetPressure(double * t = NULL);  
@@ -309,7 +308,7 @@ protected:
 	// mpi worker callback
 	int (*mpi_worker_callback_fortran) (int *method);
 	int (*mpi_worker_callback_c) (int *method, void *cookie);
-	void *mpi_worker_c_cookie;
+	void *mpi_worker_callback_cookie;
 
 private:
 	friend class RM_interface;

@@ -64,7 +64,6 @@
 #define RM_SetMpiWorkerCallback            FC_FUNC_ (rm_setmpiworkercallback,          RM_SETMPIWORKERCALLBACK)
 #define RM_SetPartitionUZSolids            FC_FUNC_ (rm_setpartitionuzsolids,          RM_SETPARTITIONUZSOLIDS)
 #define RM_SetPoreVolume                   FC_FUNC_ (rm_setporevolume,                 RM_SETPOREVOLUME)
-//#define RM_SetPoreVolumeZero               FC_FUNC_ (rm_setporevolumezero,             RM_SETPOREVOLUMEZERO)
 #define RM_SetPrintChemistryMask           FC_FUNC_ (rm_setprintchemistrymask,         RM_SETPRINTCHEMISTRYMASK)
 #define RM_SetPrintChemistryOn             FC_FUNC_ (rm_setprintchemistryon,           RM_SETPRINTCHEMISTRYON)
 #define RM_SetPressure                     FC_FUNC_ (rm_setpressure,                   RM_SETPRESSURE)
@@ -618,7 +617,6 @@ IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix, size_t l);
 IRM_RESULT RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1));
 IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t);
 IRM_RESULT RM_SetPoreVolume(int *id, double *t);
-//IRM_RESULT RM_SetPoreVolumeZero(int *id, double *t);
 IRM_RESULT RM_SetPrintChemistryOn(int *id, int *worker, int *ip, int *utility);
 IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t);
 IRM_RESULT RM_SetPressure(int *id, double *t);
