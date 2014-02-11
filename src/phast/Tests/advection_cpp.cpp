@@ -264,7 +264,7 @@ int units_tester()
 		// Create reaction module
 		PhreeqcRM phreeqc_rm(nxyz, nthreads);
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // throw exception on error
-		status = phreeqc_rm.SetFilePrefix("Units_iphreeqc");
+		status = phreeqc_rm.SetFilePrefix("Units_InitialPhreeqc_1");
 		if (phreeqc_rm.GetMpiMyself() == 0)
 		{
 			phreeqc_rm.OpenFiles();
@@ -272,12 +272,12 @@ int units_tester()
 
 		// Set concentration units
 		status = phreeqc_rm.SetUnitsSolution(1);      // 1, mg/L; 2, mol/L; 3, kg/kgs
-		status = phreeqc_rm.SetUnitsPPassemblage(1);  // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsExchange(1);      // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsSurface(1);       // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsGasPhase(1);      // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsSSassemblage(1);  // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsKinetics(1);      // 1, mol/L; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsPPassemblage(2);  // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+		status = phreeqc_rm.SetUnitsExchange(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+		status = phreeqc_rm.SetUnitsSurface(1);       // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+		status = phreeqc_rm.SetUnitsGasPhase(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+		status = phreeqc_rm.SetUnitsSSassemblage(1);  // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+		status = phreeqc_rm.SetUnitsKinetics(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 
 		// Set cell volume
 		std::vector<double> cell_vol;
@@ -300,7 +300,7 @@ int units_tester()
 		status = phreeqc_rm.SetSaturation(sat.data());
 
 		// Set printing of chemistry file
-		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
+		status = phreeqc_rm.SetPrintChemistryOn(true, true, false); // workers, initial_phreeqc, utility
 
 		// Load database
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
@@ -312,7 +312,7 @@ int units_tester()
 		// mixture for a well
 		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "units.pqi");
 
-		status = phreeqc_rm.SetFilePrefix("Units_dummy");
+		status = phreeqc_rm.SetFilePrefix("Units_InitialPhreeqc_2");
 		if (phreeqc_rm.GetMpiMyself() == 0)
 		{
 			phreeqc_rm.OpenFiles();
@@ -333,6 +333,14 @@ int units_tester()
 		// Retrieve concentrations
 		std::vector<double> c;
 		c.resize(nxyz * components.size());
+		status = phreeqc_rm.SetFilePrefix("Units_Worker");
+		if (phreeqc_rm.GetMpiMyself() == 0)
+		{
+			phreeqc_rm.OpenFiles();
+		}
+		std::vector < int > print_mask;
+		print_mask.resize(3, 1);
+		phreeqc_rm.SetPrintChemistryMask(print_mask.data());
 		status = phreeqc_rm.RunCells();
 		status = phreeqc_rm.GetConcentrations(c.data());
 
