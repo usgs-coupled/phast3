@@ -597,12 +597,15 @@ PhreeqcRM::CellInitialize(
 	{
 		cxxMix mx;
 		// Account for saturation of cell
-		double sat = 1.0;
-		if (saturation[i] > 0) 
-			sat = saturation[i];
-		mx.Add(n_old1, f1 * sat);
+		double current_v = phreeqc_bin.Get_Solution(n_old1)->Get_soln_vol();
+		double v = f1 * cell_porosity_local * saturation[i] / current_v;
+		mx.Add(n_old1, v);
 		if (n_old2 >= 0)
-			mx.Add(n_old2, (1 - f1) * sat);
+		{
+			current_v = phreeqc_bin.Get_Solution(n_old2)->Get_soln_vol();
+			v = (1.0 - f1) * cell_porosity_local * saturation[i] / current_v;
+			mx.Add(n_old2, v);
+		}
 		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
 		initial_bin.Set_Solution(n_user_new, &cxxsoln);
 	}
@@ -3457,6 +3460,7 @@ PhreeqcRM::InitialPhreeqc2Module(
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Module");
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numbers_in)
@@ -3548,6 +3552,174 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 				}
 			}
 #endif
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqcCell2Module");
+}
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numbers_in)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	 *      Routine finds the last solution in InitialPhreeqc, equilibrates the cell,
+	 *      and copies result to list of cell numbers in the module. 
+	 */
+	IRM_RESULT return_value = IRM_OK;
+	if (this->mpi_myself == 0)
+	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_INITIALPHREEQC2MODULE;
+			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+#endif
+		// determine last solution number
+		if (cell < 0)
+		{
+			int next = this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->next_user_number(Keywords::KEY_SOLUTION);
+			if (next != 0)
+			{
+				cell = next - 1;
+			}
+		}
+		else
+		{
+			cxxSolution *soln = this->GetWorkers()[this->nthreads]->Get_solution(cell);
+			if (soln == NULL)
+				cell = -1;
+		}
+	}
+#ifdef USE_MPI	
+	MPI_Bcast(&cell, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+	// cell not found
+	if (cell < 0)
+	{
+		return_value = IRM_INVALIDARG;
+		return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqcCell2Module");
+	}
+	std::vector< int > cell_numbers;
+	if (this->mpi_myself == 0)
+	{
+		cell_numbers = cell_numbers_in;
+	}
+	// transfer the cell to domain
+#ifdef USE_MPI
+	int n_cells;
+	if (this->mpi_myself == 0)
+	{
+		n_cells = (int) cell_numbers.size();
+	}
+	MPI_Bcast(&n_cells, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	cell_numbers.resize(n_cells);
+	MPI_Bcast((void *) cell_numbers.data(), n_cells, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+	try
+	{
+		std::ostringstream in;
+		in << "RUN_CELLS; -cell " << cell << "; -time_step 0\n";
+		IRM_RESULT status = this->RunString(0, 1, 0, in.str().c_str());
+		this->ErrorHandler(status, "RunString");
+
+		for (size_t i = 0; i < cell_numbers.size(); i++)
+		{
+#ifdef USE_MPI
+			int n = this->mpi_myself;
+			if (cell_numbers[i] >= start_cell[n] && cell_numbers[i] <= end_cell[n])
+			{
+				{
+#else				
+			for (size_t n = 0; n < nthreads; n++)
+			{
+				if (cell_numbers[i] >= start_cell[n] && cell_numbers[i] <= end_cell[n])
+				{
+#endif
+					cxxStorageBin cell_bin;
+					this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(cell_bin, cell);
+					cell_bin.Remove_Mix(cell);
+					cell_bin.Remove_Reaction(cell);
+					cell_bin.Remove_Temperature(cell);
+					cell_bin.Remove_Pressure(cell);
+					
+					double cell_porosity_local = this->pore_volume[i] / this->cell_volume[i];
+					// solution
+					{
+						cxxMix mx;
+						double current_v = cell_bin.Get_Solution(cell)->Get_soln_vol();
+						double v = cell_porosity_local * saturation[i] / current_v;
+						mx.Add((int) cell, v);
+						cxxSolution cxxsoln(cell_bin.Get_Solutions(), mx, cell_numbers[i]);
+						cell_bin.Set_Solution(cell_numbers[i], &cxxsoln);
+					}
+
+					// for solids
+					std::vector < double > porosity_factor;
+					porosity_factor.push_back(1.0);                          // no adjustment, per liter of cell
+					porosity_factor.push_back(cell_porosity_local);          // per liter of water
+					porosity_factor.push_back(1.0 - cell_porosity_local);    // per liter of rock
+					// pp_assemblage
+					if (cell_bin.Get_PPassemblages().find(cell) != cell_bin.Get_PPassemblages().end())
+					{
+						cxxMix mx;
+						mx.Add(cell, porosity_factor[this->input_units_PPassemblage]);
+						cxxPPassemblage cxxentity(cell_bin.Get_PPassemblages(), mx, cell_numbers[i]);
+						cell_bin.Set_PPassemblage(cell_numbers[i], &cxxentity);
+					}
+					// exchange
+					if (cell_bin.Get_Exchangers().find(cell) != cell_bin.Get_Exchangers().end())
+					{
+						cxxMix mx;
+						mx.Add(cell, porosity_factor[this->input_units_Exchange]);
+						cxxExchange cxxentity(cell_bin.Get_Exchangers(), mx, cell_numbers[i]);
+						cell_bin.Set_Exchange(cell_numbers[i], &cxxentity);
+					}
+					// surface assemblage
+					if (cell_bin.Get_Surfaces().find(cell) != cell_bin.Get_Surfaces().end())
+					{
+						cxxMix mx;
+						mx.Add(cell, porosity_factor[this->input_units_Surface]);
+						cxxSurface cxxentity(cell_bin.Get_Surfaces(), mx, cell_numbers[i]);
+						cell_bin.Set_Surface(cell_numbers[i], &cxxentity);
+					}
+					// gas phase
+					if (cell_bin.Get_GasPhases().find(cell) != cell_bin.Get_GasPhases().end())
+					{
+						cxxMix mx;
+						mx.Add(cell, porosity_factor[this->input_units_GasPhase]);
+						cxxGasPhase cxxentity(cell_bin.Get_GasPhases(), mx, cell_numbers[i]);
+						cell_bin.Set_GasPhase(cell_numbers[i], &cxxentity);
+					}
+					// solid solution
+					if (cell_bin.Get_SSassemblages().find(cell) != cell_bin.Get_SSassemblages().end())
+					{
+						cxxMix mx;
+						mx.Add(cell, porosity_factor[this->input_units_SSassemblage]);
+						cxxSSassemblage cxxentity(cell_bin.Get_SSassemblages(), mx, cell_numbers[i]);
+						cell_bin.Set_SSassemblage(cell_numbers[i], &cxxentity);
+					}
+					// solid solution
+					if (cell_bin.Get_Kinetics().find(cell) != cell_bin.Get_Kinetics().end())
+					{
+						cxxMix mx;
+						mx.Add(cell, porosity_factor[this->input_units_Kinetics]);
+						cxxKinetics cxxentity(cell_bin.Get_Kinetics(), mx, cell_numbers[i]);
+						cell_bin.Set_Kinetics(cell_numbers[i], &cxxentity);
+					}
+					
+#ifdef USE_MPI
+					this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, cell_numbers[i]);
+#else
+					this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, cell_numbers[i]);
+#endif
+				}
+			}
 		}
 	}
 	catch (...)

@@ -282,12 +282,12 @@ protected:
 	bool rebalance_by_cell;                 // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
 	int input_units_Solution;               // 1 mg/L, 2 mmol/L, 3 kg/kgs
-	int input_units_PPassemblage;           // cell 0, water 1, rock 2
-	int input_units_Exchange;               // cell 0, water 1, rock 2
-	int input_units_Surface;                // cell 0, water 1, rock 2
-	int input_units_GasPhase;               // cell 0, water 1, rock 2
-	int input_units_SSassemblage;           // cell 0, water 1, rock 2
-	int input_units_Kinetics;               // cell 0, water 1, rock 2
+	int input_units_PPassemblage;           // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	int input_units_Exchange;               // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	int input_units_Surface;                // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	int input_units_GasPhase;               // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	int input_units_SSassemblage;           // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	int input_units_Kinetics;               // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 	std::vector <int> forward_mapping;					// mapping from nxyz cells to count_chem chemistry cells
 	std::vector <std::vector <int> > backward_mapping;	// mapping from count_chem chemistry cells to nxyz cells 
 
