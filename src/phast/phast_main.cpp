@@ -24,7 +24,7 @@ extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);
 #include <windows.h>
 #include "phrqtype.h"
 #include "PhreeqcRM.h"
-#include "RM_interface.h"
+#include "RM_interface_F.h"
 
 extern LDBLE rate_sim_time_end;
 extern LDBLE rate_cnvtmi;

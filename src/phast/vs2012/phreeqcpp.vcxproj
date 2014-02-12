@@ -391,7 +391,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     <ClCompile Include="..\KDtree\kdtree2.cpp" />
     <ClCompile Include="..\KDtree\Point.cpp" />
     <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp" />
-    <ClCompile Include="..\PhreeqcRM\RM_interface.cpp" />
+    <ClCompile Include="..\PhreeqcRM\RM_interface_F.cpp" />
     <ClCompile Include="..\TM_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -405,7 +405,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     <ClInclude Include="..\KDtree\KDtree.h" />
     <ClInclude Include="..\KDtree\Point.h" />
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h" />
-    <ClInclude Include="..\PhreeqcRM\RM_interface.h" />
+    <ClInclude Include="..\PhreeqcRM\RM_interface_F.h" />
     <ClInclude Include="..\TM_interface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

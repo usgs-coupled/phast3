@@ -192,7 +192,7 @@ SUBROUTINE init3_bcast_w
   USE mpi_mod
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   TYPE (Transporter) :: xp
   INTEGER :: ls
   INTEGER, SAVE :: ntd=0

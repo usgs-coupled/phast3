@@ -20,7 +20,7 @@ SUBROUTINE read3
   USE print_control_mod
   USE rewi_mod
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifrd.inc'
   INTERFACE
      FUNCTION uppercase(string) RESULT(outstring)

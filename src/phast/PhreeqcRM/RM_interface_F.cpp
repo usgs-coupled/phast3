@@ -1,5 +1,5 @@
 #include "PhreeqcRM.h"
-#include "RM_interface.h"
+#include "RM_interface_F.h"
 #include "IPhreeqcPhastLib.h"
 #include "Phreeqc.h"
 #include "PHRQ_io.h"

@@ -6,7 +6,7 @@
 #include <iostream>
 #include "FileHandler.h"
 #include "PhreeqcRM.h"
-#include "RM_interface.h"
+#include "RM_interface_F.h"
 #ifdef USE_GZ
 #include "gzstream.h"
 #else

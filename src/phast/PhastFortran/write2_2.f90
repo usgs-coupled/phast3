@@ -29,7 +29,7 @@ SUBROUTINE write2_2
       END SUBROUTINE
   END INTERFACE 
   INCLUDE 'IPhreeqc.f90.inc'
-  INCLUDE 'RM_interface.f90.inc'
+  INCLUDE 'RM_interface_F.f90.inc'
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
 !!$  CHARACTER(LEN=11) :: chu2, chu3, fmt1

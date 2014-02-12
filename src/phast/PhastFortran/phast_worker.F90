@@ -20,7 +20,7 @@
     USE XP_module, ONLY: Transporter
     USE mpi_mod
     IMPLICIT NONE
-    INCLUDE 'RM_interface.f90.inc'
+    INCLUDE 'RM_interface_F.f90.inc'
     INTERFACE
         integer function mpi_methods(method)
             integer, intent(in) :: method

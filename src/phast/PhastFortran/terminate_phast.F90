@@ -18,7 +18,7 @@ SUBROUTINE terminate_phast
   USE mpi_mod
 #endif
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   !
   CHARACTER(LEN=160) :: fname
   CHARACTER(LEN=130) :: logline1

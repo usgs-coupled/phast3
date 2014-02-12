@@ -15,7 +15,7 @@ SUBROUTINE read2
   USE rewi_mod
   USE hdf_media_m
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifrd.inc'
   INTERFACE
      SUBROUTINE incidx(x1,x2,nx,xs,i1,i2,erflg)

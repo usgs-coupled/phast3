@@ -3,7 +3,7 @@ MODULE solver_iter_mod
   IMPLICIT NONE
   PRIVATE; PUBLIC :: gcgris
   PUBLIC :: gcgris_thread
-    INCLUDE "RM_interface.f90.inc"
+    INCLUDE "RM_interface_F.f90.inc"
 !$$  PRIVATE :: abmult, armult, dbmult, formr, rfact, rfactm, lsolv, usolv,  &
 !$$       vpsv
 
@@ -25,7 +25,7 @@ CONTAINS
     USE print_control_mod
     USE XP_module, ONLY: Transporter
     IMPLICIT NONE
-    INCLUDE "RM_interface.f90.inc"
+    INCLUDE "RM_interface_F.f90.inc"
     TYPE (Transporter) :: xp
     REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: ap
     REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: bp

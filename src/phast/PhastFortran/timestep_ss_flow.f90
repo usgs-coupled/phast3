@@ -11,7 +11,7 @@ SUBROUTINE timestep_ss_flow
   USE mcv_m
   USE print_control_mod
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC NINT
   REAL(KIND=kdp) :: adp, uctc, udtim, uptc, utime, utimchg, uttc
   CHARACTER(LEN=130) :: logline1, logline0='    '

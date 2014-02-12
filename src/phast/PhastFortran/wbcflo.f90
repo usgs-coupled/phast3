@@ -16,7 +16,7 @@ SUBROUTINE wbcflo
   USE mcw
   USE mcw_m
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   REAL(KIND=kdp) :: uqhw, uqwm
   INTEGER :: a_err, da_err, i, iis, iwel, iwfss, j, k, ks, m, nsa
   LOGICAL :: florev

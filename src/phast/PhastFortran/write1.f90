@@ -13,7 +13,7 @@ SUBROUTINE write1
   USE mcv
   USE mcv_m
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INTEGER :: i
   CHARACTER(LEN=11) :: fmt1
   CHARACTER(LEN=130) :: logline1, logline2

@@ -16,7 +16,7 @@ SUBROUTINE error4
   USE mcw_m
   USE mg2_m
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX
   CHARACTER(LEN=9) :: cibc
