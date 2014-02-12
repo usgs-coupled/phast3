@@ -28,7 +28,7 @@ SUBROUTINE write3
           INTEGER, INTENT(in) :: id, n
       END SUBROUTINE
   END INTERFACE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX
   CHARACTER(LEN=11) :: blank = '           ', ucc, up1c, up2c, uqc, utc

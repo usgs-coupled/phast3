@@ -18,7 +18,7 @@ SUBROUTINE sumcal_ss_flow
   USE mcw_m
   USE mg2_m, ONLY: hdprnt, wt_elev
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   CHARACTER(LEN=9) :: cibc
   REAL(KIND=kdp) :: denmfs, frac_flowresid, p1, pmfs, qfbc,  &
        qlim, qm_net, qn, qnp, u0, u1, u2, u6, uc,  &

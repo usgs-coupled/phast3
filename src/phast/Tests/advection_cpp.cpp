@@ -206,7 +206,7 @@ int advection_cpp()
 		tc.resize(1, 15.0);
 		p_atm.resize(1, 3.0);
 		IPhreeqc * util_ptr = phreeqc_rm.Concentrations2Utility(c_well, tc, p_atm);
-		input = "SELECTED_OUTPUT 5; -reset false; -pH;RUN_CELLS; -cells 1";
+		input = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1";
 		int iphreeqc_result;
 		util_ptr->SetOutputFileName("utility_cpp.txt");
 		util_ptr->SetOutputFileOn(true);

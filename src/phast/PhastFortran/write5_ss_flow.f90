@@ -23,7 +23,7 @@ SUBROUTINE write5_ss_flow
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE print_control_mod
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX, INT
   CHARACTER(LEN=46) :: aformt = '(TR5,A43,1PE12.4,TR1,A7,TR1,A,3(1PG10.3,A),2A)'

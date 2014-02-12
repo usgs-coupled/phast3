@@ -17,9 +17,6 @@
     <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\RM_interface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="advection_cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -32,18 +29,21 @@
     <ClCompile Include="..\gzstream.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\RM_interface_F.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PhreeqcRM\RM_interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\PhreeqcRM\RM_interface_C.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\gzstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PhreeqcRM\RM_interface_F.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

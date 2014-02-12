@@ -19,7 +19,7 @@ SUBROUTINE XP_wellsc_thread(xp)
   USE phys_const
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   TYPE (Transporter) :: xp
   INTRINSIC INT
   REAL(KIND=kdp) :: arwb, fpr3, frflm, frflp, lgren, ren, summob,  &
@@ -644,7 +644,7 @@ SUBROUTINE XP_wellsc(xp)
   USE phys_const
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   TYPE (Transporter) :: xp
   INTRINSIC INT
   REAL(KIND=kdp) :: arwb, fpr3, frflm, frflp, lgren, ren, summob,  &

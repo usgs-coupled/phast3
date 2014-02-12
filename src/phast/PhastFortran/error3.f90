@@ -14,7 +14,7 @@ SUBROUTINE error3
   USE mcw_m
   USE print_control_mod
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC INDEX
   CHARACTER(LEN=9) :: cibc
   CHARACTER(LEN=130) :: logline1

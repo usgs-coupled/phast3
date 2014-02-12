@@ -2,7 +2,7 @@
     
     subroutine advection_f90()
     implicit none
-    INCLUDE 'RM_interface.f90.inc'
+    INCLUDE 'RM_interface_F.f90.inc'
     INCLUDE 'IPhreeqc.f90.inc'
     interface
         subroutine advect_f90(c, bc_conc, ncomps, nxyz)
@@ -233,7 +233,7 @@
 	tc(1) = 15.0
 	p_atm(1) = 3.0
 	iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
-	string = "SELECTED_OUTPUT 5; -reset false; -pH;RUN_CELLS; -cells 1"
+	string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
 	status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")
 	status = SetOutputFileOn(iphreeqc_id, .true.)
 	status = RunString(iphreeqc_id, string)

@@ -25,7 +25,7 @@ SUBROUTINE init2_1
   USE phys_const
   USE reorder_mod
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   INTEGER :: status
   !
   INTRINSIC index

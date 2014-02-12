@@ -13,7 +13,7 @@ SUBROUTINE XP_asmslc_thread(xp)
   USE solver_direct_mod, only: tfrds_thread
   USE solver_iter_mod, only: gcgris_thread
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"  
+  INCLUDE "RM_interface_F.f90.inc"  
   TYPE (Transporter) :: xp
   INTEGER :: m, ma, norm, iierr  
   CHARACTER(LEN=130) :: logline1
@@ -103,7 +103,7 @@ SUBROUTINE XP_asmslc(xp)
   USE solver_direct_mod
   USE solver_iter_mod
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"  
+  INCLUDE "RM_interface_F.f90.inc"  
   TYPE (Transporter) :: xp
   INTEGER :: m, ma, norm, iierr  
   CHARACTER(LEN=130) :: logline1

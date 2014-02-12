@@ -21,7 +21,7 @@ SUBROUTINE dump_hst
   USE mcw
   USE mcw_m
   IMPLICIT NONE
-  INCLUDE "RM_interface.f90.inc"
+  INCLUDE "RM_interface_F.f90.inc"
   CHARACTER(LEN=130) :: logline1, logline2, logline3
   INTEGER :: status
   !     ------------------------------------------------------------------

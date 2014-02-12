@@ -25,7 +25,7 @@ SUBROUTINE phast_manager
     USE XP_module, ONLY: Transporter
     IMPLICIT NONE 
     SAVE
-    INCLUDE 'RM_interface.f90.inc'
+    INCLUDE 'RM_interface_F.f90.inc'
     INTERFACE
         INTEGER FUNCTION set_fdtmth
         END FUNCTION set_fdtmth
@@ -255,7 +255,7 @@ USE mpi_mod
 USE mpi
 #endif
 IMPLICIT none   
-    INCLUDE "RM_interface.f90.inc"
+    INCLUDE "RM_interface_F.f90.inc"
 integer :: i, ierr
 DOUBLE PRECISION t
 DOUBLE PRECISION, DIMENSION(0:15), save :: times
@@ -384,7 +384,7 @@ SUBROUTINE CreateRM
     USE mcv,  ONLY: ns
     IMPLICIT NONE
     SAVE
-    INCLUDE 'RM_interface.f90.inc'
+    INCLUDE 'RM_interface_F.f90.inc'
     INTERFACE
         INTEGER FUNCTION set_components() 
         END FUNCTION set_components
@@ -424,7 +424,7 @@ SUBROUTINE InitialEquilibrationRM
     USE hdf_media_m, ONLY:       pr_hdf_media
     IMPLICIT NONE
     SAVE
-    INCLUDE 'RM_interface.f90.inc' 
+    INCLUDE 'RM_interface_F.f90.inc' 
     DOUBLE PRECISION :: deltim_dummy
     CHARACTER(LEN=130) :: logline1
     INTEGER :: stop_msg, status, i
@@ -472,7 +472,7 @@ SUBROUTINE InitializeRM
 
     IMPLICIT NONE
     SAVE
-    INCLUDE 'RM_interface.f90.inc'
+    INCLUDE 'RM_interface_F.f90.inc'
     INTERFACE
         SUBROUTINE CreateMappingFortran(ic)
             implicit none
@@ -559,7 +559,7 @@ SUBROUTINE TimeStepRM
     USE print_control_mod, ONLY: print_force_chemistry, print_hdf_chemistry, print_restart
     IMPLICIT NONE
     SAVE
-    INCLUDE 'RM_interface.f90.inc' 
+    INCLUDE 'RM_interface_F.f90.inc' 
     INTEGER stop_msg, status, i
     CHARACTER(LEN=130) :: logline1
     
@@ -600,7 +600,7 @@ INTEGER FUNCTION set_components
     USE mpi_mod
     IMPLICIT NONE 
     SAVE
-    INCLUDE 'RM_interface.f90.inc'  
+    INCLUDE 'RM_interface_F.f90.inc'  
     integer method, a_err, i, status
     
 #ifdef USE_MPI    
@@ -679,7 +679,7 @@ END FUNCTION run_transport
     
 SUBROUTINE convert_to_moles(id, c, n)
     IMPLICIT NONE 
-    INCLUDE "RM_interface.f90.inc"
+    INCLUDE "RM_interface_F.f90.inc"
     DOUBLE PRECISION, INTENT(inout), DIMENSION(:,:) :: c
     INTEGER, INTENT(in) :: id, n
     DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: gfw

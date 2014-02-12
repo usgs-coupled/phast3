@@ -263,7 +263,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		tc[0] = 15.0;
 		p_atm[0] = 3.0;
 		iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm);
-		strcpy(str, "SELECTED_OUTPUT 5; -reset false; -pH; RUN_CELLS; -cells 1");
+		strcpy(str, "SELECTED_OUTPUT 5; -pH; RUN_CELLS; -cells 1");
 		SetOutputFileName(iphreeqc_id, "utility_c.txt");
 		SetOutputFileOn(iphreeqc_id, 1);
 		status = RunString(iphreeqc_id, str);

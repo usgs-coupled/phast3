@@ -18,7 +18,7 @@ SUBROUTINE init3
   USE print_control_mod
   IMPLICIT NONE
   SAVE
-  INCLUDE 'RM_interface.f90.inc'
+  INCLUDE 'RM_interface_F.f90.inc'
   INTERFACE
      SUBROUTINE load_indx_bc(ibct,indx1_bc,indx2_bc,mxf_bc,mbc,nbc)
        USE machine_constants, ONLY: kdp

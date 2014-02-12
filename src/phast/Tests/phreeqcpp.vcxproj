@@ -356,8 +356,8 @@
   <ItemGroup>
     <ClCompile Include="..\gzstream.cxx" />
     <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp" />
-    <ClCompile Include="..\PhreeqcRM\RM_interface.cpp" />
     <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp" />
+    <ClCompile Include="..\PhreeqcRM\RM_interface_F.cpp" />
     <ClCompile Include="advection_c.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">CompileAsC</CompileAs>
@@ -368,10 +368,8 @@
   <ItemGroup>
     <ClInclude Include="..\gzstream.h" />
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h" />
-    <ClInclude Include="..\PhreeqcRM\RM_interface.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\PhreeqcRM\RM_interface_C.h" />
+    <ClInclude Include="..\PhreeqcRM\RM_interface_F.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
