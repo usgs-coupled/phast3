@@ -1303,7 +1303,7 @@ PhreeqcRM::Concentrations2UtilityH2O(std::vector<double> &c, std::vector<double>
 		}
 		soln.Set_tc(tc[i]);
 		soln.Set_patm(p_atm[i]);
-		this->workers[nutil]->PhreeqcPtr->Rxn_solution_map[(int) i] = soln;
+		this->workers[nutil]->PhreeqcPtr->Rxn_solution_map[(int) (i + 1)] = soln;
 	}
 	return (dynamic_cast< IPhreeqc *> (this->workers[nutil]));
 }
@@ -1368,7 +1368,7 @@ PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<doubl
 		}
 		soln.Set_tc(tc[i]);
 		soln.Set_patm(p_atm[i]);
-		this->workers[nutil]->PhreeqcPtr->Rxn_solution_map[(int) i] = soln;
+		this->workers[nutil]->PhreeqcPtr->Rxn_solution_map[(int) (i + 1)] = soln;
 	}
 	return (dynamic_cast< IPhreeqc *> (this->workers[nutil]));
 }

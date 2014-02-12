@@ -43,7 +43,11 @@
     double precision, dimension(:,:), allocatable :: selected_out
     integer                                       :: col
     character(100)                                :: heading
+    double precision, dimension(:,:), allocatable :: c_well
     double precision, dimension(:), allocatable   :: tc, p_atm
+    integer                                       :: vtype
+    double precision                              :: pH
+    character(100)                                :: svalue
     integer                                       :: iphreeqc_id
     integer                                       :: dump_on, append
 
@@ -59,12 +63,12 @@
   
     ! Set concentration units
     status = RM_SetUnitsSolution(id, 2)      ! 1, mg/L; 2, mol/L; 3, kg/kgs
-    status = RM_SetUnitsPPassemblage(id, 1)  ! 1, mol/L; 2 mol/kg rock
-    status = RM_SetUnitsExchange(id, 1)      ! 1, mol/L; 2 mol/kg rock
-    status = RM_SetUnitsSurface(id, 1)       ! 1, mol/L; 2 mol/kg rock
-    status = RM_SetUnitsGasPhase(id, 1)      ! 1, mol/L; 2 mol/kg rock
-    status = RM_SetUnitsSSassemblage(id, 1)  ! 1, mol/L; 2 mol/kg rock
-    status = RM_SetUnitsKinetics(id, 1)      ! 1, mol/L; 2 mol/kg rock  
+    status = RM_SetUnitsPPassemblage(id, 1)  ! 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+    status = RM_SetUnitsExchange(id, 1)      ! 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+    status = RM_SetUnitsSurface(id, 1)       ! 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+    status = RM_SetUnitsGasPhase(id, 1)      ! 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+    status = RM_SetUnitsSSassemblage(id, 1)  ! 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+    status = RM_SetUnitsKinetics(id, 1)      ! 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
 
     ! Set conversion from seconds to user units
     status = RM_SetTimeConversion(id, dble(1.0 / 86400.0)) ! days
@@ -220,27 +224,29 @@
         endif
     enddo
     
- 	! Use utility instance of PhreeqcRM
-    allocate(tc(nxyz), p_atm(nxyz))
-	do i = 1, nxyz
-		tc(i) = 15.0
-		p_atm(i) = 3.0
-	enddo
-	iphreeqc_id = RM_Concentrations2Utility(id, c(1,1), nxyz, tc(1), p_atm(1))
-	string = "RUN_CELLS; -cells 0-19"
-	! Option 1, output goes to new file
+ 	! Use utility instance of PhreeqcRM to calculate pH of a mixture
+    allocate (c_well(1,ncomps))
+    do i = 1, ncomps
+        c_well(1,i) = 0.5 * c(1,i) + 0.5 * c(10,i)
+    enddo
+    allocate(tc(1), p_atm(1))
+	tc(1) = 15.0
+	p_atm(1) = 3.0
+	iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
+	string = "SELECTED_OUTPUT 5; -reset false; -pH;RUN_CELLS; -cells 1"
 	status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")
 	status = SetOutputFileOn(iphreeqc_id, .true.)
 	status = RunString(iphreeqc_id, string)
-	! Option 2, output goes to chem.txt file
-    status = RM_SetPrintChemistryOn(id, 0, 0, 1)  ! workers, initial_phreeqc, utility
-	status = RM_RunString(id, 0, 0, 1, string) 
+	status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
+    status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
 
 	! Dump results   
     dump_on = 1
     append = 0
 	status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")    
     status = RM_DumpModule(id, dump_on, append)    ! second argument: gz disabled unless compiled with #define USE_GZ
+    
+	status = RM_CloseFiles(id)
     
     deallocate(cell_vol);
     deallocate(pv);
@@ -258,6 +264,7 @@
     deallocate(c);
     deallocate(density);
     deallocate(temperature);
+    deallocate(c_well);
     deallocate(pressure);
     deallocate(tc);
     deallocate(p_atm);

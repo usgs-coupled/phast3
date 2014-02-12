@@ -26,12 +26,12 @@ int advection_cpp()
 
 		// Set concentration units
 		status = phreeqc_rm.SetUnitsSolution(2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
-		status = phreeqc_rm.SetUnitsPPassemblage(1);  // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsExchange(1);      // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsSurface(1);       // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsGasPhase(1);      // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsSSassemblage(1);  // 1, mol/L; 2 mol/kg rock
-		status = phreeqc_rm.SetUnitsKinetics(1);      // 1, mol/L; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsPPassemblage(1);  // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsExchange(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsSurface(1);       // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsGasPhase(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsSSassemblage(1);  // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = phreeqc_rm.SetUnitsKinetics(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
 
 		// Set conversion from seconds to user units
 		double time_conversion = 1.0 / 86400;
@@ -194,27 +194,36 @@ int advection_cpp()
 				}
 			}
 		}
-
-		// Use utility instance of PhreeqcRM
+		
+ 		// Use utility instance of PhreeqcRM to calculate pH of a mixture
+		std::vector <double> c_well;
+		c_well.resize(1*ncomps, 0.0);
+		for (int i = 0; i < ncomps; i++)
+		{
+			c_well[i] = 0.5 * c[0 + nxyz*i] + 0.5 * c[9 + nxyz*i];
+		}
 		std::vector<double> tc, p_atm;
-		tc.resize(nxyz, 15.0);
-		p_atm.resize(nxyz, 3.0);
-		IPhreeqc * util_ptr = phreeqc_rm.Concentrations2Utility(c, tc, p_atm);
-		input = "RUN_CELLS; -cells 0-19";
-		// Option 1, output goes to new file
+		tc.resize(1, 15.0);
+		p_atm.resize(1, 3.0);
+		IPhreeqc * util_ptr = phreeqc_rm.Concentrations2Utility(c_well, tc, p_atm);
+		input = "SELECTED_OUTPUT 5; -reset false; -pH;RUN_CELLS; -cells 1";
 		int iphreeqc_result;
 		util_ptr->SetOutputFileName("utility_cpp.txt");
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
-		// Option 2, output goes to chem.txt file
-		status = phreeqc_rm.SetPrintChemistryOn(false, false, true); // workers, initial_phreeqc, utility
-		status = phreeqc_rm.RunString(0, 0, 1, input.c_str());
+		int vtype;
+		double pH;
+		char svalue[100];
+		util_ptr->SetCurrentSelectedOutputUserNumber(5);
+		iphreeqc_result = util_ptr->GetSelectedOutputValue2(1, 0, &vtype, &pH, svalue, 100);
 
 		// Dump results
 		bool dump_on = true;
 		bool append = false;
 		status = phreeqc_rm.SetDumpFileName("advection_cpp.dmp");
 		status = phreeqc_rm.DumpModule(dump_on, append);    // gz disabled unless compiled with #define USE_GZ
+
+		status = phreeqc_rm.CloseFiles();
 	}
 	catch (PhreeqcRMStop)
 	{
