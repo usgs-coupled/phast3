@@ -100,11 +100,11 @@
     partition_uz_solids = 0
     status = RM_SetPartitionUZSolids(id, partition_uz_solids)
 
-    ! For demonstation, two row, first active, second inactive
+	! For demonstation, two equivalent rows by symmetry
     allocate(grid2chem(nxyz))
-    grid2chem = -1
     do i = 1, nxyz/2
         grid2chem(i) = i - 1
+        grid2chem(i+nxyz/2) = i - 1
     enddo
     status = RM_CreateMapping(id, grid2chem(1))   
 

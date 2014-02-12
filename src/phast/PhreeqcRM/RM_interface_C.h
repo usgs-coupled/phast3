@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 /**
- *  Close the output file and log file. 
+ *  Close the output and log files. 
  *  @param id            The instance id returned from @ref RM_Create.
  *  @retval IRM_RESULT  0 is success.
  *  @retval IRM_RESULT  Negative value is failure (@ref RM_DecodeError). 
@@ -47,6 +47,8 @@ extern "C" {
  *  </PRE>
  *  </CODE> 
  *  @endhtmlonly
+ *  @par MPI:
+ *     Called only by root.
  */
 int        RM_CloseFiles(int id);
 /**
@@ -116,61 +118,123 @@ int        RM_CloseFiles(int id);
  *  tc(1) = 15.0
  *  p_atm(1) = 3.0
  *  iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
- *  string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
+ *  string = "SELECTED_OUTPUT 5; -pH; RUN_CELLS; -cells 1"
  *  status = RunString(iphreeqc_id, string)
  *  status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
  *  status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
  *  </PRE>
  *  </CODE> 
  *  @endhtmlonly
+ *  @par MPI:
+ *     Called only by root.
  */
 int        RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm);
 /**
  *  Creates a reaction module. 
- *  @param nxyz                   The number of cells in the in the user's model.
- *  @param nthreads               When using OPENMP, the number of worker threads to be used (optional).
+ *  @param id                     The instance id returned from @ref RM_Create.
+ *  @param nxyz                   The number of grid cells in the in the user's model.
+ *  @param nthreads               When using OPENMP, the number of worker threads to be used. 
+ *  If nthreads is <= 0, the number of threads is set equal to the number of processors of the computer.
+ *  @retval Id of the PhreeqcRM instance. 
  *  @see                 @ref RM_Destroy
- *  MPI:
- *       Called by all processes.
- *       Nthreads has no effect on the MPI version, all processes have one worker thread.
- *  @par Fortran90 Interface:
+ *  @par C Prototype:
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *       INTEGER FUNCTION RM_Create(nxyz, nthreads) 
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: nxyz
- *          INTEGER, OPTIONAL, INTENT(in) :: nthreads
- *      END FUNCTION RM_Create
+ *  int RM_Create(int nxyz, int nthreads);
  *  </PRE>
- *  </CODE>
+ *  </CODE> 
  *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  id = RM_Create(nxyz, nthreads);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>   
+ *  INTEGER FUNCTION RM_Create(nxyz, nthreads) 
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: nxyz
+ *    INTEGER, INTENT(in), OPTIONAL :: nthreads
+ *  END FUNCTION RM_Create
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  id = RM_create(nxyz, nthreads)
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par MPI:
+ *     Called by all processes Value of nthreads is ignored.
  */
 int RM_Create(int nxyz, int nthreads);
 /**
- *  Provides a many-to-one mapping of cells in the user's model to cells for which chemistry need to be run. 
- *  @param id                   The instance id returned from @ref RM_Create.
- *  @param grid2chem            An nxyz list of values: Nonnegative is a chemistry cell number, negative is an inactive cell.
- *  @see                        ???
+ *  Provides a many-to-one mapping from grid cells in the user's model to cells for which chemistry needs to be run. 
  *  The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run.
- *  Default is a one-to-one mapping; all user cells are chemistry cells (equivalent to grid2chem values of 0,1,2,3...).
- *  MPI:
- *     Called by all processes.
- *     All arguments required for root process.
- *     Except for id, arguments are optional for non-root processes. 
+ *  Default is a one-to-one mapping--all user grid cells are chemistry cells (equivalent to grid2chem values of 0,1,2,3,...,nxyz-1).
+ *  @param id                   The instance id returned from @ref RM_Create.
+ *  @param grid2chem            An array of integers: Nonnegative is a chemistry cell number, negative is an inactive cell. Array of size nxyz (number of grid cells).
  *       
- *  @par Fortran90 Interface:
+ *  @par C Prototype:
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      INTEGER FUNCTION RM_CreateMapping(id, grid2chem)
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *          INTEGER, OPTIONAL :: grid2chem
- *      END FUNCTION RM_CreateMapping
+ *  int RM_CreateMapping (int id, int *grid2chem);
  *  </PRE>
- *  </CODE>
+ *  </CODE> 
  *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  // For demonstation, two equivalent rows by symmetry
+ *  grid2chem = (int *) malloc((size_t) (nxyz * sizeof(int)));
+ *  for (i = 0; i < nxyz/2; i++) 
+ *  {
+ *  	grid2chem[i] = i;
+ *  	grid2chem[i+nxyz/2] = i;
+ *  }
+ *  status = RM_CreateMapping(id, grid2chem);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+ *  INTEGER FUNCTION RM_CreateMapping(id, grid2chem)
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *    INTEGER, INTENT(in) :: grid2chem
+ *  END FUNCTION RM_CreateMappingM_Create
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>     
+ *  ! For demonstation, two equivalent rows by symmetry
+ *  allocate(grid2chem(nxyz))
+ *  do i = 1, nxyz/2
+ *      grid2chem(i) = i - 1
+ *      grid2chem(i+nxyz/2) = i - 1
+ *  enddo
+ *  status = RM_CreateMapping(id, grid2chem(1))  
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par MPI:
+ *     Called by root, workers must have called @ref MpiWorker.
  */
 int RM_CreateMapping (int id, int *grid2chem);
 int RM_DecodeError (int id, int e); 
