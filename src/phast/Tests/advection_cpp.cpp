@@ -60,12 +60,13 @@ int advection_cpp()
 		// Partitioning of uz solids
 		status = phreeqc_rm.SetPartitionUZSolids(false);
 
-		// For demonstation, two row, first active, second inactive
+		// For demonstation, two equivalent rows by symmetry
 		std::vector<int> grid2chem;
 		grid2chem.resize(nxyz, -1);
 		for (int i = 0; i < nxyz/2; i++)
 		{
 			grid2chem[i] = i;
+			grid2chem[i + nxyz/2] = i;
 		}
 		status = phreeqc_rm.CreateMapping(grid2chem.data());
 
