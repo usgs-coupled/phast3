@@ -93,22 +93,114 @@ extern "C" {
 #endif
 
 /**
- *  Closes the output file and log file. 
- *  @see                 @ref RM_OpenFiles
- *  MPI:
- *       Root process only.
+ *  Close the output file and log file. 
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @retval IRM_RESULT  0 is success.
+ *  @retval IRM_RESULT  Negative value is failure (@ref RM_DecodeError). 
+ *  @see                 @ref RM_OpenFiles, @ref RM_SetFilePrefix
+ *  @par C Prototype:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  int RM_CloseFiles(int id);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  status = RM_CloseFiles(id);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
  *  @par Fortran90 Interface:
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      SUBROUTINE RM_CloseFiles()
- *          IMPLICIT NONE
- *      END SUBROUTINE RM_CloseFiles
+ *  INTEGER FUNCTION RM_CloseFiles(id)
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *  END FUNCTION RM_CloseFiles
  *  </PRE>
- *  </CODE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  status = RM_CloseFiles(id)
+ *  </PRE>
+ *  </CODE> 
  *  @endhtmlonly
  */
 IRM_RESULT RM_CloseFiles(int *id);
+/**
+ *  A set of concentrations is imported as SOLUTIONs into the Utility IPhreeqc.
+ *  The solutions can be reacted and manipulated with the methods of IPhreeqc.
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @param c             Array of concentrations to be made SOLUTIONs in Utility IPhreeqc (n x ncomps).
+ *  @param n             The number of sets of concentrations.
+ *  @param tc            Array of temperatures to apply to the SOLUTIONs (n).
+ *  @param p_atm         Array of pressures to apply to the SOLUTIONs (n).
+ *  @retval Id of the Utility IPhreeqc instance. 
+ *  @par C Prototype:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  int RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ * 	status = RM_GetConcentrations(id, c);
+ *	tc = (double *) malloc((size_t) (nxyz * sizeof(double)));
+ *	p_atm = (double *) malloc((size_t) (nxyz * sizeof(double)));
+ *	for (i = 0; i < nxyz; i++)
+ *	{
+ *	  tc[i] = 15.0;
+ *	  p_atm[i] = 3.0;
+ *	}
+ *	iphreeqc_id = RM_Concentrations2Utility(id, c, nxyz, tc, p_atm);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  INTEGER FUNCTION RM_Concentrations2Utility(id, c, n, tc, p_atm)
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *    DOUBLE PRECISION, INTENT(in) :: c
+ *    INTEGER, INTENT(in) :: n
+ *    DOUBLE PRECISION, INTENT(in) :: tc, p_atm
+ *  END FUNCTION RM_Concentrations2Utility  
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+    allocate (c_well(1,ncomps))
+    do i = 1, ncomps
+        c_well(1,i) = 0.5 * c(1,i) + 0.5 * c(10,i)
+    enddo
+    allocate(tc(1), p_atm(1))
+	tc(1) = 15.0
+	p_atm(1) = 3.0
+	iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
+	string = "SELECTED_OUTPUT 1; -reset false; -pH;RUN_CELLS; -cells 1"
+	status = RunString(iphreeqc_id, string)
+    status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ */
 int        RM_Concentrations2Utility(int *id, double *c, int *n, double *tc, double *p_atm);
 /**
  *  Creates a reaction module. 

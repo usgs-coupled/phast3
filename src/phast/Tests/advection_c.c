@@ -40,8 +40,12 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		double * selected_out;
 		int col;
 		char heading[100];
+		double * c_well;
 		double * tc;
 		double * p_atm;
+		double pH;
+		int vtype;
+		char svalue[100];
 		int iphreeqc_id;
 		int dump_on, append;
 
@@ -56,12 +60,12 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
 		// Set concentration units
 		status = RM_SetUnitsSolution(id, 2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
-		status = RM_SetUnitsPPassemblage(id, 1);  // 1, mol/L; 2 mol/kg rock
-		status = RM_SetUnitsExchange(id, 1);      // 1, mol/L; 2 mol/kg rock
-		status = RM_SetUnitsSurface(id, 1);       // 1, mol/L; 2 mol/kg rock
-		status = RM_SetUnitsGasPhase(id, 1);      // 1, mol/L; 2 mol/kg rock
-		status = RM_SetUnitsSSassemblage(id, 1);  // 1, mol/L; 2 mol/kg rock
-		status = RM_SetUnitsKinetics(id, 1);      // 1, mol/L; 2 mol/kg rock  
+		status = RM_SetUnitsPPassemblage(id, 1);  // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = RM_SetUnitsExchange(id, 1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = RM_SetUnitsSurface(id, 1);       // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = RM_SetUnitsGasPhase(id, 1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = RM_SetUnitsSSassemblage(id, 1);  // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
+		status = RM_SetUnitsKinetics(id, 1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
 
 		// Set conversion from seconds to user units
 		status = RM_SetTimeConversion(id, 1.0 / 86400.0); // days
@@ -248,23 +252,23 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			}
 		}
 
-		// Use utility instance of PhreeqcRM
-		tc = (double *) malloc((size_t) (nxyz * sizeof(double)));
-		p_atm = (double *) malloc((size_t) (nxyz * sizeof(double)));
-		for (i = 0; i < nxyz; i++)
+		// Use utility instance of PhreeqcRM to calculate pH of a mixture
+		c_well = (double *) malloc((size_t) ((size_t) (1 * ncomps * sizeof(double))));
+		for (i = 0; i < ncomps; i++)
 		{
-			tc[i] = 15.0;
-			p_atm[i] = 3.0;
+			c_well[i] = 0.5 * c[0 + nxyz*i] + 0.5 * c[9 + nxyz*i];
 		}
-		iphreeqc_id = RM_Concentrations2Utility(id, c, nxyz, tc, p_atm);
-		strcpy(str, "RUN_CELLS; -cells 0-19");
-		// Option 1
+		tc = (double *) malloc((size_t) (1 * sizeof(double)));
+		p_atm = (double *) malloc((size_t) (1 * sizeof(double)));
+		tc[0] = 15.0;
+		p_atm[0] = 3.0;
+		iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm);
+		strcpy(str, "SELECTED_OUTPUT 5; -reset false; -pH; RUN_CELLS; -cells 1");
 		SetOutputFileName(iphreeqc_id, "utility_c.txt");
 		SetOutputFileOn(iphreeqc_id, 1);
 		status = RunString(iphreeqc_id, str);
-		// Option 2
-		status = RM_SetPrintChemistryOn(id, 0, 0, 1);  // workers, initial_phreeqc, utility
-		status = RM_RunString(id, 0, 0, 1, str); 
+		status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
+		status = GetSelectedOutputValue2(iphreeqc_id, 1, 0, &vtype, &pH, svalue, 100);
 
 		// Dump results
 		dump_on = 1;
@@ -272,6 +276,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		status = RM_SetDumpFileName(id, "advection_c.dmp.gz");
 		status = RM_DumpModule(id, dump_on, append);    // second argument: gz disabled unless compiled with #define USE_GZ
 
+		status = RM_CloseFiles(id);
 		// free space
 		free(cell_vol);
 		free(pv);
