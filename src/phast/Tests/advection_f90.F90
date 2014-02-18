@@ -25,6 +25,7 @@
     double precision, dimension(:), allocatable   :: sat
     integer,          dimension(:), allocatable   :: print_chemistry_mask
     integer,          dimension(:), allocatable   :: grid2chem
+    integer                                       :: nchem
     character(100)                                :: string
     integer                                       :: ncomps
     character(100),   dimension(:), allocatable   :: components
@@ -106,7 +107,9 @@
         grid2chem(i) = i - 1
         grid2chem(i+nxyz/2) = i - 1
     enddo
-    status = RM_CreateMapping(id, grid2chem(1))   
+    status = RM_CreateMapping(id, grid2chem(1))  
+    if (status < 0) status = RM_DecodeError(id, status) 
+	nchem = RM_GetChemistryCellCount(id)
 
     ! Load database
     status = RM_LoadDatabase(id, "phreeqc.dat"); 
@@ -123,7 +126,7 @@
     string = "DELETE; -all"
     status = RM_RunString(id, 1, 0, 1, string)  ! workers, initial_phreeqc, utility
  
-    ! Set get list of components
+    ! Get list of components
     ncomps = RM_FindComponents(id)
     allocate(components(ncomps))
     do i = 1, ncomps
@@ -244,10 +247,11 @@
     dump_on = 1
     append = 0
 	status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")    
-    status = RM_DumpModule(id, dump_on, append)    ! second argument: gz disabled unless compiled with #define USE_GZ
+    status = RM_DumpModule(id, dump_on, append)    
     
+    ! Clean up
 	status = RM_CloseFiles(id)
-    
+	status = RM_Destroy(id)
     deallocate(cell_vol);
     deallocate(pv);
     deallocate(sat);

@@ -9,8 +9,7 @@ extern "C" {
 /**
  *  Close the output and log files. 
  *  @param id            The instance id returned from @ref RM_Create.
- *  @retval IRM_RESULT  0 is success.
- *  @retval IRM_RESULT  Negative value is failure (@ref RM_DecodeError). 
+ *  @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).  
  *  @see                 @ref RM_OpenFiles, @ref RM_SetFilePrefix
  *  @par C Prototype:
  *  @htmlonly
@@ -62,7 +61,7 @@ int        RM_CloseFiles(int id);
  *  @param n             The number of sets of concentrations.
  *  @param tc            Array of temperatures to apply to the SOLUTIONs. Array of size n.
  *  @param p_atm         Array of pressures to apply to the SOLUTIONs. Array of size n.
- *  @retval Id of the Utility IPhreeqc instance. 
+ *  @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).  
  *  @par C Prototype:
  *  @htmlonly
  *  <CODE>
@@ -135,7 +134,7 @@ int        RM_Concentrations2Utility(int id, double *c, int n, double *tc, doubl
  *  @param nxyz                   The number of grid cells in the in the user's model.
  *  @param nthreads               When using OPENMP, the number of worker threads to be used. 
  *  If nthreads is <= 0, the number of threads is set equal to the number of processors of the computer.
- *  @retval Id of the PhreeqcRM instance. 
+ *  @retval Id of the PhreeqcRM instance, negative is failure (See @ref RM_DecodeError).  
  *  @see                 @ref RM_Destroy
  *  @par C Prototype:
  *  @htmlonly
@@ -174,15 +173,16 @@ int        RM_Concentrations2Utility(int id, double *c, int n, double *tc, doubl
  *  </CODE> 
  *  @endhtmlonly
  *  @par MPI:
- *     Called by all processes Value of nthreads is ignored.
+ *     Called by root and workers. The value of nthreads is ignored.
  */
 int RM_Create(int nxyz, int nthreads);
 /**
- *  Provides a many-to-one mapping from grid cells in the user's model to cells for which chemistry needs to be run. 
- *  The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run.
+ *  Provides a mapping from grid cells in the user's model to cells for which chemistry needs to be run. 
+ *  The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run. The mapping may be many-to-one to account for symmetry.
  *  Default is a one-to-one mapping--all user grid cells are chemistry cells (equivalent to grid2chem values of 0,1,2,3,...,nxyz-1).
  *  @param id                   The instance id returned from @ref RM_Create.
  *  @param grid2chem            An array of integers: Nonnegative is a chemistry cell number, negative is an inactive cell. Array of size nxyz (number of grid cells).
+  *  @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError). 
  *       
  *  @par C Prototype:
  *  @htmlonly
@@ -234,99 +234,321 @@ int RM_Create(int nxyz, int nthreads);
  *  </CODE> 
  *  @endhtmlonly
  *  @par MPI:
- *     Called by root, workers must have called @ref MpiWorker.
+ *     Called by root, workers must be in the loop of @ref MpiWorker.
  */
 int RM_CreateMapping (int id, int *grid2chem);
+/**
+ *  If e is negative, this method prints an error message corresponding to IRM_RESULT e. If e is non-negative, this method does nothing.
+ *  @param id                   The instance id returned from @ref RM_Create.
+ *  @param e                    An IRM_RESULT value returned by one of the reaction module methods.
+ *  @retval IRM_RESULT          0 is success, negative is failure (See @ref RM_DecodeError). 
+ *  @par IRM_RESULT definition:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  typedef enum {
+ *    IRM_OK            =  0,  //Success
+ *    IRM_OUTOFMEMORY   = -1,  //Failure, Out of memory 
+ *    IRM_BADVARTYPE    = -2,  //Failure, Invalid VAR type 
+ *    IRM_INVALIDARG    = -3,  //Failure, Invalid argument 
+ *    IRM_INVALIDROW    = -4,  //Failure, Invalid row 
+ *    IRM_INVALIDCOL    = -5,  //Failure, Invalid column 
+ *    IRM_BADINSTANCE   = -6,  //Failure, Invalid rm instance id 
+ *    IRM_FAIL          = -7,  //Failure, Unspecified 
+ *  } IRM_RESULT;
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par C Prototype:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  int RM_DecodeError (int id, int e); 
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  status = RM_CreateMapping(id, grid2chem);
+ *  if (status < 0) status = RM_DecodeError(id, status);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+ *  INTEGER FUNCTION RM_DecodeError(id, e)
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *    INTEGER, INTENT(in) :: e
+ *  END FUNCTION RM_DecodeError
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>     
+ *  status = RM_CreateMapping(id, grid2chem(1))  
+ *  if (status < 0) status = RM_DecodeError(id, status)
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par MPI:
+ *     Can be called by root and (or) workers.
+ */
 int RM_DecodeError (int id, int e); 
 /**
  *  Destroys a reaction module. 
  *  @param id               The instance id returned from @ref RM_Create.
- *  @see                    @ref RM_Destroy
- *  MPI:
- *     Called by all processes.
+ *  @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError). 
+ *  @see                    @ref RM_Create
+ *  @par C Prototype:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  int RM_Destroy(int id);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *	status = RM_Destroy(id);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
  *  @par Fortran90 Interface:
  *  @htmlonly
  *  <CODE>
- *  <PRE>          
- *      INTEGER FUNCTION RM_Destroy(id)
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *      END FUNCTION RM_Destroy
+ *  <PRE>   
+ *  INTEGER FUNCTION RM_Destroy(id)
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *  END FUNCTION RM_Destroy
  *  </PRE>
- *  </CODE>
+ *  </CODE> 
  *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  status = RM_Destroy(id)
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par MPI:
+ *     Called by root and workers.
  */
 int RM_Destroy(int id);
 /**
  *  Writes the contents of all workers to file in _RAW formats, including SOLUTIONs and all reactants.
  *  @param id               The instance id returned from @ref RM_Create.
  *  @param dump_on          Signal for writing the dump file: 1 true, 0 false.
- *  @param use_gz           Signal to use gz compression for the dump file: 1 true, 0 false.
- *  File name is prefix.dump or prefix.dump.gz.
- *  @see                    @ref RM_SetFilePrefix
- *  MPI:
- *     Called by all processes.
- *     Id and dump_on required for root process.
- *     Except for id, arguments are optional for non-root processes. 
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>         
- *      INTEGER FUNCTION RM_DumpModule(id, dump_on, use_gz) 
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *          INTEGER, OPTIONAL, INTENT(in) :: dump_on, use_gz
- *      END FUNCTION RM_DumpModule
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-int RM_DumpModule(int id, int dump_on, int use_gz);
-int RM_ErrorHandler(int id, int result, const char * err_str);
-int RM_ErrorMessage(int id, const char *err_str);
-/**
- *  Returns the number of items in the list of elements included in solutions and reactants in the IPhreeqcPhast workers.
- *  @param id            The instance id returned from @ref RM_Create.
- *  @retval Number of components
- *  @retval If negative, IRM_RESULT error code.
- *  The list is the set of components that need to be transported.
- *  @see                 @ref RM_GetComponent 
- *  MPI:
- *     Called by all processes.
- *  @par Fortran90 Interface:
+ *  @param append           Signal to append to the contents of the dump file: 1 true, 0 false.
+ *  @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+ *  @see                    @ref RM_SetDumpFileName
+ *  @par C Prototype:
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      INTEGER FUNCTION RM_FindComponents(id) 
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *      END FUNCTION RM_FindComponents  
+ *  int RM_DumpModule(int id, int dump_on, int append);
  *  </PRE>
- *  </CODE>
+ *  </CODE> 
  *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  		
+ *  dump_on = 1;
+ *  append = 0;
+ *  status = RM_SetDumpFileName(id, "advection_c.dmp.gz");
+ *  status = RM_DumpModule(id, dump_on, append);  
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE> 
+ *  INTEGER FUNCTION RM_DumpModule(id, dump_on, append) 
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *    INTEGER, INTENT(in) :: dump_on
+ *    INTEGER, INTENT(in) :: append
+ *  END FUNCTION RM_DumpModule
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>      dump_on = 1
+ *  append = 0
+ *  status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")    
+ *  status = RM_DumpModule(id, dump_on, append)  
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par MPI:
+ *     Called by root; workers must be in the loop of @ref MpiWorker.
+ */
+int RM_DumpModule(int id, int dump_on, int append);
+//int RM_ErrorHandler(int id, int result, const char * err_str);
+/**
+ *  Send an error message to the screen, the output file, and the log file. 
+ *  @param id               The instance id returned from @ref RM_Create.
+ *  @param errstr           String to be printed.
+ *  @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+ *  @see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
+ *  @par C Prototype:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  int RM_ErrorMessage(int id, const char *errstr);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  status = RM_ErrorMessage(id, "Goodby world");
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>   
+ *  INTEGER FUNCTION RM_ErrorMessage(id, errstr)
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *    CHARACTER, INTENT(in) :: errstr
+ *  END FUNCTION RM_ErrorMessage
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  status = RM_ErrorMessage(id, "Goodby world")
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par MPI:
+ *     Called by root and (or) workers; root writes to output and log files.
+ */
+int RM_ErrorMessage(int id, const char *errstr);
+/**
+ *  Returns the number of items in the list of all elements in the Initial Phreeqc instance. Elements are those that have been defined in a solution or any other reactant (EQUILIBRIUM_PHASE, KINETICS, and others). 
+ *  The method can be called multiple times and the list that is created is cummulative. 
+ *  The list is the set of components that needs to be transported.
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @retval              Number of components currently in the list, or IRM_RESULT error code (see @ref RM_DecodeError).
+ *  @see                 @ref RM_GetComponent 
+ *  @par C Prototype:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  int RM_FindComponents(int id);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  // Get list of components
+ *  ncomps = RM_FindComponents(id);
+ *  components = (char **) malloc((size_t) (ncomps * sizeof(char *)));
+ *  for (i = 0; i < ncomps; i++)
+ *  {
+ *    components[i] = (char *) malloc((size_t) (100 * sizeof(char *)));
+ *    status = RM_GetComponent(id, i, components[i], 100);
+ *  }
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+ *  INTEGER FUNCTION RM_FindComponents(id) 
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *  END FUNCTION RM_FindComponents  
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+ *  ! Get list of components
+ *  ncomps = RM_FindComponents(id)
+ *  allocate(components(ncomps))
+ *  do i = 1, ncomps
+ *    status = RM_GetComponent(id, i, components(i))
+ *  enddo
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par MPI:
+ *     Called by root.
  */
 int        RM_FindComponents(int id);
 /**
- *  Returns the number of chemistry cells in the reaction module.
- *  @param id            The instance id returned from @ref RM_Create.
- *  @retval Number of chemistry cells.
- *  @retval If negative, IRM_RESULT error code.
- *  The number of chemistry cells is determined by the mapping defined in RM_CreateMapping.
+ *  Returns the number of chemistry cells in the reaction module. The number of chemistry cells is defined by 
+ *  the set of non-negative integers in the mapping from user grid cells (@ref RM_CreateMapping). 
  *  The number of chemistry cells is less than or equal to the number of cells in the user's model.
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @retval              Number of chemistry cells, or IRM_RESULT error code (see @ref RM_DecodeError).
  *  @see                 @ref RM_CreateMapping, @ref RM_GetGridCellCount. 
- *  MPI:
- *     Called by all processes.
- *  @par Fortran90 Interface:
+ *  @par C Prototype:
  *  @htmlonly
  *  <CODE>
  *  <PRE>  
- *      INTEGER FUNCTION RM_FindComponents(id) 
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *      END FUNCTION RM_FindComponents  
+ *  int RM_GetChemistryCellCount(int id);
  *  </PRE>
- *  </CODE>
+ *  </CODE> 
  *  @endhtmlonly
+ *  @par C Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  status = RM_CreateMapping(id, grid2chem);
+ *  nchem = RM_GetChemistryCellCount(id);
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>   
+ *  INTEGER FUNCTION RM_GetChemistryCellCount(id)
+ *    IMPLICIT NONE
+ *    INTEGER, INTENT(in) :: id
+ *  END FUNCTION RM_GetChemistryCellCount 
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par Fortran90 Example:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+ *  status = RM_CreateMapping(id, grid2chem)
+ *  nchem = RM_GetChemistryCellCount(id)
+ *  </PRE>
+ *  </CODE> 
+ *  @endhtmlonly
+ *  @par MPI:
+ *     Called by root and (or) workers.
  */
 int        RM_GetChemistryCellCount(int id);
 /**

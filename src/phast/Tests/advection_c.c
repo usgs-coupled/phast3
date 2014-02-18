@@ -20,6 +20,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		double * sat;
 		int * print_chemistry_mask;
 		int * grid2chem;
+		int nchem;
 		char str[100] ;
 		int ncomps;
 		char ** components;
@@ -101,6 +102,8 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			grid2chem[i+nxyz/2] = i;
 		}
 		status = RM_CreateMapping(id, grid2chem);
+		if (status < 0) status = RM_DecodeError(id, status); 
+		nchem = RM_GetChemistryCellCount(id);
 		
 		// Load database
 		status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
@@ -118,7 +121,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		strcpy(str, "DELETE; -all");
 		status = RM_RunString(id, 1, 0, 1, str);	// workers, initial_phreeqc, utility 
  
-		// Set get list of components
+		// Get list of components
 		ncomps = RM_FindComponents(id);
 		components = (char **) malloc((size_t) (ncomps * sizeof(char *)));
 		for (i = 0; i < ncomps; i++)
@@ -278,9 +281,10 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		dump_on = 1;
 		append = 0;
 		status = RM_SetDumpFileName(id, "advection_c.dmp.gz");
-		status = RM_DumpModule(id, dump_on, append);    // second argument: gz disabled unless compiled with #define USE_GZ
+		status = RM_DumpModule(id, dump_on, append);   
 
 		status = RM_CloseFiles(id);
+		status = RM_Destroy(id);
 		// free space
 		free(cell_vol);
 		free(pv);

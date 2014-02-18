@@ -69,6 +69,7 @@ int advection_cpp()
 			grid2chem[i + nxyz/2] = i;
 		}
 		status = phreeqc_rm.CreateMapping(grid2chem.data());
+		if (status < 0) phreeqc_rm.DecodeError(status); 
 
 		// Set printing of chemistry file
 		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
@@ -92,6 +93,7 @@ int advection_cpp()
 		// Set reference to components
 		int ncomps = phreeqc_rm.FindComponents();
 		const std::vector<std::string> &components = phreeqc_rm.GetComponents();
+		int nchem = phreeqc_rm.GetChemistryCellCount();
 
 		// Set array of initial conditions
 		std::vector<int> ic1, ic2;
@@ -224,6 +226,7 @@ int advection_cpp()
 		status = phreeqc_rm.SetDumpFileName("advection_cpp.dmp");
 		status = phreeqc_rm.DumpModule(dump_on, append);    // gz disabled unless compiled with #define USE_GZ
 
+		// Clean up
 		status = phreeqc_rm.CloseFiles();
 	}
 	catch (PhreeqcRMStop)
