@@ -3,9 +3,8 @@ Reading input data for simulation 1.
 ------------------------------------
 
 	SELECTED_OUTPUT 5
-	 reset false
 	 ph
-	RUN_CELLS
+	 RUN_CELLS
 	 -cells 1
 --------------------------
 Beginning of run as cells.
@@ -93,7 +92,7 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 26.604 Seconds.
---------------------------------
+---------------------------------
+End of Run after 634.192 Seconds.
+---------------------------------
 

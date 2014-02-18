@@ -42,12 +42,12 @@
             INTEGER, INTENT(in) :: append
         END FUNCTION RM_DumpModule
         
-        INTEGER FUNCTION RM_ErrorHandler(id, result, str)
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: result
-            CHARACTER, INTENT(in) :: str
-        END FUNCTION RM_ErrorHandler
+        !INTEGER FUNCTION RM_ErrorHandler(id, result, str)
+        !    IMPLICIT NONE
+        !    INTEGER, INTENT(in) :: id
+        !    INTEGER, INTENT(in) :: result
+        !    CHARACTER, INTENT(in) :: str
+        !END FUNCTION RM_ErrorHandler
         
         INTEGER FUNCTION RM_ErrorMessage(id, errstr)
             IMPLICIT NONE
@@ -59,6 +59,11 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_FindComponents  
+
+        INTEGER FUNCTION RM_GetChemistryCellCount(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetChemistryCellCount 
         
         INTEGER FUNCTION RM_GetComponent(id, num, comp_name)
             IMPLICIT NONE

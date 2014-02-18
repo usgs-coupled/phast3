@@ -18,7 +18,7 @@ IRM_RESULT
 RM_CloseFiles(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	// error_file is stderr
+	// closes output and log file
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
@@ -66,7 +66,9 @@ RM_Concentrations2Utility(int *id, double *c, int *n, double *tc, double *p_atm)
 int RM_Create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
-	// Creates reaction module
+	//
+	// Creates reaction module, called by root and MPI workers
+	//
 	return PhreeqcRM::CreateReactionModule(*nxyz, *nthreads);
 }
 
@@ -75,9 +77,9 @@ IRM_RESULT RM_CreateMapping(int *id, int *grid2chem)
 /* ---------------------------------------------------------------------- */
 {
 	//
-	// Creates many-to-one mapping from all grid cells to cells for chemistry
-	// Allows exclusion of inactive cells and 
-	// cells that are redundant by symmetry (1D or 2D chemistry)
+	// Creates mapping from all grid cells to only cells for chemistry
+	// Excludes inactive cells (negative values) and cells that are redundant by symmetry (many-to-one mapping)
+	// (1D or 2D chemistry)
 	//
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
@@ -127,7 +129,7 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int RM_ErrorHandler(int *id, int *result, const char * str, size_t l)
 /* ---------------------------------------------------------------------- */
@@ -154,6 +156,7 @@ int RM_ErrorHandler(int *id, int *result, const char * str, size_t l)
 	}
 	return IRM_BADINSTANCE;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_ErrorMessage(int *id, const char *err_str, size_t l)

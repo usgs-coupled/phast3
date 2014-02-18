@@ -17,6 +17,7 @@ int
 RM_CloseFiles(int id)
 /* ---------------------------------------------------------------------- */
 {	
+	// closes output and log file
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
@@ -29,7 +30,11 @@ int
 RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm)
 /* ---------------------------------------------------------------------- */
 {
-	// error_file is stderr
+	// set of concentrations c is imported to SOLUTIONs in the Utility IPhreeqc
+	// n is the number of sets of concentrations
+	// c is of size n times count_components, equivalent to Fortran definition (n, ncomps)
+	// tc is array of dimension n of temperatures 
+	// p_atm is array of dimension n pressure
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
@@ -59,6 +64,9 @@ RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm)
 int RM_Create(int nxyz, int nthreads)
 /* ---------------------------------------------------------------------- */
 {
+	//
+	// Creates reaction module, called by root and MPI workers
+	//
 	return PhreeqcRM::CreateReactionModule(nxyz, nthreads);
 }
 
@@ -68,7 +76,7 @@ int RM_CreateMapping(int id, int *grid2chem)
 {
 	//
 	// Creates mapping from all grid cells to only cells for chemistry
-	// Excludes inactive cells and cells that are redundant by symmetry
+	// Excludes inactive cells (negative values) and cells that are redundant by symmetry (many-to-one mapping)
 	// (1D or 2D chemistry)
 	//
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -83,6 +91,7 @@ int RM_CreateMapping(int id, int *grid2chem)
 int RM_DecodeError(int id, int e)
 /* ---------------------------------------------------------------------- */
 {
+	// Prints the error message for IRM_RESULT e
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
@@ -109,7 +118,7 @@ int RM_DumpModule(int id, int dump_on, int use_gz)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int RM_ErrorHandler(int id, int result, const char * str)
 /* ---------------------------------------------------------------------- */
@@ -133,7 +142,7 @@ int RM_ErrorHandler(int id, int result, const char * str)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 int
 RM_ErrorMessage(int id, const char *err_str)
