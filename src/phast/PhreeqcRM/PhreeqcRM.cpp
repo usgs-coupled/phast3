@@ -807,8 +807,9 @@ PhreeqcRM::Char2TrimString(const char * str, size_t l)
 	{
 		if (l > 0)
 		{
+			size_t ll = strnlen(str, l);
 			std::string tstr(str, (int) l);
-			stdstr = tstr;
+			stdstr = tstr.substr(0,ll);
 		}
 		else
 		{

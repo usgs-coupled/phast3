@@ -21,8 +21,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int * print_chemistry_mask;
 		int * grid2chem;
 		int nchem;
-		char str[100] ;
-		int ncomps;
+		char str[100];
+		char str1[200];
+		int ncomps, ncomps1;
 		char ** components;
 		int * ic1; 
 		int * ic2;
@@ -58,6 +59,12 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
 		// Open error, log, and output files
 		status = RM_OpenFiles(id);
+		status = RM_GetFilePrefix(id, str, 100);
+		strcpy(str1, "File prefix: ");
+		strcat(str1, str);
+		strcat(str1, "\n");
+		status = RM_OutputMessage(id, str1);
+		status = RM_LogMessage(id, str1);
 
 		// Set concentration units
 		status = RM_SetUnitsSolution(id, 2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -128,6 +135,12 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		{
 			components[i] = (char *) malloc((size_t) (100 * sizeof(char *)));
 			status = RM_GetComponent(id, i, components[i], 100);
+		}
+		ncomps1 = RM_GetComponentCount(id);
+		if (ncomps != ncomps1)
+		{
+			status = RM_ErrorMessage(id, "Number of components is different");
+			exit(4);
 		}
 		    
 		// Set array of initial conditions

@@ -27,7 +27,8 @@
     integer,          dimension(:), allocatable   :: grid2chem
     integer                                       :: nchem
     character(100)                                :: string
-    integer                                       :: ncomps
+    character(200)                                :: string1
+    integer                                       :: ncomps, ncomps1
     character(100),   dimension(:), allocatable   :: components
     integer,          dimension(:,:), allocatable :: ic1, ic2
     double precision, dimension(:,:), allocatable :: f1
@@ -61,6 +62,10 @@
     status = RM_SetErrorHandlerMode(id, 2)
     ! Open error, log, and output files
     status = RM_OpenFiles(id)
+	status = RM_GetFilePrefix(id, string)
+    string1 = "File prefix: "//string;
+	status = RM_OutputMessage(id, string1)
+	status = RM_LogMessage(id, string1)
   
     ! Set concentration units
     status = RM_SetUnitsSolution(id, 2)      ! 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -132,6 +137,11 @@
     do i = 1, ncomps
         status = RM_GetComponent(id, i, components(i))
     enddo
+	ncomps1 = RM_GetComponentCount(id)
+	if (ncomps .ne. ncomps1) then
+		status = RM_ErrorMessage(id, "Number of components is different")
+		stop
+	endif
     
     ! Set array of initial conditions
     allocate(ic1(nxyz,7), ic2(nxyz,7), f1(nxyz,7))

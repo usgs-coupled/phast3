@@ -188,7 +188,7 @@ int RM_GetChemistryCellCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetComponent(int id, int num, char *chem_name, size_t l1)
+int RM_GetComponent(int id, int num, char *chem_name, int l1)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -203,6 +203,18 @@ int RM_GetComponent(int id, int num, char *chem_name, size_t l1)
 			return IRM_OK;
 		}
 		return IRM_INVALIDARG;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetComponentCount(int id)
+/* ---------------------------------------------------------------------- */
+{
+	// Returns the number of components 
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetComponentCount();
 	}
 	return IRM_BADINSTANCE;
 }
@@ -250,7 +262,7 @@ RM_GetDensity(int id, double * d)
 }
 /* ---------------------------------------------------------------------- */
 int 
-RM_GetFilePrefix(int id, char *prefix, long l)
+RM_GetFilePrefix(int id, char *prefix, int l)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -397,7 +409,7 @@ int RM_GetSelectedOutputCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetSelectedOutputHeading(int id, int icol, char *heading, size_t length)
+int RM_GetSelectedOutputHeading(int id, int icol, char *heading, int length)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -668,7 +680,6 @@ RM_OutputMessage(int id, const char *err_str)
 		if (err_str)
 		{
 			std::string e_string(err_str);
-			trim_right(e_string);
 			Reaction_module_ptr->OutputMessage(e_string);
 			return IRM_OK;
 		}
