@@ -760,10 +760,9 @@ RM_OutputMessage(int *id, const char *str, size_t l)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		std::string e_string(str, (int) l);
-		trim_right(e_string);
+		std::string e_string = Reaction_module_ptr->Char2TrimString(str, l);
 		e_string.append("\n");
-		Reaction_module_ptr->WarningMessage(e_string);
+		Reaction_module_ptr->OutputMessage(e_string);
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;

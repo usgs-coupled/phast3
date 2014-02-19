@@ -23,6 +23,11 @@ int advection_cpp()
 		{
 			phreeqc_rm.OpenFiles();
 		}
+		std::string str = "File prefix: ";
+		str.append(phreeqc_rm.GetFilePrefix());
+		str.append("\n");
+		phreeqc_rm.OutputMessage(str);
+		phreeqc_rm.LogMessage(str);
 
 		// Set concentration units
 		status = phreeqc_rm.SetUnitsSolution(2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -93,6 +98,12 @@ int advection_cpp()
 		// Set reference to components
 		int ncomps = phreeqc_rm.FindComponents();
 		const std::vector<std::string> &components = phreeqc_rm.GetComponents();
+		int ncomps1 = phreeqc_rm.GetComponentCount();
+		if (ncomps != ncomps1)
+		{
+			phreeqc_rm.ErrorMessage("Number of components is different");
+			exit(4);
+		}
 		int nchem = phreeqc_rm.GetChemistryCellCount();
 
 		// Set array of initial conditions
@@ -307,12 +318,14 @@ int units_tester()
 
 		// Load database
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
+		//status = phreeqc_rm.LoadDatabase("wateq4f.dat");
 
 		// Run file to define solutions and reactants for initial conditions, selected output
 		bool workers = false;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
 		bool initial_phreeqc = true;      // This is an IPhreeqc for accumulating initial and boundary conditions
 		bool utility = false;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
 		// mixture for a well
+		//status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "dk");
 		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "units.pqi");
 
 		status = phreeqc_rm.SetFilePrefix("Units_InitialPhreeqc_2");

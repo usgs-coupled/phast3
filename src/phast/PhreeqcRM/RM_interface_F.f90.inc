@@ -82,10 +82,10 @@
             DOUBLE PRECISION, INTENT(out)  :: c
         END FUNCTION RM_GetConcentrations 
 
-        INTEGER FUNCTION RM_GetDensity(id, d)   
+        INTEGER FUNCTION RM_GetDensity(id, density)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: d
+            DOUBLE PRECISION, INTENT(out) :: density
         END FUNCTION RM_GetDensity 
         
         INTEGER FUNCTION RM_GetFilePrefix(id, prefix)
@@ -216,6 +216,12 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_OpenFiles
+        
+        INTEGER FUNCTION RM_OutputMessage(id, str)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, INTENT(in) :: str
+        END FUNCTION RM_OutputMessage
         
         INTEGER FUNCTION RM_RunCells(id)   
             IMPLICIT NONE
