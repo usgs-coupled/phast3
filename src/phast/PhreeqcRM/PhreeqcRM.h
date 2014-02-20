@@ -158,7 +158,6 @@ public:
 	int                                       GetIPhreeqcId(int i) {return (i > 0 && i < this->nthreads + 2) ? this->workers[i]->GetId() : -1;};
 	const int                                 GetMpiMyself(void) const {return this->mpi_myself;}
 	const int                                 GetMpiTasks(void) const {return this->mpi_tasks;}
-	int                                       GetNThreads() {return this->nthreads;}
 	int                                       GetNthSelectedOutputUserNumber(int *i);
 	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
@@ -177,6 +176,7 @@ public:
 	std::vector<double> &                     GetSolutionVolume(void); 
 	const std::vector < int> &                GetStartCell(void) const {return this->start_cell;} 
 	std::vector<double> &                     GetTemperature(void) {return this->tempc;}
+	int                                       GetThreadCount() {return this->nthreads;}
 	double                                    GetTime(void) const {return this->time;} 
 	double                                    GetTimeStep(void) const {return this->time_step;}
 	const double                              GetTimeConversion(void) const {return this->time_conversion;} 

@@ -31,7 +31,6 @@
 #define RM_GetIPhreeqcId                   FC_FUNC_ (rm_getiphreeqcid,                 RM_GETIPHREEQCID)
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
 #define RM_GetMpiTasks                     FC_FUNC_ (rm_getmpitasks,                   RM_GETMPITASKS)
-#define RM_GetNThreads                     FC_FUNC_ (rm_getnthreads,                   RM_GETNTHREADS)
 #define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
 #define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
 #define RM_GetSelectedOutputColumnCount    FC_FUNC_ (rm_getselectedoutputcolumncount,  RM_GETSELECTEDOUTPUTCOLUMNCOUNT)
@@ -39,6 +38,7 @@
 #define RM_GetSelectedOutputHeading        FC_FUNC_ (rm_getselectedoutputheading,      RM_GETSELECTEDOUTPUTHEADING)
 #define RM_GetSelectedOutputRowCount       FC_FUNC_ (rm_getselectedoutputrowcount,     RM_GETSELECTEDOUTPUTROWCOUNT)
 #define RM_GetSolutionVolume               FC_FUNC_ (rm_getsolutionvolume,             RM_GETSOLUTIONVOLUME)
+#define RM_GetThreadCount                  FC_FUNC_ (rm_getthreadcount,                RM_GETTHREADCOUNT)
 #define RM_GetTime                         FC_FUNC_ (rm_gettime,                       RM_GETTIME)
 #define RM_GetTimeConversion               FC_FUNC_ (rm_gettimeconversion,             RM_GETTIMECONVERSION)
 #define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
@@ -117,7 +117,6 @@ int        RM_GetGridCellCount(int *id);
 int        RM_GetIPhreeqcId(int *id, int *i);
 int        RM_GetMpiMyself(int *id);
 int        RM_GetMpiTasks(int *id);
-int        RM_GetNThreads(int *id);
 int        RM_GetNthSelectedOutputUserNumber(int *id, int *i);
 IRM_RESULT RM_GetSelectedOutput(int *id, double *so);
 int        RM_GetSelectedOutputColumnCount(int *id);
@@ -125,6 +124,7 @@ int        RM_GetSelectedOutputCount(int *id);
 IRM_RESULT RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, size_t length);
 int        RM_GetSelectedOutputRowCount(int *id);
 IRM_RESULT RM_GetSolutionVolume(int *id, double *solution_volume);
+int        RM_GetThreadCount(int *id);
 double     RM_GetTime(int *id);
 double     RM_GetTimeConversion(int *id);
 double     RM_GetTimeStep(int *id);

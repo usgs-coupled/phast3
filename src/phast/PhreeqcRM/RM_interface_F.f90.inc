@@ -121,11 +121,6 @@
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetMpiTasks
         
-        INTEGER FUNCTION RM_GetNThreads(id)
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetNThreads
-        
         INTEGER FUNCTION RM_GetNthSelectedOutputUserNumber(id, n)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id, n
@@ -157,6 +152,11 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetSelectedOutputRowCount
+        
+        INTEGER FUNCTION RM_GetThreadCount(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetThreadCount
         
         DOUBLE PRECISION FUNCTION RM_GetTime(id)
             IMPLICIT NONE

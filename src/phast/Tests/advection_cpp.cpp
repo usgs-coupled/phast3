@@ -17,16 +17,9 @@ int advection_cpp()
 
 		// Create reaction module
 		PhreeqcRM phreeqc_rm(nxyz, nthreads);
-		status = phreeqc_rm.SetErrorHandlerMode(1);        // throw exception on error
+		status = phreeqc_rm.SetErrorHandlerMode(1);        // 1 = throw exception on error
 		status = phreeqc_rm.SetFilePrefix("Advect_cpp");
-		if (phreeqc_rm.GetMpiMyself() == 0)
-		{
-			phreeqc_rm.OpenFiles();
-		}
-		std::string str = "File prefix: ";
-		str.append(phreeqc_rm.GetFilePrefix());
-		str.append("\n");
-		phreeqc_rm.OutputMessage(str);
+		phreeqc_rm.OpenFiles();
 
 		// Set concentration units
 		status = phreeqc_rm.SetUnitsSolution(2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -83,10 +76,9 @@ int advection_cpp()
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
 
 		// Run file to define solutions and reactants for initial conditions, selected output
-		bool workers = true;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
+		bool workers = true;             // One or more IPhreeqcs for doing the reaction calculations for transport
 		bool initial_phreeqc = true;     // This is an IPhreeqc for accumulating initial and boundary conditions
-		bool utility = true;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
-		// mixture for a well
+		bool utility = true;             // This is an extra IPhreeqc available for processing
 		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "advect.pqi");
 
 		// For demonstration, clear contents of workers and utility
@@ -97,6 +89,25 @@ int advection_cpp()
 
 		// Set reference to components
 		int ncomps = phreeqc_rm.FindComponents();
+
+		// Print some of the reaction module information
+		{
+			char str1[100];
+			sprintf(str1, "Number of threads:                                %d\n", phreeqc_rm.GetThreadCount());
+			phreeqc_rm.OutputMessage(str1);
+			sprintf(str1, "Number of MPI processes:                          %d\n", phreeqc_rm.GetMpiTasks());
+			phreeqc_rm.OutputMessage(str1);
+			sprintf(str1, "MPI task number:                                  %d\n", phreeqc_rm.GetMpiMyself());
+			phreeqc_rm.OutputMessage(str1);
+			sprintf(str1, "File prefix:                                      %s\n", phreeqc_rm.GetFilePrefix().c_str());
+			phreeqc_rm.OutputMessage(str1);
+			sprintf(str1, "Number of grid cells in the user's model:         %d\n", phreeqc_rm.GetGridCellCount());
+			phreeqc_rm.OutputMessage(str1);
+			sprintf(str1, "Number of chemistry cells in the reaction module: %d\n", phreeqc_rm.GetChemistryCellCount());
+			phreeqc_rm.OutputMessage(str1);
+			sprintf(str1, "Number of components for transport:               %d\n", phreeqc_rm.GetComponentCount());
+			phreeqc_rm.OutputMessage(str1);
+		}
 		const std::vector<std::string> &components = phreeqc_rm.GetComponents();
 		const std::vector < double > & gfw = phreeqc_rm.GetGfw();
 		for (int i = 0; i < ncomps; i++)
@@ -107,15 +118,6 @@ int advection_cpp()
 			phreeqc_rm.OutputMessage(strm.str());
 		}
 		phreeqc_rm.OutputMessage("\n");
-
-		// Demonstrate GetComponentCount, ErrorMessage
-		int ncomps1 = phreeqc_rm.GetComponentCount();
-		if (ncomps != ncomps1)
-		{
-			// Never reaches here
-			phreeqc_rm.ErrorMessage("Number of components is different");
-			exit(4);
-		}
 
 		// Set array of initial conditions
 		std::vector<int> ic1, ic2;

@@ -883,32 +883,119 @@ Called by root.
  */
 int RM_GetGfw(int id, double * gfw);
 /**
- *  Returns the number of grid cells in the user's model.
- *  @param id            The instance id returned from @ref RM_Create.
- *  @retval Number of grid cells in the user's model.
- *  @retval If negative, IRM_RESULT error code.
- *  The mapping from grid cells to chemistry cells is defined by RM_CreateMapping.
- *  The number of chemistry cells may be less than the number of grid cells if there are inactive regions or symmetry in the model definition.
- *  @see                 @ref RM_CreateMapping, @ref RM_GetChemistryCellCount. 
- *  MPI:
- *     Called by all processes.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      INTEGER FUNCTION RM_GetGridCellCount(id)
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *      END FUNCTION RM_GetGridCellCount
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
+Returns the number of grid cells in the user's model, which is defined in the call to @ref RM_Create. 
+The mapping from grid cells to chemistry cells is defined by @ref RM_CreateMapping.
+The number of chemistry cells may be less than the number of grid cells if 
+there are inactive regions or symmetry in the model definition.
+@param id               The instance id returned from @ref RM_Create. 
+@retval                 Number of grid cells in the user's model, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_Create,  @ref RM_CreateMapping.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetGridCellCount(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE> 
+nxyz = RM_GetGridCellCount(id);
+sprintf(str1, "Number of grid cells in the user's model: %d\n", nxyz);
+status = RM_OutputMessage(id, str1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetGridCellCount(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetGridCellCount
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+nxyz = RM_GetGridCellCount(id)
+write(string1, "(A,I)") "Number of grid cells in the user's model: ", nxyz
+status = RM_OutputMessage(id, trim(string1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
  */
 int        RM_GetGridCellCount(int id);
+/**
+Returns an IPhreeqc id for one of the IPhreeqc instances in the reaction module. 
+The threaded version has nthreads, as defined in @ref RM_Create.
+The number of threads can be determined by @ref RM_GetThreadCount.
+There will be nthreads + 2 IPhreeqc instances. The first nthreads will be the workers, the
+next is the Initial IPhreeqc instance, and the next is the Utility instance. Getting
+the IPhreeqc id for one of these allows the user to use any of the IPhreeqc methods
+on that instance. For MPI, each process has three IPhreeqc instances, one worker, 
+one Initial IPhreeqc instance, and one Utility instance.
+@param id               The instance id returned from @ref RM_Create. 
+@param i                The number of the IPhreeqc instance (0 based). 
+@retval                 IPhreeqc id for the ith IPhreeqc instance.
+@see                    @ref RM_Create, @ref RM_GetThreadCount, documentation for IPhreeqc.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetIPhreeqcId(int id, int i);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE> 		
+iphreeqc_id = RM_GetIPhreeqcId(id, nthreads + 1); // Utility instance 
+strcpy(str, "SELECTED_OUTPUT 5; -pH; SOLUTION 1; RUN_CELLS; -cells 1");
+status = RunString(iphreeqc_id, str);
+status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
+status = GetSelectedOutputValue2(iphreeqc_id, 1, 0, &vtype, &pH, svalue, 100);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetIPhreeqcId(id, i)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: i
+END FUNCTION RM_GetIPhreeqcId
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+iphreeqc_id = RM_GetIPhreeqcId(id, nthreads + 1) ! Utility instance
+string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
+status = RunString(iphreeqc_id, string)
+status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
+status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 int        RM_GetIPhreeqcId(int id, int i);
 int        RM_GetMpiMyself(int id);
 int        RM_GetMpiTasks(int id);
-int        RM_GetNThreads(int id);
 int        RM_GetNthSelectedOutputUserNumber(int id, int i);
 int        RM_GetSelectedOutput(int id, double *so);
 int        RM_GetSelectedOutputColumnCount(int id);
@@ -916,6 +1003,7 @@ int        RM_GetSelectedOutputCount(int id);
 int        RM_GetSelectedOutputHeading(int id, int icol, char * heading, int length);
 int        RM_GetSelectedOutputRowCount(int id);
 int        RM_GetSolutionVolume(int id, double *v);
+int        RM_GetThreadCount(int id);
 double     RM_GetTime(int id);
 double     RM_GetTimeConversion(int id);
 double     RM_GetTimeStep(int id);
