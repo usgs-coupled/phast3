@@ -158,7 +158,7 @@ public:
 	int                                       GetIPhreeqcId(int i) {return (i > 0 && i < this->nthreads + 2) ? this->workers[i]->GetId() : -1;};
 	const int                                 GetMpiMyself(void) const {return this->mpi_myself;}
 	const int                                 GetMpiTasks(void) const {return this->mpi_tasks;}
-	int                                       GetNthSelectedOutputUserNumber(int *i);
+	int                                       GetNthSelectedOutputUserNumber(int i);
 	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}

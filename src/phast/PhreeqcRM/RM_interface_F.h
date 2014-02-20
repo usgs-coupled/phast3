@@ -17,7 +17,7 @@
 #define RM_DecodeError                     FC_FUNC_ (rm_decodeerror,                   RM_DECODEERROR)
 #define RM_Destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
 #define RM_DumpModule                      FC_FUNC_ (rm_dumpmodule,                    RM_DUMPMODULE)
-//#define RM_ErrorHandler                    FC_FUNC_ (rm_errorhandler,                  RM_ERRORHANDLER)
+#define RM_ErrorHandler                    FC_FUNC_ (rm_errorhandler,                  RM_ERRORHANDLER)
 #define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
 #define RM_GetChemistryCellCount           FC_FUNC_ (rm_getchemistrycellcount,         RM_GETCHEMISTRYCELLCOUNT)
@@ -103,7 +103,7 @@ IRM_RESULT RM_CreateMapping (int *id, int *grid2chem);
 IRM_RESULT RM_DecodeError (int *id, int *e); 
 IRM_RESULT RM_Destroy(int *id);
 IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *append);
-//int RM_ErrorHandler(int *id, int *result, const char * err_str, size_t l = 0);
+int RM_ErrorHandler(int *id, int *result, const char * err_str, size_t l = 0);
 IRM_RESULT RM_ErrorMessage(int *id, const char *err_str, size_t l = 0);
 int        RM_FindComponents(int *id);
 int        RM_GetChemistryCellCount(int *id);
