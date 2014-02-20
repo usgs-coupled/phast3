@@ -25,6 +25,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		char str1[200];
 		int ncomps, ncomps1;
 		char ** components;
+		double * gfw;
 		int * ic1; 
 		int * ic2;
 		double * f1;
@@ -64,7 +65,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		strcat(str1, str);
 		strcat(str1, "\n");
 		status = RM_OutputMessage(id, str1);
-		status = RM_LogMessage(id, str1);
 
 		// Set concentration units
 		status = RM_SetUnitsSolution(id, 2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -131,14 +131,22 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		// Get list of components
 		ncomps = RM_FindComponents(id);
 		components = (char **) malloc((size_t) (ncomps * sizeof(char *)));
+		gfw = (double *) malloc((size_t) (ncomps * sizeof(double)));
+		status = RM_GetGfw(id, gfw);
 		for (i = 0; i < ncomps; i++)
 		{
 			components[i] = (char *) malloc((size_t) (100 * sizeof(char *)));
 			status = RM_GetComponent(id, i, components[i], 100);
+			sprintf(str,"%10s    %10.3f\n", components[i], gfw[i]);
+			status = RM_OutputMessage(id, str);
 		}
+		status = RM_OutputMessage(id, "\n");
+
+		// Demonstrate RM_GetComponentCount, RM_ErrorMessage
 		ncomps1 = RM_GetComponentCount(id);
 		if (ncomps != ncomps1)
 		{
+			// never reaches here
 			status = RM_ErrorMessage(id, "Number of components is different");
 			exit(4);
 		}
@@ -215,6 +223,10 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		for (isteps = 0; isteps < nsteps; isteps++)
 		{
 			// Advection calculation
+			sprintf(str, "%s%10.1f%s", "Beginning transport calculation      ", 
+				time * RM_GetTimeConversion(id), " days\n");
+			status = RM_LogMessage(id, str);
+			status = RM_ScreenMessage(id, str);
 			advect_c(c, bc_conc, ncomps, nxyz, nbound);
         
 			// Send any new conditions to module
@@ -223,7 +235,8 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			status = RM_SetTemperature(id, temperature);  // If temperature changes
 			status = RM_SetPressure(id, pressure);        // If pressure changes
 			status = RM_SetConcentrations(id, c);
-        
+			time = time + time_step;
+			status = RM_SetTime(id, time); 
 			// Set print flag
  			if (isteps == nsteps - 1) 
 			{
@@ -233,10 +246,14 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			{
 				status = RM_SetPrintChemistryOn(id, 0, 0, 0); // workers, initial_phreeqc, utility
 			}
+
 			// Run cells with new conditions
-			time = time + time_step;
-			status = RM_SetTime(id, time); 
+			sprintf(str, "%s%10.1f%s", "Beginning reaction calculation       ", time * RM_GetTimeConversion(id), " days\n");
+			status = RM_LogMessage(id, str);
+			status = RM_ScreenMessage(id, str);
 			status = RM_RunCells(id);  
+
+			// Retrieve reacted concentrations
 			status = RM_GetConcentrations(id, c);
  
 			// Print results at last time step

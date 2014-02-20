@@ -27,7 +27,6 @@ int advection_cpp()
 		str.append(phreeqc_rm.GetFilePrefix());
 		str.append("\n");
 		phreeqc_rm.OutputMessage(str);
-		phreeqc_rm.LogMessage(str);
 
 		// Set concentration units
 		status = phreeqc_rm.SetUnitsSolution(2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -75,6 +74,7 @@ int advection_cpp()
 		}
 		status = phreeqc_rm.CreateMapping(grid2chem.data());
 		if (status < 0) phreeqc_rm.DecodeError(status); 
+		int nchem = phreeqc_rm.GetChemistryCellCount();
 
 		// Set printing of chemistry file
 		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
@@ -98,13 +98,24 @@ int advection_cpp()
 		// Set reference to components
 		int ncomps = phreeqc_rm.FindComponents();
 		const std::vector<std::string> &components = phreeqc_rm.GetComponents();
+		const std::vector < double > & gfw = phreeqc_rm.GetGfw();
+		for (int i = 0; i < ncomps; i++)
+		{
+			std::ostringstream strm;
+			strm.width(10);
+			strm << components[i] << "    " << gfw[i] << "\n";
+			phreeqc_rm.OutputMessage(strm.str());
+		}
+		phreeqc_rm.OutputMessage("\n");
+
+		// Demonstrate GetComponentCount, ErrorMessage
 		int ncomps1 = phreeqc_rm.GetComponentCount();
 		if (ncomps != ncomps1)
 		{
+			// Never reaches here
 			phreeqc_rm.ErrorMessage("Number of components is different");
 			exit(4);
 		}
-		int nchem = phreeqc_rm.GetChemistryCellCount();
 
 		// Set array of initial conditions
 		std::vector<int> ic1, ic2;
@@ -158,6 +169,12 @@ int advection_cpp()
 		for (int steps = 0; steps < nsteps; steps++)
 		{
 			// Transport calculation here
+			{
+				std::ostringstream strm;
+				strm << "Beginning transport calculation             " <<  time * phreeqc_rm.GetTimeConversion() << " days\n";
+				phreeqc_rm.LogMessage(strm.str());
+				phreeqc_rm.ScreenMessage(strm.str());
+			}
 			AdvectCpp(c, bc_conc, ncomps, nxyz, nbound);
 
 			// Send new conditions to module
@@ -168,11 +185,19 @@ int advection_cpp()
 			status = phreeqc_rm.SetTemperature(temperature.data());  // If temperature changes
 			status = phreeqc_rm.SetPressure(pressure.data());        // If pressure changes
 			status = phreeqc_rm.SetConcentrations(c.data());
-
-			// Run cells with new conditions
 			time = time + time_step;
 			status = phreeqc_rm.SetTime(time);
+
+			// Run cells with new conditions
+			{
+				std::ostringstream strm;
+				strm << "Beginning reaction calculation              " << time * phreeqc_rm.GetTimeConversion() << " days\n";
+				phreeqc_rm.LogMessage(strm.str());
+				phreeqc_rm.ScreenMessage(strm.str());
+			}
 			status = phreeqc_rm.RunCells();
+
+			// Retrieve reacted concentrations
 			status = phreeqc_rm.GetConcentrations(c.data());
 
 			// Print results at last time step

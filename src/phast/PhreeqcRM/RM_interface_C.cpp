@@ -626,7 +626,6 @@ RM_LogMessage(int id, const char *err_str)
 		if (err_str)
 		{
 			std::string e_string(err_str);
-			trim_right(e_string);
 			Reaction_module_ptr->LogMessage(e_string);
 			return IRM_OK;
 		}
@@ -742,7 +741,6 @@ RM_ScreenMessage(int id, const char *err_str)
 		if (err_str)
 		{
 			std::string e_string(err_str);
-			trim_right(e_string);
 			Reaction_module_ptr->ScreenMessage(e_string);
 			return IRM_OK;
 		}

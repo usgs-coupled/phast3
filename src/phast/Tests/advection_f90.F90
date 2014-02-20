@@ -30,6 +30,7 @@
     character(200)                                :: string1
     integer                                       :: ncomps, ncomps1
     character(100),   dimension(:), allocatable   :: components
+    double precision, dimension(:), allocatable   :: gfw
     integer,          dimension(:,:), allocatable :: ic1, ic2
     double precision, dimension(:,:), allocatable :: f1
     integer                                       :: nbound
@@ -65,7 +66,6 @@
 	status = RM_GetFilePrefix(id, string)
     string1 = "File prefix: "//string;
 	status = RM_OutputMessage(id, string1)
-	status = RM_LogMessage(id, string1)
   
     ! Set concentration units
     status = RM_SetUnitsSolution(id, 2)      ! 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -131,18 +131,26 @@
     string = "DELETE; -all"
     status = RM_RunString(id, 1, 0, 1, string)  ! workers, initial_phreeqc, utility
  
-    ! Get list of components
+    ! Get list of components, write to output file
     ncomps = RM_FindComponents(id)
     allocate(components(ncomps))
+    allocate(gfw(ncomps))
+    status = RM_GetGfw(id, gfw(1))
     do i = 1, ncomps
         status = RM_GetComponent(id, i, components(i))
+        write(string,"(A10, F15.4)") components(i), gfw(i)
+        status = RM_OutputMessage(id, string)
     enddo
+    status = RM_OutputMessage(id, " ")
+    
+    ! Demonstrates RM_GetComponentCount, RM_ErrorMessage
 	ncomps1 = RM_GetComponentCount(id)
 	if (ncomps .ne. ncomps1) then
+        ! never reaches here
 		status = RM_ErrorMessage(id, "Number of components is different")
 		stop
-	endif
-    
+    endif  
+
     ! Set array of initial conditions
     allocate(ic1(nxyz,7), ic2(nxyz,7), f1(nxyz,7))
     ic1 = -1
@@ -188,6 +196,9 @@
     status = RM_SetTimeStep(id, time_step)
     do isteps = 1, nsteps
         ! Advection calculation
+		write(string, "(A32,F15.1,A)") "Beginning transport calculation ", time * RM_GetTimeConversion(id), " days"
+		status = RM_LogMessage(id, string);
+		status = RM_ScreenMessage(id, string);
         call advect_f90(c, bc_conc, ncomps, nxyz)
         
         ! Send any new conditions to module
@@ -196,6 +207,8 @@
         status = RM_SetTemperature(id, temperature(1))  ! If temperature changes
         status = RM_SetPressure(id, pressure(1))        ! If pressure changes
         status = RM_SetConcentrations(id, c(1,1))
+        time = time + time_step
+        status = RM_SetTime(id, time) 
         
         ! print at last time step
  		if (isteps == nsteps) then
@@ -203,10 +216,15 @@
         else
             status = RM_SetPrintChemistryOn(id, 0, 0, 0)  ! workers, initial_phreeqc, utility
         endif
+        
         ! Run cells with new conditions
-        time = time + time_step
-        status = RM_SetTime(id, time) 
+		write(string, "(A32,F15.1,A)") "Beginning reaction calculation  ", &
+              time * RM_GetTimeConversion(id), " days"
+		status = RM_LogMessage(id, string);
+		status = RM_ScreenMessage(id, string);
         status = RM_RunCells(id)  
+
+		! Retrieve reacted concentrations
         status = RM_GetConcentrations(id, c(1,1))
  
         ! Print results at last time step
