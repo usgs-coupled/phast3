@@ -398,7 +398,7 @@ status = RM_DumpModule(id, dump_on, append)
 Called by root; workers must be in the loop of @ref MpiWorker.
  */
 int RM_DumpModule(int id, int dump_on, int append);
-//int RM_ErrorHandler(int id, int result, const char * err_str);
+int RM_ErrorHandler(int id, int result, const char * err_str);
 /**
 Send an error message to the screen, the output file, and the log file. 
 @param id               The instance id returned from @ref RM_Create.
@@ -944,7 +944,7 @@ on that instance. For MPI, each process has three IPhreeqc instances, one worker
 one Initial IPhreeqc instance, and one Utility instance.
 @param id               The instance id returned from @ref RM_Create. 
 @param i                The number of the IPhreeqc instance (0 based). 
-@retval                 IPhreeqc id for the ith IPhreeqc instance.
+@retval                 IPhreeqc id for the ith IPhreeqc instance, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create, @ref RM_GetThreadCount, documentation for IPhreeqc.
 @par C Prototype:
 @htmlonly
@@ -994,9 +994,196 @@ status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
 Called by root and (or) workers.
  */
 int        RM_GetIPhreeqcId(int id, int i);
+/**
+Returns the MPI task number. For the threaded version, the task number is always
+zero and the result of @ref RM_GetMpiTasks is one. For the MPI version, 
+the root task number is zero, and all workers have a task number greater than zero.
+The number of tasks can be obtained with @ref RM_GetMpiTasks. The number of 
+tasks and computer hosts are determined at run time by the mpiexec command.
+@param id               The instance id returned from @ref RM_Create.  
+@retval                 The MPI task number for a process, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_GetMpiTasks.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetMpiMyself(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>
+mpi_myself = RM_GetMpiMyself(id);
+if (mpi_myself == 0) 
+{
+  sprintf(str1, "I am root\n");
+}
+else
+{
+  sprintf(str1, "I am worker %d\n", mpi_myself);
+}
+status = RM_OutputMessage(id, str1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetMpiMyself(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetMpiMyself
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+mpi_myself = RM_GetMpiMyself(id)
+if (mpi_myself .eq. 0) then
+  write(string1, "(A)") "I am root"
+else
+  write(string1, "(A,I)") "I am worker ", mpi_myself
+endif
+status = RM_OutputMessage(id, string1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 int        RM_GetMpiMyself(int id);
+/**
+Returns the number of MPI processes (tasks). For the threaded version, the number of tasks is always
+one (although there may be multiple threads, @ref RM_GetThreadCount), 
+and the task number returned by @ref RM_GetMpiMyself is zero. For the MPI version, the number of 
+tasks and computer hosts are determined at run time by the mpiexec command.
+The root task number is zero, and all workers have a task number greater than zero.
+@param id               The instance id returned from @ref RM_Create.  
+@retval                 The number of MPI processes, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_GetMpiMyself.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetMpiTasks(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>
+mpi_tasks = RM_GetMpiTasks(id);
+sprintf(str1, "Number of MPI processes: %d\n", mpi_tasks);
+status = RM_OutputMessage(id, str1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetMpiTasks(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetMpiTasks
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+mpi_tasks = RM_GetMpiTasks(id)
+write(string1, "(A,I)") "Number of MPI processes: ", mpi_tasks
+status = RM_OutputMessage(id, string1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 int        RM_GetMpiTasks(int id);
-int        RM_GetNthSelectedOutputUserNumber(int id, int i);
+/**
+Returns the user number for the nth selected output definition. 
+Definitions are sorted by user number. Phreeqc allows multiple selected output
+definitions, each of which is assigned a nonnegative integer identifier by the 
+user. The number of definitions can be obtained by @ref RM_GetSelectedOutputCount.
+To cycle through all of the definitions, RM_GetNthSelectedOutputUserNumber 
+can be used to identify the user number for each selected output definition
+in sequence. @ref RM_SetCurrentSelectedOutputUserNumber is then used to select
+that user number for selected output processing.
+@param id               The instance id returned from @ref RM_Create. 
+@param n                The sequence number of the selected output definition for which the user number will be returned.  
+@retval                 The user number of the nth selected output definition, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_GetSelectedOutput, 
+@ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
+@ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetNthSelectedOutputUserNumber(int id, int n);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>				
+for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
+{
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  fprintf(stderr, "Selected output sequence number: %d\n", isel);
+  fprintf(stderr, "Selected output user number:     %d\n", n_user);
+  col = RM_GetSelectedOutputColumnCount(id);
+  selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
+  status = RM_GetSelectedOutput(id, selected_out);
+  // Process results here
+  free(selected_out);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetNthSelectedOutputUserNumber(id, n)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id, n
+END FUNCTION RM_GetNthSelectedOutputUserNumber
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>           
+do isel = 1, RM_GetSelectedOutputCount(id)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  write(*,*) "Selected output sequence number: ", isel);
+  write(*,*) "Selected output user number:     ", n_user);
+  col = RM_GetSelectedOutputColumnCount(id)
+  allocate(selected_out(nxyz,col))
+  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  ! Process results here
+  deallocate(selected_out)
+enddo
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+int        RM_GetNthSelectedOutputUserNumber(int id, int n);
 int        RM_GetSelectedOutput(int id, double *so);
 int        RM_GetSelectedOutputColumnCount(int id);
 int        RM_GetSelectedOutputCount(int id);

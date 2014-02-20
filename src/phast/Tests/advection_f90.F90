@@ -44,7 +44,7 @@
     double precision, dimension(:), allocatable   :: pressure
     integer                                       :: isteps, nsteps
     double precision, dimension(:,:), allocatable :: selected_out
-    integer                                       :: col
+    integer                                       :: col, isel, n_user
     character(100)                                :: heading
     double precision, dimension(:,:), allocatable :: c_well
     double precision, dimension(:), allocatable   :: tc, p_atm
@@ -237,27 +237,30 @@
         if (isteps == nsteps) then
  			! Get current density
             status = RM_GetDensity(id, density(1))
-
-			! Get double array of selected output values
-            col = RM_GetSelectedOutputColumnCount(id)
-            allocate(selected_out(nxyz,col))
-            status = RM_GetSelectedOutput(id, selected_out(1,1))
-
-			! Print results
-            do i = 1, nxyz/2
-                write(*,*) "Cell number ", i
-                write(*,*) "     Density: ", density(i)
-                write(*,*) "     Components: "
-                do j = 1, ncomps
-                    write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ",trim(components(j)), ": ", c(i,j)
+            do isel = 1, RM_GetSelectedOutputCount(id)
+                n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1)
+                status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
+				write(*,*) "Selected output sequence number: ", isel
+				write(*,*) "Selected output user number:     ", n_user
+                col = RM_GetSelectedOutputColumnCount(id)
+                allocate(selected_out(nxyz,col))
+                status = RM_GetSelectedOutput(id, selected_out(1,1))
+                ! Print results
+                do i = 1, nxyz/2
+                    write(*,*) "Cell number ", i
+                    write(*,*) "     Density: ", density(i)
+                    write(*,*) "     Components: "
+                    do j = 1, ncomps
+                        write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ",trim(components(j)), ": ", c(i,j)
+                    enddo
+                    write(*,*) "     Selected output: "
+                    do j = 1, col
+                        status = RM_GetSelectedOutputHeading(id, j-1, heading)    
+                        write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading),": ", selected_out(i,j)
+                    enddo
                 enddo
-                write(*,*) "     Selected output: "
-                do j = 1, col
-                    status = RM_GetSelectedOutputHeading(id, j-1, heading)    
-                    write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading),": ", selected_out(i,j)
-                enddo
+                deallocate(selected_out)
             enddo
-            deallocate(selected_out)
         endif
     enddo
     

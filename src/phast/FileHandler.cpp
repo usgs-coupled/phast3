@@ -390,7 +390,7 @@ FileHandler::ProcessRestartFiles(
 #else
 			// put restart definitions in reaction module
 			Reaction_module_ptr->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
-			int nthreads = Reaction_module_ptr->GetNThreads();
+			int nthreads = Reaction_module_ptr->GetThreadCount();
 			for (int n = 1; n < nthreads; n++)
 			{
 				std::ostringstream delete_command;

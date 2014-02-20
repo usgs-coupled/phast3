@@ -1010,7 +1010,7 @@ PhreeqcRM::CheckSelectedOutput()
 	{			
 		for (int nso = 0; nso < (int) this->workers[0]->CSelectedOutputMap.size(); nso++)
 		{
-			int n_user = this->GetNthSelectedOutputUserNumber(&nso);
+			int n_user = this->GetNthSelectedOutputUserNumber(nso);
 			int count = 0;
 			for (int n = 0; n < this->nthreads; n++)
 			{ 
@@ -2700,15 +2700,15 @@ PhreeqcRM::GetDensity(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-PhreeqcRM::GetNthSelectedOutputUserNumber(int *i)
+PhreeqcRM::GetNthSelectedOutputUserNumber(int i)
 /* ---------------------------------------------------------------------- */
 {
 	int return_value = IRM_OK;
 	try
 	{
-		if (i != NULL && *i >= 0) 
+		if (i >= 0) 
 		{
-			return_value = this->workers[0]->GetNthSelectedOutputUserNumber(*i);
+			return_value = this->workers[0]->GetNthSelectedOutputUserNumber(i);
 			this->ErrorHandler(return_value, "GetNthSelectedOutputUserNumber");
 		}
 		else

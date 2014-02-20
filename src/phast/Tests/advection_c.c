@@ -41,7 +41,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		double * pressure;
 		int isteps, nsteps;
 		double * selected_out;
-		int col;
+		int isel, n_user, col;
 		char heading[100];
 		double * c_well;
 		double * tc;
@@ -265,30 +265,38 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
  				// Get current density
 				status = RM_GetDensity(id, density);
 
-				// Get double array of selected output values
-				col = RM_GetSelectedOutputColumnCount(id);
-				//allocate(selected_out(nxyz,col))
-				selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
-				status = RM_GetSelectedOutput(id, selected_out);
-
-				// Print results
-				for (i = 0; i < nxyz/2; i++)
+				// Loop through possible multiple selected output definitions
+				for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
 				{
-					fprintf(stderr, "Cell number %d\n", i);
-					fprintf(stderr, "     Density: %f\n", density[i]);
-					fprintf(stderr, "     Components: \n");
-					for (j = 0; j < ncomps; j++)
+					n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
+					status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+					fprintf(stderr, "Selected output sequence number: %d\n", isel);
+					fprintf(stderr, "Selected output user number:     %d\n", n_user);
+					// Get double array of selected output values
+					col = RM_GetSelectedOutputColumnCount(id);
+					//allocate(selected_out(nxyz,col))
+					selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
+					status = RM_GetSelectedOutput(id, selected_out);
+
+					// Print results
+					for (i = 0; i < nxyz/2; i++)
 					{
-						fprintf(stderr, "          %2d %10s: %10.4f\n", j, components[j], c[j*nxyz + i]);
+						fprintf(stderr, "Cell number %d\n", i);
+						fprintf(stderr, "     Density: %f\n", density[i]);
+						fprintf(stderr, "     Components: \n");
+						for (j = 0; j < ncomps; j++)
+						{
+							fprintf(stderr, "          %2d %10s: %10.4f\n", j, components[j], c[j*nxyz + i]);
+						}
+						fprintf(stderr, "     Selected output: \n");
+						for (j = 0; j < col; j++)
+						{
+							status = RM_GetSelectedOutputHeading(id, j, heading, 100);  
+							fprintf(stderr, "          %2d %10s: %10.4f\n", j, heading, selected_out[j*nxyz + i]);
+						}
 					}
-					fprintf(stderr, "     Selected output: \n");
-					for (j = 0; j < col; j++)
-					{
-						status = RM_GetSelectedOutputHeading(id, j, heading, 100);  
-						fprintf(stderr, "          %2d %10s: %10.4f\n", j, heading, selected_out[j*nxyz + i]);
-					}
+					free(selected_out);
 				}
-				free(selected_out);
 			}
 		}
 

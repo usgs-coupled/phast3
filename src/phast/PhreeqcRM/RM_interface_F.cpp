@@ -129,7 +129,6 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int RM_ErrorHandler(int *id, int *result, const char * str, size_t l)
 /* ---------------------------------------------------------------------- */
@@ -156,7 +155,6 @@ int RM_ErrorHandler(int *id, int *result, const char * str, size_t l)
 	}
 	return IRM_BADINSTANCE;
 }
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_ErrorMessage(int *id, const char *err_str, size_t l)
@@ -397,7 +395,7 @@ RM_GetNthSelectedOutputUserNumber(int * id, int * i)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->GetNthSelectedOutputUserNumber(i);
+		return Reaction_module_ptr->GetNthSelectedOutputUserNumber(*i);
 	}
 	return IRM_BADINSTANCE;
 }

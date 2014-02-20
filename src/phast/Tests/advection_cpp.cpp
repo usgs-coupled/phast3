@@ -207,30 +207,36 @@ int advection_cpp()
 			{
 				// Get current density
 				std::vector<double> &density = phreeqc_rm.GetDensity();
-
-				// Get double array of selected output values
-				std::vector<double> so;
-				int col = phreeqc_rm.GetSelectedOutputColumnCount();
-				so.resize(nxyz*col, 0);
-				status = phreeqc_rm.GetSelectedOutput(so.data());
-
-				// Print results
-				for (int i = 0; i < nxyz/2; i++)
+				for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
 				{
-					std::cerr << "Cell number " << i << "\n";
-					std::cerr << "     Density: " << density[i] << "\n";
-					std::cerr << "     Components: " << "\n";
-					for (int j = 0; j < ncomps; j++)
+					int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
+					status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
+					std::cerr << "Selected output sequence number: " << isel << "\n";
+					std::cerr << "Selected output user number:     " << n_user << "\n";
+					// Get double array of selected output values
+					std::vector<double> so;
+					int col = phreeqc_rm.GetSelectedOutputColumnCount();
+					so.resize(nxyz*col, 0);
+					status = phreeqc_rm.GetSelectedOutput(so.data());
+
+					// Print results
+					for (int i = 0; i < nxyz/2; i++)
 					{
-						std::cerr << "          " << j << " " << components[j] << ": " << c[j*nxyz + i] << "\n";
-					}
-					std::vector<std::string> headings;
-					headings.resize(col);
-					std::cerr << "     Selected output: " << "\n";
-					for (int j = 0; j < col; j++)
-					{
-						status = phreeqc_rm.GetSelectedOutputHeading(&j, headings[j]);
-						std::cerr << "          " << j << " " << headings[j] << ": " << so[j*nxyz + i] << "\n";
+						std::cerr << "Cell number " << i << "\n";
+						std::cerr << "     Density: " << density[i] << "\n";
+						std::cerr << "     Components: " << "\n";
+						for (int j = 0; j < ncomps; j++)
+						{
+							std::cerr << "          " << j << " " << components[j] << ": " << c[j*nxyz + i] << "\n";
+						}
+						std::vector<std::string> headings;
+						headings.resize(col);
+						std::cerr << "     Selected output: " << "\n";
+						for (int j = 0; j < col; j++)
+						{
+							status = phreeqc_rm.GetSelectedOutputHeading(&j, headings[j]);
+							std::cerr << "          " << j << " " << headings[j] << ": " << so[j*nxyz + i] << "\n";
+						}
 					}
 				}
 			}

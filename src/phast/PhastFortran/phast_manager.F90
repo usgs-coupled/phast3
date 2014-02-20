@@ -397,8 +397,8 @@ SUBROUTINE CreateRM
         IF (rm_id.LT.0) THEN
             STOP
         END IF
-        nthreads = RM_GetNThreads(rm_id)
-        status = RM_SetErrorHandlerMode(rm_id, 2)   ! throw exception on error
+        nthreads = RM_GetThreadCount(rm_id)
+        status = RM_SetErrorHandlerMode(rm_id, 2)   ! exit
         status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
         status = RM_SetFilePrefix(rm_id, f3name)
         status = RM_OpenFiles(rm_id)

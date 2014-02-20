@@ -78,7 +78,7 @@ SUBROUTINE write2_2
   c_mol = c
   CALL convert_to_moles(rm_id, c_mol, nxyz)
   IF(nwel > 0) THEN
-     nthreads = RM_GetNThreads(rm_id)
+     nthreads = RM_GetThreadCount(rm_id)
      iphreeqc_id = RM_GetIPhreeqcId(rm_id, nthreads + 1)
      string = "SELECTED_OUTPUT; -reset false; -pH; -alkalinity"
      status = RunString(iphreeqc_id, string)
