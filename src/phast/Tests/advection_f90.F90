@@ -63,9 +63,6 @@
     status = RM_SetErrorHandlerMode(id, 2)
     ! Open error, log, and output files
     status = RM_OpenFiles(id)
-	status = RM_GetFilePrefix(id, string)
-    string1 = "File prefix: "//string;
-	status = RM_OutputMessage(id, string1)
   
     ! Set concentration units
     status = RM_SetUnitsSolution(id, 2)      ! 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -133,6 +130,23 @@
  
     ! Get list of components, write to output file
     ncomps = RM_FindComponents(id)
+    
+    ! Print some of the reaction module information		
+    write(string1, "(A,I)") "Number of threads:                                ", RM_GetThreadCount(id)
+	status = RM_OutputMessage(id, string1)
+	write(string1, "(A,I)") "Number of MPI processes:                          ", RM_GetMpiTasks(id)
+	status = RM_OutputMessage(id, string1)
+	write(string1, "(A,I)") "MPI task number:                                  ", RM_GetMpiMyself(id)
+	status = RM_OutputMessage(id, string1)
+	status = RM_GetFilePrefix(id, string)
+	write(string1, "(A,A)") "File prefix:                                      ", string
+	status = RM_OutputMessage(id, trim(string1))
+	write(string1, "(A,I)") "Number of grid cells in the user's model:         ", RM_GetGridCellCount(id)
+	status = RM_OutputMessage(id, trim(string1))
+	write(string1, "(A,I)") "Number of chemistry cells in the reaction module: ", RM_GetChemistryCellCount(id)
+	status = RM_OutputMessage(id, trim(string1))
+	write(string1, "(A,I)") "Number of components for transport:               ", RM_GetComponentCount(id)
+	status = RM_OutputMessage(id, trim(string1))
     allocate(components(ncomps))
     allocate(gfw(ncomps))
     status = RM_GetGfw(id, gfw(1))
@@ -142,14 +156,6 @@
         status = RM_OutputMessage(id, string)
     enddo
     status = RM_OutputMessage(id, " ")
-    
-    ! Demonstrates RM_GetComponentCount, RM_ErrorMessage
-	ncomps1 = RM_GetComponentCount(id)
-	if (ncomps .ne. ncomps1) then
-        ! never reaches here
-		status = RM_ErrorMessage(id, "Number of components is different")
-		stop
-    endif  
 
     ! Set array of initial conditions
     allocate(ic1(nxyz,7), ic2(nxyz,7), f1(nxyz,7))

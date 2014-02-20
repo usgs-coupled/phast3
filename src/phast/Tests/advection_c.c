@@ -23,7 +23,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int nchem;
 		char str[100];
 		char str1[200];
-		int ncomps, ncomps1;
+		int ncomps;
 		char ** components;
 		double * gfw;
 		int * ic1; 
@@ -60,11 +60,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
 		// Open error, log, and output files
 		status = RM_OpenFiles(id);
-		status = RM_GetFilePrefix(id, str, 100);
-		strcpy(str1, "File prefix: ");
-		strcat(str1, str);
-		strcat(str1, "\n");
-		status = RM_OutputMessage(id, str1);
 
 		// Set concentration units
 		status = RM_SetUnitsSolution(id, 2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
@@ -128,8 +123,25 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		strcpy(str, "DELETE; -all");
 		status = RM_RunString(id, 1, 0, 1, str);	// workers, initial_phreeqc, utility 
  
-		// Get list of components
+		// Make list of components
 		ncomps = RM_FindComponents(id);
+
+		// Print some of the reaction module information
+		sprintf(str1, "Number of threads:                                %d\n", RM_GetThreadCount(id));
+		status = RM_OutputMessage(id, str1);
+		sprintf(str1, "Number of MPI processes:                          %d\n", RM_GetMpiTasks(id));
+		status = RM_OutputMessage(id, str1);
+		sprintf(str1, "MPI task number:                                  %d\n", RM_GetMpiMyself(id));
+		status = RM_OutputMessage(id, str1);
+		status = RM_GetFilePrefix(id, str, 100);
+		sprintf(str1, "File prefix:                                      %s\n", str);
+		status = RM_OutputMessage(id, str1);
+		sprintf(str1, "Number of grid cells in the user's model:         %d\n", RM_GetGridCellCount(id));
+		status = RM_OutputMessage(id, str1);
+		sprintf(str1, "Number of chemistry cells in the reaction module: %d\n", RM_GetChemistryCellCount(id));
+		status = RM_OutputMessage(id, str1);
+		sprintf(str1, "Number of components for transport:               %d\n", RM_GetComponentCount(id));
+		status = RM_OutputMessage(id, str1);
 		components = (char **) malloc((size_t) (ncomps * sizeof(char *)));
 		gfw = (double *) malloc((size_t) (ncomps * sizeof(double)));
 		status = RM_GetGfw(id, gfw);
@@ -141,15 +153,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			status = RM_OutputMessage(id, str);
 		}
 		status = RM_OutputMessage(id, "\n");
-
-		// Demonstrate RM_GetComponentCount, RM_ErrorMessage
-		ncomps1 = RM_GetComponentCount(id);
-		if (ncomps != ncomps1)
-		{
-			// never reaches here
-			status = RM_ErrorMessage(id, "Number of components is different");
-			exit(4);
-		}
 		    
 		// Set array of initial conditions
 		//allocate(ic1(nxyz,7), ic2(nxyz,7), f1(nxyz,7))
@@ -197,7 +200,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		} 
 		bc_conc = (double *) malloc((size_t) (ncomps * nbound * sizeof(double)));
 		status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
-		
+
 		// Initial equilibration of cells
 		time = 0.0;
 		time_step = 0.0;

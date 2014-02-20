@@ -275,7 +275,7 @@ PhreeqcRM::~PhreeqcRM(void)
 {
 	std::map<size_t, PhreeqcRM*>::iterator it = PhreeqcRM::Instances.find(this->GetWorkers()[0]->Get_Index());
 
-	for (int i = 0; i < it->second->GetNThreads() + 2; i++)
+	for (int i = 0; i < it->second->GetThreadCount() + 2; i++)
 	{
 		delete it->second->GetWorkers()[i];
 	}

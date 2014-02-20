@@ -348,18 +348,6 @@ RM_GetMpiTasks(int id)
 }
 /* ---------------------------------------------------------------------- */
 int 
-RM_GetNThreads(int id)
-	/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->GetNThreads();
-	}
-	return IRM_BADINSTANCE;
-}
-/* ---------------------------------------------------------------------- */
-int 
 RM_GetNthSelectedOutputUserNumber(int id, int i)
 	/* ---------------------------------------------------------------------- */
 {
@@ -464,6 +452,18 @@ RM_GetSolutionVolume(int id, double * v)
 			}
 		}
 		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int 
+RM_GetThreadCount(int id)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetThreadCount();
 	}
 	return IRM_BADINSTANCE;
 }
