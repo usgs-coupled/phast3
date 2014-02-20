@@ -780,8 +780,9 @@ int RM_GetFilePrefix(int id, char *prefix, int l);
 <PRE>  
 char str[100], str1[200];
 status = RM_GetFilePrefix(id, str, 100);
-strcpy(str1, "File prefix is ");
-strncat(str1, str, 200);
+strcpy(str1, "File prefix: ");
+strcat(str1, str);
+strcat(str1, "\n");
 status = RM_OutputMessage(id, str1);
 </PRE>
 </CODE> 
@@ -805,15 +806,81 @@ END FUNCTION RM_GetFilePrefix
 character(100) :: string
 character(200) :: string1
 status = RM_GetFilePrefix(id, string)
-string1 = "File prefix is "//string;
+string1 = "File prefix: "//string;
 status = RM_OutputMessage(id, string1)
 </PRE>
 </CODE> 
 @endhtmlonly
 @par MPI:
-   Called by root and workers.
+Called by root and (or) workers. 
  */
 int RM_GetFilePrefix(int id, char *prefix, int l);
+/**
+Returns the gram formula weights (g/mol) for the components in the reaction-module component list. 
+@param id               The instance id returned from @ref RM_Create. 
+@param gfw              Array to receive the gram formula weights. Dimension of the array is (ncomps), 
+where ncomps is the number of components in the component list. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).  
+@see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_GetComponent.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetGfw(int id, double * gfw);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+ncomps = RM_FindComponents(id);
+components = (char **) malloc((size_t) (ncomps * sizeof(char *)));
+gfw = (double *) malloc((size_t) (ncomps * sizeof(double)));
+status = RM_GetGfw(id, gfw);
+for (i = 0; i < ncomps; i++)
+{
+  components[i] = (char *) malloc((size_t) (100 * sizeof(char *)));
+  status = RM_GetComponent(id, i, components[i], 100);
+  sprintf(str,"%10s    %10.3f\n", components[i], gfw[i]);
+  status = RM_OutputMessage(id, str);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetGfw(id, gfw)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(out) :: gfw
+END FUNCTION RM_GetGfw 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+character(100),   dimension(:), allocatable   :: components
+double precision, dimension(:), allocatable   :: gfw
+ncomps = RM_FindComponents(id)
+allocate(components(ncomps))
+allocate(gfw(ncomps))
+status = RM_GetGfw(id, gfw(1))
+do i = 1, ncomps
+  status = RM_GetComponent(id, i, components(i))
+  write(string,"(A10, F15.4)") components(i), gfw(i)
+  status = RM_OutputMessage(id, string)
+enddo 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root. 
+ */
 int RM_GetGfw(int id, double * gfw);
 /**
  *  Returns the number of grid cells in the user's model.
@@ -955,6 +1022,55 @@ int RM_InitialPhreeqcCell2Module(int id,
  *  @endhtmlonly
  */
 int RM_LoadDatabase(int id, const char *db_name);
+/**
+Send an message to the log file. 
+@param id               The instance id returned from @ref RM_Create.
+@param str              String to be printed.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_OpenFiles, @ref RM_ErrorMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_LogMessage(int id, const char *str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+sprintf(str, "%s%10.1f%s", "Beginning transport calculation      ", 
+        time * RM_GetTimeConversion(id), " days\n");
+status = RM_LogMessage(id, str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_LogMessage(id, str) 
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  CHARACTER, INTENT(in) :: str
+END FUNCTION RM_LogMessage
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+write(string, "(A32,F15.1,A)") "Beginning reaction calculation  ", &
+      time * RM_GetTimeConversion(id), " days"
+status = RM_LogMessage(id, string);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int RM_LogMessage(int id, const char *str);
 int RM_MpiWorker(int id);
 int RM_MpiWorkerBreak(int id);
@@ -1048,6 +1164,55 @@ int        RM_RunFile(int id, int workers, int initial_phreeqc, int utility, con
  *  @endhtmlonly
  */
 int RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char * input_string);
+/**
+Send an message to the screen. 
+@param id               The instance id returned from @ref RM_Create.
+@param str              String to be printed.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_ErrorMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_ScreenMessage(int id, const char *str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+sprintf(str, "%s%10.1f%s", "Beginning transport calculation      ", 
+        time * RM_GetTimeConversion(id), " days\n");
+status = RM_ScreenMessage(id, str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_ScreenMessage(id, str) 
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  CHARACTER, INTENT(in) :: str
+END FUNCTION RM_ScreenMessage
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+write(string, "(A32,F15.1,A)") "Beginning reaction calculation  ", &
+      time * RM_GetTimeConversion(id), " days"
+status = RM_ScreenMessage(id, string);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 int RM_ScreenMessage(int id, const char *str);
 int RM_SetCellVolume(int id, double *t);
 int RM_SetConcentrations(int id, double *t);
@@ -1079,23 +1244,49 @@ int RM_SetUnitsSolution(int id, int i);
 int RM_SetUnitsSSassemblage(int id, int i);
 int RM_SetUnitsSurface(int id, int i);
 /**
- *  Send an warning message to the screen and log file. 
- *  @param str           String to be sent.
- *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
- *  @see                 RM_ErrorMessage, RM_LogMessage, RM_LogScreenMessage, RM_ScreenMessage. 
- *  MPI:
- *       Can be called from any process.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>        
- *      SUBROUTINE RM_ErrorMessage(errstr)
- *          IMPLICIT NONE
- *          CHARACTER(*), INTENT(in) :: errstr
- *      END SUBROUTINE RM_ErrorMessage
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
+Send an warning message to the screen and the log file. 
+@param id               The instance id returned from @ref RM_Create.
+@param warnstr         String to be printed.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_ScreenMessage, @ref RM_ErrorMessage. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_WarningMessage(int id, const char *warnstr);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_WarningMessage(id, "Parameter is out of range, using default");
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_WarningMessage(id, warnstr)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  CHARACTER, INTENT(in) :: warnstr
+END FUNCTION RM_WarningMessage
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_WarningMessage(id, "Parameter is out of range, using default")
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers; root writes to the log file.
  */
 int RM_WarningMessage(int id, const char *warn_str);
 void RM_write_bc_raw(int id, 
