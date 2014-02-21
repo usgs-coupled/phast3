@@ -8,7 +8,7 @@ extern "C" {
 #endif
 /**
 Abort the program. Result will be interpreted as
-an IRM_RESULT value and decoded; err_str will be printed, and the reaction module
+an IRM_RESULT value and decoded; err_str will be printed; and the reaction module
 will be destroyed. If using MPI, an MPI_Abort message will be sent before the reaction
 module is destroyed. If the id is an invalid instance, RM_Abort will return a value of 
 IRM_BADINSTANCE, otherwise the program will exit with a return code of 4.
@@ -16,7 +16,7 @@ IRM_BADINSTANCE, otherwise the program will exit with a return code of 4.
 @param result        Integer treated as an IRM_RESULT return code. 
 @param err_str       String to be printed as an error message. 
 @retval IRM_RESULT   Program will exit before returning unless id is an invalid reaction module id.
-@see                 @ref RM_Destroy, @ref RM_ErrorMessage, @ref RM_MpiAbort.
+@see                 @ref RM_Destroy, @ref RM_ErrorMessage.
 @par C Prototype:
 @htmlonly
 <CODE>
@@ -1179,7 +1179,8 @@ that user number for selected output processing.
 @param n                The sequence number of the selected output definition for which the user number will be returned.  
 @retval                 The user number of the nth selected output definition, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetSelectedOutput, 
-@ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
+@ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, 
+@ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
 @par C Prototype:
 @htmlonly
@@ -1241,9 +1242,272 @@ enddo
 Called by root.
  */
 int        RM_GetNthSelectedOutputUserNumber(int id, int n);
+/**
+Populates an array with values from the current selected output definition. @ref RM_SetCurrentSelectedOutputUserNumber 
+determines which of the selected output definitions is used to populate the array. 
+@param id               The instance id returned from @ref RM_Create. 
+@param so               An array to contain the selected output value. Size of the array is equivalent to Fortran  (nxyz, col), 
+where nxyz is the number of grid cells in the user's model (@ref RM_GetGridCellCount), and col is the number of 
+columns in the selected output definition (@ref RM_GetSelectedOutputColumnCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_GetNthSelectedOutputUserNumber, 
+@ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
+@ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetSelectedOutput(int id, double *so);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>				
+for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
+{
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id);
+  selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
+  status = RM_GetSelectedOutput(id, selected_out);
+  // Process results here
+  free(selected_out);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSelectedOutput(id, so)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(out) :: so
+END FUNCTION RM_GetSelectedOutput
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>           
+do isel = 1, RM_GetSelectedOutputCount(id)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id)
+  allocate(selected_out(nxyz,col))
+  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  ! Process results here
+  deallocate(selected_out)
+enddo
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int        RM_GetSelectedOutput(int id, double *so);
+/**
+Returns the number of columns in the current selected output definition. @ref RM_SetCurrentSelectedOutputUserNumber 
+determines which of the selected output definitions is used. 
+@param id               The instance id returned from @ref RM_Create. 
+@retval                 Number of columns in the current selected output definition, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
+@ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
+@ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetSelectedOutputColumnCount(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>				
+for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
+{
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id);
+  selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
+  status = RM_GetSelectedOutput(id, selected_out);
+  // Process results here
+  free(selected_out);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSelectedOutputColumnCount(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetSelectedOutputColumnCount
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>           
+do isel = 1, RM_GetSelectedOutputCount(id)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id)
+  allocate(selected_out(nxyz,col))
+  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  ! Process results here
+  deallocate(selected_out)
+enddo
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int        RM_GetSelectedOutputColumnCount(int id);
+/**
+Returns the number of selected output definitions. @ref RM_SetCurrentSelectedOutputUserNumber 
+determines which of the selected output definitions is used. 
+@param id               The instance id returned from @ref RM_Create. 
+@retval                 Number of selected output definitions, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
+@ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputHeading,
+@ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetSelectedOutputCount(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>				
+for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
+{
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id);
+  selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
+  status = RM_GetSelectedOutput(id, selected_out);
+  // Process results here
+  free(selected_out);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSelectedOutputCount(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetSelectedOutputCount
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>           
+do isel = 1, RM_GetSelectedOutputCount(id)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id)
+  allocate(selected_out(nxyz,col))
+  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  ! Process results here
+  deallocate(selected_out)
+enddo
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int        RM_GetSelectedOutputCount(int id);
+/**
+Returns the a selected output heading. The number of headings is determined by @ref RM_GetSelectedOutputColumnCount.
+@ref RM_SetCurrentSelectedOutputUserNumber 
+determines which of the selected output definitions is used. 
+@param id               The instance id returned from @ref RM_Create. 
+@param icol             The sequence number of the heading to be retrieved (0 based). 
+@param heading          A string buffer to receive the heading. 
+@param length           The maximum number of characters that can be written to the string buffer (C only). 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).  
+@see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
+@ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, 
+@ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetSelectedOutputHeading(int id, int icol, char * heading, int length);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>
+char heading[100];
+for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
+{
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id);
+  for (j = 0; j < col; j++)
+  {
+	status = RM_GetSelectedOutputHeading(id, j, heading, 100);  
+	fprintf(stderr, "          %2d %10s\n", j, heading);
+  }
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSelectedOutputHeading(id, icol, heading)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id, icol
+  CHARACTER, INTENT(out) :: heading
+END FUNCTION RM_GetSelectedOutputHeading
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>           
+do isel = 1, RM_GetSelectedOutputCount(id)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id)
+  do j = 1, col
+    status = RM_GetSelectedOutputHeading(id, j-1, heading)    
+    write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading)
+  enddo
+enddo
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int        RM_GetSelectedOutputHeading(int id, int icol, char * heading, int length);
 int        RM_GetSelectedOutputRowCount(int id);
 int        RM_GetSolutionVolume(int id, double *v);
