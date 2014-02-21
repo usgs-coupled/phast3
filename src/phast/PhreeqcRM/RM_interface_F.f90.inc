@@ -127,10 +127,10 @@
             INTEGER, INTENT(in) :: id, n
         END FUNCTION RM_GetNthSelectedOutputUserNumber 
         
-        INTEGER FUNCTION RM_GetSelectedOutput(id, d)
+        INTEGER FUNCTION RM_GetSelectedOutput(id, so)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: d
+            DOUBLE PRECISION, INTENT(out) :: so
         END FUNCTION RM_GetSelectedOutput
         
         INTEGER FUNCTION RM_GetSelectedOutputColumnCount(id)
