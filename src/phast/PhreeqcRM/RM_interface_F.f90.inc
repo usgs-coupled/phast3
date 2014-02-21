@@ -153,6 +153,12 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetSelectedOutputRowCount
+
+        INTEGER FUNCTION RM_GetSolutionVolume(id, vol)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, INTENT(out) :: vol
+        END FUNCTION RM_GetSolutionVolume 
         
         INTEGER FUNCTION RM_GetThreadCount(id)
             IMPLICIT NONE

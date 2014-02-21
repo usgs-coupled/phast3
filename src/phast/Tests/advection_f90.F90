@@ -40,6 +40,7 @@
     double precision, dimension(:,:), allocatable :: c
     double precision                              :: time, time_step
     double precision, dimension(:), allocatable   :: density
+    double precision, dimension(:), allocatable   :: volume
     double precision, dimension(:), allocatable   :: temperature
     double precision, dimension(:), allocatable   :: pressure
     integer                                       :: isteps, nsteps
@@ -194,7 +195,8 @@
     
     ! Transient loop
     nsteps = 10
-    allocate(density(nxyz), pressure(nxyz), temperature(nxyz))
+    allocate(density(nxyz), pressure(nxyz), temperature(nxyz), volume(nxyz))
+    volume = 1.0
     density = 1.0
     pressure = 2.0
     temperature = 20.0
@@ -202,9 +204,14 @@
     status = RM_SetTimeStep(id, time_step)
     do isteps = 1, nsteps
         ! Advection calculation
-		write(string, "(A32,F15.1,A)") "Beginning transport calculation ", time * RM_GetTimeConversion(id), " days"
+		write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
+              RM_GetTime(id) * RM_GetTimeConversion(id), " days"
 		status = RM_LogMessage(id, string);
 		status = RM_ScreenMessage(id, string);
+		write(string, "(A32,F15.1,A)") "          Time step             ", &
+              RM_GetTimeStep(id) * RM_GetTimeConversion(id), " days"
+		status = RM_LogMessage(id, string);
+		status = RM_ScreenMessage(id, string);        
         call advect_f90(c, bc_conc, ncomps, nxyz)
         
         ! Send any new conditions to module
@@ -230,13 +237,13 @@
 		status = RM_ScreenMessage(id, string);
         status = RM_RunCells(id)  
 
-		! Retrieve reacted concentrations
+		! Retrieve reacted concentrations, density, volume
         status = RM_GetConcentrations(id, c(1,1))
+        status = RM_GetDensity(id, density(1))
+        status = RM_GetSolutionVolume(id, volume(1))
  
         ! Print results at last time step
         if (isteps == nsteps) then
- 			! Get current density
-            status = RM_GetDensity(id, density(1))
             do isel = 1, RM_GetSelectedOutputCount(id)
                 n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1)
                 status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
@@ -246,9 +253,10 @@
                 allocate(selected_out(nxyz,col))
                 status = RM_GetSelectedOutput(id, selected_out(1,1))
                 ! Print results
-                do i = 1, nxyz/2
+                do i = 1, RM_GetSelectedOutputRowCount(id)
                     write(*,*) "Cell number ", i
                     write(*,*) "     Density: ", density(i)
+                    write(*,*) "     Volume: ", volume(i)
                     write(*,*) "     Components: "
                     do j = 1, ncomps
                         write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ",trim(components(j)), ": ", c(i,j)

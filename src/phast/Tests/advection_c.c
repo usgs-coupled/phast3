@@ -37,6 +37,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		double * c;
 		double time, time_step;
 		double * density;
+		double * volume;
 		double * temperature;
 		double * pressure;
 		int isteps, nsteps;
@@ -57,7 +58,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		id = RM_Create(nxyz, nthreads);
 		status = RM_SetErrorHandlerMode(id, 2);
 		status = RM_SetFilePrefix(id, "Advect_c");
-
 		// Open error, log, and output files
 		status = RM_OpenFiles(id);
 
@@ -213,6 +213,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		// Transient loop
 		nsteps = 10;
 		density = (double *) malloc((size_t) (nxyz * sizeof(double)));
+		volume = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		pressure = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		temperature = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		for (i = 0; i < nxyz; i++) 
@@ -227,7 +228,11 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		{
 			// Advection calculation
 			sprintf(str, "%s%10.1f%s", "Beginning transport calculation      ", 
-				time * RM_GetTimeConversion(id), " days\n");
+				RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
+			status = RM_LogMessage(id, str);
+			status = RM_ScreenMessage(id, str);
+			sprintf(str, "%s%10.1f%s", "          Time step                  ", 
+				RM_GetTimeStep(id) * RM_GetTimeConversion(id), " days\n");
 			status = RM_LogMessage(id, str);
 			status = RM_ScreenMessage(id, str);
 			advect_c(c, bc_conc, ncomps, nxyz, nbound);
@@ -251,19 +256,19 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			}
 
 			// Run cells with new conditions
-			sprintf(str, "%s%10.1f%s", "Beginning reaction calculation       ", time * RM_GetTimeConversion(id), " days\n");
+			sprintf(str, "%s%10.1f%s", "Beginning reaction calculation       ", RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
 			status = RM_LogMessage(id, str);
 			status = RM_ScreenMessage(id, str);
 			status = RM_RunCells(id);  
 
-			// Retrieve reacted concentrations
+			// Retrieve reacted concentrations, density, volume
 			status = RM_GetConcentrations(id, c);
+			status = RM_GetDensity(id, density);
+			status = RM_GetSolutionVolume(id, volume);
  
 			// Print results at last time step
 			if (isteps == nsteps - 1) 
 			{
- 				// Get current density
-				status = RM_GetDensity(id, density);
 
 				// Loop through possible multiple selected output definitions
 				for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
@@ -279,10 +284,12 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 					status = RM_GetSelectedOutput(id, selected_out);
 
 					// Print results
-					for (i = 0; i < nxyz/2; i++)
+					
+					for (i = 0; i < RM_GetSelectedOutputRowCount(id)/2; i++)
 					{
 						fprintf(stderr, "Cell number %d\n", i);
 						fprintf(stderr, "     Density: %f\n", density[i]);
+						fprintf(stderr, "     Volume:  %f\n", volume[i]);
 						fprintf(stderr, "     Components: \n");
 						for (j = 0; j < ncomps; j++)
 						{
