@@ -1940,16 +1940,17 @@ int RM_InitialPhreeqc2Concentrations(
                 int *boundary_solution2, 
                 double *fraction1);
 /**
- *  Transfer results from the InitialPhreeqc IPhreeqc instance to the reaction module workers. 
- *  @param id                   The instance id returned from @ref RM_Create.
- *  @param initial_conditions1  Array containing index numbers of solutions and reactants.
- *  @param initial_conditions2  Array containing index numbers of solutions and reactants (optional).
- *  @param fraction1            Array containing fraction of initial_condition1 (when initial_conditions2 is defined) (optional).
+Transfer results from the InitialPhreeqc instance to the reaction module workers.  
+@param id                   The instance id returned from @ref RM_Create.
+@param initial_conditions1  Array containing index numbers of solutions and reactants.
+@param initial_conditions2  Array containing index numbers of solutions and reactants (optional).
+@param fraction1            Array containing fraction of initial_condition1 (when initial_conditions2 is defined) (optional).
+@retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
  *
- *  The structure of the initial condition arrays are 1D equivalent to a Fortran allocation
- *  of (nxyz,7), that is the first nxyz elements are solution numbers. The order of indexes
- *  is as follows (1) SOLUTIONS, (2) EQUILIBRIUM_PHASES, (3) EXCHANGE, (4) SURFACE, (5) GAS_PHASE,
- *  (6) SOLID_SOLUTIONS, and (7) KINETICS.
+The structure of the initial condition arrays are 1D equivalent to a Fortran allocation
+of (nxyz,7), that is the first nxyz elements are solution numbers. The order of indexes
+is as follows (1) SOLUTIONS, (2) EQUILIBRIUM_PHASES, (3) EXCHANGE, (4) SURFACE, (5) GAS_PHASE,
+(6) SOLID_SOLUTIONS, and (7) KINETICS.
  *  @see                 @ref RM_InitialPhreeqcRunFile
  *  MPI:
  *     Called by all processes.
@@ -1970,6 +1971,99 @@ int RM_InitialPhreeqc2Concentrations(
  *  </PRE>
  *  </CODE>
  *  @endhtmlonly
+ */
+/**
+Transfer solutions and reactants from the InitialPhreeqc instance to the reaction-module workers, possibly with mixing.
+In its simplest use, initial_conditions1 is used to select solutions and reactants for each cell of the model. 
+Initial_conditions1 is dimensioned (nxyz, 7), where nxyz is the number of grid cells in the user's model 
+(@ref RM_GetGridCellCount). The dimension of 7 refers to solutions and reactants in the following order:
+(1) SOLUTIONS, (2) EQUILIBRIUM_PHASES, (3) EXCHANGE, (4) SURFACE, (5) GAS_PHASE,
+(6) SOLID_SOLUTIONS, and (7) KINETICS. In Fortran, initial_conditions(100, 4) = 2, indicates that
+cell 99 (0 based) contains the SURFACE definition with user number 2 that has been defined to the 
+InitialPhreeqc instance. The same definition in C would be initial_solution1[3*nxyz + 100] = 2.
+@par
+It is also possible to mix solutions and reactants to obtain the initial conditions for the cells. For mixing,
+initials_conditions2 contains numbers for a second entity that mixes with the entity defined in initial_conditions 1.
+Fraction1 contains the mixing fraction for initial_conditions1, whereas the mixing fraction for initial_conditions2 is
+(1 - fraction1). If the user number in initial_conditions2 is negative, no mixing occurs. 
+If initials_conditions2 and fraction1 are omitted (Fortran) or NULL (C), 
+no mixing is used; initial conditions are derived from initials_conditions1 only.
+
+@param id                  The instance id returned from @ref RM_Create.
+@param c                   Array of concentrations extracted from the Initial IPhreeqc instance. 
+The dimension of c is equivalent to Fortran allocation (n_boundary, ncomp), 
+where ncomp is the number of components returned from @ref RM_FindComponents or @ref RM_GetComponentCount.
+@param n_boundary          The number of boundary condition solutions that need to be filled.
+@param boundary_solution1  Array of solution index numbers that refer to solutions in the Initial IPhreeqc instance. 
+Size is (n_boundary).
+@param boundary_solution2  Array of solution index numbers that that refer to solutions in the Initial IPhreeqc instance 
+and are defined to mix with boundary_solution1. 
+Size is (n_boundary). Optional in Fortran, may be NULL in C.
+@param fraction1           Fraction of boundary_solution1 that mixes with (1-fraction1) of boundary_solution2.
+Size is (n_boundary). Optional in Fortran, may be NULL in C.
+@retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
+@see                  @ref RM_FindComponents, @ref RM_GetComponentCount. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_InitialPhreeqc2Module(int id,
+                int *initial_conditions1,		// 7 x nxyz end-member 1
+                int *initial_conditions2,		// 7 x nxyz end-member 2
+                double *fraction1);			    // 7 x nxyz fraction of end-member 1
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+nbound = 1;
+bc1 = (int *) malloc((size_t) (nbound * sizeof(int)));
+bc2 = (int *) malloc((size_t) (nbound * sizeof(int)));
+bc_f1 = (double *) malloc((size_t) (nbound * sizeof(double)));
+bc_conc = (double *) malloc((size_t) (ncomps * nbound * sizeof(double)));
+for (i = 0; i < nbound; i++) 
+{
+  bc1[i]          = 0;       // Solution 0 from Initial IPhreeqc instance
+  bc2[i]          = -1;      // no bc2 solution for mixing
+  bc_f1[i]        = 1.0;     // mixing fraction for bc1
+} 
+status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(OUT) :: c
+  INTEGER, INTENT(IN) :: n_boundary, bc_sol1
+  INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
+  DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
+END FUNCTION RM_InitialPhreeqc2Concentrations    
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>      
+nbound = 1
+allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
+allocate(bc_conc(nbound, ncomps))  
+bc1 = 0           ! solution 0 from Initial IPhreeqc instance
+bc2 = -1          ! no bc2 solution for mixing
+bc_f1 = 1.0       ! mixing fraction for bc1 
+status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
  */
 int RM_InitialPhreeqc2Module(int id,
                 int *initial_conditions1,		// 7 x nxyz end-member 1

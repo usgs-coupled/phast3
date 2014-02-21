@@ -77,8 +77,8 @@ int advection_cpp()
 
 		// Run file to define solutions and reactants for initial conditions, selected output
 		bool workers = true;             // One or more IPhreeqcs for doing the reaction calculations for transport
-		bool initial_phreeqc = true;     // This is an IPhreeqc for accumulating initial and boundary conditions
-		bool utility = true;             // This is an extra IPhreeqc available for processing
+		bool initial_phreeqc = true;     // This is the InitialPhreeqc instance for accumulating initial and boundary conditions
+		bool utility = true;             // This is the Utility instance available for processing
 		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "advect.pqi");
 
 		// For demonstration, clear contents of workers and utility
@@ -135,8 +135,16 @@ int advection_cpp()
 			ic1[5*nxyz + i] = -1;    // Solid solutions none
 			ic1[6*nxyz + i] = -1;    // Kinetics none
 		}
-		//ic1[0] = 100;
-		status = phreeqc_rm.InitialPhreeqc2Module(ic1.data(), ic2.data(), f1.data());
+		status = phreeqc_rm.InitialPhreeqc2Module(ic1.data(), ic2.data(), f1.data());    
+		// alternative for setting initial conditions
+		// cell number in first argument (-1 indicates last solution, 40 in this case)
+		// in advect.pqi and any reactants with the same number--
+		// Equilibrium phases, exchange, surface, gas phase, solid solution, and (or) kinetics--
+		// will be written to cells 18 and 19 (0 based)
+		std::vector<int> module_cells;
+		module_cells.push_back(18);
+		module_cells.push_back(19);
+		status = phreeqc_rm.InitialPhreeqcCell2Module(-1, module_cells);
 
 		// Get a boundary condition
 		std::vector<double> bc_conc, bc_f1;

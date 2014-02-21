@@ -195,7 +195,15 @@
             INTEGER, INTENT(in) :: ic1
             INTEGER, INTENT(in), OPTIONAL :: ic2
             DOUBLE PRECISION, INTENT(in), OPTIONAL :: f1
-        END FUNCTION RM_InitialPhreeqc2Module       
+        END FUNCTION RM_InitialPhreeqc2Module    
+		 
+        INTEGER FUNCTION RM_InitialPhreeqcCell2Module(id, n_user, module_cell, dim_module_cell)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, INTENT(in) :: n_user
+            INTEGER, INTENT(in) :: module_cell
+            INTEGER, INTENT(in) :: dim_module_cell
+        END FUNCTION RM_InitialPhreeqcCell2Module         
         
         INTEGER FUNCTION RM_LoadDatabase(id, db) 
             IMPLICIT NONE
