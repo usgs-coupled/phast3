@@ -1509,11 +1509,341 @@ enddo
 Called by root.
  */
 int        RM_GetSelectedOutputHeading(int id, int icol, char * heading, int length);
+/**
+Returns the number of rows in the current selected output definition. However, the method
+is included only for convenience; the number of rows is always equal to the number of 
+grid cells in the user's model, and is equal to @ref RM_GetGridCellCount.
+@param id               The instance id returned from @ref RM_Create. 
+@retval                 Number of rows in the current selected output definition, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput, @ref RM_GetSelectedOutputColumnCount,
+@ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
+@ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetSelectedOutputRowCount(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>
+for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
+{
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id);
+  selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
+  status = RM_GetSelectedOutput(id, selected_out);
+  // Print results
+  for (i = 0; i < RM_GetSelectedOutputRowCount(id)/2; i++)
+  {
+    fprintf(stderr, "Cell number %d\n", i);
+    fprintf(stderr, "     Selected output: \n");
+    for (j = 0; j < col; j++)
+    {
+      status = RM_GetSelectedOutputHeading(id, j, heading, 100);  
+      fprintf(stderr, "          %2d %10s: %10.4f\n", j, heading, selected_out[j*nxyz + i]);
+    }
+  }
+  free(selected_out);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSelectedOutputRowCount(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetSelectedOutputRowCount
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>           
+do isel = 1, RM_GetSelectedOutputCount(id)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1)
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
+  col = RM_GetSelectedOutputColumnCount(id)
+  allocate(selected_out(nxyz,col))
+  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  ! Print results
+  do i = 1, RM_GetSelectedOutputRowCount(id)
+    write(*,*) "Cell number ", i
+    write(*,*) "     Selected output: "
+    do j = 1, col
+      status = RM_GetSelectedOutputHeading(id, j-1, heading)    
+      write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading),": ", selected_out(i,j)
+    enddo
+  enddo
+  deallocate(selected_out)
+enddo
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int        RM_GetSelectedOutputRowCount(int id);
-int        RM_GetSolutionVolume(int id, double *v);
+/**
+Transfer solution volumes from the module workers to the array given in the argument list (vol). 
+@param id                   The instance id returned from @ref RM_Create.
+@param density              Array to receive the solution volumes. Dimension of the array is (nxyz), 
+where nxyz is the number of user grid cells. Solution volumes are those calculated by the reaction module. 
+Only the following databases distributed with PhreeqcRM have molar volume information needed to calculate solution volume: 
+phreeqc.dat, Amm.dat, and pitzer.dat.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetSolutionVolume(int id, double *vol);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+volume = (double *) malloc((size_t) (nxyz * sizeof(double)));
+status = RM_RunCells(id); 
+status = RM_GetSolutionVolume(id, volume);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSolutionVolume(id, vol)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(out) :: vol
+END FUNCTION RM_GetSolutionVolume  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+allocate(volume(nxyz))
+status = RM_RunCells(id)  
+status = RM_GetSolutionVolume(id, volume(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+int        RM_GetSolutionVolume(int id, double *vol);
+/**
+Returns the number of threads, which is equal to the number of workers used to run in parallel with OPENMPI. 
+For the threaded version, the number of threads is set implicitly or explicitly with @ref RM_Create. For the
+MPI version, the number of threads is always one for each process.
+@param id               The instance id returned from @ref RM_Create.  
+@retval                 The number of threads used for OPENMPI parallel processing, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_GetMpiTasks.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_GetThreadCount(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>		
+sprintf(str1, "Number of threads: %d\n", RM_GetThreadCount(id));
+status = RM_OutputMessage(id, str1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetThreadCount(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetThreadCount
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+write(string1, "(A,I)") "Number of threads: ", RM_GetThreadCount(id)
+status = RM_OutputMessage(id, string1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers; result is always 1.
+ */
 int        RM_GetThreadCount(int id);
+/**
+Returns the current simulation time in seconds. The reaction module does not change the time value, so the 
+returned value is equal to the default (0.0) or the last time set by @ref RM_SetTime.
+@param id               The instance id returned from @ref RM_Create.  
+@retval                 The current simulation time in seconds.
+@see                    @ref RM_GetTimeConversion, @ref RM_GetTimeStep, @ref RM_SetTime, 
+@ref RM_SetTimeConversion, @ref RM_SetTimeStep.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+double RM_GetTime(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>		
+sprintf(str, "%s%10.1f%s", "Beginning reaction calculation ", 
+        RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
+status = RM_LogMessage(id, str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+DOUBLE PRECISION FUNCTION RM_GetTime(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetTime
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
+      RM_GetTime(id) * RM_GetTimeConversion(id), " days"
+status = RM_LogMessage(id, string);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 double     RM_GetTime(int id);
+/**
+Returns a multiplier to convert time from seconds to another unit, as specified by the user. 
+The reaction module uses seconds as the time unit. The user can set a conversion
+factor (@ref RM_SetTimeConversion) and retrieve it with RM_GetTimeConversion. The 
+reaction module only uses the conversion factor when printing the long version
+of cell chemistry (@ref RM_SetPrintChemistryOn), which is rare. Default conversion factor is 1.0.
+@param id               The instance id returned from @ref RM_Create.  
+@retval                 Multiplier to convert seconds to another time unit. 
+@see                    @ref RM_GetTime, @ref RM_GetTimeStep, @ref RM_SetTime, @ref RM_SetTimeConversion, @ref RM_SetTimeStep.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+double RM_GetTimeConversion(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>		
+sprintf(str, "%s%10.1f%s", "Beginning reaction calculation ", 
+        RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
+status = RM_LogMessage(id, str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+DOUBLE PRECISION FUNCTION RM_GetTimeConversion(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetTimeConversion
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
+      RM_GetTime(id) * RM_GetTimeConversion(id), " days"
+status = RM_LogMessage(id, string);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 double     RM_GetTimeConversion(int id);
+/**
+Returns the current simulation time step in seconds. 
+This is the time over which kinetic reactions are integrated in a call to @ref RM_RunCells. 
+The reaction module does not change the time step value, so the 
+returned value is equal to the default (0.0) or the last time step set by @ref RM_SetTimeStep.
+@param id               The instance id returned from @ref RM_Create.  
+@retval                 The current simulation time step in seconds.
+@see                    @ref RM_GetTime, @ref RM_GetTimeConversion, @ref RM_SetTime, 
+@ref RM_SetTimeConversion, @ref RM_SetTimeStep.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+double RM_GetTimeStep(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>		
+sprintf(str, "%s%10.1f%s", "          Time step                  ", 
+        RM_GetTimeStep(id) * RM_GetTimeConversion(id), " days\n");
+status = RM_LogMessage(id, str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+DOUBLE PRECISION FUNCTION RM_GetTimeStep(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetTimeStep 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+write(string, "(A32,F15.1,A)") "          Time step             ", &
+      RM_GetTimeStep(id) * RM_GetTimeConversion(id), " days"
+status = RM_LogMessage(id, string);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 double     RM_GetTimeStep(int id);
 /**
  *  Fills an array (c) with concentrations from solutions in the InitialPhreeqc instance, useful for obtaining concentrations for boundary conditions.

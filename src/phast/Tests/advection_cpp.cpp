@@ -173,7 +173,8 @@ int advection_cpp()
 			// Transport calculation here
 			{
 				std::ostringstream strm;
-				strm << "Beginning transport calculation             " <<  time * phreeqc_rm.GetTimeConversion() << " days\n";
+				strm << "Beginning transport calculation             " <<   phreeqc_rm.GetTime() * phreeqc_rm.GetTimeConversion() << " days\n";
+				strm << "          Time step                         " <<   phreeqc_rm.GetTimeStep() * phreeqc_rm.GetTimeConversion() << " days\n";
 				phreeqc_rm.LogMessage(strm.str());
 				phreeqc_rm.ScreenMessage(strm.str());
 			}
@@ -199,14 +200,15 @@ int advection_cpp()
 			}
 			status = phreeqc_rm.RunCells();
 
-			// Retrieve reacted concentrations
+			// Retrieve reacted concentrations, density, volume
 			status = phreeqc_rm.GetConcentrations(c.data());
+			// Get current density
+			std::vector<double> &density = phreeqc_rm.GetDensity();
+			std::vector<double> &volume = phreeqc_rm.GetSolutionVolume();
 
 			// Print results at last time step
 			if (print_chemistry_on != 0)
 			{
-				// Get current density
-				std::vector<double> &density = phreeqc_rm.GetDensity();
 				for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
 				{
 					int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
@@ -220,10 +222,11 @@ int advection_cpp()
 					status = phreeqc_rm.GetSelectedOutput(so.data());
 
 					// Print results
-					for (int i = 0; i < nxyz/2; i++)
+					for (int i = 0; i < phreeqc_rm.GetSelectedOutputRowCount(); i++)
 					{
 						std::cerr << "Cell number " << i << "\n";
 						std::cerr << "     Density: " << density[i] << "\n";
+						std::cerr << "     Volume:  " << volume[i] << "\n";
 						std::cerr << "     Components: " << "\n";
 						for (int j = 0; j < ncomps; j++)
 						{
@@ -322,7 +325,6 @@ int units_tester()
 		{
 			phreeqc_rm.OpenFiles();
 		}
-
 		// Set concentration units
 		status = phreeqc_rm.SetUnitsSolution(1);      // 1, mg/L; 2, mol/L; 3, kg/kgs
 		status = phreeqc_rm.SetUnitsPPassemblage(2);  // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
