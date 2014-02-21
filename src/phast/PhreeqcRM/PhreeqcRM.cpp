@@ -2537,6 +2537,10 @@ PhreeqcRM::GetConcentrations(double * c)
 			}
 			else
 			{
+				for (int i = 0; i < this->nxyz * (int) this->components.size(); i++) 
+				{
+					c[i] = INACTIVE_CELL_VALUE;
+				}
 				// Write vector into c
 				assert (solns.size() == this->count_chemistry*this->components.size());
 				int n = 0;
@@ -2581,11 +2585,15 @@ PhreeqcRM::GetConcentrations(double * c)
 		{
 			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in GetConcentrations.");
 		}
+
 		std::vector<double> d;  // scratch space to convert from moles to mass fraction
 		cxxNameDouble::iterator it;
 
 		int j; 
-
+		for (int i = 0; i < this->nxyz * (int) this->components.size(); i++) 
+		{
+				c[i] = INACTIVE_CELL_VALUE;
+		}
 
 		for (int n = 0; n < this->nthreads; n++)
 		{

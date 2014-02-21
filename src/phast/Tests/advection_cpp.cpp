@@ -142,12 +142,10 @@ int advection_cpp()
 		std::vector<double> bc_conc, bc_f1;
 		std::vector<int> bc1, bc2;
 		int nbound = 1;
-		bc1.resize(nbound, 0);                      // solution 0
-		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc, bc1);
-		//bc2.resize(nbound, -1);                   // no mixing
-		//bc_f1.resize(nbound, 1.0);
-		//status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc.data(),
-		//	bc1, bc2, bc_f1);
+		bc1.resize(nbound, 0);                      // solution 0 from Initial IPhreeqc instance
+		bc2.resize(nbound, -1);                     // no bc2 solution for mixing
+		bc_f1.resize(nbound, 1.0);                  // mixing fraction for bc1
+		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc, bc1, bc2, bc_f1);
 
 		// Initial equilibration of cells
 		double time = 0.0;

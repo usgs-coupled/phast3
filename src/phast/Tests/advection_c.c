@@ -192,13 +192,13 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		bc1 = (int *) malloc((size_t) (nbound * sizeof(int)));
 		bc2 = (int *) malloc((size_t) (nbound * sizeof(int)));
 		bc_f1 = (double *) malloc((size_t) (nbound * sizeof(double)));
+		bc_conc = (double *) malloc((size_t) (ncomps * nbound * sizeof(double)));
 		for (i = 0; i < nbound; i++) 
 		{
-			bc1[i]          = 0;       // Solution 1
-			bc2[i]          = -1;      // no mixing
+			bc1[i]          = 0;       // Solution 0 from Initial IPhreeqc instance
+			bc2[i]          = -1;      // no bc2 solution for mixing
 			bc_f1[i]        = 1.0;     // mixing fraction for bc1
 		} 
-		bc_conc = (double *) malloc((size_t) (ncomps * nbound * sizeof(double)));
 		status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
 
 		// Initial equilibration of cells
