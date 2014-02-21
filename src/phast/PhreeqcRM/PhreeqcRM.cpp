@@ -3801,6 +3801,16 @@ PhreeqcRM::LogMessage(const std::string &str)
 	this->phreeqcrm_io.log_msg(str.c_str());
 }
 /* ---------------------------------------------------------------------- */
+int
+PhreeqcRM::MpiAbort()
+{
+#ifdef USE_MPI
+	return MPI_Abort(MPI_COMM_WORLD, 4);
+#else
+	return 0;
+#endif
+}
+/* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::MpiWorker()
 /* ---------------------------------------------------------------------- */

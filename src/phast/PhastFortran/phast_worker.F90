@@ -55,7 +55,7 @@
             STOP 
         END IF
         time_phreeqc = 0._kdp
-        nthreads = RM_GetNThreads(rm_id)
+        nthreads = RM_GetThreadCount(rm_id)
         status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
         status = RM_MpiWorker(rm_id)                               ! loop until calculation is done
     ENDIF        ! ... solute

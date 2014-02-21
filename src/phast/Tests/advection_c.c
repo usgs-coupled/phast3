@@ -315,6 +315,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		SetOutputFileName(iphreeqc_id, "utility_c.txt");
 		SetOutputFileOn(iphreeqc_id, 1);
 		status = RunString(iphreeqc_id, str);
+		if (status != 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
 		status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
 		status = GetSelectedOutputValue2(iphreeqc_id, 1, 0, &vtype, &pH, svalue, 100);
 

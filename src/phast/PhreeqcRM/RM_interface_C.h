@@ -7,6 +7,64 @@
 extern "C" {
 #endif
 /**
+Abort the program. Result will be interpreted as
+an IRM_RESULT value and decoded; err_str will be printed, and the reaction module
+will be destroyed. If using MPI, an MPI_Abort message will be sent before the reaction
+module is destroyed. If the id is an invalid instance, RM_Abort will return a value of 
+IRM_BADINSTANCE, otherwise the program will exit with a return code of 4.
+@param id            The instance id returned from @ref RM_Create.
+@param result        Integer treated as an IRM_RESULT return code. 
+@param err_str       String to be printed as an error message. 
+@retval IRM_RESULT   Program will exit before returning unless id is an invalid reaction module id.
+@see                 @ref RM_Destroy, @ref RM_ErrorMessage, @ref RM_MpiAbort.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_Abort(int id, int result, const char * err_str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm);
+strcpy(str, "SELECTED_OUTPUT 5; -pH; RUN_CELLS; -cells 1");
+status = RunString(iphreeqc_id, str);
+if (status != 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_Abort(id, result, str)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: result
+  CHARACTER, INTENT(in) :: str
+END FUNCTION RM_Abort
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  	
+iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
+string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
+status = RunString(iphreeqc_id, string)
+if (status .ne. 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root or workers.
+*/
+int RM_Abort(int id, int result, const char * err_str);
+/**
 Close the output and log files. 
 @param id            The instance id returned from @ref RM_Create.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).  
@@ -398,7 +456,6 @@ status = RM_DumpModule(id, dump_on, append)
 Called by root; workers must be in the loop of @ref MpiWorker.
  */
 int RM_DumpModule(int id, int dump_on, int append);
-int RM_ErrorHandler(int id, int result, const char * err_str);
 /**
 Send an error message to the screen, the output file, and the log file. 
 @param id               The instance id returned from @ref RM_Create.

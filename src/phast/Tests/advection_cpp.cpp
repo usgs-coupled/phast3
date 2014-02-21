@@ -258,6 +258,7 @@ int advection_cpp()
 		util_ptr->SetOutputFileName("utility_cpp.txt");
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
+		phreeqc_rm.ErrorHandler(iphreeqc_result, "IPhreeqc RunString failed");
 		int vtype;
 		double pH;
 		char svalue[100];

@@ -155,8 +155,7 @@ FileHandler::ProcessRestartFiles(
 				fraction1_in == NULL)
 			{
 				int result = IRM_FAIL;
-				int stop = 1; 
-				RM_ErrorHandler(id, &result, "NULL pointer in call to DistributeInitialConditions");
+				RM_Abort(id, &result, "NULL pointer in call to DistributeInitialConditions");
 			}
 			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
 			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
@@ -203,8 +202,7 @@ FileHandler::ProcessRestartFiles(
 				std::ostringstream errstr;
 				errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
 				int result = IRM_FAIL;
-				int stop = 1; 
-				RM_ErrorHandler(id, &result, errstr.str().c_str());
+				RM_Abort(id, &result, errstr.str().c_str());
 			}
 
 			// points are x, y, z, cell_no

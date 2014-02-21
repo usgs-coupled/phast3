@@ -11,7 +11,24 @@
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
-
+/* ---------------------------------------------------------------------- */
+int RM_Abort(int id, int result, const char * str)
+/* ---------------------------------------------------------------------- */
+{
+	// decodes error
+	// writes any error messages
+	// exits 
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->DecodeError(result);
+		Reaction_module_ptr->ErrorMessage(str);
+		Reaction_module_ptr->MpiAbort();
+		Reaction_module_ptr->DestroyReactionModule(id);
+	    exit(4);
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 int
 RM_CloseFiles(int id)
@@ -115,29 +132,6 @@ int RM_DumpModule(int id, int dump_on, int use_gz)
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->DumpModule((dump_on != 0), (use_gz != 0));
-	}
-	return IRM_BADINSTANCE;
-}
-/* ---------------------------------------------------------------------- */
-int RM_ErrorHandler(int id, int result, const char * str)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		try
-		{
-			Reaction_module_ptr->ErrorHandler(result, PhreeqcRM::Char2TrimString(str));
-		}
-		catch (PhreeqcRMStop)
-		{
-			Reaction_module_ptr->ErrorMessage("PhreeqcRM error.");
-		}
-		catch (...)
-		{
-			Reaction_module_ptr->ErrorMessage("Unknown exception.");
-		}
-		return Reaction_module_ptr->ReturnHandler((IRM_RESULT) result, "");
 	}
 	return IRM_BADINSTANCE;
 }

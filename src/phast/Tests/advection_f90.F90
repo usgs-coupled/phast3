@@ -277,6 +277,7 @@
 	status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")
 	status = SetOutputFileOn(iphreeqc_id, .true.)
 	status = RunString(iphreeqc_id, string)
+	if (status .ne. 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
 	status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
     status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
 

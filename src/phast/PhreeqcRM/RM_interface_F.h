@@ -10,6 +10,7 @@
 
 #if defined(FC_FUNC_)
 // Called from Fortran or C++
+#define RM_Abort                           FC_FUNC_ (rm_abort,                         RM_ABORT)
 #define RM_CloseFiles                      FC_FUNC_ (rm_closefiles,                    RM_CLOSEFILES)  
 #define RM_Concentrations2Utility          FC_FUNC_ (rm_concentrations2utility,        RM_CONCENTRATIONS2UTILITY)    
 #define RM_Create                          FC_FUNC_ (rm_create,                        RM_CREATE)
@@ -17,7 +18,6 @@
 #define RM_DecodeError                     FC_FUNC_ (rm_decodeerror,                   RM_DECODEERROR)
 #define RM_Destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
 #define RM_DumpModule                      FC_FUNC_ (rm_dumpmodule,                    RM_DUMPMODULE)
-#define RM_ErrorHandler                    FC_FUNC_ (rm_errorhandler,                  RM_ERRORHANDLER)
 #define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
 #define RM_GetChemistryCellCount           FC_FUNC_ (rm_getchemistrycellcount,         RM_GETCHEMISTRYCELLCOUNT)
@@ -92,23 +92,19 @@
 extern "C" {
 #endif
 
-
+IRM_RESULT RM_Abort(int *id, int *result, const char * err_str, size_t l = 0);
 IRM_RESULT RM_CloseFiles(int *id);
-
 int        RM_Concentrations2Utility(int *id, double *c, int *n, double *tc, double *p_atm);
-
-int RM_Create(int *nxyz, int *nthreads = NULL);
-
+int        RM_Create(int *nxyz, int *nthreads = NULL);
 IRM_RESULT RM_CreateMapping (int *id, int *grid2chem); 
 IRM_RESULT RM_DecodeError (int *id, int *e); 
 IRM_RESULT RM_Destroy(int *id);
 IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *append);
-int RM_ErrorHandler(int *id, int *result, const char * err_str, size_t l = 0);
 IRM_RESULT RM_ErrorMessage(int *id, const char *err_str, size_t l = 0);
 int        RM_FindComponents(int *id);
 int        RM_GetChemistryCellCount(int *id);
 IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1);
-int RM_GetComponentCount(int * id);
+int        RM_GetComponentCount(int * id);
 IRM_RESULT RM_GetConcentrations(int *id, double *c);
 IRM_RESULT RM_GetDensity(int *id, double *density);
 IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, size_t l);

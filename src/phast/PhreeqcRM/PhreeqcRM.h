@@ -110,6 +110,7 @@ public:
 	IRM_RESULT                                InitialPhreeqcCell2Module(int i, const std::vector<int> &cell_numbers);
 	IRM_RESULT                                LoadDatabase(const char * database = NULL);
 	void                                      LogMessage(const std::string &str);
+	int                                       MpiAbort();
 	IRM_RESULT                                MpiWorker();
 	IRM_RESULT                                MpiWorkerBreak();	
 	IRM_RESULT                                OpenFiles(void);

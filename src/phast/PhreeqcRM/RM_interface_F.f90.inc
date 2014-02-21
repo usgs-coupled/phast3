@@ -1,4 +1,12 @@
     INTERFACE
+        
+        INTEGER FUNCTION RM_Abort(id, result, str)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, INTENT(in) :: result
+            CHARACTER, INTENT(in) :: str
+        END FUNCTION RM_Abort
+
         INTEGER FUNCTION RM_CloseFiles(id)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
@@ -41,13 +49,6 @@
             INTEGER, INTENT(in) :: dump_on
             INTEGER, INTENT(in) :: append
         END FUNCTION RM_DumpModule
-        
-        INTEGER FUNCTION RM_ErrorHandler(id, result, str)
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: result
-            CHARACTER, INTENT(in) :: str
-        END FUNCTION RM_ErrorHandler
         
         INTEGER FUNCTION RM_ErrorMessage(id, errstr)
             IMPLICIT NONE
