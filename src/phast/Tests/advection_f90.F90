@@ -178,10 +178,10 @@
     ! Get a boundary condition from initial phreeqc
     nbound = 1
     allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
-    bc1 = 0           ! solution 0
-    bc2 = -1          ! no mixing
-    bc_f1 = 1.0       ! mixing fraction for bc1
-    allocate(bc_conc(nbound, ncomps))   
+    allocate(bc_conc(nbound, ncomps))  
+    bc1 = 0           ! solution 0 from Initial IPhreeqc instance
+    bc2 = -1          ! no bc2 solution for mixing
+    bc_f1 = 1.0       ! mixing fraction for bc1 
     status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
     
     ! Initial equilibration of cells

@@ -719,7 +719,7 @@ Transfer solution concentrations from the module workers to the concentration ar
 @param id               The instance id returned from @ref RM_Create.
 @param c                Array to receive the concentrations. Dimension of the array is equivalent to Fortran (nxyz, ncomps), 
 where nxyz is the number of user grid cells and ncomps is the result of @ref RM_FindComponents or @ref RM_GetComponentCount. 
-Units of concentration for c are defined by RM_SetUnitsSolution.
+Units of concentration for c are defined by RM_SetUnitsSolution. Values for inactive cells are set to 1e30.
 @see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_Concentrations2Module, @ref RM_SetUnitsSolution
 @par C Prototype:
 @htmlonly
@@ -769,7 +769,7 @@ int RM_GetConcentrations(int id, double *c);
 Transfer solution densities from the module workers to the density array given in the argument list (density). 
 @param id                   The instance id returned from @ref RM_Create.
 @param density              Array to receive the densities. Dimension of the array is (nxyz), 
-where nxyz is the number of user grid cells. Densities are those calculated by the reaction module. 
+where nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. Densities are those calculated by the reaction module. 
 Only the following databases distributed with PhreeqcRM have molar volume information needed to calculate density: 
 phreeqc.dat, Amm.dat, and pitzer.dat.
 @par C Prototype:
@@ -1307,7 +1307,7 @@ enddo
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root.
+Called by root, workers must be in the loop of @ref MpiWorker.
  */
 int        RM_GetSelectedOutput(int id, double *so);
 /**
@@ -1596,7 +1596,7 @@ int        RM_GetSelectedOutputRowCount(int id);
 Transfer solution volumes from the module workers to the array given in the argument list (vol). 
 @param id                   The instance id returned from @ref RM_Create.
 @param density              Array to receive the solution volumes. Dimension of the array is (nxyz), 
-where nxyz is the number of user grid cells. Solution volumes are those calculated by the reaction module. 
+where nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. Solution volumes are those calculated by the reaction module. 
 Only the following databases distributed with PhreeqcRM have molar volume information needed to calculate solution volume: 
 phreeqc.dat, Amm.dat, and pitzer.dat.
 @par C Prototype:
@@ -1846,42 +1846,96 @@ Called by root and (or) workers.
  */
 double     RM_GetTimeStep(int id);
 /**
- *  Fills an array (c) with concentrations from solutions in the InitialPhreeqc instance, useful for obtaining concentrations for boundary conditions.
- *  @param id                  The instance id returned from @ref RM_Create.
- *  @param c                   Array of concentrations extracted from InitialPhreeqc. The dimension of c is equivalent to Fortran allocation (dim, ncomp), where ncomp is the number of components returned from RM_FindComponents.
- *  @param n_boundary          The number of boundary condition cells that need to be filled.
- *  @param dim                 The maximum number of boundary conditions cells that will fit in the c array.
- *  @param boundary_solution1  Array of solution index numbers (at least n_boundary long).
- *  @param boundary_solution2  Array of solution index numbers that are defined to mix with boundary_solution1 (dimensioned at least n_boundary) (optional).
- *  @param fraction1           Fraction of boundary_solution1 that mixes with (1-fraction1) of boundary_solution2 (dimensioned at least n_boundary) (optional).
- *  @retval IRM_OK
- *  @retval If negative, IRM_RESULT error code.
- *  If boundary_solution2 and fraction1 are omitted, no mixing is used; concentrations are derived from boundary_solution1 only.
- *  A negative value for boundary_solution2 implies no mixing, and the associated value for fraction1 is ignored. 
- *  @see                 @ref RM_FindComponents 
- *  MPI:
- *     Called by the root process.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE> 
- *      INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, dim, bc_sol1, bc_sol2, f1)   
- *              IMPLICIT NONE
- *              INTEGER :: id
- *              DOUBLE PRECISION, INTENT(OUT) :: c
- *              INTEGER, INTENT(IN) :: n_boundary, dim, bc_sol1
- *              INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
- *              DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
- *      END FUNCTION RM_InitialPhreeqc2Concentrations    
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
+Fills an array (c) with concentrations from solutions in the Initial IPhreeqc instance.
+Used to obtain concentrations for boundary conditions. Concentrations may be a mixture of two
+solutions, boundary_solution1 and boundary_solution2, with a mixing fraction for boundary_solution1 1 of
+fraction1 and mixing fraction for boundary_solution2 of (1 - fraction1). 
+A negative value for boundary_solution2 implies no mixing, and the associated value for fraction1 is ignored.
+If boundary_solution2 and fraction1 are omitted (Fortran) or NULL (C), 
+no mixing is used; concentrations are derived from boundary_solution1 only.
+@param id                  The instance id returned from @ref RM_Create.
+@param c                   Array of concentrations extracted from the Initial IPhreeqc instance. 
+The dimension of c is equivalent to Fortran allocation (n_boundary, ncomp), 
+where ncomp is the number of components returned from @ref RM_FindComponents or @ref RM_GetComponentCount.
+@param n_boundary          The number of boundary condition solutions that need to be filled.
+@param boundary_solution1  Array of solution index numbers that refer to solutions in the Initial IPhreeqc instance. 
+Size is (n_boundary).
+@param boundary_solution2  Array of solution index numbers that that refer to solutions in the Initial IPhreeqc instance 
+and are defined to mix with boundary_solution1. 
+Size is (n_boundary). Optional in Fortran, may be NULL in C.
+@param fraction1           Fraction of boundary_solution1 that mixes with (1-fraction1) of boundary_solution2.
+Size is (n_boundary). Optional in Fortran, may be NULL in C.
+@retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
+@see                  @ref RM_FindComponents, @ref RM_GetComponentCount. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_InitialPhreeqc2Concentrations(
+  int id,
+  double *c,
+  int n_boundary,
+  int *boundary_solution1,  
+  int *boundary_solution2, 
+  double *fraction1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+nbound = 1;
+bc1 = (int *) malloc((size_t) (nbound * sizeof(int)));
+bc2 = (int *) malloc((size_t) (nbound * sizeof(int)));
+bc_f1 = (double *) malloc((size_t) (nbound * sizeof(double)));
+bc_conc = (double *) malloc((size_t) (ncomps * nbound * sizeof(double)));
+for (i = 0; i < nbound; i++) 
+{
+  bc1[i]          = 0;       // Solution 0 from Initial IPhreeqc instance
+  bc2[i]          = -1;      // no bc2 solution for mixing
+  bc_f1[i]        = 1.0;     // mixing fraction for bc1
+} 
+status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(OUT) :: c
+  INTEGER, INTENT(IN) :: n_boundary, bc_sol1
+  INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
+  DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
+END FUNCTION RM_InitialPhreeqc2Concentrations    
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>      
+nbound = 1
+allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
+allocate(bc_conc(nbound, ncomps))  
+bc1 = 0           ! solution 0 from Initial IPhreeqc instance
+bc2 = -1          ! no bc2 solution for mixing
+bc_f1 = 1.0       ! mixing fraction for bc1 
+status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
  */
 int RM_InitialPhreeqc2Concentrations(
                 int id,
                 double *c,
                 int n_boundary,
-                //int dim, 
                 int *boundary_solution1,  
                 int *boundary_solution2, 
                 double *fraction1);
