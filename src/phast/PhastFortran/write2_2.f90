@@ -101,7 +101,9 @@ SUBROUTINE write2_2
                c_well(i) = c(m,i)
            enddo       
            iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well(1), 1, tc, p_atm)
-           status = RM_ErrorHandler(rm_id, iphreeqc_id, "write2_2, RM_Concentrations2Utility");
+           if (iphreeqc_id < 0) then 
+               status = RM_Abort(rm_id, iphreeqc_id, "write2_2, RM_Concentrations2Utility");
+           endif
            status = RunString(iphreeqc_id, string)
            status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
            status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, alk, svalue)

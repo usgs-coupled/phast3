@@ -14,6 +14,24 @@
 #endif
 
 /* ---------------------------------------------------------------------- */
+IRM_RESULT RM_Abort(int *id, int *result, const char * str, size_t l)
+/* ---------------------------------------------------------------------- */
+{
+	// decodes error
+	// writes any error messages
+	// exits 
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->DecodeError(*result);
+		Reaction_module_ptr->ErrorMessage(str);
+		Reaction_module_ptr->MpiAbort();
+		Reaction_module_ptr->DestroyReactionModule(*id);
+	    exit(4);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_CloseFiles(int *id)
 /* ---------------------------------------------------------------------- */
@@ -126,32 +144,6 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *use_gz)
 			gz = (*use_gz != 0);
 		}
 		return Reaction_module_ptr->DumpModule(dump, gz);
-	}
-	return IRM_BADINSTANCE;
-}
-/* ---------------------------------------------------------------------- */
-int RM_ErrorHandler(int *id, int *result, const char * str, size_t l)
-/* ---------------------------------------------------------------------- */
-{
-	// checks result for errors
-	// writes any error messages
-	// exits depending on SetErrorHandlerMode
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		try
-		{
-			Reaction_module_ptr->ErrorHandler(*result, PhreeqcRM::Char2TrimString(str, l));
-		}
-		catch (PhreeqcRMStop)
-		{
-			Reaction_module_ptr->ErrorMessage("PhreeqcRM error.");
-		}
-		catch (...)
-		{
-			Reaction_module_ptr->ErrorMessage("Unknown exception.");
-		}
-		return Reaction_module_ptr->ReturnHandler((IRM_RESULT) *result, "");
 	}
 	return IRM_BADINSTANCE;
 }
