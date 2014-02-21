@@ -29,6 +29,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int * ic1; 
 		int * ic2;
 		double * f1;
+		int * module_cells;
 		int nbound;
 		int * bc1;
 		int * bc2;
@@ -112,10 +113,10 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		status = RM_LoadDatabase(id, "phreeqc.dat"); 
 
 		// Run file to define solutions and reactants for initial conditions, selected output
-		// There are three types of IPhreeqc modules in PhreeqcRM
-		// Argument 1 refers to the InitialPhreeqc module for accumulating initial and boundary conditions
-		// Argument 2 refers to the workers for doing reaction calculations for transport
-		// Argument 3 refers to a utility module
+		// There are three types of IPhreeqc instances in PhreeqcRM
+		// Argument 1 refers to the workers for doing reaction calculations for transport
+		// Argument 2 refers to the InitialPhreeqc instance for accumulating initial and boundary conditions
+		// Argument 3 refers to the Utility instance
 		status = RM_RunFile(id, 1, 1, 1, "advect.pqi");
 
 		// For demonstration, clear contents of workers and utility
@@ -185,7 +186,16 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			f1[5*nxyz + i] = 1.0;      // Mixing fraction ic1 Solid solutions 
 			f1[6*nxyz + i] = 1.0;      // Mixing fraction ic1 Kinetics 
 		}
-		status = RM_InitialPhreeqc2Module(id, ic1, ic2, f1);
+		status = RM_InitialPhreeqc2Module(id, ic1, ic2, f1); 
+		// alternative for setting initial conditions
+		// cell number in second argument (-1 indicates last solution, 40 in this case)
+		// in advect.pqi and any reactants with the same number--
+		// Equilibrium phases, exchange, surface, gas phase, solid solution, and (or) kinetics--
+		// will be written to cells 18 and 19 (0 based)
+		module_cells = (int *) malloc((size_t) (2 * sizeof(int)));
+		module_cells[0] = 18;
+		module_cells[0] = 19;
+		status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2);
 
 		// Get a boundary condition from initial phreeqc
 		nbound = 1;

@@ -36,6 +36,7 @@
     integer                                       :: nbound
     integer,          dimension(:), allocatable   :: bc1, bc2
     double precision, dimension(:), allocatable   :: bc_f1
+    integer,          dimension(:), allocatable   :: module_cells
     double precision, dimension(:,:), allocatable :: bc_conc
     double precision, dimension(:,:), allocatable :: c
     double precision                              :: time, time_step
@@ -118,10 +119,10 @@
     status = RM_LoadDatabase(id, "phreeqc.dat"); 
     
     ! Run file to define solutions and reactants for initial conditions, selected output
-    ! There are three types of IPhreeqc modules in PhreeqcRM
-    ! Argument 1 refers to the InitialPhreeqc module for accumulating initial and boundary conditions
-    ! Argument 2 refers to the workers for doing reaction calculations for transport
-    ! Argument 3 refers to a utility module
+    ! There are three types of IPhreeqc instances in PhreeqcRM
+    ! Argument 1 refers to the worker IPhreeqcs for doing reaction calculations for transport
+    ! Argument 2 refers to the InitialPhreeqc instance for accumulating initial and boundary conditions
+    ! Argument 3 refers to the Utility instance available for processing
     status = RM_RunFile(id, 1, 1, 1, "advect.pqi")
  
     ! For demonstration, clear contents of workers and utility
@@ -173,7 +174,15 @@
         ic1(i,7) = -1      ! Kinetics none
     enddo   
     status = RM_InitialPhreeqc2Module(id, ic1(1,1), ic2(1,1), f1(1,1))
-
+    ! alternative for setting initial conditions
+    ! cell number in second argument (-1 indicates last solution, 40 in this case)
+    ! in advect.pqi and any reactants with the same number--
+    ! Equilibrium phases, exchange, surface, gas phase, solid solution, and (or) kinetics--
+    ! will be written to cells 18 and 19 (0 based)
+    allocate (module_cells(2))
+    module_cells(1) = 18
+    module_cells(2) = 19
+    status = RM_InitialPhreeqcCell2Module(id, -1, module_cells(1), 2)
 
     ! Get a boundary condition from initial phreeqc
     nbound = 1
