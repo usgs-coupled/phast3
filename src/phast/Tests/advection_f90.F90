@@ -61,8 +61,9 @@
 
     ! Create reaction module
     id = RM_create(nxyz, nthreads)
+    status = RM_SetErrorHandlerMode(id, 2)  ! exit on error
+    
     status = RM_SetFilePrefix(id, "Advect_f90")
-    status = RM_SetErrorHandlerMode(id, 2)
     ! Open error, log, and output files
     status = RM_OpenFiles(id)
   
@@ -116,7 +117,7 @@
 	nchem = RM_GetChemistryCellCount(id)
 
     ! Load database
-    status = RM_LoadDatabase(id, "phreeqc.dat"); 
+    status = RM_LoadDatabase(id, "phreeqc.dat") 
     
     ! Run file to define solutions and reactants for initial conditions, selected output
     ! There are three types of IPhreeqc instances in PhreeqcRM
@@ -219,27 +220,28 @@
 		write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
               RM_GetTime(id) * RM_GetTimeConversion(id), " days"
 		status = RM_LogMessage(id, string);
-		status = RM_ScreenMessage(id, string);
+		status = RM_ScreenMessage(id, string)
 		write(string, "(A32,F15.1,A)") "          Time step             ", &
               RM_GetTimeStep(id) * RM_GetTimeConversion(id), " days"
-		status = RM_LogMessage(id, string);
-		status = RM_ScreenMessage(id, string);        
+		status = RM_LogMessage(id, string)
+		status = RM_ScreenMessage(id, string)        
         call advect_f90(c, bc_conc, ncomps, nxyz)
         
         ! Send any new conditions to module
-        status = RM_SetPoreVolume(id, pv(1))            ! If pore volume changes due to compressibility
-        status = RM_SetSaturation(id, sat(1))           ! If saturation changes
-        status = RM_SetTemperature(id, temperature(1))  ! If temperature changes
-        status = RM_SetPressure(id, pressure(1))        ! If pressure changes
-        status = RM_SetConcentrations(id, c(1,1))
+        status = RM_SetPoreVolume(id, pv(1))               ! If pore volume changes 
+        status = RM_SetSaturation(id, sat(1))              ! If saturation changes
+        status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
+        status = RM_SetPressure(id, pressure(1))           ! If pressure changes
+        status = RM_SetConcentrations(id, c(1,1))          ! Transported concentrations
+        status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
         time = time + time_step
-        status = RM_SetTime(id, time) 
+        status = RM_SetTime(id, time)                      ! Current time
         
         ! print at last time step
  		if (isteps == nsteps) then
-            status = RM_SetPrintChemistryOn(id, 1, 0, 0)  ! workers, initial_phreeqc, utility
+            status = RM_SetPrintChemistryOn(id, 1, 0, 0)   ! workers, initial_phreeqc, utility
         else
-            status = RM_SetPrintChemistryOn(id, 0, 0, 0)  ! workers, initial_phreeqc, utility
+            status = RM_SetPrintChemistryOn(id, 0, 0, 0)   ! workers, initial_phreeqc, utility
         endif
         
         ! Run cells with new conditions
@@ -250,9 +252,9 @@
         status = RM_RunCells(id)  
 
 		! Retrieve reacted concentrations, density, volume
-        status = RM_GetConcentrations(id, c(1,1))
-        status = RM_GetDensity(id, density(1))
-        status = RM_GetSolutionVolume(id, volume(1))
+        status = RM_GetConcentrations(id, c(1,1))          ! Concentrations after reaction
+        status = RM_GetDensity(id, density(1))             ! Density after reaction
+        status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after reaction
  
         ! Print results at last time step
         if (isteps == nsteps) then

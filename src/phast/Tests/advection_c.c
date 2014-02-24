@@ -250,13 +250,14 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			advect_c(c, bc_conc, ncomps, nxyz, nbound);
         
 			// Send any new conditions to module
-			status = RM_SetPoreVolume(id, pv);            // If pore volume changes due to compressibility
-			status = RM_SetSaturation(id, sat);           // If saturation changes
-			status = RM_SetTemperature(id, temperature);  // If temperature changes
-			status = RM_SetPressure(id, pressure);        // If pressure changes
-			status = RM_SetConcentrations(id, c);
+			status = RM_SetPoreVolume(id, pv);             // If pore volume changes 
+			status = RM_SetSaturation(id, sat);            // If saturation changes
+			status = RM_SetTemperature(id, temperature);   // If temperature changes
+			status = RM_SetPressure(id, pressure);         // If pressure changes
+			status = RM_SetConcentrations(id, c);          // Transported concentrations
+		    status = RM_SetTimeStep(id, time_step);        // Time step for kinetic reactions
 			time = time + time_step;
-			status = RM_SetTime(id, time); 
+			status = RM_SetTime(id, time);                 // Current time
 			// Set print flag
  			if (isteps == nsteps - 1) 
 			{
@@ -274,9 +275,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			status = RM_RunCells(id);  
 
 			// Retrieve reacted concentrations, density, volume
-			status = RM_GetConcentrations(id, c);
-			status = RM_GetDensity(id, density);
-			status = RM_GetSolutionVolume(id, volume);
+			status = RM_GetConcentrations(id, c);          // Concentrations after reaction 
+			status = RM_GetDensity(id, density);           // Density after reaction
+			status = RM_GetSolutionVolume(id, volume);     // Solution volume after reaction
  
 			// Print results at last time step
 			if (isteps == nsteps - 1) 

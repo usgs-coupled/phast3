@@ -2071,39 +2071,133 @@ int RM_InitialPhreeqc2Module(int id,
                 int *initial_conditions1,		// 7 x nxyz end-member 1
                 int *initial_conditions2,		// 7 x nxyz end-member 2
                 double *fraction1);			    // 7 x nxyz fraction of end-member 1
+/**
+A cell numbered n in the InitialPhreeqc instance is selected to populate a series of cells in the reaction module workers.
+All reactants with the number n are transferred along with the solution. 
+If MIX n exists, it is used for the definition of the solution. 
+The list of cell numbers for the workers is module_numbers, with dimension dim_module_numbers. 
+If n is negative, n is redefined to be the largest solution or MIX number in the InitialPhreeqc instance. 
+All reactants for each cell in the list module_numbers are removed before the cell 
+definition is copied from the InitialPhreeqc instance to the workers.
+@param id                 The instance id returned from @ref RM_Create.
+@param n                  Cell number refers to a solution or MIX and associated reactants in the InitialPhreeqc instance.
+A negative number indicates the largest solution or MIX number in the InitialPhreeqc instance will be used.
+@param module_numbers     A list of cell numbers in the user's grid-cell numbering system that will be populated with
+cell n from the InitialPhreeqc instance.
+@param dim_module_numbers The number of cell numbers in the module_numbers list.
+@retval IRM_RESULT        0 is success, negative is failure (See @ref RM_DecodeError).
+@see                      @ref RM_InitialPhreeqc2Module.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_InitialPhreeqcCell2Module(int id,
+                int n,		                            // InitialPhreeqc cell number
+                int *module_numbers,		            // Module cell numbers
+                int dim_module_numbers);			    // Number of module cell numbers
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+module_cells = (int *) malloc((size_t) (2 * sizeof(int)));
+module_cells[0] = 18;
+module_cells[0] = 19;
+// n will be the largest SOLUTION number in InitialPhreeqc instance
+// copies solution and reactants to cells 18 and 19
+status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_InitialPhreeqcCell2Module(id, n_user, module_cell, dim_module_cell)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: n_user
+  INTEGER, INTENT(in) :: module_cell
+  INTEGER, INTENT(in) :: dim_module_cell
+END FUNCTION RM_InitialPhreeqcCell2Module         
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>      
+allocate (module_cells(2))
+module_cells(1) = 18
+module_cells(2) = 19
+! n will be the largest SOLUTION number in InitialPhreeqc instance
+! copies solution and reactants to cells 18 and 19
+status = RM_InitialPhreeqcCell2Module(id, -1, module_cells(1), 2)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 int RM_InitialPhreeqcCell2Module(int id,
                 int n,		                            // InitialPhreeqc cell number
                 int *module_numbers,		            // Module cell numbers
                 int dim_module_numbers);			    // Number of module cell numbers
 /**
- *  Load a database for the InitialPhreeqc and all worker IPhreeqc instances. 
- *  @param id            The instance id returned from @ref RM_Create.
- *  @param db_name       String containing the database name.
- *  @param l             Length of the db_name string buffer (automatic in Fortran, optional in C).
- *  @see                 ???
- *  MPI:
- *     Called by all processes.
- *     Except for id, arguments are optional for non-root processes.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      INTEGER FUNCTION RM_LoadDatabase(id, db) 
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *          CHARACTER, OPTIONAL, INTENT(in) :: db
- *      END FUNCTION RM_LoadDatabase 
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
+Load a database for all IPhreeqc instances--workers, InitialPhreeqc, and Utility. All definitions
+of the reaction module are cleared (SOLUTION_SPECIES, PHASES, SOLUTIONs, etc.), and the database is read.
+@param id               The instance id returned from @ref RM_Create.
+@param db_name          String containing the database name.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_Create.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_LoadDatabase(int id, const char *db_name);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  	
+status = RM_LoadDatabase(id, "phreeqc.dat"); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_LoadDatabase(id, db) 
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  CHARACTER, INTENT(in) :: db
+END FUNCTION RM_LoadDatabase         
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>      
+status = RM_LoadDatabase(id, "phreeqc.dat")
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
  */
 int RM_LoadDatabase(int id, const char *db_name);
 /**
-Send an message to the log file. 
+Print a message to the log file. 
 @param id               The instance id returned from @ref RM_Create.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
-@see                    @ref RM_OpenFiles, @ref RM_ErrorMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
+@see                    @ref RM_OpenFiles, @ref RM_ErrorMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
 @par C Prototype:
 @htmlonly
 <CODE>
@@ -2117,7 +2211,7 @@ int RM_LogMessage(int id, const char *str);
 <CODE>
 <PRE>  			
 sprintf(str, "%s%10.1f%s", "Beginning transport calculation      ", 
-        time * RM_GetTimeConversion(id), " days\n");
+        RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
 status = RM_LogMessage(id, str);
 </PRE>
 </CODE> 
@@ -2138,8 +2232,8 @@ END FUNCTION RM_LogMessage
 @htmlonly
 <CODE>
 <PRE>  		
-write(string, "(A32,F15.1,A)") "Beginning reaction calculation  ", &
-      time * RM_GetTimeConversion(id), " days"
+write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
+      RM_GetTime(id) * RM_GetTimeConversion(id), " days"
 status = RM_LogMessage(id, string);
 </PRE>
 </CODE> 
@@ -2148,47 +2242,299 @@ status = RM_LogMessage(id, string);
 Called by root.
  */
 int RM_LogMessage(int id, const char *str);
+/**
+For MPI, workers (processes with @ref RM_GetMpiMyself > 0) must call RM_MpiWorker to be able to
+respond to messages from the root to accept data, perform calculations,
+or return data. RM_MpiWorker contains a loop that reads a message from root, performs a 
+task, and waits for another message from root. @ref RM_SetConcentrations, @ref RM_RunCells, and @ref RM_GetConcentrations
+are examples of methods that send a message from root to get the workers to perform a task. The workers will
+respond to all methods that are designated "workers must be in the loop of MpiWorker" in the
+MPI section of the method documentation.
+The workers will continue to respond to messages from root until root calls
+@ref RM_MpiWorkerBreak.
+@n@n
+(Advanced) The list of tasks that the workers perform can be extended by using @ref RM_SetMpiWorkerCallback.
+It is then possible to use the MPI processes to perform other developer-defined tasks, such as transport calculations, without
+exiting from the RM_MpiWorker loop. Alternatively, root calls @ref RM_MpiWorkerBreak to allow the workers to continue
+past a call to RM_MpiWorker. The workers perform developer-defined calculations, and then RM_MpiWorker is called again to respond to 
+requests from root to perform reaction-module tasks.
+@param id               The instance id returned from @ref RM_Create.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). RM_MpiWorker returns a value only when
+@ref RM_MpiWorkerBreak is called by root.
+@see                    @ref RM_MpiWorkerBreak, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie (C only).
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
 int RM_MpiWorker(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+status = RM_MpiWorker(id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_MpiWorker(id) 
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_MpiWorker
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_MpiWorker(id)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by all workers.
+ */
+int RM_MpiWorker(int id);
+/**
+For MPI, called by root to force workers (processes with @ref RM_GetMpiMyself > 0) to return from a call to @ref RM_MpiWorker. 
+RM_MpiWorker contains a loop that reads a message from root, performs a 
+task, and waits for another message from root. The workers respond to all methods that are designated "workers must be in the loop of MpiWorker" in the
+MPI section of the method documentation.
+The workers will continue to respond to messages from root until root calls RM_MpiWorkerBreak.
+@param id               The instance id returned from @ref RM_Create.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_MpiWorker, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie (C only).
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_MpiWorkerBreak(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+status = RM_MpiWorkerBreak(id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_MpiWorkerBreak(id) 
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_MpiWorkerBreak
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_MpiWorkerBreak(id)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int RM_MpiWorkerBreak(int id);
 /**
- *  Opens the output file and log file. 
- *  @see                  @ref RM_SetFilePrefix @ref RM_CloseFiles
- *  Files are named prefix.chem.txt and prefix.log.txt
- *  MPI:
- *       Has effect only for root process.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>        
- *      INTEGER FUNCTION RM_OpenFiles(id) 
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *      END FUNCTION RM_OpenFiles
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
+Opens the output and log files. Files are named based on the prefix defined by
+@ref RM_SetFilePrefix: prefix.chem.txt and prefix.log.txt.
+@param id               The instance id returned from @ref RM_Create.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetFilePrefix, @ref RM_GetFilePrefix, @ref RM_CloseFiles..
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_OpenFiles(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+status = RM_SetFilePrefix(id, "Advect_c");
+status = RM_OpenFiles(id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_OpenFiles(id) 
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_OpenFiles
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetFilePrefix(id, "Advect_f90")
+status = RM_OpenFiles(id)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
  */
 int RM_OpenFiles(int id);
+/**
+Print a message to the output file. 
+@param id               The instance id returned from @ref RM_Create.
+@param str              String to be printed.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_ErrorMessage, @ref RM_LogMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_OutputMessage(int id, const char *str);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  					
+sprintf(str1, "Number of threads:                                %d\n", RM_GetThreadCount(id));
+status = RM_OutputMessage(id, str1);
+sprintf(str1, "Number of MPI processes:                          %d\n", RM_GetMpiTasks(id));
+status = RM_OutputMessage(id, str1);
+sprintf(str1, "MPI task number:                                  %d\n", RM_GetMpiMyself(id));
+status = RM_OutputMessage(id, str1);
+status = RM_GetFilePrefix(id, str, 100);
+sprintf(str1, "File prefix:                                      %s\n", str);
+status = RM_OutputMessage(id, str1);
+sprintf(str1, "Number of grid cells in the user's model:         %d\n", RM_GetGridCellCount(id));
+status = RM_OutputMessage(id, str1);
+sprintf(str1, "Number of chemistry cells in the reaction module: %d\n", RM_GetChemistryCellCount(id));
+status = RM_OutputMessage(id, str1);
+sprintf(str1, "Number of components for transport:               %d\n", RM_GetComponentCount(id));
+status = RM_OutputMessage(id, str1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_OutputMessage(id, str)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  CHARACTER, INTENT(in) :: str
+END FUNCTION RM_OutputMessage
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+write(string1, "(A,I)") "Number of threads:                                ", RM_GetThreadCount(id)
+status = RM_OutputMessage(id, string1)
+write(string1, "(A,I)") "Number of MPI processes:                          ", RM_GetMpiTasks(id)
+status = RM_OutputMessage(id, string1)
+write(string1, "(A,I)") "MPI task number:                                  ", RM_GetMpiMyself(id)
+status = RM_OutputMessage(id, string1)
+status = RM_GetFilePrefix(id, string)
+write(string1, "(A,A)") "File prefix:                                      ", string
+status = RM_OutputMessage(id, trim(string1))
+write(string1, "(A,I)") "Number of grid cells in the user's model:         ", RM_GetGridCellCount(id)
+status = RM_OutputMessage(id, trim(string1))
+write(string1, "(A,I)") "Number of chemistry cells in the reaction module: ", RM_GetChemistryCellCount(id)
+status = RM_OutputMessage(id, trim(string1))
+write(string1, "(A,I)") "Number of components for transport:               ", RM_GetComponentCount(id)
+status = RM_OutputMessage(id, trim(string1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int RM_OutputMessage(int id, const char *str);
 /**
- *  Transfer array of concentrations to the reaction module workers. 
- *  @param id            The instance id returned from @ref RM_Create.
- *  @param time          The current time of the simulation, in seconds.
- *  @param time_step     The time over which kinetic reactions will be integrated, in seconds.
- *  @param concentration The array of concentrations to be transferred (nxyz of component 1, nxyz component 2, ...)
- *  @param stop_msg      Signal the end of the simulation (1 stop, 0 continue).
- *  @see                 ???
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>
- *      INTEGER FUNCTION RM_RunCells(id)   
- *          IMPLICIT NONE
- *          INTEGER :: id
- *      END FUNCTION RM_RunCells     
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
+Runs a reaction step for all of the cells in the reaction module. 
+The current set of concentrations of the components (@ref RM_SetConcentrations) is used
+in the calculations. The length of time over which kinetic reactions are integrated is set
+by @ref RM_SetTimeStep. Other properties that may need to be updated as a result of the transport 
+calculations include pore volume, saturation, temperature, and pressure. 
+@param id               The instance id returned from @ref RM_Create.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetConcentrations,  @ref RM_SetPoreVolume, 
+@ref RM_SetTemperature, @ref RM_SetPressure, @ref RM_SetSaturation, @ref RM_SetTimeStep. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_RunCells(int id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:			
+@htmlonly
+<CODE>
+<PRE>  	
+status = RM_SetPoreVolume(id, pv);             // If pore volume changes 
+status = RM_SetSaturation(id, sat);            // If saturation changes
+status = RM_SetTemperature(id, temperature);   // If temperature changes
+status = RM_SetPressure(id, pressure);         // If pressure changes
+status = RM_SetConcentrations(id, c);          // Transported concentrations
+status = RM_SetTimeStep(id, time_step);        // Time step for kinetic reactions
+status = RM_RunCells(id);
+status = RM_GetConcentrations(id, c);          // Concentrations after reaction 
+status = RM_GetDensity(id, density);           // Density after reaction
+status = RM_GetSolutionVolume(id, volume);     // Solution volume after reaction
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_RunCells(id)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_RunCells 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  	
+status = RM_SetPoreVolume(id, pv(1))               ! If pore volume changes
+status = RM_SetSaturation(id, sat(1))              ! If saturation changes
+status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
+status = RM_SetPressure(id, pressure(1))           ! If pressure changes
+status = RM_SetConcentrations(id, c(1,1))          ! Transported concentrations
+status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
+status = RM_RunCells(id)  
+status = RM_GetConcentrations(id, c(1,1))          ! Concentrations after reaction
+status = RM_GetDensity(id, density(1))             ! Density after reaction
+status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after reaction
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
  */
 int RM_RunCells(int id);
 /**

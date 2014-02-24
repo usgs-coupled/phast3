@@ -196,7 +196,8 @@ int advection_cpp()
 			status = phreeqc_rm.SetSaturation(sat.data());           // If saturation changes
 			status = phreeqc_rm.SetTemperature(temperature.data());  // If temperature changes
 			status = phreeqc_rm.SetPressure(pressure.data());        // If pressure changes
-			status = phreeqc_rm.SetConcentrations(c.data());
+			status = phreeqc_rm.SetConcentrations(c.data());         // Transported concentrations
+			status = phreeqc_rm.SetTimeStep(time_step);				 // Time step for kinetic reactions
 			time = time + time_step;
 			status = phreeqc_rm.SetTime(time);
 
@@ -210,10 +211,9 @@ int advection_cpp()
 			status = phreeqc_rm.RunCells();
 
 			// Retrieve reacted concentrations, density, volume
-			status = phreeqc_rm.GetConcentrations(c.data());
-			// Get current density
-			std::vector<double> &density = phreeqc_rm.GetDensity();
-			std::vector<double> &volume = phreeqc_rm.GetSolutionVolume();
+			status = phreeqc_rm.GetConcentrations(c.data());              // Concentrations after reaction 
+			std::vector<double> &density = phreeqc_rm.GetDensity();       // Density after reaction 
+			std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); // Solution volume after reaction 
 
 			// Print results at last time step
 			if (print_chemistry_on != 0)
