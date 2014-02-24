@@ -135,7 +135,10 @@ int advection_cpp()
 			ic1[5*nxyz + i] = -1;    // Solid solutions none
 			ic1[6*nxyz + i] = -1;    // Kinetics none
 		}
-		status = phreeqc_rm.InitialPhreeqc2Module(ic1.data(), ic2.data(), f1.data());    
+		status = phreeqc_rm.InitialPhreeqc2Module(ic1.data(), ic2.data(), f1.data()); 
+		// No mixing is defined, so the following is equivalent
+		// status = phreeqc_rm.InitialPhreeqc2Module(ic1.data()); 
+		
 		// alternative for setting initial conditions
 		// cell number in first argument (-1 indicates last solution, 40 in this case)
 		// in advect.pqi and any reactants with the same number--

@@ -156,7 +156,6 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		status = RM_OutputMessage(id, "\n");
 		    
 		// Set array of initial conditions
-		//allocate(ic1(nxyz,7), ic2(nxyz,7), f1(nxyz,7))
 		ic1 = (int *) malloc((size_t) (7 * nxyz * sizeof(int)));
 		ic2 = (int *) malloc((size_t) (7 * nxyz * sizeof(int)));
 		f1 = (double *) malloc((size_t) (7 * nxyz * sizeof(double)));
@@ -187,6 +186,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			f1[6*nxyz + i] = 1.0;      // Mixing fraction ic1 Kinetics 
 		}
 		status = RM_InitialPhreeqc2Module(id, ic1, ic2, f1); 
+		// No mixing is defined, so the following is equivalent
+		// status = RM_InitialPhreeqc2Module(id, ic1, NULL, NULL);
+
 		// alternative for setting initial conditions
 		// cell number in second argument (-1 indicates last solution, 40 in this case)
 		// in advect.pqi and any reactants with the same number--

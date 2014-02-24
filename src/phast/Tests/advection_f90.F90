@@ -174,6 +174,9 @@
         ic1(i,7) = -1      ! Kinetics none
     enddo   
     status = RM_InitialPhreeqc2Module(id, ic1(1,1), ic2(1,1), f1(1,1))
+    ! No mixing is defined, so the following is equivalent
+    ! status = RM_InitialPhreeqc2Module(id, ic1(1,1))
+    
     ! alternative for setting initial conditions
     ! cell number in second argument (-1 indicates last solution, 40 in this case)
     ! in advect.pqi and any reactants with the same number--

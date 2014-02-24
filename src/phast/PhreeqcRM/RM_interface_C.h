@@ -995,10 +995,10 @@ Returns an IPhreeqc id for one of the IPhreeqc instances in the reaction module.
 The threaded version has nthreads, as defined in @ref RM_Create.
 The number of threads can be determined by @ref RM_GetThreadCount.
 There will be nthreads + 2 IPhreeqc instances. The first nthreads will be the workers, the
-next is the Initial IPhreeqc instance, and the next is the Utility instance. Getting
+next is the InitialPhreeqc instance, and the next is the Utility instance. Getting
 the IPhreeqc id for one of these allows the user to use any of the IPhreeqc methods
 on that instance. For MPI, each process has three IPhreeqc instances, one worker, 
-one Initial IPhreeqc instance, and one Utility instance.
+one InitialPhreeqc instance, and one Utility instance.
 @param id               The instance id returned from @ref RM_Create. 
 @param i                The number of the IPhreeqc instance (0 based). 
 @retval                 IPhreeqc id for the ith IPhreeqc instance, negative is failure (See @ref RM_DecodeError).
@@ -1846,7 +1846,7 @@ Called by root and (or) workers.
  */
 double     RM_GetTimeStep(int id);
 /**
-Fills an array (c) with concentrations from solutions in the Initial IPhreeqc instance.
+Fills an array (c) with concentrations from solutions in the InitialPhreeqc instance.
 Used to obtain concentrations for boundary conditions. Concentrations may be a mixture of two
 solutions, boundary_solution1 and boundary_solution2, with a mixing fraction for boundary_solution1 1 of
 fraction1 and mixing fraction for boundary_solution2 of (1 - fraction1). 
@@ -1854,13 +1854,13 @@ A negative value for boundary_solution2 implies no mixing, and the associated va
 If boundary_solution2 and fraction1 are omitted (Fortran) or NULL (C), 
 no mixing is used; concentrations are derived from boundary_solution1 only.
 @param id                  The instance id returned from @ref RM_Create.
-@param c                   Array of concentrations extracted from the Initial IPhreeqc instance. 
+@param c                   Array of concentrations extracted from the InitialPhreeqc instance. 
 The dimension of c is equivalent to Fortran allocation (n_boundary, ncomp), 
 where ncomp is the number of components returned from @ref RM_FindComponents or @ref RM_GetComponentCount.
 @param n_boundary          The number of boundary condition solutions that need to be filled.
-@param boundary_solution1  Array of solution index numbers that refer to solutions in the Initial IPhreeqc instance. 
+@param boundary_solution1  Array of solution index numbers that refer to solutions in the InitialPhreeqc instance. 
 Size is (n_boundary).
-@param boundary_solution2  Array of solution index numbers that that refer to solutions in the Initial IPhreeqc instance 
+@param boundary_solution2  Array of solution index numbers that that refer to solutions in the InitialPhreeqc instance 
 and are defined to mix with boundary_solution1. 
 Size is (n_boundary). Optional in Fortran, may be NULL in C.
 @param fraction1           Fraction of boundary_solution1 that mixes with (1-fraction1) of boundary_solution2.
@@ -1892,7 +1892,7 @@ bc_f1 = (double *) malloc((size_t) (nbound * sizeof(double)));
 bc_conc = (double *) malloc((size_t) (ncomps * nbound * sizeof(double)));
 for (i = 0; i < nbound; i++) 
 {
-  bc1[i]          = 0;       // Solution 0 from Initial IPhreeqc instance
+  bc1[i]          = 0;       // Solution 0 from InitialPhreeqc instance
   bc2[i]          = -1;      // no bc2 solution for mixing
   bc_f1[i]        = 1.0;     // mixing fraction for bc1
 } 
@@ -1922,7 +1922,7 @@ END FUNCTION RM_InitialPhreeqc2Concentrations
 nbound = 1
 allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
 allocate(bc_conc(nbound, ncomps))  
-bc1 = 0           ! solution 0 from Initial IPhreeqc instance
+bc1 = 0           ! solution 0 from InitialPhreeqc instance
 bc2 = -1          ! no bc2 solution for mixing
 bc_f1 = 1.0       ! mixing fraction for bc1 
 status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
@@ -1940,69 +1940,43 @@ int RM_InitialPhreeqc2Concentrations(
                 int *boundary_solution2, 
                 double *fraction1);
 /**
-Transfer results from the InitialPhreeqc instance to the reaction module workers.  
-@param id                   The instance id returned from @ref RM_Create.
-@param initial_conditions1  Array containing index numbers of solutions and reactants.
-@param initial_conditions2  Array containing index numbers of solutions and reactants (optional).
-@param fraction1            Array containing fraction of initial_condition1 (when initial_conditions2 is defined) (optional).
-@retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
- *
-The structure of the initial condition arrays are 1D equivalent to a Fortran allocation
-of (nxyz,7), that is the first nxyz elements are solution numbers. The order of indexes
-is as follows (1) SOLUTIONS, (2) EQUILIBRIUM_PHASES, (3) EXCHANGE, (4) SURFACE, (5) GAS_PHASE,
-(6) SOLID_SOLUTIONS, and (7) KINETICS.
- *  @see                 @ref RM_InitialPhreeqcRunFile
- *  MPI:
- *     Called by all processes.
- *	   Id and initial_conditions1 are required for the root process.
- *     Except for id, arguments are optional for non-root processes. 
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, dim, bc_sol1, bc_sol2, f1)   
- *              IMPLICIT NONE
- *              INTEGER :: id
- *              DOUBLE PRECISION, INTENT(OUT) :: c
- *              INTEGER, INTENT(IN) :: n_boundary, dim, bc_sol1
- *              INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
- *              DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
- *      END FUNCTION RM_InitialPhreeqc2Concentrations    
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
- */
-/**
 Transfer solutions and reactants from the InitialPhreeqc instance to the reaction-module workers, possibly with mixing.
-In its simplest use, initial_conditions1 is used to select solutions and reactants for each cell of the model. 
+In its simplest form, initial_conditions1 is used to select initial conditions, including solutions and reactants, 
+for each cell of the model, without mixing. 
 Initial_conditions1 is dimensioned (nxyz, 7), where nxyz is the number of grid cells in the user's model 
 (@ref RM_GetGridCellCount). The dimension of 7 refers to solutions and reactants in the following order:
 (1) SOLUTIONS, (2) EQUILIBRIUM_PHASES, (3) EXCHANGE, (4) SURFACE, (5) GAS_PHASE,
-(6) SOLID_SOLUTIONS, and (7) KINETICS. In Fortran, initial_conditions(100, 4) = 2, indicates that
-cell 99 (0 based) contains the SURFACE definition with user number 2 that has been defined to the 
-InitialPhreeqc instance. The same definition in C would be initial_solution1[3*nxyz + 100] = 2.
-@par
-It is also possible to mix solutions and reactants to obtain the initial conditions for the cells. For mixing,
-initials_conditions2 contains numbers for a second entity that mixes with the entity defined in initial_conditions 1.
-Fraction1 contains the mixing fraction for initial_conditions1, whereas the mixing fraction for initial_conditions2 is
-(1 - fraction1). If the user number in initial_conditions2 is negative, no mixing occurs. 
+(6) SOLID_SOLUTIONS, and (7) KINETICS. In Fortran, initial_conditions1(100, 4) = 2, indicates that
+cell 99 (0 based) contains the SURFACE definition with user number 2 that has been defined in the 
+InitialPhreeqc instance (either by @ref RM_RunFile or @ref RM_RunString). 
+The same definition in C would be initial_solution1[3*nxyz + 99] = 2.
+@n@n
+It is also possible to mix solutions and reactants to obtain the initial conditions for cells. For mixing,
+initials_conditions2 contains numbers for a second entity that mixes with the entity defined in initial_conditions1.
+Fraction1 contains the mixing fraction for initial_conditions1, whereas (1 - fraction1) is the mixing fraction for 
+initial_conditions2.
+In Fortran, initial_conditions1(100, 4) = 2, initial_conditions2(100, 4) = 3, fraction1(100, 4) = 0.25 indicates that
+cell 99 (0 based) contains a mixtrue of 0.25 SURFACE 2 and 0.75 SURFACE 3, where the surface compositions have been defined in the
+InitialPhreeqc instance. The same definition in C would be initial_solution1[3*nxyz + 99] = 2, initial_solution2[3*nxyz + 99] = 3,
+fraction1[3*nxyz + 99] = 0.25.
+If the user number in initial_conditions2 is negative, no mixing occurs. 
 If initials_conditions2 and fraction1 are omitted (Fortran) or NULL (C), 
-no mixing is used; initial conditions are derived from initials_conditions1 only.
+no mixing is used, and initial conditions are derived solely from initials_conditions1.
 
 @param id                  The instance id returned from @ref RM_Create.
-@param c                   Array of concentrations extracted from the Initial IPhreeqc instance. 
-The dimension of c is equivalent to Fortran allocation (n_boundary, ncomp), 
-where ncomp is the number of components returned from @ref RM_FindComponents or @ref RM_GetComponentCount.
-@param n_boundary          The number of boundary condition solutions that need to be filled.
-@param boundary_solution1  Array of solution index numbers that refer to solutions in the Initial IPhreeqc instance. 
-Size is (n_boundary).
-@param boundary_solution2  Array of solution index numbers that that refer to solutions in the Initial IPhreeqc instance 
-and are defined to mix with boundary_solution1. 
-Size is (n_boundary). Optional in Fortran, may be NULL in C.
-@param fraction1           Fraction of boundary_solution1 that mixes with (1-fraction1) of boundary_solution2.
-Size is (n_boundary). Optional in Fortran, may be NULL in C.
-@retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
-@see                  @ref RM_FindComponents, @ref RM_GetComponentCount. 
+@param initial_conditions1 Array of solution and reactant index numbers that refer to definitions in the InitialPhreeqc instance. 
+Size is (nxyz x 7). The order of definitions is given above.
+Negative values are ignored, resulting in no definition of that entity for that cell.
+@param initial_conditions2  Array of solution and reactant index numbers that refer to definitions in the InitialPhreeqc instance. 
+Nonnegative values of initial_conditions2 result in mixing with the entities defined in initial_conditions1.
+Negative values result in no mixing.
+Size is (nxyz x 7). The order of definitions is given above.
+Optional in Fortran, may be NULL in C; omitting or setting to NULL results in no mixing.
+@param fraction1           Fraction of initial_conditions1 that mixes with (1-fraction1) of initial_conditions2. 
+Size is (nxyz x 7). The order of definitions is given above.
+Optional in Fortran, may be NULL in C; omitting or setting to NULL results in no mixing.
+@retval IRM_RESULT          0 is success, negative is failure (See @ref RM_DecodeError).
+@see                        @ref RM_InitialPhreeqcCell2Module.
 @par C Prototype:
 @htmlonly
 <CODE>
@@ -2018,18 +1992,38 @@ int RM_InitialPhreeqc2Module(int id,
 @htmlonly
 <CODE>
 <PRE>  		
-nbound = 1;
-bc1 = (int *) malloc((size_t) (nbound * sizeof(int)));
-bc2 = (int *) malloc((size_t) (nbound * sizeof(int)));
-bc_f1 = (double *) malloc((size_t) (nbound * sizeof(double)));
-bc_conc = (double *) malloc((size_t) (ncomps * nbound * sizeof(double)));
-for (i = 0; i < nbound; i++) 
+ic1 = (int *) malloc((size_t) (7 * nxyz * sizeof(int)));
+ic2 = (int *) malloc((size_t) (7 * nxyz * sizeof(int)));
+f1 = (double *) malloc((size_t) (7 * nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) 
 {
-  bc1[i]          = 0;       // Solution 0 from Initial IPhreeqc instance
-  bc2[i]          = -1;      // no bc2 solution for mixing
-  bc_f1[i]        = 1.0;     // mixing fraction for bc1
-} 
-status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
+  ic1[i]          = 1;       // Solution 1
+  ic1[nxyz + i]   = -1;      // Equilibrium phases none
+  ic1[2*nxyz + i] = 1;       // Exchange 1
+  ic1[3*nxyz + i] = -1;      // Surface none
+  ic1[4*nxyz + i] = -1;      // Gas phase none
+  ic1[5*nxyz + i] = -1;      // Solid solutions none
+  ic1[6*nxyz + i] = -1;      // Kinetics none
+
+  ic2[i]          = -1;      // Solution none
+  ic2[nxyz + i]   = -1;      // Equilibrium phases none
+  ic2[2*nxyz + i] = -1;      // Exchange none
+  ic2[3*nxyz + i] = -1;      // Surface none
+  ic2[4*nxyz + i] = -1;      // Gas phase none
+  ic2[5*nxyz + i] = -1;      // Solid solutions none
+  ic2[6*nxyz + i] = -1;      // Kinetics none
+
+  f1[i]          = 1.0;      // Mixing fraction ic1 Solution
+  f1[nxyz + i]   = 1.0;      // Mixing fraction ic1 Equilibrium phases 
+  f1[2*nxyz + i] = 1.0;      // Mixing fraction ic1 Exchange 1
+  f1[3*nxyz + i] = 1.0;      // Mixing fraction ic1 Surface 
+  f1[4*nxyz + i] = 1.0;      // Mixing fraction ic1 Gas phase 
+  f1[5*nxyz + i] = 1.0;      // Mixing fraction ic1 Solid solutions 
+  f1[6*nxyz + i] = 1.0;      // Mixing fraction ic1 Kinetics 
+}
+status = RM_InitialPhreeqc2Module(id, ic1, ic2, f1); 
+// No mixing is defined, so the following is equivalent
+status = RM_InitialPhreeqc2Module(id, ic1, NULL, NULL);
 </PRE>
 </CODE> 
 @endhtmlonly
@@ -2037,14 +2031,13 @@ status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
 @htmlonly
 <CODE>
 <PRE> 
-INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1)   
+INTEGER FUNCTION RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
   IMPLICIT NONE
   INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(OUT) :: c
-  INTEGER, INTENT(IN) :: n_boundary, bc_sol1
-  INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
-  DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
-END FUNCTION RM_InitialPhreeqc2Concentrations    
+  INTEGER, INTENT(in) :: ic1
+  INTEGER, INTENT(in), OPTIONAL :: ic2
+  DOUBLE PRECISION, INTENT(in), OPTIONAL :: f1
+END FUNCTION RM_InitialPhreeqc2Module  
 </PRE>
 </CODE> 
 @endhtmlonly
@@ -2052,13 +2045,22 @@ END FUNCTION RM_InitialPhreeqc2Concentrations
 @htmlonly
 <CODE>
 <PRE>      
-nbound = 1
-allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
-allocate(bc_conc(nbound, ncomps))  
-bc1 = 0           ! solution 0 from Initial IPhreeqc instance
-bc2 = -1          ! no bc2 solution for mixing
-bc_f1 = 1.0       ! mixing fraction for bc1 
-status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
+allocate(ic1(nxyz,7), ic2(nxyz,7), f1(nxyz,7))
+ic1 = -1
+ic2 = -1
+f1 = 1.0
+do i = 1, nxyz
+  ic1(i,1) = 1       ! Solution 1
+  ic1(i,2) = -1      ! Equilibrium phases none
+  ic1(i,3) = 1       ! Exchange 1
+  ic1(i,4) = -1      ! Surface none
+  ic1(i,5) = -1      ! Gas phase none
+  ic1(i,6) = -1      ! Solid solutions none
+  ic1(i,7) = -1      ! Kinetics none
+enddo   
+status = RM_InitialPhreeqc2Module(id, ic1(1,1), ic2(1,1), f1(1,1))1))
+! No mixing is defined, so the following is equivalent
+status = RM_InitialPhreeqc2Module(id, ic1(1,1))
 </PRE>
 </CODE> 
 @endhtmlonly

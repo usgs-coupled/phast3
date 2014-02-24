@@ -3561,7 +3561,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 #ifdef USE_MPI
 		if (this->mpi_myself == 0)
 		{
-			int method = METHOD_INITIALPHREEQC2MODULE;
+			int method = METHOD_INITIALPHREEQCCELL2MODULE;
 			MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
 		}
 #endif
@@ -3864,6 +3864,13 @@ PhreeqcRM::MpiWorker()
 			case METHOD_INITIALPHREEQC2MODULE:
 				if (debug_worker) std::cerr << "METHOD_INITIALPHREEQC2MODULE" << std::endl;
 				return_value = this->InitialPhreeqc2Module();
+				break;
+			case METHOD_INITIALPHREEQCCELL2MODULE:
+				{
+					std::vector<int> dummy;
+					if (debug_worker) std::cerr << "METHOD_INITIALPHREEQCCELL2MODULE" << std::endl;
+					return_value = this->InitialPhreeqcCell2Module(-1, dummy);
+				}
 				break;
 			case METHOD_LOADDATABASE:
 				if (debug_worker) std::cerr << "METHOD_LOADDATABASE" << std::endl;
