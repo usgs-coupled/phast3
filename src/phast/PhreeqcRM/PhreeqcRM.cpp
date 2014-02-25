@@ -2450,16 +2450,36 @@ PhreeqcRM::FindComponents(void)
 				this->gfw.push_back(phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
 			}
 		}
-		//if (this->mpi_myself == 0)
-		//{
-		//	std::ostringstream outstr;
-		//	outstr << "List of Components:\n" << std::endl;
-		//	for (i = 0; i < this->components.size(); i++)
-		//	{
-		//		outstr << "\t" << i + 1 << "\t" << this->components[i].c_str() << std::endl;
-		//	}
-		//	this->OutputMessage(outstr.str());
-		//}
+#ifdef SKIP
+		// Get list of species
+		{
+			int next = phast_iphreeqc_worker->PhreeqcPtr->next_user_number(Keywords::KEY_SOLUTION);
+			std::ostringstream in;
+			in << "SOLUTION " << next << "\n";
+			for (i = 0; i < components.size(); i++)
+			{
+				if (components[i] == "H") continue;
+				if (components[i] == "O") continue;
+				if (components[i] == "H2O") continue;
+				if (components[i] == "Charge") continue;
+				in << components[i] << " 1e-6\n";
+			}
+			phast_iphreeqc_worker->RunString(in.str().c_str());
+			int n = phast_iphreeqc_worker->PhreeqcPtr->count_s_x;
+			cxxNameDouble species_moles;
+			for (int i = 0; i < phast_iphreeqc_worker->PhreeqcPtr->count_s_x; i++)
+			{
+				species_
+			}
+			//phast_iphreeqc_worker->PhreeqcPtr->GetSpeciesConcentration(species_map, units);
+			cxxNameDouble::iterator it = species_moles.begin();
+			for ( ; it != species_moles.end(); it++)
+			{
+				cxxNameDouble nd;
+				phast_iphreeqc_worker->PhreeqcPtr->species_formula(it->first, nd);
+			}
+		}
+#endif
 	}
 	catch (...)
 	{
