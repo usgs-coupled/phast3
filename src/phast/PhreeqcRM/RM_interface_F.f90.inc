@@ -263,16 +263,16 @@
             CHARACTER, INTENT(in) :: str
         END FUNCTION RM_ScreenMessage   
  		     
-        INTEGER FUNCTION RM_SetCellVolume(id, t)   
+        INTEGER FUNCTION RM_SetCellVolume(id, vol)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: vol
         END FUNCTION RM_SetCellVolume
  		     
-        INTEGER FUNCTION RM_SetConcentrations(id, t)   
+        INTEGER FUNCTION RM_SetConcentrations(id, c)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: c
         END FUNCTION RM_SetConcentrations
  		     
         INTEGER FUNCTION RM_SetCurrentSelectedOutputUserNumber(id, i)   

@@ -292,7 +292,7 @@ status = RM_CreateMapping(id, grid2chem(1))
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_CreateMapping (int id, int *grid2chem);
 /**
@@ -453,7 +453,7 @@ status = RM_DumpModule(id, dump_on, append)
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root; workers must be in the loop of @ref MpiWorker.
+Called by root; workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_DumpModule(int id, int dump_on, int append);
 /**
@@ -715,11 +715,15 @@ Called by root.
  */
 int RM_GetComponentCount(int id);
 /**
-Transfer solution concentrations from the module workers to the concentration array given in the argument list (c). 
+Transfer solution concentrations from each cell to the concentration array given in the argument list (c). 
+Units of concentration for c are defined by @ref RM_SetUnitsSolution. For concentration units of per liter, the 
+calculated solution volume is used to calculate the concentrations for c. Of the databases distributed with PhreeqcRM,
+only phreeqc.dat, Amm.dat, and pitzer.dat have the partial molar volume definitions needed to calculate solution volume. 
+Mass fraction concentration units do not require the solution volume to fill the c array (but, density is needed to
+convert transport concentrations to cell solution concentrations, @ref RM_SetConcentrations).
 @param id               The instance id returned from @ref RM_Create.
 @param c                Array to receive the concentrations. Dimension of the array is equivalent to Fortran (nxyz, ncomps), 
-where nxyz is the number of user grid cells and ncomps is the result of @ref RM_FindComponents or @ref RM_GetComponentCount. 
-Units of concentration for c are defined by RM_SetUnitsSolution. Values for inactive cells are set to 1e30.
+where nxyz is the number of user grid cells and ncomps is the result of @ref RM_FindComponents or @ref RM_GetComponentCount.  Values for inactive cells are set to 1e30.
 @see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_Concentrations2Module, @ref RM_SetUnitsSolution
 @par C Prototype:
 @htmlonly
@@ -762,7 +766,7 @@ status = RM_GetConcentrations(id, c(1,1))
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_GetConcentrations(int id, double *c);
 /**
@@ -813,7 +817,7 @@ status = RM_GetDensity(id, density(1))
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_GetDensity(int id, double *density);
 /**
@@ -1307,7 +1311,7 @@ enddo
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int        RM_GetSelectedOutput(int id, double *so);
 /**
@@ -1640,7 +1644,7 @@ status = RM_GetSolutionVolume(id, volume(1))
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int        RM_GetSolutionVolume(int id, double *vol);
 /**
@@ -1930,7 +1934,7 @@ status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_InitialPhreeqc2Concentrations(
                 int id,
@@ -2065,7 +2069,7 @@ status = RM_InitialPhreeqc2Module(id, ic1(1,1))
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_InitialPhreeqc2Module(int id,
                 int *initial_conditions1,		// 7 x nxyz end-member 1
@@ -2139,7 +2143,7 @@ status = RM_InitialPhreeqcCell2Module(id, -1, module_cells(1), 2)
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_InitialPhreeqcCell2Module(int id,
                 int n,		                            // InitialPhreeqc cell number
@@ -2189,7 +2193,7 @@ status = RM_LoadDatabase(id, "phreeqc.dat")
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_LoadDatabase(int id, const char *db_name);
 /**
@@ -2534,64 +2538,128 @@ status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after react
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_RunCells(int id);
 /**
- *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
- *  @param id            The instance id returned from @ref RM_Create.
- *  @param chem_name     String containing the name of the PHREEQC file to run.
- *  @param l             Length of the chem_name string buffer (automatic in Fortran, optional in C).
- *  @see                 ???
- *  MPI:
- *     Called by all processes.
- *     Except for id, arguments are optional for non-root processes.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, chem_name)
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *          INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
- *          CHARACTER, OPTIONAL, INTENT(in) :: chem_name
- *      END FUNCTION RM_RunFile 
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
+Run a PHREEQC input file. The first three arguments determine which IPhreeqc instances will run
+the file--the workers, the InitialPhreeqc instance, and (or) the Utility instance. Input
+files that modify the thermodynamic database should be run by all three sets of instances.
+Files with SELECTED_OUTPUT definitions that will be used during the time-stepping loop need to
+be run by the workers. Files that contain initial conditions or boundary conditions should
+be run by the InitialPhreeqc instance. 
+@param id               The instance id returned from @ref RM_Create.
+@param workers          Nonzero value, the workers will run the file; zero, the workers will not run the file.
+@param initial_phreeqc  Nonzero value, the InitialPhreeqc instance will run the file; zero, the InitialPhreeqc will not run the file.
+@param utility          Nonzero value, the Utility instance will run the file; zero, the Utility instance will not run the file.
+@param chem_name        Name of the file to run.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_RunString. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *chem_name);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:			
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_RunFile(id, 1, 1, 1, "advect.pqi");
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, chem_name)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: workers, initial_phreeqc, utility
+  CHARACTER, INTENT(in) :: chem_name
+END FUNCTION RM_RunFile 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  	
+status = RM_RunFile(id, 1, 1, 1, "advect.pqi")
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int        RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *chem_name);
 /**
- *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
- *  @param id            The instance id returned from @ref RM_Create.
- *  @param chem_name     String containing the name of the PHREEQC file to run.
- *  @param l             Length of the chem_name string buffer (automatic in Fortran, optional in C).
- *  @see                 ???
- *  <H>
- *  MPI:
- *     Called by all processes.
- *     Except for id, arguments are optional for non-root processes.
- *  @par Fortran90 Interface:
- *  @htmlonly
- *  <CODE>
- *  <PRE>  
- *      INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, input_string)
- *          IMPLICIT NONE
- *          INTEGER, INTENT(in) :: id
- *          INTEGER, OPTIONAL, INTENT(in) :: initial_phreeqc, workers, utility
- *          CHARACTER, OPTIONAL, INTENT(in) :: input_string
- *      END FUNCTION RM_RunFile 
- *  </PRE>
- *  </CODE>
- *  @endhtmlonly
+Run a PHREEQC input string. The first three arguments determine which 
+IPhreeqc instances will run
+the string--the workers, the InitialPhreeqc instance, and (or) the Utility instance. Input
+strings that modify the thermodynamic database should be run by all three sets of instances.
+Strings with SELECTED_OUTPUT definitions that will be used during the time-stepping loop need to
+be run by the workers. Strings that contain initial conditions or boundary conditions should
+be run by the InitialPhreeqc instance. 
+@param id               The instance id returned from @ref RM_Create.
+@param workers          Nonzero value, the workers will run the string; zero, the workers will not run the string.
+@param initial_phreeqc  Nonzero value, the InitialPhreeqc instance will run the string; zero, the InitialPhreeqc will not run the string.
+@param utility          Nonzero value, the Utility instance will run the string; zero, the Utility instance will not run the string.
+@param input_string     String containing PHREEQC input.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_RunFile. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char * input_string);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:			
+@htmlonly
+<CODE>
+<PRE>  
+strcpy(str, "DELETE; -all");
+status = RM_RunString(id, 1, 0, 1, str);	// workers, initial_phreeqc, utility 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_RunString(id, initial_phreeqc, workers, utility, input_string)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: initial_phreeqc, workers, utility
+  CHARACTER, INTENT(in) :: input_string
+END FUNCTION RM_RunString  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  	
+string = "DELETE; -all"
+status = RM_RunString(id, 1, 0, 1, string)  ! workers, initial_phreeqc, utility
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char * input_string);
 /**
-Send an message to the screen. 
+Print message to the screen. 
 @param id               The instance id returned from @ref RM_Create.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
-@see                    @ref RM_ErrorMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
+@see                    @ref RM_ErrorMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
 @par C Prototype:
 @htmlonly
 <CODE>
@@ -2636,8 +2704,138 @@ status = RM_ScreenMessage(id, string);
 Called by root and (or) workers.
  */
 int RM_ScreenMessage(int id, const char *str);
-int RM_SetCellVolume(int id, double *t);
-int RM_SetConcentrations(int id, double *t);
+/**
+Set the volume of each cell. Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
+to the volume. The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
+@param id               The instance id returned from @ref RM_Create.
+@param vol              Array of volumes, user units. Size of array is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetPoreVolume, @ref RM_SetSaturation.. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_SetCellVolume(int id, double *vol);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+cell_vol = (double *) malloc((size_t) (nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) cell_vol[i] = 1.0;
+status = RM_SetCellVolume(id, cell_vol);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetCellVolume(id, t)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: t
+END FUNCTION RM_SetCellVolume
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+allocate(cell_vol(nxyz))
+cell_vol = 1.0
+status = RM_SetCellVolume(id, cell_vol(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetCellVolume(int id, double *vol);
+/**
+Set the concentrations by which the moles of components of each cell are determined. 
+Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
+to the volume (@ref RM_SetCellVolume). 
+The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
+The moles of each component are determined by the volume of water and per liter concentrations. 
+If concentration units (@ref RM_SetUnitsSolution) are mass fraction, the
+density (as determined by @ref RM_SetDensity) is used to convert from mass fraction to per liter.
+@param id               The instance id returned from @ref RM_Create.
+@param vol              Array of component concentrations. Size of array is (nxyz, ncomps), where nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount), and ncomps is the number of components as determined
+by @ref RM_FindComponents or @ref RM_GetComponentCount.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                     @ref RM_SetCellVolume, @ref RM_SetPoreVolume, @ref RM_SetSaturation, @ref RM_SetUnitsSolution. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_SetConcentrations(int id, double *c);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+c = (double *) malloc((size_t) (ncomps * nxyz * sizeof(double)));
+...
+advect_c(c, bc_conc, ncomps, nxyz, nbound);
+status = RM_SetPoreVolume(id, pv);             // If pore volume changes 
+status = RM_SetSaturation(id, sat);            // If saturation changes
+status = RM_SetTemperature(id, temperature);   // If temperature changes
+status = RM_SetPressure(id, pressure);         // If pressure changes
+status = RM_SetConcentrations(id, c);          // Transported concentrations
+status = RM_SetTimeStep(id, time_step);        // Time step for kinetic reactions
+status = RM_SetTime(id, time);                 // Current time
+status = RM_RunCells(id);  
+status = RM_GetConcentrations(id, c);          // Concentrations after reaction 
+status = RM_GetDensity(id, density);           // Density after reaction
+status = RM_GetSolutionVolume(id, volume);     // Solution volume after reaction
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetConcentrations(id, c)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: t
+END FUNCTION RM_SetConcentrations
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+allocate(c(nxyz, ncomps))
+...
+call advect_f90(c, bc_conc, ncomps, nxyz)
+status = RM_SetPoreVolume(id, pv(1))               ! If pore volume changes 
+status = RM_SetSaturation(id, sat(1))              ! If saturation changes
+status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
+status = RM_SetPressure(id, pressure(1))           ! If pressure changes
+status = RM_SetConcentrations(id, c(1,1))          ! Transported concentrations
+status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
+status = RM_SetTime(id, time)                      ! Current time
+status = RM_RunCells(id)  
+status = RM_GetConcentrations(id, c(1,1))          ! Concentrations after reaction
+status = RM_GetDensity(id, density(1))             ! Density after reaction
+status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after reaction
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetConcentrations(int id, double *c);
 int RM_SetCurrentSelectedOutputUserNumber(int id, int i);
 int RM_SetDensity(int id, double *t);
 int RM_SetDumpFileName(int id, const char *dump_name);
@@ -2666,11 +2864,11 @@ int RM_SetUnitsSolution(int id, int i);
 int RM_SetUnitsSSassemblage(int id, int i);
 int RM_SetUnitsSurface(int id, int i);
 /**
-Send an warning message to the screen and the log file. 
+Print warning message to the screen and the log file. 
 @param id               The instance id returned from @ref RM_Create.
-@param warnstr         String to be printed.
+@param warnstr          String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
-@see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_ScreenMessage, @ref RM_ErrorMessage. 
+@see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_ErrorMessage. 
 @par C Prototype:
 @htmlonly
 <CODE>
@@ -2708,7 +2906,7 @@ status = RM_WarningMessage(id, "Parameter is out of range, using default")
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root and (or) workers; root writes to the log file.
+Called by root and (or) workers; only root writes to the log file.
  */
 int RM_WarningMessage(int id, const char *warn_str);
 void RM_write_bc_raw(int id, 
