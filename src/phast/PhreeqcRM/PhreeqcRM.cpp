@@ -3630,7 +3630,11 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 	{
 		std::ostringstream in;
 		in << "RUN_CELLS; -cell " << cell << "; -time_step 0\n";
+		// Turn off printing
+		std::vector<bool> tf = this->GetPrintChemistryOn();
+		this->SetPrintChemistryOn(false, false, false);
 		IRM_RESULT status = this->RunString(0, 1, 0, in.str().c_str());
+		this->SetPrintChemistryOn(tf[0], tf[1], tf[2]);
 		this->ErrorHandler(status, "RunString");
 
 		for (size_t i = 0; i < cell_numbers.size(); i++)
