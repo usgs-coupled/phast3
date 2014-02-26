@@ -49,7 +49,7 @@
 
     IF (solute) THEN
         ! ... Make a PhreeqcRM
-        rm_id = RM_Create(nxyz, nthreads)
+        rm_id = RM_Create(nxyz, MPI_COMM_WORLD)
         IF (rm_id.LT.0) THEN
             WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
             STOP 

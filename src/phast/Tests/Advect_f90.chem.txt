@@ -198,9 +198,9 @@ End of simulation.
 Reading input data for simulation 4.
 ------------------------------------
 
---------------------------------
-End of Run after 63.881 Seconds.
---------------------------------
+-------------------------------
+End of Run after 6.276 Seconds.
+-------------------------------
 
 Number of threads:                                           2
 Number of MPI processes:                                     1
@@ -325,9 +325,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 71.35 Seconds.
--------------------------------
+------------------------------
+End of Run after 6.34 Seconds.
+------------------------------
 
 Time:           10
 Chemistry cell: 0
@@ -439,9 +439,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.378 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.139 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 1
@@ -554,7 +554,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 72.39 Seconds.
+End of Run after 7.145 Seconds.
 -------------------------------
 
 Time:           10
@@ -667,9 +667,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.397 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.149 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 3
@@ -781,9 +781,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.403 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.154 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 4
@@ -896,7 +896,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 72.41 Seconds.
+End of Run after 7.159 Seconds.
 -------------------------------
 
 Time:           10
@@ -1009,9 +1009,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.417 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.164 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 6
@@ -1123,9 +1123,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.424 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.169 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 7
@@ -1237,9 +1237,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.431 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.174 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 8
@@ -1351,9 +1351,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.437 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.179 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 9
@@ -1460,9 +1460,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.445 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.185 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 10
@@ -1577,9 +1577,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.457 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.193 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 11
@@ -1694,9 +1694,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.465 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.198 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 12
@@ -1811,9 +1811,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.472 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.203 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 13
@@ -1928,9 +1928,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.479 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.208 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 14
@@ -2045,9 +2045,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.485 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.214 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 15
@@ -2162,9 +2162,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.492 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.219 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 16
@@ -2279,9 +2279,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.498 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.224 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 17
@@ -2396,9 +2396,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.504 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.229 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 18
@@ -2513,9 +2513,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.511 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.234 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 19
@@ -2630,7 +2630,7 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 72.518 Seconds.
---------------------------------
+-------------------------------
+End of Run after 7.239 Seconds.
+-------------------------------
 
