@@ -275,16 +275,16 @@
             DOUBLE PRECISION, INTENT(in) :: c
         END FUNCTION RM_SetConcentrations
  		     
-        INTEGER FUNCTION RM_SetCurrentSelectedOutputUserNumber(id, i)   
+        INTEGER FUNCTION RM_SetCurrentSelectedOutputUserNumber(id, n_user)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: i
+            INTEGER, INTENT(in) :: n_user
         END FUNCTION RM_SetCurrentSelectedOutputUserNumber
 
-        INTEGER FUNCTION RM_SetDensity(id, t)
+        INTEGER FUNCTION RM_SetDensity(id, density)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: density
         END FUNCTION RM_SetDensity 
         
         INTEGER FUNCTION RM_SetDumpFileName(id, name) 
@@ -298,7 +298,13 @@
             INTEGER, INTENT(in) :: id
             INTEGER, INTENT(in) :: i
         END FUNCTION RM_SetErrorHandlerMode        
-		
+		        
+        INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, INTENT(in) :: prefix
+        END FUNCTION RM_SetFilePrefix  
+
         INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
 			INTEGER, INTENT(IN) :: id
 			INTERFACE
@@ -307,12 +313,6 @@
 			  END FUNCTION 
 			END INTERFACE
         END FUNCTION RM_SetMpiWorkerCallback
-        
-        INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: prefix
-        END FUNCTION RM_SetFilePrefix  
 				
         INTEGER FUNCTION RM_SetPartitionUZSolids(id, t)   
             IMPLICIT NONE

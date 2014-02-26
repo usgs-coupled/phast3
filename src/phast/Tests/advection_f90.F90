@@ -213,6 +213,9 @@
     density = 1.0
     pressure = 2.0
     temperature = 20.0
+    status = RM_SetDensity(id, density(1))
+    status = RM_SetTemperature(id, temperature(1))
+    status = RM_SetPressure(id, pressure(1))
     time_step = 86400
     status = RM_SetTimeStep(id, time_step)
     do isteps = 1, nsteps
@@ -304,9 +307,9 @@
     status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
 
 	! Dump results   
+	status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")  
     dump_on = 1
-    append = 0
-	status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")    
+    append = 0  
     status = RM_DumpModule(id, dump_on, append)    
     
     ! Clean up

@@ -2836,10 +2836,282 @@ status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after react
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_SetConcentrations(int id, double *c);
-int RM_SetCurrentSelectedOutputUserNumber(int id, int i);
-int RM_SetDensity(int id, double *t);
+/**
+Set the current selected output user number. The user may define multiple SELECTED_OUTPUT
+data blocks for the workers. A user number is specified for each data block. The value of
+the argument n_user selects which of the SELECTED_OUTPUT definitions will be used 
+for selected-output operations.
+@param id               The instance id returned from @ref RM_Create.
+@param n_user           User number of the SELECTED_OUTPUT data block that is to be used. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput, @ref RM_GetSelectedOutputColumnCount,
+@ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputRowCount, @ref RM_GetSelectedOutputHeading,
+@ref RM_SetSelectedOutputOn.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_SetCurrentSelectedOutputUserNumber(int id, int n_user);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
+{
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+  col = RM_GetSelectedOutputColumnCount(id);
+  selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
+  status = RM_GetSelectedOutput(id, selected_out);
+  // Process results here
+  free(selected_out);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetCurrentSelectedOutputUserNumber(id, n_user)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: n_user
+END FUNCTION RM_SetCurrentSelectedOutputUserNumber
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+do isel = 1, RM_GetSelectedOutputCount(id)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1)
+  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
+  col = RM_GetSelectedOutputColumnCount(id)
+  allocate(selected_out(nxyz,col))
+  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  ! Process results here
+  deallocate(selected_out)
+enddo
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+int RM_SetCurrentSelectedOutputUserNumber(int id, int n_user);
+/**
+Set the density for each cell. These density values are used only 
+when converting from transported mass fraction concentrations (@ref RM_SetUnitsSolution) to
+produce per liter concentrations during a call to @ref RM_SetConcentrations.
+@param id               The instance id returned from @ref RM_Create.
+@param density          Array of densities. Size of array is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetConcentrations. 
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_SetDensity(int id, double *density);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+density = (double *) malloc((size_t) (nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) 
+{
+	density[i] = 1.0;
+}
+status = RM_SetDensity(id, density);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetDensity(id, density)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: density
+END FUNCTION RM_SetDensity 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+allocate(density(nxyz))
+density = 1.0
+status = RM_SetDensity(id, density(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetDensity(int id, double *density);
+/**
+Set the name of the dump file. It is the name used by @ref RM_DumpModule.
+@param id               The instance id returned from @ref RM_Create.
+@param dump_name        Name of dump file.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_DumpModule.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
 int RM_SetDumpFileName(int id, const char *dump_name);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE> 
+status = RM_SetDumpFileName(id, "advection_c.dmp.gz"); 
+dump_on = 1;
+append = 0;
+status = RM_DumpModule(id, dump_on, append);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetDumpFileName(id, name) 
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  CHARACTER, INTENT(in) :: name
+END FUNCTION RM_SetDumpFileName
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  	
+status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")  
+dump_on = 1
+append = 0  
+status = RM_DumpModule(id, dump_on, append)  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+int RM_SetDumpFileName(int id, const char *dump_name);
+/**
+Set the action to be taken when the reaction module encounters and error.
+Options are 0, return to calling program with an error return code; 
+1, throw an exception, in C++, the exception can be caught, for C and Fortran, the program will exit; 
+2, attempt to exit gracefully. Default is 0.
+@param id               The instance id returned from @ref RM_Create.
+@param mode             Error handling mode: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_Destroy.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_SetErrorHandlerMode(int id, int mode);;
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE> 
+id = RM_Create(nxyz, nthreads);
+status = RM_SetErrorHandlerMode(id, 2);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetErrorHandlerMode(id, i)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: i
+END FUNCTION RM_SetErrorHandlerMode 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  	
+id = RM_create(nxyz, nthreads)
+status = RM_SetErrorHandlerMode(id, 2)  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
 int RM_SetErrorHandlerMode(int id, int mode);
+
+/**
+Set the prefix for the output (prefix.chem.txt) and log (prefix.log.txt) files. 
+These files are opened by @ref RM_OpenFiles.
+@param id               The instance id returned from @ref RM_Create.
+@param prefix           Prefix used when opening the output and log files.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_OpenFiles, @ref RM_CloseFiles.
+@par C Prototype:
+@htmlonly
+<CODE>
+<PRE>  
+int RM_SetFilePrefix(int id, const char *prefix);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C Example:
+@htmlonly
+<CODE>
+<PRE> 
+status = RM_SetFilePrefix(id, "Advect_c");
+status = RM_OpenFiles(id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  CHARACTER, INTENT(in) :: prefix
+END FUNCTION RM_SetFilePrefix 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  	
+status = RM_SetFilePrefix(id, "Advect_f90")
+status = RM_OpenFiles(id)  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 int RM_SetFilePrefix(int id, const char *prefix);
 int RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1));
 int RM_SetMpiWorkerCallbackCookie(int id, void *cookie);

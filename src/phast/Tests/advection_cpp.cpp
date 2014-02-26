@@ -171,9 +171,13 @@ int advection_cpp()
 		int nsteps = 10;
 
 		// Transient loop
-		std::vector<double> temperature, pressure;
+		std::vector<double> initial_density, temperature, pressure;
+		initial_density.resize(nxyz, 1.0);
 		temperature.resize(nxyz, 20.0);
 		pressure.resize(nxyz, 2.0);
+		phreeqc_rm.SetDensity(initial_density.data());
+		phreeqc_rm.SetTemperature(temperature.data());
+		phreeqc_rm.SetPressure(pressure.data());
 
 		time_step = 86400.;
 		status = phreeqc_rm.SetTimeStep(time_step);

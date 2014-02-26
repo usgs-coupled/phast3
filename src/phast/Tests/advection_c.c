@@ -234,6 +234,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			pressure[i] = 2.0;
 			temperature[i] = 20.0;
 		}
+		status = RM_SetDensity(id, density);
+		status = RM_SetPressure(id, pressure);      
+		status = RM_SetTemperature(id, temperature); 
 		time_step = 86400;
 		status = RM_SetTimeStep(id, time_step);
 		for (isteps = 0; isteps < nsteps; isteps++)
