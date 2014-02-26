@@ -81,7 +81,7 @@ public:
 	static IRM_RESULT       DestroyReactionModule(int n);
 	static PhreeqcRM      * GetInstance(int n);
 
-	PhreeqcRM(int nxyz = 0, int thread_count = -1, bool water_as_component = false, PHRQ_io * io=NULL);
+	PhreeqcRM(int nxyz, int thread_count_or_communicator, bool water_as_component = false, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
 	
 	// Key methods	
@@ -307,7 +307,8 @@ protected:
 	std::vector<int> end_cell;
 	PHRQ_io phreeqcrm_io;
 
-	// mpi worker callback
+	// mpi 
+	int phreeqcrm_comm;                                       // MPI communicator
 	int (*mpi_worker_callback_fortran) (int *method);
 	int (*mpi_worker_callback_c) (int *method, void *cookie);
 	void *mpi_worker_callback_cookie;

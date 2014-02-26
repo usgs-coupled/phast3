@@ -2643,7 +2643,6 @@ status = RM_SetErrorHandlerMode(id, 2)
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_SetErrorHandlerMode(int id, int mode);
-
 /**
 Set the prefix for the output (prefix.chem.txt) and log (prefix.log.txt) files. 
 These files are opened by @ref RM_OpenFiles.
@@ -2685,7 +2684,134 @@ status = RM_OpenFiles(id)
 Called by root.
  */
 int RM_SetFilePrefix(int id, const char *prefix);
-int RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1));
+/**
+MPI only. Defines a callback function that allows additional tasks to be done
+by the workers. The method RM_MpiWorker contains a loop,
+where the workers receive a message (an integer),
+run a specified subroutine, and then return to wait for another message.
+RM_SetMpiWorkerCallback allows the developer to add another function 
+that responds to additional messages and calls specified subroutines.
+The callback function is called by @ref RM_MpiWorker when the message number 
+is not one of the PhreeqcRM message numbers.
+Messages are unique integer numbers. PhreeqcRM uses integers in the range
+beginning at 0. It is suggested that developers use message numbers starting
+at 1000 or higher. The callback function calls the subroutine specified
+by the message number and then returns to @ref RM_MpiWorker to wait for
+another message.
+@n@n
+For Fortran90, the subroutines that are
+called from the callback function can use USE statements to find the
+data necessary to perform the tasks. In C, an 
+additional pointer can be used to find the data necessary to do the task.
+A void pointer may be set with @ref RM_SetMpiWorkerCallbackCookie. This pointer
+is 
+@n@n
+The motivation for this method is to allow the workers to perform other
+tasks, for instance, parallel transport calculations, within the organization
+of @ref RM_MpiWorker. The callback function
+would allow the workers to receive data, perform transport-calculations, 
+and send results, without leaving the loop of @ref RM_MpiWorker. Alternatively,
+it is possible for the workers to return from @ref RM_MpiWorker 
+by root calling @ref RM_MpiWorkerBreak. The workers could then call
+subroutines to receive data, calculate transport, and send data, 
+and then resume processing PhreeqcRM messages from root with a 
+call to @ref RM_MpiWorker.
+@param id               The instance id returned from @ref RM_Create.
+@param fcn              A function that has an integer argument and returns an integer. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_MpiWorker, @ref RM_MpiWorkerBreak, 
+@ref RM_SetMpiWorkerCallbackCookie (C only).
+@par C Example:
+@htmlonly
+<CODE>
+<PRE> 
+root:
+status = RM_SetMpiWorkerCallback(rm_id, mpi_methods);
+status = RM_SetMpiWorkerCallbackCookie(this);
+status = init(this);
+...
+int mpi_methods(int method, void *cookie)
+{
+    int return_value;
+    return_value = 0;
+    if (method == 1000) 
+	{
+        return_value = init(void *cookie);
+    }
+    return return_value;
+}
+...
+int init(method)
+! make phreeqcrm_comm available with USE
+integer ierrmpi
+if (mpi_myself == 0) then
+    ! message number 1000 is sent to the workers
+    CALL MPI_BCAST(1000, 1, MPI_INTEGER, 0, phreeqcrm_comm, ierrmpi)  
+endif 
+! Do some work here by root and (or) workers
+END FUNCTION init
+
+worker:
+
+CALL RM_MpiWorker
+
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
+  INTEGER, INTENT(IN) :: id
+  INTERFACE
+    INTEGER FUNCTION fcn(method_number)
+      INTEGER, INTENT(in) :: method_number
+    END FUNCTION 
+  END INTERFACE
+END FUNCTION RM_SetMpiWorkerCallback
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE> 
+root:
+
+status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
+status = init
+...
+INTEGER FUNCTION mpi_methods(method)
+    integer method, return_value
+    return_value = 0
+    if (method == 1000) then
+        return_value = init()
+    endif
+    mpi_methods = return_value
+END FUNCTION mpi_methods
+...
+INTEGER FUNCTION init()
+! make phreeqcrm_comm available with USE
+integer ierrmpi
+if (mpi_myself == 0) then
+    ! message number 1000 is sent to the workers
+    CALL MPI_BCAST(1000, 1, MPI_INTEGER, 0, phreeqcrm_comm, ierrmpi)  
+endif 
+! Do some work here by root and (or) workers
+END FUNCTION init
+
+worker:
+
+CALL RM_MpiWorker
+
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+int RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie));
 int RM_SetMpiWorkerCallbackCookie(int id, void *cookie);
 int RM_SetPartitionUZSolids(int id, int t);
 int RM_SetPoreVolume(int id, double *t);

@@ -382,6 +382,7 @@ SUBROUTINE CreateRM
     USE mcg,  ONLY: nxyz
     USE mcs,  ONLY: nthreads
     USE mcv,  ONLY: ns
+    USE mpi_mod
     IMPLICIT NONE
     SAVE
     INCLUDE 'RM_interface_F.f90.inc'
@@ -393,7 +394,11 @@ SUBROUTINE CreateRM
   
     IF (solute) THEN  
         ! ... make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
+#ifdef USE_MPI  
+        rm_id = RM_Create(nxyz, world_comm)      
+#else
         rm_id = RM_Create(nxyz, nthreads)
+#endif        
         IF (rm_id.LT.0) THEN
             STOP
         END IF
