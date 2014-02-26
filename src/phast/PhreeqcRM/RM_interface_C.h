@@ -17,14 +17,6 @@ IRM_BADINSTANCE, otherwise the program will exit with a return code of 4.
 @param err_str       String to be printed as an error message. 
 @retval IRM_RESULT   Program will exit before returning unless id is an invalid reaction module id.
 @see                 @ref RM_Destroy, @ref RM_ErrorMessage.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_Abort(int id, int result, const char * err_str);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -69,14 +61,6 @@ Close the output and log files.
 @param id            The instance id returned from @ref RM_Create.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).  
 @see                 @ref RM_OpenFiles, @ref RM_SetFilePrefix
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_CloseFiles(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -120,14 +104,6 @@ concentrations and then calculate the pH of the mixture.
 @param tc            Array of temperatures to apply to the SOLUTIONs. Array of size n.
 @param p_atm         Array of pressures to apply to the SOLUTIONs. Array of size n.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).  
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -194,14 +170,6 @@ Creates a reaction module.
 If nthreads is <= 0, the number of threads is set equal to the number of processors of the computer.
 @retval Id of the PhreeqcRM instance, negative is failure (See @ref RM_DecodeError).  
 @see                 @ref RM_Destroy
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_Create(int nxyz, int nthreads);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -238,18 +206,9 @@ int RM_Create(int nxyz, int nthreads);
 Provides a mapping from grid cells in the user's model to cells for which chemistry needs to be run. 
 The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run. The mapping may be many-to-one to account for symmetry.
 Default is a one-to-one mapping--all user grid cells are chemistry cells (equivalent to grid2chem values of 0,1,2,3,...,nxyz-1).
-@param id                   The instance id returned from @ref RM_Create.
-@param grid2chem            An array of integers: Nonnegative is a chemistry cell number, negative is an inactive cell. Array of size nxyz (number of grid cells).
-@retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError). 
-     
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_CreateMapping (int id, int *grid2chem);
-</PRE>
-</CODE> 
-@endhtmlonly
+@param id               The instance id returned from @ref RM_Create.
+@param grid2chem        An array of integers: Nonnegative is a chemistry cell number, negative is an inactive cell. Array of size nxyz (number of grid cells).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @par C Example:
 @htmlonly
 <CODE>
@@ -317,14 +276,6 @@ typedef enum {
 </PRE>
 </CODE> 
 @endhtmlonly
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_DecodeError (int id, int e); 
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -364,14 +315,6 @@ Destroys a reaction module.
 @param id               The instance id returned from @ref RM_Create.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_Create
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_Destroy(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -410,14 +353,6 @@ Writes the contents of all workers to file in _RAW formats, including SOLUTIONs 
 @param append           Signal to append to the contents of the dump file: 1 true, 0 false.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetDumpFileName
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_DumpModule(int id, int dump_on, int append);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -462,14 +397,7 @@ Send an error message to the screen, the output file, and the log file.
 @param errstr           String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_ErrorMessage(int id, const char *errstr);
-</PRE>
-</CODE> 
-@endhtmlonly
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -509,14 +437,6 @@ The list is the set of components that needs to be transported.
 @param id            The instance id returned from @ref RM_Create.
 @retval              Number of components currently in the list, or IRM_RESULT error code (see @ref RM_DecodeError).
 @see                 @ref RM_GetComponent 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_FindComponents(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -567,14 +487,6 @@ The number of chemistry cells is less than or equal to the number of cells in th
 @param id            The instance id returned from @ref RM_Create.
 @retval              Number of chemistry cells, or IRM_RESULT error code (see @ref RM_DecodeError).
 @see                 @ref RM_CreateMapping, @ref RM_GetGridCellCount. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetChemistryCellCount(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -617,14 +529,6 @@ less than the result of @ref RM_FindComponents or @ref RM_GetComponentCount).
 @param l                The length of the maximum number of characters for chem_name (C only).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_FindComponents, @ref RM_GetComponentCount 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetComponent(int id, int num, char *chem_name, int l);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -675,14 +579,6 @@ Returns the number of components in the reaction-module component list.
 @retval                 The number of components in the reaction module component list. The component list is generated by calls to @ref RM_FindComponents. 
 The return value from the last call to @ref RM_FindComponents is equal to the return value from RM_GetComponentCount.
 @see                    @ref RM_FindComponents, @ref RM_GetComponent.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetComponentCount(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -725,14 +621,6 @@ convert transport concentrations to cell solution concentrations, @ref RM_SetCon
 @param c                Array to receive the concentrations. Dimension of the array is equivalent to Fortran (nxyz, ncomps), 
 where nxyz is the number of user grid cells and ncomps is the result of @ref RM_FindComponents or @ref RM_GetComponentCount.  Values for inactive cells are set to 1e30.
 @see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_Concentrations2Module, @ref RM_SetUnitsSolution
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetConcentrations(int id, double *c);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -776,14 +664,6 @@ Transfer solution densities from the module workers to the density array given i
 where nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. Densities are those calculated by the reaction module. 
 Only the following databases distributed with PhreeqcRM have molar volume information needed to calculate density: 
 phreeqc.dat, Amm.dat, and pitzer.dat.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetDensity(int id, double *density);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -827,14 +707,6 @@ Returns the reaction-module file prefix to the character argument (prefix).
 @param l                Maximum number of characters that can be written to the argument (prefix) (C only). 
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).  
 @see                    @ref RM_SetFilePrefix.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetFilePrefix(int id, char *prefix, int l);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -883,14 +755,6 @@ Returns the gram formula weights (g/mol) for the components in the reaction-modu
 where ncomps is the number of components in the component list. 
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).  
 @see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_GetComponent.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetGfw(int id, double * gfw);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -951,14 +815,6 @@ there are inactive regions or symmetry in the model definition.
 @param id               The instance id returned from @ref RM_Create. 
 @retval                 Number of grid cells in the user's model, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create,  @ref RM_CreateMapping.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetGridCellCount(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1007,14 +863,6 @@ one InitialPhreeqc instance, and one Utility instance.
 @param i                The number of the IPhreeqc instance (0 based). 
 @retval                 IPhreeqc id for the ith IPhreeqc instance, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create, @ref RM_GetThreadCount, documentation for IPhreeqc.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetIPhreeqcId(int id, int i);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1064,14 +912,6 @@ tasks and computer hosts are determined at run time by the mpiexec command.
 @param id               The instance id returned from @ref RM_Create.  
 @retval                 The MPI task number for a process, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetMpiTasks.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetMpiMyself(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1127,14 +967,6 @@ The root task number is zero, and all workers have a task number greater than ze
 @param id               The instance id returned from @ref RM_Create.  
 @retval                 The number of MPI processes, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetMpiMyself.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetMpiTasks(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1186,14 +1018,6 @@ that user number for selected output processing.
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, 
 @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetNthSelectedOutputUserNumber(int id, int n);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1257,14 +1081,6 @@ columns in the selected output definition (@ref RM_GetSelectedOutputColumnCount)
 @see                    @ref RM_GetNthSelectedOutputUserNumber, 
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetSelectedOutput(int id, double *so);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1322,14 +1138,6 @@ determines which of the selected output definitions is used.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetSelectedOutputColumnCount(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1386,14 +1194,6 @@ determines which of the selected output definitions is used.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetSelectedOutputCount(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1454,14 +1254,6 @@ determines which of the selected output definitions is used.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, 
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetSelectedOutputHeading(int id, int icol, char * heading, int length);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1522,14 +1314,6 @@ grid cells in the user's model, and is equal to @ref RM_GetGridCellCount.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput, @ref RM_GetSelectedOutputColumnCount,
 @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetSelectedOutputRowCount(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1603,14 +1387,6 @@ Transfer solution volumes from the module workers to the array given in the argu
 where nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. Solution volumes are those calculated by the reaction module. 
 Only the following databases distributed with PhreeqcRM have molar volume information needed to calculate solution volume: 
 phreeqc.dat, Amm.dat, and pitzer.dat.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetSolutionVolume(int id, double *vol);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1654,14 +1430,6 @@ MPI version, the number of threads is always one for each process.
 @param id               The instance id returned from @ref RM_Create.  
 @retval                 The number of threads used for OPENMPI parallel processing, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetMpiTasks.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_GetThreadCount(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1702,14 +1470,6 @@ returned value is equal to the default (0.0) or the last time set by @ref RM_Set
 @retval                 The current simulation time in seconds.
 @see                    @ref RM_GetTimeConversion, @ref RM_GetTimeStep, @ref RM_SetTime, 
 @ref RM_SetTimeConversion, @ref RM_SetTimeStep.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-double RM_GetTime(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1754,14 +1514,6 @@ of cell chemistry (@ref RM_SetPrintChemistryOn), which is rare. Default conversi
 @param id               The instance id returned from @ref RM_Create.  
 @retval                 Multiplier to convert seconds to another time unit. 
 @see                    @ref RM_GetTime, @ref RM_GetTimeStep, @ref RM_SetTime, @ref RM_SetTimeConversion, @ref RM_SetTimeStep.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-double RM_GetTimeConversion(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1806,14 +1558,6 @@ returned value is equal to the default (0.0) or the last time step set by @ref R
 @retval                 The current simulation time step in seconds.
 @see                    @ref RM_GetTime, @ref RM_GetTimeConversion, @ref RM_SetTime, 
 @ref RM_SetTimeConversion, @ref RM_SetTimeStep.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-double RM_GetTimeStep(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1871,20 +1615,6 @@ Size is (n_boundary). Optional in Fortran, may be NULL in C.
 Size is (n_boundary). Optional in Fortran, may be NULL in C.
 @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
 @see                  @ref RM_FindComponents, @ref RM_GetComponentCount. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_InitialPhreeqc2Concentrations(
-  int id,
-  double *c,
-  int n_boundary,
-  int *boundary_solution1,  
-  int *boundary_solution2, 
-  double *fraction1);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -1981,17 +1711,6 @@ Size is (nxyz x 7). The order of definitions is given above.
 Optional in Fortran, may be NULL in C; omitting or setting to NULL results in no mixing.
 @retval IRM_RESULT          0 is success, negative is failure (See @ref RM_DecodeError).
 @see                        @ref RM_InitialPhreeqcCell2Module.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_InitialPhreeqc2Module(int id,
-                int *initial_conditions1,		// 7 x nxyz end-member 1
-                int *initial_conditions2,		// 7 x nxyz end-member 2
-                double *fraction1);			    // 7 x nxyz fraction of end-member 1
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2091,17 +1810,6 @@ cell n from the InitialPhreeqc instance.
 @param dim_module_numbers The number of cell numbers in the module_numbers list.
 @retval IRM_RESULT        0 is success, negative is failure (See @ref RM_DecodeError).
 @see                      @ref RM_InitialPhreeqc2Module.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_InitialPhreeqcCell2Module(int id,
-                int n,		                            // InitialPhreeqc cell number
-                int *module_numbers,		            // Module cell numbers
-                int dim_module_numbers);			    // Number of module cell numbers
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2156,14 +1864,6 @@ of the reaction module are cleared (SOLUTION_SPECIES, PHASES, SOLUTIONs, etc.), 
 @param db_name          String containing the database name.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_LoadDatabase(int id, const char *db_name);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2202,14 +1902,6 @@ Print a message to the log file.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_OpenFiles, @ref RM_ErrorMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_LogMessage(int id, const char *str);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2266,14 +1958,6 @@ requests from root to perform reaction-module tasks.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). RM_MpiWorker returns a value only when
 @ref RM_MpiWorkerBreak is called by root.
 @see                    @ref RM_MpiWorkerBreak, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie (C only).
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_MpiWorker(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2314,14 +1998,6 @@ The workers will continue to respond to messages from root until root calls RM_M
 @param id               The instance id returned from @ref RM_Create.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_MpiWorker, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie (C only).
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_MpiWorkerBreak(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2359,14 +2035,6 @@ Opens the output and log files. Files are named based on the prefix defined by
 @param id               The instance id returned from @ref RM_Create.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetFilePrefix, @ref RM_GetFilePrefix, @ref RM_CloseFiles..
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_OpenFiles(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2406,14 +2074,6 @@ Print a message to the output file.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_ErrorMessage, @ref RM_LogMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_OutputMessage(int id, const char *str);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2484,14 +2144,6 @@ calculations include pore volume, saturation, temperature, and pressure.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetConcentrations,  @ref RM_SetPoreVolume, 
 @ref RM_SetTemperature, @ref RM_SetPressure, @ref RM_SetSaturation, @ref RM_SetTimeStep. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_RunCells(int id);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:			
 @htmlonly
 <CODE>
@@ -2555,14 +2207,6 @@ be run by the InitialPhreeqc instance.
 @param chem_name        Name of the file to run.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_RunString. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *chem_name);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:			
 @htmlonly
 <CODE>
@@ -2611,14 +2255,6 @@ be run by the InitialPhreeqc instance.
 @param input_string     String containing PHREEQC input.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_RunFile. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char * input_string);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:			
 @htmlonly
 <CODE>
@@ -2660,14 +2296,6 @@ Print message to the screen.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_ErrorMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_ScreenMessage(int id, const char *str);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2706,20 +2334,12 @@ Called by root and (or) workers.
 int RM_ScreenMessage(int id, const char *str);
 /**
 Set the volume of each cell. Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
-to the volume. The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
+to the cell volume. The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
 @param id               The instance id returned from @ref RM_Create.
-@param vol              Array of volumes, user units. Size of array is (nxyz), where nxyz is the number
+@param vol              Array of volumes, user units, but same as @ref RM_SetPoreVolume. Size of array is (nxyz), where nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetPoreVolume, @ref RM_SetSaturation.. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_SetCellVolume(int id, double *vol);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2765,19 +2385,11 @@ The moles of each component are determined by the volume of water and per liter 
 If concentration units (@ref RM_SetUnitsSolution) are mass fraction, the
 density (as determined by @ref RM_SetDensity) is used to convert from mass fraction to per liter.
 @param id               The instance id returned from @ref RM_Create.
-@param vol              Array of component concentrations. Size of array is (nxyz, ncomps), where nxyz is the number
+@param vol              Array of component concentrations. Size of array is Fortran (nxyz, ncomps), where nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount), and ncomps is the number of components as determined
 by @ref RM_FindComponents or @ref RM_GetComponentCount.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
-@see                     @ref RM_SetCellVolume, @ref RM_SetPoreVolume, @ref RM_SetSaturation, @ref RM_SetUnitsSolution. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_SetConcentrations(int id, double *c);
-</PRE>
-</CODE> 
-@endhtmlonly
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume, @ref RM_SetSaturation, @ref RM_SetUnitsSolution. 
 @par C Example:
 @htmlonly
 <CODE>
@@ -2837,7 +2449,7 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_SetConcentrations(int id, double *c);
 /**
-Set the current selected output user number. The user may define multiple SELECTED_OUTPUT
+Select the current selected output by user number. The user may define multiple SELECTED_OUTPUT
 data blocks for the workers. A user number is specified for each data block. The value of
 the argument n_user selects which of the SELECTED_OUTPUT definitions will be used 
 for selected-output operations.
@@ -2847,14 +2459,6 @@ for selected-output operations.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput, @ref RM_GetSelectedOutputColumnCount,
 @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputRowCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_SetSelectedOutputOn.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_SetCurrentSelectedOutputUserNumber(int id, int n_user);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2913,14 +2517,6 @@ produce per liter concentrations during a call to @ref RM_SetConcentrations.
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetConcentrations. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_SetDensity(int id, double *density);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -2966,14 +2562,6 @@ Set the name of the dump file. It is the name used by @ref RM_DumpModule.
 @param dump_name        Name of dump file.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_DumpModule.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_SetDumpFileName(int id, const char *dump_name);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -3021,14 +2609,6 @@ Options are 0, return to calling program with an error return code;
 @param mode             Error handling mode: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_Destroy.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_SetErrorHandlerMode(int id, int mode);;
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -3071,14 +2651,6 @@ These files are opened by @ref RM_OpenFiles.
 @param prefix           Prefix used when opening the output and log files.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_OpenFiles, @ref RM_CloseFiles.
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_SetFilePrefix(int id, const char *prefix);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
@@ -3141,14 +2713,6 @@ Print warning message to the screen and the log file.
 @param warnstr          String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_ErrorMessage. 
-@par C Prototype:
-@htmlonly
-<CODE>
-<PRE>  
-int RM_WarningMessage(int id, const char *warnstr);
-</PRE>
-</CODE> 
-@endhtmlonly
 @par C Example:
 @htmlonly
 <CODE>
