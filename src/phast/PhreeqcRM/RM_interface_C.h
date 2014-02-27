@@ -2686,25 +2686,30 @@ Called by root.
 int RM_SetFilePrefix(int id, const char *prefix);
 /**
 MPI only. Defines a callback function that allows additional tasks to be done
-by the workers. The method RM_MpiWorker contains a loop,
+by the workers. The method @ref RM_MpiWorker contains a loop,
 where the workers receive a message (an integer),
-run a specified subroutine, and then return to wait for another message.
+run a subroutine corresponding to that integer, 
+and then wait for another message.
 RM_SetMpiWorkerCallback allows the developer to add another function 
-that responds to additional messages and calls specified subroutines.
+that responds to additional integer messages and calls subroutines 
+corresponding to those integers.
 The callback function is called by @ref RM_MpiWorker when the message number 
 is not one of the PhreeqcRM message numbers.
-Messages are unique integer numbers. PhreeqcRM uses integers in the range
+Messages are unique integer numbers. PhreeqcRM uses integers in a range
 beginning at 0. It is suggested that developers use message numbers starting
-at 1000 or higher. The callback function calls the subroutine specified
+at 1000 or higher for their tasks. 
+The callback function calls the subroutine specified
 by the message number and then returns to @ref RM_MpiWorker to wait for
 another message.
 @n@n
-For Fortran90, the subroutines that are
-called from the callback function can use USE statements to find the
-data necessary to perform the tasks. In C, an 
-additional pointer can be used to find the data necessary to do the task.
+For Fortran90, the subroutines that are called from the callback function 
+can use USE statements to find the data necessary to perform the tasks, and 
+the only argument to the callback function is an integer message argument.
+In C, an additional pointer can be used to find the data necessary to do the task.
 A void pointer may be set with @ref RM_SetMpiWorkerCallbackCookie. This pointer
-is 
+is passed to the callback function through a void pointer argument in addition
+to the integer message argument. However, @ref RM_SetMpiWorkerCallbackCookie
+must be called by each worker before @ref RM_MpiWorker is called.
 @n@n
 The motivation for this method is to allow the workers to perform other
 tasks, for instance, parallel transport calculations, within the organization
@@ -2712,12 +2717,13 @@ of @ref RM_MpiWorker. The callback function
 would allow the workers to receive data, perform transport-calculations, 
 and send results, without leaving the loop of @ref RM_MpiWorker. Alternatively,
 it is possible for the workers to return from @ref RM_MpiWorker 
-by root calling @ref RM_MpiWorkerBreak. The workers could then call
+by a call to @ref RM_MpiWorkerBreak by root. The workers could then call
 subroutines to receive data, calculate transport, and send data, 
-and then resume processing PhreeqcRM messages from root with a 
+and then resume processing PhreeqcRM messages from root with another 
 call to @ref RM_MpiWorker.
 @param id               The instance id returned from @ref RM_Create.
 @param fcn              A function that has an integer argument and returns an integer. 
+C has an additional void * argument.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_MpiWorker, @ref RM_MpiWorkerBreak, 
 @ref RM_SetMpiWorkerCallbackCookie (C only).
@@ -2725,36 +2731,43 @@ call to @ref RM_MpiWorker.
 @htmlonly
 <CODE>
 <PRE> 
-root:
-status = RM_SetMpiWorkerCallback(rm_id, mpi_methods);
-status = RM_SetMpiWorkerCallbackCookie(this);
-status = init(this);
+Pseudo code for root:
+
+status = init((void *) this);                                // example of a void pointer
+
+int init(void *cookie)
+{
+  // use cookie to find data, phreeqcrm_comm
+  int ierrmpi, message
+  message = 1000;
+  if (mpi_myself == 0) 
+  {
+    // message number 1000 is sent to the workers
+    MPI_Bcast(&message, 1, MPI_INT, 0, phreeqcrm_comm);
+  }
+  // Do some work here by root and (or) workers
+  return 0;
+}
+
+Pseudo code for worker:
+
+status = RM_SetMpiWorkerCallback(id, mpi_methods);
+status = RM_SetMpiWorkerCallbackCookie(id, (void *) this);  // example of a void pointer
 ...
+status = RM_MpiWorker();
+
 int mpi_methods(int method, void *cookie)
 {
-    int return_value;
-    return_value = 0;
-    if (method == 1000) 
-	{
-        return_value = init(void *cookie);
-    }
-    return return_value;
+  // this method is called by RM_MpiWorker
+  // because of RM_SetMpiWorkerCallback
+  int return_value;
+  return_value = 0;
+  if (method == 1000) 
+  {
+    return_value = init(cookie);
+  }
+  return return_value;
 }
-...
-int init(method)
-! make phreeqcrm_comm available with USE
-integer ierrmpi
-if (mpi_myself == 0) then
-    ! message number 1000 is sent to the workers
-    CALL MPI_BCAST(1000, 1, MPI_INTEGER, 0, phreeqcrm_comm, ierrmpi)  
-endif 
-! Do some work here by root and (or) workers
-END FUNCTION init
-
-worker:
-
-CALL RM_MpiWorker
-
 </PRE>
 </CODE> 
 @endhtmlonly
@@ -2777,39 +2790,43 @@ END FUNCTION RM_SetMpiWorkerCallback
 @htmlonly
 <CODE>
 <PRE> 
-root:
+Pseudo code for root:
 
-status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
-status = init
-...
-INTEGER FUNCTION mpi_methods(method)
-    integer method, return_value
-    return_value = 0
-    if (method == 1000) then
-        return_value = init()
-    endif
-    mpi_methods = return_value
-END FUNCTION mpi_methods
-...
+status = init()
+
 INTEGER FUNCTION init()
-! make phreeqcrm_comm available with USE
+! make phreeqcrm_comm, other data available with USE
 integer ierrmpi
 if (mpi_myself == 0) then
     ! message number 1000 is sent to the workers
     CALL MPI_BCAST(1000, 1, MPI_INTEGER, 0, phreeqcrm_comm, ierrmpi)  
 endif 
 ! Do some work here by root and (or) workers
+init = 0
 END FUNCTION init
 
-worker:
+Psuedo code for worker:
 
-CALL RM_MpiWorker
+status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
+...
+status = RM_MpiWorker(id)
+
+INTEGER FUNCTION mpi_methods(method)
+  ! This callback method is called by RM_MpiWorker
+  ! because of the call to RM_SetMpiWorkerCallback
+  integer method, return_value
+  return_value = 0
+  if (method == 1000) then
+     return_value = init()
+  endif
+  mpi_methods = return_value
+END FUNCTION mpi_methods
 
 </PRE>
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root.
+Called by workers, before call to @ref RM_MpiWorker.
  */
 int RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie));
 int RM_SetMpiWorkerCallbackCookie(int id, void *cookie);
