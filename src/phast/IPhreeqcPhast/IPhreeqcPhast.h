@@ -21,6 +21,7 @@ public:
 	void Put_cell_in_storage_bin(cxxStorageBin & sb, int i);
 	Phreeqc * Get_PhreeqcPtr(void) {return PhreeqcPtr;};
 	size_t Get_Index() {return (int) this->Index;}
+	cxxGasPhase * IPhreeqcPhast::Get_gas_phase(int i);
 	cxxSolution *Get_solution(int n_user);
 	void Set_out_stream(std::ostringstream *s) {this->out_stream = s;}
 	void Set_punch_stream(std::ostringstream *s) {this->punch_stream = s;}	

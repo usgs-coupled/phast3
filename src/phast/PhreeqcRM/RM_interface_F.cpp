@@ -959,6 +959,7 @@ RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1))
 	}
 	return IRM_BADINSTANCE;
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_SetPartitionUZSolids(int *id, int *t)
@@ -978,6 +979,7 @@ RM_SetPartitionUZSolids(int *id, int *t)
 	}
 	return IRM_BADINSTANCE;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 /* ---------------------------------------------------------------------- */

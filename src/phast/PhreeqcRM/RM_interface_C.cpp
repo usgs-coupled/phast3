@@ -853,7 +853,7 @@ RM_SetMpiWorkerCallbackCookie(int id, void *cookie)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int 
 RM_SetPartitionUZSolids(int id, int t)
@@ -866,6 +866,7 @@ RM_SetPartitionUZSolids(int id, int t)
 	}
 	return IRM_BADINSTANCE;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int RM_SetPoreVolume(int id, double *t)
 /* ---------------------------------------------------------------------- */

@@ -1,6 +1,7 @@
 #include "IPhreeqcPhast.h"
 #include "Phreeqc.h"
 #include "Solution.h"
+#include "GasPhase.h"
 #include "CSelectedOutput.hxx"       // CSelectedOutput
 
 #include <assert.h>
@@ -75,4 +76,11 @@ IPhreeqcPhast::Get_solution(int i)
 /* ---------------------------------------------------------------------- */
 {
 	return Utilities::Rxn_find(this->PhreeqcPtr->Rxn_solution_map, i);
+}
+/* ---------------------------------------------------------------------- */
+cxxGasPhase *
+IPhreeqcPhast::Get_gas_phase(int i)
+/* ---------------------------------------------------------------------- */
+{
+	return Utilities::Rxn_find(this->PhreeqcPtr->Rxn_gas_phase_map, i);
 }

@@ -226,11 +226,11 @@ if( numCPU < 1 )
 	this->dump_file_name.append(".dump");
 	this->gfw_water = 18.;						// gfw of water
 	this->count_chemistry = this->nxyz;
-	this->partition_uz_solids = false;
+	//this->partition_uz_solids = false;
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
-	this->rebalance_by_cell = false;
+	this->rebalance_by_cell = true;
 	this->rebalance_fraction = 0.5;				// parameter for rebalancing process load for parallel	
 
 	// print flags
@@ -3940,10 +3940,10 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETFILEPREFIX" << std::endl;
 				return_value = this->SetFilePrefix();
 				break;
-			case METHOD_SETPARTITIONUZSOLIDS:
-				if (debug_worker) std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
-				return_value = this->SetPartitionUZSolids();
-				break;
+			//case METHOD_SETPARTITIONUZSOLIDS:
+			//	if (debug_worker) std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
+			//	return_value = this->SetPartitionUZSolids();
+			//	break;
 			case METHOD_SETPOREVOLUME:
 				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
 				return_value = this->SetPoreVolume();
@@ -4103,6 +4103,7 @@ PhreeqcRM::OutputMessage(const std::string &str)
 {
 	this->phreeqcrm_io.output_msg(str.c_str());
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
@@ -4245,6 +4246,7 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 
 	this->old_saturation[ihst] = new_frac;
 }
+#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
@@ -5555,10 +5557,10 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 					range_end = i;
 				}	
 				// partition solids between UZ and SZ
-				if (this->partition_uz_solids)
-				{
-					this->PartitionUZ(n, i, j, this->saturation[j]);
-				}
+				//if (this->partition_uz_solids)
+				//{
+				//	this->PartitionUZ(n, i, j, this->saturation[j]);
+				//}
 			}
 		}
 		if (range_start == range_end)
@@ -5607,7 +5609,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 			}
 			int counter = 0;
 			for (int i = start; i <= end; i++)
-			{							    /* i is count_chem number */
+			{							                /* i is count_chem number */
 				int j = backward_mapping[i][0];			/* j is nxyz number */
 				if (saturation[j] > 1e-10)
 				{
@@ -5618,17 +5620,27 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 					it->second->Serialize(counter, types, longs, doubles, strings);
 					ipp_it->second.DeSerialize(types, longs, doubles, strings);
 					counter++;
-					phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
 				}
 				else
 				{
 					ipp_it->second.EndRow();
-					phast_iphreeqc_worker->Get_cell_clock_times().push_back(0.0);
 				}
 			}
 		}
 	}
-
+	// Set cell_clock_times
+	for (int i = start; i <= end; i++)
+	{							                /* i is count_chem number */
+		int j = backward_mapping[i][0];			/* j is nxyz number */
+		if (saturation[j] > 1e-10)
+		{
+			phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
+		}
+		else
+		{
+			phast_iphreeqc_worker->Get_cell_clock_times().push_back(0.0);
+		}
+	}
 
 	return IRM_OK;
 }
@@ -5736,10 +5748,10 @@ PhreeqcRM::RunCellsThread(int n)
 				bool pr_chem = pr_chemistry_on && (this->print_chem_mask[j] != 0);
 
 				// partition solids between UZ and SZ
-				if (this->partition_uz_solids)
-				{
-					this->PartitionUZ(n, i, j, this->saturation[j]);
-				}
+				//if (this->partition_uz_solids)
+				//{
+				//	this->PartitionUZ(n, i, j, this->saturation[j]);
+				//}
 
 				// ignore small saturations
 				bool active = true;
@@ -6580,6 +6592,7 @@ PhreeqcRM::SetMpiWorkerCallbackFortran(int (*fcn)(int *method))
 	this->mpi_worker_callback_fortran = fcn;
 	return IRM_OK;
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 PhreeqcRM::SetPartitionUZSolids(int t)
@@ -6601,6 +6614,7 @@ PhreeqcRM::SetPartitionUZSolids(int t)
 #endif
 	return IRM_OK;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetPoreVolume(double *t)
@@ -6698,6 +6712,11 @@ PhreeqcRM::SetPressure(double *t)
 			if (soln_ptr)
 			{
 				soln_ptr->Set_patm(this->pressure[i]);
+			}
+			cxxGasPhase *gas_ptr = this->GetWorkers()[n]->Get_gas_phase(j);
+			if (gas_ptr)
+			{
+				gas_ptr->Set_total_p(this->pressure[i]);
 			}
 		}
 	}

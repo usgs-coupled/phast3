@@ -512,7 +512,7 @@ SUBROUTINE InitializeRM
         else
             ipartition_uz_solids = 0
         endif
-        status = RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
+        !status = RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
         status = RM_SetCellVolume(rm_id, volume(1))
         status = RM_SetRebalanceFraction(rm_id, rebalance_fraction_f)
         status = RM_SetRebalanceByCell(rm_id, rebalance_method_f)
