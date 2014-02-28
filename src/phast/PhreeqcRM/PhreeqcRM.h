@@ -52,7 +52,7 @@ typedef enum {
 	METHOD_SETDENSITY,
 	METHOD_SETERRORHANDLERMODE,
 	METHOD_SETFILEPREFIX,
-	METHOD_SETPARTITIONUZSOLIDS,
+	//METHOD_SETPARTITIONUZSOLIDS,
 	METHOD_SETPOREVOLUME,
 	METHOD_SETPRESSURE,
 	METHOD_SETPRINTCHEMISTRYON,
@@ -160,7 +160,7 @@ public:
 	const int                                 GetMpiMyself(void) const {return this->mpi_myself;}
 	const int                                 GetMpiTasks(void) const {return this->mpi_tasks;}
 	int                                       GetNthSelectedOutputUserNumber(int i);
-	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
+	//const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
 	std::vector<int> &                        GetPrintChemistryMask (void) {return this->print_chem_mask;}
@@ -195,7 +195,7 @@ public:
 	IRM_RESULT								  SetMpiWorkerCallbackC(int (*fcn)(int *method, void * cookie));
 	IRM_RESULT								  SetMpiWorkerCallbackCookie(void * cookie);
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
-	IRM_RESULT                                SetPartitionUZSolids(int t = -1);
+	//IRM_RESULT                                SetPartitionUZSolids(int t = -1);
 	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
 	IRM_RESULT                                SetPrintChemistryMask(int * t = NULL);
 	IRM_RESULT                                SetPrintChemistryOn(bool worker = false, bool ip = false, bool utility = false);
@@ -237,7 +237,7 @@ protected:
 	void                                      cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	int                                       HandleErrorsInternal(std::vector< int > & r);
-	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
+	//void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);
 	IRM_RESULT                                RunCellsThread(int i);
@@ -257,14 +257,14 @@ protected:
 	std::string chemistry_file_name;
 	std::string dump_file_name;
 	std::string file_prefix;
-	cxxStorageBin uz_bin;
+	//cxxStorageBin uz_bin;
 	cxxStorageBin phreeqc_bin;
 	int mpi_myself;
 	int mpi_tasks;
 	std::vector <std::string> components;	// list of components to be transported
 	std::vector <double> gfw;				// gram formula weights converting mass to moles (1 for each component)
 	double gfw_water;						// gfw of water
-	bool partition_uz_solids;
+	//bool partition_uz_solids;
 	int nxyz;								// number of nodes 
 	int count_chemistry;					// number of cells for chemistry
 	double time;						    // time from transport, sec 

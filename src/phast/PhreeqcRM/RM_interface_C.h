@@ -2339,7 +2339,7 @@ to the cell volume. The volume of water in a cell is the porosity times the satu
 @param vol              Array of volumes, user units, but same as @ref RM_SetPoreVolume. Size of array is (nxyz), where nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
-@see                    @ref RM_SetPoreVolume, @ref RM_SetSaturation.. 
+@see                    @ref RM_SetPoreVolume, @ref RM_SetSaturation. 
 @par C Example:
 @htmlonly
 <CODE>
@@ -2688,33 +2688,33 @@ int RM_SetFilePrefix(int id, const char *prefix);
 MPI only. Defines a callback function that allows additional tasks to be done
 by the workers. The method @ref RM_MpiWorker contains a loop,
 where the workers receive a message (an integer),
-run a subroutine corresponding to that integer, 
+run a function corresponding to that integer, 
 and then wait for another message.
 RM_SetMpiWorkerCallback allows the developer to add another function 
-that responds to additional integer messages and calls subroutines 
+that responds to additional integer messages by calling developer-defined functions 
 corresponding to those integers.
-The callback function is called by @ref RM_MpiWorker when the message number 
+@ref RM_MpiWorker calls the callback function when the message number 
 is not one of the PhreeqcRM message numbers.
 Messages are unique integer numbers. PhreeqcRM uses integers in a range
 beginning at 0. It is suggested that developers use message numbers starting
 at 1000 or higher for their tasks. 
-The callback function calls the subroutine specified
+The callback function calls a developer-defined function specified
 by the message number and then returns to @ref RM_MpiWorker to wait for
 another message.
 @n@n
-For Fortran90, the subroutines that are called from the callback function 
+For Fortran90, the functions that are called from the callback function 
 can use USE statements to find the data necessary to perform the tasks, and 
 the only argument to the callback function is an integer message argument.
-In C, an additional pointer can be used to find the data necessary to do the task.
+In C, an additional pointer can be supplied to find the data necessary to do the task.
 A void pointer may be set with @ref RM_SetMpiWorkerCallbackCookie. This pointer
 is passed to the callback function through a void pointer argument in addition
-to the integer message argument. However, @ref RM_SetMpiWorkerCallbackCookie
+to the integer message argument. @ref RM_SetMpiWorkerCallbackCookie
 must be called by each worker before @ref RM_MpiWorker is called.
 @n@n
 The motivation for this method is to allow the workers to perform other
-tasks, for instance, parallel transport calculations, within the organization
+tasks, for instance, parallel transport calculations, within the structure
 of @ref RM_MpiWorker. The callback function
-would allow the workers to receive data, perform transport-calculations, 
+can be used to allow the workers to receive data, perform transport-calculations, 
 and send results, without leaving the loop of @ref RM_MpiWorker. Alternatively,
 it is possible for the workers to return from @ref RM_MpiWorker 
 by a call to @ref RM_MpiWorkerBreak by root. The workers could then call
@@ -2722,7 +2722,7 @@ subroutines to receive data, calculate transport, and send data,
 and then resume processing PhreeqcRM messages from root with another 
 call to @ref RM_MpiWorker.
 @param id               The instance id returned from @ref RM_Create.
-@param fcn              A function that has an integer argument and returns an integer. 
+@param fcn              A function that returns an integer and has an integer argument. 
 C has an additional void * argument.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_MpiWorker, @ref RM_MpiWorkerBreak, 
@@ -2733,7 +2733,7 @@ C has an additional void * argument.
 <PRE> 
 Pseudo code for root:
 
-status = init((void *) this);                                // example of a void pointer
+status = init((void *) mydata); 
 
 int init(void *cookie)
 {
@@ -2752,7 +2752,7 @@ int init(void *cookie)
 Pseudo code for worker:
 
 status = RM_SetMpiWorkerCallback(id, mpi_methods);
-status = RM_SetMpiWorkerCallbackCookie(id, (void *) this);  // example of a void pointer
+status = RM_SetMpiWorkerCallbackCookie(id, (void *) mydata);  
 ...
 status = RM_MpiWorker();
 
@@ -2829,29 +2829,951 @@ END FUNCTION mpi_methods
 Called by workers, before call to @ref RM_MpiWorker.
  */
 int RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie));
-int RM_SetMpiWorkerCallbackCookie(int id, void *cookie);
-int RM_SetPartitionUZSolids(int id, int t);
-int RM_SetPoreVolume(int id, double *t);
-int RM_SetPrintChemistryOn(int id, int worker, int ip, int utility);
-int RM_SetPrintChemistryMask(int id, int *t);
-int RM_SetPressure(int id, double *t);
-int RM_SetRebalanceFraction(int id, double *f);
-int RM_SetRebalanceByCell(int id, int method);
-int RM_SetSaturation(int id, double *t);
-int RM_SetSelectedOutputOn(int id, int selected_output);
-int RM_SetTemperature(int id, double *t);
-int RM_SetTime(int id, double t);
-int RM_SetTimeConversion(int id, double t);
-int RM_SetTimeStep(int id, double t);
-int RM_SetUnitsExchange(int id, int i);
-int RM_SetUnitsGasPhase(int id, int i);
-int RM_SetUnitsKinetics(int id, int i);
-int RM_SetUnitsPPassemblage(int id, int i);
-int RM_SetUnitsSolution(int id, int i);
-int RM_SetUnitsSSassemblage(int id, int i);
-int RM_SetUnitsSurface(int id, int i);
 /**
-Print warning message to the screen and the log file. 
+MPI and C only. Defines a void pointer that can be used by 
+C functions called from the callback function (@ref RM_SetMpiWorkerCallback)
+to locate data for a task. The C callback function 
+that is registered with @ref RM_SetMpiWorkerCallback has
+two arguments, an integer message to identify a task, and a void
+pointer. RM_SetMpiWorkerCallbackCookie sets the value of the
+void pointer that is passed to the callback function. 
+@param id               The instance id returned from @ref RM_Create.
+@param cookie           Void pointer that can be used by subroutines called from the callback function 
+to locate data needed to perform a task.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_MpiWorker, @ref RM_MpiWorkerBreak, 
+@ref RM_SetMpiWorkerCallback.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE> 
+Pseudo code for root:
+
+status = init((void *) mydata);    
+
+int init(void *cookie)
+{
+  // use cookie to find data, phreeqcrm_comm
+  int ierrmpi, message
+  message = 1000;
+  if (mpi_myself == 0) 
+  {
+    // message number 1000 is sent to the workers
+    MPI_Bcast(&message, 1, MPI_INT, 0, phreeqcrm_comm);
+  }
+  // Do some work here by root and (or) workers
+  return 0;
+}
+
+Pseudo code for worker:
+
+status = RM_SetMpiWorkerCallback(id, mpi_methods);
+status = RM_SetMpiWorkerCallbackCookie(id, (void *) mydata);  
+...
+status = RM_MpiWorker();
+
+int mpi_methods(int method, void *cookie)
+{
+  // this method is called by RM_MpiWorker
+  // because of RM_SetMpiWorkerCallback
+  int return_value;
+  return_value = 0;
+  if (method == 1000) 
+  {
+    return_value = init(cookie);
+  }
+  return return_value;
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by workers, before call to @ref RM_MpiWorker.
+ */
+int RM_SetMpiWorkerCallbackCookie(int id, void *cookie);
+//int RM_SetPartitionUZSolids(int id, int t);
+/**
+Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume 
+to the cell volume (@ref RM_SetCellVolume). The volume of water in a cell is the porosity times the saturation 
+(@ref RM_SetSaturation).
+@param id               The instance id returned from @ref RM_Create.
+@param vol              Array of pore volumes, user units, but same as @ref RM_SetCellVolume. Size of array is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetSaturation.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+pv = (double *) malloc((size_t) (nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) pv[i] = 0.2;
+status = RM_SetPoreVolume(id, pv);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetPoreVolume(id, pv)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: pv
+END FUNCTION RM_SetPoreVolume 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+allocate(pv(nxyz))
+pv = 0.2
+status = RM_SetPoreVolume(id, pv(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetPoreVolume(int id, double *t);
+/**
+Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
+databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat. 
+@param id               The instance id returned from @ref RM_Create.
+@param vol              Array of pressures, in atm. Size of array is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetTemperature.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+pressure = (double *) malloc((size_t) (nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) pressure[i] = 2.0;
+status = RM_SetPressure(id, pressure); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetPressure(id, p)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: p
+END FUNCTION RM_SetPressure  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+allocate(pressure(nxyz))
+pressure = 2.0
+status = RM_SetPressure(id, pressure(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetPressure(int id, double *t);
+/**
+Setting to enable or disable printing to the output file detailed output from reaction calculations for a set of
+cells defined by (@ref RM_SetPrintChemistryMask). The detailed output prints all of the output
+typical of a PHREEQC reaction calculation, which includes solution descriptions and the compositions of
+all other reactants. The output can be several hundred lines per cell, which can lead to a very 
+large output file (prefix.chem.txt, @ref RM_OpenFiles). For the worker instances, the output can be limited to a set of cells 
+(@ref RM_SetPrintChemistryMask) and, in general, the
+amount of information printed can be limited by use of options in the PRINT data block of PHREEQC (applied by using @ref RM_RunFile or
+@ref RM_RunString). Printing the detailed output for the workers is generally used only for debugging, and PhreeqcRM will run
+significantly faster when printing detailed output for the workers is disabled.
+@param id               The instance id returned from @ref RM_Create.
+@param workers          0, disable detailed printing in the worker instances, nonzero, enable detailed printing 
+in the worker instances.
+@param initial_phreeqc  0, disable detailed printing in the InitialPhreeqc instance, nonzero, enable detailed printing 
+in the InitialPhreeqc instances.
+@param utility          0, disable detailed printing in the Utility instance, nonzero, enable detailed printing 
+in the Utility instance.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetPrintChemistryMask.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: worker, initial_phreeqc, utility
+END FUNCTION RM_SetPrintChemistryOn 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetPrintChemistryOn(int id, int worker, int initial_phreeqc, int utility);
+/**
+Enable or disable detailed output for each cell. Printing will occur only when the
+printing is enabled with @ref RM_SetPrintChemistryOn and the cell_mask value is nonzero.
+@param id               The instance id returned from @ref RM_Create.
+@param cell_mask        Array of integers. Size of array is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount). A value of zero for a cell will
+disable printing detailed output for the cell; a nonzero value for a cell will enable printing detailed output for a cell.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetPrintChemistryOn. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+print_chemistry_mask = (int *) malloc((size_t) (nxyz * sizeof(int)));
+for (i = 0; i < nxyz/2; i++) 
+{
+  print_chemistry_mask[i] = 1;
+  print_chemistry_mask[i + nxyz/2] = 0;
+}
+status = RM_SetPrintChemistryMask(id, print_chemistry_mask);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetPrintChemistryMask(id, cell_mask)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: cell_mask
+END FUNCTION RM_SetPrintChemistryMask 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+allocate(print_chemistry_mask(nxyz))
+  do i = 1, nxyz/2
+  print_chemistry_mask(i) = 1
+  print_chemistry_mask(i+nxyz/2) = 0
+enddo   
+status = RM_SetPrintChemistryMask(id, print_chemistry_mask(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetPrintChemistryMask(int id, int *cell_mask);
+/**
+PhreeqcRM attempts to rebalance the load of each thread or process such that each
+thread or process takes the same amount of time to run its part of a @ref RM_RunCells
+calculation. Two algorithms are available; one uses the average time to run a set of 
+cells, and the other accounts for cells that were not run because saturation was zero (default).
+The methods are similar, and it is not clear that one is better than the other. 
+@param id               The instance id returned from @ref RM_Create.
+@param method           0, indicates average times are used in rebalancing; nonzero indicates individual
+cell times are used in rebalancing (default). 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetRebalanceFraction. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetRebalanceByCell(id, 1);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetRebalanceByCell(id, method)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in)  :: method
+END FUNCTION RM_SetRebalanceByCell
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetRebalanceByCell(id, 1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetRebalanceByCell(int id, int method);
+/**
+PhreeqcRM attempts to rebalance the load of each thread or process such that each
+thread or process takes the same amount of time to run its part of a @ref RM_RunCells
+calculation. The rebalancing transfers cell calculations among threads or processes to
+try to achieve an optimum balance. RM_SetRebalanceFraction 
+adjusts the calculated optimum number of cell transfers by a fraction from 0 to 1.0 to
+determine the number of cell transfers that actually are made. A value of zero eliminates
+load rebalancing. A value less than 1.0 is suggested to slow the approach to the optimum cell 
+distribution and avoid possible oscillations 
+where too many cells are transferred at one iteration, requiring reverse transfers at the next iteration. 
+Default is 0.5.
+
+@param id               The instance id returned from @ref RM_Create.
+@param f                Fraction from 0.0 to 1.0. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetRebalanceByCell. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetRebalanceFraction(id, 0.5);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetRebalanceFraction(id, f)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in)  :: f
+END FUNCTION RM_SetRebalanceFraction
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetRebalanceFraction(id, 0.5d0)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+int RM_SetRebalanceFraction(int id, double f);
+/**
+Set the saturation of each cell. Saturation is a fraction ranging from 0 to 1.
+Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
+to the cell volume (@ref RM_SetCellVolume). The volume of water in a cell is the porosity times the saturation.
+@param id               The instance id returned from @ref RM_Create.
+@param sat              Array of saturations, unitless. Size of array is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+sat = (double *) malloc((size_t) (nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) sat[i] = 1.0;
+status = RM_SetSaturation(id, sat);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetSaturation(id, sat)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: sat
+END FUNCTION RM_SetSaturation 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+allocate(sat(nxyz))
+sat = 1.0
+status = RM_SetSaturation(id, sat(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetSaturation(int id, double *sat);
+/**
+Setting determines whether selected-output results are available to be retrieved 
+with @ref RM_GetSelectedOutput. Zero indicates that selected-output results will not 
+be accumulated during @ref RM_RunCells; nonzero indicates that selected-output results
+will be accumulated during @ref RM_RunCells and can be retrieved with @ref RM_GetSelectedOutput.
+@param id               The instance id returned from @ref RM_Create.
+@param selected_output  0, disable selected output; nonzero, enable selected output.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetPrintChemistryOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+status = RM_SetSelectedOutputOn(id, 1);       // enable selected output
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetSelectedOutputOn(id, tf)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: tf
+END FUNCTION RM_SetSelectedOutputOn   
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetSelectedOutputOn(id, 1);        ! enable selected output
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetSelectedOutputOn(int id, int selected_output);
+/**
+Set the temperature for each cell for reaction calculations. 
+@param id               The instance id returned from @ref RM_Create.
+@param t                Array of temperatures, in degrees C. Size of array is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetPressure.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+temperature = (double *) malloc((size_t) (nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) 
+{
+  temperature[i] = 20.0;
+}      
+status = RM_SetTemperature(id, temperature); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetTemperature(id, t)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: t
+END FUNCTION RM_SetTemperature 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+allocate(temperature(nxyz))
+temperature = 20.0
+status = RM_SetTemperature(id, temperature(1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetTemperature(int id, double *t);
+/**
+Set current simulation time for the reaction module.
+@param id               The instance id returned from @ref RM_Create.
+@param time             Current simulation time, in seconds.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetTimeStep, @ref RM_SetTimeConversion. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetTime(id, time);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetTime(id, time)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: time
+END FUNCTION RM_SetTime 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetTime(id, time) 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetTime(int id, double time);
+/**
+Set a factor to convert to user time units. Factor times seconds produces user time units.
+@param id               The instance id returned from @ref RM_Create.
+@param conv_factor      Factor to convert seconds to user time units.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetTime, @ref RM_SetTimeStep. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetTimeConversion(id, 1.0 / 86400.0); // days
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetTimeConversion(id, conv_factor)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: conv_factor
+END FUNCTION RM_SetTimeConversion 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetTimeConversion(id, dble(1.0 / 86400.0)) ! days
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetTimeConversion(int id, double conv_factor);
+/**
+Set current time step for the reaction module. This is the length
+of time over which kinetic reactions are integrated.
+@param id               The instance id returned from @ref RM_Create.
+@param time_step        Current time step, in seconds.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetTime, @ref RM_SetTimeConversion. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetTimeStep(id, time_step);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetTimeStep(id, time_step)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: time_step
+END FUNCTION RM_SetTimeStep 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetTimeStep(id, time_step)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetTimeStep(int id, double t);
+/**
+Input units for exchangers. In PHREEQC, exchangers are defined by
+moles of exchange sites. RM_SetUnitsExchange defines whether the
+number of sites applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are 
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell. 
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity 
+(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+@param id               The instance id returned from @ref RM_Create.
+@param option           Units option for exchangers: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsExchange(id, 1);     
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetUnitsExchange(id, option)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: option
+END FUNCTION RM_SetUnitsExchange 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsExchange(id, 1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetUnitsExchange(int id, int option);
+/**
+Input units for gas phase. In PHREEQC, gas phases are defined by
+moles of component gases. RM_SetUnitsGasPhase defines whether the
+number of moles applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are 
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell. 
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity 
+(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+@param id               The instance id returned from @ref RM_Create.
+@param option           Units option for gas phases: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsGasPhase(id, 1);     
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_SetUnitsGasPhase(id, option)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: option
+END FUNCTION RM_SetUnitsGasPhase 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsGasPhase(id, 1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetUnitsGasPhase(int id, int option);
+/**
+Input units for kinetic reactants. In PHREEQC, kinetics are defined by
+moles of kinetic reactant. RM_SetUnitsKinetics defines whether the
+number of moles applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are 
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell. 
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity 
+(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+@n@n
+Note that the volume of water in a cell in the reaction module is equal
+to the porosity times the saturation, which is usually much less than 1 liter. 
+It is important to write the
+RATES definitions for KINETICS to account for the current volume of water,
+usually by calculating the rate of reaction per liter of water and multiplying by the
+volume of water (Basic function SOLN_VOL).
+@param id               The instance id returned from @ref RM_Create.
+@param option           Units option for kinetic reactants: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsKinetics(id, 1);     
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_SetUnitsKinetics(id, option)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: option
+END FUNCTION RM_SetUnitsKinetics
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsKinetics(id, 1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetUnitsKinetics(int id, int option);
+/**
+Input units for pure phase assemblages (equilibrium phases). 
+In PHREEQC, equilibrium phases are defined by
+moles of each phase. RM_SetUnitsPPassemblage defines whether the
+number of moles applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are 
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell. 
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity 
+(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+@param id               The instance id returned from @ref RM_Create.
+@param option           Units option for equilibrium phases: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsPPassemblage(id, 1);     
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_SetUnitsPPassemblage(id, option)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: option
+END FUNCTION RM_SetUnitsPPassemblage
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsPPassemblage(id, 1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetUnitsPPassemblage(int id, int option);
+/**
+Solution concentration units used by the transport model. 
+Options are 1, mg/L; 2 mmol/L; or 3, mass fraction, kg/kgs.
+PHREEQC defines solutions by the number of moles of each
+element in the solution. 
+@n@n
+To convert from mg/L to moles
+of element in a cell, mg/L is converted to mol/L and
+multiplied by the solution volume,
+which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume) 
+times saturation (@ref RM_SetSaturation).
+To convert from mmol/L to moles
+of element in a cell, mmol/L is converted to mol/L and
+multiplied by the solution volume,
+which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume) 
+times saturation (@ref RM_SetSaturation).
+To convert from mass fraction to moles
+of element in a cell, kg/kgs is converted to mol/kgs, multiplied by density
+(@ref RM_SetDensity) and
+multiplied by the solution volume,
+which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume) 
+times saturation (@ref RM_SetSaturation).
+@n@n
+To convert from moles
+of element in a cell to mg/L, the number of moles of an element is divided by the
+calculated solution volume resulting in mol/L, and then converted to
+mg/L.
+To convert from moles
+of element in a cell to mmol/L,  the number of moles of an element is divided by the
+calculated solution volume resulting in mol/L, and then converted to
+mmol/L.
+To convert from moles
+of element in a cell to mass fraction, the number of moles of an element is converted to kg and divided
+by the total mass of the solution.
+@param id               The instance id returned from @ref RM_Create.
+@param option           Units option for solutions: 1, 2, or 3.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume, @ref RM_SetSaturation,
+@ref RM_SetDensity.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsSurface(id, 1);     
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetUnitsSurface(id, option)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: option
+END FUNCTION RM_SetUnitsSurface  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsSurface(id, 1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetUnitsSolution(int id, int option);
+/**
+Input units for solid-solution assemblages. 
+In PHREEQC, solid solutions are defined by
+moles of each component. RM_SetUnitsSSassemblage defines whether the
+number of moles applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are 
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell. 
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity 
+(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+@param id               The instance id returned from @ref RM_Create.
+@param option           Units option for solid solutions: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsSSassemblage(id, 1);     
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_SetUnitsSSassemblage(id, option)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: option
+END FUNCTION RM_SetUnitsSSassemblage 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsSSassemblage(id, 1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetUnitsSSassemblage(int id, int option);
+/**
+Input units for surfaces. In PHREEQC, surfaces are defined by
+moles of surface sites. RM_SetUnitsSurface defines whether the
+number of sites applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are 
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell. 
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity 
+(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+@param id               The instance id returned from @ref RM_Create.
+@param option           Units option for surfaces: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsSurface(id, 1);     
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE> 
+INTEGER FUNCTION RM_SetUnitsSurface(id, option)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: option
+END FUNCTION RM_SetUnitsSurface  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetUnitsSurface(id, 1)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SetUnitsSurface(int id, int option);
+/**
+Print a warning message to the screen and the log file. 
 @param id               The instance id returned from @ref RM_Create.
 @param warnstr          String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 

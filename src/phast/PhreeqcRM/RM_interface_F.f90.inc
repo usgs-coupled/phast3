@@ -314,34 +314,34 @@
 			END INTERFACE
         END FUNCTION RM_SetMpiWorkerCallback
 				
-        INTEGER FUNCTION RM_SetPartitionUZSolids(id, t)   
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in)  :: t
-        END FUNCTION RM_SetPartitionUZSolids 
+        !INTEGER FUNCTION RM_SetPartitionUZSolids(id, t)   
+        !    IMPLICIT NONE
+        !    INTEGER, INTENT(in) :: id
+        !    INTEGER, INTENT(in)  :: t
+        !END FUNCTION RM_SetPartitionUZSolids 
 
-        INTEGER FUNCTION RM_SetPoreVolume(id, t)   
+        INTEGER FUNCTION RM_SetPoreVolume(id, pv)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: pv
         END FUNCTION RM_SetPoreVolume 
 
-        INTEGER FUNCTION RM_SetPressure(id, t)   
+        INTEGER FUNCTION RM_SetPressure(id, p)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: p
         END FUNCTION RM_SetPressure        
         
-        INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, ip, utility)   
+        INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: worker, ip, utility
+            INTEGER, INTENT(in) :: worker, initial_phreeqc, utility
         END FUNCTION RM_SetPrintChemistryOn 
 
-        INTEGER FUNCTION RM_SetPrintChemistryMask(id, t)   
+        INTEGER FUNCTION RM_SetPrintChemistryMask(id, cell_mask)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: t
+            INTEGER, INTENT(in) :: cell_mask
         END FUNCTION RM_SetPrintChemistryMask 
         
         INTEGER FUNCTION RM_SetRebalanceByCell(id, method)
@@ -356,10 +356,10 @@
             DOUBLE PRECISION, INTENT(in)  :: f
         END FUNCTION RM_SetRebalanceFraction
 
-        INTEGER FUNCTION RM_SetSaturation(id, t)
+        INTEGER FUNCTION RM_SetSaturation(id, sat)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: sat
         END FUNCTION RM_SetSaturation 
 
         INTEGER FUNCTION RM_SetSelectedOutputOn(id, tf)
@@ -374,64 +374,64 @@
             DOUBLE PRECISION, INTENT(in) :: t
         END FUNCTION RM_SetTemperature 
 		     
-        INTEGER FUNCTION RM_SetTime(id, t)   
+        INTEGER FUNCTION RM_SetTime(id, time)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: time
         END FUNCTION RM_SetTime 
 		     
-        INTEGER FUNCTION RM_SetTimeConversion(id, t)   
+        INTEGER FUNCTION RM_SetTimeConversion(id, conv_factor)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: conv_factor
         END FUNCTION RM_SetTimeConversion 
 		     
-        INTEGER FUNCTION RM_SetTimeStep(id, t)   
+        INTEGER FUNCTION RM_SetTimeStep(id, time_step)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: time_step
         END FUNCTION RM_SetTimeStep 
 
-        INTEGER FUNCTION RM_SetUnitsExchange(id, u)   
+        INTEGER FUNCTION RM_SetUnitsExchange(id, option)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: u
+            INTEGER, INTENT(in) :: option
         END FUNCTION RM_SetUnitsExchange 
 
-        INTEGER FUNCTION RM_SetUnitsGasPhase(id, u)   
+        INTEGER FUNCTION RM_SetUnitsGasPhase(id, option)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: u
+            INTEGER, INTENT(in) :: option
         END FUNCTION RM_SetUnitsGasPhase 
 
-        INTEGER FUNCTION RM_SetUnitsKinetics(id, u)   
+        INTEGER FUNCTION RM_SetUnitsKinetics(id, option)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: u
+            INTEGER, INTENT(in) :: option
         END FUNCTION RM_SetUnitsKinetics 
 
-        INTEGER FUNCTION RM_SetUnitsPPassemblage(id, u)   
+        INTEGER FUNCTION RM_SetUnitsPPassemblage(id, option)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: u
+            INTEGER, INTENT(in) :: option
         END FUNCTION RM_SetUnitsPPassemblage
 
-        INTEGER FUNCTION RM_SetUnitsSolution(id, u)   
+        INTEGER FUNCTION RM_SetUnitsSolution(id, option)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: u
+            INTEGER, INTENT(in) :: option
         END FUNCTION RM_SetUnitsSolution  
 
-        INTEGER FUNCTION RM_SetUnitsSSassemblage(id, u)   
+        INTEGER FUNCTION RM_SetUnitsSSassemblage(id, option)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: u
+            INTEGER, INTENT(in) :: option
         END FUNCTION RM_SetUnitsSSassemblage  
 
-        INTEGER FUNCTION RM_SetUnitsSurface(id, u)   
+        INTEGER FUNCTION RM_SetUnitsSurface(id, option)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: u
+            INTEGER, INTENT(in) :: option
         END FUNCTION RM_SetUnitsSurface  
         
         INTEGER FUNCTION RM_WarningMessage(id, str) 

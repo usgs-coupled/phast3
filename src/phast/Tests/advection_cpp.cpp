@@ -18,6 +18,8 @@ int advection_cpp()
 		// Create reaction module
 		PhreeqcRM phreeqc_rm(nxyz, nthreads);
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // 1 = throw exception on error
+		status = phreeqc_rm.SetRebalanceFraction(0.5);
+		status = phreeqc_rm.SetRebalanceByCell(1);
 		status = phreeqc_rm.SetFilePrefix("Advect_cpp");
 		phreeqc_rm.OpenFiles();
 
@@ -51,11 +53,15 @@ int advection_cpp()
 
 		// Set cells to print chemistry when print chemistry is turned on
 		std::vector<int> print_chemistry_mask;
-		print_chemistry_mask.resize(nxyz, 1);
+		print_chemistry_mask.resize(nxyz, 0);
+		for (int i = 0; i < nxyz/2; i++)
+		{
+			print_chemistry_mask[i] = 1;
+		}
 		status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask.data());
 
 		// Partitioning of uz solids
-		status = phreeqc_rm.SetPartitionUZSolids(false);
+		//status = phreeqc_rm.SetPartitionUZSolids(false);
 
 		// For demonstation, two equivalent rows by symmetry
 		std::vector<int> grid2chem;
@@ -194,7 +200,9 @@ int advection_cpp()
 			AdvectCpp(c, bc_conc, ncomps, nxyz, nbound);
 
 			// Send new conditions to module
+			bool print_selected_output_on = (steps == nsteps - 1) ? true : false;
 			bool print_chemistry_on = (steps == nsteps - 1) ? true : false;
+			status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on); 
 			status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); // workers, initial_phreeqc, utility
 			status = phreeqc_rm.SetPoreVolume(pv.data());            // If pore volume changes due to compressibility
 			status = phreeqc_rm.SetSaturation(sat.data());           // If saturation changes

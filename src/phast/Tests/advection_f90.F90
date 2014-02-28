@@ -19,7 +19,7 @@
     integer :: nthreads
     integer :: id
     integer :: status
-    integer :: partition_uz_solids
+    !integer :: partition_uz_solids
     double precision, dimension(:), allocatable   :: cell_vol
     double precision, dimension(:), allocatable   :: pv
     double precision, dimension(:), allocatable   :: sat
@@ -62,6 +62,8 @@
     ! Create reaction module
     id = RM_create(nxyz, nthreads)
     status = RM_SetErrorHandlerMode(id, 2)  ! exit on error
+	status = RM_SetRebalanceFraction(id, 0.5d0)
+	status = RM_SetRebalanceByCell(id, 1)
     
     status = RM_SetFilePrefix(id, "Advect_f90")
     ! Open error, log, and output files
@@ -96,15 +98,18 @@
     
     ! Set cells to print chemistry when print chemistry is turned on
     allocate(print_chemistry_mask(nxyz))
-    print_chemistry_mask = 1
+     do i = 1, nxyz/2
+        print_chemistry_mask(i) = 1
+        print_chemistry_mask(i+nxyz/2) = 0
+    enddo   
     status = RM_SetPrintChemistryMask(id, print_chemistry_mask(1))
     
     ! Set printing of chemistry file to false
     status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
     
     ! Partitioning of uz solids
-    partition_uz_solids = 0
-    status = RM_SetPartitionUZSolids(id, partition_uz_solids)
+    !partition_uz_solids = 0
+    !status = RM_SetPartitionUZSolids(id, partition_uz_solids)
 
 	! For demonstation, two equivalent rows by symmetry
     allocate(grid2chem(nxyz))
@@ -242,8 +247,10 @@
         
         ! print at last time step
  		if (isteps == nsteps) then
+			status = RM_SetSelectedOutputOn(id, 1);        ! enable selected output
             status = RM_SetPrintChemistryOn(id, 1, 0, 0)   ! workers, initial_phreeqc, utility
         else
+			status = RM_SetSelectedOutputOn(id, 0);        ! disable selected output
             status = RM_SetPrintChemistryOn(id, 0, 0, 0)   ! workers, initial_phreeqc, utility
         endif
         

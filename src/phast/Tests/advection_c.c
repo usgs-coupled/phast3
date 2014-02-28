@@ -58,6 +58,8 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		nthreads = 2;
 		id = RM_Create(nxyz, nthreads);
 		status = RM_SetErrorHandlerMode(id, 2);
+		status = RM_SetRebalanceFraction(id, 0.5);
+		status = RM_SetRebalanceByCell(id, 1);
 		status = RM_SetFilePrefix(id, "Advect_c");
 		// Open error, log, and output files
 		status = RM_OpenFiles(id);
@@ -91,18 +93,22 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
     
 		// Set cells to print chemistry when print chemistry is turned on
 		print_chemistry_mask = (int *) malloc((size_t) (nxyz * sizeof(int)));
-		for (i = 0; i < nxyz; i++) print_chemistry_mask[i] = 1;
+		for (i = 0; i < nxyz/2; i++) 
+		{
+			print_chemistry_mask[i] = 1;
+			print_chemistry_mask[i + nxyz/2] = 0;
+		}
 		status = RM_SetPrintChemistryMask(id, print_chemistry_mask);
 				
 		// Partitioning of uz solids
-		status = RM_SetPartitionUZSolids(id, 0);
+		//status = RM_SetPartitionUZSolids(id, 0);
 
 		// For demonstation, two equivalent rows by symmetry
 		grid2chem = (int *) malloc((size_t) (nxyz * sizeof(int)));
 		for (i = 0; i < nxyz/2; i++) 
 		{
 			grid2chem[i] = i;
-			grid2chem[i+nxyz/2] = i;
+			grid2chem[i + nxyz/2] = i;
 		}
 		status = RM_CreateMapping(id, grid2chem);
 		if (status < 0) status = RM_DecodeError(id, status); 
@@ -264,10 +270,12 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			// Set print flag
  			if (isteps == nsteps - 1) 
 			{
+				status = RM_SetSelectedOutputOn(id, 1);       // enable selected output
 				status = RM_SetPrintChemistryOn(id, 1, 0, 0); // print at last time step, workers, initial_phreeqc, utility
 			}
 			else
 			{
+				status = RM_SetSelectedOutputOn(id, 0);       // disable selected output
 				status = RM_SetPrintChemistryOn(id, 0, 0, 0); // workers, initial_phreeqc, utility
 			}
 
