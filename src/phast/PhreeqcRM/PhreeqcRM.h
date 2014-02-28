@@ -142,7 +142,8 @@ public:
 	int                                       GetComponentCount(void) const {return (int) this->components.size();}
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
 	const std::string                         GetDatabaseFileName(void) const {return this->database_file_name;}
-	std::vector<double> &                     GetDensity(void); 
+	//std::vector<double> &                     GetDensity(void); 
+	IRM_RESULT                                GetDensity(std::vector<double> & density); 
 	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;}
 	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
 	const std::string                         GetFilePrefix(void) const {return this->file_prefix;}

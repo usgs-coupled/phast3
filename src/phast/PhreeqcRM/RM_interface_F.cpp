@@ -246,7 +246,7 @@ RM_GetConcentrations(int *id, double * c)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_GetDensity(int *id, double * d)
@@ -264,6 +264,39 @@ RM_GetDensity(int *id, double * d)
 			if ((int) Reaction_module_ptr->GetDensity().size() == Reaction_module_ptr->GetGridCellCount())
 			{
 				memcpy(d, Reaction_module_ptr->GetDensity().data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+			}
+			else
+			{
+				for (int i = 0; i < Reaction_module_ptr->GetGridCellCount(); i++)
+				{
+					d[i] = INACTIVE_CELL_VALUE;
+				}
+				return_value = IRM_FAIL;
+			}
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_GetDensity(int *id, double * d)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves density for all grid nodes in d
+	// size of d must be the number of grid nodes
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		IRM_RESULT return_value = IRM_OK;
+		std::vector <double> density;
+		Reaction_module_ptr->GetDensity(density);
+		if (Reaction_module_ptr->GetMpiMyself() == 0)
+		{
+			if ((int) density.size() == Reaction_module_ptr->GetGridCellCount())
+			{
+				memcpy(d, density.data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
 			}
 			else
 			{

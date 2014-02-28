@@ -2651,6 +2651,7 @@ PhreeqcRM::GetConcentrations(double * c)
 	return this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
 }
 #endif
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 std::vector<double> &
 PhreeqcRM::GetDensity(void)
@@ -2728,6 +2729,89 @@ PhreeqcRM::GetDensity(void)
 		this->density.clear();
 	}
 	return this->density;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetDensity(std::vector<double> & density_arg)
+/* ---------------------------------------------------------------------- */
+{
+	try
+	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETDENSITY;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+#endif
+		density_arg.clear();
+		std::vector<double> local_density;
+		local_density.resize(this->nxyz, INACTIVE_CELL_VALUE);
+		std::vector<double> dbuffer;
+
+#ifdef USE_MPI
+		int n = this->mpi_myself;
+		for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+		{
+			double d = this->workers[0]->Get_solution(i)->Get_density();
+			for(size_t j = 0; j < backward_mapping[i].size(); j++)
+			{
+				int n = backward_mapping[i][j];
+				local_density[n] = d;
+			}
+		}
+		for (int n = 0; n < this->mpi_tasks; n++)
+		{
+			if (this->mpi_myself == n)
+			{
+				if (this->mpi_myself == 0)
+				{
+					continue;
+				}
+				else
+				{
+					int l = this->end_cell[n] - this->start_cell[n] + 1;
+					MPI_Send((void *) &local_density[this->start_cell[n]], l, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
+				}
+			}
+			else if (this->mpi_myself == 0)
+			{	
+				std::vector<double> dbuffer;
+				MPI_Status mpi_status;
+				int l = this->end_cell[n] - this->start_cell[n] + 1;
+				dbuffer.resize(l);
+				MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
+				for (int i = 0; i < l; i++)
+				{
+					local_density[this->start_cell[n] +i] = dbuffer[i];
+				}
+			}
+		}
+#else
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
+			{
+				double d = this->workers[n]->Get_solution(i)->Get_density();
+				for(size_t j = 0; j < backward_mapping[i].size(); j++)
+				{
+					int n = backward_mapping[i][j];
+					local_density[n] = d;
+				}
+			}
+		}
+#endif
+		if (mpi_myself == 0)
+		{
+			density_arg = local_density;
+		}
+	}
+	catch (...)
+	{
+		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetDensity");
+	}
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 int
@@ -3877,8 +3961,11 @@ PhreeqcRM::MpiWorker()
 				return_value = this->GetConcentrations();
 				break;
 			case METHOD_GETDENSITY:
-				if (debug_worker) std::cerr << "METHOD_GETDENSITY" << std::endl;
-				this->GetDensity();
+				{
+					std::vector<double> density;
+					if (debug_worker) std::cerr << "METHOD_GETDENSITY" << std::endl;
+					this->GetDensity(density);
+				}
 				break;
 			case METHOD_GETSELECTEDOUTPUT:
 				if (debug_worker) std::cerr << "METHOD_GETSELECTEDOUTPUT" << std::endl;
