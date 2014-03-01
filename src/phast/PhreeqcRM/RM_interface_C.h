@@ -477,7 +477,7 @@ enddo
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int        RM_FindComponents(int id);
 /**
@@ -570,7 +570,7 @@ enddo
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root.
+Called by root and (or) workers.
  */
 int RM_GetComponent(int id, int num, char *chem_name, int l);
 /**

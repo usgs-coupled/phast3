@@ -270,6 +270,7 @@ if( numCPU < 1 )
 	// set work for each thread or process
 	SetEndCells();
 
+	save_species = false;
 	mpi_worker_callback_fortran = NULL;
 	mpi_worker_callback_c = NULL;
 	mpi_worker_callback_cookie = NULL;
@@ -2397,6 +2398,13 @@ PhreeqcRM::FindComponents(void)
  */
 	try
 	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_FINDCOMPONENTS;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+#endif
 		// Always include H, O, Charge
 
 		//this->components.clear();
@@ -2453,9 +2461,10 @@ PhreeqcRM::FindComponents(void)
 				this->gfw.push_back(phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
 			}
 		}
-#ifdef SKIP
 		// Get list of species
+		if (this->save_species)
 		{
+			//phast_iphreeqc_worker->PhreeqcPtr->save_species = true;
 			int next = phast_iphreeqc_worker->PhreeqcPtr->next_user_number(Keywords::KEY_SOLUTION);
 			std::ostringstream in;
 			in << "SOLUTION " << next << "\n";
@@ -2469,20 +2478,19 @@ PhreeqcRM::FindComponents(void)
 			}
 			phast_iphreeqc_worker->RunString(in.str().c_str());
 			int n = phast_iphreeqc_worker->PhreeqcPtr->count_s_x;
-			cxxNameDouble species_moles;
+			species_names.clear();
+			species_z.clear();
+			s_num2rm_species_num.clear();
+			species_stoichiometry.clear();
 			for (int i = 0; i < phast_iphreeqc_worker->PhreeqcPtr->count_s_x; i++)
 			{
-				species_
-			}
-			//phast_iphreeqc_worker->PhreeqcPtr->GetSpeciesConcentration(species_map, units);
-			cxxNameDouble::iterator it = species_moles.begin();
-			for ( ; it != species_moles.end(); it++)
-			{
-				cxxNameDouble nd;
-				phast_iphreeqc_worker->PhreeqcPtr->species_formula(it->first, nd);
+				species_names.push_back(phast_iphreeqc_worker->PhreeqcPtr->s_x[i]->name);
+				species_z.push_back(phast_iphreeqc_worker->PhreeqcPtr->s_x[i]->z);
+				s_num2rm_species_num[phast_iphreeqc_worker->PhreeqcPtr->s_x[i]->number] = i;
+				cxxNameDouble nd(phast_iphreeqc_worker->PhreeqcPtr->s_x[i]->next_elt);
+				species_stoichiometry.push_back(nd);
 			}
 		}
-#endif
 	}
 	catch (...)
 	{
@@ -3955,6 +3963,10 @@ PhreeqcRM::MpiWorker()
 			case METHOD_DUMPMODULE:
 				if (debug_worker) std::cerr << "METHOD_DUMPMODULE" << std::endl;
 				return_value = this->DumpModule();
+				break;
+			case METHOD_FINDCOMPONENTS:
+				if (debug_worker) std::cerr << "METHOD_FINDCOMPONENTS" << std::endl;
+				this->FindComponents();
 				break;
 			case METHOD_GETCONCENTRATIONS:
 				if (debug_worker) std::cerr << "METHOD_GETCONCENTRATIONS" << std::endl;

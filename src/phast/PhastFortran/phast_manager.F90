@@ -29,6 +29,9 @@ SUBROUTINE phast_manager
     INTERFACE
         INTEGER FUNCTION set_fdtmth
         END FUNCTION set_fdtmth
+        
+        INTEGER FUNCTION set_components() 
+        END FUNCTION set_components
     END INTERFACE
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err
@@ -43,6 +46,8 @@ SUBROUTINE phast_manager
     CALL read1                                             ! Read fundamental information, dimensioning data
     CALL read1_distribute                                  ! Distribute for MPI
     CALL CreateRM                                          ! Create Reaction Module(s)
+    ! Set components
+    status = set_components()                              ! make component list on Fortran side   
     CALL set_component_map                                 ! Map components to thread/process for parallel transport calculations
     CALL init1                                             ! Initialize and allocate arrays, root and workers
     CALL error1                                            ! Check for errors
@@ -385,11 +390,7 @@ SUBROUTINE CreateRM
     USE mpi_mod
     IMPLICIT NONE
     SAVE
-    INCLUDE 'RM_interface_F.f90.inc'
-    INTERFACE
-        INTEGER FUNCTION set_components() 
-        END FUNCTION set_components
-    END INTERFACE
+    INCLUDE 'RM_interface_F.f90.inc'   
     INTEGER i, a_err, status
   
     IF (solute) THEN  
@@ -412,8 +413,7 @@ SUBROUTINE CreateRM
         status = RM_LogMessage(rm_id, "Initial PHREEQC run.") 
         status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
-        ! Set components
-        status = set_components()       
+        status = RM_FindComponents(rm_id)    
         status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
         status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
     ENDIF
@@ -607,13 +607,14 @@ INTEGER FUNCTION set_components
     SAVE
     INCLUDE 'RM_interface_F.f90.inc'  
     integer method, a_err, i, status
-    
+    ! makes the list of components on the Fortran side.
 #ifdef USE_MPI    
     if (mpi_myself == 0) then
         CALL MPI_BCAST(METHOD_SETCOMPONENTS, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
     endif
 #endif    
-    ns = RM_FindComponents(rm_id)
+    !ns = RM_FindComponents(rm_id)
+    ns = RM_GetComponentCount(rm_id)
     ALLOCATE(comp_name(ns),  & 
     STAT = a_err)
     IF (a_err /= 0) THEN
