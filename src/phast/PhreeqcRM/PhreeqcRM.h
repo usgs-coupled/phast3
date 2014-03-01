@@ -36,6 +36,7 @@ typedef enum {
 typedef enum {
 	METHOD_CREATEMAPPING,
 	METHOD_DUMPMODULE,
+	METHOD_FINDCOMPONENTS,
 	METHOD_GETCONCENTRATIONS,
 	METHOD_GETDENSITY,
 	METHOD_GETSELECTEDOUTPUT,
@@ -314,6 +315,12 @@ protected:
 	int (*mpi_worker_callback_c) (int *method, void *cookie);
 	void *mpi_worker_callback_cookie;
 
+	// mcd
+	bool save_species;
+	std::vector <std::string> species_names;
+	std::vector <double> species_z;
+	std::vector <cxxNameDouble> species_stoichiometry;
+	std::map<int, int> s_num2rm_species_num;
 private:
 	friend class RM_interface;
 	static std::map<size_t, PhreeqcRM*> Instances;
