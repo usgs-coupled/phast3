@@ -22,6 +22,7 @@ extern void advection_c(void);
 
 // C++ function
 extern int advection_cpp();
+extern int species_cpp();
 extern int units_tester();
 
 #if defined(USE_MPI)
@@ -53,10 +54,11 @@ int main(int argc, char* argv[])
 	mpi_myself = 0;
 #endif
 
-	units_tester();
-	advection_cpp();
-	advection_f90();
-	advection_c();
+	//units_tester();
+	//advection_cpp();
+	//advection_f90();
+	//advection_c();
+	species_cpp();
 
 #if defined(USE_MPI)
 	MPI_Finalize();

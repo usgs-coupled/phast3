@@ -41,6 +41,7 @@ typedef enum {
 	METHOD_GETDENSITY,
 	METHOD_GETSELECTEDOUTPUT,
 	METHOD_GETSOLUTIONVOLUME,
+	METHOD_GETSPECIESCONCENTRATIONS,
 	METHOD_INITIALPHREEQC2MODULE,
 	METHOD_INITIALPHREEQCCELL2MODULE,
 	METHOD_LOADDATABASE,
@@ -61,6 +62,7 @@ typedef enum {
 	METHOD_SETREBALANCEBYCELL,
 	METHOD_SETSATURATION,
 	METHOD_SETSELECTEDOUTPUTON,
+	METHOD_SETSPECIESSAVEON,
 	METHOD_SETTEMPERATURE,
 	METHOD_SETTIME,
 	METHOD_SETTIMECONVERSION,
@@ -71,7 +73,8 @@ typedef enum {
 	METHOD_SETUNITSPPASSEMBLAGE,
 	METHOD_SETUNITSSOLUTION,
 	METHOD_SETUNITSSSASSEMBLAGE,
-	METHOD_SETUNITSSURFACE
+	METHOD_SETUNITSSURFACE,
+	METHOD_SPECIESCONCENTRATIONS2MODULE
 } MPI_METHOD;
 
 class PhreeqcRM: public PHRQ_base
@@ -108,6 +111,14 @@ public:
 													int *initial_conditions1 = NULL,
 													int *initial_conditions2 = NULL,	
 													double *fraction1 = NULL);
+	IRM_RESULT								  InitialPhreeqc2SpeciesConcentrations(
+													std::vector < double > & destination_c, 
+													std::vector < int >    & boundary_solution1,
+													std::vector < int >    & boundary_solution2, 
+													std::vector < double > & fraction1); 
+	IRM_RESULT                                InitialPhreeqc2SpeciesConcentrations(
+													std::vector < double > & destination_c, 
+													std::vector < int >    & boundary_solution1);
 	IRM_RESULT                                InitialPhreeqcCell2Module(int i, const std::vector<int> &cell_numbers);
 	IRM_RESULT                                LoadDatabase(const char * database = NULL);
 	void                                      LogMessage(const std::string &str);
@@ -135,6 +146,16 @@ public:
 	void                                      Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                                   int * solution_number, 
                                                   const std::string &prefix);
+
+	IRM_RESULT                                GetSpeciesConcentrations(std::vector<double> & species_conc);
+	int                                       GetSpeciesCount(void) {return (int) this->species_names.size();}
+	const std::vector<double> &               GetSpeciesD25(void) {return this->species_d_25;}
+	const std::vector<double> &               GetSpeciesZ(void) {return this->species_z;}
+	const std::vector<std::string> &          GetSpeciesNames(void) {return this->species_names;}
+	const std::vector<cxxNameDouble> &        GetSpeciesStoichiometry(void) {return this->species_stoichiometry;}
+	IRM_RESULT								  SpeciesConcentrations2Module(std::vector<double> & species_conc);
+	IRM_RESULT                                SetSpeciesSaveOn(bool tf); 
+	bool                                      GetSpeciesSaveOn(void) {return this->species_save_on;}
 
 	// Getters 
 	const std::vector < std::vector <int> > & GetBackwardMapping(void) {return this->backward_mapping;}
@@ -284,7 +305,7 @@ protected:
 	std::vector<int> print_chem_mask;		// nxyz print flags for output file
 	bool rebalance_by_cell;                 // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
-	int input_units_Solution;               // 1 mg/L, 2 mmol/L, 3 kg/kgs
+	int input_units_Solution;               // 1 mg/L, 2 mol/L, 3 kg/kgs
 	int input_units_PPassemblage;           // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 	int input_units_Exchange;               // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 	int input_units_Surface;                // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
@@ -316,11 +337,13 @@ protected:
 	void *mpi_worker_callback_cookie;
 
 	// mcd
-	bool save_species;
+	bool species_save_on;
 	std::vector <std::string> species_names;
 	std::vector <double> species_z;
+	std::vector <double> species_d_25;
 	std::vector <cxxNameDouble> species_stoichiometry;
 	std::map<int, int> s_num2rm_species_num;
+
 private:
 	friend class RM_interface;
 	static std::map<size_t, PhreeqcRM*> Instances;
