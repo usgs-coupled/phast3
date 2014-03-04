@@ -3432,7 +3432,7 @@ If 1 or 2 is selected, the input is converted
 to mol/L of cell on the basis of the porosity 
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance id returned from @ref RM_Create.
-@param option           Units option for exchangers: 0, 1, or 2.
+@param option           Units option for exchangers: 0, 1, or 2. Default is 0, mol per liter of cell.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
 @par C Example:
@@ -3477,7 +3477,7 @@ If 1 or 2 is selected, the input is converted
 to mol/L of cell on the basis of the porosity 
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance id returned from @ref RM_Create.
-@param option           Units option for gas phases: 0, 1, or 2.
+@param option           Units option for gas phases: 0, 1, or 2. Default is 0, mol per liter of cell.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
 @par C Example:
@@ -3529,7 +3529,7 @@ RATES definitions for KINETICS to account for the current volume of water,
 usually by calculating the rate of reaction per liter of water and multiplying by the
 volume of water (Basic function SOLN_VOL).
 @param id               The instance id returned from @ref RM_Create.
-@param option           Units option for kinetic reactants: 0, 1, or 2.
+@param option           Units option for kinetic reactants: 0, 1, or 2. Default is 0, mol per liter of cell.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
 @par C Example:
@@ -3575,7 +3575,7 @@ If 1 or 2 is selected, the input is converted
 to mol/L of cell on the basis of the porosity 
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance id returned from @ref RM_Create.
-@param option           Units option for equilibrium phases: 0, 1, or 2.
+@param option           Units option for equilibrium phases: 0, 1, or 2. Default is 0, mol per liter of cell.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
 @par C Example:
@@ -3612,7 +3612,7 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 int RM_SetUnitsPPassemblage(int id, int option);
 /**
 Solution concentration units used by the transport model. 
-Options are 1, mg/L; 2 mmol/L; or 3, mass fraction, kg/kgs.
+Options are 1, mg/L; 2 mol/L; or 3, mass fraction, kg/kgs.
 PHREEQC defines solutions by the number of moles of each
 element in the solution. 
 @n@n
@@ -3621,8 +3621,8 @@ of element in a cell, mg/L is converted to mol/L and
 multiplied by the solution volume,
 which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume) 
 times saturation (@ref RM_SetSaturation).
-To convert from mmol/L to moles
-of element in a cell, mmol/L is converted to mol/L and
+To convert from mol/L to moles
+of element in a cell, mol/L is
 multiplied by the solution volume,
 which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume) 
 times saturation (@ref RM_SetSaturation).
@@ -3638,14 +3638,13 @@ of element in a cell to mg/L, the number of moles of an element is divided by th
 calculated solution volume resulting in mol/L, and then converted to
 mg/L.
 To convert from moles
-of element in a cell to mmol/L,  the number of moles of an element is divided by the
-calculated solution volume resulting in mol/L, and then converted to
-mmol/L.
+of element in a cell to mol/L,  the number of moles of an element is divided by the
+calculated solution volume resulting in mol/L.
 To convert from moles
 of element in a cell to mass fraction, the number of moles of an element is converted to kg and divided
 by the total mass of the solution.
 @param id               The instance id returned from @ref RM_Create.
-@param option           Units option for solutions: 1, 2, or 3.
+@param option           Units option for solutions: 1, 2, or 3, default is 1, mg/L.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume, @ref RM_SetSaturation,
 @ref RM_SetDensity.
@@ -3692,7 +3691,7 @@ If 1 or 2 is selected, the input is converted
 to mol/L of cell on the basis of the porosity 
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance id returned from @ref RM_Create.
-@param option           Units option for solid solutions: 0, 1, or 2.
+@param option           Units option for solid solutions: 0, 1, or 2. Default is 0, mol per liter of cell.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
 @par C Example:
@@ -3737,7 +3736,7 @@ If 1 or 2 is selected, the input is converted
 to mol/L of cell on the basis of the porosity 
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance id returned from @ref RM_Create.
-@param option           Units option for surfaces: 0, 1, or 2.
+@param option           Units option for surfaces: 0, 1, or 2. Default is 0, mol per liter of cell.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume. 
 @par C Example:
