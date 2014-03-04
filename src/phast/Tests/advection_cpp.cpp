@@ -244,7 +244,7 @@ int advection_cpp()
 					status = phreeqc_rm.GetSelectedOutput(so.data());
 
 					// Print results
-					for (int i = 0; i < phreeqc_rm.GetSelectedOutputRowCount(); i++)
+					for (int i = 0; i < phreeqc_rm.GetSelectedOutputRowCount()/2; i++)
 					{
 						std::cerr << "Cell number " << i << "\n";
 						std::cerr << "     Density: " << density[i] << "\n";
