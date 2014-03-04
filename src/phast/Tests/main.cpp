@@ -54,10 +54,10 @@ int main(int argc, char* argv[])
 	mpi_myself = 0;
 #endif
 
-	//units_tester();
-	//advection_cpp();
-	//advection_f90();
-	//advection_c();
+	units_tester();
+	advection_cpp();
+	advection_f90();
+	advection_c();
 	species_cpp();
 
 #if defined(USE_MPI)
