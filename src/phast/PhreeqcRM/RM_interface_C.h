@@ -434,9 +434,16 @@ int RM_ErrorMessage(int id, const char *errstr);
 Returns the number of items in the list of all elements in the Initial Phreeqc instance. Elements are those that have been defined in a solution or any other reactant (EQUILIBRIUM_PHASE, KINETICS, and others). 
 The method can be called multiple times and the list that is created is cummulative. 
 The list is the set of components that needs to be transported.
+If multicomponent diffusion (MCD) is to be modeled, there is a capability to retrieve aqueous species concentrations
+(@ref RM_GetSpeciesConcentrations) and to set new solution concentrations after MCD from the individual species 
+(@ref RM_SpeciesConcentrations2Module). To use these methods the save-species property needs to be turned on (@ref RM_SetSpeciesSaveOn).
+If the save-species property is on, RM_FindComponents will generate 
+a list of aqueous species (@ref RM_GetSpeciesCount, @ref RM_GetSpeciesName), their diffusion coefficients at 25 C (@ref RM_GetSpeciesD25),
+their charge (@ref RM_GetSpeciesZ).
 @param id            The instance id returned from @ref RM_Create.
 @retval              Number of components currently in the list, or IRM_RESULT error code (see @ref RM_DecodeError).
-@see                 @ref RM_GetComponent 
+@see                 @ref RM_GetComponent, @ref RM_SetSpeciesSaveOn, @ref RM_GetSpeciesConcentrations, @ref RM_SpeciesConcentrations2Module,
+@ref RM_GetSpeciesCount, @ref RM_GetSpeciesName, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ.
 @par C Example:
 @htmlonly
 <CODE>
@@ -614,7 +621,7 @@ int RM_GetComponentCount(int id);
 Transfer solution concentrations from each cell to the concentration array given in the argument list (c). 
 Units of concentration for c are defined by @ref RM_SetUnitsSolution. For concentration units of per liter, the 
 calculated solution volume is used to calculate the concentrations for c. Of the databases distributed with PhreeqcRM,
-only phreeqc.dat, Amm.dat, and pitzer.dat have the partial molar volume definitions needed to calculate solution volume. 
+only phreeqc.dat, Amm.dat, and pitzer.dat have the partial molar volume definitions needed to accurately calculate solution volume. 
 Mass fraction concentration units do not require the solution volume to fill the c array (but, density is needed to
 convert transport concentrations to cell solution concentrations, @ref RM_SetConcentrations).
 @param id               The instance id returned from @ref RM_Create.
@@ -662,7 +669,7 @@ Transfer solution densities from the module workers to the density array given i
 @param id                   The instance id returned from @ref RM_Create.
 @param density              Array to receive the densities. Dimension of the array is (nxyz), 
 where nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. Densities are those calculated by the reaction module. 
-Only the following databases distributed with PhreeqcRM have molar volume information needed to calculate density: 
+Only the following databases distributed with PhreeqcRM have molar volume information needed to accurately calculate density: 
 phreeqc.dat, Amm.dat, and pitzer.dat.
 @par C Example:
 @htmlonly
@@ -1383,10 +1390,11 @@ int        RM_GetSelectedOutputRowCount(int id);
 /**
 Transfer solution volumes from the module workers to the array given in the argument list (vol). 
 @param id                   The instance id returned from @ref RM_Create.
-@param density              Array to receive the solution volumes. Dimension of the array is (nxyz), 
+@param vol                  Array to receive the solution volumes. Dimension of the array is (nxyz), 
 where nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. Solution volumes are those calculated by the reaction module. 
-Only the following databases distributed with PhreeqcRM have molar volume information needed to calculate solution volume: 
+Only the following databases distributed with PhreeqcRM have molar volume information needed to accurately calculate solution volume: 
 phreeqc.dat, Amm.dat, and pitzer.dat.
+@retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
 @par C Example:
 @htmlonly
 <CODE>
@@ -1422,7 +1430,344 @@ status = RM_GetSolutionVolume(id, volume(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int        RM_GetSolutionVolume(int id, double *vol);
+int RM_GetSolutionVolume(int id, double *vol);
+/**
+Transfer concentrations of aqueous species to the array argument. This
+method is intended for use with multicomponent-diffusion transport calculations.
+The list of aqueous
+species is determined by @ref RM_FindComponents and includes all
+aqueous species that can be made from the set of components.
+Solution volumes used to calculate mol/L are calculated by the reaction module. 
+Only the following databases distributed with PhreeqcRM have molar volume information needed to accurately calculate solution volume: 
+phreeqc.dat, Amm.dat, and pitzer.dat.
+@param id               The instance id returned from @ref RM_Create.
+@param species_conc     Array to receive the aqueous species concentrations. Dimension of the array is (nxyz, nspecies), 
+where nxyz is the number of user grid cells (@ref RM_GetGridCellCount), and nspecies is the number of aqueous species (@ref RM_GetSpeciesCount). 
+Concentrations are moles per liter.
+Values for inactive cells are set to 1e30. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
+@ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1);
+ncomps = RM_FindComponents(id);
+nspecies = RM_GetSpeciesCount(id);
+nxyz = RM_GetGridCellCount(id);
+species_c = (double *) malloc((size_t) (nxyz * nspecies * sizeof(double)));
+status = RM_RunCells(id);
+status = RM_GetSpeciesConcentrations(id, species_c);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSpeciesConcentrations(id, species_conc)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(out) :: species_conc
+END FUNCTION RM_GetSpeciesConcentrations 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1)
+ncomps = RM_FindComponents(id)
+nspecies = RM_GetSpeciesCount(id)
+nxyz = RM_GetGridCellCount(id)
+allocate(species_c(nxyz, nspecies))
+status = RM_RunCells(id)
+status = RM_GetSpeciesConcentrations(id, species_c(1,1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_GetSpeciesConcentrations(int id, double *species_conc);
+/**
+The number of aqueous species used in the reaction module. This
+method is intended for use with multicomponent-diffusion transport calculations.
+The list of aqueous
+species is determined by @ref RM_FindComponents and includes all
+aqueous species that can be made from the set of components.
+@param id               The instance id returned from @ref RM_Create.
+@retval IRM_RESULT      The number of aqueous species, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
+@ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1);
+ncomps = RM_FindComponents(id);
+nspecies = RM_GetSpeciesCount(id);
+nxyz = RM_GetGridCellCount(id);
+species_c = (double *) malloc((size_t) (nxyz * nspecies * sizeof(double)));
+status = RM_RunCells(id);
+status = RM_GetSpeciesConcentrations(id, species_c);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSpeciesCount(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetSpeciesCount
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1)
+ncomps = RM_FindComponents(id)
+nspecies = RM_GetSpeciesCount(id)
+nxyz = RM_GetGridCellCount(id)
+allocate(species_c(nxyz, nspecies))
+status = RM_RunCells(id)
+status = RM_GetSpeciesConcentrations(id, species_c(1,1))
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+int RM_GetSpeciesCount(int *id);
+/**
+Transfers diffusion coefficients at 25C to the array argument. This
+method is intended for use with multicomponent-diffusion transport calculations.
+Diffusion coefficients are defined in SOLUTION_SPECIES data blocks, normally in the database file.
+Databases distributed with the reaction module that have diffusion coefficients defined are 
+phreeqc.dat, Amm.dat, and pitzer.dat.
+@param id               The instance id returned from @ref RM_Create.
+@param diffc            Array to receive the diffusion coefficients at 25 C, m^2/s. 
+Dimension of the array is (nxyz), 
+where nxyz is the number of user grid cells (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesZ,
+@ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1);
+ncomps = RM_FindComponents(id);
+nspecies = RM_GetSpeciesCount(id);
+diffc = (double *) malloc((size_t) (nspecies * sizeof(double)));
+status = RM_GetSpeciesD25(id, diffc);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSpeciesD25(id, diffc)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(out) :: diffc
+END FUNCTION RM_GetSpeciesD25 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1)
+ncomps = RM_FindComponents(id)
+nspecies = RM_GetSpeciesCount(id)
+allocate(diffc(nspecies))
+status = RM_GetSpeciesD25(id, diffc)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+int RM_GetSpeciesD25(int id, double *diffc);
+/**
+Transfers the name of the ith aqueous species to the character argument. This
+method is intended for use with multicomponent-diffusion transport calculations.
+The list of aqueous
+species is determined by @ref RM_FindComponents and includes all
+aqueous species that can be made from the set of components.
+@param id               The instance id returned from @ref RM_Create.
+@param i                Number of the species in the species list. Numbers range from 0 to less
+than @ref RM_GetSpeciesCount.
+@param name             Character array to receive the species name.
+@param length           Maximum length of string that can be stored in the character array (C only). 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, 
+@ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
+@ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+char name[100];
+...
+status = RM_SetSpeciesSaveOn(id, 1);
+ncomps = RM_FindComponents(id);
+nspecies = RM_GetSpeciesCount(id);
+for (i = 0; i < nspecies; i++)
+{
+  status = RM_GetSpeciesName(id, i, name, 100);
+  fprintf(stderr, "%s\n", name); 
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSpeciesName(id, i, name)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id, i
+  CHARACTER, INTENT(out) :: name
+END FUNCTION RM_GetSpeciesName
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+char*100 name
+...
+status = RM_SetSpeciesSaveOn(id, 1)
+ncomps = RM_FindComponents(id)
+nspecies = RM_GetSpeciesCount(id)
+do i = 0, nspecies - 1 
+  status = RM_GetSpeciesName(id, i, name)
+  write(*,*) name
+enddo
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+int RM_GetSpeciesName(int id, int i, char * name, int length);
+/**
+Returns the value of the species-save property.  
+This
+method is intended for use with multicomponent-diffusion transport calculations.
+The return value indicates whether aqueous species concentrations are being saved in the reaction
+module.
+@param id               The instance id returned from @ref RM_Create. 
+@retval IRM_RESULT      0, species are not saved; 1, species are saved; negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, 
+@ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
+@ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_SetSpeciesSaveOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+save_on = RM_GetSpeciesSaveOn(id);
+if (save_on .ne. 0) 
+{
+  fprintf(stderr, "Reaction module is saving species concentrations\n");
+}
+else
+{
+  fprintf(stderr, "Reaction module is not saving species concentrations\n");
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetSpeciesSaveOn
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+save_on = RM_GetSpeciesSaveOn(id)
+if (save_on .ne. 0) then
+  write(*,*) "Reaction module is saving species concentrations"
+else
+  write(*,*) "Reaction module is not saving species concentrations"
+end
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+int RM_GetSpeciesSaveOn(int id);
+/**
+Transfers the charge of each aqueous species to the array argument. This
+method is intended for use with multicomponent-diffusion transport calculations.
+@param id               The instance id returned from @ref RM_Create.
+@param z                Array that receives the charge for each aqueous species. 
+Dimension of the array is (nxyz), 
+where nxyz is the number of user grid cells (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, 
+@ref RM_GetSpeciesD25,
+@ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1);
+ncomps = RM_FindComponents(id);
+nspecies = RM_GetSpeciesCount(id);
+z = (double *) malloc((size_t) (nspecies * sizeof(double)));
+status = RM_GetSpeciesZ(id, z);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSpeciesZ(id, z)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(out) :: z
+END FUNCTION RM_GetSpeciesZ 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1)
+ncomps = RM_FindComponents(id)
+nspecies = RM_GetSpeciesCount(id)
+allocate(z(nspecies))
+status = RM_GetSpeciesZ(id, z)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+int RM_GetSpeciesZ(int id, double *z);
 /**
 Returns the number of threads, which is equal to the number of workers used to run in parallel with OPENMPI. 
 For the threaded version, the number of threads is set implicitly or explicitly with @ref RM_Create. For the
@@ -3262,6 +3607,66 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_SetSelectedOutputOn(int id, int selected_output);
 /**
+Sets the value of the species-save property.  
+This
+method is intended for use with multicomponent-diffusion transport calculations.
+By default, concentrations of aqueous species are not saved. Setting the species-save property to 1 allows
+aqueous species concentrations to be retrieved
+with @ref RM_GetSpeciesConcentrations, and solution compositions to be set with 
+@ref RM_SpeciesConcentrations2Module. 
+RM_SetSpeciesSaveOn must be called before any call to @ref RM_FindComponents.
+@param id               The instance id returned from @ref RM_Create. 
+@param save_on          0, indicates species concentrations are not saved; 1, indicates species concentrations are
+saved. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, 
+@ref RM_GetSpeciesD25, @ref RM_GetSpeciesSaveOn, @ref RM_GetSpeciesZ,
+@ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+save_on = RM_GetSpeciesSaveOn(id);
+if (save_on .ne. 0) 
+{
+  fprintf(stderr, "Reaction module is saving species concentrations\n");
+}
+else
+{
+  fprintf(stderr, "Reaction module is not saving species concentrations\n");
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetSpeciesSaveOn
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+save_on = RM_GetSpeciesSaveOn(id)
+if (save_on .ne. 0) then
+  write(*,*) "Reaction module is saving species concentrations"
+else
+  write(*,*) "Reaction module is not saving species concentrations"
+end
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+int RM_SetSpeciesSaveOn(int id, int save_on);
+/**
 Set the temperature for each cell for reaction calculations. 
 @param id               The instance id returned from @ref RM_Create.
 @param t                Array of temperatures, in degrees C. Size of array is (nxyz), where nxyz is the number
@@ -3771,6 +4176,67 @@ status = RM_SetUnitsSurface(id, 1)
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_SetUnitsSurface(int id, int option);
+/**
+Set solution concentrations in the reaction module based on the array of aqueous species concentrations. This
+method is intended for use with multicomponent-diffusion transport calculations. The method determines the
+total concentration of a component by summing the molarities of the individual species times the stoichiometric 
+coefficient of the element in each species.
+@param id               The instance id returned from @ref RM_Create.
+@param species_conc     Array of aqueous species concentrations. Dimension of the array is (nxyz, nspecies), 
+where nxyz is the number of user grid cells (@ref RM_GetGridCellCount), and nspecies is the number of aqueous species (@ref RM_GetSpeciesCount). 
+Concentrations are moles per liter.
+The list of aqueous
+species is determined by @ref RM_FindComponents and includes all
+aqueous species that can be made from the set of components.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
+@ref RM_GetSpeciesName, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1);
+ncomps = RM_FindComponents(id);
+nspecies = RM_GetSpeciesCount(id);
+nxyz = RM_GetGridCellCount(id);
+species_c = (double *) malloc((size_t) (nxyz * nspecies * sizeof(double)));
+...
+status = RM_SpeciesConcentrations2Module(id, species_c);
+status = RM_RunCells(id);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SpeciesConcentrations2Module(id, species_conc)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: species_conc
+END FUNCTION RM_SpeciesConcentrations2Module  
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = RM_SetSpeciesSaveOn(id, 1)
+ncomps = RM_FindComponents(id)
+nspecies = RM_GetSpeciesCount(id)
+nxyz = RM_GetGridCellCount(id)
+allocate(species_c(nxyz, nspecies))
+...
+status = RM_SpeciesConcentrations2Module(id, species_c(1,1))
+status = RM_RunCells(id)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+int RM_SpeciesConcentrations2Module(int id, double * species_conc);
 /**
 Print a warning message to the screen and the log file. 
 @param id               The instance id returned from @ref RM_Create.

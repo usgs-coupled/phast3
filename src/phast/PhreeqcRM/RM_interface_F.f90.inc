@@ -159,6 +159,40 @@
             INTEGER, INTENT(in) :: id
             DOUBLE PRECISION, INTENT(out) :: vol
         END FUNCTION RM_GetSolutionVolume 
+
+        INTEGER FUNCTION RM_GetSpeciesConcentrations(id, species_conc)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, INTENT(out) :: species_conc
+        END FUNCTION RM_GetSpeciesConcentrations 
+
+        INTEGER FUNCTION RM_GetSpeciesCount(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetSpeciesCount
+
+        INTEGER FUNCTION RM_GetSpeciesD25(id, diffc)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, INTENT(out) :: diffc
+        END FUNCTION RM_GetSpeciesD25 
+
+        INTEGER FUNCTION RM_GetSpeciesName(id, i, name)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id, i
+            CHARACTER, INTENT(out) :: name
+        END FUNCTION RM_GetSpeciesName
+
+        INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetSpeciesSaveOn
+
+        INTEGER FUNCTION RM_GetSpeciesZ(id, z)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, INTENT(out) :: z
+        END FUNCTION RM_GetSpeciesZ 
         
         INTEGER FUNCTION RM_GetThreadCount(id)
             IMPLICIT NONE
@@ -368,6 +402,12 @@
             INTEGER, INTENT(in) :: tf
         END FUNCTION RM_SetSelectedOutputOn   
 
+        INTEGER FUNCTION RM_SetSetSpeciesSaveOn(id, save_on)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, INTENT(in) :: save_on
+        END FUNCTION RM_SetSetSpeciesSaveOn
+
         INTEGER FUNCTION RM_SetTemperature(id, t)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
@@ -433,6 +473,12 @@
             INTEGER, INTENT(in) :: id
             INTEGER, INTENT(in) :: option
         END FUNCTION RM_SetUnitsSurface  
+
+        INTEGER FUNCTION RM_SpeciesConcentrations2Module(id, species_conc)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, INTENT(in) :: species_conc
+        END FUNCTION RM_SpeciesConcentrations2Module  
         
         INTEGER FUNCTION RM_WarningMessage(id, str) 
             IMPLICIT NONE
