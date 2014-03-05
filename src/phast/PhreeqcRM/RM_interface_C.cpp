@@ -478,6 +478,94 @@ RM_GetSolutionVolume(int id, double * v)
 	}
 	return IRM_BADINSTANCE;
 }
+
+/* ---------------------------------------------------------------------- */
+int
+RM_GetSpeciesConcentrations(int id, double * species_conc)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		IRM_RESULT return_value = IRM_OK;
+		std::vector<double> species_conc_vector;
+		return_value = Reaction_module_ptr->GetSpeciesConcentrations(species_conc_vector);
+		if (return_value == IRM_OK)
+		{
+			memcpy(species_conc, species_conc_vector.data(), species_conc_vector.size()*sizeof(double));
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int
+RM_GetSpeciesCount(int id)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetSpeciesCount();
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int
+RM_GetSpeciesD25(int id, double * diffc)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		const std::vector<double> & diffc_vector = Reaction_module_ptr->GetSpeciesD25();
+		memcpy(diffc, diffc_vector.data(), diffc_vector.size()*sizeof(double));
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetSpeciesName(int id, int i, char *name, int length)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		const std::vector<std::string> & names = Reaction_module_ptr->GetSpeciesNames();
+		if (i >= 0 && i < (int) names.size())
+		{
+			strncpy(name, names[i].c_str(), length);
+			return IRM_OK;
+		}
+		return IRM_INVALIDARG;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetSpeciesSaveOn(int id)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return (Reaction_module_ptr->GetSpeciesSaveOn() ? 1 : 0);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int
+RM_GetSpeciesZ(int id, double * z)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		const std::vector<double> & z_vector = Reaction_module_ptr->GetSpeciesZ();
+		memcpy(z, z_vector.data(), z_vector.size()*sizeof(double));
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 int 
 RM_GetThreadCount(int id)
@@ -994,6 +1082,19 @@ RM_SetSelectedOutputOn(int id, int selected_output_on)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
+int
+RM_SetSpeciesSaveOn(int id, int save_on)
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->SetSelectedOutputOn(save_on != 0);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
 int RM_SetTemperature(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1132,6 +1233,26 @@ RM_SetUnitsSurface (int id, int u)
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetUnitsSurface(u);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int
+RM_SpeciesConcentrations2Module(int id, double * species_conc)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		if (species_conc)
+		{
+			IRM_RESULT return_value = IRM_OK;
+			std::vector<double> species_conc_vector;
+			species_conc_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetSpeciesCount() * sizeof(double));
+			memcpy(species_conc_vector.data(), species_conc, species_conc_vector.size()*sizeof(double));
+			return_value = Reaction_module_ptr->SpeciesConcentrations2Module(species_conc_vector);
+		}
+		return IRM_INVALIDARG;
 	}
 	return IRM_BADINSTANCE;
 }

@@ -38,6 +38,12 @@
 #define RM_GetSelectedOutputHeading        FC_FUNC_ (rm_getselectedoutputheading,      RM_GETSELECTEDOUTPUTHEADING)
 #define RM_GetSelectedOutputRowCount       FC_FUNC_ (rm_getselectedoutputrowcount,     RM_GETSELECTEDOUTPUTROWCOUNT)
 #define RM_GetSolutionVolume               FC_FUNC_ (rm_getsolutionvolume,             RM_GETSOLUTIONVOLUME)
+#define RM_GetSpeciesConcentrations        FC_FUNC_ (rm_getspeciesconcentrations,      RM_GETSPECIESCONCENTRATIONS)
+#define RM_GetSpeciesCount                 FC_FUNC_ (rm_getspeciescount,               RM_GETSPECIESCOUNT)
+#define RM_GetSpeciesD25                   FC_FUNC_ (rm_getspeciesd25,                 RM_GETSPECIESD25)
+#define RM_GetSpeciesName                  FC_FUNC_ (rm_getspeciesname,                RM_GETSPECIESNAME)
+#define RM_GetSpeciesSaveOn                FC_FUNC_ (rm_getspeciessaveon,              RM_GETSPECIESSAVEON)
+#define RM_GetSpeciesZ                     FC_FUNC_ (rm_getspeciesz,                   RM_GETSPECIESZ)
 #define RM_GetThreadCount                  FC_FUNC_ (rm_getthreadcount,                RM_GETTHREADCOUNT)
 #define RM_GetTime                         FC_FUNC_ (rm_gettime,                       RM_GETTIME)
 #define RM_GetTimeConversion               FC_FUNC_ (rm_gettimeconversion,             RM_GETTIMECONVERSION)
@@ -72,6 +78,7 @@
 #define RM_SetRebalanceByCell              FC_FUNC_ (rm_setrebalancebycell,            RM_SETREBALANCEBYCELL)
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
+#define RM_SetSpeciesSaveOn                FC_FUNC_ (rm_setspeciessaveon,              RM_SETSPECIESSAVEON)
 #define RM_SetTemperature                  FC_FUNC_ (rm_settemperature,                RM_SETTEMPERATURE)
 #define RM_SetTime                         FC_FUNC_ (rm_settime,                       RM_SETTIME)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
@@ -84,8 +91,9 @@
 #define RM_SetUnitsSSassemblage            FC_FUNC_ (rm_setunitsssassemblage,          RM_SETUNITSSSASSEMBLAGE)
 #define RM_SetUnitsSSassemblage            FC_FUNC_ (rm_setunitsssassemblage,          RM_SETUNITSSSASSEMBLAGE)
 #define RM_SetUnitsSurface                 FC_FUNC_ (rm_setunitssurface,               RM_SETUNITSSURFACE)
-#define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
+#define RM_SpeciesConcentrations2Module    FC_FUNC_ (rm_speciesconcentrations2module,  RM_SPECIESCONCENTRATIONS2MODULE)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
+#define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #endif
 
 #if defined(__cplusplus)
@@ -120,6 +128,12 @@ int        RM_GetSelectedOutputCount(int *id);
 IRM_RESULT RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, size_t length);
 int        RM_GetSelectedOutputRowCount(int *id);
 IRM_RESULT RM_GetSolutionVolume(int *id, double *solution_volume);
+IRM_RESULT RM_GetSpeciesConcentrations(int *id, double *species_conc);
+int        RM_GetSpeciesCount(int *id);
+IRM_RESULT RM_GetSpeciesD25(int *id, double *diffc);
+IRM_RESULT RM_GetSpeciesName(int *id, int *i, char * name, size_t length);
+int        RM_GetSpeciesSaveOn(int *id);
+IRM_RESULT RM_GetSpeciesZ(int *id, double *z);
 int        RM_GetThreadCount(int *id);
 double     RM_GetTime(int *id);
 double     RM_GetTimeConversion(int *id);
@@ -166,6 +180,7 @@ IRM_RESULT RM_SetRebalanceFraction(int *id, double *f);
 IRM_RESULT RM_SetRebalanceByCell(int *id, int *method);
 IRM_RESULT RM_SetSaturation(int *id, double *t);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output);
+IRM_RESULT RM_SetSpeciesSaveOn(int *id, int *save_on);
 IRM_RESULT RM_SetTemperature(int *id, double *t);
 IRM_RESULT RM_SetTime(int *id, double *t);
 IRM_RESULT RM_SetTimeConversion(int *id, double *t);
@@ -177,6 +192,7 @@ IRM_RESULT RM_SetUnitsPPassemblage(int *id, int *i);
 IRM_RESULT RM_SetUnitsSolution(int *id, int *i);
 IRM_RESULT RM_SetUnitsSSassemblage(int *id, int *i);
 IRM_RESULT RM_SetUnitsSurface(int *id, int *i);
+IRM_RESULT RM_SpeciesConcentrations2Module(int *id, double * species_conc);
 IRM_RESULT RM_WarningMessage(int *id, const char *warn_str, size_t l = 0);
 void       RM_write_bc_raw(int *id, 
                 int *solution_list, 
