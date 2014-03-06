@@ -194,7 +194,7 @@ public:
 	IRM_RESULT                                GetSelectedOutput(double *so = NULL);
 	int                                       GetSelectedOutputColumnCount(void);
 	int                                       GetSelectedOutputCount(void);
-	IRM_RESULT                                GetSelectedOutputHeading(int *icol, std::string &heading);
+	IRM_RESULT                                GetSelectedOutputHeading(int icol, std::string &heading);
 	const bool                                GetSelectedOutputOn(void) const {return this->selected_output_on;}
 	int                                       GetSelectedOutputRowCount(void);	
 	std::vector<double> &                     GetSolutionVolume(void); 

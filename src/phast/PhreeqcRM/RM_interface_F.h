@@ -51,6 +51,7 @@
 #define RM_InitialPhreeqc2Concentrations   FC_FUNC_ (rm_initialphreeqc2concentrations, RM_INITIALPHREEQC2CONCENTRATIONS)
 #define RM_InitialPhreeqc2Module           FC_FUNC_ (rm_initialphreeqc2module,         RM_INITIALPHREEQC2MODULE)
 #define RM_InitialPhreeqcCell2Module       FC_FUNC_ (rm_initialphreeqccell2module,     RM_INITIALPHREEQCCELL2MODULE)
+#define RM_InitialPhreeqc2SpeciesConcentrations   FC_FUNC_ (rm_initialphreeqc2speciesconcentrations, RM_INITIALPHREEQC2SPECIESCONCENTRATIONS)
 #define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
 #define RM_MpiWorker                       FC_FUNC_ (rm_mpiworker,                     RM_MPIWORKER)
@@ -153,6 +154,13 @@ IRM_RESULT RM_InitialPhreeqcCell2Module(int *id,
                 int *n,		                            // InitialPhreeqc cell number
                 int *module_numbers,		            // Module cell numbers
                 int *dim_module_numbers);			    // Number of module cell numbers
+IRM_RESULT RM_InitialPhreeqc2SpeciesConcentrations(
+                int *id,
+                double *species_c,
+                int *n_boundary,
+                int *boundary_solution1,  
+                int *boundary_solution2 = NULL, 
+                double *fraction1 = NULL);
 IRM_RESULT RM_LoadDatabase(int *id, const char *db_name, size_t l = 0);
 IRM_RESULT RM_LogMessage(int * id, const char *str, size_t l = 0);
 IRM_RESULT RM_MpiWorker(int * id);

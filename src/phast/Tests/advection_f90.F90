@@ -269,7 +269,7 @@
         ! Print results at last time step
         if (isteps == nsteps) then
             do isel = 1, RM_GetSelectedOutputCount(id)
-                n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1)
+                n_user = RM_GetNthSelectedOutputUserNumber(id, isel)
                 status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
 				write(*,*) "Selected output sequence number: ", isel
 				write(*,*) "Selected output user number:     ", n_user
@@ -287,7 +287,7 @@
                     enddo
                     write(*,*) "     Selected output: "
                     do j = 1, col
-                        status = RM_GetSelectedOutputHeading(id, j-1, heading)    
+                        status = RM_GetSelectedOutputHeading(id, j, heading)    
                         write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading),": ", selected_out(i,j)
                     enddo
                 enddo

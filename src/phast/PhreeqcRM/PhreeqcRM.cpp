@@ -3033,7 +3033,7 @@ PhreeqcRM::GetSelectedOutputCount(void)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::GetSelectedOutputHeading(int *icol, std::string &heading)
+PhreeqcRM::GetSelectedOutputHeading(int icol, std::string &heading)
 /* ---------------------------------------------------------------------- */
 {
 	try
@@ -3046,7 +3046,7 @@ PhreeqcRM::GetSelectedOutputHeading(int *icol, std::string &heading)
 			{
 				VAR pVar;
 				VarInit(&pVar);
-				if (icol != NULL && it->second.Get(0, *icol, &pVar) == VR_OK)
+				if (it->second.Get(0, icol, &pVar) == VR_OK)
 				{
 					if (pVar.type == TT_STRING)
 					{
@@ -3746,7 +3746,7 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 	this->Get_phreeqc_bin().Clear();
 	try
 	{
-		if (boundary_solution1.size() > 0)
+		if (boundary_solution1.size() > 0 && this->species_names.size() > 0)
 		{
 			destination_c.resize(this->species_names.size()*boundary_solution1.size(), 0.0);
 			int	n_old1, n_old2;
@@ -3846,13 +3846,13 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 			}
 			return IRM_OK;
 		}
-		this->ErrorHandler(IRM_INVALIDARG, "NULL pointer or dimension of zero in arguments.");
+		this->ErrorHandler(IRM_INVALIDARG, "Size of boundary1 or species is zero.");
 	}
 	catch (...)
 	{
 		return_value = IRM_FAIL;
 	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Concentrations");
+	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2SpeciesConcentrations");
 }
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */

@@ -7,6 +7,7 @@
 #if defined(FC_FUNC_)
 // Calls to Fortran
 #define advection_f90         FC_FUNC_ (advection_f90,       ADVECTION_F90)
+#define species_f90           FC_FUNC_ (species_f90,         SPECIES_F90)
 #endif
 
 #if defined(__cplusplus)
@@ -15,6 +16,8 @@ extern "C" {
 	
 extern void advection_f90(void);
 extern void advection_c(void);
+extern void species_f90(void);
+extern void species_c(void);
 
 #if defined(__cplusplus)
 }
@@ -58,7 +61,11 @@ int main(int argc, char* argv[])
 	advection_cpp();
 	advection_f90();
 	advection_c();
+
 	species_cpp();
+	species_f90();
+	species_c();
+
 
 #if defined(USE_MPI)
 	MPI_Finalize();

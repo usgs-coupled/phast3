@@ -364,6 +364,7 @@
     </ClCompile>
     <ClCompile Include="advection_cpp.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="species_c.c" />
     <ClCompile Include="species_cpp.cpp" />
   </ItemGroup>
   <ItemGroup>

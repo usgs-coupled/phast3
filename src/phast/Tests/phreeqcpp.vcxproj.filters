@@ -35,6 +35,9 @@
     <ClCompile Include="species_cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="species_c.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h">
