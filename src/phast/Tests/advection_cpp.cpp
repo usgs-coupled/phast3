@@ -259,7 +259,7 @@ int advection_cpp()
 						std::cerr << "     Selected output: " << "\n";
 						for (int j = 0; j < col; j++)
 						{
-							status = phreeqc_rm.GetSelectedOutputHeading(&j, headings[j]);
+							status = phreeqc_rm.GetSelectedOutputHeading(j, headings[j]);
 							std::cerr << "          " << j << " " << headings[j] << ": " << so[j*nxyz + i] << "\n";
 						}
 					}

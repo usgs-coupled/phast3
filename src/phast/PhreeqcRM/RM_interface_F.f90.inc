@@ -237,7 +237,16 @@
             INTEGER, INTENT(in) :: n_user
             INTEGER, INTENT(in) :: module_cell
             INTEGER, INTENT(in) :: dim_module_cell
-        END FUNCTION RM_InitialPhreeqcCell2Module         
+        END FUNCTION RM_InitialPhreeqcCell2Module   
+
+        INTEGER FUNCTION RM_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1)   
+                IMPLICIT NONE
+                INTEGER, INTENT(in) :: id
+                DOUBLE PRECISION, INTENT(OUT) :: species_c
+                INTEGER, INTENT(IN) :: n_boundary, bc_sol1
+                INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
+                DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
+        END FUNCTION RM_InitialPhreeqc2SpeciesConcentrations          
         
         INTEGER FUNCTION RM_LoadDatabase(id, db) 
             IMPLICIT NONE
@@ -402,11 +411,11 @@
             INTEGER, INTENT(in) :: tf
         END FUNCTION RM_SetSelectedOutputOn   
 
-        INTEGER FUNCTION RM_SetSetSpeciesSaveOn(id, save_on)
+        INTEGER FUNCTION RM_SetSpeciesSaveOn(id, save_on)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             INTEGER, INTENT(in) :: save_on
-        END FUNCTION RM_SetSetSpeciesSaveOn
+        END FUNCTION RM_SetSpeciesSaveOn
 
         INTEGER FUNCTION RM_SetTemperature(id, t)
             IMPLICIT NONE

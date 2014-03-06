@@ -427,7 +427,7 @@ int RM_GetSelectedOutputHeading(int id, int icol, char *heading, int length)
 	if (Reaction_module_ptr)
 	{
 		std::string head;
-		IRM_RESULT rtn = Reaction_module_ptr->GetSelectedOutputHeading(&icol, head);
+		IRM_RESULT rtn = Reaction_module_ptr->GetSelectedOutputHeading(icol, head);
 		if (rtn >= 0)
 		{
 			strncpy(heading, head.c_str(), length);
@@ -710,6 +710,64 @@ RM_InitialPhreeqcCell2Module(int id,
 		return Reaction_module_ptr->InitialPhreeqcCell2Module(
 			n,
 			module_numbers_vector);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int
+RM_InitialPhreeqc2SpeciesConcentrations(
+			int id,
+			double *species_c,
+			int n_boundary,
+			int *boundary_solution1,  
+			int *boundary_solution2, 
+			double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   aqueous species concentrations
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - list of mixing fractions of solution 1
+ *
+ *   Output: species_c - aqueous species concentrations for boundary conditions
+ *                     - dimensions must be n_boundary x n_species
+ *
+ */
+	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		if (species_c && boundary_solution1)
+		{
+			std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
+			std::vector < double > destination_c, fraction1_vector;
+			boundary_solution1_vector.resize(n_boundary);
+			memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (n_boundary * sizeof(int)));
+			if (boundary_solution2 != NULL)
+			{
+				boundary_solution2_vector.resize(n_boundary);
+				memcpy(boundary_solution2_vector.data(), boundary_solution2, (size_t) (n_boundary * sizeof(int)));
+			}
+			if (fraction1 != NULL)
+			{
+				fraction1_vector.resize(n_boundary);
+				memcpy(fraction1_vector.data(), fraction1, (size_t) (n_boundary * sizeof(double)));
+			}
+			IRM_RESULT return_value = Reaction_module_ptr->InitialPhreeqc2SpeciesConcentrations(
+				destination_c,
+				boundary_solution1_vector,
+				boundary_solution2_vector,
+				fraction1_vector);		
+			if (return_value == 0)
+			{
+				memcpy(species_c, destination_c.data(), destination_c.size() * sizeof(double));
+			}       
+			return return_value;
+		}
+		return IRM_INVALIDARG;
 	}
 	return IRM_BADINSTANCE;
 }
@@ -1090,7 +1148,7 @@ RM_SetSpeciesSaveOn(int id, int save_on)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetSelectedOutputOn(save_on != 0);
+		return Reaction_module_ptr->SetSpeciesSaveOn(save_on != 0);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -1248,7 +1306,7 @@ RM_SpeciesConcentrations2Module(int id, double * species_conc)
 		{
 			IRM_RESULT return_value = IRM_OK;
 			std::vector<double> species_conc_vector;
-			species_conc_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetSpeciesCount() * sizeof(double));
+			species_conc_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetSpeciesCount());
 			memcpy(species_conc_vector.data(), species_conc, species_conc_vector.size()*sizeof(double));
 			return_value = Reaction_module_ptr->SpeciesConcentrations2Module(species_conc_vector);
 		}
