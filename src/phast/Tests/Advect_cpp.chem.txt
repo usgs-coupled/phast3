@@ -199,7 +199,7 @@ Reading input data for simulation 4.
 ------------------------------------
 
 -------------------------------
-End of Run after 1.944 Seconds.
+End of Run after 2.024 Seconds.
 -------------------------------
 
 Number of threads:                                3
@@ -328,9 +328,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 2.895 Seconds.
--------------------------------
+------------------------------
+End of Run after 2.87 Seconds.
+------------------------------
 
 Time:           10
 Chemistry cell: 1
@@ -442,9 +442,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
------------------------------
-End of Run after 2.9 Seconds.
------------------------------
+-------------------------------
+End of Run after 2.875 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 2
@@ -556,9 +556,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 2.905 Seconds.
--------------------------------
+------------------------------
+End of Run after 2.88 Seconds.
+------------------------------
 
 Time:           10
 Chemistry cell: 3
@@ -670,9 +670,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 2.91 Seconds.
-------------------------------
+-------------------------------
+End of Run after 2.885 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 4
@@ -784,9 +784,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 2.915 Seconds.
--------------------------------
+------------------------------
+End of Run after 2.89 Seconds.
+------------------------------
 
 Time:           10
 Chemistry cell: 5
@@ -898,9 +898,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 2.92 Seconds.
-------------------------------
+-------------------------------
+End of Run after 2.895 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 6
@@ -1013,7 +1013,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.929 Seconds.
+End of Run after 2.903 Seconds.
 -------------------------------
 
 Time:           10
@@ -1127,7 +1127,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.934 Seconds.
+End of Run after 2.909 Seconds.
 -------------------------------
 
 Time:           10
@@ -1241,7 +1241,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.939 Seconds.
+End of Run after 2.915 Seconds.
 -------------------------------
 
 Time:           10
@@ -1350,7 +1350,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.945 Seconds.
+End of Run after 2.921 Seconds.
 -------------------------------
 
 Time:           10
@@ -1467,7 +1467,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.951 Seconds.
+End of Run after 2.927 Seconds.
 -------------------------------
 
 Time:           10
@@ -1584,7 +1584,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.956 Seconds.
+End of Run after 2.932 Seconds.
 -------------------------------
 
 Time:           10
@@ -1701,7 +1701,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.965 Seconds.
+End of Run after 2.941 Seconds.
 -------------------------------
 
 Time:           10
@@ -1817,9 +1817,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 2.97 Seconds.
-------------------------------
+-------------------------------
+End of Run after 2.946 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 14
@@ -1935,7 +1935,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.975 Seconds.
+End of Run after 2.952 Seconds.
 -------------------------------
 
 Time:           10
@@ -2051,9 +2051,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 2.98 Seconds.
-------------------------------
+-------------------------------
+End of Run after 2.957 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 16
@@ -2169,7 +2169,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.985 Seconds.
+End of Run after 2.962 Seconds.
 -------------------------------
 
 Time:           10
@@ -2285,9 +2285,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 2.99 Seconds.
-------------------------------
+-------------------------------
+End of Run after 2.967 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 18
@@ -2403,7 +2403,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.995 Seconds.
+End of Run after 2.972 Seconds.
 -------------------------------
 
 Time:           10
@@ -2519,7 +2519,7 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
----------------------------
-End of Run after 3 Seconds.
----------------------------
+-------------------------------
+End of Run after 2.977 Seconds.
+-------------------------------
 

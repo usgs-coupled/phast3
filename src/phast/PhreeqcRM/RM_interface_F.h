@@ -63,6 +63,7 @@
 #define RM_RunString                       FC_FUNC_ (rm_runstring,                     RM_RUNSTRING)
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
 #define RM_SetCellVolume				   FC_FUNC_ (rm_setcellvolume,                 RM_SETCELLVOLUME)
+#define RM_SetComponentH2O				   FC_FUNC_ (rm_setcomponenth2o,               RM_SETCOMPONENTH2O)
 #define RM_SetConcentrations			   FC_FUNC_ (rm_setconcentrations,             RM_SETCONCENTRATIONS)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
 #define RM_SetDensity                      FC_FUNC_ (rm_setdensity,                    RM_SETDENSITY)
@@ -172,6 +173,7 @@ IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility
 IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string, size_t l = 0);
 IRM_RESULT RM_ScreenMessage(int *id, const char *str, size_t l = 0);
 IRM_RESULT RM_SetCellVolume(int *id, double *t);
+IRM_RESULT RM_SetComponentH2O(int *id, int *tf);
 IRM_RESULT RM_SetConcentrations(int *id, double *t);
 IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 IRM_RESULT RM_SetDensity(int *id, double *t);

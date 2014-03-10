@@ -929,7 +929,18 @@ RM_SetCellVolume(int id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-
+/* ---------------------------------------------------------------------- */
+int 
+RM_SetComponentH2O(int id, int tf)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->SetComponentH2O(tf != 0);
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 int 
 RM_SetConcentrations(int id, double *t)

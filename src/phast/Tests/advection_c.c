@@ -58,6 +58,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		nthreads = 2;
 		id = RM_Create(nxyz, nthreads);
 		status = RM_SetErrorHandlerMode(id, 2);
+		status = RM_SetComponentH2O(id, 0);
 		status = RM_SetRebalanceFraction(id, 0.5);
 		status = RM_SetRebalanceByCell(id, 1);
 		status = RM_SetFilePrefix(id, "Advect_c");

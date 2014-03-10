@@ -119,7 +119,7 @@ PhreeqcRM::GetInstance(int id)
 //
 */
 
-PhreeqcRM::PhreeqcRM(int nxyz_arg, int data_for_parallel_processing, bool water_as_component, PHRQ_io *io)
+PhreeqcRM::PhreeqcRM(int nxyz_arg, int data_for_parallel_processing, PHRQ_io *io)
 	//
 	// constructor
 	//
@@ -197,7 +197,7 @@ if( numCPU < 1 )
 	  //		}
 		this->nxyz = nxyz_arg;
 	}
-	this->component_h2o = water_as_component;
+	this->component_h2o = false;
 #ifdef USE_MPI
 	MPI_Bcast(&this->nxyz, 1, MPI_INT, 0, phreeqcrm_comm);
 	MPI_Bcast(&this->component_h2o, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
@@ -4328,6 +4328,13 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETCELLVOLUME" << std::endl;
 				this->SetCellVolume();
 				break;
+			case METHOD_SETCOMPONENTH2O:
+				if (debug_worker) std::cerr << "METHOD_SETCOMPONENTH2O" << std::endl;
+				{
+					bool dummy = false;
+					this->SetComponentH2O(dummy);
+				}
+				break;
 			case METHOD_SETCONCENTRATIONS:
 				if (debug_worker) std::cerr << "METHOD_SETCONCENTRATIONS" << std::endl;
 				return_value = this->SetConcentrations();
@@ -6677,6 +6684,28 @@ PhreeqcRM::SetCellVolume(double *t)
 	MPI_Bcast(this->cell_volume.data(), this->nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetCellVolume");
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetComponentH2O(bool tf)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETCOMPONENTH2O;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+#endif
+	IRM_RESULT return_value = IRM_OK;
+	if (mpi_myself == 0)
+	{
+		this->component_h2o  = tf;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->component_h2o,  1, MPI_LOGICAL, 0, phreeqcrm_comm);
+#endif
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetComponentH2O");
 }
 
 /* ---------------------------------------------------------------------- */
