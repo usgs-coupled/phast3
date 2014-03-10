@@ -93,13 +93,13 @@ public:
 	IRM_RESULT                                CloseFiles(void);
 	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c_in, 
 		                                           std::vector<double> t_in, std::vector<double> p_in);
-	IRM_RESULT                                CreateMapping(int *grid2chem = NULL);
+	IRM_RESULT                                CreateMapping(int *grid2chem);
 	void                                      DecodeError(int r);
-	IRM_RESULT                                DumpModule(bool dump_on = false, bool append = false);
+	IRM_RESULT                                DumpModule(bool dump_on, bool append = false);
 	void                                      ErrorHandler(int result, const std::string &e_string);
 	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
 	int                                       FindComponents();
-	IRM_RESULT                                GetConcentrations(double * c = NULL);
+	IRM_RESULT                                GetConcentrations(double * c);
 	IRM_RESULT								  InitialPhreeqc2Concentrations(
 													std::vector < double > & destination_c, 
 													std::vector < int >    & boundary_solution1,
@@ -109,9 +109,11 @@ public:
 													std::vector < double > & destination_c, 
 													std::vector < int >    & boundary_solution1);
 	IRM_RESULT                                InitialPhreeqc2Module(
-													int *initial_conditions1 = NULL,
-													int *initial_conditions2 = NULL,	
-													double *fraction1 = NULL);
+													int *initial_conditions1);
+	IRM_RESULT                                InitialPhreeqc2Module(
+													int *initial_conditions1,
+													int *initial_conditions2,	
+													double *fraction1);
 	IRM_RESULT								  InitialPhreeqc2SpeciesConcentrations(
 													std::vector < double > & destination_c, 
 													std::vector < int >    & boundary_solution1,
@@ -121,7 +123,7 @@ public:
 													std::vector < double > & destination_c, 
 													std::vector < int >    & boundary_solution1);
 	IRM_RESULT                                InitialPhreeqcCell2Module(int i, const std::vector<int> &cell_numbers);
-	IRM_RESULT                                LoadDatabase(const char * database = NULL);
+	IRM_RESULT                                LoadDatabase(const char * database);
 	void                                      LogMessage(const std::string &str);
 	int                                       MpiAbort();
 	IRM_RESULT                                MpiWorker();
@@ -129,35 +131,16 @@ public:
 	IRM_RESULT                                OpenFiles(void);
 	void                                      OutputMessage(const std::string &str);
 	IRM_RESULT                                RunCells(void);
-	IRM_RESULT                                RunFile(bool workers = false, bool initial_phreeqc = false, bool utility = false,  const char *chemistry_name = NULL);
-	IRM_RESULT                                RunString(bool workers = false, bool initial_phreeqc = false, bool utility = false, const char *str = NULL);
+	IRM_RESULT                                RunFile(bool workers, bool initial_phreeqc, bool utility,  const char *chemistry_name);
+	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const char *str);
 	void                                      ScreenMessage(const std::string &str);
+	IRM_RESULT								  SpeciesConcentrations2Module(std::vector<double> & species_conc); 
 	void                                      WarningMessage(const std::string &str);
-
-	// Utilities
-	static std::string                        Char2TrimString(const char * str, size_t l = 0);
-	static bool                               FileExists(const std::string &name);
-	static void                               FileRename(const std::string &temp_name, const std::string &name, 
-		                                           const std::string &backup_name);
-	static IRM_RESULT                         Int2IrmResult(int r, bool positive_ok);
-	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
-
 
 	// TODO ///////////////////////////
 	void                                      Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                                   int * solution_number, 
                                                   const std::string &prefix);
-
-	IRM_RESULT                                GetSpeciesConcentrations(std::vector<double> & species_conc);
-	int                                       GetSpeciesCount(void) {return (int) this->species_names.size();}
-	const std::vector<double> &               GetSpeciesD25(void) {return this->species_d_25;}
-	const std::vector<double> &               GetSpeciesZ(void) {return this->species_z;}
-	const std::vector<std::string> &          GetSpeciesNames(void) {return this->species_names;}
-	const std::vector<cxxNameDouble> &        GetSpeciesStoichiometry(void) {return this->species_stoichiometry;}
-	IRM_RESULT								  SpeciesConcentrations2Module(std::vector<double> & species_conc);
-	IRM_RESULT                                SetSpeciesSaveOn(bool tf); 
-	bool                                      GetSpeciesSaveOn(void) {return this->species_save_on;}
-
 	// Getters 
 	const std::vector < std::vector <int> > & GetBackwardMapping(void) {return this->backward_mapping;}
 	std::vector<double> &                     GetCellVolume(void) {return this->cell_volume;}
@@ -192,13 +175,20 @@ public:
 	bool                                      GetRebalanceMethod(void) const {return this->rebalance_by_cell;}
 	double                                    GetRebalanceFraction(void) const {return this->rebalance_fraction;}
 	std::vector<double> &                     GetSaturation(void) {return this->saturation;}
-	IRM_RESULT                                GetSelectedOutput(double *so = NULL);
+	IRM_RESULT                                GetSelectedOutput(double *so);
 	int                                       GetSelectedOutputColumnCount(void);
 	int                                       GetSelectedOutputCount(void);
 	IRM_RESULT                                GetSelectedOutputHeading(int icol, std::string &heading);
 	const bool                                GetSelectedOutputOn(void) const {return this->selected_output_on;}
 	int                                       GetSelectedOutputRowCount(void);	
 	std::vector<double> &                     GetSolutionVolume(void); 
+	IRM_RESULT                                GetSpeciesConcentrations(std::vector<double> & species_conc);
+	int                                       GetSpeciesCount(void) {return (int) this->species_names.size();}
+	const std::vector<double> &               GetSpeciesD25(void) {return this->species_d_25;}
+	bool                                      GetSpeciesSaveOn(void) {return this->species_save_on;}
+	const std::vector<double> &               GetSpeciesZ(void) {return this->species_z;}
+	const std::vector<std::string> &          GetSpeciesNames(void) {return this->species_names;}
+	const std::vector<cxxNameDouble> &        GetSpeciesStoichiometry(void) {return this->species_stoichiometry;}
 	const std::vector < int> &                GetStartCell(void) const {return this->start_cell;} 
 	std::vector<double> &                     GetTemperature(void) {return this->tempc;}
 	int                                       GetThreadCount() {return this->nthreads;}
@@ -208,40 +198,48 @@ public:
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
 
 	// Setters 
-	IRM_RESULT                                SetCellVolume(double * t = NULL);
+	IRM_RESULT                                SetCellVolume(double * t);
 	IRM_RESULT                                SetComponentH2O(bool tf);
-	IRM_RESULT                                SetConcentrations(double * t = NULL); 
-	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i = -1);
-	IRM_RESULT                                SetDensity(double * t = NULL);
-	IRM_RESULT                                SetDumpFileName(const char * db = NULL); 
-	IRM_RESULT                                SetErrorHandlerMode(int i = 0);
-	IRM_RESULT                                SetFilePrefix(const char * prefix = NULL); 
+	IRM_RESULT                                SetConcentrations(double * t); 
+	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i);
+	IRM_RESULT                                SetDensity(double * t);
+	IRM_RESULT                                SetDumpFileName(const char * db); 
+	IRM_RESULT                                SetErrorHandlerMode(int i);
+	IRM_RESULT                                SetFilePrefix(const char * prefix); 
 	IRM_RESULT								  SetMpiWorker(int (*fcn)(int *method, void *cookie));
 	IRM_RESULT								  SetMpiWorkerCallbackC(int (*fcn)(int *method, void * cookie));
 	IRM_RESULT								  SetMpiWorkerCallbackCookie(void * cookie);
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
 	//IRM_RESULT                                SetPartitionUZSolids(int t = -1);
-	IRM_RESULT                                SetPoreVolume(double * t = NULL); 
-	IRM_RESULT                                SetPrintChemistryMask(int * t = NULL);
-	IRM_RESULT                                SetPrintChemistryOn(bool worker = false, bool ip = false, bool utility = false);
-	IRM_RESULT                                SetPressure(double * t = NULL);  
-	IRM_RESULT                                SetRebalanceFraction(double t = 0.0); 
-	IRM_RESULT                                SetRebalanceByCell(bool t = false); 
-	IRM_RESULT                                SetSaturation(double * t = NULL); 
-	IRM_RESULT                                SetSelectedOutputOn(bool t = false);
-	IRM_RESULT                                SetTemperature(double * t = NULL);
-	IRM_RESULT                                SetTime(double t = 0.0);
-	IRM_RESULT                                SetTimeConversion(double t = 1.0);
-	IRM_RESULT                                SetTimeStep(double t = 1.0);
-	IRM_RESULT                                SetUnitsExchange(int i = 1);
-	IRM_RESULT                                SetUnitsGasPhase(int i = 1);
-	IRM_RESULT                                SetUnitsKinetics(int i = 1);
-	IRM_RESULT                                SetUnitsPPassemblage(int i = 1);
-	IRM_RESULT                                SetUnitsSolution(int i = 1);
-	IRM_RESULT                                SetUnitsSSassemblage(int i = 1);
-	IRM_RESULT                                SetUnitsSurface(int i = 1);
+	IRM_RESULT                                SetPoreVolume(double * t); 
+	IRM_RESULT                                SetPrintChemistryMask(int * t);
+	IRM_RESULT                                SetPrintChemistryOn(bool worker, bool ip, bool utility);
+	IRM_RESULT                                SetPressure(double * t);  
+	IRM_RESULT                                SetRebalanceFraction(double t); 
+	IRM_RESULT                                SetRebalanceByCell(bool t); 
+	IRM_RESULT                                SetSaturation(double * t); 
+	IRM_RESULT                                SetSelectedOutputOn(bool t);
+	IRM_RESULT                                SetSpeciesSaveOn(bool tf);
+	IRM_RESULT                                SetTemperature(double * t);
+	IRM_RESULT                                SetTime(double t);
+	IRM_RESULT                                SetTimeConversion(double t);
+	IRM_RESULT                                SetTimeStep(double t);
+	IRM_RESULT                                SetUnitsExchange(int i);
+	IRM_RESULT                                SetUnitsGasPhase(int i);
+	IRM_RESULT                                SetUnitsKinetics(int i);
+	IRM_RESULT                                SetUnitsPPassemblage(int i);
+	IRM_RESULT                                SetUnitsSolution(int i);
+	IRM_RESULT                                SetUnitsSSassemblage(int i);
+	IRM_RESULT                                SetUnitsSurface(int i);
+
+	// Utilities
+	static std::string                        Char2TrimString(const char * str, size_t l = 0);
+	static bool                               FileExists(const std::string &name);
+	static void                               FileRename(const std::string &temp_name, const std::string &name, 
+		                                           const std::string &backup_name);
+	static IRM_RESULT                         Int2IrmResult(int r, bool positive_ok);
+	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
 protected:
-	void                                      BeginTimeStep(void);
 	IRM_RESULT                                CellInitialize(
 		                                          int i, 
 		                                          int n_user_new, 

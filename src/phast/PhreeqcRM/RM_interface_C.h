@@ -433,7 +433,9 @@ int RM_ErrorMessage(int id, const char *errstr);
 /**
 Returns the number of items in the list of all elements in the Initial Phreeqc instance. Elements are those that have been defined in a solution or any other reactant (EQUILIBRIUM_PHASE, KINETICS, and others). 
 The method can be called multiple times and the list that is created is cummulative. 
-The list is the set of components that needs to be transported.
+The list is the set of components that needs to be transported. By default the list includes total H and total O concentrations;
+for numerical accuracy in transport, the list may be defined to include excess H and O (the H and O not contained in water) 
+and the water concentration (@ref RM_SetComponentH2O).
 If multicomponent diffusion (MCD) is to be modeled, there is a capability to retrieve aqueous species concentrations
 (@ref RM_GetSpeciesConcentrations) and to set new solution concentrations after MCD from the individual species 
 (@ref RM_SpeciesConcentrations2Module). To use these methods the save-species property needs to be turned on (@ref RM_SetSpeciesSaveOn).
@@ -443,7 +445,7 @@ their charge (@ref RM_GetSpeciesZ).
 @param id            The instance id returned from @ref RM_Create.
 @retval              Number of components currently in the list, or IRM_RESULT error code (see @ref RM_DecodeError).
 @see                 @ref RM_GetComponent, @ref RM_SetSpeciesSaveOn, @ref RM_GetSpeciesConcentrations, @ref RM_SpeciesConcentrations2Module,
-@ref RM_GetSpeciesCount, @ref RM_GetSpeciesName, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ.
+@ref RM_GetSpeciesCount, @ref RM_GetSpeciesName, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ, @ref RM_SetComponentH2O.
 @par C Example:
 @htmlonly
 <CODE>
@@ -2803,6 +2805,52 @@ status = RM_SetCellVolume(id, cell_vol(1))
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_SetCellVolume(int id, double *vol);
+/**
+Select whether to include H2O in the component list. By default, the total concentrations of H and O are included
+in the list of components that need to be transported (@ref FindComponents). 
+However, the concentrations of H and O must be known
+accurately (8 to 10 significant digits) for the numerical method of PHREEQC to produce accurate pH and pe values. 
+Because most of the H and O are in the water species, 
+it may be more robust (require less accuracy in transport) to transport the excess H and O (the H and O not 
+in water) and water. PhreeqcRM will then add the H and O from water to the excess quantities to arrive at 
+total H and total O concentrations for reaction calculations. 
+A value of 1 will cause water and the excess H and O to be included in the list of components.
+@param id               The instance id returned from @ref RM_Create.
+@param tf               0, total H and O are included in the list of components; 1, excess H, excess O, and water
+are included in the component list.  
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref FindComponents. 
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+status = RM_SetComponentH2O(id, 0);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetComponentH2O(id, tf)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: tf
+END FUNCTION RM_SetComponentH2O
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetComponentH2O(id, 0)
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
 int RM_SetComponentH2O(int id, int tf);
 /**
 Set the concentrations by which the moles of components of each cell are determined. 

@@ -3529,6 +3529,16 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Module(
+					int *initial_conditions1_in)
+/* ---------------------------------------------------------------------- */
+{
+	std::vector<int> i_dummy;
+	std::vector<double> d_dummy;
+	return InitialPhreeqc2Module(initial_conditions1_in, i_dummy.data(), d_dummy.data());
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::InitialPhreeqc2Module(
 					int *initial_conditions1_in,
 					int *initial_conditions2_in, 
 					double *fraction1_in)
@@ -4256,11 +4266,17 @@ PhreeqcRM::MpiWorker()
 			{
 			case METHOD_CREATEMAPPING:
 				if (debug_worker) std::cerr << "METHOD_CREATEMAPPING" << std::endl;
-				return_value = this->CreateMapping();
+				{
+					std::vector<int> dummy;
+					return_value = this->CreateMapping(dummy.data());
+				}
 				break;
 			case METHOD_DUMPMODULE:
 				if (debug_worker) std::cerr << "METHOD_DUMPMODULE" << std::endl;
-				return_value = this->DumpModule();
+				{
+					bool dummy = false;
+					return_value = this->DumpModule(dummy);
+				}
 				break;
 			case METHOD_FINDCOMPONENTS:
 				if (debug_worker) std::cerr << "METHOD_FINDCOMPONENTS" << std::endl;
@@ -4268,18 +4284,24 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_GETCONCENTRATIONS:
 				if (debug_worker) std::cerr << "METHOD_GETCONCENTRATIONS" << std::endl;
-				return_value = this->GetConcentrations();
+				{
+					std::vector<double> dummy;
+					return_value = this->GetConcentrations(dummy.data());
+				}
 				break;
 			case METHOD_GETDENSITY:
+				if (debug_worker) std::cerr << "METHOD_GETDENSITY" << std::endl;
 				{
-					std::vector<double> density;
-					if (debug_worker) std::cerr << "METHOD_GETDENSITY" << std::endl;
-					this->GetDensity(density);
+					std::vector<double> dummy;
+					this->GetDensity(dummy);
 				}
 				break;
 			case METHOD_GETSELECTEDOUTPUT:
 				if (debug_worker) std::cerr << "METHOD_GETSELECTEDOUTPUT" << std::endl;
-				return_value = this->GetSelectedOutput();
+				{
+					std::vector<double> dummy;
+					return_value = this->GetSelectedOutput(dummy.data());
+				}
 				break;
 			case METHOD_GETSOLUTIONVOLUME:
 				if (debug_worker) std::cerr << "METHOD_GETSOLUTIONVOLUME" << std::endl;
@@ -4294,7 +4316,11 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_INITIALPHREEQC2MODULE:
 				if (debug_worker) std::cerr << "METHOD_INITIALPHREEQC2MODULE" << std::endl;
-				return_value = this->InitialPhreeqc2Module();
+				{
+					std::vector<int> dummy;
+					std::vector<double> d_dummy;
+					return_value = this->InitialPhreeqc2Module(dummy.data(), dummy.data(), d_dummy.data());
+				}
 				break;
 			case METHOD_INITIALPHREEQCCELL2MODULE:
 				{
@@ -4305,7 +4331,10 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_LOADDATABASE:
 				if (debug_worker) std::cerr << "METHOD_LOADDATABASE" << std::endl;
-				return_value = this->LoadDatabase();
+				{
+					char dummy[1];
+					return_value = this->LoadDatabase(dummy);
+				}
 				break;
 			case METHOD_MPIWORKERBREAK:
 				if (debug_worker) std::cerr << "METHOD_MPIWORKERBREAK" << std::endl;
@@ -4317,16 +4346,26 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_RUNFILE:
 				if (debug_worker) std::cerr << "METHOD_RUNFILE" << std::endl;
-				return_value = this->RunFile();
-				if (debug_worker) std::cerr << "done METHOD_RUNFILE" << std::endl;
+				{
+					bool dummy = false;
+					char c_dummy[1];
+					return_value = this->RunFile(dummy, dummy, dummy, c_dummy);
+				}
 				break;
 			case METHOD_RUNSTRING:
 				if (debug_worker) std::cerr << "METHOD_RUNSTRING" << std::endl;
-				return_value = this->RunString();
+				{
+					bool dummy = false;
+					char c_dummy[1];
+					return_value = this->RunString(dummy, dummy, dummy, c_dummy);
+				}
 				break;
 			case METHOD_SETCELLVOLUME:
 				if (debug_worker) std::cerr << "METHOD_SETCELLVOLUME" << std::endl;
-				this->SetCellVolume();
+				{
+					std::vector<double> dummy;
+					this->SetCellVolume(dummy.data());
+				}
 				break;
 			case METHOD_SETCOMPONENTH2O:
 				if (debug_worker) std::cerr << "METHOD_SETCOMPONENTH2O" << std::endl;
@@ -4337,19 +4376,31 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_SETCONCENTRATIONS:
 				if (debug_worker) std::cerr << "METHOD_SETCONCENTRATIONS" << std::endl;
-				return_value = this->SetConcentrations();
+				{
+					std::vector<double> dummy;
+					this->SetConcentrations(dummy.data());
+				}
 				break;
 			case METHOD_SETDENSITY:
 				if (debug_worker) std::cerr << "METHOD_SETDENSITY" << std::endl;
-				this->SetDensity();
+				{
+					std::vector<double> dummy;
+					this->SetDensity(dummy.data());
+				}
 				break;
 			case METHOD_SETERRORHANDLERMODE:
 				if (debug_worker) std::cerr << "METHOD_SETERRORHANDLERMODE" << std::endl;
-				return_value = this->SetErrorHandlerMode();
+				{
+					int dummy = 1;
+					return_value = this->SetErrorHandlerMode(dummy);
+				}
 				break;
 			case METHOD_SETFILEPREFIX:
 				if (debug_worker) std::cerr << "METHOD_SETFILEPREFIX" << std::endl;
-				return_value = this->SetFilePrefix();
+				{
+					char c_dummy[1];
+					return_value = this->SetFilePrefix(c_dummy);
+				}
 				break;
 			//case METHOD_SETPARTITIONUZSOLIDS:
 			//	if (debug_worker) std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
@@ -4357,31 +4408,52 @@ PhreeqcRM::MpiWorker()
 			//	break;
 			case METHOD_SETPOREVOLUME:
 				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
-				return_value = this->SetPoreVolume();
+				{
+					std::vector<double> dummy;
+					this->SetPoreVolume(dummy.data());
+				}
 				break;
 			case METHOD_SETPRESSURE:
 				if (debug_worker) std::cerr << "METHOD_SETPRESSURE" << std::endl;
-				return_value = this->SetPressure();
+				{
+					std::vector<double> dummy;
+					this->SetPressure(dummy.data());
+				}
 				break;
 			case METHOD_SETPRINTCHEMISTRYON:
 				if (debug_worker) std::cerr << "METHOD_SETPRINTCHEMISTRYON" << std::endl;
-				return_value = this->SetPrintChemistryOn();
+				{
+					bool dummy = false;
+					return_value = this->SetPrintChemistryOn(dummy, dummy, dummy);
+				}
 				break;
 			case METHOD_SETPRINTCHEMISTRYMASK:
 				if (debug_worker) std::cerr << "METHOD_SETPRINTCHEMISTRYMASK" << std::endl;
-				return_value = this->SetPrintChemistryMask();
+				{
+					std::vector<int> dummy;
+					this->SetPrintChemistryMask(dummy.data());
+				}
 				break;
 			case METHOD_SETREBALANCEBYCELL:
 				if (debug_worker) std::cerr << "METHOD_SETREBALANCEBYCELL" << std::endl;
-				return_value = this->SetRebalanceByCell();
+				{
+					bool dummy = false;
+					return_value = this->SetRebalanceByCell(dummy);
+				}
 				break;
 			case METHOD_SETSATURATION:
 				if (debug_worker) std::cerr << "METHOD_SETSATURATION" << std::endl;
-				return_value = this->SetSaturation();
+				{
+					std::vector<double> dummy;
+					this->SetSaturation(dummy.data());
+				}
 				break;
 			case METHOD_SETSELECTEDOUTPUTON:
 				if (debug_worker) std::cerr << "METHOD_SETSELECTEDOUTPUTON" << std::endl;
-				return_value = this->SetSelectedOutputOn();
+				{
+					bool dummy = false;
+					return_value = this->SetSelectedOutputOn(dummy);
+				}
 				break;
 			case METHOD_SETSPECIESSAVEON:
 				if (debug_worker) std::cerr << "METHOD_SETSPECIESSAVEON" << std::endl;
@@ -4392,47 +4464,80 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_SETTEMPERATURE:
 				if (debug_worker) std::cerr << "METHOD_SETTEMPERATURE" << std::endl;
-				return_value = this->SetTemperature();
+				{
+					std::vector<double> dummy;
+					this->SetTemperature(dummy.data());
+				}
 				break;
 			case METHOD_SETTIME:
 				if (debug_worker) std::cerr << "METHOD_SETTIME" << std::endl;
-				return_value = this->SetTime();
+				{
+					double dummy = 0;
+					return_value = this->SetTime(dummy);
+				}
 				break;
 			case METHOD_SETTIMECONVERSION:
 				if (debug_worker) std::cerr << "METHOD_SETTIMECONVERSION" << std::endl;
-				return_value = this->SetTimeConversion();
+				{
+					double dummy = 0;
+					return_value = this->SetTimeConversion(dummy);
+				}
 				break;
 			case METHOD_SETTIMESTEP:
 				if (debug_worker) std::cerr << "METHOD_SETTIMESTEP" << std::endl;
-				return_value = this->SetTimeStep();
+				{
+					double dummy = 0;
+					return_value = this->SetTimeStep(dummy);
+				}
 				break;
 			case METHOD_SETUNITSEXCHANGE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSEXCHANGE" << std::endl;
-				return_value = this->SetUnitsExchange();
+				{
+					int dummy = 0;
+					return_value = this->SetUnitsExchange(dummy);
+				}
 				break;
 			case METHOD_SETUNITSGASPHASE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSGASPHASE" << std::endl;
-				return_value = this->SetUnitsGasPhase();
+				{
+					int dummy = 0;
+					return_value = this->SetUnitsGasPhase(dummy);
+				}
 				break;
 			case METHOD_SETUNITSKINETICS:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSKINETICS" << std::endl;
-				return_value = this->SetUnitsKinetics();
+				{
+					int dummy = 0;
+					return_value = this->SetUnitsKinetics(dummy);
+				}
 				break;
 			case METHOD_SETUNITSPPASSEMBLAGE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSPPASSEMBLAGE" << std::endl;
-				return_value = this->SetUnitsPPassemblage();
+				{
+					int dummy = 0;
+					return_value = this->SetUnitsPPassemblage(dummy);
+				}
 				break;
 			case METHOD_SETUNITSSOLUTION:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSSOLUTION" << std::endl;
-				return_value = this->SetUnitsSolution();
+				{
+					int dummy = 0;
+					return_value = this->SetUnitsSolution(dummy);
+				}
 				break;
 			case METHOD_SETUNITSSSASSEMBLAGE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSSSASSEMBLAGE" << std::endl;
-				return_value = this->SetUnitsSSassemblage();
+				{
+					int dummy = 0;
+					return_value = this->SetUnitsSSassemblage(dummy);
+				}
 				break;
 			case METHOD_SETUNITSSURFACE:
 				if (debug_worker) std::cerr << "METHOD_SETUNITSSURFACE" << std::endl;
-				return_value = this->SetUnitsSurface();
+				{
+					int dummy = 0;
+					return_value = this->SetUnitsSurface(dummy);
+				}
 				break;
 			case METHOD_SPECIESCONCENTRATIONS2MODULE:
 				if (debug_worker) std::cerr << "METHOD_SPECIESCONCENTRATIONS2MODULE" << std::endl;
