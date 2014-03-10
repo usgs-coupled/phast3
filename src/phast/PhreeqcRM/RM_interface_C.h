@@ -1,8 +1,11 @@
 /*! @file RM_interface_C.h
 	@brief C/Fortran Documentation
-*/#ifndef RM_INTERFACE_C_H
+*/
+#include "IrmResult.h"
+#ifndef RM_INTERFACE_C_H
 #define RM_INTERFACE_C_H
-
+/*! @brief Enumeration used to return error codes.
+*/
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -55,7 +58,7 @@ if (status .ne. 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
 @par MPI:
 Called by root or workers.
 */
-int RM_Abort(int id, int result, const char * err_str);
+IRM_RESULT RM_Abort(int id, int result, const char * err_str);
 /**
 Close the output and log files. 
 @param id            The instance id returned from @ref RM_Create.
@@ -91,7 +94,7 @@ status = RM_CloseFiles(id)
 @par MPI:
 Called only by root.
  */
-int        RM_CloseFiles(int id);
+IRM_RESULT        RM_CloseFiles(int id);
 /**
 N sets of component concentrations are converted to SOLUTIONs numbered 1-n in the Utility IPhreeqc.
 The solutions can be reacted and manipulated with the methods of IPhreeqc. The motivation for this
@@ -253,7 +256,7 @@ status = RM_CreateMapping(id, grid2chem(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_CreateMapping (int id, int *grid2chem);
+IRM_RESULT RM_CreateMapping (int id, int *grid2chem);
 /**
 If e is negative, this method prints an error message corresponding to IRM_RESULT e. If e is non-negative, this method does nothing.
 @param id                   The instance id returned from @ref RM_Create.
@@ -309,7 +312,7 @@ if (status < 0) status = RM_DecodeError(id, status)
 @par MPI:
 Can be called by root and (or) workers.
  */
-int RM_DecodeError (int id, int e); 
+IRM_RESULT RM_DecodeError (int id, int e); 
 /**
 Destroys a reaction module. 
 @param id               The instance id returned from @ref RM_Create.
@@ -345,7 +348,7 @@ status = RM_Destroy(id)
 @par MPI:
 Called by root and workers.
  */
-int RM_Destroy(int id);
+IRM_RESULT RM_Destroy(int id);
 /**
 Writes the contents of all workers to file in _RAW formats, including SOLUTIONs and all reactants.
 @param id               The instance id returned from @ref RM_Create.
@@ -390,7 +393,7 @@ status = RM_DumpModule(id, dump_on, append)
 @par MPI:
 Called by root; workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_DumpModule(int id, int dump_on, int append);
+IRM_RESULT RM_DumpModule(int id, int dump_on, int append);
 /**
 Send an error message to the screen, the output file, and the log file. 
 @param id               The instance id returned from @ref RM_Create.
@@ -429,7 +432,7 @@ status = RM_ErrorMessage(id, "Goodby world")
 @par MPI:
 Called by root and (or) workers; root writes to output and log files.
  */
-int RM_ErrorMessage(int id, const char *errstr);
+IRM_RESULT RM_ErrorMessage(int id, const char *errstr);
 /**
 Returns the number of items in the list of all elements in the Initial Phreeqc instance. Elements are those that have been defined in a solution or any other reactant (EQUILIBRIUM_PHASE, KINETICS, and others). 
 The method can be called multiple times and the list that is created is cummulative. 
@@ -580,7 +583,7 @@ enddo
 @par MPI:
 Called by root and (or) workers.
  */
-int RM_GetComponent(int id, int num, char *chem_name, int l);
+IRM_RESULT RM_GetComponent(int id, int num, char *chem_name, int l);
 /**
 Returns the number of components in the reaction-module component list. 
 @param id               The instance id returned from @ref RM_Create.   
@@ -664,7 +667,7 @@ status = RM_GetConcentrations(id, c(1,1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_GetConcentrations(int id, double *c);
+IRM_RESULT RM_GetConcentrations(int id, double *c);
 /**
 Transfer solution densities from the module workers to the density array given in the argument list (density). 
 @param id                   The instance id returned from @ref RM_Create.
@@ -707,7 +710,7 @@ status = RM_GetDensity(id, density(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_GetDensity(int id, double *density);
+IRM_RESULT RM_GetDensity(int id, double *density);
 /**
 Returns the reaction-module file prefix to the character argument (prefix). 
 @param id               The instance id returned from @ref RM_Create. 
@@ -755,7 +758,7 @@ status = RM_OutputMessage(id, string1)
 @par MPI:
 Called by root and (or) workers. 
  */
-int RM_GetFilePrefix(int id, char *prefix, int l);
+IRM_RESULT RM_GetFilePrefix(int id, char *prefix, int l);
 /**
 Returns the gram formula weights (g/mol) for the components in the reaction-module component list. 
 @param id               The instance id returned from @ref RM_Create. 
@@ -814,7 +817,7 @@ enddo
 @par MPI:
 Called by root. 
  */
-int RM_GetGfw(int id, double * gfw);
+IRM_RESULT RM_GetGfw(int id, double * gfw);
 /**
 Returns the number of grid cells in the user's model, which is defined in the call to @ref RM_Create. 
 The mapping from grid cells to chemistry cells is defined by @ref RM_CreateMapping.
@@ -1138,7 +1141,7 @@ enddo
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int        RM_GetSelectedOutput(int id, double *so);
+IRM_RESULT        RM_GetSelectedOutput(int id, double *so);
 /**
 Returns the number of columns in the current selected output definition. @ref RM_SetCurrentSelectedOutputUserNumber 
 determines which of the selected output definitions is used. 
@@ -1313,7 +1316,7 @@ enddo
 @par MPI:
 Called by root.
  */
-int        RM_GetSelectedOutputHeading(int id, int icol, char * heading, int length);
+IRM_RESULT        RM_GetSelectedOutputHeading(int id, int icol, char * heading, int length);
 /**
 Returns the number of rows in the current selected output definition. However, the method
 is included only for convenience; the number of rows is always equal to the number of 
@@ -1432,7 +1435,7 @@ status = RM_GetSolutionVolume(id, volume(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_GetSolutionVolume(int id, double *vol);
+IRM_RESULT RM_GetSolutionVolume(int id, double *vol);
 /**
 Transfer concentrations of aqueous species to the array argument. This
 method is intended for use with multicomponent-diffusion transport calculations.
@@ -1493,7 +1496,7 @@ status = RM_GetSpeciesConcentrations(id, species_c(1,1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_GetSpeciesConcentrations(int id, double *species_conc);
+IRM_RESULT RM_GetSpeciesConcentrations(int id, double *species_conc);
 /**
 The number of aqueous species used in the reaction module. This
 method is intended for use with multicomponent-diffusion transport calculations.
@@ -1599,7 +1602,7 @@ status = RM_GetSpeciesD25(id, diffc)
 @par MPI:
 Called by root and (or) workers.
  */
-int RM_GetSpeciesD25(int id, double *diffc);
+IRM_RESULT RM_GetSpeciesD25(int id, double *diffc);
 /**
 Transfers the name of the ith aqueous species to the character argument. This
 method is intended for use with multicomponent-diffusion transport calculations.
@@ -1662,7 +1665,7 @@ enddo
 @par MPI:
 Called by root and (or) workers.
  */
-int RM_GetSpeciesName(int id, int i, char * name, int length);
+IRM_RESULT RM_GetSpeciesName(int id, int i, char * name, int length);
 /**
 Returns the value of the species-save property.  
 This method is intended for use with multicomponent-diffusion transport calculations.
@@ -1767,7 +1770,7 @@ status = RM_GetSpeciesZ(id, z)
 @par MPI:
 Called by root and (or) workers.
  */
-int RM_GetSpeciesZ(int id, double *z);
+IRM_RESULT RM_GetSpeciesZ(int id, double *z);
 /**
 Returns the number of threads, which is equal to the number of workers used to run in parallel with OPENMPI. 
 For the threaded version, the number of threads is set implicitly or explicitly with @ref RM_Create. For the
@@ -2011,7 +2014,7 @@ status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_InitialPhreeqc2Concentrations(
+IRM_RESULT RM_InitialPhreeqc2Concentrations(
                 int id,
                 double *c,
                 int n_boundary,
@@ -2135,7 +2138,7 @@ status = RM_InitialPhreeqc2Module(id, ic1(1,1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_InitialPhreeqc2Module(int id,
+IRM_RESULT RM_InitialPhreeqc2Module(int id,
                 int *initial_conditions1,		// 7 x nxyz end-member 1
                 int *initial_conditions2,		// 7 x nxyz end-member 2
                 double *fraction1);			    // 7 x nxyz fraction of end-member 1
@@ -2198,7 +2201,7 @@ status = RM_InitialPhreeqcCell2Module(id, -1, module_cells(1), 2)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_InitialPhreeqcCell2Module(int id,
+IRM_RESULT RM_InitialPhreeqcCell2Module(int id,
                 int n,		                            // InitialPhreeqc cell number
                 int *module_numbers,		            // Module cell numbers
                 int dim_module_numbers);			    // Number of module cell numbers
@@ -2278,7 +2281,7 @@ status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_InitialPhreeqc2SpeciesConcentrations(
+IRM_RESULT RM_InitialPhreeqc2SpeciesConcentrations(
                 int id,
                 double *species_c,
                 int n_boundary,
@@ -2324,7 +2327,7 @@ status = RM_LoadDatabase(id, "phreeqc.dat")
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 
-int RM_LoadDatabase(int id, const char *db_name);
+IRM_RESULT RM_LoadDatabase(int id, const char *db_name);
 /**
 Print a message to the log file. 
 @param id               The instance id returned from @ref RM_Create.
@@ -2366,7 +2369,7 @@ status = RM_LogMessage(id, string);
 @par MPI:
 Called by root.
  */
-int RM_LogMessage(int id, const char *str);
+IRM_RESULT RM_LogMessage(int id, const char *str);
 /**
 For MPI, workers (processes with @ref RM_GetMpiMyself > 0) must call RM_MpiWorker to be able to
 respond to messages from the root to accept data, perform calculations,
@@ -2417,7 +2420,7 @@ status = RM_MpiWorker(id)
 @par MPI:
 Called by all workers.
  */
-int RM_MpiWorker(int id);
+IRM_RESULT RM_MpiWorker(int id);
 /**
 For MPI, called by root to force workers (processes with @ref RM_GetMpiMyself > 0) to return from a call to @ref RM_MpiWorker. 
 RM_MpiWorker contains a loop that reads a message from root, performs a 
@@ -2457,7 +2460,7 @@ status = RM_MpiWorkerBreak(id)
 @par MPI:
 Called by root.
  */
-int RM_MpiWorkerBreak(int id);
+IRM_RESULT RM_MpiWorkerBreak(int id);
 /**
 Opens the output and log files. Files are named based on the prefix defined by
 @ref RM_SetFilePrefix: prefix.chem.txt and prefix.log.txt.
@@ -2496,7 +2499,7 @@ status = RM_OpenFiles(id)
 @par MPI:
 Called by root.
  */
-int RM_OpenFiles(int id);
+IRM_RESULT RM_OpenFiles(int id);
 /**
 Print a message to the output file. 
 @param id               The instance id returned from @ref RM_Create.
@@ -2562,7 +2565,7 @@ status = RM_OutputMessage(id, trim(string1))
 @par MPI:
 Called by root.
  */
-int RM_OutputMessage(int id, const char *str);
+IRM_RESULT RM_OutputMessage(int id, const char *str);
 /**
 Runs a reaction step for all of the cells in the reaction module. 
 The current set of concentrations of the components (@ref RM_SetConcentrations) is used
@@ -2621,7 +2624,7 @@ status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after react
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_RunCells(int id);
+IRM_RESULT RM_RunCells(int id);
 /**
 Run a PHREEQC input file. The first three arguments determine which IPhreeqc instances will run
 the file--the workers, the InitialPhreeqc instance, and (or) the Utility instance. Input
@@ -2668,7 +2671,7 @@ status = RM_RunFile(id, 1, 1, 1, "advect.pqi")
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int        RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *chem_name);
+IRM_RESULT        RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *chem_name);
 /**
 Run a PHREEQC input string. The first three arguments determine which 
 IPhreeqc instances will run
@@ -2718,7 +2721,7 @@ status = RM_RunString(id, 1, 0, 1, string)  ! workers, initial_phreeqc, utility
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char * input_string);
+IRM_RESULT RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char * input_string);
 /**
 Print message to the screen. 
 @param id               The instance id returned from @ref RM_Create.
@@ -2760,7 +2763,7 @@ status = RM_ScreenMessage(id, string);
 @par MPI:
 Called by root and (or) workers.
  */
-int RM_ScreenMessage(int id, const char *str);
+IRM_RESULT RM_ScreenMessage(int id, const char *str);
 /**
 Set the volume of each cell. Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
 to the cell volume. The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
@@ -2804,7 +2807,7 @@ status = RM_SetCellVolume(id, cell_vol(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetCellVolume(int id, double *vol);
+IRM_RESULT RM_SetCellVolume(int id, double *vol);
 /**
 Select whether to include H2O in the component list. By default, the total concentrations of H and O are included
 in the list of components that need to be transported (@ref FindComponents). 
@@ -2814,7 +2817,8 @@ Because most of the H and O are in the water species,
 it may be more robust (require less accuracy in transport) to transport the excess H and O (the H and O not 
 in water) and water. PhreeqcRM will then add the H and O from water to the excess quantities to arrive at 
 total H and total O concentrations for reaction calculations. 
-A value of 1 will cause water and the excess H and O to be included in the list of components.
+A value of 1 will cause water and the excess H and O to be included in the list of components. RM_SetComponentH2O
+must be called before @ref FindComponents.
 @param id               The instance id returned from @ref RM_Create.
 @param tf               0, total H and O are included in the list of components; 1, excess H, excess O, and water
 are included in the component list.  
@@ -2851,7 +2855,7 @@ status = RM_SetComponentH2O(id, 0)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetComponentH2O(int id, int tf);
+IRM_RESULT RM_SetComponentH2O(int id, int tf);
 /**
 Set the concentrations by which the moles of components of each cell are determined. 
 Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
@@ -2923,7 +2927,7 @@ status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after react
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetConcentrations(int id, double *c);
+IRM_RESULT RM_SetConcentrations(int id, double *c);
 /**
 Select the current selected output by user number. The user may define multiple SELECTED_OUTPUT
 data blocks for the workers. A user number is specified for each data block. The value of
@@ -2983,7 +2987,7 @@ enddo
 @par MPI:
 Called by root.
  */
-int RM_SetCurrentSelectedOutputUserNumber(int id, int n_user);
+IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int id, int n_user);
 /**
 Set the density for each cell. These density values are used only 
 when converting from transported mass fraction concentrations (@ref RM_SetUnitsSolution) to
@@ -3031,7 +3035,7 @@ status = RM_SetDensity(id, density(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetDensity(int id, double *density);
+IRM_RESULT RM_SetDensity(int id, double *density);
 /**
 Set the name of the dump file. It is the name used by @ref RM_DumpModule.
 @param id               The instance id returned from @ref RM_Create.
@@ -3075,7 +3079,7 @@ status = RM_DumpModule(id, dump_on, append)
 @par MPI:
 Called by root.
  */
-int RM_SetDumpFileName(int id, const char *dump_name);
+IRM_RESULT RM_SetDumpFileName(int id, const char *dump_name);
 /**
 Set the action to be taken when the reaction module encounters and error.
 Options are 0, return to calling program with an error return code; 
@@ -3118,7 +3122,7 @@ status = RM_SetErrorHandlerMode(id, 2)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetErrorHandlerMode(int id, int mode);
+IRM_RESULT RM_SetErrorHandlerMode(int id, int mode);
 /**
 Set the prefix for the output (prefix.chem.txt) and log (prefix.log.txt) files. 
 These files are opened by @ref RM_OpenFiles.
@@ -3159,7 +3163,7 @@ status = RM_OpenFiles(id)
 @par MPI:
 Called by root.
  */
-int RM_SetFilePrefix(int id, const char *prefix);
+IRM_RESULT RM_SetFilePrefix(int id, const char *prefix);
 /**
 MPI only. Defines a callback function that allows additional tasks to be done
 by the workers. The method @ref RM_MpiWorker contains a loop,
@@ -3304,7 +3308,7 @@ END FUNCTION mpi_methods
 @par MPI:
 Called by workers, before call to @ref RM_MpiWorker.
  */
-int RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie));
+IRM_RESULT RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie));
 /**
 MPI and C only. Defines a void pointer that can be used by 
 C functions called from the callback function (@ref RM_SetMpiWorkerCallback)
@@ -3366,7 +3370,7 @@ int mpi_methods(int method, void *cookie)
 @par MPI:
 Called by workers, before call to @ref RM_MpiWorker.
  */
-int RM_SetMpiWorkerCallbackCookie(int id, void *cookie);
+IRM_RESULT RM_SetMpiWorkerCallbackCookie(int id, void *cookie);
 //int RM_SetPartitionUZSolids(int id, int t);
 /**
 Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume 
@@ -3412,7 +3416,7 @@ status = RM_SetPoreVolume(id, pv(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetPoreVolume(int id, double *t);
+IRM_RESULT RM_SetPoreVolume(int id, double *t);
 /**
 Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
 databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat. 
@@ -3456,58 +3460,7 @@ status = RM_SetPressure(id, pressure(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetPressure(int id, double *t);
-/**
-Setting to enable or disable printing to the output file detailed output from reaction calculations for a set of
-cells defined by (@ref RM_SetPrintChemistryMask). The detailed output prints all of the output
-typical of a PHREEQC reaction calculation, which includes solution descriptions and the compositions of
-all other reactants. The output can be several hundred lines per cell, which can lead to a very 
-large output file (prefix.chem.txt, @ref RM_OpenFiles). For the worker instances, the output can be limited to a set of cells 
-(@ref RM_SetPrintChemistryMask) and, in general, the
-amount of information printed can be limited by use of options in the PRINT data block of PHREEQC (applied by using @ref RM_RunFile or
-@ref RM_RunString). Printing the detailed output for the workers is generally used only for debugging, and PhreeqcRM will run
-significantly faster when printing detailed output for the workers is disabled.
-@param id               The instance id returned from @ref RM_Create.
-@param workers          0, disable detailed printing in the worker instances, nonzero, enable detailed printing 
-in the worker instances.
-@param initial_phreeqc  0, disable detailed printing in the InitialPhreeqc instance, nonzero, enable detailed printing 
-in the InitialPhreeqc instances.
-@param utility          0, disable detailed printing in the Utility instance, nonzero, enable detailed printing 
-in the Utility instance.
-@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
-@see                    @ref RM_SetPrintChemistryMask.
-@par C Example:
-@htmlonly
-<CODE>
-<PRE>  			
-status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
-</PRE>
-</CODE> 
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>   
-INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)   
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: worker, initial_phreeqc, utility
-END FUNCTION RM_SetPrintChemistryOn 
-</PRE>
-</CODE> 
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>  		
-status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
-</PRE>
-</CODE> 
-@endhtmlonly
-@par MPI:
-Called by root, workers must be in the loop of @ref RM_MpiWorker.
- */
-int RM_SetPrintChemistryOn(int id, int worker, int initial_phreeqc, int utility);
+IRM_RESULT RM_SetPressure(int id, double *t);
 /**
 Enable or disable detailed output for each cell. Printing will occur only when the
 printing is enabled with @ref RM_SetPrintChemistryOn and the cell_mask value is nonzero.
@@ -3559,7 +3512,59 @@ status = RM_SetPrintChemistryMask(id, print_chemistry_mask(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetPrintChemistryMask(int id, int *cell_mask);
+IRM_RESULT RM_SetPrintChemistryMask(int id, int *cell_mask);
+/**
+Setting to enable or disable printing to the output file detailed output from reaction calculations for a set of
+cells defined by (@ref RM_SetPrintChemistryMask). The detailed output prints all of the output
+typical of a PHREEQC reaction calculation, which includes solution descriptions and the compositions of
+all other reactants. The output can be several hundred lines per cell, which can lead to a very 
+large output file (prefix.chem.txt, @ref RM_OpenFiles). For the worker instances, the output can be limited to a set of cells 
+(@ref RM_SetPrintChemistryMask) and, in general, the
+amount of information printed can be limited by use of options in the PRINT data block of PHREEQC (applied by using @ref RM_RunFile or
+@ref RM_RunString). Printing the detailed output for the workers is generally used only for debugging, and PhreeqcRM will run
+significantly faster when printing detailed output for the workers is disabled.
+@param id               The instance id returned from @ref RM_Create.
+@param workers          0, disable detailed printing in the worker instances, nonzero, enable detailed printing 
+in the worker instances.
+@param initial_phreeqc  0, disable detailed printing in the InitialPhreeqc instance, nonzero, enable detailed printing 
+in the InitialPhreeqc instances.
+@param utility          0, disable detailed printing in the Utility instance, nonzero, enable detailed printing 
+in the Utility instance.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
+@see                    @ref RM_SetPrintChemistryMask.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  			
+status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>   
+INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  INTEGER, INTENT(in) :: worker, initial_phreeqc, utility
+END FUNCTION RM_SetPrintChemistryOn 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>  		
+status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+IRM_RESULT RM_SetPrintChemistryOn(int id, int worker, int initial_phreeqc, int utility);
+
 /**
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
 thread or process takes the same amount of time to run its part of a @ref RM_RunCells
@@ -3602,7 +3607,7 @@ status = RM_SetRebalanceByCell(id, 1)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetRebalanceByCell(int id, int method);
+IRM_RESULT RM_SetRebalanceByCell(int id, int method);
 /**
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
 thread or process takes the same amount of time to run its part of a @ref RM_RunCells
@@ -3650,7 +3655,7 @@ status = RM_SetRebalanceFraction(id, 0.5d0)
 @par MPI:
 Called by root.
  */
-int RM_SetRebalanceFraction(int id, double f);
+IRM_RESULT RM_SetRebalanceFraction(int id, double f);
 /**
 Set the saturation of each cell. Saturation is a fraction ranging from 0 to 1.
 Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
@@ -3695,7 +3700,7 @@ status = RM_SetSaturation(id, sat(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetSaturation(int id, double *sat);
+IRM_RESULT RM_SetSaturation(int id, double *sat);
 /**
 Setting determines whether selected-output results are available to be retrieved 
 with @ref RM_GetSelectedOutput. Zero indicates that selected-output results will not 
@@ -3736,7 +3741,7 @@ status = RM_SetSelectedOutputOn(id, 1);        ! enable selected output
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetSelectedOutputOn(int id, int selected_output);
+IRM_RESULT RM_SetSelectedOutputOn(int id, int selected_output);
 /**
 Sets the value of the species-save property.  
 This
@@ -3796,7 +3801,7 @@ end
 @par MPI:
 Called by root and (or) workers.
  */
-int RM_SetSpeciesSaveOn(int id, int save_on);
+IRM_RESULT RM_SetSpeciesSaveOn(int id, int save_on);
 /**
 Set the temperature for each cell for reaction calculations. 
 @param id               The instance id returned from @ref RM_Create.
@@ -3842,7 +3847,7 @@ status = RM_SetTemperature(id, temperature(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetTemperature(int id, double *t);
+IRM_RESULT RM_SetTemperature(int id, double *t);
 /**
 Set current simulation time for the reaction module.
 @param id               The instance id returned from @ref RM_Create.
@@ -3880,7 +3885,7 @@ status = RM_SetTime(id, time)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetTime(int id, double time);
+IRM_RESULT RM_SetTime(int id, double time);
 /**
 Set a factor to convert to user time units. Factor times seconds produces user time units.
 @param id               The instance id returned from @ref RM_Create.
@@ -3918,7 +3923,7 @@ status = RM_SetTimeConversion(id, dble(1.0 / 86400.0)) ! days
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetTimeConversion(int id, double conv_factor);
+IRM_RESULT RM_SetTimeConversion(int id, double conv_factor);
 /**
 Set current time step for the reaction module. This is the length
 of time over which kinetic reactions are integrated.
@@ -3957,7 +3962,7 @@ status = RM_SetTimeStep(id, time_step)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetTimeStep(int id, double t);
+IRM_RESULT RM_SetTimeStep(int id, double t);
 /**
 Input units for exchangers. In PHREEQC, exchangers are defined by
 moles of exchange sites. RM_SetUnitsExchange defines whether the
@@ -4002,7 +4007,7 @@ status = RM_SetUnitsExchange(id, 1)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetUnitsExchange(int id, int option);
+IRM_RESULT RM_SetUnitsExchange(int id, int option);
 /**
 Input units for gas phase. In PHREEQC, gas phases are defined by
 moles of component gases. RM_SetUnitsGasPhase defines whether the
@@ -4047,7 +4052,7 @@ status = RM_SetUnitsGasPhase(id, 1)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetUnitsGasPhase(int id, int option);
+IRM_RESULT RM_SetUnitsGasPhase(int id, int option);
 /**
 Input units for kinetic reactants. In PHREEQC, kinetics are defined by
 moles of kinetic reactant. RM_SetUnitsKinetics defines whether the
@@ -4099,7 +4104,7 @@ status = RM_SetUnitsKinetics(id, 1)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetUnitsKinetics(int id, int option);
+IRM_RESULT RM_SetUnitsKinetics(int id, int option);
 /**
 Input units for pure phase assemblages (equilibrium phases). 
 In PHREEQC, equilibrium phases are defined by
@@ -4145,7 +4150,7 @@ status = RM_SetUnitsPPassemblage(id, 1)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetUnitsPPassemblage(int id, int option);
+IRM_RESULT RM_SetUnitsPPassemblage(int id, int option);
 /**
 Solution concentration units used by the transport model. 
 Options are 1, mg/L; 2 mol/L; or 3, mass fraction, kg/kgs.
@@ -4215,7 +4220,7 @@ status = RM_SetUnitsSurface(id, 1)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetUnitsSolution(int id, int option);
+IRM_RESULT RM_SetUnitsSolution(int id, int option);
 /**
 Input units for solid-solution assemblages. 
 In PHREEQC, solid solutions are defined by
@@ -4261,7 +4266,7 @@ status = RM_SetUnitsSSassemblage(id, 1)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetUnitsSSassemblage(int id, int option);
+IRM_RESULT RM_SetUnitsSSassemblage(int id, int option);
 /**
 Input units for surfaces. In PHREEQC, surfaces are defined by
 moles of surface sites. RM_SetUnitsSurface defines whether the
@@ -4306,7 +4311,7 @@ status = RM_SetUnitsSurface(id, 1)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SetUnitsSurface(int id, int option);
+IRM_RESULT RM_SetUnitsSurface(int id, int option);
 /**
 Set solution concentrations in the reaction module based on the array of aqueous species concentrations. This
 method is intended for use with multicomponent-diffusion transport calculations. The method determines the
@@ -4367,7 +4372,7 @@ status = RM_RunCells(id)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-int RM_SpeciesConcentrations2Module(int id, double * species_conc);
+IRM_RESULT RM_SpeciesConcentrations2Module(int id, double * species_conc);
 /**
 Print a warning message to the screen and the log file. 
 @param id               The instance id returned from @ref RM_Create.
@@ -4405,7 +4410,7 @@ status = RM_WarningMessage(id, "Parameter is out of range, using default")
 @par MPI:
 Called by root and (or) workers; only root writes to the log file.
  */
-int RM_WarningMessage(int id, const char *warn_str);
+IRM_RESULT RM_WarningMessage(int id, const char *warn_str);
 void RM_write_bc_raw(int id, 
                 int *solution_list, 
                 int bc_solution_count, 

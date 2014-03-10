@@ -52,5 +52,8 @@
     <ClInclude Include="..\PhreeqcRM\RM_interface_F.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\PhreeqcRM\IrmResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
