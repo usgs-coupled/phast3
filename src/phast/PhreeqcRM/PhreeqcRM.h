@@ -50,6 +50,7 @@ typedef enum {
 	METHOD_RUNFILE,
 	METHOD_RUNSTRING,
 	METHOD_SETCELLVOLUME,
+	METHOD_SETCOMPONENTH2O,
 	METHOD_SETCONCENTRATIONS,
 	METHOD_SETDENSITY,
 	METHOD_SETERRORHANDLERMODE,
@@ -85,7 +86,7 @@ public:
 	static IRM_RESULT       DestroyReactionModule(int n);
 	static PhreeqcRM      * GetInstance(int n);
 
-	PhreeqcRM(int nxyz, int thread_count_or_communicator, bool water_as_component = false, PHRQ_io * io=NULL);
+	PhreeqcRM(int nxyz, int thread_count_or_communicator, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
 	
 	// Key methods	
@@ -208,6 +209,7 @@ public:
 
 	// Setters 
 	IRM_RESULT                                SetCellVolume(double * t = NULL);
+	IRM_RESULT                                SetComponentH2O(bool tf);
 	IRM_RESULT                                SetConcentrations(double * t = NULL); 
 	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i = -1);
 	IRM_RESULT                                SetDensity(double * t = NULL);

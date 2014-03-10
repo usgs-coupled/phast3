@@ -312,6 +312,12 @@
             DOUBLE PRECISION, INTENT(in) :: vol
         END FUNCTION RM_SetCellVolume
  		     
+        INTEGER FUNCTION RM_SetComponentH2O(id, tf)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, INTENT(in) :: tf
+        END FUNCTION RM_SetComponentH2O
+ 		     
         INTEGER FUNCTION RM_SetConcentrations(id, c)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id

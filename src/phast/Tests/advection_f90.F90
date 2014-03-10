@@ -62,6 +62,7 @@
     ! Create reaction module
     id = RM_create(nxyz, nthreads)
     status = RM_SetErrorHandlerMode(id, 2)  ! exit on error
+    status = RM_SetComponentH2O(id, 0)
 	status = RM_SetRebalanceFraction(id, 0.5d0)
 	status = RM_SetRebalanceByCell(id, 1)
     

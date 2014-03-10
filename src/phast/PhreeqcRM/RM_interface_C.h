@@ -207,7 +207,7 @@ Provides a mapping from grid cells in the user's model to cells for which chemis
 The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run. The mapping may be many-to-one to account for symmetry.
 Default is a one-to-one mapping--all user grid cells are chemistry cells (equivalent to grid2chem values of 0,1,2,3,...,nxyz-1).
 @param id               The instance id returned from @ref RM_Create.
-@param grid2chem        An array of integers: Nonnegative is a chemistry cell number, negative is an inactive cell. Array of size nxyz (number of grid cells).
+@param grid2chem        An array of integers: Nonnegative is a chemistry cell number (0 based), negative is an inactive cell. Array of size nxyz (number of grid cells).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
 @par C Example:
 @htmlonly
@@ -1060,7 +1060,7 @@ END FUNCTION RM_GetNthSelectedOutputUserNumber
 <CODE>
 <PRE>           
 do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
   write(*,*) "Selected output sequence number: ", isel);
   write(*,*) "Selected output user number:     ", n_user);
@@ -1122,7 +1122,7 @@ END FUNCTION RM_GetSelectedOutput
 <CODE>
 <PRE>           
 do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
@@ -1178,7 +1178,7 @@ END FUNCTION RM_GetSelectedOutputColumnCount
 <CODE>
 <PRE>           
 do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
@@ -1234,7 +1234,7 @@ END FUNCTION RM_GetSelectedOutputCount
 <CODE>
 <PRE>           
 do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
@@ -1297,11 +1297,11 @@ END FUNCTION RM_GetSelectedOutputHeading
 <CODE>
 <PRE>           
 do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1);
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
   col = RM_GetSelectedOutputColumnCount(id)
   do j = 1, col
-    status = RM_GetSelectedOutputHeading(id, j-1, heading)    
+    status = RM_GetSelectedOutputHeading(id, j, heading)    
     write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading)
   enddo
 enddo
@@ -1364,7 +1364,7 @@ END FUNCTION RM_GetSelectedOutputRowCount
 <CODE>
 <PRE>           
 do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel)
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
@@ -1374,7 +1374,7 @@ do isel = 1, RM_GetSelectedOutputCount(id)
     write(*,*) "Cell number ", i
     write(*,*) "     Selected output: "
     do j = 1, col
-      status = RM_GetSelectedOutputHeading(id, j-1, heading)    
+      status = RM_GetSelectedOutputHeading(id, j, heading)    
       write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading),": ", selected_out(i,j)
     enddo
   enddo
@@ -1650,7 +1650,7 @@ char*100 name
 status = RM_SetSpeciesSaveOn(id, 1)
 ncomps = RM_FindComponents(id)
 nspecies = RM_GetSpeciesCount(id)
-do i = 0, nspecies - 1 
+do i = 1, nspecies 
   status = RM_GetSpeciesName(id, i, name)
   write(*,*) name
 enddo
@@ -2803,6 +2803,7 @@ status = RM_SetCellVolume(id, cell_vol(1))
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 int RM_SetCellVolume(int id, double *vol);
+int RM_SetComponentH2O(int id, int tf);
 /**
 Set the concentrations by which the moles of components of each cell are determined. 
 Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
@@ -2920,7 +2921,7 @@ END FUNCTION RM_SetCurrentSelectedOutputUserNumber
 <CODE>
 <PRE>  		
 do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel - 1)
+  n_user = RM_GetNthSelectedOutputUserNumber(id, isel)
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))

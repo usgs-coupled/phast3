@@ -18,6 +18,7 @@ int advection_cpp()
 		// Create reaction module
 		PhreeqcRM phreeqc_rm(nxyz, nthreads);
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // 1 = throw exception on error
+		status = phreeqc_rm.SetComponentH2O(false);
 		status = phreeqc_rm.SetRebalanceFraction(0.5);
 		status = phreeqc_rm.SetRebalanceByCell(1);
 		status = phreeqc_rm.SetFilePrefix("Advect_cpp");
