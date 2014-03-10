@@ -12,7 +12,7 @@
 #include "mpi.h"
 #endif
 /* ---------------------------------------------------------------------- */
-int RM_Abort(int id, int result, const char * str)
+IRM_RESULT RM_Abort(int id, int result, const char * str)
 /* ---------------------------------------------------------------------- */
 {
 	// decodes error
@@ -30,7 +30,7 @@ int RM_Abort(int id, int result, const char * str)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_CloseFiles(int id)
 /* ---------------------------------------------------------------------- */
 {	
@@ -88,7 +88,7 @@ int RM_Create(int nxyz, int nthreads)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_CreateMapping(int id, int *grid2chem)
+IRM_RESULT RM_CreateMapping(int id, int *grid2chem)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -105,7 +105,7 @@ int RM_CreateMapping(int id, int *grid2chem)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_DecodeError(int id, int e)
+IRM_RESULT RM_DecodeError(int id, int e)
 /* ---------------------------------------------------------------------- */
 {
 	// Prints the error message for IRM_RESULT e
@@ -118,14 +118,14 @@ int RM_DecodeError(int id, int e)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_Destroy(int id)
+IRM_RESULT RM_Destroy(int id)
 /* ---------------------------------------------------------------------- */
 {
 	return PhreeqcRM::DestroyReactionModule(id);
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_DumpModule(int id, int dump_on, int use_gz)
+IRM_RESULT RM_DumpModule(int id, int dump_on, int use_gz)
 /* ---------------------------------------------------------------------- */
 {	
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -136,7 +136,7 @@ int RM_DumpModule(int id, int dump_on, int use_gz)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_ErrorMessage(int id, const char *err_str)
 /* ---------------------------------------------------------------------- */
 {
@@ -180,7 +180,8 @@ int RM_GetChemistryCellCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetComponent(int id, int num, char *chem_name, int l1)
+IRM_RESULT
+RM_GetComponent(int id, int num, char *chem_name, int l1)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -212,7 +213,8 @@ int RM_GetComponentCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetConcentrations(int id, double * c)
+IRM_RESULT 
+RM_GetConcentrations(int id, double * c)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -254,7 +256,7 @@ RM_GetDensity(int id, double * d)
 }
 #endif
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_GetDensity(int id, double * d)
 /* ---------------------------------------------------------------------- */
 {
@@ -284,7 +286,7 @@ RM_GetDensity(int id, double * d)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_GetFilePrefix(int id, char *prefix, int l)
 /* ---------------------------------------------------------------------- */
 {
@@ -302,7 +304,7 @@ RM_GetFilePrefix(int id, char *prefix, int l)
 }
 
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_GetGfw(int id, double * gfw)
 /* ---------------------------------------------------------------------- */
 {
@@ -383,7 +385,8 @@ RM_GetNthSelectedOutputUserNumber(int id, int i)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetSelectedOutput(int id, double * so)
+IRM_RESULT 
+RM_GetSelectedOutput(int id, double * so)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -420,7 +423,8 @@ int RM_GetSelectedOutputCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetSelectedOutputHeading(int id, int icol, char *heading, int length)
+IRM_RESULT 
+RM_GetSelectedOutputHeading(int id, int icol, char *heading, int length)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -450,7 +454,7 @@ int RM_GetSelectedOutputRowCount(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_GetSolutionVolume(int id, double * v)
 /* ---------------------------------------------------------------------- */
 {
@@ -480,7 +484,7 @@ RM_GetSolutionVolume(int id, double * v)
 }
 
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_GetSpeciesConcentrations(int id, double * species_conc)
 /* ---------------------------------------------------------------------- */
 {
@@ -511,7 +515,7 @@ RM_GetSpeciesCount(int id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_GetSpeciesD25(int id, double * diffc)
 /* ---------------------------------------------------------------------- */
 {
@@ -525,7 +529,8 @@ RM_GetSpeciesD25(int id, double * diffc)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_GetSpeciesName(int id, int i, char *name, int length)
+IRM_RESULT 
+RM_GetSpeciesName(int id, int i, char *name, int length)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -553,7 +558,7 @@ int RM_GetSpeciesSaveOn(int id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_GetSpeciesZ(int id, double * z)
 /* ---------------------------------------------------------------------- */
 {
@@ -614,7 +619,7 @@ double RM_GetTimeStep(int id)
 	return (double) IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_InitialPhreeqc2Concentrations(
 			int id,
 			double *boundary_c,
@@ -668,7 +673,7 @@ RM_InitialPhreeqc2Concentrations(
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_InitialPhreeqc2Module(int id,
 							  int *initial_conditions1,		// 7 x nxyz end-member 1
 							  int *initial_conditions2,		// 7 x nxyz end-member 2
@@ -694,7 +699,7 @@ RM_InitialPhreeqc2Module(int id,
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_InitialPhreeqcCell2Module(int id,
                 int n,		                            // InitialPhreeqc cell number
                 int *module_numbers,		            // Module cell numbers
@@ -714,7 +719,7 @@ RM_InitialPhreeqcCell2Module(int id,
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_InitialPhreeqc2SpeciesConcentrations(
 			int id,
 			double *species_c,
@@ -772,7 +777,7 @@ RM_InitialPhreeqc2SpeciesConcentrations(
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_LoadDatabase(int id, const char *db_name)
 	/* ---------------------------------------------------------------------- */
 {
@@ -785,7 +790,7 @@ RM_LoadDatabase(int id, const char *db_name)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_LogMessage(int id, const char *err_str)
 /* ---------------------------------------------------------------------- */
 {
@@ -803,7 +808,7 @@ RM_LogMessage(int id, const char *err_str)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_MpiWorker(int id)
 /* ---------------------------------------------------------------------- */
 {
@@ -815,7 +820,7 @@ RM_MpiWorker(int id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_MpiWorkerBreak(int id)
 /* ---------------------------------------------------------------------- */
 {
@@ -827,7 +832,8 @@ RM_MpiWorkerBreak(int id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_OpenFiles(int id)
+IRM_RESULT 
+RM_OpenFiles(int id)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -838,7 +844,7 @@ int RM_OpenFiles(int id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_OutputMessage(int id, const char *err_str)
 /* ---------------------------------------------------------------------- */
 {
@@ -856,7 +862,8 @@ RM_OutputMessage(int id, const char *err_str)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_RunCells(int id)
+IRM_RESULT 
+RM_RunCells(int id)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -873,7 +880,7 @@ int RM_RunCells(int id)
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *chem_name)
 /* ---------------------------------------------------------------------- */
 {
@@ -887,7 +894,7 @@ RM_RunFile(int id, int workers, int initial_phreeqc, int utility, const char *ch
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char *input_string)
 /* ---------------------------------------------------------------------- */
 {
@@ -900,7 +907,7 @@ RM_RunString(int id, int workers, int initial_phreeqc, int utility, const char *
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_ScreenMessage(int id, const char *err_str)
 /* ---------------------------------------------------------------------- */
 {
@@ -918,7 +925,7 @@ RM_ScreenMessage(int id, const char *err_str)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetCellVolume(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -930,7 +937,7 @@ RM_SetCellVolume(int id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetComponentH2O(int id, int tf)
 /* ---------------------------------------------------------------------- */
 {
@@ -942,7 +949,7 @@ RM_SetComponentH2O(int id, int tf)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetConcentrations(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -955,7 +962,8 @@ RM_SetConcentrations(int id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_SetCurrentSelectedOutputUserNumber(int id, int i)
+IRM_RESULT 
+RM_SetCurrentSelectedOutputUserNumber(int id, int i)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -967,7 +975,7 @@ int RM_SetCurrentSelectedOutputUserNumber(int id, int i)
 }
 
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetDensity(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -979,7 +987,7 @@ RM_SetDensity(int id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetDumpFileName(int id, const char *name)
 /* ---------------------------------------------------------------------- */
 {
@@ -992,7 +1000,7 @@ RM_SetDumpFileName(int id, const char *name)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetErrorHandlerMode(int id, int mode)
 /* ---------------------------------------------------------------------- */
 {
@@ -1005,7 +1013,7 @@ RM_SetErrorHandlerMode(int id, int mode)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetFilePrefix(int id, const char *name)
 /* ---------------------------------------------------------------------- */
 {
@@ -1018,7 +1026,7 @@ RM_SetFilePrefix(int id, const char *name)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie))
 /* ---------------------------------------------------------------------- */
 {
@@ -1030,7 +1038,7 @@ RM_SetMpiWorkerCallback(int id, int (*fcn)(int *x1, void *cookie))
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetMpiWorkerCallbackCookie(int id, void *cookie)
 /* ---------------------------------------------------------------------- */
 {
@@ -1056,7 +1064,8 @@ RM_SetPartitionUZSolids(int id, int t)
 }
 #endif
 /* ---------------------------------------------------------------------- */
-int RM_SetPoreVolume(int id, double *t)
+IRM_RESULT 
+RM_SetPoreVolume(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -1067,7 +1076,8 @@ int RM_SetPoreVolume(int id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_SetPressure(int id, double *t)
+IRM_RESULT 
+RM_SetPressure(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -1079,7 +1089,7 @@ int RM_SetPressure(int id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetPrintChemistryOn(int id,	 int worker, int ip, int utility)
 /* ---------------------------------------------------------------------- */
 {
@@ -1094,7 +1104,8 @@ RM_SetPrintChemistryOn(int id,	 int worker, int ip, int utility)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_SetPrintChemistryMask(int id, int *t)
+IRM_RESULT 
+RM_SetPrintChemistryMask(int id, int *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -1105,7 +1116,8 @@ int RM_SetPrintChemistryMask(int id, int *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_SetRebalanceFraction(int id, double f)
+IRM_RESULT 
+RM_SetRebalanceFraction(int id, double f)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -1116,7 +1128,8 @@ int RM_SetRebalanceFraction(int id, double f)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_SetRebalanceByCell(int id, int method)
+IRM_RESULT 
+RM_SetRebalanceByCell(int id, int method)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -1127,7 +1140,8 @@ int RM_SetRebalanceByCell(int id, int method)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_SetSaturation(int id, double *t)
+IRM_RESULT 
+RM_SetSaturation(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -1138,7 +1152,7 @@ int RM_SetSaturation(int id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetSelectedOutputOn(int id, int selected_output_on)
 /* ---------------------------------------------------------------------- */
 {
@@ -1151,7 +1165,7 @@ RM_SetSelectedOutputOn(int id, int selected_output_on)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetSpeciesSaveOn(int id, int save_on)
 /* ---------------------------------------------------------------------- */
 {
@@ -1164,7 +1178,8 @@ RM_SetSpeciesSaveOn(int id, int save_on)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_SetTemperature(int id, double *t)
+IRM_RESULT 
+RM_SetTemperature(int id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
@@ -1176,7 +1191,7 @@ int RM_SetTemperature(int id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetTime(int id, double t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1192,7 +1207,8 @@ RM_SetTime(int id, double t)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_SetTimeConversion(int id, double t)
+IRM_RESULT 
+RM_SetTimeConversion(int id, double t)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -1207,7 +1223,7 @@ int RM_SetTimeConversion(int id, double t)
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetTimeStep(int id, double t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1222,7 +1238,7 @@ RM_SetTimeStep(int id, double t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetUnitsExchange (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1234,7 +1250,7 @@ RM_SetUnitsExchange (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetUnitsGasPhase (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1246,7 +1262,7 @@ RM_SetUnitsGasPhase (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetUnitsKinetics (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1258,7 +1274,7 @@ RM_SetUnitsKinetics (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetUnitsPPassemblage (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1270,7 +1286,7 @@ RM_SetUnitsPPassemblage (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetUnitsSolution (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1282,7 +1298,7 @@ RM_SetUnitsSolution (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetUnitsSSassemblage (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1294,7 +1310,7 @@ RM_SetUnitsSSassemblage (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetUnitsSurface (int id, int u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1306,7 +1322,7 @@ RM_SetUnitsSurface (int id, int u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SpeciesConcentrations2Module(int id, double * species_conc)
 /* ---------------------------------------------------------------------- */
 {
@@ -1327,7 +1343,7 @@ RM_SpeciesConcentrations2Module(int id, double * species_conc)
 }
 /* 
 --------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_WarningMessage(int id, const char *err_str)
 /* ---------------------------------------------------------------------- */
 {	
