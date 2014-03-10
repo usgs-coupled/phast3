@@ -256,7 +256,7 @@ if( numCPU < 1 )
 		temp.push_back(i);
 		backward_mapping.push_back(temp);
 		saturation.push_back(1.0);
-		old_saturation.push_back(1.0);
+		//old_saturation.push_back(1.0);
 		pore_volume.push_back(0.1);
 		//pore_volume_zero.push_back(0.1);
 		cell_volume.push_back(1.0);
@@ -4989,7 +4989,7 @@ PhreeqcRM::RebalanceLoad(void)
 			{
 				int i = k;
 				int ihst = this->backward_mapping[i][0];	/* ihst is 1 to nxyz */
-				old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
+				//old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
 				while (k > end_cell[old])
 				{
 					old++;
@@ -5498,7 +5498,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		int i = k;
 		//int iphrq = i;			/* iphrq is 1 to count_chem */
 		int ihst = this->backward_mapping[i][0];	/* ihst is 1 to nxyz */
-		old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
+		//old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
 		while (k > end_cell[old])
 		{
 			old++;

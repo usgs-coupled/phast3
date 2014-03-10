@@ -294,7 +294,7 @@ protected:
 	double time;						    // time from transport, sec 
 	double time_step;					    // time step from transport, sec
 	double time_conversion;					// time conversion factor, multiply to convert to preferred time unit for output
-	std::vector <double> old_saturation;	// saturation fraction from previous step
+	//std::vector <double> old_saturation;	// saturation fraction from previous step
 	std::vector<double> saturation;	        // nxyz saturation fraction
 	std::vector<double> pressure;			// nxyz current pressure
 	std::vector<double> pore_volume;		// nxyz current pore volumes 
