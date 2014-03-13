@@ -1943,7 +1943,9 @@ Called by root and (or) workers.
 double     RM_GetTimeStep(int id);
 /**
 Fills an array (c) with concentrations from solutions in the InitialPhreeqc instance.
-Used to obtain concentrations for boundary conditions. Concentrations may be a mixture of two
+Used to obtain concentrations for boundary conditions. If a negative value
+is used for a cell in boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
+will be used for that cell. Concentrations may be a mixture of two
 solutions, boundary_solution1 and boundary_solution2, with a mixing fraction for boundary_solution1 1 of
 fraction1 and mixing fraction for boundary_solution2 of (1 - fraction1). 
 A negative value for boundary_solution2 implies no mixing, and the associated value for fraction1 is ignored.
@@ -2164,7 +2166,7 @@ cell n from the InitialPhreeqc instance.
 <PRE>  		
 module_cells = (int *) malloc((size_t) (2 * sizeof(int)));
 module_cells[0] = 18;
-module_cells[0] = 19;
+module_cells[1] = 19;
 // n will be the largest SOLUTION number in InitialPhreeqc instance
 // copies solution and reactants to cells 18 and 19
 status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2);
@@ -2208,7 +2210,10 @@ IRM_RESULT RM_InitialPhreeqcCell2Module(int id,
 /**
 Fills an array (c) with aqueous species concentrations from solutions in the InitialPhreeqc instance.
 This method is intended for use with multicomponent-diffusion transport calculations.
-Used to aqueous species obtain concentrations for boundary conditions. Concentrations may be a mixture of two
+Used to obtain aqueous species concentrations for boundary conditions. If a negative value
+is used for a cell in boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
+will be used for that cell. 
+Concentrations may be a mixture of two
 solutions, boundary_solution1 and boundary_solution2, with a mixing fraction for boundary_solution1 1 of
 fraction1 and mixing fraction for boundary_solution2 of (1 - fraction1). 
 A negative value for boundary_solution2 implies no mixing, and the associated value for fraction1 is ignored.

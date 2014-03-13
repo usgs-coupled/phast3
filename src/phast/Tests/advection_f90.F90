@@ -1,6 +1,9 @@
 
     
     subroutine advection_f90()
+#ifdef USE_MPI    
+    USE mpi
+#endif    
     implicit none
     INCLUDE 'RM_interface_F.f90.inc'
     INCLUDE 'IPhreeqc.f90.inc'
@@ -14,6 +17,7 @@
     end interface
     
     ! Based on PHREEQC Example 11
+    integer :: mpi_myself
     integer :: i, j
     integer :: nxyz
     integer :: nthreads
@@ -57,10 +61,21 @@
     integer                                       :: dump_on, append
 
     nxyz = 40
-    nthreads = 2
-
-    ! Create reaction module
-    id = RM_create(nxyz, nthreads)
+#ifdef USE_MPI
+	id = RM_Create(nxyz, MPI_COMM_WORLD)
+    call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
+	if (status .ne. MPI_SUCCESS) then
+		stop "Failed to get mpi_myself"
+    endif
+	if (mpi_myself > 0) then
+		status = RM_MpiWorker(id);
+		status = RM_Destroy(id);
+		return
+	endif
+#else
+	nthreads = 3;
+	id = RM_Create(nxyz, nthreads);
+#endif
     status = RM_SetErrorHandlerMode(id, 2)  ! exit on error
     status = RM_SetComponentH2O(id, 0)
 	status = RM_SetRebalanceFraction(id, 0.5d0)
@@ -322,6 +337,7 @@
     
     ! Clean up
 	status = RM_CloseFiles(id)
+	status = RM_MpiWorkerBreak(id)
 	status = RM_Destroy(id)
     deallocate(cell_vol);
     deallocate(pv);

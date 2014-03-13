@@ -37,7 +37,7 @@ Using solution 1.
                         Activity of water  =   1.000
                            Ionic strength  =  1.500e-003
                        Mass of water (kg)  =  9.982e-001
-                 Total alkalinity (eq/kg)  = -1.622e-018
+                 Total alkalinity (eq/kg)  = -1.974e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  15.00
@@ -92,7 +92,7 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 27.771 Seconds.
---------------------------------
+-------------------------------
+End of Run after 0.473 Seconds.
+-------------------------------
 

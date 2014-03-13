@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 #include "PhreeqcRM.h"
+#if defined(USE_MPI)
+#include <mpi.h>
+#endif
 
 void AdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int nxyz, int dim);
 
@@ -12,11 +15,24 @@ int advection_cpp()
 	try
 	{
 		int nxyz = 40;
+#ifdef USE_MPI
+		PhreeqcRM phreeqc_rm(nxyz, MPI_COMM_WORLD);
+		int mpi_myself;
+		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+		{
+			exit(4);
+		}
+		if (mpi_myself > 0)
+		{
+			phreeqc_rm.MpiWorker();
+			return EXIT_SUCCESS;
+		}
+#else
 		int nthreads = 3;
+		PhreeqcRM phreeqc_rm(nxyz, nthreads);
+#endif
 		IRM_RESULT status;
 
-		// Create reaction module
-		PhreeqcRM phreeqc_rm(nxyz, nthreads);
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // 1 = throw exception on error
 		status = phreeqc_rm.SetComponentH2O(false);
 		status = phreeqc_rm.SetRebalanceFraction(0.5);
@@ -299,6 +315,7 @@ int advection_cpp()
 
 		// Clean up
 		status = phreeqc_rm.CloseFiles();
+		status = phreeqc_rm.MpiWorkerBreak();
 	}
 	catch (PhreeqcRMStop)
 	{

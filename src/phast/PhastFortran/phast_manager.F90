@@ -257,7 +257,6 @@ SUBROUTINE time_parallel(i)
     USE mcc, only: rm_id
 #if defined(USE_MPI)
 USE mpi_mod
-USE mpi
 #endif
 IMPLICIT none   
     INCLUDE "RM_interface_F.f90.inc"

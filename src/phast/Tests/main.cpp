@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 	mpi_myself = 0;
 #endif
 
-	units_tester();
+	//units_tester();
 	advection_cpp();
 	advection_f90();
 	advection_c();
