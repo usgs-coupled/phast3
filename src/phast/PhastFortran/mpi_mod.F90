@@ -1,7 +1,6 @@
 ! ... Module file used for definition of mpi parameters and inclusion of
 ! ...      mpi header files
 ! ... This module is used by both manager and worker programs
-! ... $Id: mpi_mod.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $
 MODULE mpi_mod
 #if defined(USE_MPI)
   USE MPI

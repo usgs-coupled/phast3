@@ -4,12 +4,15 @@
 #include <stdlib.h>
 #include "RM_interface_C.h"
 #include "IPhreeqc.h"
-
+#if defined(USE_MPI)
+#include <mpi.h>
+#endif
 void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
     void advection_c()
 	{
 		// Based on PHREEQC Example 11
+		int mpi_myself = 0;
 		int i, j;
 		int nxyz; 
 		int nthreads;
@@ -55,8 +58,22 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int dump_on, append;
 
 		nxyz = 40;
-		nthreads = 2;
+#ifdef USE_MPI
+		id = RM_Create(nxyz, MPI_COMM_WORLD);
+		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+		{
+			exit(4);
+		}
+		if (mpi_myself > 0)
+		{
+			status = RM_MpiWorker(id);
+			status = RM_Destroy(id);
+			return;
+		}
+#else
+		nthreads = 3;
 		id = RM_Create(nxyz, nthreads);
+#endif
 		status = RM_SetErrorHandlerMode(id, 2);
 		status = RM_SetComponentH2O(id, 0);
 		status = RM_SetRebalanceFraction(id, 0.5);
@@ -203,7 +220,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		// will be written to cells 18 and 19 (0 based)
 		module_cells = (int *) malloc((size_t) (2 * sizeof(int)));
 		module_cells[0] = 18;
-		module_cells[0] = 19;
+		module_cells[1] = 19;
 		status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2);
 
 		// Get a boundary condition from initial phreeqc
@@ -358,6 +375,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		status = RM_DumpModule(id, dump_on, append);   
 
 		status = RM_CloseFiles(id);
+		status = RM_MpiWorkerBreak(id);
 		status = RM_Destroy(id);
 		// free space
 		free(cell_vol);

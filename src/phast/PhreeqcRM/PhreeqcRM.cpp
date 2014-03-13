@@ -1985,14 +1985,13 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 		{
 			// open dump file
 			std::string name(this->dump_file_name);
-			if (append)
-			{
-				dump_file = gzopen(name.c_str(), "ab1");
-			}
-			else
-			{	
-				dump_file = gzopen(name.c_str(), "wb1");
-			}
+			std::string mode;
+#ifdef USE_GZ
+			mode = append ? "ab1" : "wb1";
+#else
+			mode = append ? "a" : "w";
+#endif
+			dump_file = gzopen(name.c_str(), mode.c_str());
 			if (dump_file == NULL)
 			{
 				std::ostringstream errstr;
@@ -2114,14 +2113,14 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 		std::string name(this->dump_file_name);
 
 		// open
-		if (append)
-		{
-			dump_file = gzopen(name.c_str(), "ab1");
-		}
-		else
-		{	
-			dump_file = gzopen(name.c_str(), "wb1");
-		}
+		std::string mode;
+#ifdef USE_GZ
+		mode = append ? "ab1" : "wb1";
+#else
+		mode = append ? "a" : "w";
+#endif
+		dump_file = gzopen(name.c_str(), mode.c_str());
+
 		if (dump_file == NULL)
 		{
 			std::ostringstream errstr;
@@ -2496,7 +2495,7 @@ PhreeqcRM::FindComponents(void)
 			}
 			{
 				std::ostringstream in;
-				in << "SOLUTION " << next << "\n";
+				in << "DELETE; -solution " << next << "\n";
 				phast_iphreeqc_worker->RunString(in.str().c_str());
 			}
 		}
@@ -3156,13 +3155,12 @@ IRM_RESULT
 PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
 		int method = METHOD_GETSPECIESCONCENTRATIONS;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
-#endif
+
 	if (this->species_save_on)
 	{
 		size_t nspecies = this->species_names.size();
@@ -3200,8 +3198,8 @@ PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 		// Fill in worker concentrations
 		for (int n = 1; n < this->mpi_tasks; n++)
 		{
-			int ncells = this->end_cell[n] - start_cell[0] + 1;
-			if (this->mpi_myself = n)
+			int ncells = this->end_cell[n] - start_cell[n] + 1;
+			if (this->mpi_myself == n)
 			{
 				species_conc.resize(nspecies * ncells, 0);
 				for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
@@ -3219,7 +3217,7 @@ PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 				}
 				MPI_Send((void *) species_conc.data(), (int) nspecies * ncells, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
 			}
-			else if (this->mpi_myself = 0)
+			else if (this->mpi_myself == 0)
 			{
 				MPI_Status mpi_status;
 				double * recv_species = new double[(size_t)  nspecies * ncells];
@@ -3974,16 +3972,16 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 	 *      Routine finds the last solution in InitialPhreeqc, equilibrates the cell,
 	 *      and copies result to list of cell numbers in the module. 
 	 */
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_INITIALPHREEQCCELL2MODULE;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+#endif
 	IRM_RESULT return_value = IRM_OK;
 	if (this->mpi_myself == 0)
 	{
-#ifdef USE_MPI
-		if (this->mpi_myself == 0)
-		{
-			int method = METHOD_INITIALPHREEQCCELL2MODULE;
-			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-		}
-#endif
 		// determine last solution number
 		if (cell < 0)
 		{
@@ -4031,10 +4029,12 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 		in << "RUN_CELLS; -cell " << cell << "; -time_step 0\n";
 		// Turn off printing
 		std::vector<bool> tf = this->GetPrintChemistryOn();
-		this->SetPrintChemistryOn(false, false, false);
-		IRM_RESULT status = this->RunString(0, 1, 0, in.str().c_str());
-		this->SetPrintChemistryOn(tf[0], tf[1], tf[2]);
+		this->print_chemistry_on[1] = false;
+		int status_ip = this->workers[this->nthreads]->RunString(in.str().c_str());
+		IRM_RESULT status = IRM_OK;
+		if (status_ip != 0) status = IRM_FAIL;
 		this->ErrorHandler(status, "RunString");
+		this->print_chemistry_on[1] = tf[1];
 
 		for (size_t i = 0; i < cell_numbers.size(); i++)
 		{
@@ -6570,8 +6570,8 @@ PhreeqcRM::RunString(bool workers, bool initial_phreeqc, bool utility, const cha
 	}
 #ifdef USE_MPI
 	MPI_Bcast((void *) flags.data(), 5, MPI_INT, 0, phreeqcrm_comm);
-	input.resize(flags[4]);
-	MPI_Bcast((void *) input.c_str(), flags[4], MPI_CHAR, 0, phreeqcrm_comm);
+	input.resize(flags[3]);
+	MPI_Bcast((void *) input.c_str(), flags[3], MPI_CHAR, 0, phreeqcrm_comm);
 #endif
 
 	// Quit on error
@@ -7877,7 +7877,11 @@ PhreeqcRM::SpeciesConcentrations2Module(std::vector<double> & species_conc)
 						nd.add(it->first.c_str(), it->second);
 					}
 				}
+#ifdef USE_MPI
+				cxxSolution *soln_ptr = this->GetWorkers()[0]->Get_solution(i);
+#else
 				cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(i);
+#endif
 				if (soln_ptr)
 				{
 					soln_ptr->Update(d[0], d[1], d[2], nd);

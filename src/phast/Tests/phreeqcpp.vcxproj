@@ -137,6 +137,9 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</PostBuildEventUseInBuild>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -277,8 +280,8 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_MPICH2_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DEV_MPICH2_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(DEV_ZLIB123_X64_INC);$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_GZ;NDEBUG;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -289,8 +292,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>fmpich2.lib;mpi.lib;IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_MPICH2_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release;$(SolutionDir)FortranAdvect\$(platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmpich2.lib;mpi.lib;zlib1.lib;IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_ZLIB123_X64_LIB);$(DEV_IFC_X64_LIB);$(DEV_MPICH2_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release;$(SolutionDir)FortranAdvect\$(platform)\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>

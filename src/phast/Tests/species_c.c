@@ -75,7 +75,7 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			return;
 		}
 #else
-		nthreads = 2;
+		nthreads = 3;
 		id = RM_Create(nxyz, nthreads);
 #endif
 		status = RM_SetErrorHandlerMode(id, 2);
