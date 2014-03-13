@@ -354,11 +354,23 @@ int units_tester()
 	try
 	{
 		int nxyz = 3;
-		int nthreads = 3;
 		IRM_RESULT status;
-
-		// Create reaction module
+#ifdef USE_MPI
+		PhreeqcRM phreeqc_rm(nxyz, MPI_COMM_WORLD);
+		int mpi_myself;
+		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+		{
+			exit(4);
+		}
+		if (mpi_myself > 0)
+		{
+			phreeqc_rm.MpiWorker();
+			return EXIT_SUCCESS;
+		}
+#else
+		int nthreads = 3;
 		PhreeqcRM phreeqc_rm(nxyz, nthreads);
+#endif
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // throw exception on error
 		status = phreeqc_rm.SetFilePrefix("Units_InitialPhreeqc_1");
 		if (phreeqc_rm.GetMpiMyself() == 0)
@@ -448,6 +460,7 @@ int units_tester()
 		util_ptr->SetOutputFileName("Units_utility.out");
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
+		status = phreeqc_rm.MpiWorkerBreak();
 		
 	}
 	catch (PhreeqcRMStop)
