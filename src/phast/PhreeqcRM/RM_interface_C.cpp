@@ -395,7 +395,7 @@ RM_GetSelectedOutput(int id, double * so)
 			// todo ...........
 			so_vector.resize(Reaction_module_ptr->GetSelectedOutputColumnCount() * 
 				Reaction_module_ptr->GetSelectedOutputRowCount());
-			IRM_RESULT return_value = Reaction_module_ptr->GetSelectedOutput(so_vector.data());
+			IRM_RESULT return_value = Reaction_module_ptr->GetSelectedOutput(so_vector);
 			if (return_value == IRM_OK)
 			{
 				memcpy(so, so_vector.data(), so_vector.size() * sizeof(double));
@@ -995,7 +995,7 @@ RM_SetCellVolume(int id, double *t)
 			std::vector<double> v_vector;
 			v_vector.resize(Reaction_module_ptr->GetGridCellCount());
 			memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
-			return Reaction_module_ptr->SetCellVolume(v_vector.data());
+			return Reaction_module_ptr->SetCellVolume(v_vector);
 		}
 		return IRM_INVALIDARG;
 	}

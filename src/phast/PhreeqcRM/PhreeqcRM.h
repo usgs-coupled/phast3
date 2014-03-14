@@ -164,7 +164,7 @@ public:
 	bool                                      GetRebalanceMethod(void) const {return this->rebalance_by_cell;}
 	double                                    GetRebalanceFraction(void) const {return this->rebalance_fraction;}
 	std::vector<double> &                     GetSaturation(void) {return this->saturation;}
-	IRM_RESULT                                GetSelectedOutput(double *so);
+	IRM_RESULT                                GetSelectedOutput(std::vector<double> &so);
 	int                                       GetSelectedOutputColumnCount(void);
 	int                                       GetSelectedOutputCount(void);
 	IRM_RESULT                                GetSelectedOutputHeading(int icol, std::string &heading);
@@ -187,7 +187,7 @@ public:
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
 
 	// Setters 
-	IRM_RESULT                                SetCellVolume(double * t);
+	IRM_RESULT                                SetCellVolume(const std::vector<double> &t);
 	IRM_RESULT                                SetComponentH2O(bool tf);
 	IRM_RESULT                                SetConcentrations(double * t); 
 	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i);
@@ -262,6 +262,8 @@ protected:
 	void                                      SetEndCells(void);
 	IRM_RESULT                                TransferCells(cxxStorageBin &t_bin, int old, int nnew);
 
+private:
+	IRM_RESULT                                SetGeneric(std::vector<double> &destination, int newSize, const std::vector<double> &origin, int mpiMethod, const std::string &name, const double newValue = 0.0);
 protected:
 	bool component_h2o;                      // true: use H2O, excess H, excess O, and charge; 
 	                                         // false total H, total O, and charge
