@@ -61,12 +61,12 @@ int advection_cpp()
 		// Set current pore volume
 		std::vector<double> pv;
 		pv.resize(nxyz, 0.2);
-		status = phreeqc_rm.SetPoreVolume(pv.data());
+		status = phreeqc_rm.SetPoreVolume(pv);
 
 		// Set saturation
 		std::vector<double> sat;
 		sat.resize(nxyz, 1.0);
-		status = phreeqc_rm.SetSaturation(sat.data());
+		status = phreeqc_rm.SetSaturation(sat);
 
 		// Set cells to print chemistry when print chemistry is turned on
 		std::vector<int> print_chemistry_mask;
@@ -198,9 +198,9 @@ int advection_cpp()
 		initial_density.resize(nxyz, 1.0);
 		temperature.resize(nxyz, 20.0);
 		pressure.resize(nxyz, 2.0);
-		phreeqc_rm.SetDensity(initial_density.data());
-		phreeqc_rm.SetTemperature(temperature.data());
-		phreeqc_rm.SetPressure(pressure.data());
+		phreeqc_rm.SetDensity(initial_density);
+		phreeqc_rm.SetTemperature(temperature);
+		phreeqc_rm.SetPressure(pressure);
 
 		time_step = 86400.;
 		status = phreeqc_rm.SetTimeStep(time_step);
@@ -221,10 +221,10 @@ int advection_cpp()
 			bool print_chemistry_on = (steps == nsteps - 1) ? true : false;
 			status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on); 
 			status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); // workers, initial_phreeqc, utility
-			status = phreeqc_rm.SetPoreVolume(pv.data());            // If pore volume changes due to compressibility
-			status = phreeqc_rm.SetSaturation(sat.data());           // If saturation changes
-			status = phreeqc_rm.SetTemperature(temperature.data());  // If temperature changes
-			status = phreeqc_rm.SetPressure(pressure.data());        // If pressure changes
+			status = phreeqc_rm.SetPoreVolume(pv);            // If pore volume changes due to compressibility
+			status = phreeqc_rm.SetSaturation(sat);           // If saturation changes
+			status = phreeqc_rm.SetTemperature(temperature);  // If temperature changes
+			status = phreeqc_rm.SetPressure(pressure);        // If pressure changes
 			status = phreeqc_rm.SetConcentrations(c);         // Transported concentrations
 			status = phreeqc_rm.SetTimeStep(time_step);				 // Time step for kinetic reactions
 			time = time + time_step;
@@ -394,12 +394,12 @@ int units_tester()
 		// Set current pore volume
 		std::vector<double> pv;
 		pv.resize(nxyz, 0.2);
-		status = phreeqc_rm.SetPoreVolume(pv.data());
+		status = phreeqc_rm.SetPoreVolume(pv);
 
 		// Set saturation
 		std::vector<double> sat;
 		sat.resize(nxyz, 1.0);
-		status = phreeqc_rm.SetSaturation(sat.data());
+		status = phreeqc_rm.SetSaturation(sat);
 
 		// Set printing of chemistry file
 		status = phreeqc_rm.SetPrintChemistryOn(true, true, false); // workers, initial_phreeqc, utility

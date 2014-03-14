@@ -1059,7 +1059,7 @@ RM_SetDensity(int *id, double *t)
 			std::vector<double> d_vector;
 			d_vector.resize(Reaction_module_ptr->GetGridCellCount());
 			memcpy(d_vector.data(), t, d_vector.size() * sizeof(double));
-			return Reaction_module_ptr->SetDensity(d_vector.data());
+			return Reaction_module_ptr->SetDensity(d_vector);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -1156,7 +1156,7 @@ IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 		std::vector<double> v_vector;
 		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
 		memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
-		return Reaction_module_ptr->SetPoreVolume(v_vector.data());
+		return Reaction_module_ptr->SetPoreVolume(v_vector);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -1172,7 +1172,7 @@ IRM_RESULT RM_SetPressure(int *id, double *t)
 		std::vector<double> p_vector;
 		p_vector.resize(Reaction_module_ptr->GetGridCellCount());
 		memcpy(p_vector.data(), t, p_vector.size() * sizeof(double));
-		return Reaction_module_ptr->SetPressure(p_vector.data());
+		return Reaction_module_ptr->SetPressure(p_vector);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -1253,7 +1253,7 @@ IRM_RESULT RM_SetSaturation(int *id, double *t)
 		std::vector<double> s_vector;
 		s_vector.resize(Reaction_module_ptr->GetGridCellCount());
 		memcpy(s_vector.data(), t, s_vector.size() * sizeof(double));
-		return Reaction_module_ptr->SetSaturation(s_vector.data());
+		return Reaction_module_ptr->SetSaturation(s_vector);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -1297,7 +1297,7 @@ IRM_RESULT RM_SetTemperature(int *id, double *t)
 		std::vector<double> t_vector;
 		t_vector.resize(Reaction_module_ptr->GetGridCellCount());
 		memcpy(t_vector.data(), t, t_vector.size() * sizeof(double));
-		return Reaction_module_ptr->SetTemperature(t_vector.data());
+		return Reaction_module_ptr->SetTemperature(t_vector);
 	}
 	return IRM_BADINSTANCE;
 }

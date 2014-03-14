@@ -4289,7 +4289,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETDENSITY" << std::endl;
 				{
 					std::vector<double> dummy;
-					this->SetDensity(dummy.data());
+					this->SetDensity(dummy);
 				}
 				break;
 			case METHOD_SETERRORHANDLERMODE:
@@ -4314,14 +4314,14 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
 				{
 					std::vector<double> dummy;
-					this->SetPoreVolume(dummy.data());
+					this->SetPoreVolume(dummy);
 				}
 				break;
 			case METHOD_SETPRESSURE:
 				if (debug_worker) std::cerr << "METHOD_SETPRESSURE" << std::endl;
 				{
 					std::vector<double> dummy;
-					this->SetPressure(dummy.data());
+					this->SetPressure(dummy);
 				}
 				break;
 			case METHOD_SETPRINTCHEMISTRYON:
@@ -4349,7 +4349,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETSATURATION" << std::endl;
 				{
 					std::vector<double> dummy;
-					this->SetSaturation(dummy.data());
+					this->SetSaturation(dummy);
 				}
 				break;
 			case METHOD_SETSELECTEDOUTPUTON:
@@ -4370,7 +4370,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETTEMPERATURE" << std::endl;
 				{
 					std::vector<double> dummy;
-					this->SetTemperature(dummy.data());
+					this->SetTemperature(dummy);
 				}
 				break;
 			case METHOD_SETTIME:
@@ -6817,40 +6817,12 @@ PhreeqcRM::SetDatabaseFileName(const char * db)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetDensity(double *t)
+PhreeqcRM::SetDensity(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
-	IRM_RESULT return_value = IRM_OK;
-	try
-	{
-#ifdef USE_MPI
-	if (this->mpi_myself == 0)
-	{
-		int method = METHOD_SETDENSITY;
-		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-	}
-#endif
-		if ((int) this->density.size() < this->nxyz)
-		{
-			this->density.resize((size_t) (this->nxyz), 0.0);
-		}
-		if (mpi_myself == 0)
-		{
-			if (t == NULL) 
-			{
-				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetDensity");
-			}
-			memcpy(this->density.data(), t, (size_t) (this->nxyz * sizeof(double)));
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_FAIL;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->density.data(), this->nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
-#endif
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetDensity");
+	std::string methodName = "SetDensity";
+	IRM_RESULT result_value = SetGeneric(this->density, this->nxyz, t, METHOD_SETDENSITY, methodName);
+	return this->ReturnHandler(result_value, "PhreeqcRM::" + methodName);
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -7065,80 +7037,27 @@ PhreeqcRM::SetPartitionUZSolids(int t)
 	return IRM_OK;
 }
 #endif
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetPoreVolume(double *t)
+PhreeqcRM::SetPoreVolume(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef USE_MPI
-	if (this->mpi_myself == 0)
-	{
-		int method = METHOD_SETPOREVOLUME;
-		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-	}
-#endif
-	IRM_RESULT return_value = IRM_OK;
-	if ((int) this->pore_volume.size() < this->nxyz)
-	{
-		this->pore_volume.resize(this->nxyz);
-	}
-	try
-	{
-		if (mpi_myself == 0)
-		{
-			if (t == NULL)
-			{
-				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetPoreVolume");
-			}
-			memcpy(this->pore_volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_INVALIDARG;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->pore_volume.data(), this->nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
-#endif
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetPoreVolume");
+	std::string methodName = "SetPoreVolume";
+	IRM_RESULT return_value = SetGeneric(this->pore_volume, this->nxyz, t, METHOD_SETPOREVOLUME, methodName);
+	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetPressure(double *t)
+PhreeqcRM::SetPressure(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef USE_MPI
-	if (this->mpi_myself == 0)
-	{
-		int method = METHOD_SETPRESSURE;
-		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-	}
-#endif
-	IRM_RESULT return_value = IRM_OK;
-	if ((int) this->pressure.size() < this->nxyz)
-	{
-		this->pressure.resize(this->nxyz);
-	}
-	try
-	{
-		if (mpi_myself == 0)
-		{
-			if (t == NULL) 
-			{
-				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetPressure");
-			}
-			memcpy(this->pressure.data(), t, (size_t) (this->nxyz * sizeof(double)));
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_INVALIDARG;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->pressure.data(), this->nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
-#endif
+	std::string methodName = "SetPressure";
+	IRM_RESULT return_value = SetGeneric(this->pressure, this->nxyz, t, METHOD_SETPRESSURE, methodName);
+
 #ifdef THREADED_PHAST
-		omp_set_num_threads(this->nthreads);
+	omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for
 #endif
@@ -7153,7 +7072,7 @@ PhreeqcRM::SetPressure(double *t)
 #endif
 
 		for (int j = start; j <= end; j++)
-		{		
+		{
 			// j is count_chem number
 			int i = this->backward_mapping[j][0];
 			if (j < 0) continue;
@@ -7170,7 +7089,7 @@ PhreeqcRM::SetPressure(double *t)
 			}
 		}
 	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetPressure");
+	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
@@ -7272,44 +7191,16 @@ PhreeqcRM::SetRebalanceFraction(double t)
 //#endif
 	return IRM_OK;
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetSaturation(double *t)
+PhreeqcRM::SetSaturation(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
-{	
-#ifdef USE_MPI
-	if (this->mpi_myself == 0)
-	{
-		int method = METHOD_SETSATURATION;
-		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-	}
-#endif
-	IRM_RESULT return_value = IRM_OK;
-	if ((int) this->saturation.size() < this->nxyz)
-	{
-		this->saturation.resize(this->nxyz);
-	}
-	try
-	{
-		if (mpi_myself == 0)
-		{
-			if (t == NULL)
-			{
-				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetSaturation");
-			}
-			memcpy(this->saturation.data(), t, (size_t) (this->nxyz * sizeof(double)));
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_INVALIDARG;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->saturation.data(), this->nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
-#endif
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetSaturation");
+{
+	std::string methodName = "SetSaturation";
+	IRM_RESULT return_value = SetGeneric(this->saturation, this->nxyz, t, METHOD_SETSATURATION, methodName);
+	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
 }
-
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetSelectedOutputOn(bool t)
@@ -7372,43 +7263,16 @@ PhreeqcRM::SetSpeciesSaveOn(bool t)
 
 	return IRM_OK;
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetTemperature(double *t)
+PhreeqcRM::SetTemperature(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef USE_MPI
-	if (this->mpi_myself == 0)
-	{
-		int method = METHOD_SETTEMPERATURE;
-		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-	}
-#endif
-	IRM_RESULT return_value = IRM_OK;
-	if ((int) this->tempc.size() < this->nxyz)
-	{
-		this->tempc.resize(this->nxyz);
-	}
-	try
-	{
-		if (mpi_myself == 0)
-		{
-			if (t == NULL) 
-			{
-				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetTemperature");
-			}
-			memcpy(this->tempc.data(), t, (size_t) (this->nxyz * sizeof(double)));
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_INVALIDARG;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->tempc.data(), this->nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
-#endif
+	IRM_RESULT return_value = SetGeneric(this->tempc, this->nxyz, t, METHOD_SETTEMPERATURE, "SetTemperature");
+
 #ifdef THREADED_PHAST
-		omp_set_num_threads(this->nthreads);
+	omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for
 #endif
@@ -7422,7 +7286,7 @@ PhreeqcRM::SetTemperature(double *t)
 		int end = this->end_cell[n];
 #endif
 		for (int j = start; j <= end; j++)
-		{		
+		{
 			// j is count_chem number
 			int i = this->backward_mapping[j][0];
 			if (j < 0) continue;
