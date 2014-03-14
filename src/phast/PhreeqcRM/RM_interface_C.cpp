@@ -1026,7 +1026,7 @@ RM_SetConcentrations(int id, double *t)
 			std::vector<double> c_vector;
 			c_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
 			memcpy(c_vector.data(), t, c_vector.size() * sizeof(double));
-			return Reaction_module_ptr->SetConcentrations(c_vector.data());
+			return Reaction_module_ptr->SetConcentrations(c_vector);
 		}
 		return IRM_INVALIDARG;
 	}
