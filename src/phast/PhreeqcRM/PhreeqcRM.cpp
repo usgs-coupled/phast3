@@ -2509,7 +2509,7 @@ PhreeqcRM::FindComponents(void)
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::GetConcentrations(double * c)
+PhreeqcRM::GetConcentrations(std::vector<double> &c)
 /* ---------------------------------------------------------------------- */
 {
 	IRM_RESULT return_value = IRM_OK;
@@ -2570,35 +2570,28 @@ PhreeqcRM::GetConcentrations(double * c)
 
 		if (mpi_myself == 0)
 		{
-			if (c == NULL)
+			// check size and fill elements, if necessary resize
+			c.resize(this->nxyz * this->components.size());
+			std::fill(c.begin(), c.end(), INACTIVE_CELL_VALUE);
+
+			// Write vector into c
+			assert (solns.size() == this->count_chemistry*this->components.size());
+			int n = 0;
+			for (int j = 0; j < count_chemistry; j++)
 			{
-				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in GetConcentrations.");
-			}
-			else
-			{
-				for (int i = 0; i < this->nxyz * (int) this->components.size(); i++) 
+				std::vector<double> d;
+				for (size_t i = 0; i < this->components.size(); i++)
 				{
-					c[i] = INACTIVE_CELL_VALUE;
+					d.push_back(solns[n++]);
 				}
-				// Write vector into c
-				assert (solns.size() == this->count_chemistry*this->components.size());
-				int n = 0;
-				for (int j = 0; j < count_chemistry; j++)
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
 				{
-					std::vector<double> d;
-					for (size_t i = 0; i < this->components.size(); i++)
+					double *d_ptr = &c[*it];
+					size_t i;
+					for (i = 0; i < this->components.size(); i++)
 					{
-						d.push_back(solns[n++]);
-					}
-					std::vector<int>::iterator it;
-					for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
-					{
-						double *d_ptr = &c[*it];
-						size_t i;
-						for (i = 0; i < this->components.size(); i++)
-						{
-							d_ptr[this->nxyz * i] = d[i];
-						}
+						d_ptr[this->nxyz * i] = d[i];
 					}
 				}
 			}
@@ -2613,36 +2606,27 @@ PhreeqcRM::GetConcentrations(double * c)
 #else
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::GetConcentrations(double * c)
+PhreeqcRM::GetConcentrations(std::vector<double> &c)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
-		if (c == NULL)
-		{
-			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in GetConcentrations.");
-		}
+		// check size and fill elements, if necessary resize
+		c.resize(this->nxyz * this->components.size());
+		std::fill(c.begin(), c.end(), INACTIVE_CELL_VALUE);
 
 		std::vector<double> d;  // scratch space to convert from moles to mass fraction
-		cxxNameDouble::iterator it;
-
-		int j; 
-		for (int i = 0; i < this->nxyz * (int) this->components.size(); i++) 
-		{
-				c[i] = INACTIVE_CELL_VALUE;
-		}
-
+		cxxSolution * cxxsoln_ptr;
 		for (int n = 0; n < this->nthreads; n++)
 		{
-			for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+			for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 			{
 				// load fractions into d
-				cxxSolution * cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
+				cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
 				assert (cxxsoln_ptr);
 				int i_grid = this->backward_mapping[j][0];
-				//double v = this->pore_volume[i_grid] / this->pore_volume_zero[i_grid] * saturation[i_grid];
 				double v = cxxsoln_ptr->Get_soln_vol();
 				this->cxxSolution2concentration(cxxsoln_ptr, d, v);
 
@@ -2665,86 +2649,6 @@ PhreeqcRM::GetConcentrations(double * c)
 		return_value = IRM_FAIL;
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
-}
-#endif
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-std::vector<double> &
-PhreeqcRM::GetDensity(void)
-/* ---------------------------------------------------------------------- */
-{
-	try
-	{
-#ifdef USE_MPI
-		if (this->mpi_myself == 0)
-		{
-			int method = METHOD_GETDENSITY;
-			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-		}
-#endif
-		this->density.clear();
-		this->density.resize(this->nxyz, INACTIVE_CELL_VALUE);
-		std::vector<double> dbuffer;
-
-#ifdef USE_MPI
-		int n = this->mpi_myself;
-		for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
-		{
-			double d = this->workers[0]->Get_solution(i)->Get_density();
-			for(size_t j = 0; j < backward_mapping[i].size(); j++)
-			{
-				int n = backward_mapping[i][j];
-				this->density[n] = d;
-			}
-		}
-		for (int n = 0; n < this->mpi_tasks; n++)
-		{
-			if (this->mpi_myself == n)
-			{
-				if (this->mpi_myself == 0)
-				{
-					continue;
-				}
-				else
-				{
-					int l = this->end_cell[n] - this->start_cell[n] + 1;
-					MPI_Send((void *) &this->density[this->start_cell[n]], l, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
-				}
-			}
-			else if (this->mpi_myself == 0)
-			{	
-				std::vector<double> dbuffer;
-				MPI_Status mpi_status;
-				int l = this->end_cell[n] - this->start_cell[n] + 1;
-				dbuffer.resize(l);
-				MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
-				for (int i = 0; i < l; i++)
-				{
-					this->density[this->start_cell[n] +i] = dbuffer[i];
-				}
-			}
-		}
-#else
-		for (int n = 0; n < this->nthreads; n++)
-		{
-			for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
-			{
-				double d = this->workers[n]->Get_solution(i)->Get_density();
-				for(size_t j = 0; j < backward_mapping[i].size(); j++)
-				{
-					int n = backward_mapping[i][j];
-					this->density[n] = d;
-				}
-			}
-		}
-#endif
-	}
-	catch (...)
-	{
-		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetDensity");
-		this->density.clear();
-	}
-	return this->density;
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -4286,7 +4190,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_GETCONCENTRATIONS" << std::endl;
 				{
 					std::vector<double> dummy;
-					return_value = this->GetConcentrations(dummy.data());
+					return_value = this->GetConcentrations(dummy);
 				}
 				break;
 			case METHOD_GETDENSITY:

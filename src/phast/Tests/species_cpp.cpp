@@ -244,7 +244,7 @@ int species_cpp()
 
 			// Retrieve reacted concentrations, density, volume
 			status = phreeqc_rm.GetSpeciesConcentrations(c);              // Concentrations after reaction 
-			phreeqc_rm.GetConcentrations(component_c.data());
+			phreeqc_rm.GetConcentrations(component_c);
 			std::vector<double> density;
 			status = phreeqc_rm.GetDensity(density);                      // Density after reaction 
 			std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); // Solution volume after reaction 
