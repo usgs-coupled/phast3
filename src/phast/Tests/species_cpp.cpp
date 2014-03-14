@@ -52,7 +52,7 @@ int species_cpp()
 		// Set cell volume
 		std::vector<double> cell_vol;
 		cell_vol.resize(nxyz, 1);
-		status = phreeqc_rm.SetCellVolume(cell_vol.data());
+		status = phreeqc_rm.SetCellVolume(cell_vol);
 
 		// Set current pore volume
 		std::vector<double> pv;
@@ -262,7 +262,7 @@ int species_cpp()
 					std::vector<double> so;
 					int col = phreeqc_rm.GetSelectedOutputColumnCount();
 					so.resize(nxyz*col, 0);
-					status = phreeqc_rm.GetSelectedOutput(so.data());
+					status = phreeqc_rm.GetSelectedOutput(so);
 
 					// Print results
 					for (int i = 0; i < phreeqc_rm.GetSelectedOutputRowCount()/2; i++)

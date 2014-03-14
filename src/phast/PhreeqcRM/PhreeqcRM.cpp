@@ -2761,7 +2761,7 @@ PhreeqcRM::GetNthSelectedOutputUserNumber(int i)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::GetSelectedOutput(double *so)
+PhreeqcRM::GetSelectedOutput(std::vector<double> &so)
 /* ---------------------------------------------------------------------- */
 {
 	
@@ -2794,6 +2794,12 @@ PhreeqcRM::GetSelectedOutput(double *so)
 			int ncol = this->GetSelectedOutputColumnCount();
 			int local_start_cell = 0;
 			std::vector<double> dbuffer;
+
+			// fill with INACTIVE_CELL_VALUE
+			if (mpi_myself == 0)
+			{
+				so.resize(this->nxyz * ncol);
+			}
 			for (int n = 0; n < this->mpi_tasks; n++)
 			{
 				int nrow;	
@@ -2826,27 +2832,20 @@ PhreeqcRM::GetSelectedOutput(double *so)
 				}
 				if (mpi_myself == 0)
 				{
-					if (so)
+					// Now write data from the process to so
+					for (int icol = 0; icol < ncol; icol++)
 					{
-						// Now write data from the process to so
-						for (int icol = 0; icol < ncol; icol++)
+						for (int irow = 0; irow < nrow; irow++)
 						{
-							for (int irow = 0; irow < nrow; irow++)
+							int ichem = local_start_cell + (int) irow;
+							for (size_t k = 0; k < backward_mapping[ichem].size(); k++)
 							{
-								int ichem = local_start_cell + (int) irow;
-								for (size_t k = 0; k < backward_mapping[ichem].size(); k++)
-								{
-									int ixyz = backward_mapping[ichem][k];
-									so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow + irow];
-								}
+								int ixyz = backward_mapping[ichem][k];
+								so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow + irow];
 							}
 						}
-						local_start_cell += nrow;
 					}
-					else
-					{
-						this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in argument to GetSelectedOutput");
-					}
+					local_start_cell += nrow;
 				}
 			}
 		}
@@ -2856,8 +2855,6 @@ PhreeqcRM::GetSelectedOutput(double *so)
 		}
 		this->HandleErrorsInternal(r_values);
 #else
-		if (so == NULL)
-			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in GetSelectedOutput.");
 		if (n_user < 0)
 			this->ErrorHandler(IRM_INVALIDARG, "Selected output not defined.");
 		if (this->SetCurrentSelectedOutputUserNumber(n_user) < 0)
@@ -2865,6 +2862,9 @@ PhreeqcRM::GetSelectedOutput(double *so)
 		int ncol = this->GetSelectedOutputColumnCount();
 		std::vector<double> dbuffer;
 		int local_start_cell = 0;
+		
+		// resize target
+		so.resize(this->nxyz * ncol);
 		for (int n = 0; n < this->nthreads; n++)
 		{
 			int nrow_x, ncol_x;
@@ -4204,7 +4204,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_GETSELECTEDOUTPUT" << std::endl;
 				{
 					std::vector<double> dummy;
-					return_value = this->GetSelectedOutput(dummy.data());
+					return_value = this->GetSelectedOutput(dummy);
 				}
 				break;
 			case METHOD_GETSOLUTIONVOLUME:
@@ -4268,7 +4268,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETCELLVOLUME" << std::endl;
 				{
 					std::vector<double> dummy;
-					this->SetCellVolume(dummy.data());
+					this->SetCellVolume(dummy);
 				}
 				break;
 			case METHOD_SETCOMPONENTH2O:
@@ -6657,9 +6657,10 @@ PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
 	}
 	return this->ReturnHandler(PhreeqcRM::Int2IrmResult(return_value, false),"PhreeqcRM::SetCurrentSelectedOutputUserNumber");
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetCellVolume(double *t)
+PhreeqcRM::SetCellVolume(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
 	IRM_RESULT return_value = IRM_OK;
@@ -6693,6 +6694,16 @@ PhreeqcRM::SetCellVolume(double *t)
 	MPI_Bcast(this->cell_volume.data(), this->nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetCellVolume");
+}
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetCellVolume(const std::vector<double> &t)
+/* ---------------------------------------------------------------------- */
+{
+	std::string methodName = "SetCellVolume";
+	IRM_RESULT return_value = SetGeneric(this->cell_volume, this->nxyz, t, METHOD_SETCELLVOLUME, methodName);
+	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -6991,42 +7002,39 @@ PhreeqcRM::SetFilePrefix(const char * prefix)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetFilePrefix"); 
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetFilePrefix(std::string prefix)
+PhreeqcRM::SetGeneric(std::vector<double> &destination, int newSize, const std::vector<double> &origin, int mpiMethod, const std::string &name, const double newValue)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef USE_MPI
-	if (this->mpi_myself == 0)
-	{
-		int method = METHOD_SETFILEPREFIX;
-		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-	}
-#endif
 	IRM_RESULT return_value = IRM_OK;
-	this->file_prefix.clear();
-	int l = 0;
-	if (mpi_myself == 0)
+	try
 	{
-		this->file_prefix = trim(prefix);
-		l = (int) prefix.size();
+		destination.resize(newSize, newValue);
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			MPI_Bcast(&mpiMethod, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+#endif
+		if (mpi_myself == 0)
+		{
+			if (destination.size() != origin.size())
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "Wrong number of elements in vector argument for " + name);
+			}
+			destination = origin;
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&l, 1, MPI_INT, 0, phreeqcrm_comm);
-	if (l > 0)
-	{
-		this->file_prefix.resize(l);
-		MPI_Bcast((void *) this->file_prefix.c_str(), l, MPI_CHAR, 0, phreeqcrm_comm);
-	}
+	MPI_Bcast(destination.data(), (int) destination.size(), MPI_DOUBLE, 0, phreeqcrm_comm);
 #endif
-	if (l == 0)
-	{
-		return_value = IRM_INVALIDARG;
-	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetFilePrefix");
+	return return_value;
 }
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetMpiWorkerCallbackC(int (*fcn)(int *method, void *cookie))
