@@ -189,7 +189,7 @@ public:
 	// Setters 
 	IRM_RESULT                                SetCellVolume(const std::vector<double> &t);
 	IRM_RESULT                                SetComponentH2O(bool tf);
-	IRM_RESULT                                SetConcentrations(double * t); 
+	IRM_RESULT                                SetConcentrations(const std::vector<double> &t); 
 	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i);
 	IRM_RESULT                                SetDensity(double * t);
 	IRM_RESULT                                SetDumpFileName(const char * db); 

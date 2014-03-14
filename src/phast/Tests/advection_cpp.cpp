@@ -225,7 +225,7 @@ int advection_cpp()
 			status = phreeqc_rm.SetSaturation(sat.data());           // If saturation changes
 			status = phreeqc_rm.SetTemperature(temperature.data());  // If temperature changes
 			status = phreeqc_rm.SetPressure(pressure.data());        // If pressure changes
-			status = phreeqc_rm.SetConcentrations(c.data());         // Transported concentrations
+			status = phreeqc_rm.SetConcentrations(c);         // Transported concentrations
 			status = phreeqc_rm.SetTimeStep(time_step);				 // Time step for kinetic reactions
 			time = time + time_step;
 			status = phreeqc_rm.SetTime(time);

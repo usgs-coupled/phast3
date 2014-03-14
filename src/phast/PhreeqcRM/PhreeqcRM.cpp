@@ -4282,7 +4282,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETCONCENTRATIONS" << std::endl;
 				{
 					std::vector<double> dummy;
-					this->SetConcentrations(dummy.data());
+					this->SetConcentrations(dummy);
 				}
 				break;
 			case METHOD_SETDENSITY:
@@ -6646,17 +6646,6 @@ PhreeqcRM::ScreenMessage(const std::string &str)
 {
 	this->phreeqcrm_io.screen_msg(str.c_str());
 }
-/* ---------------------------------------------------------------------- */
-IRM_RESULT 
-PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
-{
-	int return_value = IRM_INVALIDARG;
-	if (i >= 0)
-	{
-		return_value = this->workers[0]->SetCurrentSelectedOutputUserNumber(i);
-	}
-	return this->ReturnHandler(PhreeqcRM::Int2IrmResult(return_value, false),"PhreeqcRM::SetCurrentSelectedOutputUserNumber");
-}
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -6705,28 +6694,6 @@ PhreeqcRM::SetCellVolume(const std::vector<double> &t)
 	IRM_RESULT return_value = SetGeneric(this->cell_volume, this->nxyz, t, METHOD_SETCELLVOLUME, methodName);
 	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
 }
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::SetComponentH2O(bool tf)
-/* ---------------------------------------------------------------------- */
-{
-#ifdef USE_MPI
-	if (this->mpi_myself == 0)
-	{
-		int method = METHOD_SETCOMPONENTH2O;
-		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-	}
-#endif
-	IRM_RESULT return_value = IRM_OK;
-	if (mpi_myself == 0)
-	{
-		this->component_h2o  = tf;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&this->component_h2o,  1, MPI_LOGICAL, 0, phreeqcrm_comm);
-#endif
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetComponentH2O");
-}
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -6763,31 +6730,37 @@ PhreeqcRM::SetChemistryFileName(const char * cn)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetConcentrations(double *t)
+PhreeqcRM::SetComponentH2O(bool tf)
 /* ---------------------------------------------------------------------- */
 {
-	// Distribute concentration data
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
-		int method = METHOD_SETCONCENTRATIONS;
+		int method = METHOD_SETCOMPONENTH2O;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
 #endif
-	size_t ncomps = this->components.size();
-	std::vector<double> c;
-	c.resize(ncomps * nxyz, INACTIVE_CELL_VALUE);
+	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) 
-			this->ErrorHandler(IRM_FAIL, "NULL pointer in SetConcentrations");
-		memcpy(c.data(), t, (size_t) (this->nxyz * ncomps * sizeof(double)));
+		this->component_h2o  = tf;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(c.data(), this->nxyz * (int) ncomps, MPI_DOUBLE, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->component_h2o,  1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetComponentH2O");
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetConcentrations(const std::vector<double> &t)
+/* ---------------------------------------------------------------------- */
+{
+	std::vector<double> c;
+	std::string methodName = "SetConcentrations";
+	IRM_RESULT result_value = SetGeneric(c, (int) this->components.size() * this->nxyz, t, METHOD_SETCONCENTRATIONS, methodName, INACTIVE_CELL_VALUE);
+
 #ifdef THREADED_PHAST
-		omp_set_num_threads(this->nthreads);
+	omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for
 #endif
@@ -6795,9 +6768,19 @@ PhreeqcRM::SetConcentrations(double *t)
 	{
 		this->Concentrations2Solutions(n, c);
 	}
-	return IRM_OK;
+	return this->ReturnHandler(result_value, "PhreeqcRM::" + methodName);
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT 
+PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
+{
+	int return_value = IRM_INVALIDARG;
+	if (i >= 0)
+	{
+		return_value = this->workers[0]->SetCurrentSelectedOutputUserNumber(i);
+	}
+	return this->ReturnHandler(PhreeqcRM::Int2IrmResult(return_value, false),"PhreeqcRM::SetCurrentSelectedOutputUserNumber");
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetDatabaseFileName(const char * db)
