@@ -235,7 +235,7 @@ RM_GetConcentrations(int *id, double * c)
 		std::vector<double> c_vector;
 		// todo ...........
 		c_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
-		IRM_RESULT return_value = Reaction_module_ptr->GetConcentrations(c_vector.data());
+		IRM_RESULT return_value = Reaction_module_ptr->GetConcentrations(c_vector);
 		if (return_value == IRM_OK)
 		{
 			memcpy(c, c_vector.data(), c_vector.size() * sizeof(double));

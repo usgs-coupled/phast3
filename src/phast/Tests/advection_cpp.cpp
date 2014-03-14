@@ -189,7 +189,7 @@ int advection_cpp()
 		status = phreeqc_rm.SetTime(time);
 		status = phreeqc_rm.SetTimeStep(time_step);
 		status = phreeqc_rm.RunCells();
-		status = phreeqc_rm.GetConcentrations(c.data());
+		status = phreeqc_rm.GetConcentrations(c);
 
 		int nsteps = 10;
 
@@ -240,7 +240,7 @@ int advection_cpp()
 			status = phreeqc_rm.RunCells();
 
 			// Retrieve reacted concentrations, density, volume
-			status = phreeqc_rm.GetConcentrations(c.data());              // Concentrations after reaction 
+			status = phreeqc_rm.GetConcentrations(c);              // Concentrations after reaction 
 			std::vector<double> density;
 			status = phreeqc_rm.GetDensity(density);                      // Density after reaction 
 			std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); // Solution volume after reaction 
@@ -446,7 +446,7 @@ int units_tester()
 		print_mask.resize(3, 1);
 		phreeqc_rm.SetPrintChemistryMask(print_mask.data());
 		status = phreeqc_rm.RunCells();
-		status = phreeqc_rm.GetConcentrations(c.data());
+		status = phreeqc_rm.GetConcentrations(c);
 
 		// Use utility instance of PhreeqcRM
 		std::vector<double> tc, p_atm;

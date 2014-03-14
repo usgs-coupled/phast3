@@ -19,18 +19,6 @@ class IPQ_DLL_EXPORT PhreeqcRMStop : std::exception
 {
 };
 
-///*! @brief Enumeration used to return error codes.
-//*/
-//typedef enum {
-//	IRM_OK            =  0,  /*!< Success */
-//	IRM_OUTOFMEMORY   = -1,  /*!< Failure, Out of memory */
-//	IRM_BADVARTYPE    = -2,  /*!< Failure, Invalid VAR type */
-//	IRM_INVALIDARG    = -3,  /*!< Failure, Invalid argument */
-//	IRM_INVALIDROW    = -4,  /*!< Failure, Invalid row */
-//	IRM_INVALIDCOL    = -5,  /*!< Failure, Invalid column */
-//	IRM_BADINSTANCE   = -6,  /*!< Failure, Invalid rm instance id */
-//	IRM_FAIL          = -7,  /*!< Failure, Unspecified */
-//} IRM_RESULT;
 #include "IrmResult.h"
 /*! @brief Enumeration used to for MPI worker to determine method to call
 */
@@ -100,7 +88,7 @@ public:
 	void                                      ErrorHandler(int result, const std::string &e_string);
 	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
 	int                                       FindComponents();
-	IRM_RESULT                                GetConcentrations(double * c);
+	IRM_RESULT                                GetConcentrations(std::vector<double> &c);
 	IRM_RESULT								  InitialPhreeqc2Concentrations(
 													std::vector < double > & destination_c, 
 													std::vector < int >    & boundary_solution1,
