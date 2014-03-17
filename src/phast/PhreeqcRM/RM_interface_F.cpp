@@ -1470,6 +1470,7 @@ RM_WarningMessage(int *id, const char *err_str, size_t l)
 	return IRM_BADINSTANCE;
 
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void RM_write_bc_raw(
 			int *id,
@@ -1491,3 +1492,4 @@ void RM_write_bc_raw(
 					fn);
 	}
 }
+#endif

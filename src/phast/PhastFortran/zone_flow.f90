@@ -749,17 +749,17 @@ SUBROUTINE zone_flow_write_chem
            end do
            ! write raw solutions to file
            file_name = trim(file_name_base) // ".soln.bc"
-           CALL RM_write_bc_raw(rm_id, solution_list, bc_soln_count - 1, solution_number_start, file_name)
+           !TODO CALL RM_write_bc_raw(rm_id, solution_list, bc_soln_count - 1, solution_number_start, file_name)
 
            ! finish xyzt file
            CLOSE(fuzf_chem_xyzt, status='KEEP')
            solution_number_start = solution_number
         endif
      end do
-     CALL RM_write_bc_raw(rm_id, solution_list, bc_soln_count - 1, 0, file_name)     
+     !TODO CALL RM_write_bc_raw(rm_id, solution_list, bc_soln_count - 1, 0, file_name)     
   else
      do 
-        CALL RM_write_bc_raw(rm_id, solution_list, bc_soln_count - 1, solution_number_start, file_name)     
+        !TODO CALL RM_write_bc_raw(rm_id, solution_list, bc_soln_count - 1, solution_number_start, file_name)     
         if (solution_number_start == 0) EXIT
      enddo
   endif

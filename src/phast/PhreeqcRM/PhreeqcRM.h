@@ -78,7 +78,6 @@ public:
 	PhreeqcRM(int nxyz, int thread_count_or_communicator, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
 	
-	// Key methods	
 	IRM_RESULT                                CloseFiles(void);
 	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c_in, 
 		                                           std::vector<double> t_in, std::vector<double> p_in);
@@ -88,56 +87,13 @@ public:
 	void                                      ErrorHandler(int result, const std::string &e_string);
 	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
 	int                                       FindComponents();
-	IRM_RESULT                                GetConcentrations(std::vector<double> &c);
-	IRM_RESULT								  InitialPhreeqc2Concentrations(
-													std::vector < double > & destination_c, 
-													std::vector < int >    & boundary_solution1,
-													std::vector < int >    & boundary_solution2, 
-													std::vector < double > & fraction1); 
-	IRM_RESULT                                InitialPhreeqc2Concentrations(
-													std::vector < double > & destination_c, 
-													std::vector < int >    & boundary_solution1);
-	IRM_RESULT                                InitialPhreeqc2Module(
-													std::vector < int >    & initial_conditions1);
-	IRM_RESULT                                InitialPhreeqc2Module(
-													std::vector < int >    & initial_conditions1,
-													std::vector < int >    & initial_conditions2,	
-													std::vector < double > & fraction1);
-	IRM_RESULT								  InitialPhreeqc2SpeciesConcentrations(
-													std::vector < double > & destination_c, 
-													std::vector < int >    & boundary_solution1,
-													std::vector < int >    & boundary_solution2, 
-													std::vector < double > & fraction1); 
-	IRM_RESULT                                InitialPhreeqc2SpeciesConcentrations(
-													std::vector < double > & destination_c, 
-													std::vector < int >    & boundary_solution1);
-	IRM_RESULT                                InitialPhreeqcCell2Module(int i, const std::vector<int> &cell_numbers);
-	IRM_RESULT                                LoadDatabase(const std::string &database);
-	void                                      LogMessage(const std::string &str);
-	int                                       MpiAbort();
-	IRM_RESULT                                MpiWorker();
-	IRM_RESULT                                MpiWorkerBreak();	
-	IRM_RESULT                                OpenFiles(void);
-	void                                      OutputMessage(const std::string &str);
-	IRM_RESULT                                RunCells(void);
-	IRM_RESULT                                RunFile(bool workers, bool initial_phreeqc, bool utility,  const std::string & chemistry_name);
-	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const std::string & str);
-	void                                      ScreenMessage(const std::string &str);
-	IRM_RESULT								  SpeciesConcentrations2Module(std::vector<double> & species_conc); 
-	void                                      WarningMessage(const std::string &str);
-
-	// TODO ///////////////////////////
-	void                                      Write_bc_raw(int *solution_list, int * bc_solution_count, 
-                                                  int * solution_number, 
-                                                  const std::string &prefix);
-	// Getters 
 	const std::vector < std::vector <int> > & GetBackwardMapping(void) {return this->backward_mapping;}
 	std::vector<double> &                     GetCellVolume(void) {return this->cell_volume;}
 	int                                       GetChemistryCellCount(void) const {return this->count_chemistry;}
 	int                                       GetComponentCount(void) const {return (int) this->components.size();}
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
+	IRM_RESULT                                GetConcentrations(std::vector<double> &c);
 	const std::string                         GetDatabaseFileName(void) const {return this->database_file_name;}
-	//std::vector<double> &                     GetDensity(void); 
 	IRM_RESULT                                GetDensity(std::vector<double> & density); 
 	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;}
 	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
@@ -185,8 +141,40 @@ public:
 	double                                    GetTimeStep(void) const {return this->time_step;}
 	const double                              GetTimeConversion(void) const {return this->time_conversion;} 
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
-
-	// Setters 
+	IRM_RESULT								  InitialPhreeqc2Concentrations(
+													std::vector < double > & destination_c, 
+													std::vector < int >    & boundary_solution1,
+													std::vector < int >    & boundary_solution2, 
+													std::vector < double > & fraction1); 
+	IRM_RESULT                                InitialPhreeqc2Concentrations(
+													std::vector < double > & destination_c, 
+													std::vector < int >    & boundary_solution1);
+	IRM_RESULT                                InitialPhreeqc2Module(
+													std::vector < int >    & initial_conditions1);
+	IRM_RESULT                                InitialPhreeqc2Module(
+													std::vector < int >    & initial_conditions1,
+													std::vector < int >    & initial_conditions2,	
+													std::vector < double > & fraction1);
+	IRM_RESULT								  InitialPhreeqc2SpeciesConcentrations(
+													std::vector < double > & destination_c, 
+													std::vector < int >    & boundary_solution1,
+													std::vector < int >    & boundary_solution2, 
+													std::vector < double > & fraction1); 
+	IRM_RESULT                                InitialPhreeqc2SpeciesConcentrations(
+													std::vector < double > & destination_c, 
+													std::vector < int >    & boundary_solution1);
+	IRM_RESULT                                InitialPhreeqcCell2Module(int i, const std::vector<int> &cell_numbers);
+	IRM_RESULT                                LoadDatabase(const std::string &database);
+	void                                      LogMessage(const std::string &str);
+	int                                       MpiAbort();
+	IRM_RESULT                                MpiWorker();
+	IRM_RESULT                                MpiWorkerBreak();	
+	IRM_RESULT                                OpenFiles(void);
+	void                                      OutputMessage(const std::string &str);
+	IRM_RESULT                                RunCells(void);
+	IRM_RESULT                                RunFile(bool workers, bool initial_phreeqc, bool utility,  const std::string & chemistry_name);
+	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const std::string & str);
+	void                                      ScreenMessage(const std::string &str);
 	IRM_RESULT                                SetCellVolume(const std::vector<double> &t);
 	IRM_RESULT                                SetComponentH2O(bool tf);
 	IRM_RESULT                                SetConcentrations(const std::vector<double> &t); 
@@ -220,7 +208,9 @@ public:
 	IRM_RESULT                                SetUnitsSolution(int i);
 	IRM_RESULT                                SetUnitsSSassemblage(int i);
 	IRM_RESULT                                SetUnitsSurface(int i);
-
+	IRM_RESULT								  SpeciesConcentrations2Module(std::vector<double> & species_conc); 
+	void                                      WarningMessage(const std::string &str);
+	
 	// Utilities
 	static std::string                        Char2TrimString(const char * str, size_t l = 0);
 	static bool                               FileExists(const std::string &name);
