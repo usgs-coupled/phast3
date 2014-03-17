@@ -1380,38 +1380,31 @@ PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<doubl
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::CreateMapping(int *t)
+PhreeqcRM::CreateMapping(std::vector<int> &grid2chem)
 /* ---------------------------------------------------------------------- */
 {
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
-		std::vector<int> grid2chem;
-		grid2chem.resize(this->nxyz);
 		if (mpi_myself == 0)
 		{
+			if ((int) grid2chem.size() != this->nxyz)
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "Mapping vector is the wrong size");
+			} 
+		}
 #ifdef USE_MPI
+		if (mpi_myself == 0)
+		{
 			int method = METHOD_CREATEMAPPING;
 			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-#endif
-			if (t != NULL)
-			{
-				memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
-			}
-			else
-			{
-				grid2chem.clear();
-				grid2chem.resize(this->nxyz, -999999);
-			}
 		}
-
-#ifdef USE_MPI
+		else 
+		{
+			grid2chem.resize(this->nxyz);
+		}
 		MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, phreeqcrm_comm);
 #endif
-		if (grid2chem[0] == -999999)
-		{
-			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in CreateMapping");
-		}
 		backward_mapping.clear();
 		forward_mapping.clear();
 
@@ -3428,22 +3421,23 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2Concentrations");
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Module(
-					int *initial_conditions1_in)
+					std::vector < int >    & initial_conditions1_in)
 /* ---------------------------------------------------------------------- */
 {
 	std::vector<int> i_dummy;
 	std::vector<double> d_dummy;
-	return InitialPhreeqc2Module(initial_conditions1_in, i_dummy.data(), d_dummy.data());
+	return InitialPhreeqc2Module(initial_conditions1_in, i_dummy, d_dummy);
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Module(
-					int *initial_conditions1_in,
-					int *initial_conditions2_in, 
-					double *fraction1_in)
+					std::vector < int >    & initial_conditions1,
+					std::vector < int >    & initial_conditions2, 
+					std::vector < double > & fraction1)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -3469,53 +3463,38 @@ PhreeqcRM::InitialPhreeqc2Module(
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
+		if (mpi_myself == 0)
+		{
+			if ((int) initial_conditions1.size() != (7 * this->nxyz))
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "initial_conditions1 vector is the wrong size in InitialPhreeqc2Module");
+			}
+			if ((int) initial_conditions2.size() > 0 && (int) initial_conditions2.size() != (7 * this->nxyz))
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "initial_conditions2 vector is the wrong size in InitialPhreeqc2Module");
+			}
+			if ((int) fraction1.size() > 0 && (int) fraction1.size() != (7 * this->nxyz))
+			{
+				this->ErrorHandler(IRM_INVALIDARG, "fraction1 vector is the wrong size in InitialPhreeqc2Module");
+			}
+		}
+		initial_conditions2.resize(7 * this->nxyz, -2);
+		fraction1.resize(7 * this->nxyz, 1.0);
 #ifdef USE_MPI
 		if (this->mpi_myself == 0)
 		{
 			int method = METHOD_INITIALPHREEQC2MODULE;
 			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 		}
+		else
+		{
+			initial_conditions1.resize(7 * this->nxyz, -2);
+		}
 #endif
 		this->Get_phreeqc_bin().Clear();
 		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 
-		std::vector < int > initial_conditions1, initial_conditions2;
-		std::vector < double > fraction1;
-		initial_conditions1.resize(7 * this->nxyz);
-		initial_conditions2.resize(7 * this->nxyz, -1);
-		fraction1.resize(7 * this->nxyz, 1.0);
 		size_t array_size = (size_t) (7 * this->nxyz);
-		if (this->mpi_myself == 0)
-		{
-			try
-			{
-				if (initial_conditions1_in == NULL)
-				{
-					throw PhreeqcRMStop();
-				}
-
-				memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
-				if (initial_conditions2_in != NULL)
-				{
-					memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
-				}
-				if (fraction1_in != NULL)
-				{
-					memcpy(fraction1.data(), fraction1_in, array_size * sizeof(double));
-				}
-			}
-			catch (...)
-			{
-				return_value = IRM_FAIL;
-			}
-		}
-
-		// Check error
-#ifdef USE_MPI
-		MPI_Bcast(&return_value, 1, MPI_INT, 0, phreeqcrm_comm);
-#endif
-		if (return_value < 0)
-			this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in argument to DistributeInitialConditions");
 
 #ifdef USE_MPI
 		//
@@ -3591,7 +3570,10 @@ PhreeqcRM::InitialPhreeqc2Module(
 				"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
 				"Increase porosity, decrease specific storage, or use free surface boundary.";
 		}
-
+		if (return_value != IRM_OK)
+		{
+			std::cerr << errstr << std::endl;
+		}
 #ifdef USE_MPI	
 		std::vector<int> r_values;
 		r_values.push_back(return_value);
@@ -4172,7 +4154,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_CREATEMAPPING" << std::endl;
 				{
 					std::vector<int> dummy;
-					return_value = this->CreateMapping(dummy.data());
+					return_value = this->CreateMapping(dummy);
 				}
 				break;
 			case METHOD_DUMPMODULE:
@@ -4221,9 +4203,9 @@ PhreeqcRM::MpiWorker()
 			case METHOD_INITIALPHREEQC2MODULE:
 				if (debug_worker) std::cerr << "METHOD_INITIALPHREEQC2MODULE" << std::endl;
 				{
-					std::vector<int> dummy;
-					std::vector<double> d_dummy;
-					return_value = this->InitialPhreeqc2Module(dummy.data(), dummy.data(), d_dummy.data());
+					std::vector<int> ic1, ic2;
+					std::vector<double> f1;
+					return_value = this->InitialPhreeqc2Module(ic1, ic2, f1);
 				}
 				break;
 			case METHOD_INITIALPHREEQCCELL2MODULE:

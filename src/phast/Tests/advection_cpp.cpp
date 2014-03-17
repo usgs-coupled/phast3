@@ -88,7 +88,7 @@ int advection_cpp()
 			grid2chem[i] = i;
 			grid2chem[i + nxyz/2] = i;
 		}
-		status = phreeqc_rm.CreateMapping(grid2chem.data());
+		status = phreeqc_rm.CreateMapping(grid2chem);
 		if (status < 0) phreeqc_rm.DecodeError(status); 
 		int nchem = phreeqc_rm.GetChemistryCellCount();
 
@@ -158,7 +158,7 @@ int advection_cpp()
 			ic1[5*nxyz + i] = -1;    // Solid solutions none
 			ic1[6*nxyz + i] = -1;    // Kinetics none
 		}
-		status = phreeqc_rm.InitialPhreeqc2Module(ic1.data(), ic2.data(), f1.data()); 
+		status = phreeqc_rm.InitialPhreeqc2Module(ic1, ic2, f1); 
 		// No mixing is defined, so the following is equivalent
 		// status = phreeqc_rm.InitialPhreeqc2Module(ic1.data()); 
 		
