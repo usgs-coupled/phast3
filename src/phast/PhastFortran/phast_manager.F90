@@ -84,7 +84,7 @@ SUBROUTINE phast_manager
 ! ... Use Reaction Module to equilbrate cells  
 !
     CALL InitialEquilibrationRM
-	CALL zone_flow_write_chem()
+	!TODO CALL zone_flow_write_chem()
     IF (solute) THEN
         CALL init2_3        
     ENDIF
@@ -209,7 +209,7 @@ SUBROUTINE phast_manager
             IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
                 CALL zone_flow_write_heads
             ENDIF
-	        CALL zone_flow_write_chem()
+	        ! TODO CALL zone_flow_write_chem()
             IF (.NOT.steady_flow) THEN
                 CALL write4
             ENDIF

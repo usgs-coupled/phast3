@@ -7762,6 +7762,7 @@ PhreeqcRM::WarningMessage(const std::string &str)
 {
 	this->phreeqcrm_io.warning_msg(str.c_str());
 }
+#ifdef SKIP
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
@@ -7916,4 +7917,5 @@ PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count,
 	ofs.close();
 	return;
 }
+#endif
 #endif
