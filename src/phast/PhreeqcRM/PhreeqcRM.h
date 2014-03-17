@@ -82,7 +82,7 @@ public:
 	IRM_RESULT                                CloseFiles(void);
 	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c_in, 
 		                                           std::vector<double> t_in, std::vector<double> p_in);
-	IRM_RESULT                                CreateMapping(int *grid2chem);
+	IRM_RESULT                                CreateMapping(std::vector<int> &grid2chem);
 	void                                      DecodeError(int r);
 	IRM_RESULT                                DumpModule(bool dump_on, bool append = false);
 	void                                      ErrorHandler(int result, const std::string &e_string);
@@ -98,11 +98,11 @@ public:
 													std::vector < double > & destination_c, 
 													std::vector < int >    & boundary_solution1);
 	IRM_RESULT                                InitialPhreeqc2Module(
-													int *initial_conditions1);
+													std::vector < int >    & initial_conditions1);
 	IRM_RESULT                                InitialPhreeqc2Module(
-													int *initial_conditions1,
-													int *initial_conditions2,	
-													double *fraction1);
+													std::vector < int >    & initial_conditions1,
+													std::vector < int >    & initial_conditions2,	
+													std::vector < double > & fraction1);
 	IRM_RESULT								  InitialPhreeqc2SpeciesConcentrations(
 													std::vector < double > & destination_c, 
 													std::vector < int >    & boundary_solution1,

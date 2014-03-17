@@ -81,7 +81,7 @@ int species_cpp()
 			grid2chem[i] = i;
 			grid2chem[i + nxyz/2] = i;
 		}
-		status = phreeqc_rm.CreateMapping(grid2chem.data());
+		status = phreeqc_rm.CreateMapping(grid2chem);
 		if (status < 0) phreeqc_rm.DecodeError(status); 
 		int nchem = phreeqc_rm.GetChemistryCellCount();
 
@@ -151,7 +151,7 @@ int species_cpp()
 			ic1[i] = 1;              // Solution 1
 			ic1[2*nxyz + i] = 1;     // Exchange 1
 		}
-		status = phreeqc_rm.InitialPhreeqc2Module(ic1.data()); 
+		status = phreeqc_rm.InitialPhreeqc2Module(ic1); 
 
 		// Get a boundary condition
 		std::vector<double> bc_conc, bc_f1;

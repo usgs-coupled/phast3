@@ -108,7 +108,7 @@ IRM_RESULT RM_CreateMapping(int id, int *grid2chem)
 			std::vector<int> grid2chem_vector;
 			grid2chem_vector.resize(Reaction_module_ptr->GetGridCellCount());
 			memcpy(grid2chem_vector.data(), grid2chem, (size_t) (Reaction_module_ptr->GetGridCellCount() * sizeof(int)));
-			return Reaction_module_ptr->CreateMapping(grid2chem_vector.data());
+			return Reaction_module_ptr->CreateMapping(grid2chem_vector);
 		}
 		return IRM_INVALIDARG;
 	}
@@ -743,9 +743,9 @@ RM_InitialPhreeqc2Module(int id,
 				memcpy(f1_vector.data(), fraction1, (size_t) (nxyz * 7 * sizeof(double)));
 			}
 			return Reaction_module_ptr->InitialPhreeqc2Module(
-				i1_vector.data(),
-				i2_vector.data(),
-				f1_vector.data());
+				i1_vector,
+				i2_vector,
+				f1_vector);
 		}
 		return IRM_INVALIDARG;
 	}
