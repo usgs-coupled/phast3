@@ -112,7 +112,7 @@ public:
 													std::vector < double > & destination_c, 
 													std::vector < int >    & boundary_solution1);
 	IRM_RESULT                                InitialPhreeqcCell2Module(int i, const std::vector<int> &cell_numbers);
-	IRM_RESULT                                LoadDatabase(const char * database);
+	IRM_RESULT                                LoadDatabase(const std::string &database);
 	void                                      LogMessage(const std::string &str);
 	int                                       MpiAbort();
 	IRM_RESULT                                MpiWorker();
@@ -120,8 +120,8 @@ public:
 	IRM_RESULT                                OpenFiles(void);
 	void                                      OutputMessage(const std::string &str);
 	IRM_RESULT                                RunCells(void);
-	IRM_RESULT                                RunFile(bool workers, bool initial_phreeqc, bool utility,  const char *chemistry_name);
-	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const char *str);
+	IRM_RESULT                                RunFile(bool workers, bool initial_phreeqc, bool utility,  const std::string & chemistry_name);
+	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const std::string & str);
 	void                                      ScreenMessage(const std::string &str);
 	IRM_RESULT								  SpeciesConcentrations2Module(std::vector<double> & species_conc); 
 	void                                      WarningMessage(const std::string &str);
@@ -192,16 +192,16 @@ public:
 	IRM_RESULT                                SetConcentrations(const std::vector<double> &t); 
 	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i);
 	IRM_RESULT                                SetDensity(const std::vector<double> &t);
-	IRM_RESULT                                SetDumpFileName(const char * db); 
+	IRM_RESULT                                SetDumpFileName(const std::string & db); 
 	IRM_RESULT                                SetErrorHandlerMode(int i);
-	IRM_RESULT                                SetFilePrefix(const char * prefix); 
+	IRM_RESULT                                SetFilePrefix(const std::string & prefix); 
 	IRM_RESULT								  SetMpiWorker(int (*fcn)(int *method, void *cookie));
 	IRM_RESULT								  SetMpiWorkerCallbackC(int (*fcn)(int *method, void * cookie));
 	IRM_RESULT								  SetMpiWorkerCallbackCookie(void * cookie);
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
 	//IRM_RESULT                                SetPartitionUZSolids(int t = -1);
 	IRM_RESULT                                SetPoreVolume(const std::vector<double> &t); 
-	IRM_RESULT                                SetPrintChemistryMask(int * t);
+	IRM_RESULT                                SetPrintChemistryMask(std::vector<int> & t);
 	IRM_RESULT                                SetPrintChemistryOn(bool worker, bool ip, bool utility);
 	IRM_RESULT                                SetPressure(const std::vector<double> &t);  
 	IRM_RESULT                                SetRebalanceFraction(double t); 

@@ -75,7 +75,7 @@ int advection_cpp()
 		{
 			print_chemistry_mask[i] = 1;
 		}
-		status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask.data());
+		status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask);
 
 		// Partitioning of uz solids
 		//status = phreeqc_rm.SetPartitionUZSolids(false);
@@ -444,7 +444,7 @@ int units_tester()
 		}
 		std::vector < int > print_mask;
 		print_mask.resize(3, 1);
-		phreeqc_rm.SetPrintChemistryMask(print_mask.data());
+		phreeqc_rm.SetPrintChemistryMask(print_mask);
 		status = phreeqc_rm.RunCells();
 		status = phreeqc_rm.GetConcentrations(c);
 

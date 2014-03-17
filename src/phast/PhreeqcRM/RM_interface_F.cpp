@@ -1209,7 +1209,7 @@ IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t)
 		std::vector<int> m_vector;
 		m_vector.resize(Reaction_module_ptr->GetGridCellCount());
 		memcpy(m_vector.data(), t, m_vector.size() * sizeof(int));
-		return Reaction_module_ptr->SetPrintChemistryMask(m_vector.data());
+		return Reaction_module_ptr->SetPrintChemistryMask(m_vector);
 	}
 	return IRM_BADINSTANCE;
 }

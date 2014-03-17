@@ -71,7 +71,7 @@ int species_cpp()
 		{
 			print_chemistry_mask[i] = 1;
 		}
-		status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask.data());
+		status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask);
 
 		// For demonstation, two equivalent rows by symmetry
 		std::vector<int> grid2chem;
@@ -239,7 +239,7 @@ int species_cpp()
 			//status = phreeqc_rm.RunString(true, true, true, knobs.c_str());
 			std::vector < int > print_mask;
 			print_mask.resize(nxyz, 1);
-			phreeqc_rm.SetPrintChemistryMask(print_mask.data());
+			phreeqc_rm.SetPrintChemistryMask(print_mask);
 			status = phreeqc_rm.RunCells();
 
 			// Retrieve reacted concentrations, density, volume

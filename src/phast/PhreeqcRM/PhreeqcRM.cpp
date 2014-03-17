@@ -4062,7 +4062,7 @@ PhreeqcRM::Int2IrmResult(int i, bool positive_ok)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::LoadDatabase(const char * database)
+PhreeqcRM::LoadDatabase(const std::string &database)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef USE_MPI
@@ -4078,7 +4078,7 @@ PhreeqcRM::LoadDatabase(const char * database)
 		std::vector <int> r_vector;
 		r_vector.resize(1);
 
-		r_vector[0] = this->SetDatabaseFileName(database);
+		r_vector[0] = this->SetDatabaseFileName(database.c_str());
 		this->HandleErrorsInternal(r_vector);
 
 		// vector for return values
@@ -4317,7 +4317,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_SETPRINTCHEMISTRYMASK" << std::endl;
 				{
 					std::vector<int> dummy;
-					this->SetPrintChemistryMask(dummy.data());
+					this->SetPrintChemistryMask(dummy);
 				}
 				break;
 			case METHOD_SETREBALANCEBYCELL:
@@ -6294,7 +6294,7 @@ PhreeqcRM::RunCellsThread(int n)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunFile(bool workers, bool initial_phreeqc, bool utility, const char * chemistry_name)
+PhreeqcRM::RunFile(bool workers, bool initial_phreeqc, bool utility, const std::string & chemistry_name)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -6310,7 +6310,7 @@ PhreeqcRM::RunFile(bool workers, bool initial_phreeqc, bool utility, const char 
 	this->error_count = 0;
 	std::vector<int> flags;
 	flags.resize(4);
-	this->SetChemistryFileName(chemistry_name);
+	this->SetChemistryFileName(chemistry_name.c_str());
 	if (mpi_myself == 0)
 	{
 		flags[0] = workers;
@@ -6429,7 +6429,7 @@ PhreeqcRM::RunFileThread(int n)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::RunString(bool workers, bool initial_phreeqc, bool utility, const char * input_string)
+PhreeqcRM::RunString(bool workers, bool initial_phreeqc, bool utility, const std::string & input_string)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -6443,7 +6443,7 @@ PhreeqcRM::RunString(bool workers, bool initial_phreeqc, bool utility, const cha
 	}
 #endif
 	this->error_count = 0;
-	std::string input = Char2TrimString(input_string);
+	std::string input = input_string;
 	std::vector<int> flags;
 	flags.resize(5);
 	if (mpi_myself == 0)
@@ -6808,7 +6808,7 @@ PhreeqcRM::SetDensity(const std::vector<double> &t)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetDumpFileName(const char * cn)
+PhreeqcRM::SetDumpFileName(const std::string & cn)
 /* ---------------------------------------------------------------------- */
 {
 //#ifdef USE_MPI
@@ -6822,9 +6822,9 @@ PhreeqcRM::SetDumpFileName(const char * cn)
 	int l = 0;
 	if (this->mpi_myself == 0)
 	{	
-		if (cn != NULL)
+		if (cn.size() > 0)
 		{
-			this->dump_file_name = Char2TrimString(cn);
+			this->dump_file_name = cn;
 			l = (int) this->dump_file_name.size();
 		}
 		else
@@ -6908,7 +6908,7 @@ PhreeqcRM::SetErrorHandlerMode(int i)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetFilePrefix(const char * prefix)
+PhreeqcRM::SetFilePrefix(const std::string & prefix)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef USE_MPI
@@ -6921,7 +6921,7 @@ PhreeqcRM::SetFilePrefix(const char * prefix)
 	IRM_RESULT return_value = IRM_OK;
 	if (this->mpi_myself == 0)
 	{	
-		this->file_prefix = Char2TrimString(prefix);
+		this->file_prefix = prefix;
 	}
 #ifdef USE_MPI
 	int l1 = 0;
@@ -7103,7 +7103,7 @@ PhreeqcRM::SetPrintChemistryOn(bool worker, bool ip, bool utility)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-PhreeqcRM::SetPrintChemistryMask(int * t)
+PhreeqcRM::SetPrintChemistryMask(std::vector<int> & m)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef USE_MPI
@@ -7122,11 +7122,11 @@ PhreeqcRM::SetPrintChemistryMask(int * t)
 	{
 		if (this->mpi_myself == 0)
 		{
-			if (t == NULL)
+			if ((int) m.size() != this->nxyz)
 			{
-				this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetPrintChemistryMask");
+				this->ErrorHandler(IRM_INVALIDARG, "Wrong size for mask in SetPrintChemistryMask");
 			}
-			memcpy(this->print_chem_mask.data(), t, (size_t) (this->nxyz * sizeof(int)));
+			memcpy(this->print_chem_mask.data(), m.data(), (size_t) (this->nxyz * sizeof(int)));
 		}
 	}
 	catch (...)
