@@ -21,9 +21,9 @@
 #include "IPhreeqc.h"
 #include "H5Cpp.h"
 #include "hdf.h"
-#ifdef THREADED_PHAST
-#include <omp.h>
-#endif
+//#ifdef USE_OPENMP
+//#include <omp.h>
+//#endif
 #ifdef USE_MPI
 #include "mpi.h"
 #endif

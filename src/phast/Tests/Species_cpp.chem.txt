@@ -198,9 +198,9 @@ End of simulation.
 Reading input data for simulation 4.
 ------------------------------------
 
-------------------------------
-End of Run after 0.53 Seconds.
-------------------------------
+-------------------------------
+End of Run after 0.539 Seconds.
+-------------------------------
 
 Number of threads:                                1
 Number of MPI processes:                          3
@@ -420,7 +420,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.588 Seconds.
+End of Run after 0.599 Seconds.
 -------------------------------
 
 Time:           10
@@ -533,9 +533,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 0.588 Seconds.
--------------------------------
+-----------------------------
+End of Run after 0.6 Seconds.
+-----------------------------
 
 Time:           10
 Chemistry cell: 2
@@ -647,9 +647,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 0.589 Seconds.
--------------------------------
+-----------------------------
+End of Run after 0.6 Seconds.
+-----------------------------
 
 Time:           10
 Chemistry cell: 3
@@ -762,7 +762,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.589 Seconds.
+End of Run after 0.601 Seconds.
 -------------------------------
 
 Time:           10
@@ -875,9 +875,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 0.59 Seconds.
-------------------------------
+-------------------------------
+End of Run after 0.601 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 5
@@ -934,7 +934,7 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.211e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  =  4.954e-019
+                 Total alkalinity (eq/kg)  =  1.933e-017
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
@@ -989,9 +989,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 0.59 Seconds.
-------------------------------
+-------------------------------
+End of Run after 0.602 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 6
@@ -1048,7 +1048,7 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.842e-017
+                 Total alkalinity (eq/kg)  =  2.136e-017
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
@@ -1104,7 +1104,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.634 Seconds.
+End of Run after 0.644 Seconds.
 -------------------------------
 
 Time:           10
@@ -1162,7 +1162,7 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.164e-018
+                 Total alkalinity (eq/kg)  =  3.708e-019
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
@@ -1178,8 +1178,8 @@ X               2.200e-004 mol
                                                Log       Log       Log    mole V
    Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
 
-   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
    OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
+   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 Ca           9.066e-017
    Ca+2           9.066e-017  7.786e-017   -16.043   -16.109    -0.066    -18.19
@@ -1218,7 +1218,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.634 Seconds.
+End of Run after 0.645 Seconds.
 -------------------------------
 
 Time:           10
@@ -1276,7 +1276,7 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.329e-017
+                 Total alkalinity (eq/kg)  =  5.048e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
@@ -1292,8 +1292,8 @@ X               2.200e-004 mol
                                                Log       Log       Log    mole V
    Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
 
-   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
    OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
+   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
    H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
 Ca           1.806e-023
    Ca+2           1.806e-023  1.551e-023   -22.743   -22.809    -0.066    -18.19
@@ -1332,7 +1332,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.635 Seconds.
+End of Run after 0.645 Seconds.
 -------------------------------
 
 Time:           10
@@ -1388,12 +1388,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -5.087e-017
+                 Total alkalinity (eq/kg)  = -5.024e-017
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  9.935e-017
+                  Electrical balance (eq)  =  1.010e-016
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
                                Iterations  =   2
                                   Total H  = 2.216295e+001
@@ -1441,7 +1441,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.636 Seconds.
+End of Run after 0.646 Seconds.
 -------------------------------
 
 Time:           10
@@ -1498,12 +1498,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.610e-018
+                 Total alkalinity (eq/kg)  = -1.015e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -6.842e-017
+                  Electrical balance (eq)  = -8.696e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.216266e+001
@@ -1558,7 +1558,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.636 Seconds.
+End of Run after 0.647 Seconds.
 -------------------------------
 
 Time:           10
@@ -1585,6 +1585,240 @@ Reaction step 1.
 
 Using solution 11.	Solution after simulation 1.
 Using exchange 11.	Exchange assemblage after simulation 1.
+
+-----------------------------Exchange composition------------------------------
+
+X               2.200e-004 mol
+
+	                               Equiv-    Equivalent      Log 
+	Species             Moles      alents      Fraction     Gamma
+
+	KX               1.107e-004  1.107e-004  5.034e-001    -0.017
+	NaX              1.093e-004  1.093e-004  4.966e-001    -0.017
+	NH4X             3.897e-065  3.897e-065  1.771e-061    -0.017
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	K                1.969e-004  3.932e-005
+	N                1.200e-003  2.396e-004
+	Na               1.003e-003  2.003e-004
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.082      Charge balance
+                                       pe  =  13.967      Adjusted to redox equilibrium
+       Specific Conductance (µS/cm, 20°C)  = 130
+                          Density (g/cm³)  =   0.99832
+                               Volume (L)  =   0.20000
+                        Activity of water  =   1.000
+                           Ionic strength  =  1.200e-003
+                       Mass of water (kg)  =  1.996e-001
+                 Total alkalinity (eq/kg)  = -7.859e-019
+                    Total carbon (mol/kg)  =  0.000e+000
+                       Total CO2 (mol/kg)  =  0.000e+000
+                         Temperature (°C)  =  20.00
+                           Pressure (atm)  =  2.00
+                  Electrical balance (eq)  = -1.090e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+001
+                                  Total O  = 1.108216e+001
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
+   OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
+   H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
+H(0)         0.000e+000
+   H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
+K            1.969e-004
+   K+             1.969e-004  1.895e-004    -3.706    -3.723    -0.017      8.84
+N(-3)        0.000e+000
+   NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
+   NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
+N(0)         5.774e-020
+   N2             2.887e-020  2.888e-020   -19.540   -19.539     0.000     29.29
+N(3)         1.258e-016
+   NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
+N(5)         1.200e-003
+   NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
+Na           1.003e-003
+   Na+            1.003e-003  9.653e-004    -2.999    -3.015    -0.017     -1.75
+   NaOH           7.972e-021  7.974e-021   -20.098   -20.098     0.000     (0)  
+O(0)         5.351e-004
+   O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(293 K,   2 atm)
+
+  H2(g)           -42.14    -45.22   -3.09  H2
+  H2O(g)           -1.63     -0.00    1.63  H2O
+  N2(g)           -16.39    -19.54   -3.14  N2
+  NH3(g)          -68.29    -66.39    1.90  NH3
+  O2(g)            -0.72     -3.57   -2.85  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+-------------------------------
+End of Run after 0.691 Seconds.
+-------------------------------
+
+Time:           10
+Chemistry cell: 12
+Grid cell(s):   12 32 
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	RUN_CELLS
+	  -start_time 777600
+	  -time_step  86400
+	  -cells      12
+	END
+--------------------------
+Beginning of run as cells.
+--------------------------
+
+-----------------------------------------
+Beginning of batch-reaction calculations.
+-----------------------------------------
+
+Reaction step 1.
+
+Using solution 12.	Solution after simulation 1.
+Using exchange 12.	Exchange assemblage after simulation 1.
+
+-----------------------------Exchange composition------------------------------
+
+X               2.200e-004 mol
+
+	                               Equiv-    Equivalent      Log 
+	Species             Moles      alents      Fraction     Gamma
+
+	KX               1.107e-004  1.107e-004  5.034e-001    -0.017
+	NaX              1.093e-004  1.093e-004  4.966e-001    -0.017
+	NH4X             3.897e-065  3.897e-065  1.771e-061    -0.017
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	K                1.969e-004  3.932e-005
+	N                1.200e-003  2.396e-004
+	Na               1.003e-003  2.003e-004
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.082      Charge balance
+                                       pe  =  13.967      Adjusted to redox equilibrium
+       Specific Conductance (µS/cm, 20°C)  = 130
+                          Density (g/cm³)  =   0.99832
+                               Volume (L)  =   0.20000
+                        Activity of water  =   1.000
+                           Ionic strength  =  1.200e-003
+                       Mass of water (kg)  =  1.996e-001
+                 Total alkalinity (eq/kg)  = -9.835e-019
+                    Total carbon (mol/kg)  =  0.000e+000
+                       Total CO2 (mol/kg)  =  0.000e+000
+                         Temperature (°C)  =  20.00
+                           Pressure (atm)  =  2.00
+                  Electrical balance (eq)  = -1.089e-016
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+001
+                                  Total O  = 1.108216e+001
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
+   OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
+   H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
+H(0)         0.000e+000
+   H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
+K            1.969e-004
+   K+             1.969e-004  1.895e-004    -3.706    -3.723    -0.017      8.84
+N(-3)        0.000e+000
+   NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
+   NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
+N(0)         5.774e-020
+   N2             2.887e-020  2.888e-020   -19.540   -19.539     0.000     29.29
+N(3)         1.258e-016
+   NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
+N(5)         1.200e-003
+   NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
+Na           1.003e-003
+   Na+            1.003e-003  9.653e-004    -2.999    -3.015    -0.017     -1.75
+   NaOH           7.972e-021  7.974e-021   -20.098   -20.098     0.000     (0)  
+O(0)         5.351e-004
+   O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(293 K,   2 atm)
+
+  H2(g)           -42.14    -45.22   -3.09  H2
+  H2O(g)           -1.63     -0.00    1.63  H2O
+  N2(g)           -16.39    -19.54   -3.14  N2
+  NH3(g)          -68.29    -66.39    1.90  NH3
+  O2(g)            -0.72     -3.57   -2.85  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+-------------------------------
+End of Run after 0.692 Seconds.
+-------------------------------
+
+Time:           10
+Chemistry cell: 13
+Grid cell(s):   13 33 
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	RUN_CELLS
+	  -start_time 777600
+	  -time_step  86400
+	  -cells      13
+	END
+--------------------------
+Beginning of run as cells.
+--------------------------
+
+-----------------------------------------
+Beginning of batch-reaction calculations.
+-----------------------------------------
+
+Reaction step 1.
+
+Using solution 13.	Solution after simulation 1.
+Using exchange 13.	Exchange assemblage after simulation 1.
 
 -----------------------------Exchange composition------------------------------
 
@@ -1675,241 +1909,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.678 Seconds.
--------------------------------
-
-Time:           10
-Chemistry cell: 12
-Grid cell(s):   12 32 
-------------------------------------
-Reading input data for simulation 1.
-------------------------------------
-
-	RUN_CELLS
-	  -start_time 777600
-	  -time_step  86400
-	  -cells      12
-	END
---------------------------
-Beginning of run as cells.
---------------------------
-
------------------------------------------
-Beginning of batch-reaction calculations.
------------------------------------------
-
-Reaction step 1.
-
-Using solution 12.	Solution after simulation 1.
-Using exchange 12.	Exchange assemblage after simulation 1.
-
------------------------------Exchange composition------------------------------
-
-X               2.200e-004 mol
-
-	                               Equiv-    Equivalent      Log 
-	Species             Moles      alents      Fraction     Gamma
-
-	KX               1.107e-004  1.107e-004  5.034e-001    -0.017
-	NaX              1.093e-004  1.093e-004  4.966e-001    -0.017
-	NH4X             3.897e-065  3.897e-065  1.771e-061    -0.017
-
------------------------------Solution composition------------------------------
-
-	Elements           Molality       Moles
-
-	K                1.969e-004  3.932e-005
-	N                1.200e-003  2.396e-004
-	Na               1.003e-003  2.003e-004
-
-----------------------------Description of solution----------------------------
-
-                                       pH  =   7.082      Charge balance
-                                       pe  =  13.967      Adjusted to redox equilibrium
-       Specific Conductance (µS/cm, 20°C)  = 130
-                          Density (g/cm³)  =   0.99832
-                               Volume (L)  =   0.20000
-                        Activity of water  =   1.000
-                           Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -5.154e-017
-                    Total carbon (mol/kg)  =  0.000e+000
-                       Total CO2 (mol/kg)  =  0.000e+000
-                         Temperature (°C)  =  20.00
-                           Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -6.840e-017
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
-                               Iterations  =   0
-                                  Total H  = 2.216266e+001
-                                  Total O  = 1.108216e+001
-
-----------------------------Distribution of species----------------------------
-
-                                               Log       Log       Log    mole V
-   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
-
-   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
-   OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
-   H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
-H(0)         0.000e+000
-   H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            1.969e-004
-   K+             1.969e-004  1.895e-004    -3.706    -3.723    -0.017      8.84
-N(-3)        0.000e+000
-   NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
-   NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
-N(0)         5.774e-020
-   N2             2.887e-020  2.888e-020   -19.540   -19.539     0.000     29.29
-N(3)         1.258e-016
-   NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
-N(5)         1.200e-003
-   NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.003e-003
-   Na+            1.003e-003  9.653e-004    -2.999    -3.015    -0.017     -1.75
-   NaOH           7.972e-021  7.974e-021   -20.098   -20.098     0.000     (0)  
-O(0)         5.351e-004
-   O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
-
-------------------------------Saturation indices-------------------------------
-
-  Phase               SI** log IAP   log K(293 K,   2 atm)
-
-  H2(g)           -42.14    -45.22   -3.09  H2
-  H2O(g)           -1.63     -0.00    1.63  H2O
-  N2(g)           -16.39    -19.54   -3.14  N2
-  NH3(g)          -68.29    -66.39    1.90  NH3
-  O2(g)            -0.72     -3.57   -2.85  O2
-
-**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
-  For ideal gases, phi = 1.
-
-------------------
-End of simulation.
-------------------
-
-------------------------------------
-Reading input data for simulation 2.
-------------------------------------
-
--------------------------------
-End of Run after 0.678 Seconds.
--------------------------------
-
-Time:           10
-Chemistry cell: 13
-Grid cell(s):   13 33 
-------------------------------------
-Reading input data for simulation 1.
-------------------------------------
-
-	RUN_CELLS
-	  -start_time 777600
-	  -time_step  86400
-	  -cells      13
-	END
---------------------------
-Beginning of run as cells.
---------------------------
-
------------------------------------------
-Beginning of batch-reaction calculations.
------------------------------------------
-
-Reaction step 1.
-
-Using solution 13.	Solution after simulation 1.
-Using exchange 13.	Exchange assemblage after simulation 1.
-
------------------------------Exchange composition------------------------------
-
-X               2.200e-004 mol
-
-	                               Equiv-    Equivalent      Log 
-	Species             Moles      alents      Fraction     Gamma
-
-	KX               1.107e-004  1.107e-004  5.034e-001    -0.017
-	NaX              1.093e-004  1.093e-004  4.966e-001    -0.017
-	NH4X             3.897e-065  3.897e-065  1.771e-061    -0.017
-
------------------------------Solution composition------------------------------
-
-	Elements           Molality       Moles
-
-	K                1.969e-004  3.932e-005
-	N                1.200e-003  2.396e-004
-	Na               1.003e-003  2.003e-004
-
-----------------------------Description of solution----------------------------
-
-                                       pH  =   7.082      Charge balance
-                                       pe  =  13.967      Adjusted to redox equilibrium
-       Specific Conductance (µS/cm, 20°C)  = 130
-                          Density (g/cm³)  =   0.99832
-                               Volume (L)  =   0.20000
-                        Activity of water  =   1.000
-                           Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.429e-018
-                    Total carbon (mol/kg)  =  0.000e+000
-                       Total CO2 (mol/kg)  =  0.000e+000
-                         Temperature (°C)  =  20.00
-                           Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -8.681e-017
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
-                               Iterations  =   0
-                                  Total H  = 2.216266e+001
-                                  Total O  = 1.108216e+001
-
-----------------------------Distribution of species----------------------------
-
-                                               Log       Log       Log    mole V
-   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
-
-   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
-   OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
-   H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
-H(0)         0.000e+000
-   H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            1.969e-004
-   K+             1.969e-004  1.895e-004    -3.706    -3.723    -0.017      8.84
-N(-3)        0.000e+000
-   NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
-   NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
-N(0)         5.774e-020
-   N2             2.887e-020  2.888e-020   -19.540   -19.539     0.000     29.29
-N(3)         1.258e-016
-   NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
-N(5)         1.200e-003
-   NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.003e-003
-   Na+            1.003e-003  9.653e-004    -2.999    -3.015    -0.017     -1.75
-   NaOH           7.972e-021  7.974e-021   -20.098   -20.098     0.000     (0)  
-O(0)         5.351e-004
-   O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
-
-------------------------------Saturation indices-------------------------------
-
-  Phase               SI** log IAP   log K(293 K,   2 atm)
-
-  H2(g)           -42.14    -45.22   -3.09  H2
-  H2O(g)           -1.63     -0.00    1.63  H2O
-  N2(g)           -16.39    -19.54   -3.14  N2
-  NH3(g)          -68.29    -66.39    1.90  NH3
-  O2(g)            -0.72     -3.57   -2.85  O2
-
-**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
-  For ideal gases, phi = 1.
-
-------------------
-End of simulation.
-------------------
-
-------------------------------------
-Reading input data for simulation 2.
-------------------------------------
-
--------------------------------
-End of Run after 0.679 Seconds.
+End of Run after 0.692 Seconds.
 -------------------------------
 
 Time:           10
@@ -1966,12 +1966,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.023e-018
+                 Total alkalinity (eq/kg)  = -1.388e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -6.848e-017
+                  Electrical balance (eq)  = -6.836e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.216266e+001
@@ -2026,7 +2026,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.679 Seconds.
+End of Run after 0.693 Seconds.
 -------------------------------
 
 Time:           10
@@ -2053,6 +2053,123 @@ Reaction step 1.
 
 Using solution 15.	Solution after simulation 1.
 Using exchange 15.	Exchange assemblage after simulation 1.
+
+-----------------------------Exchange composition------------------------------
+
+X               2.200e-004 mol
+
+	                               Equiv-    Equivalent      Log 
+	Species             Moles      alents      Fraction     Gamma
+
+	KX               1.107e-004  1.107e-004  5.034e-001    -0.017
+	NaX              1.093e-004  1.093e-004  4.966e-001    -0.017
+	NH4X             3.897e-065  3.897e-065  1.771e-061    -0.017
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	K                1.969e-004  3.932e-005
+	N                1.200e-003  2.396e-004
+	Na               1.003e-003  2.003e-004
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.082      Charge balance
+                                       pe  =  13.967      Adjusted to redox equilibrium
+       Specific Conductance (µS/cm, 20°C)  = 130
+                          Density (g/cm³)  =   0.99832
+                               Volume (L)  =   0.20000
+                        Activity of water  =   1.000
+                           Ionic strength  =  1.200e-003
+                       Mass of water (kg)  =  1.996e-001
+                 Total alkalinity (eq/kg)  = -1.118e-018
+                    Total carbon (mol/kg)  =  0.000e+000
+                       Total CO2 (mol/kg)  =  0.000e+000
+                         Temperature (°C)  =  20.00
+                           Pressure (atm)  =  2.00
+                  Electrical balance (eq)  = -8.676e-017
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   0
+                                  Total H  = 2.216266e+001
+                                  Total O  = 1.108216e+001
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
+   OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
+   H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
+H(0)         0.000e+000
+   H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
+K            1.969e-004
+   K+             1.969e-004  1.895e-004    -3.706    -3.723    -0.017      8.84
+N(-3)        0.000e+000
+   NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
+   NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
+N(0)         5.774e-020
+   N2             2.887e-020  2.888e-020   -19.540   -19.539     0.000     29.29
+N(3)         1.258e-016
+   NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
+N(5)         1.200e-003
+   NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
+Na           1.003e-003
+   Na+            1.003e-003  9.653e-004    -2.999    -3.015    -0.017     -1.75
+   NaOH           7.972e-021  7.974e-021   -20.098   -20.098     0.000     (0)  
+O(0)         5.351e-004
+   O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(293 K,   2 atm)
+
+  H2(g)           -42.14    -45.22   -3.09  H2
+  H2O(g)           -1.63     -0.00    1.63  H2O
+  N2(g)           -16.39    -19.54   -3.14  N2
+  NH3(g)          -68.29    -66.39    1.90  NH3
+  O2(g)            -0.72     -3.57   -2.85  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+-------------------------------
+End of Run after 0.693 Seconds.
+-------------------------------
+
+Time:           10
+Chemistry cell: 16
+Grid cell(s):   16 36 
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	RUN_CELLS
+	  -start_time 777600
+	  -time_step  86400
+	  -cells      16
+	END
+--------------------------
+Beginning of run as cells.
+--------------------------
+
+-----------------------------------------
+Beginning of batch-reaction calculations.
+-----------------------------------------
+
+Reaction step 1.
+
+Using solution 16.	Solution after simulation 1.
+Using exchange 16.	Exchange assemblage after simulation 1.
 
 -----------------------------Exchange composition------------------------------
 
@@ -2142,126 +2259,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 0.68 Seconds.
-------------------------------
-
-Time:           10
-Chemistry cell: 16
-Grid cell(s):   16 36 
-------------------------------------
-Reading input data for simulation 1.
-------------------------------------
-
-	RUN_CELLS
-	  -start_time 777600
-	  -time_step  86400
-	  -cells      16
-	END
---------------------------
-Beginning of run as cells.
---------------------------
-
------------------------------------------
-Beginning of batch-reaction calculations.
------------------------------------------
-
-Reaction step 1.
-
-Using solution 16.	Solution after simulation 1.
-Using exchange 16.	Exchange assemblage after simulation 1.
-
------------------------------Exchange composition------------------------------
-
-X               2.200e-004 mol
-
-	                               Equiv-    Equivalent      Log 
-	Species             Moles      alents      Fraction     Gamma
-
-	KX               1.107e-004  1.107e-004  5.034e-001    -0.017
-	NaX              1.093e-004  1.093e-004  4.966e-001    -0.017
-	NH4X             3.897e-065  3.897e-065  1.771e-061    -0.017
-
------------------------------Solution composition------------------------------
-
-	Elements           Molality       Moles
-
-	K                1.969e-004  3.932e-005
-	N                1.200e-003  2.396e-004
-	Na               1.003e-003  2.003e-004
-
-----------------------------Description of solution----------------------------
-
-                                       pH  =   7.082      Charge balance
-                                       pe  =  13.967      Adjusted to redox equilibrium
-       Specific Conductance (µS/cm, 20°C)  = 130
-                          Density (g/cm³)  =   0.99832
-                               Volume (L)  =   0.20000
-                        Activity of water  =   1.000
-                           Ionic strength  =  1.200e-003
-                       Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.610e-018
-                    Total carbon (mol/kg)  =  0.000e+000
-                       Total CO2 (mol/kg)  =  0.000e+000
-                         Temperature (°C)  =  20.00
-                           Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -6.842e-017
- Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
-                               Iterations  =   0
-                                  Total H  = 2.216266e+001
-                                  Total O  = 1.108216e+001
-
-----------------------------Distribution of species----------------------------
-
-                                               Log       Log       Log    mole V
-   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
-
-   H+             8.595e-008  8.287e-008    -7.066    -7.082    -0.016      0.00
-   OH-            8.595e-008  8.268e-008    -7.066    -7.083    -0.017     -4.32
-   H2O            5.551e+001  1.000e+000     1.744    -0.000     0.000     18.05
-H(0)         0.000e+000
-   H2             0.000e+000  0.000e+000   -45.225   -45.225     0.000     28.61
-K            1.969e-004
-   K+             1.969e-004  1.895e-004    -3.706    -3.723    -0.017      8.84
-N(-3)        0.000e+000
-   NH4+           0.000e+000  0.000e+000   -64.054   -64.071    -0.017     17.80
-   NH3            0.000e+000  0.000e+000   -66.390   -66.390     0.000     24.19
-N(0)         5.774e-020
-   N2             2.887e-020  2.888e-020   -19.540   -19.539     0.000     29.29
-N(3)         1.258e-016
-   NO2-           1.258e-016  1.210e-016   -15.900   -15.917    -0.017     24.69
-N(5)         1.200e-003
-   NO3-           1.200e-003  1.154e-003    -2.921    -2.938    -0.017     28.98
-Na           1.003e-003
-   Na+            1.003e-003  9.653e-004    -2.999    -3.015    -0.017     -1.75
-   NaOH           7.972e-021  7.974e-021   -20.098   -20.098     0.000     (0)  
-O(0)         5.351e-004
-   O2             2.676e-004  2.676e-004    -3.573    -3.572     0.000     29.98
-
-------------------------------Saturation indices-------------------------------
-
-  Phase               SI** log IAP   log K(293 K,   2 atm)
-
-  H2(g)           -42.14    -45.22   -3.09  H2
-  H2O(g)           -1.63     -0.00    1.63  H2O
-  N2(g)           -16.39    -19.54   -3.14  N2
-  NH3(g)          -68.29    -66.39    1.90  NH3
-  O2(g)            -0.72     -3.57   -2.85  O2
-
-**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
-  For ideal gases, phi = 1.
-
-------------------
-End of simulation.
-------------------
-
-------------------------------------
-Reading input data for simulation 2.
-------------------------------------
-
-------------------------------
-End of Run after 0.68 Seconds.
-------------------------------
+-------------------------------
+End of Run after 0.694 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 17
@@ -2377,7 +2377,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.681 Seconds.
+End of Run after 0.694 Seconds.
 -------------------------------
 
 Time:           10
@@ -2494,7 +2494,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.681 Seconds.
+End of Run after 0.695 Seconds.
 -------------------------------
 
 Time:           10
@@ -2611,6 +2611,6 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.682 Seconds.
+End of Run after 0.695 Seconds.
 -------------------------------
 
