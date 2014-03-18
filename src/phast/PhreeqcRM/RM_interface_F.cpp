@@ -6,9 +6,9 @@
 #include <string>
 #include <map>
 #include "fwrap.h"
-#ifdef THREADED_PHAST
-#include <omp.h>
-#endif
+//#ifdef USE_OPENMP
+//#include <omp.h>
+//#endif
 #ifdef USE_MPI
 #include "mpi.h"
 #endif

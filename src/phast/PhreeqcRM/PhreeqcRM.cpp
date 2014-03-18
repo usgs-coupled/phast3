@@ -8,7 +8,8 @@
 #include <assert.h>
 #include "System.h"
 #ifdef USE_GZ
-#include "gzstream.h"
+//#include "gzstream.h"
+#include <zlib.h>
 #else
 #define gzFile FILE*
 #define gzclose fclose
@@ -26,7 +27,7 @@
 #include "GasPhase.h"
 #include "CSelectedOutput.hxx"
 #include <time.h>
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 #include <omp.h>
 #endif
 #ifdef USE_MPI
@@ -130,7 +131,7 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, int data_for_parallel_processing, PHRQ_io *io
 	phreeqcrm_comm = data_for_parallel_processing;
 
 	int n = 1;	
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 #if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo( &sysinfo );
@@ -2120,7 +2121,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 			errstr << "Restart file could not be opened: " << name;
 			this->ErrorHandler(IRM_FAIL, errstr.str());
 		}	
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 		omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for
@@ -4085,7 +4086,7 @@ PhreeqcRM::LoadDatabase(const std::string &database)
 		r_vector.resize(this->nthreads + 2);
 
 		// Load database for all IPhreeqc instances
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 		omp_set_num_threads(this->nthreads+1);
 #pragma omp parallel 
 #pragma omp for
@@ -5824,7 +5825,7 @@ PhreeqcRM::RunCells()
 		}
 		std::vector < int > r_vector;
 		r_vector.resize(this->nthreads);
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 		omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for
@@ -6349,7 +6350,7 @@ PhreeqcRM::RunFile(bool workers, bool initial_phreeqc, bool utility, const std::
 		run[this->nthreads + 1] = true;
 	}
 
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 	omp_set_num_threads(this->nthreads);
 	#pragma omp parallel 
 	#pragma omp for
@@ -6486,7 +6487,7 @@ PhreeqcRM::RunString(bool workers, bool initial_phreeqc, bool utility, const std
 	{
 		run[this->nthreads + 1] = true;
 	}
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 	omp_set_num_threads(this->nthreads);
 	#pragma omp parallel 
 	#pragma omp for
@@ -6741,7 +6742,7 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 	std::string methodName = "SetConcentrations";
 	IRM_RESULT result_value = SetGeneric(c, (int) this->components.size() * this->nxyz, t, METHOD_SETCONCENTRATIONS, methodName, INACTIVE_CELL_VALUE);
 
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 	omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for
@@ -7038,7 +7039,7 @@ PhreeqcRM::SetPressure(const std::vector<double> &t)
 	std::string methodName = "SetPressure";
 	IRM_RESULT return_value = SetGeneric(this->pressure, this->nxyz, t, METHOD_SETPRESSURE, methodName);
 
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 	omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for
@@ -7253,7 +7254,7 @@ PhreeqcRM::SetTemperature(const std::vector<double> &t)
 {
 	IRM_RESULT return_value = SetGeneric(this->tempc, this->nxyz, t, METHOD_SETTEMPERATURE, "SetTemperature");
 
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 	omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for

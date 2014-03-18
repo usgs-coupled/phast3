@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include "TM_interface.h"
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 #include <omp.h>
 #endif
 #ifdef USE_MPI
@@ -33,7 +33,7 @@ TM_transport(int *id, int *ncomps, int *nthreads)
 {
 	int n = 1;
 	// Used for threaded transport calculations
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 	if (*nthreads <= 0)
 	{
 #if defined(_WIN32)
@@ -52,7 +52,7 @@ TM_transport(int *id, int *ncomps, int *nthreads)
 		n = *nthreads;
 	}
 #endif
-#ifdef THREADED_PHAST
+#ifdef USE_OPENMP
 	omp_set_num_threads(n);
 	#pragma omp parallel
 	#pragma omp for
