@@ -1,3 +1,6 @@
+/*! @file RM_interface_C.h
+	@brief C/Fortran Documentation
+*/
 #if !defined(PHREEQCRM_H_INCLUDED)
 #define PHREEQCRM_H_INCLUDED
 #include "PHRQ_base.h"
@@ -19,9 +22,9 @@ class IPQ_DLL_EXPORT PhreeqcRMStop : std::exception
 {
 };
 
-#include "IrmResult.h"
-/*! @brief Enumeration used to for MPI worker to determine method to call
+/*! @brief Enumeration used to return error codes.
 */
+#include "IrmResult.h"
 typedef enum {
 	METHOD_CREATEMAPPING,
 	METHOD_DUMPMODULE,
@@ -75,32 +78,498 @@ public:
 	static IRM_RESULT       DestroyReactionModule(int n);
 	static PhreeqcRM      * GetInstance(int n);
 
+/**
+Constructor for the PhreeqcRM reaction module. If the code is compiled with
+the preprocessor directive USE_OPENMP, the reaction module is multithreaded.
+If the code is compiled with the preprocessor directive USE_MPI, the reaction
+module will use MPI and multiple processes. If neither preprocessor directive is used,
+the reaction module will be serial (unparallelized). 
+@param nxyz        The number of grid cells in the users model.
+@param thread_count_or_communicator If multithreaded, the number of threads to use
+in parallel segments of the code. 
+If thread_count_or_communicator is <= 0, the number of threads is set equal to the number of processors of the computer.
+If multiprocessor, the MPI communicator to use within the reaction module. 
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  		
+int nxyz = 40;
+#ifdef USE_MPI
+  PhreeqcRM phreeqc_rm(nxyz, MPI_COMM_WORLD);
+  int mpi_myself;
+  if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+  {
+    exit(4);
+  }
+  if (mpi_myself > 0)
+  {
+    phreeqc_rm.MpiWorker();
+    return EXIT_SUCCESS;
+  }
+#else
+  int nthreads = 3;
+  PhreeqcRM phreeqc_rm(nxyz, nthreads);
+#endif
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and all workers.
+ */	
 	PhreeqcRM(int nxyz, int thread_count_or_communicator, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
-	
+/**
+Close the output and log files. 
+@retval IRM_RESULT   0 is success, negative is failure (See @ref DecodeError).  
+@see                 @ref OpenFiles, @ref SetFilePrefix
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = phreeqc_rm.CloseFiles();
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called only by root.
+ */	
 	IRM_RESULT                                CloseFiles(void);
-	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c_in, 
-		                                           std::vector<double> t_in, std::vector<double> p_in);
+/**
+N sets of component concentrations are converted to SOLUTIONs numbered 1-n in the Utility IPhreeqc.
+The solutions can be reacted and manipulated with the methods of IPhreeqc. The motivation for this
+method is the mixing of solutions in wells, where it may be necessary to calculate solution properties
+(pH for example) or react the mixture to form scale minerals. The code fragment below makes a mixture of
+concentrations and then calculate the pH of the mixture.
+@param c             Vector of concentrations to be made SOLUTIONs in Utility IPhreeqc. 
+Vector contains n values for each component (@ref GetComponentCount) in sequence. 
+@param tc            Vector of temperatures to apply to the SOLUTIONs, in degrees C. Vector of size n. 
+@param p_atm         Vector of pressures to apply to the SOLUTIONs, in atm. Vector of size n.
+@retval IRM_RESULT   0 is success, negative is failure (See @ref DecodeError).  
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+std::vector <double> c_well;
+c_well.resize(1*ncomps, 0.0);
+for (int i = 0; i < ncomps; i++)
+{
+  c_well[i] = 0.5 * c[0 + nxyz*i] + 0.5 * c[9 + nxyz*i];
+}
+std::vector<double> tc, p_atm;
+tc.resize(1, 15.0);
+p_atm.resize(1, 3.0);
+IPhreeqc * util_ptr = phreeqc_rm.Concentrations2Utility(c_well, tc, p_atm);
+input = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1";
+int iphreeqc_result;
+util_ptr->SetOutputFileName("utility_cpp.txt");
+util_ptr->SetOutputFileOn(true);
+iphreeqc_result = util_ptr->RunString(input.c_str());
+phreeqc_rm.ErrorHandler(iphreeqc_result, "IPhreeqc RunString failed");
+int vtype;
+double pH;
+char svalue[100];
+util_ptr->SetCurrentSelectedOutputUserNumber(5);
+iphreeqc_result = util_ptr->GetSelectedOutputValue2(1, 0, &vtype, &pH, svalue, 100);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called only by root.
+ */
+	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c, 
+		                                           std::vector<double> tc, std::vector<double> p_atm);
+/**
+Provides a mapping from grid cells in the user's model to cells for which chemistry needs to be run. 
+The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells 
+for which chemistry must be run. The mapping may be many-to-one to account for symmetry.
+Default is a one-to-one mapping--all user grid cells are chemistry cells 
+(equivalent to grid2chem values of 0,1,2,3,...,nxyz-1).
+@param grid2chem        A vector of integers: Nonnegative is a chemistry cell number (0 based), 
+negative is an inactive cell. Vector is of size nxyz (number of grid cells).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError). 
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+// For demonstation, two equivalent rows by symmetry
+std::vector<int> grid2chem;
+grid2chem.resize(nxyz, -1);
+for (int i = 0; i < nxyz/2; i++)
+{
+  grid2chem[i] = i;
+  grid2chem[i + nxyz/2] = i;
+}
+status = phreeqc_rm.CreateMapping(grid2chem);
+if (status < 0) phreeqc_rm.DecodeError(status); 
+int nchem = phreeqc_rm.GetChemistryCellCount();
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                CreateMapping(std::vector<int> &grid2chem);
-	void                                      DecodeError(int r);
+/**
+If result is negative, this method prints an error message corresponding to IRM_RESULT result. 
+If result is non-negative, this method does nothing.
+@param result               An IRM_RESULT value returned by one of the reaction-module methods.
+@retval IRM_RESULT          0 is success, negative is failure. 
+@par IRM_RESULT definition:
+@htmlonly
+<CODE>
+<PRE>  
+typedef enum {
+  IRM_OK            =  0,  //Success
+  IRM_OUTOFMEMORY   = -1,  //Failure, Out of memory 
+  IRM_BADVARTYPE    = -2,  //Failure, Invalid VAR type 
+  IRM_INVALIDARG    = -3,  //Failure, Invalid argument 
+  IRM_INVALIDROW    = -4,  //Failure, Invalid row 
+  IRM_INVALIDCOL    = -5,  //Failure, Invalid column 
+  IRM_BADINSTANCE   = -6,  //Failure, Invalid rm instance id 
+  IRM_FAIL          = -7,  //Failure, Unspecified 
+} IRM_RESULT;
+</PRE>
+</CODE> 
+@endhtmlonly
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = phreeqc_rm.CreateMapping(grid2chem);
+if (status < 0) phreeqc_rm.DecodeError(status); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Can be called by root and (or) workers.
+ */
+	void                                      DecodeError(int result);
+/**
+Writes the contents of all workers to file in _RAW formats, including SOLUTIONs and all reactants.
+@param dump_on          Signal for writing the dump file: 1 true, 0 false.
+@param append           Signal to append to the contents of the dump file: 1 true, 0 false.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError). 
+@see                    @ref SetDumpFileName
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  				
+bool dump_on = true;
+bool append = false;
+status = phreeqc_rm.SetDumpFileName("advection_cpp.dmp");
+status = phreeqc_rm.DumpModule(dump_on, append);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root; workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                DumpModule(bool dump_on, bool append = false);
+/**
+Checks result for an error code. If result is negative, the result is decoded (@ref DecodeError), 
+and printed as an error message along with the e_string, and an exception is thrown. If the result
+is nonnegative, no action is taken and IRM_OK is returned.
+@param result           IRM_RESULT to be checked for an error.
+@param e_string         String to be printed if an error is found.
+@see                    @ref ErrorMessage.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  				
+iphreeqc_result = util_ptr->RunString(input.c_str());
+if (iphreeqc_result != 0)
+{
+  phreeqc_rm.ErrorHandler(IRM_FAIL, "IPhreeqc RunString failed");
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	void                                      ErrorHandler(int result, const std::string &e_string);
+/**
+Send an error message to the screen, the output file, and the log file. 
+@param error_string      String to be printed.
+@param prepend           True, prepend with "Error: "; false, error_string is used intact.
+@see                    @ref OpenFiles, @ref LogMessage, @ref ScreenMessage, @ref WarningMessage. 
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+phreeqc_rm.ErrorMessage("Goodby world");
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers; root writes to output and log files.
+ */
 	void                                      ErrorMessage(const std::string &error_string, bool prepend = true);
+/**
+Returns the number of items in the list of all elements in the InitialPhreeqc instance. 
+Elements are those that have been defined in a solution or any other reactant 
+(EQUILIBRIUM_PHASE, KINETICS, and others). 
+The method can be called multiple times and the list that is created is cummulative. 
+The list is the set of components that needs to be transported. By default the list 
+includes total H and total O concentrations;
+for numerical accuracy in transport, the list may be defined to include excess H and O 
+(the H and O not contained in water) 
+and the water concentration (@ref SetComponentH2O).
+If multicomponent diffusion (MCD) is to be modeled, there is a capability to retrieve aqueous species concentrations
+(@ref GetSpeciesConcentrations) and to set new solution concentrations after 
+MCD from the individual species concentrations 
+(@ref SpeciesConcentrations2Module). 
+To use these methods the save-species property needs to be turned on (@ref SetSpeciesSaveOn).
+If the save-species property is on, FindComponents will generate 
+a list of aqueous species (@ref GetSpeciesCount, @ref GetSpeciesName), their diffusion coefficients at 25 C (@ref GetSpeciesD25),
+their charge (@ref GetSpeciesZ).
+@retval              Number of components currently in the list, or IRM_RESULT error code (see @ref DecodeError).
+@see                 @ref GetComponents, @ref SetSpeciesSaveOn, @ref GetSpeciesConcentrations, @ref SpeciesConcentrations2Module,
+@ref GetSpeciesCount, @ref GetSpeciesName, @ref GetSpeciesD25, @ref GetSpeciesZ, @ref SetComponentH2O.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+int ncomps = phreeqc_rm.FindComponents();
+const std::vector<std::string> &components = phreeqc_rm.GetComponents();
+const std::vector < double > & gfw = phreeqc_rm.GetGfw();
+for (int i = 0; i < ncomps; i++)
+{
+  std::ostringstream strm;
+  strm.width(10);
+  strm << components[i] << "    " << gfw[i] << "\n";
+  phreeqc_rm.OutputMessage(strm.str());
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	int                                       FindComponents();
+/**
+Returns a mapping for each chemistry cell number in the reaction module to grid cell numbers in the 
+user grid. Each chemistry cell will map to one or more grid cells. 
+@retval              Vector of vectors of ints. For each chemistry cell n, the nth vector in the vector of vectors contains
+the user grid cell numbers that the chemistry cell maps to.
+@see                 @ref CreateMapping, @ref GetForwardMapping.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+for (int j = 0; j < count_chemistry; j++)	
+{
+    // First grid cell in list for chemistry cell j
+	int i = phreeqc_rm.GetBackwardMapping()[j][0]; 
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const std::vector < std::vector <int> > & GetBackwardMapping(void) {return this->backward_mapping;}
-	std::vector<double> &                     GetCellVolume(void) {return this->cell_volume;}
+/**
+Returns the current set of cell volumes for the chemistry cells as 
+defined by the last use of @ref SetCellVolume or the default (1.0 L). 
+Cell volume is used with pore volume (@ref SetPoreVolume) in calculating porosity. 
+In most cases, cell volumes are expected to be constant.
+@retval const std::vector<double>&       A vector reference to the cell volumes
+defined to the reaction module by the last call to @ref SetCellVolume, or default 1.0. 
+Size of vector is nxyz, the number of grid cells in the user's model (@ref GetGridCellCount).
+@see                 @ref GetPoreVolume, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+const std::vector<double> & vol = phreeqc_rm.GetCellVolume(); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	const std::vector<double> &               GetCellVolume(void) {return this->cell_volume;}
+/**
+Returns the number of chemistry cells in the reaction module. The number of chemistry cells is defined by 
+the set of non-negative integers in the mapping from user grid cells (@ref CreateMapping), or, by default,
+the number of grid cells (@ref GetGridCellCount). 
+The number of chemistry cells is less than or equal to the number of grid cells in the user's model.
+@retval              Number of chemistry cells, or IRM_RESULT error code (see @ref RM_DecodeError).
+@see                 @ref RM_CreateMapping, @ref RM_GetGridCellCount. 
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = phreeqc_rm.CreateMapping(grid2chem);
+std::ostringstream oss;
+oss << "Number of chemistry cells in the reaction module: " 
+    << phreeqc_rm.GetChemistryCellCount() << "\n";
+phreeqc_rm.OutputMessage(oss.str());
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	int                                       GetChemistryCellCount(void) const {return this->count_chemistry;}
+/**
+Returns the number of components in the reaction-module component list. 
+@retval                 The number of components in the reaction-module component list. The component list is 
+generated by calls to @ref FindComponents. 
+The return value from the last call to @ref RM_FindComponents is equal to the return value from RM_GetComponentCount.
+@see                    @ref FindComponents, @ref GetComponents.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+std::ostringstream oss;
+oss << "Number of components for transport: " << phreeqc_rm.GetComponentCount() << "\n";
+phreeqc_rm.OutputMessage(oss.str());
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	int                                       GetComponentCount(void) const {return (int) this->components.size();}
+/**
+Returns a reference to the reaction-module component list that was generated by calls to @ref FindComponents.
+@retval const std::vector<std::string>&       A vector of strings; each string is a component name.
+@see                    @ref FindComponents, @ref GetComponentCount 
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+const std::vector<std::string> &components = phreeqc_rm.GetComponents();
+const std::vector < double > & gfw = phreeqc_rm.GetGfw();
+for (int i = 0; i < ncomps; i++)
+{
+  std::ostringstream strm;
+  strm.width(10);
+  strm << components[i] << "    " << gfw[i] << "\n";
+  phreeqc_rm.OutputMessage(strm.str());
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
+/**
+Transfer solution concentrations from each reaction-module cell to the concentration array given in the argument list (c).
+Units of concentration for c are defined by @ref SetUnitsSolution. For concentration units of per liter, the 
+calculated solution volume is used to calculate the concentrations for c. Of the databases distributed with PhreeqcRM,
+only phreeqc.dat, Amm.dat, and pitzer.dat have the partial molar volume definitions needed 
+to accurately calculate solution volume. 
+Mass fraction concentration units do not require the solution volume to fill the c array (but, density is needed to
+convert transport concentrations to cell solution concentrations, @ref SetConcentrations).
+@param c                Array to receive the concentrations. 
+Dimension of the array is equivalent to Fortran (nxyz, ncomps), 
+where nxyz is the number of user grid cells and ncomps is the result of 
+@ref FindComponents or @ref GetComponentCount.  Values for inactive cells are set to 1e30.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError). 
+@see                    @ref FindComponents, @ref GetComponentCount, @ref Concentrations2Module, @ref SetUnitsSolution
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+std::vector<double> c;
+status = phreeqc_rm.RunCells();
+status = phreeqc_rm.GetConcentrations(c);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
 	IRM_RESULT                                GetConcentrations(std::vector<double> &c);
-	const std::string                         GetDatabaseFileName(void) const {return this->database_file_name;}
+/**
+Returns the file name of the database. Should be called after @ref LoadDatabase.
+@retval std::string      The file name defined in @ref LoadDatabase. 
+@see                    @ref LoadDatabase.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  	
+std::ostringstream oss;
+oss << "Database: " << phreeqc_rm.GetDatabaseFileName().c_str() << "\n";
+phreeqc_rm.OutputMessage(oss.str());
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	std::string                               GetDatabaseFileName(void) {return this->database_file_name;}
+/**
+Transfer solution densities from the module workers to the density array given in the argument list. 
+@param density              Vector to receive the densities. Dimension of the array is set to nxyz, 
+where nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. 
+Densities are those calculated by the reaction module. 
+Only the following databases distributed with PhreeqcRM have molar volume information needed 
+to accurately calculate density: phreeqc.dat, Amm.dat, and pitzer.dat.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError). 
+@see                    @ref GetSolutionVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+status = phreeqc_rm.RunCells();
+status = phreeqc_rm.GetConcentrations(c);              
+std::vector<double> density;
+status = phreeqc_rm.GetDensity(density); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
 	IRM_RESULT                                GetDensity(std::vector<double> & density); 
+/**
+Each worker is assigned a range of chemistry cell numbers that are run by @ref RunCells. The range of
+cells for a worker may vary as load rebalancing occurs. At any point in the calculations, the
+first cell and last cell to be run by a worker can be found in the vectors returned by 
+@ref GetStartCell and @ref GetEndCell.
+Each method returns a vector of integers that has length of the number of threads (@ref GetThreadCount), 
+if using OPENMP, or the number of processes (@ref GetMpiTasks), if using MPI.
+@retval IRM_RESULT      Vector of integers, one for each worker, that gives the last chemistry cell 
+to be run by each worker. 
+@see                    @ref GetStartCell, @ref GetThreadCount, @ref GetMpiTasks.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+std::ostringstream oss;
+oss << "Current distribution of cells for workers\n";
+oss << "Worker First cell   Last Cell\n";
+int n;
+#ifdef USE_MPI
+  n = phreeqc_rm.GetMpiTasks();
+#else
+  n = phreeqc_rm.GetThreadCount();
+#endif
+for (int i = 0; i < n; i++)
+{
+	oss << i << "      " 
+	    << phreeqc_rm.GetStartCell()[i] 
+	    << "            " 
+		<< phreeqc_rm.GetEndCell()[i] << "\n";
+}
+phreeqc_rm.OutputMessage(oss.str());
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;}
 	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
-	const std::string                         GetFilePrefix(void) const {return this->file_prefix;}
+	std::string                               GetFilePrefix(void) {return this->file_prefix;}
 	const std::vector < int > &               GetForwardMapping(void) {return this->forward_mapping;}
 	const std::vector < double > &            GetGfw(void) {return this->gfw;}
-	const int                                 GetGridCellCount(void) const {return this->nxyz;}
+	int                                       GetGridCellCount(void) {return this->nxyz;}
 	int                                       GetInputUnitsSolution(void) {return this->input_units_Solution;}
 	int                                       GetInputUnitsPPassemblage(void) {return this->input_units_PPassemblage;}
 	int                                       GetInputUnitsExchange(void) {return this->input_units_Exchange;}
@@ -134,6 +603,43 @@ public:
 	const std::vector<double> &               GetSpeciesZ(void) {return this->species_z;}
 	const std::vector<std::string> &          GetSpeciesNames(void) {return this->species_names;}
 	const std::vector<cxxNameDouble> &        GetSpeciesStoichiometry(void) {return this->species_stoichiometry;}
+/**
+Each worker is assigned a range of chemistry cell numbers that are run by @ref RunCells. The range of
+cells for a worker may vary as load rebalancing occurs. At any point in the calculations, the
+first cell and last cell to be run by a worker can be found in the vectors returned by 
+@ref GetStartCell and @ref GetEndCell.
+Each method returns a vector of integers that has length of the number of threads (@ref GetThreadCount), 
+if using OPENMP, or the number of processes (@ref GetMpiTasks), if using MPI.
+@retval IRM_RESULT      Vector of integers, one for each worker, that gives the first chemistry cell 
+to be run by each worker. 
+@see                    @ref GetEndCell, @ref GetThreadCount, @ref GetMpiTasks.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+std::ostringstream oss;
+oss << "Current distribution of cells for workers\n";
+oss << "Worker First cell   Last Cell\n";
+int n;
+#ifdef USE_MPI
+  n = phreeqc_rm.GetMpiTasks();
+#else
+  n = phreeqc_rm.GetThreadCount();
+#endif
+for (int i = 0; i < n; i++)
+{
+	oss << i << "      " 
+	    << phreeqc_rm.GetStartCell()[i] 
+	    << "            " 
+		<< phreeqc_rm.GetEndCell()[i] << "\n";
+}
+phreeqc_rm.OutputMessage(oss.str());
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const std::vector < int> &                GetStartCell(void) const {return this->start_cell;} 
 	std::vector<double> &                     GetTemperature(void) {return this->tempc;}
 	int                                       GetThreadCount() {return this->nthreads;}

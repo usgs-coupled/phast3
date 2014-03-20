@@ -306,7 +306,10 @@ int species_cpp()
 			util_ptr->SetOutputFileName("species_utility_cpp.txt");
 			util_ptr->SetOutputFileOn(true);
 			iphreeqc_result = util_ptr->RunString(input.c_str());
-			phreeqc_rm.ErrorHandler(iphreeqc_result, "IPhreeqc RunString failed");
+			if (iphreeqc_result != 0)
+			{
+				phreeqc_rm.ErrorHandler(IRM_FAIL, "IPhreeqc RunString failed");
+			}
 			int vtype;
 			double pH;
 			char svalue[100];

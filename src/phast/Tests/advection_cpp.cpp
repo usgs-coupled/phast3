@@ -115,21 +115,16 @@ int advection_cpp()
 
 		// Print some of the reaction module information
 		{
-			char str1[100];
-			sprintf(str1, "Number of threads:                                %d\n", phreeqc_rm.GetThreadCount());
-			phreeqc_rm.OutputMessage(str1);
-			sprintf(str1, "Number of MPI processes:                          %d\n", phreeqc_rm.GetMpiTasks());
-			phreeqc_rm.OutputMessage(str1);
-			sprintf(str1, "MPI task number:                                  %d\n", phreeqc_rm.GetMpiMyself());
-			phreeqc_rm.OutputMessage(str1);
-			sprintf(str1, "File prefix:                                      %s\n", phreeqc_rm.GetFilePrefix().c_str());
-			phreeqc_rm.OutputMessage(str1);
-			sprintf(str1, "Number of grid cells in the user's model:         %d\n", phreeqc_rm.GetGridCellCount());
-			phreeqc_rm.OutputMessage(str1);
-			sprintf(str1, "Number of chemistry cells in the reaction module: %d\n", phreeqc_rm.GetChemistryCellCount());
-			phreeqc_rm.OutputMessage(str1);
-			sprintf(str1, "Number of components for transport:               %d\n", phreeqc_rm.GetComponentCount());
-			phreeqc_rm.OutputMessage(str1);
+			std::ostringstream oss;
+			oss << "Database:                                         " << phreeqc_rm.GetDatabaseFileName().c_str() << "\n";
+			oss << "Number of threads:                                " << phreeqc_rm.GetThreadCount() << "\n";
+			oss << "Number of MPI processes:                          " << phreeqc_rm.GetMpiTasks() << "\n";
+			oss << "MPI task number:                                  " << phreeqc_rm.GetMpiMyself() << "\n";
+			oss << "File prefix:                                      " << phreeqc_rm.GetFilePrefix() << "\n";
+			oss << "Number of grid cells in the user's model:         " << phreeqc_rm.GetGridCellCount() << "\n";
+			oss << "Number of chemistry cells in the reaction module: " << phreeqc_rm.GetChemistryCellCount() << "\n";
+			oss << "Number of components for transport:               " << phreeqc_rm.GetComponentCount() << "\n";
+			phreeqc_rm.OutputMessage(oss.str());
 		}
 		const std::vector<std::string> &components = phreeqc_rm.GetComponents();
 		const std::vector < double > & gfw = phreeqc_rm.GetGfw();
@@ -248,6 +243,23 @@ int advection_cpp()
 			// Print results at last time step
 			if (print_chemistry_on != 0)
 			{
+				{
+					std::ostringstream oss;
+					oss << "Current distribution of cells for workers\n";
+					oss << "Worker      First cell        Last Cell\n";
+					int n;
+#ifdef USE_MPI
+					n = phreeqc_rm.GetMpiTasks();
+#else
+					n = phreeqc_rm.GetThreadCount();
+#endif
+					for (int i = 0; i < n; i++)
+					{
+						oss << i << "           " << phreeqc_rm.GetStartCell()[i] << "                 " 
+							<< phreeqc_rm.GetEndCell()[i] << "\n";
+					}
+					phreeqc_rm.OutputMessage(oss.str());
+				}
 				for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
 				{
 					int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
@@ -300,7 +312,10 @@ int advection_cpp()
 		util_ptr->SetOutputFileName("utility_cpp.txt");
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
-		phreeqc_rm.ErrorHandler(iphreeqc_result, "IPhreeqc RunString failed");
+		if (iphreeqc_result != 0)
+		{
+			phreeqc_rm.ErrorHandler(IRM_FAIL, "IPhreeqc RunString failed");
+		}
 		int vtype;
 		double pH;
 		char svalue[100];
@@ -409,12 +424,16 @@ int units_tester()
 		//status = phreeqc_rm.LoadDatabase("wateq4f.dat");
 
 		// Run file to define solutions and reactants for initial conditions, selected output
-		bool workers = false;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
+		bool workers = true;              // This is one or more IPhreeqcs for doing the reaction calculations for transport
 		bool initial_phreeqc = true;      // This is an IPhreeqc for accumulating initial and boundary conditions
 		bool utility = false;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
 		// mixture for a well
 		//status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "dk");
 		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "units.pqi");
+		{
+			std::string input = "DELETE; -all";
+			status = phreeqc_rm.RunString(true, false, true, input.c_str());
+		}
 
 		status = phreeqc_rm.SetFilePrefix("Units_InitialPhreeqc_2");
 		if (phreeqc_rm.GetMpiMyself() == 0)
@@ -436,7 +455,7 @@ int units_tester()
 		
 		// Retrieve concentrations
 		std::vector<double> c;
-		c.resize(nxyz * components.size());
+		//c.resize(nxyz * components.size());
 		status = phreeqc_rm.SetFilePrefix("Units_Worker");
 		if (phreeqc_rm.GetMpiMyself() == 0)
 		{
@@ -447,6 +466,17 @@ int units_tester()
 		phreeqc_rm.SetPrintChemistryMask(print_mask);
 		status = phreeqc_rm.RunCells();
 		status = phreeqc_rm.GetConcentrations(c);
+		std::vector<double> so;
+		status = phreeqc_rm.GetSelectedOutput(so);
+		std::vector<std::string> headings;
+		{
+			std::string heading;
+			std::cerr << "Cell  " << phreeqc_rm.GetSelectedOutputHeading(0, heading) << std::endl;
+			for (int i = 0; i < nxyz; i++)
+			{
+				std::cerr << i << "   " << so[i] << std::endl;
+			}
+		}
 
 		// Use utility instance of PhreeqcRM
 		std::vector<double> tc, p_atm;

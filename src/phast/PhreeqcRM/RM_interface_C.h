@@ -4,8 +4,6 @@
 #include "IrmResult.h"
 #ifndef RM_INTERFACE_C_H
 #define RM_INTERFACE_C_H
-/*! @brief Enumeration used to return error codes.
-*/
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -100,12 +98,12 @@ N sets of component concentrations are converted to SOLUTIONs numbered 1-n in th
 The solutions can be reacted and manipulated with the methods of IPhreeqc. The motivation for this
 method is the mixing of solutions in wells, where it may be necessary to calculate solution properties
 (pH for example) or react the mixture to form scale minerals. The code fragments below make a mixture of
-concentrations and then calculate the pH of the mixture.
+concentrations and then calculates the pH of the mixture.
 @param id            The instance id returned from @ref RM_Create.
 @param c             Array of concentrations to be made SOLUTIONs in Utility IPhreeqc. Array storage is equivalent to Fortran (n,ncomps).
 @param n             The number of sets of concentrations.
-@param tc            Array of temperatures to apply to the SOLUTIONs. Array of size n.
-@param p_atm         Array of pressures to apply to the SOLUTIONs. Array of size n.
+@param tc            Array of temperatures to apply to the SOLUTIONs, in degrees C. Array of size n.
+@param p_atm         Array of pressures to apply to the SOLUTIONs, in atm. Array of size n.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).  
 @par C Example:
 @htmlonly
@@ -166,18 +164,39 @@ Called only by root.
  */
 int        RM_Concentrations2Utility(int id, double *c, int n, double *tc, double *p_atm);
 /**
-Creates a reaction module. 
+Creates a reaction module. If the code is compiled with
+the preprocessor directive USE_OPENMP, the reaction module is multithreaded.
+If the code is compiled with the preprocessor directive USE_MPI, the reaction
+module will use MPI and multiple processes. If neither preprocessor directive is used,
+the reaction module will be serial (unparallelized). 
 @param id                     The instance id returned from @ref RM_Create.
 @param nxyz                   The number of grid cells in the in the user's model.
-@param nthreads               When using OPENMP, the number of worker threads to be used. 
-If nthreads is <= 0, the number of threads is set equal to the number of processors of the computer.
+@param thread_count_or_communicator               When using OPENMP, the number of worker threads to be used. 
+If thread_count_or_communicator <= 0, the number of threads is set equal to the number of processors of the computer.
+If multiprocessor, the MPI communicator to use within the reaction module. 
 @retval Id of the PhreeqcRM instance, negative is failure (See @ref RM_DecodeError).  
 @see                 @ref RM_Destroy
 @par C Example:
 @htmlonly
 <CODE>
-<PRE>  
-id = RM_Create(nxyz, nthreads);
+<PRE>  		
+nxyz = 40;
+#ifdef USE_MPI
+  id = RM_Create(nxyz, MPI_COMM_WORLD);
+  if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+  {
+    exit(4);
+  }
+  if (mpi_myself > 0)
+  {
+    status = RM_MpiWorker(id);
+    status = RM_Destroy(id);
+    return;
+  }
+#else
+  nthreads = 3;
+  id = RM_Create(nxyz, nthreads);
+#endif
 </PRE>
 </CODE> 
 @endhtmlonly
@@ -196,15 +215,30 @@ END FUNCTION RM_Create
 @par Fortran90 Example:
 @htmlonly
 <CODE>
-<PRE>  
-id = RM_create(nxyz, nthreads)
+<PRE>      
+nxyz = 40
+#ifdef USE_MPI
+  id = RM_Create(nxyz, MPI_COMM_WORLD)
+  call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
+  if (status .ne. MPI_SUCCESS) then
+    stop "Failed to get mpi_myself"
+  endif
+  if (mpi_myself > 0) then
+    status = RM_MpiWorker(id);
+    status = RM_Destroy(id);
+    return
+  endif
+#else
+  nthreads = 3;
+  id = RM_Create(nxyz, nthreads);
+#endif
 </PRE>
 </CODE> 
 @endhtmlonly
 @par MPI:
 Called by root and workers. The value of nthreads is ignored.
  */
-int RM_Create(int nxyz, int nthreads);
+int RM_Create(int nxyz, int thread_count_or_communicator);
 /**
 Provides a mapping from grid cells in the user's model to cells for which chemistry needs to be run. 
 The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run. The mapping may be many-to-one to account for symmetry.
@@ -434,13 +468,13 @@ Called by root and (or) workers; root writes to output and log files.
  */
 IRM_RESULT RM_ErrorMessage(int id, const char *errstr);
 /**
-Returns the number of items in the list of all elements in the Initial Phreeqc instance. Elements are those that have been defined in a solution or any other reactant (EQUILIBRIUM_PHASE, KINETICS, and others). 
+Returns the number of items in the list of all elements in the InitialPhreeqc instance. Elements are those that have been defined in a solution or any other reactant (EQUILIBRIUM_PHASE, KINETICS, and others). 
 The method can be called multiple times and the list that is created is cummulative. 
 The list is the set of components that needs to be transported. By default the list includes total H and total O concentrations;
 for numerical accuracy in transport, the list may be defined to include excess H and O (the H and O not contained in water) 
 and the water concentration (@ref RM_SetComponentH2O).
 If multicomponent diffusion (MCD) is to be modeled, there is a capability to retrieve aqueous species concentrations
-(@ref RM_GetSpeciesConcentrations) and to set new solution concentrations after MCD from the individual species 
+(@ref RM_GetSpeciesConcentrations) and to set new solution concentrations after MCD from the individual species concentrations
 (@ref RM_SpeciesConcentrations2Module). To use these methods the save-species property needs to be turned on (@ref RM_SetSpeciesSaveOn).
 If the save-species property is on, RM_FindComponents will generate 
 a list of aqueous species (@ref RM_GetSpeciesCount, @ref RM_GetSpeciesName), their diffusion coefficients at 25 C (@ref RM_GetSpeciesD25),
