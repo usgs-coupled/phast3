@@ -124,8 +124,10 @@ int advection_cpp()
 			oss << "Number of grid cells in the user's model:         " << phreeqc_rm.GetGridCellCount() << "\n";
 			oss << "Number of chemistry cells in the reaction module: " << phreeqc_rm.GetChemistryCellCount() << "\n";
 			oss << "Number of components for transport:               " << phreeqc_rm.GetComponentCount() << "\n";
+			oss << "Error handler mode:                               " << phreeqc_rm.GetErrorHandlerMode() << "\n";
 			phreeqc_rm.OutputMessage(oss.str());
 		}
+		const std::vector<int> &f_map = phreeqc_rm.GetForwardMapping();
 		const std::vector<std::string> &components = phreeqc_rm.GetComponents();
 		const std::vector < double > & gfw = phreeqc_rm.GetGfw();
 		for (int i = 0; i < ncomps; i++)
@@ -312,6 +314,9 @@ int advection_cpp()
 		util_ptr->SetOutputFileName("utility_cpp.txt");
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
+		// Alternatively, utility pointer is worker nthreads + 1 
+		IPhreeqc * util_ptr1 = phreeqc_rm.GetIPhreeqcPointer(phreeqc_rm.GetThreadCount() + 1);
+
 		if (iphreeqc_result != 0)
 		{
 			phreeqc_rm.ErrorHandler(IRM_FAIL, "IPhreeqc RunString failed");
@@ -417,14 +422,14 @@ int units_tester()
 		status = phreeqc_rm.SetSaturation(sat);
 
 		// Set printing of chemistry file
-		status = phreeqc_rm.SetPrintChemistryOn(true, true, false); // workers, initial_phreeqc, utility
+		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
 
 		// Load database
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
 		//status = phreeqc_rm.LoadDatabase("wateq4f.dat");
 
 		// Run file to define solutions and reactants for initial conditions, selected output
-		bool workers = true;              // This is one or more IPhreeqcs for doing the reaction calculations for transport
+		bool workers = true;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
 		bool initial_phreeqc = true;      // This is an IPhreeqc for accumulating initial and boundary conditions
 		bool utility = false;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
 		// mixture for a well
@@ -464,6 +469,7 @@ int units_tester()
 		std::vector < int > print_mask;
 		print_mask.resize(3, 1);
 		phreeqc_rm.SetPrintChemistryMask(print_mask);
+		phreeqc_rm.SetPrintChemistryOn(true,true,true);
 		status = phreeqc_rm.RunCells();
 		status = phreeqc_rm.GetConcentrations(c);
 		std::vector<double> so;

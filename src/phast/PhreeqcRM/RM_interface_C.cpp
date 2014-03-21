@@ -339,7 +339,11 @@ RM_GetIPhreeqcId(int id, int i)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->GetIPhreeqcId(i);
+		IPhreeqc * iptr = Reaction_module_ptr->GetIPhreeqcPointer(i);
+		if (iptr != NULL)
+		{
+			return iptr->GetId();
+		}
 	}
 	return IRM_BADINSTANCE;
 }

@@ -899,24 +899,21 @@ int        RM_GetGridCellCount(int id);
 Returns an IPhreeqc id for one of the IPhreeqc instances in the reaction module. 
 The threaded version has nthreads, as defined in @ref RM_Create.
 The number of threads can be determined by @ref RM_GetThreadCount.
-There will be nthreads + 2 IPhreeqc instances. The first nthreads will be the workers, the
-next is the InitialPhreeqc instance, and the next is the Utility instance. Getting
+There will be nthreads + 2 IPhreeqc instances. The first nthreads (0 based) will be the workers, the
+next (nthreads) is the InitialPhreeqc instance, and the next (nthreads + 1) is the Utility instance. Getting
 the IPhreeqc id for one of these allows the user to use any of the IPhreeqc methods
-on that instance. For MPI, each process has three IPhreeqc instances, one worker, 
-one InitialPhreeqc instance, and one Utility instance.
+on that instance. For MPI, each process has three IPhreeqc instances, one worker (0), 
+one InitialPhreeqc instance (1), and one Utility instance (2).
 @param id               The instance id returned from @ref RM_Create. 
-@param i                The number of the IPhreeqc instance (0 based). 
+@param i                The number of the IPhreeqc instance to be retrieved (0 based). 
 @retval                 IPhreeqc id for the ith IPhreeqc instance, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create, @ref RM_GetThreadCount, documentation for IPhreeqc.
 @par C Example:
 @htmlonly
 <CODE>
 <PRE> 		
-iphreeqc_id = RM_GetIPhreeqcId(id, nthreads + 1); // Utility instance 
-strcpy(str, "SELECTED_OUTPUT 5; -pH; SOLUTION 1; RUN_CELLS; -cells 1");
-status = RunString(iphreeqc_id, str);
-status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
-status = GetSelectedOutputValue2(iphreeqc_id, 1, 0, &vtype, &pH, svalue, 100);
+// Utility pointer is worker number nthreads + 1 
+iphreeqc_id1 = RM_GetIPhreeqcId(id, RM_GetThreadCount(id) + 1);
 </PRE>
 </CODE> 
 @endhtmlonly
@@ -936,11 +933,8 @@ END FUNCTION RM_GetIPhreeqcId
 @htmlonly
 <CODE>
 <PRE>  
-iphreeqc_id = RM_GetIPhreeqcId(id, nthreads + 1) ! Utility instance
-string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
-status = RunString(iphreeqc_id, string)
-status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
-status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
+! Utility pointer is worker number nthreads + 1 
+iphreeqc_id1 = RM_GetIPhreeqcId(id, RM_GetThreadCount(id) + 1)
 </PRE>
 </CODE> 
 @endhtmlonly
@@ -953,7 +947,9 @@ Returns the MPI task number. For the threaded version, the task number is always
 zero and the result of @ref RM_GetMpiTasks is one. For the MPI version, 
 the root task number is zero, and all workers have a task number greater than zero.
 The number of tasks can be obtained with @ref RM_GetMpiTasks. The number of 
-tasks and computer hosts are determined at run time by the mpiexec command.
+tasks and computer hosts are determined at run time by the mpiexec command, and the
+number of reaction-module processes is defined by the communicator used in
+constructing the reaction modules (@ref RM_Create).
 @param id               The instance id returned from @ref RM_Create.  
 @retval                 The MPI task number for a process, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetMpiTasks.
@@ -961,15 +957,7 @@ tasks and computer hosts are determined at run time by the mpiexec command.
 @htmlonly
 <CODE>
 <PRE>
-mpi_myself = RM_GetMpiMyself(id);
-if (mpi_myself == 0) 
-{
-  sprintf(str1, "I am root\n");
-}
-else
-{
-  sprintf(str1, "I am worker %d\n", mpi_myself);
-}
+sprintf(str1, "MPI task number:  %d\n", RM_GetMpiMyself(id));
 status = RM_OutputMessage(id, str1);
 </PRE>
 </CODE> 
@@ -989,12 +977,7 @@ END FUNCTION RM_GetMpiMyself
 @htmlonly
 <CODE>
 <PRE>  
-mpi_myself = RM_GetMpiMyself(id)
-if (mpi_myself .eq. 0) then
-  write(string1, "(A)") "I am root"
-else
-  write(string1, "(A,I)") "I am worker ", mpi_myself
-endif
+write(string1, "(A,I)") "MPI task number: ", RM_GetMpiMyself(id)
 status = RM_OutputMessage(id, string1)
 </PRE>
 </CODE> 
@@ -1007,7 +990,9 @@ int        RM_GetMpiMyself(int id);
 Returns the number of MPI processes (tasks). For the threaded version, the number of tasks is always
 one (although there may be multiple threads, @ref RM_GetThreadCount), 
 and the task number returned by @ref RM_GetMpiMyself is zero. For the MPI version, the number of 
-tasks and computer hosts are determined at run time by the mpiexec command.
+tasks and computer hosts are determined at run time by the mpiexec command. An MPI communicator
+is used in constructing reaction modules for MPI. The communicator may define a subset of the
+total number of MPI processes.
 The root task number is zero, and all workers have a task number greater than zero.
 @param id               The instance id returned from @ref RM_Create.  
 @retval                 The number of MPI processes, negative is failure (See @ref RM_DecodeError).
@@ -3127,7 +3112,6 @@ Options are 0, return to calling program with an error return code;
 @param id               The instance id returned from @ref RM_Create.
 @param mode             Error handling mode: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). 
-@see                    @ref RM_Destroy.
 @par C Example:
 @htmlonly
 <CODE>
