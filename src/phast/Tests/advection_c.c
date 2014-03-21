@@ -54,7 +54,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		double pH;
 		int vtype;
 		char svalue[100];
-		int iphreeqc_id;
+		int iphreeqc_id, iphreeqc_id1;
 		int dump_on, append;
 
 		nxyz = 40;
@@ -361,6 +361,8 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		p_atm[0] = 3.0;
 		iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm);
 		strcpy(str, "SELECTED_OUTPUT 5; -pH; RUN_CELLS; -cells 1");
+		// Alternatively, utility pointer is worker number nthreads + 1 
+		iphreeqc_id1 = RM_GetIPhreeqcId(id, RM_GetThreadCount(id) + 1);
 		SetOutputFileName(iphreeqc_id, "utility_c.txt");
 		SetOutputFileOn(iphreeqc_id, 1);
 		status = RunString(iphreeqc_id, str);

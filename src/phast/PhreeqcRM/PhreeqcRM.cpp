@@ -237,13 +237,13 @@ if( numCPU < 1 )
 	// print flags
 	this->print_chemistry_on.resize(3, false);  // print flag for chemistry output file 	
 	this->selected_output_on = true;			// Create selected output
-	this->input_units_Solution = 1;				// 1 mg/L, 2 mol/L, 3 kg/kgs
-	this->input_units_PPassemblage = 0;			// 0, mol/L cell; 1, mol/L water; 2 mol/L rock
-	this->input_units_Exchange = 0;			    // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
-	this->input_units_Surface = 0;			    // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
-	this->input_units_GasPhase = 0;			    // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
-	this->input_units_SSassemblage = 0;			// 0, mol/L cell; 1, mol/L water; 2 mol/L rock
-	this->input_units_Kinetics = 0;			    // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	this->units_Solution = 1;				    // 1 mg/L, 2 mol/L, 3 kg/kgs
+	this->units_PPassemblage = 0;			    // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	this->units_Exchange = 0;			        // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	this->units_Surface = 0;			        // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	this->units_GasPhase = 0;			        // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	this->units_SSassemblage = 0;			    // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	this->units_Kinetics = 0;			        // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 
 	//this->stop_message = false;
 	this->error_count = 0;
@@ -373,7 +373,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (this->input_units_PPassemblage == 2)
+		if (this->units_PPassemblage == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -408,7 +408,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (this->input_units_Exchange == 2)
+		if (this->units_Exchange == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -441,7 +441,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (this->input_units_Surface == 2)
+		if (this->units_Surface == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -474,7 +474,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (this->input_units_GasPhase == 2)
+		if (this->units_GasPhase == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -507,7 +507,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (this->input_units_SSassemblage == 2)
+		if (this->units_SSassemblage == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -541,7 +541,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (this->input_units_Kinetics == 2)
+		if (this->units_Kinetics == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -642,7 +642,7 @@ PhreeqcRM::CellInitialize(
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
 		
-		mx.Multiply(porosity_factor[this->input_units_PPassemblage]);
+		mx.Multiply(porosity_factor[this->units_PPassemblage]);
 		cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
 								  n_user_new);
 		initial_bin.Set_PPassemblage(n_user_new, &cxxentity);
@@ -674,7 +674,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->input_units_Exchange]);
+		mx.Multiply(porosity_factor[this->units_Exchange]);
 		cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
 		initial_bin.Set_Exchange(n_user_new, &cxxexch);
 	}
@@ -704,7 +704,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->input_units_Surface]);
+		mx.Multiply(porosity_factor[this->units_Surface]);
 		cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
 		initial_bin.Set_Surface(n_user_new, &cxxentity);
 	}
@@ -734,7 +734,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->input_units_GasPhase]);
+		mx.Multiply(porosity_factor[this->units_GasPhase]);
 		cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
 		initial_bin.Set_GasPhase(n_user_new, &cxxentity);
 	}
@@ -764,7 +764,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->input_units_SSassemblage]);
+		mx.Multiply(porosity_factor[this->units_SSassemblage]);
 		cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
 								  n_user_new);
 		initial_bin.Set_SSassemblage(n_user_new, &cxxentity);
@@ -795,7 +795,7 @@ PhreeqcRM::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->input_units_Kinetics]);
+		mx.Multiply(porosity_factor[this->units_Kinetics]);
 		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
 		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
 	}
@@ -1080,7 +1080,7 @@ PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
 		i = this->backward_mapping[j][0];
 		if (j < 0) continue;
 
-		switch (this->input_units_Solution)
+		switch (this->units_Solution)
 		{
 		case 1:  // mg/L to mol/L
 			{
@@ -1170,7 +1170,7 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 		i = this->backward_mapping[j][0];
 		if (j < 0) continue;
 
-		switch (this->input_units_Solution)
+		switch (this->units_Solution)
 		{
 		case 1:  // mg/L to mol/L
 			{
@@ -1252,7 +1252,7 @@ PhreeqcRM::Concentrations2UtilityH2O(std::vector<double> &c, std::vector<double>
 	for (size_t i = 0; i < nsolns; i++)
 	{
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
-		switch (this->input_units_Solution)
+		switch (this->units_Solution)
 		{
 		case 1:  // mg/L to mol/L
 			{
@@ -1326,7 +1326,7 @@ PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<doubl
 	for (size_t i = 0; i < nsolns; i++)
 	{
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
-		switch (this->input_units_Solution)
+		switch (this->units_Solution)
 		{
 		case 1:  // mg/L to mol/L
 			{
@@ -1498,7 +1498,7 @@ PhreeqcRM::cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<d
 	// convert units
 	//double vol = cxxsoln_ptr->Get_soln_vol();
 	double vol = v;
-	switch (this->input_units_Solution)
+	switch (this->units_Solution)
 	{
 	case 1:  // convert to mg/L 
 		{
@@ -1565,7 +1565,7 @@ PhreeqcRM::cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector
 	// convert units
 	//double vol = cxxsoln_ptr->Get_soln_vol();
 	double vol = v;
-	switch (this->input_units_Solution)
+	switch (this->units_Solution)
 	{
 	case 1:  // convert to mg/L 
 		{
@@ -3963,7 +3963,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					if (cell_bin.Get_PPassemblages().find(cell) != cell_bin.Get_PPassemblages().end())
 					{
 						cxxMix mx;
-						mx.Add(cell, porosity_factor[this->input_units_PPassemblage]);
+						mx.Add(cell, porosity_factor[this->units_PPassemblage]);
 						cxxPPassemblage cxxentity(cell_bin.Get_PPassemblages(), mx, cell_numbers[i]);
 						cell_bin.Set_PPassemblage(cell_numbers[i], &cxxentity);
 					}
@@ -3971,7 +3971,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					if (cell_bin.Get_Exchangers().find(cell) != cell_bin.Get_Exchangers().end())
 					{
 						cxxMix mx;
-						mx.Add(cell, porosity_factor[this->input_units_Exchange]);
+						mx.Add(cell, porosity_factor[this->units_Exchange]);
 						cxxExchange cxxentity(cell_bin.Get_Exchangers(), mx, cell_numbers[i]);
 						cell_bin.Set_Exchange(cell_numbers[i], &cxxentity);
 					}
@@ -3979,7 +3979,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					if (cell_bin.Get_Surfaces().find(cell) != cell_bin.Get_Surfaces().end())
 					{
 						cxxMix mx;
-						mx.Add(cell, porosity_factor[this->input_units_Surface]);
+						mx.Add(cell, porosity_factor[this->units_Surface]);
 						cxxSurface cxxentity(cell_bin.Get_Surfaces(), mx, cell_numbers[i]);
 						cell_bin.Set_Surface(cell_numbers[i], &cxxentity);
 					}
@@ -3987,7 +3987,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					if (cell_bin.Get_GasPhases().find(cell) != cell_bin.Get_GasPhases().end())
 					{
 						cxxMix mx;
-						mx.Add(cell, porosity_factor[this->input_units_GasPhase]);
+						mx.Add(cell, porosity_factor[this->units_GasPhase]);
 						cxxGasPhase cxxentity(cell_bin.Get_GasPhases(), mx, cell_numbers[i]);
 						cell_bin.Set_GasPhase(cell_numbers[i], &cxxentity);
 					}
@@ -3995,7 +3995,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					if (cell_bin.Get_SSassemblages().find(cell) != cell_bin.Get_SSassemblages().end())
 					{
 						cxxMix mx;
-						mx.Add(cell, porosity_factor[this->input_units_SSassemblage]);
+						mx.Add(cell, porosity_factor[this->units_SSassemblage]);
 						cxxSSassemblage cxxentity(cell_bin.Get_SSassemblages(), mx, cell_numbers[i]);
 						cell_bin.Set_SSassemblage(cell_numbers[i], &cxxentity);
 					}
@@ -4003,7 +4003,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					if (cell_bin.Get_Kinetics().find(cell) != cell_bin.Get_Kinetics().end())
 					{
 						cxxMix mx;
-						mx.Add(cell, porosity_factor[this->input_units_Kinetics]);
+						mx.Add(cell, porosity_factor[this->units_Kinetics]);
 						cxxKinetics cxxentity(cell_bin.Get_Kinetics(), mx, cell_numbers[i]);
 						cell_bin.Set_Kinetics(cell_numbers[i], &cxxentity);
 					}
@@ -7365,7 +7365,7 @@ PhreeqcRM::SetUnitsExchange(int u)
 	{
 		if (u >= 0 && u < 3)
 		{
-			this->input_units_Exchange  = u;
+			this->units_Exchange  = u;
 		}
 		else
 		{
@@ -7373,7 +7373,7 @@ PhreeqcRM::SetUnitsExchange(int u)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->input_units_Exchange,  1, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->units_Exchange,  1, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsExchange");
 }
@@ -7394,7 +7394,7 @@ PhreeqcRM::SetUnitsGasPhase(int u)
 	{
 		if (u >= 0 && u < 3)
 		{
-			this->input_units_GasPhase  = u;
+			this->units_GasPhase  = u;
 		}
 		else
 		{
@@ -7402,7 +7402,7 @@ PhreeqcRM::SetUnitsGasPhase(int u)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->input_units_GasPhase,  1, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->units_GasPhase,  1, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsGasPhase");
 }
@@ -7423,7 +7423,7 @@ PhreeqcRM::SetUnitsKinetics(int u)
 	{
 		if (u >= 0 && u < 3)
 		{
-			this->input_units_Kinetics  = u;
+			this->units_Kinetics  = u;
 		}
 		else
 		{
@@ -7431,7 +7431,7 @@ PhreeqcRM::SetUnitsKinetics(int u)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->input_units_Kinetics,  1, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->units_Kinetics,  1, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsKinetics");
 }
@@ -7452,7 +7452,7 @@ PhreeqcRM::SetUnitsPPassemblage(int u)
 	{
 		if (u >= 0 && u < 3)
 		{
-			this->input_units_PPassemblage  = u;
+			this->units_PPassemblage  = u;
 		}
 		else
 		{
@@ -7460,7 +7460,7 @@ PhreeqcRM::SetUnitsPPassemblage(int u)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->input_units_PPassemblage,  1, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->units_PPassemblage,  1, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsPPassemblage");
 }
@@ -7481,7 +7481,7 @@ PhreeqcRM::SetUnitsSolution(int u)
 	{
 		if (u > 0 && u < 4)
 		{
-			this->input_units_Solution  = u;
+			this->units_Solution  = u;
 		}
 		else
 		{
@@ -7489,7 +7489,7 @@ PhreeqcRM::SetUnitsSolution(int u)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->input_units_Solution,  1, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->units_Solution,  1, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsSolution");
 }
@@ -7510,7 +7510,7 @@ PhreeqcRM::SetUnitsSSassemblage(int u)
 	{
 		if (u >= 0 && u < 3)
 		{
-			this->input_units_SSassemblage  = u;
+			this->units_SSassemblage  = u;
 		}
 		else
 		{
@@ -7518,7 +7518,7 @@ PhreeqcRM::SetUnitsSSassemblage(int u)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->input_units_SSassemblage,  1, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->units_SSassemblage,  1, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsSSassemblage");
 }
@@ -7539,7 +7539,7 @@ PhreeqcRM::SetUnitsSurface(int u)
 	{
 		if (u >= 0 && u < 3)
 		{
-			this->input_units_Surface  = u;
+			this->units_Surface  = u;
 		}
 		else
 		{
@@ -7547,7 +7547,7 @@ PhreeqcRM::SetUnitsSurface(int u)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->input_units_Surface,  1, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->units_Surface,  1, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetUnitsSurface");
 }

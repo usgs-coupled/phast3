@@ -57,7 +57,7 @@
     integer                                       :: vtype
     double precision                              :: pH
     character(100)                                :: svalue
-    integer                                       :: iphreeqc_id
+    integer                                       :: iphreeqc_id, iphreeqc_id1
     integer                                       :: dump_on, append
 
     nxyz = 40
@@ -322,6 +322,8 @@
 	p_atm(1) = 3.0
 	iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
 	string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
+	! Alternatively, utility pointer is worker number nthreads + 1 
+	iphreeqc_id1 = RM_GetIPhreeqcId(id, RM_GetThreadCount(id) + 1)
 	status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")
 	status = SetOutputFileOn(iphreeqc_id, .true.)
 	status = RunString(iphreeqc_id, string)
