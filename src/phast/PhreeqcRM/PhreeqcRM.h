@@ -370,7 +370,7 @@ Called by root and (or) workers.
  */
 	const std::vector < std::vector <int> > & GetBackwardMapping(void) {return this->backward_mapping;}
 /**
-Returns the current set of cell volumes for the chemistry cells as 
+Returns the current set of cell volumes as 
 defined by the last use of @ref SetCellVolume or the default (1.0 L). 
 Cell volume is used with pore volume (@ref SetPoreVolume) in calculating porosity. 
 In most cases, cell volumes are expected to be constant.
@@ -723,7 +723,8 @@ Called by root and (or) workers.
  */
 	const int                                 GetMpiMyself(void) const {return this->mpi_myself;}
 /**
-Returns the number of MPI processes (tasks). For the threaded version, the number of tasks is always
+Returns the number of MPI processes (tasks) assigned to the reaction module. 
+For the threaded version, the number of tasks is always
 one (although there may be multiple threads, @ref GetThreadCount), 
 and the task number returned by @ref GetMpiMyself is zero.
 For the MPI version, the number of 
@@ -731,7 +732,7 @@ tasks and computer hosts are determined at run time by the mpiexec command. An M
 is used in constructing reaction modules for MPI. The communicator may define a subset of the
 total number of MPI processes. The root task number is zero, and all workers have a task number greater than zero.
 @retval                 The number of MPI processes assigned to the reaction module.
-@see                    @ref GetMpiMyself.
+@see                    @ref GetMpiMyself, @ref PhreeqcRM::PhreeqcRM.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -746,15 +747,204 @@ phreeqc_rm.OutputMessage(oss.str());
 Called by root and (or) workers.
  */
 	const int                                 GetMpiTasks(void) const {return this->mpi_tasks;}
+/**
+Returns the user number for the nth selected-output definition. 
+Definitions are sorted by user number. Phreeqc allows multiple selected-output
+definitions, each of which is assigned a nonnegative integer identifier by the 
+user. The number of definitions can be obtained by @ref GetSelectedOutputCount.
+To cycle through all of the definitions, GetNthSelectedOutputUserNumber 
+can be used to identify the user number for each selected-output definition
+in sequence. @ref SetCurrentSelectedOutputUserNumber is then used to select
+that user number for selected-output processing.
+@param n                The sequence number of the selected-output definition for which the user number will be returned. 
+Fortran, 1 based; C, 0 based.
+@retval                 The user number of the nth selected-output definition, negative is failure (See @ref DecodeError).
+@see                    @ref GetSelectedOutput, 
+@ref GetSelectedOutputColumnCount, @ref GetSelectedOutputCount, 
+@ref GetSelectedOutputHeading,
+@ref GetSelectedOutputRowCount, @ref SetCurrentSelectedOutputUserNumber, @ref SetSelectedOutputOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>	
+for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
+{
+  int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
+  status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
+  std::cerr << "Selected output sequence number: " << isel << "\n";
+  std::cerr << "Selected output user number:     " << n_user << "\n";
+  std::vector<double> so;
+  int col = phreeqc_rm.GetSelectedOutputColumnCount();
+  status = phreeqc_rm.GetSelectedOutput(so);
+  // Process results here
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	int                                       GetNthSelectedOutputUserNumber(int i);
 	//const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
+/**
+Returns the current set of pore volumes as 
+defined by the last use of @ref SetPoreVolume or the default (0.1 L). 
+Pore volume is used with cell volume (@ref SetCellVolume) in calculating porosity. 
+Pore volumes may change as a function of pressure, in which case they can be updated
+with @ref SetPoreVolume.
+@retval const std::vector<double>&       A vector reference to the pore volumes.
+Size of vector is nxyz, the number of grid cells in the user's model (@ref GetGridCellCount).
+@see                 @ref GetCellVolume, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+const std::vector<double> & vol = phreeqc_rm.GetPoreVolume(); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
+/**
+Returns the current set of pressures as 
+defined by the last use of @ref SetPressure or the default (1 atm). 
+Pressure effects are considered by three PHREEQC databases: phreeqc.dat, Amm.dat, and pitzer.dat.
+@retval const std::vector<double>&       A vector reference to the pressures in each cell, in atm.
+Size of vector is nxyz, the number of grid cells in the user's model (@ref GetGridCellCount).
+@see                 @ref SetPressure, @ref GetTemperature, @ref SetTemperature.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+const std::vector<double> & p_atm = phreeqc_rm.GetPressure(); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
-	std::vector<int> &                        GetPrintChemistryMask (void) {return this->print_chem_mask;}
+/**
+Return a reference to the vector of print flags that enable or disable detailed output for each cell. 
+Printing will occur only when the
+printing is enabled with @ref SetPrintChemistryOn, and the value in the vector for a cell is nonzero.       
+@retval std::vector<int> &      Vector of integers. Size of vector is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref GetGridCellCount). A value of zero for a cell indicates
+printing for the cell is disabled; 
+a nonzero value for a cell indicates printing for the cell is enabled.
+@see                    @ref SetPrintChemistryOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+const std::vector<int> & print_chemistry_mask1 = phreeqc_rm.GetPrintChemistryMask();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	const std::vector<int> &                  GetPrintChemistryMask (void) {return this->print_chem_mask;}
+/**
+Return a vector reference to the current print flags for detailed output for the three sets of IPhreeqc instances:
+the workers, the InitialPhreeqc instance, and the Utility instance. Dimension of the vector is 3. 
+Printing of detailed output from reaction calculations to the output file 
+is enabled when the vector value is true, disabled when false.
+The detailed output prints all of the output
+typical of a PHREEQC reaction calculation, which includes solution descriptions and the compositions of
+all other reactants. The output can be several hundred lines per cell, which can lead to a very
+large output file (prefix.chem.txt, @ref OpenFiles). For the worker instances, 
+the output can be limited to a set of cells
+(@ref SetPrintChemistryMask) and, in general, the
+amount of information printed can be limited by use of options in the PRINT data block of PHREEQC 
+(applied by using @ref RM_RunFile or
+@ref RM_RunString). Printing the detailed output for the workers is generally used only for debugging, 
+and PhreeqcRM will run
+significantly faster when printing detailed output for the workers is disabled (@ref SetPrintChemistryOn).
+@retval const std::vector <bool> & Print flag for the workers, InitialPhreeqc, and Utility IPhreeqc instances, in order.      
+@see                     @ref SetPrintChemistryOn, @ref SetPrintChemistryMask.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+const std::vector<bool> & print_on = phreeqc_rm.GetPrintChemistryOn();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const std::vector <bool> &                GetPrintChemistryOn(void) const {return this->print_chemistry_on;}  
-	bool                                      GetRebalanceMethod(void) const {return this->rebalance_by_cell;}
+/**
+Get the load-rebalancing method used for parallel processing. 
+PhreeqcRM attempts to rebalance the load of each thread or 
+process such that each
+thread or process takes the same amount of time to run its part of a @ref RunCells
+calculation. Two algorithms are available: one accounts for cells that were not run 
+because saturation was zero (true), and the other uses the average time 
+to run all of the cells assigned to a process or thread (false), .
+The methods are similar, and it is not clear that one is better than the other.
+@retval bool           True indicates individual
+cell run times are used in rebalancing (default); False, indicates average run times are used in rebalancing.
+@see                    @ref GetRebalanceFraction, @ref SetRebalanceByCell, @ref SetRebalanceFraction.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+bool rebalance = phreeqc_rm.GetRebalanceByCell();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	bool                                      GetRebalanceByCell(void) const {return this->rebalance_by_cell;}
+/**
+Get the fraction used to determine the number of cells to transfer among threads or processes.
+PhreeqcRM attempts to rebalance the load of each thread or process such that each
+thread or process takes the same amount of time to run its part of a @ref RunCells
+calculation. The rebalancing transfers cell calculations among threads or processes to
+try to achieve an optimum balance. @ref SetRebalanceFraction
+adjusts the calculated optimum number of cell transfers by a fraction from 0 to 1.0 to
+determine the number of cell transfers that actually are made. A value of zero eliminates
+load rebalancing. A value less than 1.0 is suggested to avoid possible oscillations,
+where too many cells are transferred at one iteration, requiring reverse transfers at the next iteration.
+Default is 0.5.
+@retval int       Fraction used in rebalance, 0.0 to 1.0.
+@see                    @ref GetRebalanceByCell, @ref SetRebalanceByCell, @ref SetRebalanceFraction.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+double f_rebalance = phreeqc_rm.GetRebalanceFraction();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	double                                    GetRebalanceFraction(void) const {return this->rebalance_fraction;}
-	std::vector<double> &                     GetSaturation(void) {return this->saturation;}
+/**
+Get a vector reference to the current values of saturation for each cell. Saturation is a fraction ranging from 0 to 1.
+Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
+to the cell volume (@ref SetCellVolume). The volume of water in a cell is the porosity times the saturation.
+@retval std::vector<double> &      Vector of saturations, unitless. Size of vector is (nxyz), where nxyz is the number
+of grid cells in the user's model (@ref GetGridCellCount).
+@see                    @ref SetSaturation, GetPoreVolume, GetCellVolume, SetCellVolume, SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<double> &  current_sat =  phreeqc_rm.GetSaturation();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	const std::vector<double> &               GetSaturation(void) {return this->saturation;}
 	IRM_RESULT                                GetSelectedOutput(std::vector<double> &so);
 	int                                       GetSelectedOutputColumnCount(void);
 	int                                       GetSelectedOutputCount(void);
@@ -871,8 +1061,8 @@ Called by root and (or) workers.
 	IRM_RESULT                                SetPrintChemistryMask(std::vector<int> & t);
 	IRM_RESULT                                SetPrintChemistryOn(bool worker, bool ip, bool utility);
 	IRM_RESULT                                SetPressure(const std::vector<double> &t);  
-	IRM_RESULT                                SetRebalanceFraction(double t); 
 	IRM_RESULT                                SetRebalanceByCell(bool t); 
+	IRM_RESULT                                SetRebalanceFraction(double t); 
 	IRM_RESULT                                SetSaturation(const std::vector<double> &t); 
 	IRM_RESULT                                SetSelectedOutputOn(bool t);
 	IRM_RESULT                                SetSpeciesSaveOn(bool tf);
