@@ -76,7 +76,13 @@ int advection_cpp()
 			print_chemistry_mask[i] = 1;
 		}
 		status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask);
-
+		
+		// test getters
+		const std::vector<int> & print_chemistry_mask1 = phreeqc_rm.GetPrintChemistryMask();
+		const std::vector<bool> & print_on = phreeqc_rm.GetPrintChemistryOn();
+		bool rebalance = phreeqc_rm.GetRebalanceByCell();
+		double f_rebalance = phreeqc_rm.GetRebalanceFraction();
+		std::vector<double> &  current_sat =  phreeqc_rm.GetSaturation();
 		// Partitioning of uz solids
 		//status = phreeqc_rm.SetPartitionUZSolids(false);
 
@@ -271,7 +277,6 @@ int advection_cpp()
 					// Get double array of selected output values
 					std::vector<double> so;
 					int col = phreeqc_rm.GetSelectedOutputColumnCount();
-					so.resize(nxyz*col, 0);
 					status = phreeqc_rm.GetSelectedOutput(so);
 
 					// Print results
