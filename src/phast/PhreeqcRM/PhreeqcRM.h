@@ -1,4 +1,4 @@
-/*! @file RM_interface_C.h
+/*! @file PhreeqcRM.h
 	@brief C/Fortran Documentation
 */
 #if !defined(PHREEQCRM_H_INCLUDED)
@@ -321,11 +321,11 @@ MCD from the individual species concentrations
 (@ref SpeciesConcentrations2Module). 
 To use these methods the save-species property needs to be turned on (@ref SetSpeciesSaveOn).
 If the save-species property is on, FindComponents will generate 
-a list of aqueous species (@ref GetSpeciesCount, @ref GetSpeciesName), their diffusion coefficients at 25 C (@ref GetSpeciesD25),
+a list of aqueous species (@ref GetSpeciesCount, @ref GetSpeciesNames), their diffusion coefficients at 25 C (@ref GetSpeciesD25),
 their charge (@ref GetSpeciesZ).
 @retval              Number of components currently in the list, or IRM_RESULT error code (see @ref DecodeError).
 @see                 @ref GetComponents, @ref SetSpeciesSaveOn, @ref GetSpeciesConcentrations, @ref SpeciesConcentrations2Module,
-@ref GetSpeciesCount, @ref GetSpeciesName, @ref GetSpeciesD25, @ref GetSpeciesZ, @ref SetComponentH2O.
+@ref GetSpeciesCount, @ref GetSpeciesNames, @ref GetSpeciesD25, @ref GetSpeciesZ, @ref SetComponentH2O.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -937,7 +937,7 @@ of grid cells in the user's model (@ref GetGridCellCount).
 @htmlonly
 <CODE>
 <PRE>
-std::vector<double> &  current_sat =  phreeqc_rm.GetSaturation();
+const std::vector<double> &  current_sat =  phreeqc_rm.GetSaturation();
 </PRE>
 </CODE>
 @endhtmlonly
@@ -945,19 +945,411 @@ std::vector<double> &  current_sat =  phreeqc_rm.GetSaturation();
 Called by root and (or) workers.
  */
 	const std::vector<double> &               GetSaturation(void) {return this->saturation;}
+/**
+Populates a vector with values from the current selected-output definition. @ref SetCurrentSelectedOutputUserNumber
+determines which of the selected-output definitions is used to populate the vector.
+@param so               A vector to contain the selected-output values. Size of the vector is set to col times nxyz,
+where nxyz is the number of grid cells in the user's model (@ref GetGridCellCount), and col is the number of
+columns in the selected-output definition (@ref GetSelectedOutputColumnCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref GetNthSelectedOutputUserNumber,
+@ref GetSelectedOutputColumnCount, @ref GetSelectedOutputCount, @ref GetSelectedOutputHeading,
+@ref GetSelectedOutputRowCount, @ref SetCurrentSelectedOutputUserNumber, @ref SetSelectedOutputOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
+{
+  int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
+  status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
+  std::vector<double> so;
+  int col = phreeqc_rm.GetSelectedOutputColumnCount();
+  status = phreeqc_rm.GetSelectedOutput(so);
+  // Process results here
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                GetSelectedOutput(std::vector<double> &so);
+/**
+Returns the number of columns in the current selected-output definition. @ref SetCurrentSelectedOutputUserNumber
+determines which of the selected-output definitions is used.
+@retval                 Number of columns in the current selected-output definition, negative is failure (See @ref DecodeError).
+@see                    @ref GetNthSelectedOutputUserNumber, @ref GetSelectedOutput,
+@ref GetSelectedOutputCount, @ref GetSelectedOutputHeading,
+@ref GetSelectedOutputRowCount, @ref SetCurrentSelectedOutputUserNumber, @ref SetSelectedOutputOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
+{
+  int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
+  status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
+  std::vector<double> so;
+  int col = phreeqc_rm.GetSelectedOutputColumnCount();
+  status = phreeqc_rm.GetSelectedOutput(so);
+  // Print results
+  for (int i = 0; i < phreeqc_rm.GetSelectedOutputRowCount()/2; i++)
+  {
+    std::vector<std::string> headings;
+    headings.resize(col);
+    std::cerr << "     Selected output: " << "\n";
+    for (int j = 0; j < col; j++)
+    {
+      status = phreeqc_rm.GetSelectedOutputHeading(j, headings[j]);
+      std::cerr << "          " << j << " " << headings[j] << ": " << so[j*nxyz + i] << "\n";
+    }
+  }
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	int                                       GetSelectedOutputColumnCount(void);
+/**
+Returns the number of selected-output definitions. @ref SetCurrentSelectedOutputUserNumber
+determines which of the selected-output definitions is used.
+@retval                 Number of selected-output definitions, negative is failure (See @ref DecodeError).
+@see                    @ref GetNthSelectedOutputUserNumber, @ref GetSelectedOutput,
+@ref GetSelectedOutputColumnCount, @ref GetSelectedOutputHeading,
+@ref GetSelectedOutputRowCount, @ref SetCurrentSelectedOutputUserNumber, @ref SetSelectedOutputOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
+{
+  int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
+  status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
+  std::vector<double> so;
+  int col = phreeqc_rm.GetSelectedOutputColumnCount();
+  status = phreeqc_rm.GetSelectedOutput(so);
+  // Process results here
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	int                                       GetSelectedOutputCount(void);
+/**
+Returns a selected-output heading. The number of headings is determined by @ref GetSelectedOutputColumnCount.
+@ref SetCurrentSelectedOutputUserNumber
+determines which of the selected-output definitions is used.
+@param icol             The sequence number of the heading to be retrieved, 0 based.
+@param heading          A string to receive the heading.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref GetNthSelectedOutputUserNumber, @ref GetSelectedOutput,
+@ref GetSelectedOutputColumnCount, @ref GetSelectedOutputCount,
+@ref GetSelectedOutputRowCount, @ref SetCurrentSelectedOutputUserNumber, @ref SetSelectedOutputOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
+{
+  int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
+  status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
+  std::vector<double> so;
+  int col = phreeqc_rm.GetSelectedOutputColumnCount();
+  status = phreeqc_rm.GetSelectedOutput(so);
+  std::vector<std::string> headings;
+  headings.resize(col);
+  std::cerr << "     Selected output: " << "\n";
+  for (int j = 0; j < col; j++)
+  {
+    status = phreeqc_rm.GetSelectedOutputHeading(j, headings[j]);
+    std::cerr << "          " << j << " " << headings[j] << "\n";
+  }
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	IRM_RESULT                                GetSelectedOutputHeading(int icol, std::string &heading);
-	const bool                                GetSelectedOutputOn(void) const {return this->selected_output_on;}
+/**
+Returns the current value of the selected-output-on property. A value of true for this property indicates
+that selected output data is being processed. A value of false 
+indicates that selected output will not be retrieved for this time step, and processing the 
+selected output is avoided, with some time savings. 
+@retval bool      True, selected output is being processed; false, selected output is not being processed.
+@see              @ref SetSelectedOutputOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+bool so_on = phreeqc_rm.GetSelectedOutputOn();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	bool                                      GetSelectedOutputOn(void) {return this->selected_output_on;}
+/**
+Returns the number of rows in the current selected-output definition. However, the method
+is included only for convenience; the number of rows is always equal to the number of
+grid cells in the user's model, and is equal to @ref GetGridCellCount.
+@retval                 Number of rows in the current selected-output definition, negative is failure 
+(See @ref DecodeError).
+@see                    @ref GetNthSelectedOutputUserNumber, @ref GetSelectedOutput, @ref GetSelectedOutputColumnCount,
+@ref GetSelectedOutputCount, @ref GetSelectedOutputHeading,
+@ref SetCurrentSelectedOutputUserNumber, @ref SetSelectedOutputOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
+{
+  int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
+  status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
+  std::vector<double> so;
+  int col = phreeqc_rm.GetSelectedOutputColumnCount();
+  status = phreeqc_rm.GetSelectedOutput(so);
+  // Print results
+  for (int i = 0; i < phreeqc_rm.GetSelectedOutputRowCount()/2; i++)
+  {
+    std::vector<std::string> headings;
+    headings.resize(col);
+    std::cerr << "     Selected output: " << "\n";
+    for (int j = 0; j < col; j++)
+    {
+      status = phreeqc_rm.GetSelectedOutputHeading(j, headings[j]);
+      std::cerr << "          " << j << " " << headings[j] << ": " << so[j*nxyz + i] << "\n";
+    }
+  }
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	int                                       GetSelectedOutputRowCount(void);	
-	std::vector<double> &                     GetSolutionVolume(void); 
+/**
+Return a vector reference to the current solution volumes. Dimension of the vector will be nxyz,
+where nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. 
+Solution volumes are those calculated by the reaction module. Only the following databases distributed with PhreeqcRM have molar volume information 
+needed to accurately calculate solution volume: phreeqc.dat, Amm.dat, and pitzer.dat.
+@retval Vector reference to current solution volumes.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.RunCells();
+const std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); 
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	const std::vector<double> &               GetSolutionVolume(void); 
+/**
+Transfer concentrations of aqueous species to the vector argument. This
+method is intended for use with multicomponent-diffusion transport calculations.
+The list of aqueous
+species is determined by @ref FindComponents and includes all
+aqueous species that can be made from the set of components.
+Solution volumes used to calculate mol/L are calculated by the reaction module.
+Only the following databases distributed with PhreeqcRM have molar volume information 
+needed to accurately calculate solution volume: phreeqc.dat, Amm.dat, and pitzer.dat.
+@param species_conc     Vector to receive the aqueous species concentrations. 
+Dimension of the vector is set to nspecies times nxyz,
+where nspecies is the number of aqueous species (@ref GetSpeciesCount),
+and nxyz is the number of user grid cells (@ref GetGridCellCount).
+Concentrations are moles per liter.
+Values for inactive cells are set to 1e30.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref FindComponents, @ref GetSpeciesCount, @ref GetSpeciesD25, @ref GetSpeciesZ,
+@ref GetSpeciesNames, @ref SpeciesConcentrations2Module, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSpeciesSaveOn(true);
+int ncomps = phreeqc_rm.FindComponents();
+int npecies = phreeqc_rm.GetSpeciesCount();	
+status = phreeqc_rm.RunCells();
+std::vector<double> c;
+status = phreeqc_rm.GetSpeciesConcentrations(c);	
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
 	IRM_RESULT                                GetSpeciesConcentrations(std::vector<double> & species_conc);
+/**
+Returns the number of aqueous species used in the reaction module. This
+method is intended for use with multicomponent-diffusion transport calculations.
+The list of aqueous
+species is determined by @ref FindComponents and includes all
+aqueous species that can be made from the set of components.
+@retval int      The number of aqueous species.
+@see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesD25, @ref GetSpeciesZ,
+@ref GetSpeciesNames, @ref SpeciesConcentrations2Module, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSpeciesSaveOn(true);
+int ncomps = phreeqc_rm.FindComponents();
+int npecies = phreeqc_rm.GetSpeciesCount();	
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	int                                       GetSpeciesCount(void) {return (int) this->species_names.size();}
+/**
+Returns a vector reference to diffusion coefficients at 25C for the set of aqueous species. This
+method is intended for use with multicomponent-diffusion transport calculations.
+Diffusion coefficients are defined in SOLUTION_SPECIES data blocks, normally in the database file.
+Databases distributed with the reaction module that have diffusion coefficients defined are
+phreeqc.dat, Amm.dat, and pitzer.dat.
+@retval Vector reference to the diffusion coefficients at 25 C, m^2/s. Dimension of the vector is nspecies,
+where nspecies is the number of aqueous species (@ref GetSpeciesCount).
+@see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount, @ref GetSpeciesZ,
+@ref GetSpeciesNames, @ref SpeciesConcentrations2Module, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSpeciesSaveOn(true);
+int ncomps = phreeqc_rm.FindComponents();
+int npecies = phreeqc_rm.GetSpeciesCount();
+const std::vector < double > & species_d = phreeqc_rm.GetSpeciesD25();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const std::vector<double> &               GetSpeciesD25(void) {return this->species_d_25;}
-	bool                                      GetSpeciesSaveOn(void) {return this->species_save_on;}
-	const std::vector<double> &               GetSpeciesZ(void) {return this->species_z;}
+/**
+Returns a vector reference to the names of the aqueous species. This
+method is intended for use with multicomponent-diffusion transport calculations.
+The list of aqueous
+species is determined by @ref FindComponents and includes all
+aqueous species that can be made from the set of components.
+@retval names      Vector of strings containing the names of the aqueous species. Dimension of the vector is nspecies,
+where nspecies is the number of aqueous species (@ref GetSpeciesCount). 
+@see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount,
+@ref GetSpeciesD25, @ref GetSpeciesZ,
+@ref SpeciesConcentrations2Module, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSpeciesSaveOn(true);
+int ncomps = phreeqc_rm.FindComponents();
+int npecies = phreeqc_rm.GetSpeciesCount();
+const std::vector<std::string> &species = phreeqc_rm.GetSpeciesNames();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const std::vector<std::string> &          GetSpeciesNames(void) {return this->species_names;}
+/**
+Returns the value of the species-save property.
+This
+method is intended for use with multicomponent-diffusion transport calculations.
+By default, concentrations of aqueous species are not saved. Setting the species-save property to true allows
+aqueous species concentrations to be retrieved
+with @ref GetSpeciesConcentrations, and solution compositions to be set with
+@ref SpeciesConcentrations2Module.
+@retval True indicates solution species concentrations are saved and can be used for multicomponent-diffusion calculation; 
+False indicates that solution species concentrations are not saved. 
+@see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount,
+@ref GetSpeciesD25, @ref GetSpeciesSaveOn, @ref GetSpeciesZ,
+@ref GetSpeciesNames, @ref SpeciesConcentrations2Module.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSpeciesSaveOn(true);
+int ncomps = phreeqc_rm.FindComponents();
+int npecies = phreeqc_rm.GetSpeciesCount();
+bool species_on = phreeqc_rm.GetSpeciesSaveOn();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	bool                                      GetSpeciesSaveOn(void) {return this->species_save_on;}
+/**
+Returns a vector reference to the charge on each aqueous species. This
+method is intended for use with multicomponent-diffusion transport calculations.
+@retval Vector containing the charge on each aqueous species. Dimension of the vector is nspecies,
+where nspecies is the number of aqueous species (@ref GetSpeciesCount).
+@see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount, @ref GetSpeciesZ,
+@ref GetSpeciesNames, @ref SpeciesConcentrations2Module, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSpeciesSaveOn(true);
+int ncomps = phreeqc_rm.FindComponents();
+int npecies = phreeqc_rm.GetSpeciesCount();
+const std::vector < double > & species_z = phreeqc_rm.GetSpeciesZ();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	const std::vector<double> &               GetSpeciesZ(void) {return this->species_z;}
+/**
+Returns a vector reference to the stoichiometry of each aqueous species. This
+method is intended for use with multicomponent-diffusion transport calculations.
+@retval Vector of cxxNameDouble instances (maps), that contain the component name and 
+associated stoichiometric coefficient for each aqueous species.  Dimension of the vector is nspecies,
+where nspecies is the number of aqueous species (@ref GetSpeciesCount).
+@see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount, @ref GetSpeciesD25,
+@ref GetSpeciesNames, @ref SpeciesConcentrations2Module, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+const std::vector<std::string> &species = phreeqc_rm.GetSpeciesNames();
+const std::vector < double > & species_z = phreeqc_rm.GetSpeciesZ();
+const std::vector < double > & species_d = phreeqc_rm.GetSpeciesD25();
+bool species_on = phreeqc_rm.GetSpeciesSaveOn();
+int nspecies = phreeqc_rm.GetSpeciesCount();
+for (int i = 0; i < nspecies; i++)
+{
+  std::ostringstream strm;
+  strm << species[i] << "\n";
+  strm << "    Charge: " << species_z[i] << std::endl;
+  strm << "    Dw:     " << species_d[i] << std::endl;
+  cxxNameDouble::const_iterator it = phreeqc_rm.GetSpeciesStoichiometry()[i].begin();
+  for (; it != phreeqc_rm.GetSpeciesStoichiometry()[i].begin(); it++)
+  {
+    strm << "          " << it->first << "   " << it->second << "\n";
+  }
+  phreeqc_rm.OutputMessage(strm.str());
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const std::vector<cxxNameDouble> &        GetSpeciesStoichiometry(void) {return this->species_stoichiometry;}
 /**
 Each worker is assigned a range of chemistry cell numbers that are run by @ref RunCells. The range of

@@ -131,6 +131,7 @@ int species_cpp()
 		const std::vector<std::string> &species = phreeqc_rm.GetSpeciesNames();
 		const std::vector < double > & species_z = phreeqc_rm.GetSpeciesZ();
 		const std::vector < double > & species_d = phreeqc_rm.GetSpeciesD25();
+		bool species_on = phreeqc_rm.GetSpeciesSaveOn();
 		int nspecies = phreeqc_rm.GetSpeciesCount();
 		for (int i = 0; i < nspecies; i++)
 		{
@@ -138,7 +139,12 @@ int species_cpp()
 			strm << species[i] << "\n";
 			strm << "    Charge: " << species_z[i] << std::endl;
 			strm << "    Dw:     " << species_d[i] << std::endl;
-			phreeqc_rm.GetSpeciesStoichiometry()[i].dump_raw(strm, 2);
+			cxxNameDouble::const_iterator it = phreeqc_rm.GetSpeciesStoichiometry()[i].begin();
+			for (; it != phreeqc_rm.GetSpeciesStoichiometry()[i].end(); it++)
+			{
+				strm << "        " << it->first << "   " << it->second << "\n";
+			}
+			//phreeqc_rm.GetSpeciesStoichiometry()[i].dump_raw(strm, 2);
 			phreeqc_rm.OutputMessage(strm.str());
 		}
 		phreeqc_rm.OutputMessage("\n");
@@ -247,7 +253,7 @@ int species_cpp()
 			phreeqc_rm.GetConcentrations(component_c);
 			std::vector<double> density;
 			status = phreeqc_rm.GetDensity(density);                      // Density after reaction 
-			std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); // Solution volume after reaction 
+			const std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); // Solution volume after reaction 
 
 			// Print results at last time step
 			if (print_chemistry_on != 0)

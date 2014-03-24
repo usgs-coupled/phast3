@@ -82,7 +82,8 @@ int advection_cpp()
 		const std::vector<bool> & print_on = phreeqc_rm.GetPrintChemistryOn();
 		bool rebalance = phreeqc_rm.GetRebalanceByCell();
 		double f_rebalance = phreeqc_rm.GetRebalanceFraction();
-		std::vector<double> &  current_sat =  phreeqc_rm.GetSaturation();
+		const std::vector<double> &  current_sat = phreeqc_rm.GetSaturation();
+		bool so_on = phreeqc_rm.GetSelectedOutputOn();
 		// Partitioning of uz solids
 		//status = phreeqc_rm.SetPartitionUZSolids(false);
 
@@ -246,7 +247,7 @@ int advection_cpp()
 			status = phreeqc_rm.GetConcentrations(c);              // Concentrations after reaction 
 			std::vector<double> density;
 			status = phreeqc_rm.GetDensity(density);                      // Density after reaction 
-			std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); // Solution volume after reaction 
+			const std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); // Solution volume after reaction 
 
 			// Print results at last time step
 			if (print_chemistry_on != 0)
