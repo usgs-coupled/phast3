@@ -482,7 +482,7 @@ RM_GetSolutionVolume(int id, double * v)
 		if (v != NULL)
 		{
 			IRM_RESULT return_value = IRM_OK;
-			std::vector<double> &v_vector = Reaction_module_ptr->GetSolutionVolume();
+			const std::vector<double> &v_vector = Reaction_module_ptr->GetSolutionVolume();
 			if ((int) v_vector.size() == Reaction_module_ptr->GetGridCellCount())
 			{
 				memcpy(v, v_vector.data(), v_vector.size() * sizeof(double));

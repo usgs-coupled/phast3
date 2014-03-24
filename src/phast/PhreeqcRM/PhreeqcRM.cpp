@@ -2971,7 +2971,7 @@ PhreeqcRM::GetSelectedOutputRowCount()
 	return this->nxyz;
 }
 /* ---------------------------------------------------------------------- */
-std::vector<double> &
+const std::vector<double> &
 PhreeqcRM::GetSolutionVolume(void)
 /* ---------------------------------------------------------------------- */
 {
@@ -4192,7 +4192,9 @@ PhreeqcRM::MpiWorker()
 				break;
 			case METHOD_GETSOLUTIONVOLUME:
 				if (debug_worker) std::cerr << "METHOD_GETSOLUTIONVOLUME" << std::endl;
-				this->GetSolutionVolume();
+				{
+					const std::vector<double> dummy = this->GetSolutionVolume();
+				}
 				break;
 			case METHOD_GETSPECIESCONCENTRATIONS:
 				if (debug_worker) std::cerr << "METHOD_GETSPECIESCONCENTRATIONS" << std::endl;

@@ -1104,12 +1104,12 @@ Called by root.
  */
 int        RM_GetNthSelectedOutputUserNumber(int id, int n);
 /**
-Populates an array with values from the current selected output definition. @ref RM_SetCurrentSelectedOutputUserNumber
-determines which of the selected output definitions is used to populate the array.
+Populates an array with values from the current selected-output definition. @ref RM_SetCurrentSelectedOutputUserNumber
+determines which of the selected-output definitions is used to populate the array.
 @param id               The instance id returned from @ref RM_Create.
-@param so               An array to contain the selected output value. Size of the array is equivalent to Fortran  (nxyz, col),
+@param so               An array to contain the selected-output values. Size of the array is equivalent to Fortran (nxyz, col),
 where nxyz is the number of grid cells in the user's model (@ref RM_GetGridCellCount), and col is the number of
-columns in the selected output definition (@ref RM_GetSelectedOutputColumnCount).
+columns in the selected-output definition (@ref RM_GetSelectedOutputColumnCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetNthSelectedOutputUserNumber,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
@@ -1164,10 +1164,10 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT        RM_GetSelectedOutput(int id, double *so);
 /**
-Returns the number of columns in the current selected output definition. @ref RM_SetCurrentSelectedOutputUserNumber
-determines which of the selected output definitions is used.
+Returns the number of columns in the current selected-output definition. @ref RM_SetCurrentSelectedOutputUserNumber
+determines which of the selected-output definitions is used.
 @param id               The instance id returned from @ref RM_Create.
-@retval                 Number of columns in the current selected output definition, negative is failure (See @ref RM_DecodeError).
+@retval                 Number of columns in the current selected-output definition, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
@@ -1220,10 +1220,10 @@ Called by root.
  */
 int        RM_GetSelectedOutputColumnCount(int id);
 /**
-Returns the number of selected output definitions. @ref RM_SetCurrentSelectedOutputUserNumber
-determines which of the selected output definitions is used.
+Returns the number of selected-output definitions. @ref RM_SetCurrentSelectedOutputUserNumber
+determines which of the selected-output definitions is used.
 @param id               The instance id returned from @ref RM_Create.
-@retval                 Number of selected output definitions, negative is failure (See @ref RM_DecodeError).
+@retval                 Number of selected-output definitions, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
@@ -1276,9 +1276,9 @@ Called by root.
  */
 int        RM_GetSelectedOutputCount(int id);
 /**
-Returns the a selected output heading. The number of headings is determined by @ref RM_GetSelectedOutputColumnCount.
+Returns a selected output heading. The number of headings is determined by @ref RM_GetSelectedOutputColumnCount.
 @ref RM_SetCurrentSelectedOutputUserNumber
-determines which of the selected output definitions is used.
+determines which of the selected-output definitions is used.
 @param id               The instance id returned from @ref RM_Create.
 @param icol             The sequence number of the heading to be retrieved. Fortran, 1 based; C, 0 based.
 @param heading          A string buffer to receive the heading.
@@ -1339,11 +1339,11 @@ Called by root.
  */
 IRM_RESULT        RM_GetSelectedOutputHeading(int id, int icol, char * heading, int length);
 /**
-Returns the number of rows in the current selected output definition. However, the method
+Returns the number of rows in the current selected-output definition. However, the method
 is included only for convenience; the number of rows is always equal to the number of
 grid cells in the user's model, and is equal to @ref RM_GetGridCellCount.
 @param id               The instance id returned from @ref RM_Create.
-@retval                 Number of rows in the current selected output definition, negative is failure (See @ref RM_DecodeError).
+@retval                 Number of rows in the current selected-output definition, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput, @ref RM_GetSelectedOutputColumnCount,
 @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
@@ -1579,8 +1579,8 @@ Databases distributed with the reaction module that have diffusion coefficients 
 phreeqc.dat, Amm.dat, and pitzer.dat.
 @param id               The instance id returned from @ref RM_Create.
 @param diffc            Array to receive the diffusion coefficients at 25 C, m^2/s.
-Dimension of the array is (nxyz),
-where nxyz is the number of user grid cells (@ref RM_GetGridCellCount).
+Dimension of the array is nspecies,
+where nspecies is is the number of aqueous species (@ref RM_GetSpeciesCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
