@@ -2409,7 +2409,7 @@ Called by root.
 
 IRM_RESULT RM_LogMessage(int id, const char *str);
 /**
-For MPI, workers (processes with @ref RM_GetMpiMyself > 0) must call RM_MpiWorker to be able to
+MPI only. Workers (processes with @ref RM_GetMpiMyself > 0) must call RM_MpiWorker to be able to
 respond to messages from the root to accept data, perform calculations,
 or return data. RM_MpiWorker contains a loop that reads a message from root, performs a
 task, and waits for another message from root. @ref RM_SetConcentrations, @ref RM_RunCells, and @ref RM_GetConcentrations
@@ -2460,8 +2460,9 @@ Called by all workers.
  */
 IRM_RESULT RM_MpiWorker(int id);
 /**
-For MPI, called by root to force workers (processes with @ref RM_GetMpiMyself > 0) to return from a call to @ref RM_MpiWorker.
-RM_MpiWorker contains a loop that reads a message from root, performs a
+MPI only. This method is called by root to force workers (processes with @ref RM_GetMpiMyself > 0)
+to return from a call to @ref RM_MpiWorker.
+@ref RM_MpiWorker contains a loop that reads a message from root, performs a
 task, and waits for another message from root. The workers respond to all methods that are designated
 "workers must be in the loop of RM_MpiWorker" in the
 MPI section of the method documentation.
@@ -2505,7 +2506,8 @@ Opens the output and log files. Files are named based on the prefix defined by
 @ref RM_SetFilePrefix: prefix.chem.txt and prefix.log.txt.
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetFilePrefix, @ref RM_GetFilePrefix, @ref RM_CloseFiles..
+@see                    @ref RM_SetFilePrefix, @ref RM_GetFilePrefix, @ref RM_CloseFiles,
+@ref RM_ErrorMessage, @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_WarningMessage.
 @par C Example:
 @htmlonly
 <CODE>

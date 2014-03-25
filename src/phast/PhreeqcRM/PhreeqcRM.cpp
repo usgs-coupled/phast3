@@ -3573,7 +3573,7 @@ PhreeqcRM::InitialPhreeqc2Module(
 		}
 		if (return_value != IRM_OK)
 		{
-			std::cerr << errstr << std::endl;
+			std::cerr << errstr.str() << std::endl;
 		}
 #ifdef USE_MPI	
 		std::vector<int> r_values;
