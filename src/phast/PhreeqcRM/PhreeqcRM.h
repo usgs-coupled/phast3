@@ -1261,7 +1261,7 @@ where @a nspecies is the number of aqueous species (@ref GetSpeciesCount).
 @see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount,
 @ref GetSpeciesD25, @ref GetSpeciesZ,
 @ref SpeciesConcentrations2Module, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
-@par C Example:
+@par C++ Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1783,7 +1783,7 @@ Size is @a n_boundary.
 Size is @a n_boundary.
 @retval IRM_RESULT         0 is success, negative is failure (See @ref DecodeError).
 @see                  @ref FindComponents, @ref GetComponentCount.
-@par C Example:
+@par C++ Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2019,12 +2019,167 @@ status = phreeqc_rm.InitialPhreeqcCell2Module(-1, module_cells);
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                InitialPhreeqcCell2Module(int n, const std::vector<int> &cell_numbers);
+/**
+Load a database for all IPhreeqc instances--workers, InitialPhreeqc, and Utility. All definitions
+of the reaction module are cleared (SOLUTION_SPECIES, PHASES, SOLUTIONs, etc.), and the database is read.
+@param db_name          String containing the database name.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.LoadDatabase("phreeqc.dat");
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                LoadDatabase(const std::string &database);
+/**
+Print a message to the log file.
+@param str              String to be printed.
+@see                    @ref OpenFiles, @ref ErrorMessage, @ref OutputMessage, @ref ScreenMessage, @ref WarningMessage.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::ostringstream strm;
+strm << "Beginning transport calculation " <<   phreeqc_rm.GetTime() * phreeqc_rm.GetTimeConversion() << " days\n";
+strm << "          Time step             " <<   phreeqc_rm.GetTimeStep() * phreeqc_rm.GetTimeConversion() << " days\n";
+phreeqc_rm.LogMessage(strm.str());
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	void                                      LogMessage(const std::string &str);
+/**
+MPI only. Calls MPI_Abort, which aborts MPI, and makes the reaction module unusable. 
+Should be used only on encountering an unrecoverable error.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+int status = phreeqc_rm.MPI_Abort();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root or workers.
+ */
 	int                                       MpiAbort();
+/**
+MPI only. Workers (processes with @ref GetMpiMyself > 0) must call MpiWorker to be able to
+respond to messages from the root to accept data, perform calculations,
+or return data within the reaction module. 
+MpiWorker contains a loop that reads a message from root, performs a
+task, and waits for another message from root. 
+@ref SetConcentrations, @ref RunCells, and @ref GetConcentrations
+are examples of methods that send a message from root to get the workers to perform a task. 
+The workers will respond to all methods that are designated "workers must be in the loop of RM_MpiWorker" 
+in the MPI section of the method documentation.
+The workers will continue to respond to messages from root until root calls
+@ref MpiWorkerBreak.
+@n@n
+(Advanced) The list of tasks that the workers perform can be extended by using @ref SetMpiWorkerCallback.
+It is then possible to use the MPI processes to perform other developer-defined tasks, 
+such as transport calculations, without exiting from the MpiWorker loop. 
+Alternatively, root calls @ref MpiWorkerBreak to allow the workers to continue past a call to RM_MpiWorker. 
+The workers perform developer-defined calculations, and then MpiWorker is called again to respond to
+requests from root to perform reaction-module tasks.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError). 
+MpiWorker returns a value only when @ref RM_MpiWorkerBreak is called by root.
+@see                    @ref MpiWorkerBreak, @ref SetMpiWorkerCallback, @ref SetMpiWorkerCallbackCookie (C only).
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+PhreeqcRM phreeqc_rm(nxyz, MPI_COMM_WORLD);
+int mpi_myself;
+if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+{
+  exit(4);
+}
+if (mpi_myself > 0)
+{
+  phreeqc_rm.MpiWorker();
+  return EXIT_SUCCESS;
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by all workers.
+ */
 	IRM_RESULT                                MpiWorker();
+/**
+MPI only. This method is called by root to force workers (processes with @ref GetMpiMyself > 0) 
+to return from a call to @ref MpiWorker.
+@ref MpiWorker contains a loop that reads a message from root, performs a
+task, and waits for another message from root. The workers respond to all methods that are designated
+"workers must be in the loop of MpiWorker" in the
+MPI section of the method documentation.
+The workers will continue to respond to messages from root until root calls MpiWorkerBreak.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref MpiWorker, @ref SetMpiWorkerCallback, @ref SetMpiWorkerCallbackCookie (C only).
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.MpiWorkerBreak();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	IRM_RESULT                                MpiWorkerBreak();	
+/**
+Opens the output and log files. Files are named based on the prefix defined by
+@ref RM_SetFilePrefix: prefix.chem.txt and prefix.log.txt.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetFilePrefix, @ref GetFilePrefix, @ref CloseFiles, 
+@ref ErrorMessage, @ref LogMessage, @ref OutputMessage, @ref WarningMessage.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetFilePrefix("Advect_cpp");
+phreeqc_rm.OpenFiles();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	IRM_RESULT                                OpenFiles(void);
+/**
+Print a message to the output file.
+@param str              String to be printed.
+@see                    @ref ErrorMessage, @ref LogMessage, @ref ScreenMessage, @ref WarningMessage.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::ostringstream oss;
+oss << "Database:                                         " << phreeqc_rm.GetDatabaseFileName().c_str() << "\n";
+oss << "Number of threads:                                " << phreeqc_rm.GetThreadCount() << "\n";
+oss << "Number of MPI processes:                          " << phreeqc_rm.GetMpiTasks() << "\n";
+oss << "MPI task number:                                  " << phreeqc_rm.GetMpiMyself() << "\n";
+oss << "File prefix:                                      " << phreeqc_rm.GetFilePrefix() << "\n";
+oss << "Number of grid cells in the user's model:         " << phreeqc_rm.GetGridCellCount() << "\n";
+oss << "Number of chemistry cells in the reaction module: " << phreeqc_rm.GetChemistryCellCount() << "\n";
+oss << "Number of components for transport:               " << phreeqc_rm.GetComponentCount() << "\n";
+oss << "Error handler mode:                               " << phreeqc_rm.GetErrorHandlerMode() << "\n";
+phreeqc_rm.OutputMessage(oss.str());
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	void                                      OutputMessage(const std::string &str);
 	IRM_RESULT                                RunCells(void);
 	IRM_RESULT                                RunFile(bool workers, bool initial_phreeqc, bool utility,  const std::string & chemistry_name);
