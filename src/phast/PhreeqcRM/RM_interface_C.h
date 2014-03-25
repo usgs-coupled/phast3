@@ -1746,8 +1746,8 @@ Transfers the charge of each aqueous species to the array argument. This
 method is intended for use with multicomponent-diffusion transport calculations.
 @param id               The instance id returned from @ref RM_Create.
 @param z                Array that receives the charge for each aqueous species.
-Dimension of the array is (nxyz),
-where nxyz is the number of user grid cells (@ref RM_GetGridCellCount).
+Dimension of the array is nspecies,
+where nspecies is is the number of aqueous species (@ref RM_GetSpeciesCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount,
 @ref RM_GetSpeciesD25,
@@ -1793,11 +1793,11 @@ Called by root and (or) workers.
  */
 IRM_RESULT RM_GetSpeciesZ(int id, double *z);
 /**
-Returns the number of threads, which is equal to the number of workers used to run in parallel with OPENMPI.
+Returns the number of threads, which is equal to the number of workers used to run in parallel with OPENMP.
 For the threaded version, the number of threads is set implicitly or explicitly with @ref RM_Create. For the
 MPI version, the number of threads is always one for each process.
 @param id               The instance id returned from @ref RM_Create.
-@retval                 The number of threads used for OPENMPI parallel processing, negative is failure (See @ref RM_DecodeError).
+@retval                 The number of threads used for OPENMP parallel processing, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetMpiTasks.
 @par C Example:
 @htmlonly
@@ -3990,10 +3990,10 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 IRM_RESULT RM_SetTimeStep(int id, double t);
 /**
 Input units for exchangers. In PHREEQC, exchangers are defined by
-moles of exchange sites. RM_SetUnitsExchange defines whether the
+moles of exchange sites. RM_SetUnitsExchange determines whether the
 number of sites applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+water in the cell, or the volume of rock in the cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
 to mol/L of cell on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
@@ -4034,11 +4034,11 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsExchange(int id, int option);
 /**
-Input units for gas phase. In PHREEQC, gas phases are defined by
-moles of component gases. RM_SetUnitsGasPhase defines whether the
+Input units for gas phases. In PHREEQC, gas phases are defined by
+moles of component gases. RM_SetUnitsGasPhase determines whether the
 number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
 to mol/L of cell on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
@@ -4080,10 +4080,10 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 IRM_RESULT RM_SetUnitsGasPhase(int id, int option);
 /**
 Input units for kinetic reactants. In PHREEQC, kinetics are defined by
-moles of kinetic reactant. RM_SetUnitsKinetics defines whether the
+moles of kinetic reactant. RM_SetUnitsKinetics determines whether the
 number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
 to mol/L of cell on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
@@ -4133,7 +4133,7 @@ IRM_RESULT RM_SetUnitsKinetics(int id, int option);
 /**
 Input units for pure phase assemblages (equilibrium phases).
 In PHREEQC, equilibrium phases are defined by
-moles of each phase. RM_SetUnitsPPassemblage defines whether the
+moles of each phase. RM_SetUnitsPPassemblage determines whether the
 number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
 0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
@@ -4249,7 +4249,7 @@ IRM_RESULT RM_SetUnitsSolution(int id, int option);
 /**
 Input units for solid-solution assemblages.
 In PHREEQC, solid solutions are defined by
-moles of each component. RM_SetUnitsSSassemblage defines whether the
+moles of each component. RM_SetUnitsSSassemblage determines whether the
 number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
 0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
@@ -4293,7 +4293,7 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsSSassemblage(int id, int option);
 /**
-Input units for surfaces. In PHREEQC, surfaces are defined by
+Input units for surfaces. In PHREEQC, surfaces are determined by
 moles of surface sites. RM_SetUnitsSurface defines whether the
 number of sites applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are

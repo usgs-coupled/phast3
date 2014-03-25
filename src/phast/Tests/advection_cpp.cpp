@@ -84,6 +84,16 @@ int advection_cpp()
 		double f_rebalance = phreeqc_rm.GetRebalanceFraction();
 		const std::vector<double> &  current_sat = phreeqc_rm.GetSaturation();
 		bool so_on = phreeqc_rm.GetSelectedOutputOn();
+		const std::vector<double> &  tempc = phreeqc_rm.GetTemperature();
+		int units_exchange = phreeqc_rm.GetUnitsExchange();
+		int units_gas_phase = phreeqc_rm.GetUnitsGasPhase();
+		int units_kinetics = phreeqc_rm.GetUnitsKinetics();
+		int units_pp_assemblage = phreeqc_rm.GetUnitsPPassemblage();
+		int units_solution = phreeqc_rm.GetUnitsSolution();
+		int units_ss_exchange = phreeqc_rm.GetUnitsSSassemblage();
+		int units_surface = phreeqc_rm.GetUnitsSurface();
+
+
 		// Partitioning of uz solids
 		//status = phreeqc_rm.SetPartitionUZSolids(false);
 

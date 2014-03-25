@@ -809,7 +809,11 @@ Called by root and (or) workers.
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
 /**
 Returns the current set of pressures as 
-defined by the last use of @ref SetPressure or the default (1 atm). 
+defined by the last use of @ref SetPressure. 
+By default, the pressure vector is initialized with 1 atm; 
+however, if @ref SetPressure has not been called, worker solutions will have pressures as defined in  
+input files (@ref RunFile) or input strings (@ref RunString). If @ref SetPressure has been called,
+worker solutions will have the pressures as defined by @ref SetPressure.
 Pressure effects are considered by three PHREEQC databases: phreeqc.dat, Amm.dat, and pitzer.dat.
 @retval const std::vector<double>&       A vector reference to the pressures in each cell, in atm.
 Size of vector is nxyz, the number of grid cells in the user's model (@ref GetGridCellCount).
@@ -927,10 +931,11 @@ Called by root.
  */
 	double                                    GetRebalanceFraction(void) const {return this->rebalance_fraction;}
 /**
-Get a vector reference to the current values of saturation for each cell. Saturation is a fraction ranging from 0 to 1.
+Vector reference to the current values of saturation for each cell. Saturation is a fraction ranging from 0 to 1, default 
+values are 1.0.
 Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
 to the cell volume (@ref SetCellVolume). The volume of water in a cell is the porosity times the saturation.
-@retval std::vector<double> &      Vector of saturations, unitless. Size of vector is (nxyz), where nxyz is the number
+@retval std::vector<double> &      Vector of saturations, unitless. Size of vector is nxyz, where nxyz is the number
 of grid cells in the user's model (@ref GetGridCellCount).
 @see                    @ref SetSaturation, GetPoreVolume, GetCellVolume, SetCellVolume, SetPoreVolume.
 @par C++ Example:
@@ -1389,17 +1394,314 @@ phreeqc_rm.OutputMessage(oss.str());
 Called by root and (or) workers.
  */
 	const std::vector < int> &                GetStartCell(void) const {return this->start_cell;} 
-	std::vector<double> &                     GetTemperature(void) {return this->tempc;}
+/**
+Vector reference to the temperatures set by the last call to @ref SetTemperature. 
+By default, the temperature vector is initialized with 25 C; 
+however, if @ref SetTemperature has not been called, worker solutions will have temperatures as defined in  
+input files (@ref RunFile) or input strings (@ref RunString). If @ref SetTemperature has been called,
+worker solutions will have the temperatures as defined by @ref SetTemperature.
+@retval Vector of temperatures, in degrees C. Size of vector is nxyz, where nxyz is the number
+of grid cells in the user's model (@ref GetGridCellCount).
+@see                    @ref SetTemperature, @ref GetPressure, @ref SetPressure.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+const std::vector<double> &  tempc = phreeqc_rm.GetTemperature();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	const std::vector<double> &               GetTemperature(void) {return this->tempc;}
+/**
+Returns the number of threads, which is equal to the number of workers used to run in parallel with OPENMP.
+For the threaded version, the number of threads is set implicitly or explicitly 
+with the constructor (@ref PhreeqcRM::PhreeqcRM). 
+For the MPI version, the number of threads is always one for each process.
+@retval                 The number of threads used for OPENMP parallel processing.
+@see                    @ref GetMpiTasks.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::ostringstream oss;
+oss << "Number of threads: " << phreeqc_rm.GetThreadCount() << "\n";
+phreeqc_rm.OutputMessage(oss.str());
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers; result is always 1.
+ */
 	int                                       GetThreadCount() {return this->nthreads;}
+/**
+Returns the current simulation time in seconds. The reaction module does not change the time value, so the
+returned value is equal to the default (0.0) or the last time set by @ref SetTime.
+@retval                 The current simulation time, in seconds.
+@see                    @ref GetTimeConversion, @ref GetTimeStep, @ref SetTime,
+@ref SetTimeConversion, @ref SetTimeStep.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::ostringstream strm;
+strm << "Beginning transport calculation " 
+     << phreeqc_rm.GetTime() * phreeqc_rm.GetTimeConversion() 
+	 << " days\n";
+phreeqc_rm.LogMessage(strm.str());
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	double                                    GetTime(void) const {return this->time;} 
-	double                                    GetTimeStep(void) const {return this->time_step;}
-	const double                              GetTimeConversion(void) const {return this->time_conversion;} 
+/**
+Returns a multiplier to convert time from seconds to another unit, as specified by the user.
+The reaction module uses seconds as the time unit. The user can set a conversion
+factor (@ref SetTimeConversion) and retrieve it with GetTimeConversion. The
+reaction module only uses the conversion factor when printing the long version
+of cell chemistry (@ref SetPrintChemistryOn), which is rare. 
+Default conversion factor is 1.0.
+@retval                 Multiplier to convert seconds to another time unit.
+@see                    @ref GetTime, @ref GetTimeStep, @ref SetTime, @ref SetTimeConversion, @ref SetTimeStep.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::ostringstream strm;
+strm << "Beginning transport calculation " 
+     <<   phreeqc_rm.GetTime() * phreeqc_rm.GetTimeConversion() 
+	 << " days\n";
+phreeqc_rm.LogMessage(strm.str());
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	double                                    GetTimeConversion(void) {return this->time_conversion;}
+/**
+Returns the current simulation time step in seconds.
+This is the time over which kinetic reactions are integrated in a call to @ref RunCells.
+The reaction module does not change the time step value, so the
+returned value is equal to the default (0.0) or the last time step set by @ref SetTimeStep.
+@retval                 The current simulation time step in seconds.
+@see                    @ref GetTime, @ref GetTimeConversion, @ref SetTime,
+@ref SetTimeConversion, @ref SetTimeStep.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::ostringstream strm;
+strm << "Time step " 
+     << phreeqc_rm.GetTimeStep() * phreeqc_rm.GetTimeConversion() 
+	 << " days\n";
+phreeqc_rm.LogMessage(strm.str());
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	double                                    GetTimeStep(void) {return this->time_step;} 
+/**
+Returns the input units for exchangers.
+In PHREEQC, exchangers are defined by
+moles of exchange sites. SetUnitsExchange determines whether the
+number of sites applies to the volume of the cell, the volume of
+water in the cell, or the volume of rock in the cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+@retval                 Input units for exchangers.
+@see                    @ref SetUnitsExchange, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+int units_exchange = phreeqc_rm.GetUnitsExchange();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	int                                       GetUnitsExchange(void) {return this->units_Exchange;}
+/**
+Returns the input units for gas phases.
+In PHREEQC, gas phases are defined by
+moles of component gases. GetUnitsGasPhase determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in the cell, or the volume of rock in the cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+@retval                 Input units for gas phases.
+@see                    @ref SetUnitsGasPhase, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+int units_gas_phase = phreeqc_rm.GetUnitsGasPhase();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	int                                       GetUnitsGasPhase(void) {return this->units_GasPhase;}
+/**
+Returns the input units for kinetic reactants.
+In PHREEQC, kinetics are defined by
+moles of kinetic reactant. GetUnitsKinetics determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in the cell, or the volume of rock in the cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+@retval                 Input units for kinetic reactants.
+@see                    @ref SetUnitsKinetics, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+int units_kinetics = phreeqc_rm.GetUnitsKinetics();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	int                                       GetUnitsKinetics(void) {return this->units_Kinetics;}
-	int                                       GetUnitsSolution(void) {return this->units_Solution;}
+/**
+Returns the input units for pure phase assemblages (equilibrium phases).
+In PHREEQC, equilibrium phases are defined by
+moles of each phase. GetUnitsPPassemblage determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in the cell, or the volume of rock in the cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+@retval                 Input units for equilibrium phases.
+@see                    @ref SetUnitsPPassemblage, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+int units_pp_assemblage = phreeqc_rm.GetUnitsPPassemblage();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	int                                       GetUnitsPPassemblage(void) {return this->units_PPassemblage;}
+/**
+Returns the units of concentration units used by the transport model.
+Options are 1, mg/L; 2 mol/L; or 3, mass fraction, kg/kgs.
+In PHREEQC, solutions are defined by the number of moles of each
+element in the solution. The units of transport concentration are used when 
+transport concentrations are converted to
+solution moles by @ref SetConcentrations and @ref Concentrations2Utility. 
+The units of solution concentration also are used when solution moles are converted to 
+transport concentrations by 
+@ref GetConcentrations.
+@n@n
+To convert from mg/L to moles
+of element in a cell, mg/L is converted to mol/L and
+multiplied by the solution volume,
+which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
+times saturation (@ref RM_SetSaturation).
+To convert from mol/L to moles
+of element in a cell, mol/L is
+multiplied by the solution volume,
+which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
+times saturation (@ref RM_SetSaturation).
+To convert from mass fraction to moles
+of element in a cell, kg/kgs is converted to mol/kgs, multiplied by density
+(@ref RM_SetDensity) and
+multiplied by the solution volume,
+which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
+times saturation (@ref RM_SetSaturation).
+@n@n
+To convert from moles
+of element in a cell to mg/L, the number of moles of an element is divided by the
+calculated solution volume resulting in mol/L, and then converted to
+mg/L.
+To convert from moles
+of element in a cell to mol/L,  the number of moles of an element is divided by the
+calculated solution volume resulting in mol/L.
+To convert from moles
+of element in a cell to mass fraction, the number of moles of an element is converted to kg and divided
+by the total mass of the solution.
+@retval                 Units for concentrations in transport.
+@see                    @ref SetUnitsSolution, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+int units_solution = phreeqc_rm.GetUnitsSolution();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	int                                       GetUnitsSolution(void) {return this->units_Solution;}
+/**
+Returns the input units for solid-solution assemblages.
+In PHREEQC, solid solutions are defined by
+moles of each component. GetUnitsSSassemblage determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in the cell, or the volume of rock in the cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+@retval                 Input units for solid solutions.
+@see                    @ref SetUnitsSSassemblage, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+int units_ss_exchange = phreeqc_rm.GetUnitsSSassemblage();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	int                                       GetUnitsSSassemblage(void) {return this->units_SSassemblage;}
+/**
+Returns the input units for surfaces.
+In PHREEQC, surfaces are defined by
+moles of each surface sites. GetUnitsSurface determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in the cell, or the volume of rock in the cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+@retval                 Input units for solid surfaces.
+@see                    @ref SetUnitsSurface, @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+int units_surface = phreeqc_rm.GetUnitsSurface();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	int                                       GetUnitsSurface(void) {return this->units_Surface;}
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
 	IRM_RESULT								  InitialPhreeqc2Concentrations(
@@ -1458,6 +1760,27 @@ Called by root and (or) workers.
 	IRM_RESULT                                SetSaturation(const std::vector<double> &t); 
 	IRM_RESULT                                SetSelectedOutputOn(bool t);
 	IRM_RESULT                                SetSpeciesSaveOn(bool tf);
+/**
+Set the temperature for each cell for reaction calculations. If SetTemperature is not called, 
+worker solutions will have temperatures as defined in  
+input files (@ref RunFile) or input strings (@ref RunString).
+@param t                Vector of temperatures, in degrees C. Size of vector is nxyz, where nxyz is the number
+of grid cells in the user's model (@ref GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref GetPressure, @ref SetPressure, @ref GetTemperature.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<double> temperature;
+temperature.resize(nxyz, 20.0);
+phreeqc_rm.SetTemperature(temperature);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	IRM_RESULT                                SetTemperature(const std::vector<double> &t);
 	IRM_RESULT                                SetTime(double t);
 	IRM_RESULT                                SetTimeConversion(double t);
