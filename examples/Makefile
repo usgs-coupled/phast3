@@ -2,7 +2,7 @@ CFG1 :=`uname`
 CFG :=$(shell echo $(CFG1) | sed "s/CYGWIN.*/CYGWIN/")
 
 ifeq ($(CFG), Linux)
-  TOPDIR=$(HOME)/programs/phastpp
+  TOPDIR=/lobo02home/dlpark/programs/phastpp3-worker
 ifeq ($(USER), charlton)
   TOPDIR=$(HOME)/programs/phreeqc/phastpp-trunk
 endif
