@@ -1,5 +1,5 @@
 cxxHstSubs.o: ../cxxHstSubs.cxx
-gzstream.o: ../gzstream.cxx ../gzstream.h
+gzstream.o: ../gzstream.cxx
 FileHandler.o: ../FileHandler.cpp ../FileHandler.h \
  ../PhreeqcRM/PhreeqcRM.h ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
  ../IPhreeqcPhast/IPhreeqcPhast.h \
@@ -14,10 +14,9 @@ FileHandler.o: ../FileHandler.cpp ../FileHandler.h \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
  ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../PhreeqcRM/RM_interface.h ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/Var.h ../gzstream.h ../KDtree/KDtree.h \
- ../KDtree/kdtree2.hpp ../KDtree/Point.h ../KDtree/Cell_Face.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h ../PhreeqcRM/IrmResult.h \
+ ../PhreeqcRM/RM_interface_C.h ../KDtree/KDtree.h ../KDtree/kdtree2.hpp \
+ ../KDtree/Point.h ../KDtree/Cell_Face.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
@@ -38,9 +37,24 @@ FileHandler.o: ../FileHandler.cpp ../FileHandler.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h ../hdf.h
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../hdf.h
 hdf.o: ../hdf.cpp ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h ../hdf.h
-phast_main.o: ../phast_main.cpp ../hdf.h
+phast_main.o: ../phast_main.cpp ../hdf.h ../PhreeqcRM/PhreeqcRM.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqcPhast.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
+ ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h ../PhreeqcRM/IrmResult.h
 TM_interface.o: ../TM_interface.cpp ../TM_interface.h
 fwrap2Phast.o: ../IPhreeqcPhast/fwrap2Phast.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
@@ -227,6 +241,8 @@ IPhreeqcPhast.o: ../IPhreeqcPhast/IPhreeqcPhast.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h \
  ../IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx \
  ../IPhreeqcPhast/IPhreeqc/CVar.hxx
 PhreeqcRM.o: ../PhreeqcRM/PhreeqcRM.cpp ../PhreeqcRM/PhreeqcRM.h \
@@ -243,11 +259,10 @@ PhreeqcRM.o: ../PhreeqcRM/PhreeqcRM.cpp ../PhreeqcRM/PhreeqcRM.h \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
  ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h ../PhreeqcRM/IrmResult.h \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqcPhastLib.h \
  ../IPhreeqcPhast/IPhreeqcPhast.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h ../KDtree/KDtree.h \
- ../KDtree/kdtree2.hpp ../KDtree/Point.h ../KDtree/Cell_Face.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
@@ -272,7 +287,7 @@ PhreeqcRM.o: ../PhreeqcRM/PhreeqcRM.cpp ../PhreeqcRM/PhreeqcRM.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h \
  ../IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx \
- ../IPhreeqcPhast/IPhreeqc/CVar.hxx ../hdf.h \
+ ../IPhreeqcPhast/IPhreeqc/CVar.hxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
@@ -288,8 +303,8 @@ PhreeqcRM.o: ../PhreeqcRM/PhreeqcRM.cpp ../PhreeqcRM/PhreeqcRM.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h
-RM_interface.o: ../PhreeqcRM/RM_interface.cpp ../PhreeqcRM/PhreeqcRM.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+RM_interface_C.o: ../PhreeqcRM/RM_interface_C.cpp \
+ ../PhreeqcRM/PhreeqcRM.h ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
  ../IPhreeqcPhast/IPhreeqcPhast.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
@@ -302,10 +317,9 @@ RM_interface.o: ../PhreeqcRM/RM_interface.cpp ../PhreeqcRM/PhreeqcRM.h \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
  ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../PhreeqcRM/RM_interface.h ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/Var.h ../IPhreeqcPhast/IPhreeqcPhastLib.h \
- ../IPhreeqcPhast/IPhreeqcPhast.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h ../PhreeqcRM/IrmResult.h \
+ ../PhreeqcRM/RM_interface_C.h ../IPhreeqcPhast/IPhreeqcPhastLib.h \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqcPhast.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
@@ -326,7 +340,46 @@ RM_interface.o: ../PhreeqcRM/RM_interface.cpp ../PhreeqcRM/PhreeqcRM.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h ../hdf.h
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h
+RM_interface_F.o: ../PhreeqcRM/RM_interface_F.cpp \
+ ../PhreeqcRM/PhreeqcRM.h ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqcPhast.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
+ ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h ../PhreeqcRM/IrmResult.h \
+ ../PhreeqcRM/RM_interface_F.h ../IPhreeqcPhast/IPhreeqcPhastLib.h \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqcPhast.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
 CSelectedOutput.o: ../IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp \
  ../IPhreeqcPhast/IPhreeqc/Debug.h \
  ../IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx \

@@ -290,13 +290,13 @@ INTEGER FUNCTION mpi_methods(method)
     USE mpi_mod
     IMPLICIT none
     INTERFACE
-        INTEGER FUNCTION set_components
+        INTEGER FUNCTION set_components()
         END FUNCTION set_components
-        SUBROUTINE worker_init1
+        SUBROUTINE worker_init1()
         END SUBROUTINE worker_init1
-        SUBROUTINE set_component_map
+        SUBROUTINE set_component_map()
         END SUBROUTINE set_component_map
-        INTEGER FUNCTION set_fdtmth
+        INTEGER FUNCTION set_fdtmth()
         END FUNCTION set_fdtmth
     END INTERFACE
     integer method, return_value

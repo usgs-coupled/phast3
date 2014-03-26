@@ -30,9 +30,9 @@
 #ifdef USE_OPENMP
 #include <omp.h>
 #endif
-#ifdef USE_MPI
-#include <mpi.h>
-#endif
+//#ifdef USE_MPI
+//#include <mpi.h>
+//#endif
 #include "Phreeqc.h"
 std::map<size_t, PhreeqcRM*> PhreeqcRM::Instances;
 size_t PhreeqcRM::InstancesIndex = 0;
@@ -55,7 +55,7 @@ void PhreeqcRM::CleanupReactionModuleInstances(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-PhreeqcRM::CreateReactionModule(int nxyz, int nthreads)
+PhreeqcRM::CreateReactionModule(int nxyz, MP_TYPE nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	int n = IRM_OUTOFMEMORY;
@@ -120,18 +120,18 @@ PhreeqcRM::GetInstance(int id)
 //
 */
 
-PhreeqcRM::PhreeqcRM(int nxyz_arg, int data_for_parallel_processing, PHRQ_io *io)
+PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io *io)
 	//
 	// constructor
 	//
 : PHRQ_base(io)
 {
 	// second argument is threads for OPENMP or COMM for MPI
-	int thread_count = data_for_parallel_processing;
-	phreeqcrm_comm = data_for_parallel_processing;
+        int thread_count = 1;
 
 	int n = 1;	
 #ifdef USE_OPENMP
+	int thread_count = data_for_parallel_processing;
 #if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo( &sysinfo );
@@ -178,6 +178,7 @@ if( numCPU < 1 )
 	this->mpi_myself = 0;
 	this->mpi_tasks = 1;
 #ifdef USE_MPI
+	phreeqcrm_comm = data_for_parallel_processing;
 	if (MPI_Comm_size(phreeqcrm_comm, &this->mpi_tasks) != MPI_SUCCESS)
 	{
 		error_msg("MPI communicator not defined", 1);

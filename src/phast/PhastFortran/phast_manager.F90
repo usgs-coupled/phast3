@@ -27,7 +27,7 @@ SUBROUTINE phast_manager
     SAVE
     INCLUDE 'RM_interface_F.f90.inc'
     INTERFACE
-        INTEGER FUNCTION set_fdtmth
+        INTEGER FUNCTION set_fdtmth()
         END FUNCTION set_fdtmth
         
         INTEGER FUNCTION set_components() 
@@ -540,7 +540,7 @@ SUBROUTINE InitializeRM
             ic2_reordered(1,1),           & ! Fortran nxyz x 7 end-member 2
             f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1   
         
-        CALL process_restart_files
+        CALL process_restart_files()
         status = RM_GetConcentrations(rm_id, c(1,1))      
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
@@ -583,7 +583,7 @@ SUBROUTINE TimeStepRM
         
         status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer, 0, 0)
 	    status = 0
-        if (prhdfc .ne. 0 .or. prcphrq .ne. 0) status = 1
+        if (prhdfc .or. prcphrq) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)
         
         status = RM_SetTime(rm_id, time) 
@@ -597,7 +597,7 @@ SUBROUTINE TimeStepRM
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM   
     
-INTEGER FUNCTION set_components 
+INTEGER FUNCTION set_components()
     USE mcc, ONLY:               mpi_myself, rm_id, solute
     USE mcch, ONLY:              comp_name
     USE mcv, ONLY:               ns
@@ -626,7 +626,7 @@ INTEGER FUNCTION set_components
     ENDDO  
     set_components = 0
 END FUNCTION set_components 
-INTEGER FUNCTION process_restart_files 
+SUBROUTINE process_restart_files()
     USE mcc, ONLY: mpi_myself, rm_id
     USE mcch
     USE mcg
@@ -648,10 +648,9 @@ INTEGER FUNCTION process_restart_files
 	        indx_sol1_ic(1,1),            &
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
-    process_restart_files = 0
-    END FUNCTION process_restart_files 
+    END SUBROUTINE process_restart_files 
     
-INTEGER FUNCTION set_fdtmth
+INTEGER FUNCTION set_fdtmth()
     USE mcc, ONLY: mpi_myself
     USE mcp
     USE mpi_mod
@@ -666,7 +665,7 @@ INTEGER FUNCTION set_fdtmth
     set_fdtmth = 0
     END FUNCTION set_fdtmth 
     
-INTEGER FUNCTION run_transport
+SUBROUTINE run_transport
     USE mcc, ONLY: mpi_myself, rm_id
     USE mcs, ONLY: nthreads
     USE mcv, ONLY: local_ns
@@ -679,8 +678,7 @@ INTEGER FUNCTION run_transport
     endif 
 #endif 
     CALL TM_transport(rm_id, local_ns, nthreads)
-    run_transport = 0
-END FUNCTION run_transport    
+END SUBROUTINE run_transport    
     
 SUBROUTINE convert_to_moles(id, c, n)
     IMPLICIT NONE 
