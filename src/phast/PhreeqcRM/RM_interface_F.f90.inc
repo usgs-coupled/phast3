@@ -19,11 +19,11 @@
             INTEGER, INTENT(in) :: n
             DOUBLE PRECISION, INTENT(in) :: tc, p_atm
         END FUNCTION RM_Concentrations2Utility  
-        
+       
         INTEGER FUNCTION RM_Create(nxyz, nthreads) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: nxyz
-			INTEGER, INTENT(in), OPTIONAL :: nthreads
+			INTEGER, INTENT(in) :: nthreads
         END FUNCTION RM_Create
 
 		INTEGER FUNCTION RM_CreateMapping(id, grid2chem)

@@ -1,6 +1,9 @@
 /*! @file RM_interface_C.h
 	@brief C/Fortran Documentation
 */
+#ifdef USE_MPI
+#include "mpi.h"
+#endif
 #include "IrmResult.h"
 #ifndef RM_INTERFACE_C_H
 #define RM_INTERFACE_C_H
@@ -238,7 +241,11 @@ nxyz = 40
 @par MPI:
 Called by root and workers. The value of nthreads is ignored.
  */
-int RM_Create(int nxyz, int thread_count_or_communicator);
+#ifdef USE_MPI
+int RM_Create(int nxyz, MPI_Comm comm);
+#else
+int RM_Create(int nxyz, int nthreads);
+#endif
 /**
 Provides a mapping from grid cells in the user's model to cells for which chemistry needs to be run.
 The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run.
