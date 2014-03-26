@@ -2187,6 +2187,35 @@ phreeqc_rm.OutputMessage(oss.str());
 Called by root.
  */
 	void                                      OutputMessage(const std::string &str);
+/**
+Runs a reaction step for all of the cells in the reaction module.
+The current set of concentrations of the components (@ref SetConcentrations) is used
+in the calculations. The length of time over which kinetic reactions are integrated is set
+by @ref SetTimeStep. Other properties that may need to be updated as a result of the transport
+calculations include pore volume, saturation, temperature, and pressure.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetConcentrations,  @ref SetPoreVolume,
+@ref SetTemperature, @ref SetPressure, @ref SetSaturation, @ref SetTimeStep.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on); 
+status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); 
+status = phreeqc_rm.SetPoreVolume(pv);            // If pore volume changes due to compressibility
+status = phreeqc_rm.SetSaturation(sat);           // If saturation changes
+status = phreeqc_rm.SetTemperature(temperature);  // If temperature changes
+status = phreeqc_rm.SetPressure(pressure);        // If pressure changes
+status = phreeqc_rm.SetConcentrations(c);         // Transported concentrations
+status = phreeqc_rm.SetTimeStep(time_step);		  // Time step for kinetic reactions
+time = time + time_step;
+status = phreeqc_rm.SetTime(time);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                RunCells(void);
 	IRM_RESULT                                RunFile(bool workers, bool initial_phreeqc, bool utility,  const std::string & chemistry_name);
 	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const std::string & str);
