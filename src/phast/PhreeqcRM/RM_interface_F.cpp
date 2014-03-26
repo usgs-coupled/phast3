@@ -79,7 +79,19 @@ RM_Concentrations2Utility(int *id, double *c, int *n, double *tc, double *p_atm)
 	}
 	return IRM_BADINSTANCE;
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+int RM_Create(int *nxyz, int *nthreads)
+/* ---------------------------------------------------------------------- */
+{
+	//
+	// Creates reaction module, called by root and MPI workers
+	//
+  std::cerr << "CreateReactionModule" << std::endl;
 
+  return PhreeqcRM::CreateReactionModule(*nxyz, MPI_Comm_f2c(*nthreads));
+}
+#else
 /* ---------------------------------------------------------------------- */
 int RM_Create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
@@ -89,7 +101,7 @@ int RM_Create(int *nxyz, int *nthreads)
 	//
 	return PhreeqcRM::CreateReactionModule(*nxyz, *nthreads);
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_CreateMapping(int *id, int *grid2chem)
 /* ---------------------------------------------------------------------- */

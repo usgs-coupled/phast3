@@ -605,6 +605,7 @@ gzstream.o \
 phast_main.o  \
 PhreeqcRM.o \
 RM_interface_F.o \
+RM_interface_C.o \
 hdf.o \
 TM_interface.o \
 FileHandler.o \
