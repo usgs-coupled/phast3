@@ -604,7 +604,7 @@ COMMON_CXXOBJS = \
 gzstream.o \
 phast_main.o  \
 PhreeqcRM.o \
-RM_interface.o \
+RM_interface_F.o \
 hdf.o \
 TM_interface.o \
 FileHandler.o \

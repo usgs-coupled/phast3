@@ -9,6 +9,12 @@
 #include <vector>
 #include <list>
 #include <set>
+#ifdef USE_MPI
+#include <mpi.h>
+#define MP_TYPE MPI_Comm
+#else
+#define MP_TYPE int
+#endif
 
 class PHRQ_io;
 class IPhreeqc;
@@ -74,7 +80,7 @@ class PhreeqcRM: public PHRQ_base
 {
 public:
 	static void             CleanupReactionModuleInstances(void);
-	static int              CreateReactionModule(int nxyz, int nthreads = -1);
+	static int              CreateReactionModule(int nxyz, MP_TYPE nthreads);
 	static IRM_RESULT       DestroyReactionModule(int n);
 	static PhreeqcRM      * GetInstance(int n);
 
@@ -116,7 +122,7 @@ int nxyz = 40;
 @par MPI:
 Called by root and all workers.
  */	
-	PhreeqcRM(int nxyz, int thread_count_or_communicator, PHRQ_io * io=NULL);
+	PhreeqcRM(int nxyz, MP_TYPE thread_count_or_communicator, PHRQ_io * io=NULL);
 	~PhreeqcRM(void);
 /**
 Close the output and log files. 
@@ -2343,7 +2349,9 @@ protected:
 	PHRQ_io phreeqcrm_io;
 
 	// mpi 
-	int phreeqcrm_comm;                                       // MPI communicator
+#ifdef USE_MPI
+	MPI_Comm phreeqcrm_comm;                                       // MPI communicator
+#endif
 	int (*mpi_worker_callback_fortran) (int *method);
 	int (*mpi_worker_callback_c) (int *method, void *cookie);
 	void *mpi_worker_callback_cookie;
