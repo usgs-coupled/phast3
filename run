@@ -1,13 +1,15 @@
 #!/bin/sh
 if [ $USER == dlpark ]; then
-    PHASTDIR=/z/parkplace/home/dlpark/programs/phastpp
+    PHASTDIR=/lobo02home/dlpark/programs/phastpp3-worker
 fi
 if [ $USER == charlton ]; then
     PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phastpp
 fi
 EXDIR=$PHASTDIR/examples
+TMP=/lobo02home/dlpark/temp
+TMPDIR=/lobo02home/dlpark/temp
 # 32 Bit Parallel versions
-CONFIGURATION=LAM_LAHEY
+#CONFIGURATION=LAM_LAHEY
 #CONFIGURATION=LAM_LAHEY_DEBUG
 #CONFIGURATION=LAM_GFORTRAN
 #CONFIGURATION=LAM_INTEL
@@ -16,7 +18,7 @@ CONFIGURATION=LAM_LAHEY
 #CONFIGURATION=OPENMPI_INTEL
 # 64-Bit Parallel versions
 #CONFIGURATION=OPENMPI_GFORTRAN_64
-#CONFIGURATION=OPENMPI_INTEL_64
+CONFIGURATION=OPENMPI_INTEL_64
 #CONFIGURATION=OPENMPI_INTEL_64_DEBUG
 #
 #   make directory
@@ -54,8 +56,6 @@ if [ -f phast.dat ]; then
     cp phast.dat 0
     fi
 
-TMP=/z/parkplace/home/dlpark/tmp
-TMPDIR=/z/parkplace/home/dlpark/tmp
 #
 #   run phastinput
 #
@@ -151,7 +151,7 @@ if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then
 #   64 bit openmpi_intel_64
 #
 #    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
-    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
+    /usr/lib64/openmpi/bin/mpiexec  -n 8 -H lobo02 -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_INTEL_64_DEBUG" ]; then
