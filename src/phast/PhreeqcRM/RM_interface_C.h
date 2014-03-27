@@ -172,7 +172,6 @@ the preprocessor directive USE_OPENMP, the reaction module is multithreaded.
 If the code is compiled with the preprocessor directive USE_MPI, the reaction
 module will use MPI and multiple processes. If neither preprocessor directive is used,
 the reaction module will be serial (unparallelized).
-@param id                     The instance @a id returned from @ref RM_Create.
 @param nxyz                   The number of grid cells in the in the user's model.
 @param thread_count_or_communicator               When using OPENMP, the number of worker threads to be used.
 If @a thread_count_or_communicator <= 0, the number of threads is set equal to the number of processors of the computer.
@@ -251,7 +250,7 @@ Provides a mapping from grid cells in the user's model to cells for which chemis
 The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run.
 The mapping may be many-to-one to account for symmetry.
 Default is a one-to-one mapping--all user grid cells are chemistry cells (equivalent to @a grid2chem values of 0,1,2,3,...,@a nxyz-1).
-@param id               The instance id returned from @ref RM_Create.
+@param id                   The instance @a id returned from @ref RM_Create.
 @param grid2chem        An array of integers: Nonnegative is a chemistry cell number (0 based), negative is an inactive cell. Array of size @a nxyz (number of grid cells).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @par C Example:
@@ -676,7 +675,7 @@ convert transport concentrations to cell solution concentrations, @ref RM_SetCon
 @param c                Array to receive the concentrations. Dimension of the array is equivalent to Fortran (@a nxyz, @a ncomps),
 where @a nxyz is the number of user grid cells and @a ncomps is the result of @ref RM_FindComponents or @ref RM_GetComponentCount.
 Values for inactive cells are set to 1e30.
-@see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_Concentrations2Module, @ref RM_SetUnitsSolution
+@see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_SetConcentrations, @ref RM_SetUnitsSolution
 @par C Example:
 @htmlonly
 <CODE>
@@ -1472,7 +1471,7 @@ IRM_RESULT RM_GetSolutionVolume(int id, double *vol);
 /**
 Transfer concentrations of aqueous species to the array argument (@a species_conc)
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The list of aqueous
 species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
@@ -1534,7 +1533,7 @@ IRM_RESULT RM_GetSpeciesConcentrations(int id, double *species_conc);
 /**
 The number of aqueous species used in the reaction module.
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The list of aqueous
 species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
@@ -1588,7 +1587,7 @@ int RM_GetSpeciesCount(int id);
 /**
 Transfers diffusion coefficients at 25C to the array argument (@a diffc).
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 Diffusion coefficients are defined in SOLUTION_SPECIES data blocks, normally in the database file.
 Databases distributed with the reaction module that have diffusion coefficients defined are
 phreeqc.dat, Amm.dat, and pitzer.dat.
@@ -1642,7 +1641,7 @@ IRM_RESULT RM_GetSpeciesD25(int id, double *diffc);
 /**
 Transfers the name of the ith aqueous species to the character argument (@a name).
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The list of aqueous
 species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
@@ -1706,7 +1705,7 @@ IRM_RESULT RM_GetSpeciesName(int id, int i, char * name, int length);
 /**
 Returns the value of the species-save property.
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The return value indicates whether aqueous species concentrations are being saved in the reaction
 module.
 @param id               The instance @a id returned from @ref RM_Create.
@@ -1761,7 +1760,7 @@ int RM_GetSpeciesSaveOn(int id);
 /**
 Transfers the charge of each aqueous species to the array argument (@a  z).
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 @param id               The instance @a id returned from @ref RM_Create.
 @param z                Array that receives the charge for each aqueous species.
 Dimension of the array is @a nspecies,
@@ -2187,7 +2186,7 @@ IRM_RESULT RM_InitialPhreeqc2Module(int id,
 /**
 Fills an array (@a species_c) with aqueous species concentrations from solutions in the InitialPhreeqc instance.
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The method is used to obtain aqueous species concentrations for boundary conditions. If a negative value
 is used for a cell in @a boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
 will be used for that cell.
@@ -2509,8 +2508,8 @@ Called by root.
  */
 IRM_RESULT RM_MpiWorkerBreak(int id);
 /**
-Opens the output and log files. Files are named based on the prefix defined by
-@ref RM_SetFilePrefix: prefix.chem.txt and prefix.log.txt.
+Opens the output and log files. Files are named prefix.chem.txt and prefix.log.txt 
+based on the prefix defined by @ref RM_SetFilePrefix.
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetFilePrefix, @ref RM_GetFilePrefix, @ref RM_CloseFiles,
@@ -3467,7 +3466,7 @@ status = RM_SetPoreVolume(id, pv(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-IRM_RESULT RM_SetPoreVolume(int id, double *t);
+IRM_RESULT RM_SetPoreVolume(int id, double *vol);
 /**
 Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
 databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat.
@@ -3614,7 +3613,7 @@ status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utilit
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-IRM_RESULT RM_SetPrintChemistryOn(int id, int worker, int initial_phreeqc, int utility);
+IRM_RESULT RM_SetPrintChemistryOn(int id, int workers, int initial_phreeqc, int utility);
 
 /**
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
@@ -4000,7 +3999,7 @@ status = RM_SetTimeStep(id, time_step)
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-IRM_RESULT RM_SetTimeStep(int id, double t);
+IRM_RESULT RM_SetTimeStep(int id, double time_step);
 /**
 Input units for exchangers. In PHREEQC, exchangers are defined by
 moles of exchange sites. RM_SetUnitsExchange determines whether the
@@ -4366,7 +4365,7 @@ IRM_RESULT RM_SetUnitsSurface(int id, int option);
 Set solution concentrations in the reaction module based on the array of aqueous species concentrations.
 This
 method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The method determines the
 total concentration of a component by summing the molarities of the individual species times the stoichiometric
 coefficient of the element in each species.
@@ -4429,7 +4428,7 @@ IRM_RESULT RM_SpeciesConcentrations2Module(int id, double * species_conc);
 /**
 Print a warning message to the screen and the log file.
 @param id               The instance @a id returned from @ref RM_Create.
-@param warnstr          String to be printed.
+@param warn_str         String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_ErrorMessage.
 @par C Example:
