@@ -2,9 +2,12 @@ CFG1 :=`uname`
 CFG :=$(shell echo $(CFG1) | sed "s/CYGWIN.*/CYGWIN/")
 
 ifeq ($(CFG), Linux)
-  TOPDIR=/lobo02home/dlpark/programs/phastpp3-worker
+  #TOPDIR=/lobo02home/dlpark/programs/phastpp3-worker
+  #TOPDIR=/home/charlton/reactive-transport/phastpp3-worker
+  TOPDIR=..
 ifeq ($(USER), charlton)
-  TOPDIR=$(HOME)/programs/phreeqc/phastpp-trunk
+  ##TOPDIR=$(HOME)/programs/phreeqc/phastpp-trunk
+  ##TOPDIR=/home/charlton/reactive-transport/phastpp3-worker
 endif
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
