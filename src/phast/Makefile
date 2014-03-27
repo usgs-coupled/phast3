@@ -197,7 +197,14 @@ OPENMPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
-HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
+HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
+
+
+# -----------------------------------------------------------------------------
+#hdf options
+ifeq ($(HOSTNAME), arc1.cr.usgs.gov)
+  HDF5_LIBS_64=${HDF5_ROOT}/lib64/openmpi/lib/libhdf5.a -Xlinker -lz -lpthread 
+endif
 
 # -----------------------------------------------------------------------------
 DEFINE_HDF=-DHDF5_CREATE -DH5Dcreate_vers=1 -DH5Gcreate_vers=1 -DH5Eset_auto_vers=1
@@ -217,7 +224,7 @@ HASH_STYLE=$(call ld-option, -Wl$(comma)--hash-style=sysv)
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -231,7 +238,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -245,7 +252,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -259,7 +266,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -336,7 +343,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), SERIAL_INTEL)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -350,7 +357,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -364,7 +371,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -378,7 +385,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST -I$(PHREEQC_INCLUDES)
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
