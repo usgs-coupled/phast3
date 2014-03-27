@@ -3472,7 +3472,7 @@ IRM_RESULT RM_SetPoreVolume(int id, double *t);
 Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
 databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat.
 @param id               The instance @a id returned from @ref RM_Create.
-@param vol              Array of pressures, in atm. Size of array is @a nxyz, where @a nxyz is the number
+@param p                Array of pressures, in atm. Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetTemperature.
@@ -3511,14 +3511,14 @@ status = RM_SetPressure(id, pressure(1))
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-IRM_RESULT RM_SetPressure(int id, double *t);
+IRM_RESULT RM_SetPressure(int id, double *p);
 /**
-Enable or disable detailed output for each cell. Printing will occur only when the
-printing is enabled with @ref RM_SetPrintChemistryOn and the cell_mask value is 1.
+Enable or disable detailed output for each cell. Printing for a cell will occur only when the
+printing is enabled with @ref RM_SetPrintChemistryOn and the @a cell_mask value is 1.
 @param id               The instance @a id returned from @ref RM_Create.
 @param cell_mask        Array of integers. Size of array is @a nxyz, where @a nxyz is the number
-of grid cells in the user's model (@ref RM_GetGridCellCount). A value of 0 for a cell will
-disable printing detailed output for the cell; a value of 1 for a cell will enable printing detailed output for a cell.
+of grid cells in the user's model (@ref RM_GetGridCellCount). A value of 0 will
+disable printing detailed output for the cell; a value of 1 will enable printing detailed output for a cell.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetPrintChemistryOn.
 @par C Example:
@@ -3760,7 +3760,7 @@ will be accumulated during @ref RM_RunCells and can be retrieved with @ref RM_Ge
 @param id               The instance @a id returned from @ref RM_Create.
 @param selected_output  0, disable selected output; 1, enable selected output.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetPrintChemistryOn.
+@see                    @ref RM_GetSelectedOutput, @ref RM_SetPrintChemistryOn.
 @par C Example:
 @htmlonly
 <CODE>
@@ -3795,9 +3795,7 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 IRM_RESULT RM_SetSelectedOutputOn(int id, int selected_output);
 /**
 Sets the value of the species-save property.
-This
-method enables use of PhreeqcRM with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+This method enables use of PhreeqcRM with multicomponent-diffusion transport calculations.
 By default, concentrations of aqueous species are not saved. Setting the species-save property to 1 allows
 aqueous species concentrations to be retrieved
 with @ref RM_GetSpeciesConcentrations, and solution compositions to be set with
@@ -3814,15 +3812,7 @@ saved.
 @htmlonly
 <CODE>
 <PRE>
-save_on = RM_GetSpeciesSaveOn(id);
-if (save_on .ne. 0)
-{
-  fprintf(stderr, "Reaction module is saving species concentrations\n");
-}
-else
-{
-  fprintf(stderr, "Reaction module is not saving species concentrations\n");
-}
+status = RM_SetSpeciesSaveOn(id, 1);
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3841,12 +3831,7 @@ END FUNCTION RM_GetSpeciesSaveOn
 @htmlonly
 <CODE>
 <PRE>
-save_on = RM_GetSpeciesSaveOn(id)
-if (save_on .ne. 0) then
-  write(*,*) "Reaction module is saving species concentrations"
-else
-  write(*,*) "Reaction module is not saving species concentrations"
-end
+save_on = RM_SetSpeciesSaveOn(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3987,6 +3972,7 @@ of time over which kinetic reactions are integrated.
 @htmlonly
 <CODE>
 <PRE>
+time_step = 86400.0;
 status = RM_SetTimeStep(id, time_step);
 </PRE>
 </CODE>
@@ -4022,12 +4008,14 @@ number of sites applies to the volume of the cell, the volume of
 water in the cell, or the volume of rock in the cell. Options are
 0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
+to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
+on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance @a id returned from @ref RM_Create.
-@param option           Units option for exchangers: 0, 1, or 2. Default is 0, mol per liter of cell.
+@param option           Units option for exchangers: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume.
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
+@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
 @par C Example:
 @htmlonly
 <CODE>
@@ -4067,12 +4055,14 @@ number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
 0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
+to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
+on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance @a id returned from @ref RM_Create.
-@param option           Units option for gas phases: 0, 1, or 2. Default is 0, mol per liter of cell.
+@param option           Units option for gas phases: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume.
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
+@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
 @par C Example:
 @htmlonly
 <CODE>
@@ -4112,7 +4102,8 @@ number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
 0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
+to mol/L of by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
+cell on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @n@n
 Note that the volume of water in a cell in the reaction module is equal
@@ -4122,9 +4113,10 @@ RATES definitions for KINETICS to account for the current volume of water,
 often by calculating the rate of reaction per liter of water and multiplying by the
 volume of water (Basic function SOLN_VOL).
 @param id               The instance @a id returned from @ref RM_Create.
-@param option           Units option for kinetic reactants: 0, 1, or 2. Default is 0, mol per liter of cell.
+@param option           Units option for kinetic reactants: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume.
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
+@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
 @par C Example:
 @htmlonly
 <CODE>
@@ -4165,12 +4157,14 @@ number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
 0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
+to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
+on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance @a id returned from @ref RM_Create.
-@param option           Units option for equilibrium phases: 0, 1, or 2. Default is 0, mol per liter of cell.
+@param option           Units option for equilibrium phases: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume.
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
+@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
 @par C Example:
 @htmlonly
 <CODE>
@@ -4281,12 +4275,14 @@ number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
 0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
+to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
+on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance @a id returned from @ref RM_Create.
-@param option           Units option for solid solutions: 0, 1, or 2. Default is 0, mol per liter of cell.
+@param option           Units option for solid solutions: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume.
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
+@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
 @par C Example:
 @htmlonly
 <CODE>
@@ -4326,12 +4322,14 @@ number of sites applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
 0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
+to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
+on the basis of the porosity
 (@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
 @param id               The instance @a id returned from @ref RM_Create.
-@param option           Units option for surfaces: 0, 1, or 2. Default is 0, mol per liter of cell.
+@param option           Units option for surfaces: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume.
+@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
+@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
 @par C Example:
 @htmlonly
 <CODE>

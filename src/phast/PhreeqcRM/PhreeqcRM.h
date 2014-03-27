@@ -2008,7 +2008,7 @@ definition is copied from the InitialPhreeqc instance to the workers.
 @param n                  Cell number refers to a solution or MIX and associated reactants in the InitialPhreeqc instance.
 @param cell_numbers       A vector of module cell numbers in the user's grid-cell numbering system that 
 will be populated with cell @a n from the InitialPhreeqc instance.
-@retval IRM_RESULT        0 is success, negative is failure (See @ref RM_DecodeError).
+@retval IRM_RESULT        0 is success, negative is failure (See @ref DecodeError).
 @see                      @ref InitialPhreeqc2Module.
 @par C++ Example:
 @htmlonly
@@ -2358,7 +2358,7 @@ where @a ncomps is the number of components as determined
 by @ref FindComponents or @ref GetComponentCount and
 @a nxyz is the number of grid cells in the user's model (@ref GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume, @ref SetSaturation, @ref etUnitsSolution.
+@see                    @ref SetCellVolume, @ref SetPoreVolume, @ref SetSaturation, @ref SetUnitsSolution.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -2652,15 +2652,258 @@ by the workers. See documentation of PhreeqcRM for C and Fortran, method RM_SetM
  */
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
 	//IRM_RESULT                                SetPartitionUZSolids(int t = -1);
+/**
+Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume
+to the cell volume (@ref SetCellVolume). The volume of water in a cell is the porosity times the saturation
+(@ref SetSaturation).
+@param vol              Vector of pore volumes, user units, but same as @ref SetCellVolume. 
+Size of vector is @a nxyz, where @a nxyz is the number
+of grid cells in the user's model (@ref GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetSaturation.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<double> pv;
+pv.resize(nxyz, 0.2);
+status = phreeqc_rm.SetPoreVolume(pv);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetPoreVolume(const std::vector<double> &t); 
-	IRM_RESULT                                SetPrintChemistryMask(std::vector<int> & t);
-	IRM_RESULT                                SetPrintChemistryOn(bool worker, bool ip, bool utility);
-	IRM_RESULT                                SetPressure(const std::vector<double> &t);  
+/**
+Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
+databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat.
+@param p                Vector of pressures, in atm. Size of vector is @a nxyz, 
+where @a nxyz is the number of grid cells in the user's model (@ref GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetTemperature.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<double> pressure;
+pressure.resize(nxyz, 2.0);
+phreeqc_rm.SetPressure(pressure);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetPressure(const std::vector<double> &p); 
+/**
+Enable or disable detailed output for each cell. Printing for a cell will occur only when the
+printing is enabled with @ref SetPrintChemistryOn and the @a cell_mask value is 1.
+@param cell_mask        Vector of integers. Size of vector is @a nxyz, where @a nxyz is the number
+of grid cells in the user's model (@ref GetGridCellCount). A value of 0 will
+disable printing detailed output for the cell; a value of 1 will enable printing detailed output for a cell.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetPrintChemistryOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<int> print_chemistry_mask;
+print_chemistry_mask.resize(nxyz, 0);
+for (int i = 0; i < nxyz/2; i++)
+{
+  print_chemistry_mask[i] = 1;
+}
+status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetPrintChemistryMask(std::vector<int> & cell_mask);
+/**
+Property that enables or disables printing detailed output from reaction calculations 
+to the output file for a set of cells defined by @ref SetPrintChemistryMask. 
+The detailed output prints all of the output typical of a PHREEQC reaction calculation, 
+which includes solution descriptions and the compositions of all other reactants. 
+The output can be several hundred lines per cell, which can lead to a very
+large output file (prefix.chem.txt, @ref OpenFiles). 
+For the worker instances, the output can be limited to a set of cells
+(@ref SetPrintChemistryMask) and, in general, the
+amount of information printed can be limited by use of options in the PRINT data block of PHREEQC 
+(applied by using @ref RunFile or @ref RunString). 
+Printing the detailed output for the workers is generally used only for debugging, 
+and PhreeqcRM will run significantly faster 
+when printing detailed output for the workers is disabled.
+@param workers          @a True, enable detailed printing in the worker instances; 
+@a False, disable detailed printing in the worker instances.
+@param initial_phreeqc  @a True, enable detailed printing in the InitialPhreeqc instance; 
+@a False, disable detailed printing in the InitialPhreeqc instance.
+@param utility          @a True, enable detailed printing in the Utility instance; 
+@a False, disable detailed printing in the Utility instance.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetPrintChemistryMask.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetPrintChemistryOn(false, true, false);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetPrintChemistryOn(bool worker, bool ip, bool utility); 
+/**
+PhreeqcRM attempts to rebalance the load of each thread or process such that each
+thread or process takes the same amount of time to run its part of a @ref RunCells
+calculation. Two algorithms are available; one uses the average time to run a set of
+cells, and the other accounts for cells that were not run because saturation was zero (default).
+The methods are similar, and it is not clear that one is better than the other.
+@param tf           @a True, indicates individual cell times are used in rebalancing (default); 
+@a False, indicates average times are used in rebalancing.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref RM_SetRebalanceFraction.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetRebalanceByCell(true);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetRebalanceByCell(bool t); 
-	IRM_RESULT                                SetRebalanceFraction(double t); 
-	IRM_RESULT                                SetSaturation(const std::vector<double> &t); 
+/**
+PhreeqcRM attempts to rebalance the load of each thread or process such that each
+thread or process takes the same amount of time to run its part of a @ref RunCells
+calculation. The rebalancing transfers cell calculations among threads or processes to
+try to achieve an optimum balance. SetRebalanceFraction
+adjusts the calculated optimum number of cell transfers by a fraction from 0 to 1.0 to
+determine the actual number of cell transfers. A value of zero eliminates
+load rebalancing. A value less than 1.0 is suggested to slow the approach to the optimum cell
+distribution and avoid possible oscillations
+where too many cells are transferred at one iteration, requiring reverse transfers at the next iteration.
+Default is 0.5.
+
+@param f                Fraction from 0.0 to 1.0.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetRebalanceByCell.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetRebalanceFraction(0.5);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+	IRM_RESULT                                SetRebalanceFraction(double f); 
+/**
+Set the saturation of each cell. Saturation is a fraction ranging from 0 to 1.
+Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
+to the cell volume (@ref SetCellVolume). The volume of water in a cell is the porosity times the saturation.
+
+@param sat              Vector of saturations, unitless. Size of vector is @a nxyz, 
+where @a nxyz is the number of grid cells in the user's model (@ref GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<double> sat;
+sat.resize(nxyz, 1.0);
+status = phreeqc_rm.SetSaturation(sat);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetSaturation(const std::vector<double> &sat); 
+/**
+This property determines whether selected-output results are available to be retrieved
+with @ref GetSelectedOutput. @a True indicates that selected-output results
+will be accumulated during @ref RunCells and can be retrieved with @ref GetSelectedOutput;
+@a False indicates that selected-output results will not
+be accumulated during @ref RunCells. 
+
+@param selected_output  @a True, enable selected output; @a False, disable selected output. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref GetSelectedOutput, @ref SetPrintChemistryOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSelectedOutputOn(true);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetSelectedOutputOn(bool t);
-	IRM_RESULT                                SetSpeciesSaveOn(bool tf);
+/**
+Sets the value of the species-save property.
+This method enables use of PhreeqcRM with multicomponent-diffusion transport calculations.
+By default, concentrations of aqueous species are not saved. Setting the species-save property to @a true allows
+aqueous species concentrations to be retrieved
+with @ref GetSpeciesConcentrations, and solution compositions to be set with
+@ref SpeciesConcentrations2Module.
+SetSpeciesSaveOn must be called before calls to @ref FindComponents.
+
+@param save_on          @a True indicates species concentrations are saved; 
+@a False indicates species concentrations are not saved.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount,
+@ref GetSpeciesD25, @ref GetSpeciesSaveOn, @ref GetSpeciesZ,
+@ref GetSpeciesNames, @ref SpeciesConcentrations2Module.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+save_on = RM_GetSpeciesSaveOn(id);
+if (save_on .ne. 0)
+{
+  fprintf(stderr, "Reaction module is saving species concentrations\n");
+}
+else
+{
+  fprintf(stderr, "Reaction module is not saving species concentrations\n");
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetSpeciesSaveOn
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSpeciesSaveOn(true);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
+	IRM_RESULT                                SetSpeciesSaveOn(bool save_on);
 /**
 Set the temperature for each cell for reaction calculations. If SetTemperature is not called, 
 worker solutions will have temperatures as defined in  
@@ -2683,18 +2926,339 @@ phreeqc_rm.SetTemperature(temperature);
 Called by root and (or) workers.
  */
 	IRM_RESULT                                SetTemperature(const std::vector<double> &t);
-	IRM_RESULT                                SetTime(double t);
-	IRM_RESULT                                SetTimeConversion(double t);
-	IRM_RESULT                                SetTimeStep(double t);
-	IRM_RESULT                                SetUnitsExchange(int i);
+/**
+Set current simulation time for the reaction module.
+@param time             Current simulation time, in seconds.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetTimeStep, @ref SetTimeConversion.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+time += time_step;
+status = phreeqc_rm.SetTime(time);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetTime(double time);
+/**
+Set a factor to convert to user time units. Factor times seconds produces user time units.
+
+@param conv_factor      Factor to convert seconds to user time units.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetTime, @ref SetTimeStep.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+double time_conversion = 1.0 / 86400;
+status = phreeqc_rm.SetTimeConversion(time_conversion); 
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetTimeConversion(double conv_factor);
+/**
+Set current time step for the reaction module. This is the length
+of time over which kinetic reactions are integrated.
+
+@param time_step        Current time step, in seconds.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetTime, @ref SetTimeConversion.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+time_step = 86400.;
+status = phreeqc_rm.SetTimeStep(time_step);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetTimeStep(double time_step);
+/**
+Input units for exchangers. In PHREEQC, exchangers are defined by
+moles of exchange sites. SetUnitsExchange determines whether the
+number of sites applies to the volume of the cell, the volume of
+water in the cell, or the volume of rock in the cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
+on the basis of the porosity (@ref SetCellVolume and @ref SetPoreVolume).
+
+@param option           Units option for exchangers: 0, 1, or 2. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume, 
+@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetUnitsExchange(1);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetUnitsExchange(int option);
+/**
+Input units for gas phases. In PHREEQC, gas phases are defined by
+moles of component gases. SetUnitsGasPhase determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
+on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+
+@param option           Units option for gas phases: 0, 1, or 2. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume, 
+@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetUnitsGasPhase(1);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetUnitsGasPhase(int i);
+/**
+Input units for kinetic reactants. In PHREEQC, kinetics are defined by
+moles of kinetic reactant. SetUnitsKinetics determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
+on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+@n@n
+Note that the volume of water in a cell in the reaction module is equal
+to the porosity times the saturation, which is usually much less than 1 liter.
+It is important to write the
+RATES definitions for KINETICS to account for the current volume of water,
+often by calculating the rate of reaction per liter of water and multiplying by the
+volume of water (Basic function SOLN_VOL).
+
+@param option           Units option for kinetic reactants: 0, 1, or 2. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume, 
+@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetUnitsKinetics(1);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetUnitsKinetics(int i);
+/**
+Input units for pure phase assemblages (equilibrium phases).
+In PHREEQC, equilibrium phases are defined by
+moles of each phase. SetUnitsPPassemblage determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
+on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+
+@param option           Units option for equilibrium phases: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume, 
+@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetUnitsPPassemblage(1);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetUnitsPPassemblage(int i);
+/**
+Solution concentration units used by the transport model.
+Options are 1, mg/L; 2 mol/L; or 3, mass fraction, kg/kgs.
+PHREEQC defines solutions by the number of moles of each
+element in the solution.
+@n@n
+To convert from mg/L to moles
+of element in a cell, mg/L is converted to mol/L and
+multiplied by the solution volume,
+which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
+times saturation (@ref SetSaturation).
+To convert from mol/L to moles
+of element in a cell, mol/L is
+multiplied by the solution volume,
+which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
+times saturation (@ref SetSaturation).
+To convert from mass fraction to moles
+of element in a cell, kg/kgs is converted to mol/kgs, multiplied by density
+(@ref SetDensity) and
+multiplied by the solution volume,
+which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
+times saturation (@ref SetSaturation).
+@n@n
+To convert from moles
+of element in a cell to mg/L, the number of moles of an element is divided by the
+calculated solution volume resulting in mol/L, and then converted to
+mg/L.
+To convert from moles
+of element in a cell to mol/L,  the number of moles of an element is divided by the
+calculated solution volume resulting in mol/L.
+To convert from moles
+of element in a cell to mass fraction, the number of moles of an element is converted to kg and divided
+by the total mass of the solution.
+
+@param option           Units option for solutions: 1, 2, or 3, default is 1, mg/L.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume, @ref SetSaturation,
+@ref SetDensity.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetUnitsSolution(2);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetUnitsSolution(int i);
+/**
+Input units for solid-solution assemblages.
+In PHREEQC, solid solutions are defined by
+moles of each component. SetUnitsSSassemblage determines whether the
+number of moles applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
+on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+
+@param option           Units option for solid solutions: 0, 1, or 2. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume, 
+@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetUnitsSSassemblage(1);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetUnitsSSassemblage(int i);
+/**
+Input units for surfaces. In PHREEQC, surfaces are determined by
+moles of surface sites. SetUnitsSurface defines whether the
+number of sites applies to the volume of the cell, the volume of
+water in a cell, or the volume of rock in a cell. Options are
+0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+If 1 or 2 is selected, the input is converted
+to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
+on the basis of the porosity
+(@ref SetCellVolume and @ref SetPoreVolume).
+
+@param option           Units option for surfaces: 0, 1, or 2. 
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume, 
+@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetUnitsSurface(1);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetUnitsSurface(int i);
+/**
+Set solution concentrations in the reaction module 
+based on the vector of aqueous species concentrations (@a species_conc).
+This method is intended for use with multicomponent-diffusion transport calculations,
+and @ref RM_SpeciesSaveOn must be set to @a true.
+The method determines the total concentration of a component 
+by summing the molarities of the individual species times the stoichiometric
+coefficient of the element in each species.
+
+@param species_conc     Vector of aqueous species concentrations. Dimension of the array is @a nspecies times @a nxyz,
+where  @a nspecies is the number of aqueous species (@ref GetSpeciesCount),
+and @a nxyz is the number of user grid cells (@ref GetGridCellCount).
+Concentrations are moles per liter.
+The list of aqueous species is determined by @ref FindComponents and includes all
+aqueous species that can be made from the set of components.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount, 
+@ref GetSpeciesD25, @ref GetSpeciesZ,
+@ref GetSpeciesName, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetSpeciesSaveOn(true);
+int ncomps = phreeqc_rm.FindComponents();
+int nspecies = phreeqc_rm.GetSpeciesCount();
+std::vector<double> c;
+status = phreeqc_rm.GetSpeciesConcentrations(c);
+...
+SpeciesAdvectCpp(c, bc_conc, nspecies, nxyz, nbound);
+status = phreeqc_rm.SpeciesConcentrations2Module(c);
+status = phreeqc_rm.RunCells();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT								  SpeciesConcentrations2Module(std::vector<double> & species_conc); 
-	void                                      WarningMessage(const std::string &str);
+/**
+Print a warning message to the screen and the log file.
+
+@param warnstr          String to be printed.
+@see                    @ref OpenFiles, @ref ErrorMessage, @ref LogMessage, @ref OutputMessage, @ref ScreenMessage.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+phreeqc_rm.WarningMessage("Parameter is out of range, using default");
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers; only root writes to the log file.
+ */
+	void                                      WarningMessage(const std::string &warnstr);
 	
 	// Utilities
 	static std::string                        Char2TrimString(const char * str, size_t l = 0);
