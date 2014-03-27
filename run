@@ -1,13 +1,15 @@
 #!/bin/sh
 if [ $USER == dlpark ]; then
-    PHASTDIR=/lobo02home/dlpark/programs/phastpp3-worker
+    #PHASTDIR=/lobo02home/dlpark/programs/phastpp3-worker
+    PHASTDIR=/home/charlton/reactive-transport/phastpp3-worker
 fi
 if [ $USER == charlton ]; then
-    PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phastpp
+    ##PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phastpp
+    PHASTDIR=/home/charlton/reactive-transport/phastpp3-worker
 fi
 EXDIR=$PHASTDIR/examples
-TMP=/lobo02home/dlpark/temp
-TMPDIR=/lobo02home/dlpark/temp
+###TMP=/lobo02home/dlpark/temp
+###TMPDIR=/lobo02home/dlpark/temp
 # 32 Bit Parallel versions
 #CONFIGURATION=LAM_LAHEY
 #CONFIGURATION=LAM_LAHEY_DEBUG
@@ -17,8 +19,8 @@ TMPDIR=/lobo02home/dlpark/temp
 #CONFIGURATION=OPENMPI_GFORTRAN
 #CONFIGURATION=OPENMPI_INTEL
 # 64-Bit Parallel versions
-#CONFIGURATION=OPENMPI_GFORTRAN_64
-CONFIGURATION=OPENMPI_INTEL_64
+CONFIGURATION=OPENMPI_GFORTRAN_64
+#CONFIGURATION=OPENMPI_INTEL_64
 #CONFIGURATION=OPENMPI_INTEL_64_DEBUG
 #
 #   make directory
@@ -167,6 +169,7 @@ if [ $CONFIGURATION == "OPENMPI_GFORTRAN_64" ]; then
 # 
 #   64 bit openmpi_gfortran_64
 #
-    /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpirun -n 12 -H grundvand -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
+    ##/usr/lib64/openmpi/bin/mpirun -n 8 -H arc1 -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
+    /usr/lib64/openmpi/bin/mpirun -n 8 -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
 fi
 
