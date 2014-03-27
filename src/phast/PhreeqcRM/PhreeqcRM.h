@@ -95,6 +95,8 @@ the reaction module will be serial (unparallelized).
 in parallel segments of the code. 
 If @a thread_count_or_communicator is <= 0, the number of threads is set equal to the number of processors of the computer.
 If multiprocessor, the MPI communicator to use within the reaction module. 
+@param io        Optionally, a PHRQ_io input/output object can be provided to the constructor. By default
+a PHRQ_io object is constructed to handle reading and writing files. 
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -477,7 +479,7 @@ where,  ncomps is the result of @ref FindComponents or @ref GetComponentCount,
 and @a nxyz is the number of user grid cells (@ref GetGridCellCount).  
 Values for inactive cells are set to 1e30.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError). 
-@see                    @ref FindComponents, @ref GetComponentCount, @ref Concentrations2Module, @ref SetUnitsSolution
+@see                    @ref FindComponents, @ref GetComponentCount, @ref SetConcentrations, @ref SetUnitsSolution
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -871,11 +873,11 @@ large output file (prefix.chem.txt, @ref OpenFiles). For the worker instances,
 the output can be limited to a set of cells
 (@ref SetPrintChemistryMask) and, in general, the
 amount of information printed can be limited by use of options in the PRINT data block of PHREEQC 
-(applied by using @ref RM_RunFile or
-@ref RM_RunString). Printing the detailed output for the workers is generally used only for debugging, 
+(applied by using @ref RunFile or
+@ref RunString). Printing the detailed output for the workers is generally used only for debugging, 
 and PhreeqcRM will run
 significantly faster when printing detailed output for the workers is disabled (@ref SetPrintChemistryOn).
-@retval const std::vector <bool> & Print flag for the workers, InitialPhreeqc, and Utility IPhreeqc instances, in order.      
+@retval const std::vector<bool> & Print flag for the workers, InitialPhreeqc, and Utility IPhreeqc instances, in order.      
 @see                     @ref SetPrintChemistryOn, @ref SetPrintChemistryMask.
 @par C++ Example:
 @htmlonly
@@ -1175,7 +1177,7 @@ Called by root, workers must be in the loop of @ref MpiWorker.
 /**
 Transfer concentrations of aqueous species to the vector argument (@a species_conc). 
 This method is intended for use with multicomponent-diffusion transport calculations, 
-and @ref SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 The list of aqueous species is determined by @ref FindComponents and includes all
 aqueous species that can be made from the set of components.
 Solution volumes used to calculate mol/L are calculated by the reaction module.
@@ -1204,13 +1206,13 @@ status = phreeqc_rm.GetSpeciesConcentrations(c);
 </CODE>
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref RM_MpiWorker.
+Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                GetSpeciesConcentrations(std::vector<double> & species_conc);
 /**
 Returns the number of aqueous species used in the reaction module. 
 This method is intended for use with multicomponent-diffusion transport calculations, 
-and @ref SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 The list of aqueous species is determined by @ref FindComponents and includes all
 aqueous species that can be made from the set of components.
 @retval int      The number of aqueous species.
@@ -1233,7 +1235,7 @@ Called by root and (or) workers.
 /**
 Returns a vector reference to diffusion coefficients at 25C for the set of aqueous species. 
 This method is intended for use with multicomponent-diffusion transport calculations, 
-and @ref SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 Diffusion coefficients are defined in SOLUTION_SPECIES data blocks, normally in the database file.
 Databases distributed with the reaction module that have diffusion coefficients defined are
 phreeqc.dat, Amm.dat, and pitzer.dat.
@@ -1259,7 +1261,7 @@ Called by root and (or) workers.
 /**
 Returns a vector reference to the names of the aqueous species. 
 This method is intended for use with multicomponent-diffusion transport calculations, 
-and @ref SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 The list of aqueous species is determined by @ref FindComponents and includes all
 aqueous species that can be made from the set of components.
 @retval names      Vector of strings containing the names of the aqueous species. Dimension of the vector is @a nspecies,
@@ -1311,7 +1313,7 @@ Called by root and (or) workers.
 /**
 Returns a vector reference to the charge on each aqueous species. 
 This method is intended for use with multicomponent-diffusion transport calculations, 
-and @ref SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 @retval Vector containing the charge on each aqueous species. Dimension of the vector is @a nspecies,
 where @a nspecies is the number of aqueous species (@ref GetSpeciesCount).
 @see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount, @ref GetSpeciesZ,
@@ -1334,7 +1336,7 @@ Called by root and (or) workers.
 /**
 Returns a vector reference to the stoichiometry of each aqueous species. 
 This method is intended for use with multicomponent-diffusion transport calculations, 
-and @ref SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 @retval Vector of cxxNameDouble instances (maps), that contain the component names and 
 associated stoichiometric coefficients for each aqueous species.  Dimension of the vector is @a nspecies,
 where @a nspecies is the number of aqueous species (@ref GetSpeciesCount).
@@ -1631,19 +1633,19 @@ transport concentrations by
 To convert from mg/L to moles
 of element in a cell, mg/L is converted to mol/L and
 multiplied by the solution volume,
-which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
-times saturation (@ref RM_SetSaturation).
+which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
+times saturation (@ref SetSaturation).
 To convert from mol/L to moles
 of element in a cell, mol/L is
 multiplied by the solution volume,
-which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
-times saturation (@ref RM_SetSaturation).
+which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
+times saturation (@ref SetSaturation).
 To convert from mass fraction to moles
 of element in a cell, kg/kgs is converted to mol/kgs, multiplied by density
-(@ref RM_SetDensity) and
+(@ref SetDensity) and
 multiplied by the solution volume,
-which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
-times saturation (@ref RM_SetSaturation).
+which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
+times saturation (@ref SetSaturation).
 @n@n
 To convert from moles
 of element in a cell to mg/L, the number of moles of an element is divided by the
@@ -1743,7 +1745,7 @@ Fills a vector (@a destination_c) with concentrations from solutions in the Init
 The method is used to obtain concentrations for boundary conditions. If a negative value
 is used for a cell in @a boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
 will be used for that cell. 
-The dimension of @a destination_c is set to @a ncomps times @a n_boundary,
+@param destination_c       Vector to receive the concentrations.The dimension of @a destination_c is set to @a ncomps times @a n_boundary,
 where @a ncomps is the number of components returned from @ref FindComponents or @ref GetComponentCount, and @a n_boundary
 is the dimension of the vector @a boundary_solution1.
 @param boundary_solution1  Vector of solution index numbers that refer to solutions in the InitialPhreeqc instance.
@@ -1922,11 +1924,11 @@ Called by root, workers must be in the loop of @ref MpiWorker.
 /**
 Fills a vector @a destination_c with aqueous species concentrations from solutions in the InitialPhreeqc instance.
 This method is intended for use with multicomponent-diffusion transport calculations, 
-and @ref SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 The method is used to obtain aqueous species concentrations for boundary conditions. If a negative value
 is used for a cell in @a boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
 will be used for that cell.
-@param species_c           Vector of aqueous concentrations extracted from the InitialPhreeqc instance.
+@param destination_c           Vector of aqueous concentrations extracted from the InitialPhreeqc instance.
 The dimension of @a species_c is @a nspecies times @a n_boundary,
 where @a nspecies is the number of aqueous species returned from @ref GetSpeciesCount, 
 and @a n_boundary is the dimension of @a boundary_solution1.
@@ -1956,7 +1958,7 @@ Called by root.
 /**
 Fills a vector @a destination_c with aqueous species concentrations from solutions in the InitialPhreeqc instance.
 This method is intended for use with multicomponent-diffusion transport calculations, 
-and @ref SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 The method is used to obtain aqueous species concentrations for boundary conditions. If a negative value
 is used for a cell in @a boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
 will be used for that cell.
@@ -1964,7 +1966,7 @@ Concentrations may be a mixture of two
 solutions, @a boundary_solution1 and @a boundary_solution2, with a mixing fraction for @a boundary_solution1 of
 @a fraction1 and mixing fraction for @a boundary_solution2 of (1 - @a fraction1).
 A negative value for @a boundary_solution2 implies no mixing, and the associated value for @a fraction1 is ignored.
-@param species_c           Vector of aqueous concentrations extracted from the InitialPhreeqc instance.
+@param destination_c           Vector of aqueous concentrations extracted from the InitialPhreeqc instance.
 The dimension of @a species_c is @a nspecies times @a n_boundary,
 where @a nspecies is the number of aqueous species returned from @ref GetSpeciesCount, and @a n_boundary is the dimension
 of @a boundary_solution1.
@@ -2028,7 +2030,7 @@ Called by root, workers must be in the loop of @ref MpiWorker.
 /**
 Load a database for all IPhreeqc instances--workers, InitialPhreeqc, and Utility. All definitions
 of the reaction module are cleared (SOLUTION_SPECIES, PHASES, SOLUTIONs, etc.), and the database is read.
-@param db_name          String containing the database name.
+@param database         String containing the database name.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
 @par C++ Example:
 @htmlonly
@@ -2089,15 +2091,15 @@ in the MPI section of the method documentation.
 The workers will continue to respond to messages from root until root calls
 @ref MpiWorkerBreak.
 @n@n
-(Advanced) The list of tasks that the workers perform can be extended by using @ref SetMpiWorkerCallback.
+(Advanced) The list of tasks that the workers perform can be extended by using @ref SetMpiWorkerCallbackC.
 It is then possible to use the MPI processes to perform other developer-defined tasks, 
 such as transport calculations, without exiting from the MpiWorker loop. 
 Alternatively, root calls @ref MpiWorkerBreak to allow the workers to continue past a call to RM_MpiWorker. 
 The workers perform developer-defined calculations, and then MpiWorker is called again to respond to
 requests from root to perform reaction-module tasks.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError). 
-MpiWorker returns a value only when @ref RM_MpiWorkerBreak is called by root.
-@see                    @ref MpiWorkerBreak, @ref SetMpiWorkerCallback, @ref SetMpiWorkerCallbackCookie (C only).
+MpiWorker returns a value only when @ref MpiWorkerBreak is called by root.
+@see                    @ref MpiWorkerBreak, @ref SetMpiWorkerCallbackC, @ref SetMpiWorkerCallbackCookie (C only).
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -2129,7 +2131,7 @@ task, and waits for another message from root. The workers respond to all method
 MPI section of the method documentation.
 The workers will continue to respond to messages from root until root calls MpiWorkerBreak.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref MpiWorker, @ref SetMpiWorkerCallback, @ref SetMpiWorkerCallbackCookie (C only).
+@see                    @ref MpiWorker, @ref SetMpiWorkerCallbackC, @ref SetMpiWorkerCallbackCookie (C only).
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -2143,8 +2145,8 @@ Called by root.
  */
 	IRM_RESULT                                MpiWorkerBreak();	
 /**
-Opens the output and log files. Files are named based on the prefix defined by
-@ref RM_SetFilePrefix: prefix.chem.txt and prefix.log.txt.
+Opens the output and log files. Files are named prefix.chem.txt and prefix.log.txt 
+based on the prefix defined by @ref SetFilePrefix.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
 @see                    @ref SetFilePrefix, @ref GetFilePrefix, @ref CloseFiles, 
 @ref ErrorMessage, @ref LogMessage, @ref OutputMessage, @ref WarningMessage.
@@ -2228,7 +2230,7 @@ be run by the InitialPhreeqc instance.
 @param workers          @a True, the workers will run the file; @a False, the workers will not run the file.
 @param initial_phreeqc  @a True, the InitialPhreeqc instance will run the file; @a False, the InitialPhreeqc will not run the file.
 @param utility          @a True, the Utility instance will run the file; @a False, the Utility instance will not run the file.
-@param chem_name        Name of the file to run.
+@param chemistry_name   Name of the file to run.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
 @see                    @ref RunString.
 @par C++ Example:
@@ -2269,7 +2271,7 @@ status = phreeqc_rm.RunString(true, false, true, input.c_str());
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const std::string & str);
+	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const std::string & input_string);
 /**
 Print message to the screen.
 @param str              String to be printed.
@@ -2314,7 +2316,7 @@ status = phreeqc_rm.SetCellVolume(cell_vol);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetCellVolume(const std::vector<double> &t);
+	IRM_RESULT                                SetCellVolume(const std::vector<double> &vol);
 /**
 Select whether to include H2O in the component list. 
 By default, the total concentrations of H and O are included
@@ -2674,7 +2676,7 @@ status = phreeqc_rm.SetPoreVolume(pv);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetPoreVolume(const std::vector<double> &t); 
+	IRM_RESULT                                SetPoreVolume(const std::vector<double> &vol); 
 /**
 Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
 databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat.
@@ -2755,7 +2757,7 @@ status = phreeqc_rm.SetPrintChemistryOn(false, true, false);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetPrintChemistryOn(bool worker, bool ip, bool utility); 
+	IRM_RESULT                                SetPrintChemistryOn(bool workers, bool initial_phreeqc, bool utility); 
 /**
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
 thread or process takes the same amount of time to run its part of a @ref RunCells
@@ -2765,7 +2767,7 @@ The methods are similar, and it is not clear that one is better than the other.
 @param tf           @a True, indicates individual cell times are used in rebalancing (default); 
 @a False, indicates average times are used in rebalancing.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref RM_SetRebalanceFraction.
+@see                    @ref SetRebalanceFraction.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -2777,7 +2779,7 @@ status = phreeqc_rm.SetRebalanceByCell(true);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetRebalanceByCell(bool t); 
+	IRM_RESULT                                SetRebalanceByCell(bool tf); 
 /**
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
 thread or process takes the same amount of time to run its part of a @ref RunCells
@@ -2835,7 +2837,7 @@ will be accumulated during @ref RunCells and can be retrieved with @ref GetSelec
 @a False indicates that selected-output results will not
 be accumulated during @ref RunCells. 
 
-@param selected_output  @a True, enable selected output; @a False, disable selected output. 
+@param tf  @a True, enable selected output; @a False, disable selected output. 
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
 @see                    @ref GetSelectedOutput, @ref SetPrintChemistryOn.
 @par C++ Example:
@@ -2849,11 +2851,12 @@ status = phreeqc_rm.SetSelectedOutputOn(true);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetSelectedOutputOn(bool t);
+	IRM_RESULT                                SetSelectedOutputOn(bool tf);
 /**
 Sets the value of the species-save property.
 This method enables use of PhreeqcRM with multicomponent-diffusion transport calculations.
-By default, concentrations of aqueous species are not saved. Setting the species-save property to @a true allows
+By default, concentrations of aqueous species are not saved. 
+Setting the species-save property to @a true allows
 aqueous species concentrations to be retrieved
 with @ref GetSpeciesConcentrations, and solution compositions to be set with
 @ref SpeciesConcentrations2Module.
@@ -2866,33 +2869,6 @@ SetSpeciesSaveOn must be called before calls to @ref FindComponents.
 @ref GetSpeciesD25, @ref GetSpeciesSaveOn, @ref GetSpeciesZ,
 @ref GetSpeciesNames, @ref SpeciesConcentrations2Module.
 @par C++ Example:
-@htmlonly
-<CODE>
-<PRE>
-save_on = RM_GetSpeciesSaveOn(id);
-if (save_on .ne. 0)
-{
-  fprintf(stderr, "Reaction module is saving species concentrations\n");
-}
-else
-{
-  fprintf(stderr, "Reaction module is not saving species concentrations\n");
-}
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetSpeciesSaveOn
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3035,7 +3011,7 @@ status = phreeqc_rm.SetUnitsGasPhase(1);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetUnitsGasPhase(int i);
+	IRM_RESULT                                SetUnitsGasPhase(int option);
 /**
 Input units for kinetic reactants. In PHREEQC, kinetics are defined by
 moles of kinetic reactant. SetUnitsKinetics determines whether the
@@ -3069,7 +3045,7 @@ status = phreeqc_rm.SetUnitsKinetics(1);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetUnitsKinetics(int i);
+	IRM_RESULT                                SetUnitsKinetics(int option);
 /**
 Input units for pure phase assemblages (equilibrium phases).
 In PHREEQC, equilibrium phases are defined by
@@ -3097,7 +3073,7 @@ status = phreeqc_rm.SetUnitsPPassemblage(1);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetUnitsPPassemblage(int i);
+	IRM_RESULT                                SetUnitsPPassemblage(int option);
 /**
 Solution concentration units used by the transport model.
 Options are 1, mg/L; 2 mol/L; or 3, mass fraction, kg/kgs.
@@ -3147,7 +3123,7 @@ status = phreeqc_rm.SetUnitsSolution(2);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetUnitsSolution(int i);
+	IRM_RESULT                                SetUnitsSolution(int option);
 /**
 Input units for solid-solution assemblages.
 In PHREEQC, solid solutions are defined by
@@ -3175,7 +3151,7 @@ status = phreeqc_rm.SetUnitsSSassemblage(1);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetUnitsSSassemblage(int i);
+	IRM_RESULT                                SetUnitsSSassemblage(int option);
 /**
 Input units for surfaces. In PHREEQC, surfaces are determined by
 moles of surface sites. SetUnitsSurface defines whether the
@@ -3202,12 +3178,12 @@ status = phreeqc_rm.SetUnitsSurface(1);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                SetUnitsSurface(int i);
+	IRM_RESULT                                SetUnitsSurface(int option);
 /**
 Set solution concentrations in the reaction module 
 based on the vector of aqueous species concentrations (@a species_conc).
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SpeciesSaveOn must be set to @a true.
+and @ref SetSpeciesSaveOn must be set to @a true.
 The method determines the total concentration of a component 
 by summing the molarities of the individual species times the stoichiometric
 coefficient of the element in each species.
@@ -3221,7 +3197,7 @@ aqueous species that can be made from the set of components.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
 @see                    @ref FindComponents, @ref GetSpeciesConcentrations, @ref GetSpeciesCount, 
 @ref GetSpeciesD25, @ref GetSpeciesZ,
-@ref GetSpeciesName, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
+@ref GetSpeciesNames, @ref GetSpeciesSaveOn, @ref SetSpeciesSaveOn.
 @par C++ Example:
 @htmlonly
 <CODE>
