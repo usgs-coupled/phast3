@@ -2816,7 +2816,8 @@ IRM_RESULT RM_ScreenMessage(int id, const char *str);
 Set the volume of each cell. Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
 to the cell volume. The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
 @param id               The instance @a id returned from @ref RM_Create.
-@param vol              Array of volumes, user units, but same as @ref RM_SetPoreVolume. Size of array is @a nxyz, where nxyz is the number
+@param vol              Array of volumes, user units, but same as @ref RM_SetPoreVolume.
+Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetPoreVolume, @ref RM_SetSaturation.
@@ -2858,7 +2859,7 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 IRM_RESULT RM_SetCellVolume(int id, double *vol);
 /**
 Select whether to include H2O in the component list. By default, the total concentrations of H and O are included
-in the list of components that need to be transported (@ref FindComponents).
+in the list of components that need to be transported (@ref RM_FindComponents).
 However, the concentrations of H and O must be known
 accurately (8 to 10 significant digits) for the numerical method of PHREEQC to produce accurate pH and pe values.
 Because most of the H and O are in the water species,
@@ -2866,12 +2867,12 @@ it may be more robust (require less accuracy in transport) to transport the exce
 in water) and water. PhreeqcRM will then add the H and O from water to the excess quantities to arrive at
 total H and total O concentrations for reaction calculations.
 A value of 1 will cause water and the excess H and O to be included in the list of components. RM_SetComponentH2O
-must be called before @ref FindComponents.
+must be called before @ref RM_FindComponents.
 @param id               The instance id returned from @ref RM_Create.
 @param tf               0, total H and O are included in the list of components; 1, excess H, excess O, and water
 are included in the component list.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref FindComponents.
+@see                    @ref RM_FindComponents.
 @par C Example:
 @htmlonly
 <CODE>
@@ -2905,7 +2906,7 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetComponentH2O(int id, int tf);
 /**
-Set the concentrations by which the moles of components of each cell are determined.
+Use the vector of concentrations to set the moles of components in each cell.
 Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
 to the volume (@ref RM_SetCellVolume).
 The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
@@ -2913,7 +2914,7 @@ The moles of each component are determined by the volume of water and per liter 
 If concentration units (@ref RM_SetUnitsSolution) are mass fraction, the
 density (as determined by @ref RM_SetDensity) is used to convert from mass fraction to per liter.
 @param id               The instance @a id returned from @ref RM_Create.
-@param vol              Array of component concentrations. Size of array is Fortran (@a nxyz, @a ncomps), where @a nxyz is the number
+@param c                Array of component concentrations. Size of array is Fortran (@a nxyz, @a ncomps), where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount), and @a ncomps is the number of components as determined
 by @ref RM_FindComponents or @ref RM_GetComponentCount.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
@@ -3044,7 +3045,7 @@ produce per liter concentrations during a call to @ref RM_SetConcentrations.
 @param density          Array of densities. Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetConcentrations.
+@see                    @ref RM_SetConcentrations, @ref RM_SetUnitsSolution.
 @par C Example:
 @htmlonly
 <CODE>
@@ -3129,9 +3130,9 @@ Called by root.
  */
 IRM_RESULT RM_SetDumpFileName(int id, const char *dump_name);
 /**
-Set the action to be taken when the reaction module encounters and error.
+Set the action to be taken when the reaction module encounters an error.
 Options are 0, return to calling program with an error return code (default);
-1, throw an exception, in C++, the exception can be caught, for C and Fortran, the program will exit;
+1, throw an exception, in C++, the exception can be caught, for C and Fortran, the program will exit; or
 2, attempt to exit gracefully.
 @param id               The instance id returned from @ref RM_Create.
 @param mode             Error handling mode: 0, 1, or 2.
@@ -3260,6 +3261,7 @@ C has an additional void * argument.
 <PRE>
 Pseudo code for root:
 
+// Root calls a function that will involve the workers
 status = init((void *) mydata);
 
 int init(void *cookie)
@@ -3291,6 +3293,7 @@ int mpi_methods(int method, void *cookie)
   return_value = 0;
   if (method == 1000)
   {
+	// Workers call init here
     return_value = init(cookie);
   }
   return return_value;
@@ -3375,7 +3378,7 @@ to locate data needed to perform a task.
 <CODE>
 <PRE>
 Pseudo code for root:
-
+// Root calls a function that will involve the workers
 status = init((void *) mydata);
 
 int init(void *cookie)
@@ -3407,6 +3410,7 @@ int mpi_methods(int method, void *cookie)
   return_value = 0;
   if (method == 1000)
   {
+	// Workers call init here
     return_value = init(cookie);
   }
   return return_value;

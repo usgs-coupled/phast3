@@ -493,7 +493,8 @@ int units_tester()
 		std::vector<std::string> headings;
 		{
 			std::string heading;
-			std::cerr << "Cell  " << phreeqc_rm.GetSelectedOutputHeading(0, heading) << std::endl;
+			phreeqc_rm.GetSelectedOutputHeading(0, heading);
+			std::cerr << "Cell  " << heading << std::endl;
 			for (int i = 0; i < nxyz; i++)
 			{
 				std::cerr << i << "   " << so[i] << std::endl;
