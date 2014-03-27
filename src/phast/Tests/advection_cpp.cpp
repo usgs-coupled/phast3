@@ -36,7 +36,7 @@ int advection_cpp()
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // 1 = throw exception on error
 		status = phreeqc_rm.SetComponentH2O(false);
 		status = phreeqc_rm.SetRebalanceFraction(0.5);
-		status = phreeqc_rm.SetRebalanceByCell(1);
+		status = phreeqc_rm.SetRebalanceByCell(true);
 		status = phreeqc_rm.SetFilePrefix("Advect_cpp");
 		phreeqc_rm.OpenFiles();
 
@@ -241,7 +241,7 @@ int advection_cpp()
 			status = phreeqc_rm.SetPressure(pressure);        // If pressure changes
 			status = phreeqc_rm.SetConcentrations(c);         // Transported concentrations
 			status = phreeqc_rm.SetTimeStep(time_step);				 // Time step for kinetic reactions
-			time = time + time_step;
+			time += time_step;
 			status = phreeqc_rm.SetTime(time);
 
 			// Run cells with new conditions
