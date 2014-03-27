@@ -2210,6 +2210,7 @@ status = phreeqc_rm.SetConcentrations(c);         // Transported concentrations
 status = phreeqc_rm.SetTimeStep(time_step);		  // Time step for kinetic reactions
 time = time + time_step;
 status = phreeqc_rm.SetTime(time);
+status = phreeqc_rm.RunCells();
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2217,20 +2218,438 @@ status = phreeqc_rm.SetTime(time);
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                RunCells(void);
+/**
+Run a PHREEQC input file. The first three arguments determine which IPhreeqc instances will run
+the file--the workers, the InitialPhreeqc instance, and (or) the Utility instance. Input
+files that modify the thermodynamic database should be run by all three sets of instances.
+Files with SELECTED_OUTPUT definitions that will be used during the time-stepping loop need to
+be run by the workers. Files that contain initial conditions or boundary conditions should
+be run by the InitialPhreeqc instance.
+@param workers          @a True, the workers will run the file; @a False, the workers will not run the file.
+@param initial_phreeqc  @a True, the InitialPhreeqc instance will run the file; @a False, the InitialPhreeqc will not run the file.
+@param utility          @a True, the Utility instance will run the file; @a False, the Utility instance will not run the file.
+@param chem_name        Name of the file to run.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref RunString.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.RunFile(true, true, true, "advect.pqi");
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                RunFile(bool workers, bool initial_phreeqc, bool utility,  const std::string & chemistry_name);
+/**
+Run a PHREEQC input string. The first three arguments determine which
+IPhreeqc instances will run
+the string--the workers, the InitialPhreeqc instance, and (or) the Utility instance. Input
+strings that modify the thermodynamic database should be run by all three sets of instances.
+Strings with SELECTED_OUTPUT definitions that will be used during the time-stepping loop need to
+be run by the workers. Strings that contain initial conditions or boundary conditions should
+be run by the InitialPhreeqc instance.
+@param workers          @a True, the workers will run the string; @a False, the workers will not run the string.
+@param initial_phreeqc  @a True, the InitialPhreeqc instance will run the string; @a False, the InitialPhreeqc will not run the string.
+@param utility          @a True, the Utility instance will run the string; @a False, the Utility instance will not run the string.
+@param input_string     String containing PHREEQC input.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref RunFile.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>		
+std::string input = "DELETE; -all";
+status = phreeqc_rm.RunString(true, false, true, input.c_str());
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                RunString(bool workers, bool initial_phreeqc, bool utility, const std::string & str);
+/**
+Print message to the screen.
+@param str              String to be printed.
+@see                    @ref ErrorMessage, @ref LogMessage, @ref OutputMessage, @ref WarningMessage.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::ostringstream strm;
+strm << "Beginning transport calculation " 
+     <<   phreeqc_rm.GetTime() * phreeqc_rm.GetTimeConversion() 
+	 << " days\n";
+strm << "          Time step             " 
+     <<   phreeqc_rm.GetTimeStep() * phreeqc_rm.GetTimeConversion() 
+	 << " days\n";
+phreeqc_rm.ScreenMessage(strm.str());
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	void                                      ScreenMessage(const std::string &str);
+/**
+Set the volume of each cell. Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
+to the cell volume. The volume of water in a cell is the porosity times the saturation (@ref SetSaturation).
+@param vol              Vector of volumes, user units, but same as @ref SetPoreVolume. 
+Size of array is @a nxyz, where @a nxyz is the number
+of grid cells in the user's model (@ref GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetPoreVolume, @ref SetSaturation.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<double> cell_vol;
+cell_vol.resize(nxyz, 1);
+status = phreeqc_rm.SetCellVolume(cell_vol);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetCellVolume(const std::vector<double> &t);
+/**
+Select whether to include H2O in the component list. 
+By default, the total concentrations of H and O are included
+in the list of components that need to be transported (@ref FindComponents).
+However, the concentrations of H and O must be known
+accurately (8 to 10 significant digits) for the numerical method of 
+PHREEQC to produce accurate pH and pe values.
+Because most of the H and O are in the water species,
+it may be more robust (require less accuracy in transport) to 
+transport the excess H and O (the H and O not in water) and water. 
+PhreeqcRM will then add the H and O from water to the excess quantities 
+to arrive at total H and total O concentrations for reaction calculations.
+A value of @a true will cause water and the excess H and O to be included in the list of components. 
+SetComponentH2O must be called before @ref FindComponents.
+@param tf               @a True, excess H, excess O, and water are included in the component list;
+@a False, total H and O are included in the list of components.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref FindComponents.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetComponentH2O(false);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetComponentH2O(bool tf);
-	IRM_RESULT                                SetConcentrations(const std::vector<double> &t); 
-	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int i);
-	IRM_RESULT                                SetDensity(const std::vector<double> &t);
-	IRM_RESULT                                SetDumpFileName(const std::string & db); 
-	IRM_RESULT                                SetErrorHandlerMode(int i);
+/**
+Use the vector of concentrations to set the moles of components in each cell.
+Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
+to the volume (@ref SetCellVolume).
+The volume of water in a cell is the porosity times the saturation (@ref SetSaturation).
+The moles of each component are determined by the volume of water and per liter concentrations.
+If concentration units (@ref SetUnitsSolution) are mass fraction, the
+density (as determined by @ref SetDensity) is used to convert from mass fraction to per liter.
+@param c               Vector of component concentrations. Size of vector is @a ncomps times @a nxyz, 
+where @a ncomps is the number of components as determined
+by @ref FindComponents or @ref GetComponentCount and
+@a nxyz is the number of grid cells in the user's model (@ref GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetCellVolume, @ref SetPoreVolume, @ref SetSaturation, @ref etUnitsSolution.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<double> c;
+c.resize(nxyz * components.size());
+...
+AdvectCpp(c, bc_conc, ncomps, nxyz, nbound);
+status = phreeqc_rm.SetPoreVolume(pv);            // If pore volume changes due to compressibility
+status = phreeqc_rm.SetSaturation(sat);           // If saturation changes
+status = phreeqc_rm.SetTemperature(temperature);  // If temperature changes
+status = phreeqc_rm.SetPressure(pressure);        // If pressure changes
+status = phreeqc_rm.SetConcentrations(c);         // Transported concentrations
+status = phreeqc_rm.SetTimeStep(time_step);		  // Time step for kinetic reactions
+time = time + time_step;
+status = phreeqc_rm.SetTime(time);
+status = phreeqc_rm.RunCells();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetConcentrations(const std::vector<double> &c); 
+/**
+Select the current selected output by user number. The user may define multiple SELECTED_OUTPUT
+data blocks for the workers. A user number is specified for each data block. The value of
+the argument @a n_user selects which of the SELECTED_OUTPUT definitions will be used
+for selected-output operations.
+@param n_user           User number of the SELECTED_OUTPUT data block that is to be used.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref GetNthSelectedOutputUserNumber, @ref GetSelectedOutput, @ref GetSelectedOutputColumnCount,
+@ref GetSelectedOutputCount, @ref GetSelectedOutputRowCount, @ref GetSelectedOutputHeading,
+@ref SetSelectedOutputOn.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
+{
+  int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
+  status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
+  std::cerr << "Selected output sequence number: " << isel << "\n";
+  std::cerr << "Selected output user number:     " << n_user << "\n";
+  std::vector<double> so;
+  status = phreeqc_rm.GetSelectedOutput(so);
+  // Process results here
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int n_user);
+/**
+Set the density for each cell. These density values are used only
+when converting from transported mass-fraction concentrations (@ref SetUnitsSolution) to
+produce per liter concentrations during a call to @ref SetConcentrations.
+@param density          Vector of densities. Size of vector is @a nxyz, where @a nxyz is the number
+of grid cells in the user's model (@ref GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref SetConcentrations, @ref SetUnitsSolution.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+std::vector<double> initial_density;
+initial_density.resize(nxyz, 1.0);
+phreeqc_rm.SetDensity(initial_density);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetDensity(const std::vector<double> &density);
+/**
+Set the name of the dump file. It is the name used by @ref DumpModule.
+@param dump_name        Name of dump file.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref DumpModule.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetDumpFileName("advection_cpp.dmp");
+bool dump_on = true;
+bool append = false;
+status = phreeqc_rm.DumpModule(dump_on, append);
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+	IRM_RESULT                                SetDumpFileName(const std::string & dump_name); 
+/**
+Set the action to be taken when the reaction module encounters an error.
+Options are 0, return to calling program with an error return code (default);
+1, throw an exception, in C++, the exception can be caught, for C and Fortran, the program will exit; or
+2, attempt to exit gracefully.
+@param mode             Error handling mode: 0, 1, or 2.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+PhreeqcRM phreeqc_rm(nxyz, nthreads);
+IRM_RESULT status;
+status = phreeqc_rm.SetErrorHandlerMode(1); 
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
+	IRM_RESULT                                SetErrorHandlerMode(int mode);
+/**
+Set the prefix for the output (prefix.chem.txt) and log (prefix.log.txt) files.
+These files are opened by @ref OpenFiles.
+@param prefix           Prefix used when opening the output and log files.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref OpenFiles, @ref CloseFiles.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.SetFilePrefix("Advect_cpp");
+phreeqc_rm.OpenFiles();
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
 	IRM_RESULT                                SetFilePrefix(const std::string & prefix); 
-	IRM_RESULT								  SetMpiWorker(int (*fcn)(int *method, void *cookie));
+/**
+MPI and C/C++ only. Defines a callback function that allows additional tasks to be done
+by the workers. The method @ref MpiWorker contains a loop,
+where the workers receive a message (an integer),
+run a function corresponding to that integer,
+and then wait for another message.
+SetMpiWorkerCallbackC allows the C or C++ developers to add another function
+that responds to additional integer messages by calling developer-defined functions
+corresponding to those integers.
+@ref MpiWorker calls the callback function when the message number
+is not one of the PhreeqcRM message numbers.
+Messages are unique integer numbers. PhreeqcRM uses integers in a range
+beginning at 0. It is suggested that developers use message numbers starting
+at 1000 or higher for their tasks.
+The callback function calls a developer-defined function specified
+by the message number and then returns to @ref MpiWorker to wait for
+another message.
+@n@n
+In C and C++, an additional pointer can be supplied to find the data necessary to do the task.
+A void pointer may be set with @ref SetMpiWorkerCallbackCookie. This pointer
+is passed to the callback function through a void pointer argument in addition
+to the integer message argument. @ref SetMpiWorkerCallbackCookie
+must be called by each worker before @ref MpiWorker is called.
+@n@n
+The motivation for this method is to allow the workers to perform other
+tasks, for instance, parallel transport calculations, within the structure
+of @ref MpiWorker. The callback function
+can be used to allow the workers to receive data, perform transport calculations,
+and send results, without leaving the loop of @ref MpiWorker. Alternatively,
+it is possible for the workers to return from @ref MpiWorker
+by a call to @ref MpiWorkerBreak by root. The workers could then call
+subroutines to receive data, calculate transport, and send data,
+and then resume processing PhreeqcRM messages from root with another
+call to @ref MpiWorker.
+@param fcn              A function that returns an integer and has an integer argument 
+and a void * argument.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref MpiWorker, @ref MpiWorkerBreak,
+@ref SetMpiWorkerCallbackCookie.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+Pseudo code for root:
+// root calls a function that will involve the workers
+status = init((void *) mydata);
+
+int init(void *cookie)
+{
+  // use cookie to find data, phreeqcrm_comm
+  int ierrmpi, message
+  message = 1000;
+  if (mpi_myself == 0)
+  {
+    // message number 1000 is sent to the workers
+    MPI_Bcast(&message, 1, MPI_INT, 0, phreeqcrm_comm);
+  }
+  // Do some work here by root and (or) workers
+  return 0;
+}
+
+Pseudo code for worker:
+
+status = phreeqc_rm.SetMpiWorkerCallbackC(mpi_methods);
+status = phreeqc_rm.SetMpiWorkerCallbackCookie((void *) mydata);
+...
+status = phreeqc_rm.MpiWorker();
+
+int mpi_methods(int method, void *cookie)
+{
+  // this method is called by MpiWorker
+  // because it was registered by SetMpiWorkerCallbackC
+  int return_value;
+  return_value = 0;
+  if (method == 1000)
+  {
+    // Here the workers call init
+    return_value = init(cookie);
+  }
+  return return_value;
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by workers, before call to @ref MpiWorker.
+ */
 	IRM_RESULT								  SetMpiWorkerCallbackC(int (*fcn)(int *method, void * cookie));
+/**
+MPI and C/C++ only. Defines a void pointer that can be used by
+C and C++ functions called from the callback function (@ref SetMpiWorkerCallbackC)
+to locate data for a task. The C callback function
+that is registered with @ref SetMpiWorkerCallbackC has
+two arguments, an integer message to identify a task, and a void
+pointer. SetMpiWorkerCallbackCookie sets the value of the
+void pointer that is passed to the callback function.
+@param cookie           Void pointer that can be used by subroutines called from the callback function
+to locate data needed to perform a task.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref MpiWorker, @ref MpiWorkerBreak,
+@ref SetMpiWorkerCallbackC.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+Pseudo code for root:
+// root calls a function that will involve the workers
+status = init((void *) mydata);
+
+int init(void *cookie)
+{
+  // use cookie to find data, phreeqcrm_comm
+  int ierrmpi, message
+  message = 1000;
+  if (mpi_myself == 0)
+  {
+    // message number 1000 is sent to the workers
+    MPI_Bcast(&message, 1, MPI_INT, 0, phreeqcrm_comm);
+  }
+  // Do some work here by root and (or) workers
+  return 0;
+}
+
+Pseudo code for worker:
+
+status = phreeqc_rm.SetMpiWorkerCallbackC(mpi_methods);
+status = SetMpiWorkerCallbackCookie(id, (void *) mydata);
+...
+status = MpiWorker();
+
+int mpi_methods(int method, void *cookie)
+{
+  // this method is called by MpiWorker
+  // because it was registered by SetMpiWorkerCallbackC
+  int return_value;
+  return_value = 0;
+  if (method == 1000)
+  {
+    // Here the workers call init
+    return_value = init(cookie);
+  }
+  return return_value;
+}
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by workers, before call to @ref MpiWorker.
+ */
 	IRM_RESULT								  SetMpiWorkerCallbackCookie(void * cookie);
+/**
+MPI and Fortran only. Defines a callback function that allows additional tasks to be done
+by the workers. See documentation of PhreeqcRM for C and Fortran, method RM_SetMpiWorkerCallback.
+ */
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
 	//IRM_RESULT                                SetPartitionUZSolids(int t = -1);
 	IRM_RESULT                                SetPoreVolume(const std::vector<double> &t); 

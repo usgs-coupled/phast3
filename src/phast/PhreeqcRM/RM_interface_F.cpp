@@ -87,8 +87,6 @@ int RM_Create(int *nxyz, int *nthreads)
 	//
 	// Creates reaction module, called by root and MPI workers
 	//
-  std::cerr << "CreateReactionModule" << std::endl;
-
   return PhreeqcRM::CreateReactionModule(*nxyz, MPI_Comm_f2c(*nthreads));
 }
 #else
