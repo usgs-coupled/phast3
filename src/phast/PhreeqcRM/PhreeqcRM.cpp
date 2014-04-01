@@ -127,11 +127,11 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 : PHRQ_base(io)
 {
 	// second argument is threads for OPENMP or COMM for MPI
-        int thread_count = 1;
+    int thread_count = 1;
 
 	int n = 1;	
 #ifdef USE_OPENMP
-	int thread_count = data_for_parallel_processing;
+	thread_count = data_for_parallel_processing;
 #if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo( &sysinfo );
