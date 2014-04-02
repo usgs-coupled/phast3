@@ -111,7 +111,7 @@ SUBROUTINE phast_manager
             CALL time_parallel(0)                         ! Timing
             CALL c_distribute
             CALL p_distribute
-            CALL time_parallel(1)
+            CALL time_parallel(1)                         ! 1 - 0, flow and transport communication
             IF (.NOT. steady_flow) THEN
                 CALL coeff_flow
                 CALL rhsn
@@ -121,21 +121,19 @@ SUBROUTINE phast_manager
             !
             ! ... Read the transient data, if necessary. The first block was read by the steady flow 
             ! ... simulation section
-            !           
+            ! 
+            CALL time_parallel(2)                          ! 2 - 1, flow
             DO WHILE(time*one_plus_eps >= timchg)          ! skip past data blocks until
                 ! ...         restart time is reached
                 CALL read3
-                CALL init3
-                CALL time_parallel(2)                      ! only for timing
+                CALL init3                      ! only for timing
                 CALL init3_distribute
-                CALL time_parallel(3)
                 IF(thru) EXIT                              ! Normal exit from time step loop
                 CALL error3
                 CALL write3
                 IF(errexi) EXIT
             END DO  
-            CALL time_parallel(4)
-            CALL time_parallel(5)
+            CALL time_parallel(3)                          ! 3 - 2, flow and transport communication
             IF (thru) then
                 status = RM_MpiWorkerBreak(rm_id)          ! stop loop in worker
                 EXIT                                       ! ... second step of exit
@@ -164,11 +162,12 @@ SUBROUTINE phast_manager
             !
             IF(.NOT.steady_flow) THEN
                 CALL asmslp_flow
-                CALL time_parallel(6)
-                CALL flow_distribute
-                CALL time_parallel(7)
             ENDIF
-            CALL time_parallel(8)
+            CALL time_parallel(4)                          ! 4 - 3, flow
+            IF(.NOT.steady_flow) THEN
+                CALL flow_distribute
+            ENDIF
+            CALL time_parallel(5)                          ! 5 - 4, flow communication
             !
             ! ... Root and workers do transport calculations
             !
@@ -187,10 +186,10 @@ SUBROUTINE phast_manager
             !
             ! Gather results from workers to root, process results
             !
-            CALL time_parallel(9)
+            CALL time_parallel(6)                          ! 6 - 5, transport
             CALL sbc_gather
             CALL c_gather
-            CALL time_parallel(10)
+            CALL time_parallel(7)                          ! 7 - 6, transport communication
             IF (steady_flow) THEN
                 CALL sumcal1_manager
             ELSE
@@ -200,11 +199,12 @@ SUBROUTINE phast_manager
             !
             ! ... React cells with PhreeqcRM, process and write results
             !
-            CALL time_parallel(11) 
+            CALL time_parallel(8)                          ! 8 - 7, sumcal
             CALL TimeStepRM                                ! Run cells in Reaction Module, return concentrations
-            CALL time_parallel(12)
+            
+            CALL time_parallel(14)                         ! new time
             CALL sumcal2                                   ! Calculate summary fluxes
-            CALL time_parallel(13)
+            CALL time_parallel(15)                         ! 15 - 14, sumcal
             CALL write5                                    ! Write results
             IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
                 CALL zone_flow_write_heads
@@ -216,12 +216,12 @@ SUBROUTINE phast_manager
             IF (prhdfii == 1) THEN
                 CALL write_hdf_intermediate     
             ENDIF
-            
             CALL update_print_flags                        ! Update times for next printouts
             CALL time_step_save                            ! Save values for next time step 
 
             IF(errexe) EXIT
-            IF(prcpd) CALL dump_hst                        ! not functional        
+            IF(prcpd) CALL dump_hst                        ! not functional   
+            CALL time_parallel(16)                         ! 16 - 15, write files     
         ENDDO                                              ! End transient time step
     ENDIF                                                  ! End transient loop
 50  CONTINUE   ! ... Exit, could be error
@@ -252,7 +252,7 @@ SUBROUTINE phast_manager
     ! ... Cleanup PHAST
     CALL terminate_phast
 END SUBROUTINE phast_manager
-
+#ifdef SKIP
 SUBROUTINE time_parallel(i)
     USE mcc, only: rm_id
 #if defined(USE_MPI)
@@ -335,7 +335,91 @@ INTEGER t_ticks, clock_rate, clock_max
         status = RM_ScreenMessage(rm_id, logline)  
     endif
 END SUBROUTINE time_parallel
+#endif
+SUBROUTINE time_parallel(i)
+    USE mcc, only: rm_id
+    USE mpi_mod
+    IMPLICIT none   
+    INCLUDE "RM_interface_F.f90.inc"
+    integer :: i, ierr
+    DOUBLE PRECISION t
+    DOUBLE PRECISION, DIMENSION(0:16), save :: times
+    DOUBLE PRECISION, save :: time_flow=0, time_transfer, time_transport, time_chemistry, time_chemistry_transfer
+    DOUBLE PRECISION, save :: cum_flow=0, cum_transfer=0, cum_transport=0, cum_chemistry=0, cum_chemistry_transfer=0
+    CHARACTER(LEN=130) :: logline
+    INTEGER :: status
+#ifndef USE_MPI
+    INTEGER t_ticks, clock_rate, clock_max
+#endif
 
+#if defined(USE_MPI)
+    t = MPI_Wtime()
+#else    
+    call SYSTEM_CLOCK(t_ticks, clock_rate, clock_max)
+    t = real(t_ticks) / real(clock_rate)
+#endif    
+    if (i == 0) then
+        times = -1.0
+        times(0) = t
+    else
+        times(i) = t
+    endif
+    if (i == 16) then
+! 1 - 0, flow and transport communication
+        time_transfer = times(1) - times(0)
+! 2 - 1, flow
+        time_flow = times(2) - times(1)
+! 3 - 2, flow and transport communication
+        time_transfer = time_transfer + (times(3) - times(2))
+! 4 - 3, flow
+        time_flow = time_flow + (times(2) - times(1))
+! 5 - 4, flow communication
+        time_transfer = time_transfer + (times(5) - times(4))
+! 6 - 5, transport
+        time_transport = times(6) - times(5)
+! 7 - 6, transport communication
+        time_transfer = time_transfer + (times(7) - times(6))
+! 8 - 7, sumcal
+        time_transport = time_transport + (times(8) - times(7))
+! 9, new time
+! 10 - 9 chemistry communication
+        time_chemistry_transfer = times(10) - times(9)
+! 11 - 10 run cells
+        time_chemistry = times(11) - times(10)
+! 12 - 11 chemistry communication
+        time_chemistry_transfer = time_chemistry_transfer + (times(12) - times(11))
+! 13 - 12 chemistry files
+        time_chemistry_transfer = time_chemistry_transfer + (times(13) - times(12))
+! 14, new time
+! 15 - 14, sumcal
+        time_transport = time_transport + (times(15) - times(14))
+! 16 - 15, write files    
+        time_chemistry_transfer = time_chemistry_transfer + (times(16) - times(15))    
+
+        
+        cum_flow = cum_flow + time_flow
+        cum_transport = cum_transport + time_transport
+        cum_transfer = cum_transfer + time_transfer
+        cum_chemistry = cum_chemistry + time_chemistry
+        cum_chemistry_transfer = cum_chemistry_transfer + time_chemistry_transfer
+        
+        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time flow:                ", time_flow, " Cumulative:", cum_flow
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)
+        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time transport:           ", time_transport, " Cumulative:", cum_transport
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)
+        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time flow/trans messages: ", time_transfer, " Cumulative:", cum_transfer
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)
+        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry:           ", time_chemistry, " Cumulative:", cum_chemistry
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline) 
+        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry messages:  ", time_chemistry_transfer, " Cumulative:", cum_chemistry_transfer
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)  
+    endif
+END SUBROUTINE time_parallel
 SUBROUTINE transport_component(i)
     USE mcc, ONLY: cylind, errexe, errexi, rm_id
     USE mcw, ONLY: nwel
@@ -569,6 +653,7 @@ SUBROUTINE TimeStepRM
     
     stop_msg = 0
     IF (solute) THEN
+        CALL time_parallel(9)                                     ! 9 new time
         WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
@@ -589,11 +674,15 @@ SUBROUTINE TimeStepRM
         status = RM_SetTime(rm_id, time) 
         status = RM_SetTimeStep(rm_id, deltim) 
         status = RM_SetConcentrations(rm_id, c(1,1))
+        CALL time_parallel(10)                                    ! 10 - 9 chemistry communication
         status = RM_RunCells(rm_id)  
+        CALL time_parallel(11)                                    ! 11 - 10 run cells
         status = RM_GetConcentrations(rm_id, c(1,1))
+        CALL time_parallel(12)                                    ! 12 - 11 chemistry communication
         
         CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
             iprint_xyz(1), print_restart%print_flag_integer) 
+        CALL time_parallel(13)                                    ! 13 - 12 chemistry files
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM   
     
