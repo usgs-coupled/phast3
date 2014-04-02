@@ -1,10 +1,10 @@
 
     
-    subroutine species_f90()
-#ifdef USE_MPI    
-    USE mpi
-#endif 
+    subroutine species_f90() 
     implicit none
+#ifdef USE_MPI    
+    INCLUDE 'mpif.h'
+#endif 
     INCLUDE 'RM_interface_F.f90.inc'
     INCLUDE 'IPhreeqc.f90.inc'
     interface

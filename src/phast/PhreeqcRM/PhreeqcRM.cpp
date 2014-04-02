@@ -4331,6 +4331,13 @@ PhreeqcRM::MpiWorker()
 					return_value = this->SetRebalanceByCell(dummy);
 				}
 				break;
+			case METHOD_SETREBALANCEFRACTION:
+				if (debug_worker) std::cerr << "METHOD_SETREBALANCEFRACTION" << std::endl;
+				{
+					double dummy = 0.0;
+					return_value = this->SetRebalanceFraction(dummy);
+				}
+				break;
 			case METHOD_SETSATURATION:
 				if (debug_worker) std::cerr << "METHOD_SETSATURATION" << std::endl;
 				{
@@ -4675,6 +4682,7 @@ PhreeqcRM::RebalanceLoad(void)
 {
 	if (this->mpi_tasks <= 1) return;
 	if (this->mpi_tasks > count_chemistry) return;
+	if (this->rebalance_fraction <= 0.0) return;
 	if (this->rebalance_by_cell)
 	{
 		try
@@ -4982,6 +4990,7 @@ PhreeqcRM::RebalanceLoad(void)
 {
 	// Threaded version
 	if (this->nthreads <= 1) return;
+	if (this->rebalance_fraction <= 0.0) return;
 	if (this->nthreads > count_chemistry) return;
 #include <time.h>
 	if (this->rebalance_by_cell)
@@ -7172,9 +7181,14 @@ PhreeqcRM::SetRebalanceFraction(double t)
 	{
 		this->rebalance_fraction = t;
 	}
-//#ifdef USE_MPI
-//	MPI_Bcast(&(this->rebalance_fraction), 1, MPI_DOUBLE, 0, phreeqcrm_comm);
-//#endif
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETREBALANCEFRACTION;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+	MPI_Bcast(&(this->rebalance_fraction), 1, MPI_DOUBLE, 0, phreeqcrm_comm);
+#endif
 	return IRM_OK;
 }
 

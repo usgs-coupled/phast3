@@ -39,12 +39,6 @@
     <ClCompile Include="..\gzstream.cxx">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\Reaction_module.cxx">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RM_interface.cpp">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\KDtree\KDtree.cpp">
       <Filter>Source Files\PHASTINPUT_OBJS</Filter>
     </ClCompile>
@@ -57,11 +51,20 @@
     <ClCompile Include="..\hdf.cpp">
       <Filter>Source Files\HDF_OBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\xfer_indices.cpp">
-      <Filter>Source Files\MPI_OBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\TM_interface.cpp">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FileHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\RM_interface_F.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,13 +76,31 @@
     <ClInclude Include="..\gzstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Reaction_module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RM_interface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\TM_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FileHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hdf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\KDtree\Cell_Face.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\KDtree\KDtree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\KDtree\Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PhreeqcRM\RM_interface_C.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PhreeqcRM\RM_interface_F.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

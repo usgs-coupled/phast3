@@ -280,8 +280,8 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_MPICH2_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(DEV_ZLIB123_X64_INC);$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>USE_GZ;NDEBUG;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DEV_OPENMPI_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(DEV_ZLIB123_X64_INC);$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OMPI_IMPORTS;USE_GZ;NDEBUG;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -292,8 +292,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>fmpich2.lib;mpi.lib;zlib1.lib;IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_ZLIB123_X64_LIB);$(DEV_IFC_X64_LIB);$(DEV_MPICH2_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release;$(SolutionDir)FortranAdvect\$(platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib1.lib;IPhreeqcPhast.lib;FortranAdvect.lib;libmpi.lib;libmpi_cxx.lib;libmpi_f77.lib;libopen-rte.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_ZLIB123_X64_LIB);$(DEV_IFC_X64_LIB);$(DEV_OPENMPI_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release;$(SolutionDir)FortranAdvect\$(platform)\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -357,18 +357,35 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\gzstream.cxx" />
-    <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp" />
-    <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp" />
-    <ClCompile Include="..\PhreeqcRM\RM_interface_F.cpp" />
+    <ClCompile Include="..\gzstream.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\PhreeqcRM\RM_interface_F.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="advection_c.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">CompileAsC</CompileAs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="advection_cpp.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="species_c.c" />
-    <ClCompile Include="species_cpp.cpp" />
+    <ClCompile Include="advection_cpp.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="species_c.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="species_cpp.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gzstream.h" />

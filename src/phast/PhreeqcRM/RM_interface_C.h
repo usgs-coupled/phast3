@@ -3703,7 +3703,7 @@ status = RM_SetRebalanceFraction(id, 0.5d0)
 </CODE>
 @endhtmlonly
 @par MPI:
-Called by root.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetRebalanceFraction(int id, double f);
 /**

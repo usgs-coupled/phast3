@@ -10,7 +10,7 @@
 #include <list>
 #include <set>
 #ifdef USE_MPI
-#include <mpi.h>
+#include "mpi.h"
 #define MP_TYPE MPI_Comm
 #else
 #define MP_TYPE int
@@ -59,6 +59,7 @@ typedef enum {
 	METHOD_SETPRINTCHEMISTRYON,
 	METHOD_SETPRINTCHEMISTRYMASK,
 	METHOD_SETREBALANCEBYCELL,
+	METHOD_SETREBALANCEFRACTION,
 	METHOD_SETSATURATION,
 	METHOD_SETSELECTEDOUTPUTON,
 	METHOD_SETSPECIESSAVEON,
@@ -2804,7 +2805,7 @@ status = phreeqc_rm.SetRebalanceFraction(0.5);
 </CODE>
 @endhtmlonly
 @par MPI:
-Called by root.
+Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetRebalanceFraction(double f); 
 /**
