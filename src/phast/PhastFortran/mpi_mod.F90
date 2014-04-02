@@ -3,8 +3,8 @@
 ! ... This module is used by both manager and worker programs
 MODULE mpi_mod
 #if defined(USE_MPI)
-  USE MPI
   IMPLICIT NONE
+  INCLUDE 'mpif.h'
   SAVE
   INTEGER :: manager=0, xp_comm, world_comm
   INTEGER :: ierrmpi
