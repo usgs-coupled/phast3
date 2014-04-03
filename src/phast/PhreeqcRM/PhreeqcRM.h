@@ -3252,6 +3252,7 @@ protected:
 		                                          int *initial_conditions2, 
 		                                          double *fraction1,
 		                                          std::set<std::string> &error_set);
+	IRM_RESULT                                CheckCells();
 	int                                       CheckSelectedOutput();
 	IPhreeqc *                                Concentrations2UtilityH2O(std::vector<double> &c_in, 
 		                                           std::vector<double> t_in, std::vector<double> p_in);
@@ -3264,7 +3265,7 @@ protected:
 	void                                      cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v);
 	void                                      cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
-	int                                       HandleErrorsInternal(std::vector< int > & r);
+	IRM_RESULT                                HandleErrorsInternal(std::vector< int > & r);
 	//void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);
@@ -3326,9 +3327,9 @@ protected:
 	std::vector<bool> print_chemistry_on;	// print flag for chemistry output file 
 	bool selected_output_on;				// create selected output
 
-	//bool stop_message;
 	int error_count;
 	int error_handler_mode;                 // 0, return code; 1, throw; 2 exit;
+	bool need_error_check;
 
 	// threading
 	int nthreads;
