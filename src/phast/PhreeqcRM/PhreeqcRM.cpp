@@ -249,6 +249,7 @@ if( numCPU < 1 )
 	//this->stop_message = false;
 	this->error_count = 0;
 	this->error_handler_mode = 0;
+	this->need_error_check = true;
 
 	// initialize arrays
 	for (int i = 0; i < this->nxyz; i++)
@@ -825,7 +826,85 @@ PhreeqcRM::Char2TrimString(const char * str, size_t l)
 	stdstr = trim(stdstr);
 	return stdstr;
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+IRM_RESULT 
+PhreeqcRM::CheckCells()
+/* ---------------------------------------------------------------------- */
+{
+	std::vector<int> missing;
+	for(int i = this->start_cell[this->mpi_myself]; i <= this->end_cell[this->mpi_myself]; i++)
+	{
+		cxxSolution *soln_ptr = this->workers[0]->Get_solution(i);
+		if (soln_ptr == NULL)
+		{
+			missing.push_back(i);
+		}
+	}
 
+	std::vector<int> r_vector;
+	r_vector.resize(1);
+	r_vector[0] = IRM_OK;
+	if (missing.size() > 0)
+	{
+		std::ostringstream estr;
+		estr << "Solutions not defined for these cells:\n";
+		for (size_t i = 0; i < missing.size(); i++)
+		{
+			estr << "Chem cell "<< i << " = Grid cell(s): ";
+			for (size_t j = 0; j < backward_mapping[i].size(); j++)
+			{
+				estr << backward_mapping[i][j] << " ";
+			}
+			estr << "\n";
+		}
+		
+		this->workers[0]->AddError(estr.str().c_str());
+		//ErrorMessage(estr.str());
+		r_vector[0] = IRM_FAIL;
+	}
+	HandleErrorsInternal(r_vector);
+	return IRM_OK;
+}
+#else
+/* ---------------------------------------------------------------------- */
+IRM_RESULT 
+PhreeqcRM::CheckCells()
+/* ---------------------------------------------------------------------- */
+{
+	IRM_RESULT return_value = IRM_OK;
+	std::vector<int> missing;
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		for(int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+		{
+			cxxSolution *soln_ptr = this->workers[n]->Get_solution(i);
+			if (soln_ptr == NULL)
+			{
+				missing.push_back(i);
+			}
+		}
+	}
+
+	if (missing.size() > 0)
+	{
+		std::ostringstream estr;
+		estr << "Solutions not defined for these cells:\n";
+		for (size_t i = 0; i < missing.size(); i++)
+		{
+			estr << "Chem cell "<< i << " = Grid cell(s): ";
+			for (size_t j = 0; j < backward_mapping[i].size(); j++)
+			{
+				estr << backward_mapping[i][j] << " ";
+			}
+			estr << "\n";
+		}
+		ErrorMessage(estr.str());
+		throw PhreeqcRMStop();
+	}
+	return return_value;
+}
+#endif
 /* ---------------------------------------------------------------------- */
 int 
 PhreeqcRM::CheckSelectedOutput()
@@ -3191,10 +3270,10 @@ PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 #endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 /* ---------------------------------------------------------------------- */
-{
+{	
 	// Check for errors
 	std::vector<int> recv_buffer;
 	recv_buffer.resize(this->mpi_tasks);
@@ -3211,10 +3290,8 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 		}
 	}
 	MPI_Bcast(&this->error_count, 1, MPI_INT, 0, phreeqcrm_comm);
-
 	// return if no errors
-	if (error_count == 0) return 0;
-
+	if (error_count == 0) return IRM_OK;
 	// Root write any error messages
 	for (int n = 0; n < this->mpi_tasks; n++)
 	{
@@ -3261,11 +3338,12 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 			}
 		}
 	}
+	MPI_Barrier(phreeqcrm_comm);
 	throw PhreeqcRMStop();
 }
 #else
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 /* ---------------------------------------------------------------------- */
 {
@@ -3283,7 +3361,7 @@ PhreeqcRM::HandleErrorsInternal(std::vector< int > &rtn)
 	}
 	if (error_count > 0)
 		throw PhreeqcRMStop();
-	return this->error_count;
+	return IRM_OK;
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -4468,7 +4546,7 @@ PhreeqcRM::MpiWorker()
 	}
 	catch (...)
 	{
-		std::cerr << "Catch in MpiWorker" << std::endl;
+		//std::cerr << "Catch in MpiWorker" << std::endl;
 		return_value = IRM_FAIL;
 	}
 #endif
@@ -5702,8 +5780,14 @@ PhreeqcRM::ReturnHandler(IRM_RESULT result, const std::string & e_string)
 {
 	if (result < 0)
 	{
-		this->DecodeError(result);
-		this->ErrorMessage(e_string);
+		//if (this->mpi_myself == 0)
+		{
+			this->DecodeError(result);
+			this->ErrorMessage(e_string);
+			std::ostringstream flush;
+			flush << std::endl;
+			this->ErrorMessage(flush.str(), false);
+		}
 		switch (this->error_handler_mode)
 		{
 		case 0:
@@ -5735,6 +5819,22 @@ PhreeqcRM::RunCells()
 	{
 		int method = METHOD_RUNCELLS;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+
+	// check that all solutions are defined
+	if (this->need_error_check)
+	{
+
+		this->need_error_check = false;
+		try
+		{
+			CheckCells();
+		}
+		catch(...)
+		{
+			MPI_Barrier(phreeqcrm_comm);
+			return this->ReturnHandler(IRM_FAIL, "PhreeqcRM::RunCells");
+		}
 	}
 	IRM_RESULT return_value = IRM_OK;
 	/*
@@ -5825,6 +5925,19 @@ PhreeqcRM::RunCells()
 /*
  *   Update solution compositions in sz_bin
  */
+	// check that all solutions are defined
+	if (this->need_error_check)
+	{
+		this->need_error_check = false;
+		try
+		{
+			CheckCells();
+		}
+		catch(...)
+		{
+			return this->ReturnHandler(IRM_FAIL, "PhreeqcRM::RunCells");
+		}
+	}
 	//clock_t t0 = clock();
 	IRM_RESULT return_value = IRM_OK;
 	try
