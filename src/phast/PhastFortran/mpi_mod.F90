@@ -25,7 +25,8 @@ MODULE mpi_mod
              METHOD_RUNTRANSPORT           = 1013, &
              METHOD_SBCGATHER              = 1014, &
              METHOD_CGATHER                = 1015, &
-             METHOD_TIMESTEPSAVE           = 1016
+             METHOD_TIMESTEPSAVE           = 1016, &
+             METHOD_TIMINGBARRIER          = 1017
   
 CONTAINS  
 

@@ -272,6 +272,7 @@ INTEGER t_ticks, clock_rate, clock_max
 #endif
 
 #if defined(USE_MPI)
+    CALL Timing_barrier()
     t = MPI_Wtime()
 #else    
     call SYSTEM_CLOCK(t_ticks, clock_rate, clock_max)
@@ -797,3 +798,15 @@ SUBROUTINE convert_to_moles(id, c, n)
     ENDIF
     
 END SUBROUTINE convert_to_moles  
+SUBROUTINE Timing_barrier()
+    USE mcc, ONLY: mpi_myself
+    USE mpi_mod
+    IMPLICIT NONE 
+    INTEGER :: i
+#ifdef USE_MPI  
+    if (mpi_myself == 0) then
+        CALL MPI_BCAST(METHOD_TIMINGBARRIER, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+    endif 
+    CALL MPI_BARRIER(world_comm, ierrmpi)
+#endif 
+END SUBROUTINE Timing_barrier  
