@@ -31,7 +31,7 @@ Aerobic
 
 410 O = TOT("O(0)")*16*1000
 430 S1 = TOT("Substrate")*1000
-450 x1 = KIN("aerobic_biomass")
+450 x1 = KIN("aerobic_biomass") / SOLN_VOL
 470 Ib = 1 + x1 / kbio
 
 500    REM  **  Oxygen rate ***
@@ -40,7 +40,7 @@ Aerobic
 530 rateS1 = 2*(vmaxS1 * x1 / Ib) * (S1 / ( kh1S1 + S1))
 560 rate = rateO
 570 if rateS1 < rate then rate = rateS1
-590 mg_O = -TIME*rate
+590 mg_O = -TIME * rate * SOLN_VOL
 600 SAVE mg_O
         -end
 
@@ -55,16 +55,16 @@ Aerobic_biomass
 
 410 O = TOT("O(0)")*16*1000
 430 S1 = TOT("Substrate")*1000
-450 x1 = KIN("aerobic_biomass")
+450 x1 = KIN("aerobic_biomass") / SOLN_VOL
 470 Ib = 1 + x1 / kbio
 
 520    REM  **  Substrate rate ***
-530 rateS1 = .25*(vmaxS1 * x1 / Ib) * (S1 / ( kh1S1 + S1))
+530 rateS1 = 0.25 * (vmaxS1 * x1 / Ib) * (S1 / ( kh1S1 + S1))
 540    REM  **  Oxygen rate ***
-550 rateO = 0.125*(vmaxO * x1 / Ib) * (O / ( kh1O + O))
+550 rateO = 0.125 * (vmaxO * x1 / Ib) * (O / ( kh1O + O))
 560 rate = RateO
 570 if rateS1 < rate then rate = rateS1
-590 mg_O_biomass = -TIME*(rate - km * x1)
+590 mg_O_biomass = -TIME * (rate - km * x1) * SOLN_VOL
 600 SAVE mg_O_biomass
         -end
 
@@ -85,7 +85,7 @@ SELECTED_OUTPUT
         -file ex3.dummy.sel
         -reset false
 USER_PUNCH
--headings Substrate O(0) O_biomass
+-headings Substrate O(0) O_biomass 
 10 PUNCH TOT("Substrate")*1000,  TOT("O(0)")*16*1000
-20 PUNCH KIN("Aerobic_biomass")
+20 PUNCH KIN("Aerobic_biomass") / SOLN_VOL
 END
