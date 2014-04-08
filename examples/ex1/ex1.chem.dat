@@ -32,7 +32,7 @@ RATES
         A_decay
         -start
 10 rate = -(TOT("A") + MOL("SurfA")) * .01
-20 moles = rate * TIME
+20 moles = rate * TIME * SOLN_VOL
 30 SAVE moles
         -end
 END
