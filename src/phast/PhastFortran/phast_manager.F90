@@ -410,13 +410,16 @@ SUBROUTINE time_parallel(i)
         write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time transport:           ", time_transport, " Cumulative:", cum_transport
         status = RM_LogMessage(rm_id, logline)
         status = RM_ScreenMessage(rm_id, logline)
-        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time flow/trans messages: ", time_transfer, " Cumulative:", cum_transfer
+        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time flow/trans messages: ", &
+               time_transfer, " Cumulative:", cum_transfer
         status = RM_LogMessage(rm_id, logline)
         status = RM_ScreenMessage(rm_id, logline)
-        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry:           ", time_chemistry, " Cumulative:", cum_chemistry
+        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry:           ", &
+               time_chemistry, " Cumulative:", cum_chemistry
         status = RM_LogMessage(rm_id, logline)
         status = RM_ScreenMessage(rm_id, logline) 
-        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry messages:  ", time_chemistry_transfer, " Cumulative:", cum_chemistry_transfer
+        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry messages:  ", &
+               time_chemistry_transfer, " Cumulative:", cum_chemistry_transfer
         status = RM_LogMessage(rm_id, logline)
         status = RM_ScreenMessage(rm_id, logline)  
     endif

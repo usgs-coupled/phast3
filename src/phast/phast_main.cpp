@@ -1,3 +1,6 @@
+#if defined(USE_MPI)
+#include <mpi.h>
+#endif
 #include <stdlib.h>
 #include <iostream>
 #include <string>
@@ -6,9 +9,6 @@
 #include "PhreeqcRM.h"
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
-#if defined(USE_MPI)
-#include <mpi.h>
-#endif
 
 #if defined(_MSC_VER)
 #define FC_FUNC_(name,NAME) NAME

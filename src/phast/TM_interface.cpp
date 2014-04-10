@@ -1,3 +1,6 @@
+#ifdef USE_MPI
+#include "mpi.h"
+#endif
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -6,9 +9,6 @@
 #include "TM_interface.h"
 #ifdef USE_OPENMP
 #include <omp.h>
-#endif
-#ifdef USE_MPI
-#include "mpi.h"
 #endif
 extern void transport_component(int *i);
 extern void transport_component_thread(int *i);

@@ -808,7 +808,7 @@ SUBROUTINE write5
               status = RunString(iphreeqc_id, string)
               if (status .ne. 0) then
                   status = RM_ErrorMessage(rm_id, "Well calculation of pH, write5.")
-                  do i = 1, i < GetErrorStringLineCount(iphreeqc_id)
+                  do i = 1, GetErrorStringLineCount(iphreeqc_id)
                       call GetErrorStringLine(iphreeqc_id, i, line)
                       status = RM_ErrorMessage(rm_id, line)
                   enddo

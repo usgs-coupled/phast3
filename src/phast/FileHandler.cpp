@@ -1,3 +1,4 @@
+#include "PhreeqcRM.h"
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -5,7 +6,6 @@
 #include <map>
 #include <iostream>
 #include "FileHandler.h"
-#include "PhreeqcRM.h"
 #include "RM_interface_C.h"
 #ifdef USE_GZ
 #include "gzstream.h"

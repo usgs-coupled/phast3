@@ -3,18 +3,18 @@
 */
 #if !defined(PHREEQCRM_H_INCLUDED)
 #define PHREEQCRM_H_INCLUDED
-#include "PHRQ_base.h"
-#include "IPhreeqcPhast.h"
-#include "StorageBin.h"
-#include <vector>
-#include <list>
-#include <set>
 #ifdef USE_MPI
 #include "mpi.h"
 #define MP_TYPE MPI_Comm
 #else
 #define MP_TYPE int
 #endif
+#include "PHRQ_base.h"
+#include "IPhreeqcPhast.h"
+#include "StorageBin.h"
+#include <vector>
+#include <list>
+#include <set>
 
 class PHRQ_io;
 class IPhreeqc;
