@@ -145,9 +145,13 @@ Called only by root.
 	IRM_RESULT                                CloseFiles(void);
 /**
 @a N sets of component concentrations are converted to SOLUTIONs numbered 1-@a n in the Utility IPhreeqc.
-The solutions can be reacted and manipulated with the methods of IPhreeqc. The motivation for this
+The solutions can be reacted and manipulated with the methods of IPhreeqc. If solution concentration units
+(@ref SetUnitsSolution) is per liter, one liter of solution is created in the Utility instance; if solution
+concentration units are mass fraction, one kilogram of solution is created in the Utility instance.
+The motivation for this
 method is the mixing of solutions in wells, where it may be necessary to calculate solution properties
-(pH for example) or react the mixture to form scale minerals. The code fragment below makes a mixture of
+(pH for example) or react the mixture to form scale minerals. 
+The code fragment below makes a mixture of
 concentrations and then calculates the pH of the mixture.
 @param c             Vector of concentrations to be made SOLUTIONs in Utility IPhreeqc. 
 Vector contains @a n values for each component (@ref GetComponentCount) in sequence. 
@@ -185,8 +189,8 @@ iphreeqc_result = util_ptr->GetSelectedOutputValue2(1, 0, &vtype, &pH, svalue, 1
 @par MPI:
 Called only by root.
  */
-	IPhreeqc *                                Concentrations2Utility(std::vector<double> &c, 
-		                                           std::vector<double> tc, std::vector<double> p_atm);
+IPhreeqc * Concentrations2Utility(std::vector<double> &c, 
+		   std::vector<double> tc, std::vector<double> p_atm);
 /**
 Provides a mapping from grid cells in the user's model to cells for which chemistry needs to be run. 
 The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells 

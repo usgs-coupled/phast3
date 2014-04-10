@@ -758,8 +758,15 @@ FileHandler::WriteXYZ(int id, int *print_xyz, int *xyz_mask)
 						int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
 
 						// write xyz file
+#ifdef OLD_STYLE_XYZ
+						for (int ichem = 0; ichem < RM_GetChemistryCellCount(id); ichem++)
+						{
+							PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+							int irow = Reaction_module_ptr->GetBackwardMapping()[ichem][0];
+#else
 						for (int irow = 0; irow < nxyz; irow++)
 						{
+#endif
 							if (xyz_mask[irow] <= 0) continue;
 							int active = 1;
 							if (mapping[irow] < 0 || saturation[irow] <= 0)

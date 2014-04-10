@@ -7330,10 +7330,14 @@ read_units(void)
 			{
 				exchange_units = WATER;
 			}
+			else if (token[0] == 'c')
+			{
+				exchange_units = CELL;
+			}
 			else
 			{
 				input_error++;
-				sprintf(error_string, "Expected units for concentration of exchanger: water (mol/L) or rock (mol/L).");
+				sprintf(error_string, "Expected units for concentration of exchanger: mol/L of cell, water, or rock.");
 				error_msg(error_string, CONTINUE);
 			}
 			break;	
@@ -7349,10 +7353,14 @@ read_units(void)
 			{
 				surface_units = WATER;
 			}
+			else if (token[0] == 'c')
+			{
+				surface_units = CELL;
+			}
 			else
 			{
 				input_error++;
-				sprintf(error_string, "Expected units for concentration of surface: water (mol/L) or rock (mol/L).");
+				sprintf(error_string, "Expected units for concentration of surface: mol/L of cell, water, or rock.");
 				error_msg(error_string, CONTINUE);
 			}
 			break;
@@ -7367,10 +7375,14 @@ read_units(void)
 			{
 				ssassemblage_units = WATER;
 			}
+			else if (token[0] == 'c')
+			{
+				ssassemblage_units = CELL;
+			}
 			else
 			{
 				input_error++;
-				sprintf(error_string, "Expected units for concentration of solid_solution: water (mol/L) or rock (mol/L).");
+				sprintf(error_string, "Expected units for concentration of solid_solution: mol/L of cell, water, or rock.");
 				error_msg(error_string, CONTINUE);
 			}
 			break;
@@ -7385,10 +7397,14 @@ read_units(void)
 			{
 				gasphase_units = WATER;
 			}
+			else if (token[0] == 'c')
+			{
+				gasphase_units = CELL;
+			}
 			else
 			{
 				input_error++;
-				sprintf(error_string, "Expected units for concentration of gas_phase: water (mol/L) or rock (mol/L).");
+				sprintf(error_string, "Expected units for concentration of gas_phase: mol/L of cell, water, or rock.");
 				error_msg(error_string, CONTINUE);
 			}
 			break;
@@ -7403,10 +7419,14 @@ read_units(void)
 			{
 				kinetics_units = WATER;
 			}
+			else if (token[0] == 'c')
+			{
+				kinetics_units = CELL;
+			}
 			else
 			{
 				input_error++;
-				sprintf(error_string, "Expected units for concentration of kinetics: water (mol/L) or rock (mol/L).");
+				sprintf(error_string, "Expected units for concentration of kinetics: mol/L of cell, water, or rock.");
 				error_msg(error_string, CONTINUE);
 			}
 			break;
@@ -7421,10 +7441,14 @@ read_units(void)
 			{
 				ppassemblage_units = WATER;
 			}
+			else if (token[0] == 'c')
+			{
+				ppassemblage_units = CELL;
+			}
 			else
 			{
 				input_error++;
-				sprintf(error_string, "Expected units for concentration of equilibrium_phases: water (mol/L) or rock (mol/L).");
+				sprintf(error_string, "Expected units for concentration of equilibrium_phases: mol/L of cell, water, or rock.");
 				error_msg(error_string, CONTINUE);
 			}
 			break;

@@ -199,7 +199,7 @@ if( numCPU < 1 )
 	  //		}
 		this->nxyz = nxyz_arg;
 	}
-	this->component_h2o = false;
+	this->component_h2o = true;
 #ifdef USE_MPI
 	MPI_Bcast(&this->nxyz, 1, MPI_INT, 0, phreeqcrm_comm);
 	MPI_Bcast(&this->component_h2o, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
@@ -1360,13 +1360,14 @@ PhreeqcRM::Concentrations2UtilityH2O(std::vector<double> &c, std::vector<double>
 				d[1] += h2o_mol;
 			}
 			break;
-		case 3:  // mass fraction, kg/kg solution to mol/L
+		case 3:  // mass fraction, kg/kg solution to mol/kgs
 			{
 				double *ptr = &c[i];
 				// convert to mol/L
 				for (size_t k = 1; k < this->components.size(); k++)
 				{	
-					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
+					//d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
+					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k]);
 				}	
 				double h2o_mol = ptr[0] * 1000.0 / this->gfw[0] * density[i];
 				d[0] += h2o_mol * 2.0;
@@ -1428,13 +1429,14 @@ PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<doubl
 				}	
 			}
 			break;
-		case 3:  // mass fraction, kg/kg solution to mol/L
+		case 3:  // mass fraction, kg/kg solution to mol/kgs
 			{
 				double *ptr = &c[i];
 				// convert to mol/L
 				for (size_t k = 0; k < this->components.size(); k++)
 				{	
-					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
+					//d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
+					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k]);
 				}	
 			}
 			break;

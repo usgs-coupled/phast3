@@ -1021,7 +1021,7 @@ EXTERNAL std::map < std::string, int >
 
 enum SOLID_UNITS
 {
-		WATER = 1, ROCK = 2
+		CELL = 0, WATER = 1, ROCK = 2
 };
 EXTERNAL SOLID_UNITS exchange_units;
 EXTERNAL SOLID_UNITS surface_units;
