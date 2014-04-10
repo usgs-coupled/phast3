@@ -516,7 +516,7 @@ SUBROUTINE InitialEquilibrationRM
     INCLUDE 'RM_interface_F.f90.inc' 
     DOUBLE PRECISION :: deltim_dummy
     CHARACTER(LEN=130) :: logline1
-    INTEGER :: stop_msg, status, i
+    INTEGER :: stop_msg, status, i, imedia
     
     ! ...  Initial equilibrate
     IF (solute) THEN
@@ -542,8 +542,10 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetTime(rm_id, time_phreeqc) 
         status = RM_SetTimeStep(rm_id, deltim_dummy) 
         status = RM_SetConcentrations(rm_id, c(1,1))
-        status = RM_RunCells(rm_id)    
-        CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
+        status = RM_RunCells(rm_id)   
+        imedia = 0
+        if (pr_hdf_media) imedia = 1
+        CALL FH_WriteFiles(rm_id, prhdfci,  imedia, prcphrqi, &
 	        iprint_xyz(1), 0);  
     ENDIF       
 END SUBROUTINE InitialEquilibrationRM
@@ -649,7 +651,7 @@ SUBROUTINE TimeStepRM
     IMPLICIT NONE
     SAVE
     INCLUDE 'RM_interface_F.f90.inc' 
-    INTEGER stop_msg, status, i
+    INTEGER stop_msg, status, i, ihdf, ixyz, imedia
     CHARACTER(LEN=130) :: logline1
     
     stop_msg = 0
@@ -681,7 +683,13 @@ SUBROUTINE TimeStepRM
         status = RM_GetConcentrations(rm_id, c(1,1))
         CALL time_parallel(12)                                    ! 12 - 11 chemistry communication
         
-        CALL FH_WriteFiles(rm_id, prhdfc, pr_hdf_media, prcphrq, &
+        ihdf = 0
+        if (prhdfc) ihdf = 1
+        imedia = 0
+        if (pr_hdf_media) imedia = 1 
+        ixyz = 0
+        if (prcphrq) ixyz = 1        
+        CALL FH_WriteFiles(rm_id, ihdf, imedia, ixyz, &
             iprint_xyz(1), print_restart%print_flag_integer) 
         CALL time_parallel(13)                                    ! 13 - 12 chemistry files
     ENDIF    ! ... Done with chemistry    

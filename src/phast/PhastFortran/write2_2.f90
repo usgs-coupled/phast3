@@ -59,7 +59,7 @@ SUBROUTINE write2_2
   REAL(KIND=kdp) :: ph, alk
   INTEGER :: da_err
   INTEGER :: a_err
-  CHARACTER(LEN=100) :: string, svalue
+  CHARACTER(LEN=100) :: string, svalue, line
   INTEGER :: iphreeqc_id, nthreads, status, vtype
   DOUBLE PRECISION, DIMENSION(100) :: c_well
   DOUBLE PRECISION :: tc, p_atm
@@ -80,9 +80,12 @@ SUBROUTINE write2_2
   IF(nwel > 0) THEN
      nthreads = RM_GetThreadCount(rm_id)
      iphreeqc_id = RM_GetIPhreeqcId(rm_id, nthreads + 1)
-     string = "SELECTED_OUTPUT; -reset false; -pH; -alkalinity"
+     if (iphreeqc_id < 0) then 
+         status = RM_Abort(rm_id, iphreeqc_id, "write2_2, RM_GetIPhreeqcId");
+     endif
+     string = "DELETE; -cell 1; SELECTED_OUTPUT; -reset false; -pH; -alkalinity"
      status = RunString(iphreeqc_id, string)
-     string = "RUN_CELLS; -cell 0"
+     string = "RUN_CELLS; -cell 1"
      IF(solute .AND. prtic_well_timser) THEN
         ! ... Write static data to file 'FUPLT' for temporal plots
         WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+2,'(1pe15.7,a)) '
@@ -101,10 +104,14 @@ SUBROUTINE write2_2
                c_well(i) = c(m,i)
            enddo       
            iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well(1), 1, tc, p_atm)
-           if (iphreeqc_id < 0) then 
-               status = RM_Abort(rm_id, iphreeqc_id, "write2_2, RM_Concentrations2Utility");
-           endif
            status = RunString(iphreeqc_id, string)
+           if (status .ne. 0) then
+               status = RM_ErrorMessage(rm_id, "Well calculation of pH, write2_2.")
+               do i = 1, i < GetErrorStringLineCount(iphreeqc_id)
+                   call GetErrorStringLine(iphreeqc_id, i, line)
+                   status = RM_ErrorMessage(rm_id, line)
+               enddo
+           endif
            status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
            status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, alk, svalue)
            WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &

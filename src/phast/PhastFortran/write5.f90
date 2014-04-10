@@ -55,7 +55,7 @@ SUBROUTINE write5
   REAL(KIND=kdp) :: ph, alk
   CHARACTER(LEN=130) :: logline1, logline2
   INTEGER :: status
-  CHARACTER(LEN=100) :: string, svalue
+  CHARACTER(LEN=100) :: string, svalue, line
   INTEGER :: iphreeqc_id, vtype
   DOUBLE PRECISION :: tc, p_atm
   DOUBLE PRECISION :: c_well(100)
@@ -768,7 +768,12 @@ SUBROUTINE write5
         ntprwel = ntprwel+1
      END IF
      IF(prtem) THEN
-        string = "RUN_CELLS; -cell 0"
+        iphreeqc_id = RM_GetIPhreeqcId(rm_id, RM_GetThreadCount(rm_id) + 1)
+        if (iphreeqc_id < 0) then 
+           status = RM_Abort(rm_id, iphreeqc_id, "writer, RM_GetIPhreeqcId");
+        endif
+        status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -alkalinity");
+        string = "RUN_CELLS; -cell 1"
         DO  iwel=1,nwel
            mkt=mwel(iwel,nkswel(iwel))
            u2=0.d0
@@ -801,6 +806,13 @@ SUBROUTINE write5
               p_atm = 1.0
               iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well(1), 1, tc, p_atm)
               status = RunString(iphreeqc_id, string)
+              if (status .ne. 0) then
+                  status = RM_ErrorMessage(rm_id, "Well calculation of pH, write5.")
+                  do i = 1, i < GetErrorStringLineCount(iphreeqc_id)
+                      call GetErrorStringLine(iphreeqc_id, i, line)
+                      status = RM_ErrorMessage(rm_id, line)
+                  enddo
+              endif              
               status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
               status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, alk, svalue)              
               WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+2,'(1pe15.7,a))'

@@ -98,7 +98,10 @@ Called only by root.
 IRM_RESULT        RM_CloseFiles(int id);
 /**
 @a N sets of component concentrations are converted to SOLUTIONs numbered 1-@a n in the Utility IPhreeqc.
-The solutions can be reacted and manipulated with the methods of IPhreeqc. The motivation for this
+The solutions can be reacted and manipulated with the methods of IPhreeqc. If solution concentration units
+(@ref SetUnitsSolution) is per liter, one liter of solution is created in the Utility instance; if solution
+concentration units are mass fraction, one kilogram of solution is created in the Utility instance.
+The motivation for this
 method is the mixing of solutions in wells, where it may be necessary to calculate solution properties
 (pH for example) or react the mixture to form scale minerals. The code fragments below make a mixture of
 concentrations and then calculates the pH of the mixture.
