@@ -664,10 +664,12 @@ SUBROUTINE TimeStepRM
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
         status = RM_SetPoreVolume(rm_id, pv(1))
-        sat = 1.0
+        sat = frac
         do i = 1, nxyz
             if (frac(i) <= 0.0) then
                 sat(i) = 0.0
+            else if (frac(i) > 1.0) then
+                sat(i) = 1.0
             endif
         enddo
         status = RM_SetSaturation(rm_id, sat(1))
