@@ -546,6 +546,7 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetTimeStep(rm_id, deltim_dummy) 
         status = RM_SetConcentrations(rm_id, c(1,1))
         status = RM_RunCells(rm_id)   
+        status = RM_GetConcentrations(rm_id, c(1,1))
         imedia = 0
         if (pr_hdf_media) imedia = 1
         CALL FH_WriteFiles(rm_id, prhdfci,  imedia, prcphrqi, &

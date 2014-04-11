@@ -955,6 +955,7 @@ SUBROUTINE write5
                        IF(l1 == 0) l1 = nxy
                        m = mfsbc(l1)
                     END IF
+                    if (m .lt. 1) cycle ! not sure if this is right, but avoids crash
                     lprnt1(m) = 1
                     prthd=.TRUE.
                     aprnt3(m) = qsfbc(lc,iis)
