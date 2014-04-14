@@ -238,6 +238,8 @@ if( numCPU < 1 )
 	// print flags
 	this->print_chemistry_on.resize(3, false);  // print flag for chemistry output file 	
 	this->selected_output_on = true;			// Create selected output
+
+	// Units
 	this->units_Solution = 1;				    // 1 mg/L, 2 mol/L, 3 kg/kgs
 	this->units_PPassemblage = 0;			    // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 	this->units_Exchange = 0;			        // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
@@ -245,8 +247,9 @@ if( numCPU < 1 )
 	this->units_GasPhase = 0;			        // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 	this->units_SSassemblage = 0;			    // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 	this->units_Kinetics = 0;			        // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+	this->use_solution_density_volume = true;   // Use calculated solution density and volume
 
-	//this->stop_message = false;
+	// errors
 	this->error_count = 0;
 	this->error_handler_mode = 0;
 	this->need_error_check = true;
@@ -1555,18 +1558,18 @@ PhreeqcRM::CreateMapping(std::vector<int> &grid2chem)
 }
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
+PhreeqcRM::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v, double dens)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->component_h2o)
 	{
-		return cxxSolution2concentrationH2O(cxxsoln_ptr, d, v);
+		return cxxSolution2concentrationH2O(cxxsoln_ptr, d, v, dens);
 	}
-	return cxxSolution2concentrationNoH2O(cxxsoln_ptr, d, v);
+	return cxxSolution2concentrationNoH2O(cxxsoln_ptr, d, v, dens);
 }
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
+PhreeqcRM::cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v, double dens)
 /* ---------------------------------------------------------------------- */
 {
 	d.clear();
@@ -1614,7 +1617,7 @@ PhreeqcRM::cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<d
 		break;
 	case 3:  // convert to mass fraction kg/kgs
 		{
-			double kgs = cxxsoln_ptr->Get_density() * cxxsoln_ptr->Get_soln_vol();
+			double kgs = dens * v;
 			double moles_h2o = cxxsoln_ptr->Get_mass_water() * 1.0e3 / this->gfw[0];
 			d.push_back(cxxsoln_ptr->Get_mass_water() / kgs);
 			double excess_h = cxxsoln_ptr->Get_total_h() - 2.0 * moles_h2o;
@@ -1633,7 +1636,7 @@ PhreeqcRM::cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<d
 
 /* ---------------------------------------------------------------------- */
 void
-PhreeqcRM::cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v)
+PhreeqcRM::cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v, double dens)
 /* ---------------------------------------------------------------------- */
 {
 	d.clear();
@@ -1674,7 +1677,7 @@ PhreeqcRM::cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector
 	case 3:  // convert to mass fraction kg/kgs
 		{
 			//double kgs = v * cxxsoln_ptr->Get_density();
-			double kgs = cxxsoln_ptr->Get_density() * cxxsoln_ptr->Get_soln_vol();
+			double kgs = dens * v;
 			d.push_back(cxxsoln_ptr->Get_total_h() * this->gfw[0] / 1000. / kgs); 
 			d.push_back(cxxsoln_ptr->Get_total_o() * this->gfw[1] / 1000. / kgs); 
 			d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2] / 1000. / kgs); 
@@ -2611,8 +2614,23 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 			assert (cxxsoln_ptr);
 			int i_grid = this->backward_mapping[j][0];
 			//double v = this->pore_volume[i_grid] / this->pore_volume_zero[i_grid] * saturation[i_grid];
-			double v = cxxsoln_ptr->Get_soln_vol();
-			this->cxxSolution2concentration(cxxsoln_ptr, d, v);
+			double v, dens;
+			if (this->use_solution_density_volume)
+			{
+				v = cxxsoln_ptr->Get_soln_vol();
+				dens = cxxsoln_ptr->Get_density();
+			}
+			else
+			{
+				int k = this->backward_mapping[j][0];
+				v = this->saturation[k] * this->pore_volume[k] / this->cell_volume[k];
+				if (v <= 0)
+				{
+					v = cxxsoln_ptr->Get_soln_vol();
+				}
+				dens = this->density[k];
+			}
+			this->cxxSolution2concentration(cxxsoln_ptr, d, v, dens);
 			for (int i = 0; i < (int) this->components.size(); i++)
 			{
 				solns.push_back(d[i]);
@@ -2703,8 +2721,23 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 				cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
 				assert (cxxsoln_ptr);
 				int i_grid = this->backward_mapping[j][0];
-				double v = cxxsoln_ptr->Get_soln_vol();
-				this->cxxSolution2concentration(cxxsoln_ptr, d, v);
+				double v, dens;
+				if (this->use_solution_density_volume)
+				{
+					v = cxxsoln_ptr->Get_soln_vol();
+					dens = cxxsoln_ptr->Get_density();
+				}
+				else
+				{
+					int k = this->backward_mapping[j][0];
+					v = saturation[k] * pore_volume[k] / cell_volume[k];
+					dens = density[k];
+					if (v <= 0)
+					{
+						v = cxxsoln_ptr->Get_soln_vol();
+					}
+				}
+				this->cxxSolution2concentration(cxxsoln_ptr, d, v, dens);
 
 				// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
 				std::vector<int>::iterator it;
@@ -3484,7 +3517,9 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 				// Make concentrations in destination_c
 				std::vector<double> d;
 				cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
-				cxxSolution2concentration(&cxxsoln, d, cxxsoln.Get_soln_vol());
+				double v = cxxsoln.Get_soln_vol();
+				double dens = cxxsoln.Get_density();
+				cxxSolution2concentration(&cxxsoln, d, v, dens);
 
 				// Put concentrations in c
 				double *d_ptr = &destination_c[i];
@@ -4521,6 +4556,13 @@ PhreeqcRM::MpiWorker()
 				{
 					std::vector<double> c;
 					return_value = this->SpeciesConcentrations2Module(c);
+				}
+				break;
+			case METHOD_USESOLUTIONDENSITYVOLUME:
+				if (debug_worker) std::cerr << "METHOD_USESOLUTIONDENSITYVOLUME" << std::endl;
+				{
+					bool tf = true;
+					this->UseSolutionDensityVolume(tf);
 				}
 				break;
 			default:
@@ -7888,6 +7930,27 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 	return return_value;
 }
 #endif
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::UseSolutionDensityVolume(bool tf)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_USESOLUTIONDENSITYVOLUME;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+#endif
+	IRM_RESULT return_value = IRM_OK;
+	if (mpi_myself == 0)
+	{
+		this->use_solution_density_volume = tf;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->use_solution_density_volume,  1, MPI_LOGICAL, 0, phreeqcrm_comm);
+#endif
+}
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::WarningMessage(const std::string &str)

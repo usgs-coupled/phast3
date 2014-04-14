@@ -94,6 +94,7 @@
 #define RM_SetUnitsSSassemblage            FC_FUNC_ (rm_setunitsssassemblage,          RM_SETUNITSSSASSEMBLAGE)
 #define RM_SetUnitsSurface                 FC_FUNC_ (rm_setunitssurface,               RM_SETUNITSSURFACE)
 #define RM_SpeciesConcentrations2Module    FC_FUNC_ (rm_speciesconcentrations2module,  RM_SPECIESCONCENTRATIONS2MODULE)
+#define RM_UseSolutionDensityVolume        FC_FUNC_ (rm_usesolutiondensityvolume,      RM_USESOLUTIONDENSITYVOLUME)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #endif
@@ -203,6 +204,7 @@ IRM_RESULT RM_SetUnitsSolution(int *id, int *i);
 IRM_RESULT RM_SetUnitsSSassemblage(int *id, int *i);
 IRM_RESULT RM_SetUnitsSurface(int *id, int *i);
 IRM_RESULT RM_SpeciesConcentrations2Module(int *id, double * species_conc);
+IRM_RESULT RM_UseSolutionDensityVolume(int *id, int *tf);
 IRM_RESULT RM_WarningMessage(int *id, const char *warn_str, size_t l = 0);
 void       RM_write_bc_raw(int *id, 
                 int *solution_list, 

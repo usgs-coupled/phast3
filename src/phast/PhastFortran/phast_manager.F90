@@ -77,6 +77,7 @@ SUBROUTINE phast_manager
 !
     IF(steady_flow) THEN
         CALL simulate_ss_flow                              ! calls read3 and init3
+        IF(errexe .OR. errexi) GO TO 50
         CALL init3_distribute                              ! Distribute for MPI
     ENDIF
     CALL zone_flow_write_heads                             ! Write zone flows 
@@ -494,6 +495,7 @@ SUBROUTINE CreateRM
         status = RM_SetErrorHandlerMode(rm_id, 2)   ! exit
         status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
         status = RM_SetFilePrefix(rm_id, f3name)
+        status = RM_UseSolutionDensityVolume(rm_id, 0)
         status = RM_OpenFiles(rm_id)
         status = RM_LoadDatabase(rm_id, f2name);
         !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
@@ -591,8 +593,6 @@ SUBROUTINE InitializeRM
         status = RM_SetUnitsSurface(rm_id, surface_units)            
         status = RM_SetTimeConversion(rm_id, cnvtmi)
         status = RM_SetPoreVolume(rm_id, pv0(1))
-        !status = RM_SetPoreVolumeZero(rm_id, pv0(1))
-        !status = RM_SetSaturation(rm_id, sat(1))
         status = RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
 	    status = 0
         if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
@@ -665,7 +665,7 @@ SUBROUTINE TimeStepRM
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
         status = RM_SetPoreVolume(rm_id, pv(1))
-        sat = frac
+        sat = 1.0
         do i = 1, nxyz
             if (frac(i) <= 0.0) then
                 sat(i) = 0.0
