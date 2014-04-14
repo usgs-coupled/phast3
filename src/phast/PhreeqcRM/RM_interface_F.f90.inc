@@ -494,6 +494,12 @@
             INTEGER, INTENT(in) :: id
             DOUBLE PRECISION, INTENT(in) :: species_conc
         END FUNCTION RM_SpeciesConcentrations2Module  
+
+        INTEGER FUNCTION RM_UseSolutionDensityVolume(id, tf)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, INTENT(in) :: tf
+        END FUNCTION RM_UseSolutionDensityVolume 
         
         INTEGER FUNCTION RM_WarningMessage(id, str) 
             IMPLICIT NONE
