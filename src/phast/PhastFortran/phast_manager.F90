@@ -570,7 +570,7 @@ SUBROUTINE InitializeRM
     IMPLICIT NONE
     SAVE
     INCLUDE 'RM_interface_F.f90.inc'
-    INTERFACE
+    INTERFACE    
         SUBROUTINE CreateMappingFortran(ic)
             implicit none
             INTEGER, DIMENSION(:,:), ALLOCATABLE, INTENT(INOUT) :: ic
@@ -597,12 +597,13 @@ SUBROUTINE InitializeRM
 	    status = 0
         if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)
-        if (fresur .and. .not. steady_flow) then
+        !if (fresur .and. .not. steady_flow) then
+        if (fresur) then
             ipartition_uz_solids = 1
         else
             ipartition_uz_solids = 0
         endif
-        !status = RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
+        status = RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
         status = RM_SetCellVolume(rm_id, volume(1))
         status = RM_SetRebalanceFraction(rm_id, rebalance_fraction_f)
         status = RM_SetRebalanceByCell(rm_id, rebalance_method_f)
@@ -665,7 +666,7 @@ SUBROUTINE TimeStepRM
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
         status = RM_SetPoreVolume(rm_id, pv(1))
-        sat = 1.0
+        sat = frac
         do i = 1, nxyz
             if (frac(i) <= 0.0) then
                 sat(i) = 0.0

@@ -3441,7 +3441,7 @@ int mpi_methods(int method, void *cookie)
 Called by workers, before call to @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetMpiWorkerCallbackCookie(int id, void *cookie);
-//int RM_SetPartitionUZSolids(int id, int t);
+IRM_RESULT RM_SetPartitionUZSolids(int id, int t);
 /**
 Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume
 to the cell volume (@ref RM_SetCellVolume). The volume of water in a cell is the porosity times the saturation

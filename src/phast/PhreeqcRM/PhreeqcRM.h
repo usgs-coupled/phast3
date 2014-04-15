@@ -53,7 +53,7 @@ typedef enum {
 	METHOD_SETDENSITY,
 	METHOD_SETERRORHANDLERMODE,
 	METHOD_SETFILEPREFIX,
-	//METHOD_SETPARTITIONUZSOLIDS,
+	METHOD_SETPARTITIONUZSOLIDS,
 	METHOD_SETPOREVOLUME,
 	METHOD_SETPRESSURE,
 	METHOD_SETPRINTCHEMISTRYON,
@@ -808,7 +808,7 @@ for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
 Called by root.
  */
 	int                                       GetNthSelectedOutputUserNumber(int n);
-	//const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
+	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 /**
 Returns the current set of pore volumes as 
 defined by the last use of @ref SetPoreVolume or the default (0.1 L). 
@@ -2676,7 +2676,7 @@ MPI and Fortran only. Defines a callback function that allows additional tasks t
 by the workers. See documentation of PhreeqcRM for C and Fortran, method RM_SetMpiWorkerCallback.
  */
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
-	//IRM_RESULT                                SetPartitionUZSolids(int t = -1);
+	IRM_RESULT                                SetPartitionUZSolids(bool tf);
 /**
 Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume
 to the cell volume (@ref SetCellVolume). The volume of water in a cell is the porosity times the saturation
@@ -3326,7 +3326,7 @@ protected:
 	void                                      cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v, double dens);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	IRM_RESULT                                HandleErrorsInternal(std::vector< int > & r);
-	//void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
+	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
 	void                                      RebalanceLoadPerCell(void);
 	IRM_RESULT                                RunCellsThread(int i);
@@ -3348,24 +3348,23 @@ protected:
 	std::string chemistry_file_name;
 	std::string dump_file_name;
 	std::string file_prefix;
-	//cxxStorageBin uz_bin;
+	cxxStorageBin uz_bin;
 	cxxStorageBin phreeqc_bin;
 	int mpi_myself;
 	int mpi_tasks;
 	std::vector <std::string> components;	// list of components to be transported
 	std::vector <double> gfw;				// gram formula weights converting mass to moles (1 for each component)
 	double gfw_water;						// gfw of water
-	//bool partition_uz_solids;
+	bool partition_uz_solids;
 	int nxyz;								// number of nodes 
 	int count_chemistry;					// number of cells for chemistry
 	double time;						    // time from transport, sec 
 	double time_step;					    // time step from transport, sec
 	double time_conversion;					// time conversion factor, multiply to convert to preferred time unit for output
-	//std::vector <double> old_saturation;	// saturation fraction from previous step
+	std::vector <double> old_saturation;	// saturation fraction from previous step
 	std::vector<double> saturation;	        // nxyz saturation fraction
 	std::vector<double> pressure;			// nxyz current pressure
 	std::vector<double> pore_volume;		// nxyz current pore volumes 
-	//std::vector<double> pore_volume_zero;	// nxyz initial pore volumes
 	std::vector<double> cell_volume;		// nxyz geometric cell volumes
 	std::vector<double> tempc;				// nxyz temperature Celsius
 	std::vector<double> density;			// nxyz density

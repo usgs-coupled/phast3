@@ -37,6 +37,7 @@ int advection_cpp()
 		status = phreeqc_rm.SetComponentH2O(false);
 		status = phreeqc_rm.SetRebalanceFraction(0.5);
 		status = phreeqc_rm.SetRebalanceByCell(true);
+		phreeqc_rm.UseSolutionDensityVolume(false);
 		status = phreeqc_rm.SetFilePrefix("Advect_cpp");
 		phreeqc_rm.OpenFiles();
 

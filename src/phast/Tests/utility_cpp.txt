@@ -22,10 +22,10 @@ Using solution 1.
 
 	Elements           Molality       Moles
 
-	Ca               3.000e-004  2.995e-004
-	Cl               1.200e-003  1.198e-003
-	K                9.851e-005  9.834e-005
-	Na               5.015e-004  5.006e-004
+	Ca               3.000e-004  2.991e-004
+	Cl               1.200e-003  1.196e-003
+	K                9.851e-005  9.822e-005
+	Na               5.015e-004  5.000e-004
 
 ----------------------------Description of solution----------------------------
 
@@ -33,20 +33,20 @@ Using solution 1.
                                        pe  =  14.315      Adjusted to redox equilibrium
        Specific Conductance (µS/cm, 15°C)  = 120
                           Density (g/cm³)  =   0.99925
-                               Volume (L)  =   0.99905
+                               Volume (L)  =   0.99785
                         Activity of water  =   1.000
                            Ionic strength  =  1.500e-003
-                       Mass of water (kg)  =  9.982e-001
-                 Total alkalinity (eq/kg)  = -2.533e-018
+                       Mass of water (kg)  =  9.970e-001
+                 Total alkalinity (eq/kg)  = -2.308e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  15.00
                            Pressure (atm)  =  3.00
-                  Electrical balance (eq)  = -2.196e-012
+                  Electrical balance (eq)  = -2.193e-012
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =  12
-                                  Total H  = 1.108154e+002
-                                  Total O  = 5.540822e+001
+                                  Total H  = 1.106821e+002
+                                  Total O  = 5.534157e+001
 
 ----------------------------Distribution of species----------------------------
 
@@ -92,7 +92,7 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
-------------------------------
-End of Run after 0.21 Seconds.
-------------------------------
+-------------------------------
+End of Run after 3.199 Seconds.
+-------------------------------
 

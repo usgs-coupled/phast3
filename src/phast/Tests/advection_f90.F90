@@ -80,6 +80,7 @@
     status = RM_SetComponentH2O(id, 0)
 	status = RM_SetRebalanceFraction(id, 0.5d0)
 	status = RM_SetRebalanceByCell(id, 1)
+    status = RM_UseSolutionDensityVolume(id, 0)
     
     status = RM_SetFilePrefix(id, "Advect_f90")
     ! Open error, log, and output files
