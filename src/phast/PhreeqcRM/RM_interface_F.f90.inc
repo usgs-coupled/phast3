@@ -363,11 +363,11 @@
 			END INTERFACE
         END FUNCTION RM_SetMpiWorkerCallback
 				
-        !INTEGER FUNCTION RM_SetPartitionUZSolids(id, t)   
-        !    IMPLICIT NONE
-        !    INTEGER, INTENT(in) :: id
-        !    INTEGER, INTENT(in)  :: t
-        !END FUNCTION RM_SetPartitionUZSolids 
+        INTEGER FUNCTION RM_SetPartitionUZSolids(id, tf)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, INTENT(in)  :: tf
+        END FUNCTION RM_SetPartitionUZSolids 
 
         INTEGER FUNCTION RM_SetPoreVolume(id, pv)   
             IMPLICIT NONE

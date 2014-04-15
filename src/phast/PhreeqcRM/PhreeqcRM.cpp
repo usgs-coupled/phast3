@@ -228,7 +228,7 @@ if( numCPU < 1 )
 	this->dump_file_name.append(".dump");
 	this->gfw_water = 18.;						// gfw of water
 	this->count_chemistry = this->nxyz;
-	//this->partition_uz_solids = false;
+	this->partition_uz_solids = false;
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
@@ -4407,10 +4407,13 @@ PhreeqcRM::MpiWorker()
 					return_value = this->SetFilePrefix(c_dummy);
 				}
 				break;
-			//case METHOD_SETPARTITIONUZSOLIDS:
-			//	if (debug_worker) std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
-			//	return_value = this->SetPartitionUZSolids();
-			//	break;
+			case METHOD_SETPARTITIONUZSOLIDS:
+				if (debug_worker) std::cerr << "METHOD_SETPARTITIONUZSOLIDS" << std::endl;
+				{
+					bool dummy = false;
+					return_value = this->SetPartitionUZSolids(dummy);
+				}
+				break;
 			case METHOD_SETPOREVOLUME:
 				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
 				{
@@ -4652,7 +4655,6 @@ PhreeqcRM::OutputMessage(const std::string &str)
 {
 	this->phreeqcrm_io.output_msg(str.c_str());
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
@@ -4665,7 +4667,7 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 	 * repartition solids for partially saturated cells
 	 */
 
-	if ((fabs(this->old_saturation[ihst] - new_frac) < 1e-8) ? true : false)
+	if (fabs(this->old_saturation[ihst] - new_frac) < 1e-8) 
 		return;
 
 	n_user = iphrq;
@@ -4795,7 +4797,6 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 
 	this->old_saturation[ihst] = new_frac;
 }
-#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
@@ -5612,6 +5613,72 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		{
 			std::cerr << "          Cells shifted between processes     " << change << "\n";
 		}
+#ifdef SKIP
+		// Also need to tranfer UZ
+		if (this->partition_uz_solids)
+		{
+			std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.begin();
+			std::vector<int> r_vector;
+			r_vector.push_back(IRM_OK);
+			for ( ; tp_it != transfer_pair.end(); tp_it++)
+			{
+				cxxStorageBin t_bin;
+				int pold = tp_it->second[0];
+				int pnew = tp_it->second[1];
+				if (this->mpi_myself == pold)
+				{
+					for (size_t i = 2; i < tp_it->second.size(); i++)
+					{
+						int k = tp_it->second[i];
+						phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, k);
+					}			
+				}
+				transfers++;
+				try
+				{
+					this->TransferCells(t_bin, pold, pnew);
+				}
+				catch (...)
+				{
+					r_vector[0] = 1;
+				}
+
+				// Delete cells in old
+				if (this->mpi_myself == pold && r_vector[0] == 0)
+				{
+					std::ostringstream del;
+					del << "DELETE; -cell\n";
+					for (size_t i = 2; i < tp_it->second.size(); i++)
+					{
+						del << tp_it->second[i] << "\n";
+
+					}
+					try
+					{
+						int status = phast_iphreeqc_worker->RunString(del.str().c_str());
+						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+					}
+					catch (...)
+					{
+						r_vector[0] = 1;
+					}
+				}
+				//The gather is sometimes slow for some reason
+				//this->HandleErrorsInternal(r_vector);
+				if (r_vector[0] != 0)
+					throw PhreeqcRMStop();
+			}		
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				start_cell[i] = start_cell_new[i];
+				end_cell[i] = end_cell_new[i];
+			}
+			if (this->mpi_myself == 0)
+			{
+				std::cerr << "          Cells shifted between processes     " << change << "\n";
+			}
+		}
+#endif
 	}
 	catch (...)
 	{
@@ -5894,6 +5961,7 @@ PhreeqcRM::RunCells()
 	std::vector<int> r_vector;
 	r_vector.resize(1);
 	r_vector[0] = RunCellsThread(0);
+	old_saturation = saturation;
 
 	std::vector<char> char_buffer;
 	std::vector<double> double_buffer;
@@ -6003,6 +6071,7 @@ PhreeqcRM::RunCells()
 		{
 			r_vector[n] = RunCellsThread(n);
 		} 
+		old_saturation = saturation;
 		
 
 		// write output results
@@ -6250,6 +6319,27 @@ PhreeqcRM::RunCellsThread(int n)
 	IPhreeqcPhast *phast_iphreeqc_worker = this->GetWorkers()[n];
 	try
 	{
+		// Partition solids, if necessary
+		if (this->partition_uz_solids)
+		{
+#ifdef USE_MPI
+			int start = this->start_cell[this->mpi_myself];
+			int end = this->end_cell[this->mpi_myself];
+			int iworker = 0;
+#else
+			int start = this->start_cell[n];
+			int end = this->end_cell[n];
+			int iworker = n;
+#endif			
+			// run the cells
+			for (i = start; i <= end; i++)
+			{							/* i is count_chem number */
+				j = backward_mapping[i][0];			/* j is nxyz number */
+				this->PartitionUZ(iworker, i, j, this->saturation[j]);
+			}
+		}
+
+
 		// Find the print flag
 		bool pr_chemistry_on;
 		if (n < this->nthreads)
@@ -7166,10 +7256,9 @@ PhreeqcRM::SetMpiWorkerCallbackFortran(int (*fcn)(int *method))
 	this->mpi_worker_callback_fortran = fcn;
 	return IRM_OK;
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
-PhreeqcRM::SetPartitionUZSolids(int t)
+PhreeqcRM::SetPartitionUZSolids(bool tf)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef USE_MPI
@@ -7181,14 +7270,17 @@ PhreeqcRM::SetPartitionUZSolids(int t)
 #endif
 	if (mpi_myself == 0)
 	{
-		this->partition_uz_solids = (t != 0);
+		this->partition_uz_solids = tf;
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->partition_uz_solids, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
+	if (this->partition_uz_solids && (this->old_saturation.size() == 0))
+	{
+		this->old_saturation.resize(this->nxyz, 1.0);
+	}
 	return IRM_OK;
 }
-#endif
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT

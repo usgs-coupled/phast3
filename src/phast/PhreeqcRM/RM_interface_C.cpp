@@ -1151,20 +1151,18 @@ RM_SetMpiWorkerCallbackCookie(int id, void *cookie)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_SetPartitionUZSolids(int id, int t)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->SetPartitionUZSolids(t);
+		return Reaction_module_ptr->SetPartitionUZSolids(t != 0);
 	}
 	return IRM_BADINSTANCE;
 }
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_SetPoreVolume(int id, double *t)
@@ -1475,8 +1473,23 @@ RM_SpeciesConcentrations2Module(int id, double * species_conc)
 	}
 	return IRM_BADINSTANCE;
 }
-/* 
---------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------- */
+IRM_RESULT
+RM_UseSolutionDensityVolume(int id, int tf)
+/* ---------------------------------------------------------------------- */
+{
+	// writes a warning message to screen, log, and output files
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->UseSolutionDensityVolume(tf != 0);
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
+
+}
+/* --------------------------------------------------------------------- */
 IRM_RESULT
 RM_WarningMessage(int id, const char *err_str)
 /* ---------------------------------------------------------------------- */

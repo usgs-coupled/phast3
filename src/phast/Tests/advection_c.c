@@ -78,6 +78,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		status = RM_SetComponentH2O(id, 0);
 		status = RM_SetRebalanceFraction(id, 0.5);
 		status = RM_SetRebalanceByCell(id, 1);
+		status = RM_UseSolutionDensityVolume(id, 0);
 		status = RM_SetFilePrefix(id, "Advect_c");
 		// Open error, log, and output files
 		status = RM_OpenFiles(id);
