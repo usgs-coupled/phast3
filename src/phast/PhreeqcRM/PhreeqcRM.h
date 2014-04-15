@@ -3338,6 +3338,7 @@ protected:
 	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
 	void                                      SetEndCells(void);
 	IRM_RESULT                                TransferCells(cxxStorageBin &t_bin, int old, int nnew);
+	IRM_RESULT                                TransferCellsUZ(std::ostringstream &raw_stream, int old, int nnew);
 
 private:
 	IRM_RESULT                                SetGeneric(std::vector<double> &destination, int newSize, const std::vector<double> &origin, int mpiMethod, const std::string &name, const double newValue = 0.0);
@@ -3348,7 +3349,6 @@ protected:
 	std::string chemistry_file_name;
 	std::string dump_file_name;
 	std::string file_prefix;
-	cxxStorageBin uz_bin;
 	cxxStorageBin phreeqc_bin;
 	int mpi_myself;
 	int mpi_tasks;

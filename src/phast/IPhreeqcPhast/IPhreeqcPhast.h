@@ -52,5 +52,6 @@ protected:
 	double thread_clock_time;
 	std::vector<double> cell_clock_times;
 	double standard_clock_time;
+	cxxStorageBin uz_bin;
 };
 #endif // !defined(PHAST_IPHREEQC_H_INCLUDED)

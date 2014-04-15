@@ -4722,66 +4722,66 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 	{
 		cxxStorageBin tempBin;
 		tempBin.Set_Exchange(0, sz_bin.Get_Exchange(n_user));
-		tempBin.Set_Exchange(1, this->uz_bin.Get_Exchange(n_user));
+		tempBin.Set_Exchange(1, phast_iphreeqc_worker->uz_bin.Get_Exchange(n_user));
 		cxxExchange newsz(tempBin.Get_Exchangers(), szmix, n_user);
 		cxxExchange newuz(tempBin.Get_Exchangers(), uzmix, n_user);
 		sz_bin.Set_Exchange(n_user, &newsz);
-		this->uz_bin.Set_Exchange(n_user, &newuz);
+		phast_iphreeqc_worker->uz_bin.Set_Exchange(n_user, &newuz);
 	}
 //PPassemblage
 	if (sz_bin.Get_PPassemblage(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
 		tempBin.Set_PPassemblage(0, sz_bin.Get_PPassemblage(n_user));
-		tempBin.Set_PPassemblage(1, this->uz_bin.Get_PPassemblage(n_user));
+		tempBin.Set_PPassemblage(1, phast_iphreeqc_worker->uz_bin.Get_PPassemblage(n_user));
 		cxxPPassemblage newsz(tempBin.Get_PPassemblages(), szmix, n_user);
 		cxxPPassemblage newuz(tempBin.Get_PPassemblages(), uzmix, n_user);
 		sz_bin.Set_PPassemblage(n_user, &newsz);
-		this->uz_bin.Set_PPassemblage(n_user, &newuz);
+		phast_iphreeqc_worker->uz_bin.Set_PPassemblage(n_user, &newuz);
 	}
 //Gas_phase
 	if (sz_bin.Get_GasPhase(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
 		tempBin.Set_GasPhase(0, sz_bin.Get_GasPhase(n_user));
-		tempBin.Set_GasPhase(1, this->uz_bin.Get_GasPhase(n_user));
+		tempBin.Set_GasPhase(1, phast_iphreeqc_worker->uz_bin.Get_GasPhase(n_user));
 		cxxGasPhase newsz(tempBin.Get_GasPhases(), szmix, n_user);
 		cxxGasPhase newuz(tempBin.Get_GasPhases(), uzmix, n_user);
 		sz_bin.Set_GasPhase(n_user, &newsz);
-		this->uz_bin.Set_GasPhase(n_user, &newuz);
+		phast_iphreeqc_worker->uz_bin.Set_GasPhase(n_user, &newuz);
 	}
 //SSassemblage
 	if (sz_bin.Get_SSassemblage(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
 		tempBin.Set_SSassemblage(0, sz_bin.Get_SSassemblage(n_user));
-		tempBin.Set_SSassemblage(1, this->uz_bin.Get_SSassemblage(n_user));
+		tempBin.Set_SSassemblage(1, phast_iphreeqc_worker->uz_bin.Get_SSassemblage(n_user));
 		cxxSSassemblage newsz(tempBin.Get_SSassemblages(), szmix, n_user);
 		cxxSSassemblage newuz(tempBin.Get_SSassemblages(), uzmix, n_user);
 		sz_bin.Set_SSassemblage(n_user, &newsz);
-		this->uz_bin.Set_SSassemblage(n_user, &newuz);
+		phast_iphreeqc_worker->uz_bin.Set_SSassemblage(n_user, &newuz);
 	}
 //Kinetics
 	if (sz_bin.Get_Kinetics(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
 		tempBin.Set_Kinetics(0, sz_bin.Get_Kinetics(n_user));
-		tempBin.Set_Kinetics(1, this->uz_bin.Get_Kinetics(n_user));
+		tempBin.Set_Kinetics(1, phast_iphreeqc_worker->uz_bin.Get_Kinetics(n_user));
 		cxxKinetics newsz(tempBin.Get_Kinetics(), szmix, n_user);
 		cxxKinetics newuz(tempBin.Get_Kinetics(), uzmix, n_user);
 		sz_bin.Set_Kinetics(n_user, &newsz);
-		this->uz_bin.Set_Kinetics(n_user, &newuz);
+		phast_iphreeqc_worker->uz_bin.Set_Kinetics(n_user, &newuz);
 	}
 //Surface
 	if (sz_bin.Get_Surface(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
 		tempBin.Set_Surface(0, sz_bin.Get_Surface(n_user));
-		tempBin.Set_Surface(1, this->uz_bin.Get_Surface(n_user));
+		tempBin.Set_Surface(1, phast_iphreeqc_worker->uz_bin.Get_Surface(n_user));
 		cxxSurface newsz(tempBin.Get_Surfaces(), szmix, n_user);
 		cxxSurface newuz(tempBin.Get_Surfaces(), uzmix, n_user);
 		sz_bin.Set_Surface(n_user, &newsz);
-		this->uz_bin.Set_Surface(n_user, &newuz);
+		phast_iphreeqc_worker->uz_bin.Set_Surface(n_user, &newuz);
 	}
 
 	// Put back in reaction module
@@ -4792,7 +4792,7 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 	 */
 	if (new_frac >= 1.0)
 	{
-		this->uz_bin.Remove(iphrq);
+		phast_iphreeqc_worker->uz_bin.Remove(iphrq);
 	}
 
 	this->old_saturation[ihst] = new_frac;
@@ -5083,6 +5083,31 @@ PhreeqcRM::RebalanceLoad(void)
 						r_vector[0] = 1;
 					}
 				}
+
+				// Also need to tranfer UZ
+				if (this->partition_uz_solids)
+				{
+					std::ostringstream uz_dump;
+					if (this->mpi_myself == pold)
+					{
+						for (size_t i = 2; i < tp_it->second.size(); i++)
+						{
+							int k = tp_it->second[i];
+							phast_iphreeqc_worker->uz_bin.Remove_Solution(k);
+							phast_iphreeqc_worker->uz_bin.dump_raw(uz_dump, k, 0);
+							phast_iphreeqc_worker->uz_bin.Remove(k);
+						}			
+					}
+					try
+					{
+						this->TransferCellsUZ(uz_dump, pold, pnew);
+					}
+					catch (...)
+					{
+						r_vector[0] = 1;
+					}
+				}
+
 				//The gather is sometimes slow for some reason
 				//this->HandleErrorsInternal(r_vector);
 				if (r_vector[0] != 0)
@@ -5317,6 +5342,14 @@ PhreeqcRM::RebalanceLoad(void)
 			del << "DELETE; -cell " << iphrq << "\n";
 			int status = old_worker->RunString(del.str().c_str());
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+
+			// Also need to tranfer UZ
+			if (this->partition_uz_solids)
+			{
+				new_worker->uz_bin.Add(old_worker->uz_bin, iphrq);
+				old_worker->uz_bin.Remove(iphrq);
+			}			
+
 		}
 
 		for (int i = 0; i < this->nthreads; i++)
@@ -5599,6 +5632,31 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 					r_vector[0] = 1;
 				}
 			}
+
+			// Also need to tranfer UZ
+			if (this->partition_uz_solids)
+			{
+				std::ostringstream uz_dump;
+				if (this->mpi_myself == pold)
+				{
+					for (size_t i = 2; i < tp_it->second.size(); i++)
+					{
+						int k = tp_it->second[i];
+						phast_iphreeqc_worker->uz_bin.Remove_Solution(k);
+						phast_iphreeqc_worker->uz_bin.dump_raw(uz_dump, k, 0);
+						phast_iphreeqc_worker->uz_bin.Remove(k);
+					}			
+				}
+				try
+				{
+					this->TransferCellsUZ(uz_dump, pold, pnew);
+				}
+				catch (...)
+				{
+					r_vector[0] = 1;
+				}
+			}
+
 			//The gather is sometimes slow for some reason
 			//this->HandleErrorsInternal(r_vector);
 			if (r_vector[0] != 0)
@@ -5613,72 +5671,8 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		{
 			std::cerr << "          Cells shifted between processes     " << change << "\n";
 		}
-#ifdef SKIP
-		// Also need to tranfer UZ
-		if (this->partition_uz_solids)
-		{
-			std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.begin();
-			std::vector<int> r_vector;
-			r_vector.push_back(IRM_OK);
-			for ( ; tp_it != transfer_pair.end(); tp_it++)
-			{
-				cxxStorageBin t_bin;
-				int pold = tp_it->second[0];
-				int pnew = tp_it->second[1];
-				if (this->mpi_myself == pold)
-				{
-					for (size_t i = 2; i < tp_it->second.size(); i++)
-					{
-						int k = tp_it->second[i];
-						phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, k);
-					}			
-				}
-				transfers++;
-				try
-				{
-					this->TransferCells(t_bin, pold, pnew);
-				}
-				catch (...)
-				{
-					r_vector[0] = 1;
-				}
 
-				// Delete cells in old
-				if (this->mpi_myself == pold && r_vector[0] == 0)
-				{
-					std::ostringstream del;
-					del << "DELETE; -cell\n";
-					for (size_t i = 2; i < tp_it->second.size(); i++)
-					{
-						del << tp_it->second[i] << "\n";
 
-					}
-					try
-					{
-						int status = phast_iphreeqc_worker->RunString(del.str().c_str());
-						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
-					}
-					catch (...)
-					{
-						r_vector[0] = 1;
-					}
-				}
-				//The gather is sometimes slow for some reason
-				//this->HandleErrorsInternal(r_vector);
-				if (r_vector[0] != 0)
-					throw PhreeqcRMStop();
-			}		
-			for (int i = 0; i < this->mpi_tasks; i++)
-			{
-				start_cell[i] = start_cell_new[i];
-				end_cell[i] = end_cell_new[i];
-			}
-			if (this->mpi_myself == 0)
-			{
-				std::cerr << "          Cells shifted between processes     " << change << "\n";
-			}
-		}
-#endif
 	}
 	catch (...)
 	{
@@ -5865,6 +5859,13 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 			del << "DELETE; -cell " << iphrq << "\n";
 			int status = old_worker->RunString(del.str().c_str());
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in RebalanceLoadPerCell");
+
+			// Also need to tranfer UZ
+			if (this->partition_uz_solids)
+			{
+				new_worker->uz_bin.Add(old_worker->uz_bin, iphrq);
+				old_worker->uz_bin.Remove(iphrq);
+			}
 		}
 
 		for (int i = 0; i < this->nthreads; i++)
@@ -6333,12 +6334,11 @@ PhreeqcRM::RunCellsThread(int n)
 #endif			
 			// run the cells
 			for (i = start; i <= end; i++)
-			{							/* i is count_chem number */
+			{							            /* i is count_chem number */
 				j = backward_mapping[i][0];			/* j is nxyz number */
 				this->PartitionUZ(iworker, i, j, this->saturation[j]);
 			}
 		}
-
 
 		// Find the print flag
 		bool pr_chemistry_on;
@@ -8021,6 +8021,42 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 	this->ErrorHandler(return_value, "PhreeqcRM::TransferCells");
 	return return_value;
 }
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::TransferCellsUZ(std::ostringstream &raw_stream, int old, int nnew)
+/* ---------------------------------------------------------------------- */
+{
+	// Throws on error
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		if (this->mpi_myself == old)
+		{
+			size_t string_size = raw_stream.str().size() + 1;
+			MPI_Send(&string_size, 1, MPI_INT, nnew, 0, phreeqcrm_comm);
+			MPI_Send((void *) raw_stream.str().c_str(), (int) string_size, MPI_CHAR, nnew, 0, phreeqcrm_comm);
+		}
+		else if (this->mpi_myself == nnew)
+		{	
+			MPI_Status mpi_status;
+			int string_size;;
+			MPI_Recv(&string_size, 1, MPI_INT, old, 0, phreeqcrm_comm, &mpi_status);
+			char *string_buffer = new char[string_size];
+			MPI_Recv((void *) string_buffer, string_size, MPI_CHAR, old, 0, phreeqcrm_comm, &mpi_status);
+			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+			std::istringstream iss(string_buffer);
+			CParser cp(iss);
+			phast_iphreeqc_worker->uz_bin.read_raw(cp);
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	this->ErrorHandler(return_value, "PhreeqcRM::TransferCellsUZ");
+	return return_value;
+}
+
 #endif
 /* ---------------------------------------------------------------------- */
 void
