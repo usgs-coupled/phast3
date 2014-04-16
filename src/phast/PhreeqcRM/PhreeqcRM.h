@@ -808,6 +808,39 @@ for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
 Called by root.
  */
 	int                                       GetNthSelectedOutputUserNumber(int n);
+/**
+Returns the setting for partitioning solids between the saturated and unsaturated 
+parts of a partially saturated cell. The value has meaning only when saturations 
+less than 1.0 are encountered. Unexpected results may
+occur in partially saturated cells for models that try to account for a free surface, but 
+consider only saturated-zone flow and transport. The partially saturated cells 
+see a smaller volume of water, 
+even though, physically, recharge water is percolating through these cells. 
+It takes a longer time for reactions to occur in these cells than in cells 
+that are fully saturated. By setting  @ref SetPartitionUZSolids to true, the
+amounts of solids and gases are partioned according to the saturation. 
+If a cell has a saturation of 0.5, then
+the water interacts with only half of the solids and gases; the other half is unreactive
+until the water table rises. As the saturation in a cell varies, 
+solids and gases are transferred between the
+saturated and unsaturated (unreactive) reservoirs of the cell. 
+Unsaturated-zone flow and transport codes will probably use the default (false), 
+which assumes all gases and solids are reactive regardless of saturation.  
+@retval bool       @a True, the fraction of solids and gases available for 
+reaction is equal to the saturation; 
+@a False (default), all solids and gases are reactive regardless of saturation.
+@see                @ref SetPartitionUZSolids.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+oss << "Partioning of UZ solids: " << phreeqc_rm.GetPartitionUZSolids(); 
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root and (or) workers.
+ */
 	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 /**
 Returns the current set of pore volumes as 
@@ -2676,6 +2709,40 @@ MPI and Fortran only. Defines a callback function that allows additional tasks t
 by the workers. See documentation of PhreeqcRM for C and Fortran, method RM_SetMpiWorkerCallback.
  */
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
+/**
+Sets the property for partitioning solids between the saturated and unsaturated 
+parts of a partially saturated cell. The value has meaning only when saturations 
+less than 1.0 are encountered. Unexpected results may
+occur in partially saturated cells for models that try to account for a free surface, but 
+consider only saturated-zone flow and transport. The partially saturated cells 
+see a smaller volume of water, 
+even though, physically, recharge water is percolating through these cells. 
+It takes a longer time for reactions to occur in these cells than in cells 
+that are fully saturated. By setting  SetPartitionUZSolids to true, the
+amounts of solids and gases are partioned according to the saturation. 
+If a cell has a saturation of 0.5, then
+the water interacts with only half of the solids and gases; the other half is unreactive
+until the water table rises. As the saturation in a cell varies, 
+solids and gases are transferred between the
+saturated and unsaturated (unreactive) reservoirs of the cell. 
+Unsaturated-zone flow and transport codes will probably use the default (false), 
+which assumes all gases and solids are reactive regardless of saturation.  
+@param tf       @a True, the fraction of solids and gases available for 
+reaction is equal to the saturation; 
+@a False (default), all solids and gases are reactive regardless of saturation.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                @ref GetPartitionUZSolids.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+phreeqc_rm.SetPartitionUZSolids(false);
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref MpiWorker.
+ */
 	IRM_RESULT                                SetPartitionUZSolids(bool tf);
 /**
 Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume
