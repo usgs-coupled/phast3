@@ -355,6 +355,9 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_TIMESTEPSAVE) then
         if (debug) write(*,*) "METHOD_TIMESTEPSAVE"
         CALL time_step_save
+    else if (method == METHOD_TIMINGBARRIER) then
+        if (debug) write(*,*) "METHOD_TIMINGBARRIER"
+        CALL Timing_barrier()
     endif
 #endif
     mpi_methods = return_value
