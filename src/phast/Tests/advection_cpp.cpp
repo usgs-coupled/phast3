@@ -38,6 +38,7 @@ int advection_cpp()
 		status = phreeqc_rm.SetRebalanceFraction(0.5);
 		status = phreeqc_rm.SetRebalanceByCell(true);
 		phreeqc_rm.UseSolutionDensityVolume(false);
+		phreeqc_rm.SetPartitionUZSolids(false);
 		status = phreeqc_rm.SetFilePrefix("Advect_cpp");
 		phreeqc_rm.OpenFiles();
 
@@ -142,6 +143,7 @@ int advection_cpp()
 			oss << "Number of grid cells in the user's model:         " << phreeqc_rm.GetGridCellCount() << "\n";
 			oss << "Number of chemistry cells in the reaction module: " << phreeqc_rm.GetChemistryCellCount() << "\n";
 			oss << "Number of components for transport:               " << phreeqc_rm.GetComponentCount() << "\n";
+			oss << "Partioning of UZ solids:                          " << phreeqc_rm.GetPartitionUZSolids() << "\n";
 			oss << "Error handler mode:                               " << phreeqc_rm.GetErrorHandlerMode() << "\n";
 			phreeqc_rm.OutputMessage(oss.str());
 		}
