@@ -45,7 +45,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" EnableRecursion="true" ReentrantCode="reentrancyThreaded" OpenMP="OpenMPParallelCode" Interfaces="true"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" EnableRecursion="true" ReentrantCode="reentrancyThreaded" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -65,7 +65,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="merge|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_OPENMPI_X64_INC);$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" PreprocessorDefinitions="USE_MPI;NO_UNDERSCORES" VectorizerDiagLevel="vectorizerDiagLevel5" Interfaces="true"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)\amd64;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" PreprocessorDefinitions="USE_MPI;NO_UNDERSCORES" VectorizerDiagLevel="vectorizerDiagLevel5" RuntimeLibrary="rtMultiThreadedDLL" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -75,7 +75,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="merge_debug|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_OPENMPI_X64_INC);$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" PreprocessorDefinitions="USE_MPI;NO_UNDERSCORES" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)\amd64;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" PreprocessorDefinitions="USE_MPI;NO_UNDERSCORES" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -90,8 +90,8 @@
 		<File RelativePath="..\PhastFortran\ifwr.inc"/>
 		<File RelativePath="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.f90.inc"/>
 		<File RelativePath="..\PhastFortran\mpi_windows.inc">
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/></File>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/></File>
 		<File RelativePath="..\PhreeqcRM\RM_interface_F.f90.inc"/></Filter>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">

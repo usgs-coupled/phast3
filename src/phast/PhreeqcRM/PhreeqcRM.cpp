@@ -6013,6 +6013,7 @@ PhreeqcRM::RunCells()
 		// Rebalance load
 		clock_t t0 = clock();
 		this->RebalanceLoad();
+		MPI_Barrier(this->phreeqcrm_comm);
 		if (mpi_myself == 0 && mpi_tasks > 1)
 		{ 
 			std::cerr << "          Time rebalancing load             " << double(clock() - t0)/CLOCKS_PER_SEC << "\n";
@@ -8046,6 +8047,8 @@ PhreeqcRM::TransferCellsUZ(std::ostringstream &raw_stream, int old, int nnew)
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
 			std::istringstream iss(string_buffer);
 			CParser cp(iss);
+			cp.set_echo_file(CParser::EO_NONE);
+			cp.set_echo_stream(CParser::EO_NONE);
 			phast_iphreeqc_worker->uz_bin.read_raw(cp);
 		}
 	}
