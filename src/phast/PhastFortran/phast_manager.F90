@@ -419,6 +419,7 @@ SUBROUTINE CreateRM
         status = RM_LogMessage(rm_id, "Initial PHREEQC run.") 
         status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
+        status = RM_RunString(rm_id, 1, 0, 1, "DELETE; -all")
         status = RM_FindComponents(rm_id)    
         status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
         status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
