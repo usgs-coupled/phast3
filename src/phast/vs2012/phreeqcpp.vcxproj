@@ -182,7 +182,7 @@ copy $(DEV_HDF5_LIBDLL)\hdf5dll.dll $(OutDir)</Command>
       <PreprocessorDefinitions>OLD_STYLE_XYZ;USE_OPENMP;USE_GZ;USE_PHRQ_ALLOC;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <BrowseInformation>true</BrowseInformation>
