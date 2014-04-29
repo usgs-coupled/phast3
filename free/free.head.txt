@@ -57,8 +57,8 @@
 
                               *** Output at End of Time Step No.     2 ***
 
-     Time .......................................................   2.000e-04  (s)
-     Maximum change in potentiometric head ...  1.0000e-05      (m )   at location ( 0.000e+00,  1.00    ,  1.00    )(m )
+     Time .......................................................   2.000E-04  (s)
+     Maximum change in potentiometric head ...  1.0000E-05      (m )   at location (  1.00    ,  0.00    ,  0.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -87,7 +87,7 @@
                               *** Output at End of Time Step No.     7 ***
 
      Time .......................................................    5.00      (s)
-     Maximum change in potentiometric head ...  9.9980e-02      (m )   at location ( 0.000e+00,  1.00    , 0.000e+00)(m )
+     Maximum change in potentiometric head ...  9.9980E-02      (m )   at location (  0.00    ,  1.00    ,  1.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -122,7 +122,7 @@
                               *** Output at End of Time Step No.    12 ***
 
      Time .......................................................    10.0      (s)
-     Maximum change in potentiometric head ... -1.0000e-01      (m )   at location (  1.00    ,  1.00    , 0.000e+00)(m )
+     Maximum change in potentiometric head ... -1.0000E-01      (m )   at location (  1.00    ,  1.00    ,  0.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -149,6 +149,6 @@
 
 
 
-                                       ***** Simulation Completed *****
+                      ***** Flow and Transport Simulation Completed *****
                Last time value calculated ......................................  10.00     (s)
                Last time step index ............................................      12
