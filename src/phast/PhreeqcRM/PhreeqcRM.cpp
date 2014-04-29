@@ -1817,7 +1817,16 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 		in << "DUMP; -cells " << this->start_cell[this->mpi_myself] << "-" << this->end_cell[this->mpi_myself] << "\n";
 
 		std::vector<int> r_values;
-		r_values.push_back(this->workers[0]->RunString(in.str().c_str()));
+		//r_values.push_back(this->workers[0]->RunString(in.str().c_str()));
+		{
+			int status;
+			status = this->workers[0]->RunString(in.str().c_str());
+			if (status != 0)
+			{
+				error_msg(this->workers[0]->GetErrorString());
+			}
+			r_values.push_back(status);
+		}
 		this->HandleErrorsInternal(r_values);
 
 		r_values.clear();
@@ -1868,7 +1877,16 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 			// Clear dump string to save space
 			std::ostringstream clr;
 			clr << "END\n";
-			r_values.push_back(this->GetWorkers()[0]->RunString(clr.str().c_str()));
+			//r_values.push_back(this->GetWorkers()[0]->RunString(clr.str().c_str()));
+			{
+				int status;
+				status = this->workers[0]->RunString(clr.str().c_str()));
+				if (status != 0)
+				{
+					error_msg(this->workers[0]->GetErrorString());
+				}
+				r_values.push_back(status);
+			}
 		}
 		this->HandleErrorsInternal(r_values);
 #else
@@ -1879,8 +1897,16 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 			this->workers[n]->SetDumpStringOn(true); 
 			std::ostringstream in;
 			in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
-			r_values[n] = this->workers[n]->RunString(in.str().c_str());
-
+			//r_values[n] = this->workers[n]->RunString(in.str().c_str());
+			{
+				int status;
+				status = this->workers[n]->RunString(in.str().c_str());
+				if (status != 0)
+				{
+					error_msg(this->workers[n]->GetErrorString());
+				}
+				r_values[n] = status;
+			}
 			if (use_gz)
 			{
 #ifdef USE_GZ
@@ -1898,7 +1924,16 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 		{
 			// Clear dump string to save space
 			std::string clr = "END\n";
-			r_values.push_back(this->workers[n]->RunString(clr.c_str()));
+			//r_values.push_back(this->workers[n]->RunString(clr.c_str()));
+			{
+				int status;
+				status = this->workers[n]->RunString(clr.c_str());
+				if (status != 0)
+				{
+					error_msg(this->workers[n]->GetErrorString());
+				}
+				r_values.push_back(status);
+			}
 		}
 		this->HandleErrorsInternal(r_values);
 #endif
@@ -1957,6 +1992,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 			std::ostringstream in;
 			in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
 			int status = this->workers[0]->RunString(in.str().c_str());
+			if (status != 0)
+			{
+				error_msg(this->workers[0]->GetErrorString());
+			}
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 		}
 		catch (...)
@@ -2101,7 +2140,16 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 		in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
 
 		std::vector<int> r_values;
-		r_values.push_back(this->workers[0]->RunString(in.str().c_str()));
+		//r_values.push_back(this->workers[0]->RunString(in.str().c_str()));
+		{
+			int status;
+			status = this->workers[0]->RunString(in.str().c_str());
+			if (status != 0)
+			{
+				error_msg(this->workers[0]->GetErrorString());
+			}
+			r_values.push_back(status);
+		}
 		this->HandleErrorsInternal(r_values);
 		r_values.clear();
 		for (int n = 0; n < this->mpi_tasks; n++)
@@ -2160,7 +2208,16 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 			// Clear dump string to save space
 			std::ostringstream clr;
 			clr << "END\n";
-			r_values.push_back(this->GetWorkers()[0]->RunString(clr.str().c_str()));
+			//r_values.push_back(this->GetWorkers()[0]->RunString(clr.str().c_str()));
+			{
+				int status;
+				status = this->GetWorkers()[0]->RunString(clr.str().c_str());
+				if (status != 0)
+				{
+					error_msg(this->workers[0]->GetErrorString());
+				}
+				r_values.push_back(status);
+			}
 		}
 		this->HandleErrorsInternal(r_values);
 	}
@@ -2217,6 +2274,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 			std::ostringstream in;
 			in << "DUMP; -cells " << start_cell[n] << "-" << end_cell[n] << "\n";
 			int status = this->workers[n]->RunString(in.str().c_str());
+			if (status != 0)
+			{
+				error_msg(this->workers[n]->GetErrorString());
+			}
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 		}
 
@@ -2313,6 +2374,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 						int last = j + block > this->end_cell[n] ? this->end_cell[n] : j + block;
 						in << "DUMP; -cells " << j << "-" << last << "\n";
 						int status = this->workers[0]->RunString(in.str().c_str());
+						if (status != 0)
+						{
+							error_msg(this->workers[0]->GetErrorString());
+						}
 						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 
 						size_t dump_length = strlen(this->GetWorkers()[0]->GetDumpString());
@@ -2393,6 +2458,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 				int last = (j + block) > this->end_cell[n] ? this->end_cell[n] : j + block;
 				in << "DUMP; -cells " << j << "-" << last << "\n";
 				int status = this->workers[n]->RunString(in.str().c_str());
+				if (status != 0)
+				{
+					error_msg(this->workers[n]->GetErrorString());
+				}
 				this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 				size_t dump_length = strlen(this->GetWorkers()[n]->GetDumpString());
 				char buffer[4096];
@@ -2556,6 +2625,11 @@ PhreeqcRM::FindComponents(void)
 					in << components[i] << " 1e-6\n";
 				}
 				int status = phast_iphreeqc_worker->RunString(in.str().c_str());
+				if (status != 0)
+				{
+					error_msg(phast_iphreeqc_worker->GetErrorString());
+					throw PhreeqcRMStop();
+				}
 			}
 			int n = phast_iphreeqc_worker->PhreeqcPtr->count_s_x;
 			species_names.clear();
@@ -2575,7 +2649,12 @@ PhreeqcRM::FindComponents(void)
 			{
 				std::ostringstream in;
 				in << "DELETE; -solution " << next << "\n";
-				phast_iphreeqc_worker->RunString(in.str().c_str());
+				int status = phast_iphreeqc_worker->RunString(in.str().c_str());
+				if (status != 0)
+				{
+					error_msg(phast_iphreeqc_worker->GetErrorString());
+					throw PhreeqcRMStop();
+				}
 			}
 		}
 	}
@@ -3469,6 +3548,7 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
 						if (rtn != 0)
 						{
+							error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
 							status = IRM_FAIL;
 						}
 						else
@@ -3507,7 +3587,10 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 						//status = this->RunString(0, 1, 0, in.str().c_str());
 						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
 						if (rtn != 0)
+						{
+							error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
 							status = IRM_FAIL;
+						}
 						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old2);
 					}
 					mixmap.Add(n_old2, f2);
@@ -3712,6 +3795,10 @@ PhreeqcRM::InitialPhreeqc2Module(
 				delete_command << i << "\n";
 			}
 			r_values[n] = this->GetWorkers()[0]->RunString(delete_command.str().c_str());	
+			if (r_values[n] != 0)
+			{
+				error_msg(this->GetWorkers()[0]->GetErrorString());
+			}
 		}
 		this->HandleErrorsInternal(r_values);
 #endif
@@ -3792,6 +3879,7 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
 						if (rtn != 0)
 						{
+							error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
 							status = IRM_FAIL;
 						}
 						else
@@ -3830,7 +3918,10 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 						//status = this->RunString(0, 1, 0, in.str().c_str());
 						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
 						if (rtn != 0)
+						{
+							error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
 							status = IRM_FAIL;
+						}
 						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old2);
 					}
 					mixmap.Add(n_old2, f2);
@@ -4035,7 +4126,11 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 		this->print_chemistry_on[1] = false;
 		int status_ip = this->workers[this->nthreads]->RunString(in.str().c_str());
 		IRM_RESULT status = IRM_OK;
-		if (status_ip != 0) status = IRM_FAIL;
+		if (status_ip != 0) 
+		{
+			error_msg(this->workers[this->nthreads]->GetErrorString());
+			status = IRM_FAIL;
+		}
 		this->ErrorHandler(status, "RunString");
 		this->print_chemistry_on[1] = tf[1];
 
@@ -5076,6 +5171,10 @@ PhreeqcRM::RebalanceLoad(void)
 					try
 					{
 						int status = phast_iphreeqc_worker->RunString(del.str().c_str());
+						if (status != 0)
+						{
+							error_msg(phast_iphreeqc_worker->GetErrorString());
+						}
 						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 					}
 					catch (...)
@@ -5341,6 +5440,10 @@ PhreeqcRM::RebalanceLoad(void)
 			std::ostringstream del;
 			del << "DELETE; -cell " << iphrq << "\n";
 			int status = old_worker->RunString(del.str().c_str());
+			if (status != 0)
+			{
+				error_msg(old_worker->GetErrorString());
+			}
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 
 			// Also need to tranfer UZ
@@ -5625,6 +5728,10 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 				try
 				{
 					int status = phast_iphreeqc_worker->RunString(del.str().c_str());
+					if (status != 0)
+					{
+						error_msg(phast_iphreeqc_worker->GetErrorString());
+					}
 					this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 				}
 				catch (...)
@@ -5858,6 +5965,10 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 			std::ostringstream del;
 			del << "DELETE; -cell " << iphrq << "\n";
 			int status = old_worker->RunString(del.str().c_str());
+			if (status != 0)
+			{
+				error_msg(old_worker->GetErrorString());
+			}
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in RebalanceLoadPerCell");
 
 			// Also need to tranfer UZ
@@ -5960,7 +6071,7 @@ PhreeqcRM::RunCells()
 
 	// Run cells in each process
 	std::vector<int> r_vector;
-	r_vector.resize(1);
+	r_vector.resize(1);	
 	r_vector[0] = RunCellsThread(0);
 	old_saturation = saturation;
 
@@ -6128,7 +6239,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 		input << "SOLUTION " << next << "; DELETE; -solution " << next << "\n";
 		if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
 		{
-			std::cerr << "Throw in dummy run for selected output" << std::endl;
+			error_msg(phast_iphreeqc_worker->GetErrorString());
 			throw PhreeqcRMStop();
 		}
 		std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
@@ -6247,6 +6358,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 
 		if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
 		{
+			error_msg(phast_iphreeqc_worker->GetErrorString());
 			throw PhreeqcRMStop();
 		}
 	}
@@ -6371,7 +6483,7 @@ PhreeqcRM::RunCellsThread(int n)
 				input << "SOLUTION " << next << "; DELETE; -solution " << next << "\n";
 				if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
 				{
-					std::cerr << "Throw in dummy run for selected output" << std::endl;
+					error_msg(phast_iphreeqc_worker->GetErrorString());
 					throw PhreeqcRMStop();
 				}
 				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
@@ -6458,7 +6570,7 @@ PhreeqcRM::RunCellsThread(int n)
 					input << "END" << "\n";
 					if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
 					{
-						phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
+						error_msg(phast_iphreeqc_worker->GetErrorString());
 						throw PhreeqcRMStop();
 					}
 
@@ -6804,7 +6916,7 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 		// Run chemistry file
 		if (iphreeqc_phast_worker->RunString(input.c_str()) > 0) 
 		{
-			this->OutputMessage(iphreeqc_phast_worker->GetOutputString());
+			error_msg(iphreeqc_phast_worker->GetErrorString());
 			throw PhreeqcRMStop();
 		}
 
@@ -7935,6 +8047,10 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 			// RunString to enter in module
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
 			int status = phast_iphreeqc_worker->RunString(raw_buffer.data());
+			if (status != 0)
+			{
+				error_msg(phast_iphreeqc_worker->GetErrorString());
+			}
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
 		}
 	}
@@ -8011,6 +8127,10 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 			MPI_Recv((void *) string_buffer, string_size, MPI_CHAR, old, 0, phreeqcrm_comm, &mpi_status);
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
 			int status = phast_iphreeqc_worker->RunString(string_buffer);
+			if (status != 0)
+			{
+				error_msg(phast_iphreeqc_worker->GetErrorString());
+			}
 //#endif
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
 		}
