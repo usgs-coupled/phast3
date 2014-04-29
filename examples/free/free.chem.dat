@@ -1,7 +1,16 @@
 SOLUTION_MASTER_SPECIES
+	Ntg		Ntg	0	Ntg		28.0134 # N2 gas        
+SOLUTION_SPECIES        
+        Ntg = Ntg # N2
+PHASES
+Ntg(g)
+	Ntg = Ntg
+	-analytic -58.453 1.81800e-3  3199  17.909 -27460
+SOLUTION_MASTER_SPECIES
         A       A       0       A       1
 SOLUTION_SPECIES
         A = A
+        -gamma 1e10 0
         log_k   0
 SURFACE_MASTER_SPECIES
         Surf    Surf
@@ -10,6 +19,61 @@ SURFACE_SPECIES
                 log_k 0
         Surf + A = SurfA 
                 log_k   -10
+RATES
+#K-feldspar
+###########
+# Example of KINETICS data block for K-feldspar rate:
+#	KINETICS 1
+#	K-feldspar
+#		-m0 2.16  # 10% K-fsp, 0.1 mm cubes
+#		-m  1.94
+#		-parms 1.36e4  0.1
+
+K-feldspar
+      -start
+#1 rem specific rate from Sverdrup, 1990, in kmol/m2/s
+#2 rem parm(1) = 10 * (A/V, 1/dm) (recalc's sp. rate to mol/kgw)
+#3 rem parm(2) = corrects for field rate relative to lab rate
+#4 rem temp corr: from p. 162. E (kJ/mol) / R / 2.303 = H in H*(1/T-1/298)
+
+10    dif_temp = 1/TK - 1/298
+20    pk_H = 12.5 + 3134 * dif_temp
+30    pk_w = 15.3 + 1838 * dif_temp
+40    pk_OH = 14.2 + 3134 * dif_temp
+50    pk_CO2 = 14.6 + 1677 * dif_temp
+#60   pk_org = 13.9 + 1254 * dif_temp  # rate increase with DOC
+70    rate = 10^-pk_H * ACT("H+")^0.5 + 10^-pk_w + 10^-pk_OH * ACT("OH-")^0.3
+71    rate = rate + 10^-pk_CO2 * (10^SI("CO2(g)"))^0.6
+#72   rate = rate + 10^-pk_org * TOT("DOC")^0.4
+80    moles = parm(1) * parm(2) * rate * (1 - SR("K-feldspar")) * time * SOLN_VOL
+81 rem decrease rate on precipitation
+90    if SR("K-feldspar") > 1 then moles = moles * 0.1 * SOLN_VOL
+100   save moles
+      -end 
+      
+#######
+#Pyrite
+#######
+# Example of KINETICS data block for pyrite rate:
+#	KINETICS 1
+#	Pyrite
+#		-tol    1e-8
+#		-m0	 5.e-4
+#		-m	5.e-4
+#		-parms -5.0	 0.1	 .5	 -0.11
+Pyrite
+  -start
+   1 rem	parm(1) = log10(A/V, 1/dm)	parm(2) = exp for (m/m0)
+   2 rem	parm(3) = exp for O2		parm(4) = exp for H+
+
+   10 if (m <= 0) then goto 200
+   20 if (si("Pyrite") >= 0) then goto 200
+   30  rate = -10.19 + parm(1) + parm(3)*lm("O2") + parm(4)*lm("H+") + parm(2)*log10(m/m0)
+   40  moles = 10^rate * time * SOLN_VOL
+   200 save moles 
+  -end
+  
+  
 SOLUTION 1
 	 Na	1
 	 Cl	1
@@ -29,8 +93,8 @@ END
 SOLID_SOLUTION 1
         CaSrBaSO4    # greater than 2 components, ideal
                 -comp   Anhydrite   1.
-                -comp   Celestite   0.1
                 -comp   Barite      1
+                -comp   Celestite   0.1
 END
 EXCHANGE 1              
         NaX             2.0
@@ -38,8 +102,8 @@ END
 GAS_PHASE 1
         -fixed_volume
         -volume 1
-        N2(g)      0.78
-        O2(g)      .0003
+        Ntg(g)      0.78
+        O2(g)       0.0003
 END
 KINETICS 1
         K-feldspar
@@ -65,3 +129,53 @@ USER_PUNCH
 40 PUNCH TOT("Cl")*1000
 50 PUNCH TOT("Br")*1000
 END
+#
+# This makes the first water in cell 4 (0-based)
+# 
+SOLUTION 2
+	A        1.0 mmol/kgw
+	Na	 1
+	Br	 1
+END
+EQUILIBRIUM_PHASES 1
+        Calcite  0 1
+END
+EXCHANGE 1              
+        NaX             2.0
+END
+EXCHANGE_MIX 10
+	1 2e-6
+END
+EQUILIBRIUM_PHASES_MIX 10
+	1 2e-6
+END
+# reacted water in cell 0
+USE solution 1
+USE exchange 1
+USE equilibrium_phases 1
+SAVE solution 1
+END
+# reacted water from cell 0 plus solution 2 react in cell 4
+MIX 
+	1 0.99725e-6
+	2 1e-6
+USE exchange 10
+USE equilibrium_phases 10
+END
+#
+# This makes the first water in cell 5 (1-based) in old PHAST
+#
+#USE solution 1
+#USE exchange 1
+#USE equilibrium_phases 1
+#SAVE solution 1
+#SAVE exchange 1
+#SAVE equilibrium_phases 1
+#END
+# reacted water from cell 0 plus solution 2 react in cell 5 
+#MIX 
+#	1 0.5
+#	2 0.5
+#USE exchange 1
+#USE equilibrium_phases 1
+#END
