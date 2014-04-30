@@ -102,6 +102,7 @@
       CALL Setup()
       CALL XY_Plane()
       CALL XZ_Plane()
+      CALL XYZ_File()
       
 !      
 !      CALL OFILE
@@ -345,24 +346,31 @@ subroutine Setup()
     double precision pi, d
     
     ! spatial
-    nx = 101
+    nx = 26
     xmin = 0.0d0 
     xmax = 100.0d0
-    ny = 41
+    ny = 22
     ymin = 0.0d0
-    ymax = 40.0d0
-    nz = 26
+    !ymax = 41.0d0
+    ymax = 20.5
+    nz = 14
     zmin = 0.0d0
-    zmax = 25.0d0
+    !zmax = 25.0d0
+    zmax = 12.5d0
     allocate (x_nodes(nx), y_nodes(ny), z_nodes(nz))
-    do i = 1, nx
-        x_nodes(i) = xmin + dble(i - 1)*(xmax/dble(nx - 1))
+    x_nodes(1) = 0.0d0
+    do i = 2, nx
+        x_nodes(i) = x_nodes(i - 1) + 4.0
     enddo
-    do i = 1, ny
-        y_nodes(i) = ymin + dble(i - 1)*(ymax/dble(ny - 1))
+    y_nodes(1) = 0.0d0
+    y_nodes(2) = 0.5d0
+    do i = 3, ny
+        y_nodes(i) = y_nodes(i - 1) + 1.0d0
     enddo
-    do i = 1, nz
-        z_nodes(i) = zmin + dble(i - 1)*(zmax/dble(nz - 1))
+    z_nodes(1) = 0.0d0
+    z_nodes(2) = 0.5d0
+    do i = 3, nz
+        z_nodes(i) = z_nodes(i - 1) + 1.0d0
     enddo
     
     ! patch 15. 26. 10. 15. 
@@ -420,7 +428,7 @@ subroutine XY_plane()
     integer i, ix, iy, j, l
     double precision, allocatable, dimension(:) :: c_save_x
     allocate(c_save_x(nx))
-    z = 13.0d0
+    z = 12.5d0
     OPEN (20,FILE='Sun6_3.xy.out')
     write(20,'(a)') '         X         Y         Z         A         B         C         D'
     !write(20,'(102(f10.2))') z, (x_nodes(i), i = 1, nx)
@@ -457,7 +465,7 @@ subroutine XZ_plane()
     implicit none
     double precision :: ai_normalized, d, pi, y
     integer i, ix, iz, j, l
-    Y = 15.5d0
+    Y = 12.5d0
     OPEN (20,FILE='Sun6_3.xz.out')
     write(20,'(a)') '         X         Y         Z         A         B         C         D'
     do iz=1,nz
@@ -486,3 +494,50 @@ subroutine XZ_plane()
     enddo
     close(20)
 end subroutine XZ_plane
+subroutine XYZ_File()
+    use sun_data
+    implicit none
+    double precision :: ai_normalized, d, pi
+    integer i, ix, iy, iz, j, l
+    character*1 tab
+    OPEN (20,FILE='Sun6_3.xyz.out')
+    !write(20,'(a)') '         X         Y         Z         A         B         C         D'
+    tab = char(9)
+    write(20,'(14a)') '         X',tab, &
+                      '         Y',tab, &
+                      '         Z',tab, &
+                      '         A',tab, &
+                      '         B',tab, &
+                      '         C',tab, &
+                      '         D',tab
+    do iz=1,nz
+        do iy=1,ny
+            do ix=1,nx
+                do i = 1, 4
+                    ! Calculate a
+                    CALL CNRMLP(lambda(i), time, x_nodes(ix),y_nodes(iy), z_nodes(iz), &
+                    y1_patch, y2_patch, z1_patch, z2_patch, dispx, dispy, dispz, vel, ai_normalized, nquad)
+                    a(i) = ai_normalized * a0(i)
+                enddo
+                ! convert a to c
+                do i = 1,4
+                    c(i) = a(i)
+                    do j = 1, i -1
+                        pi = 1.0d0
+                        do l = j, i - 1
+                            d = lambda(l) / (lambda(l) - lambda(i))
+                            pi = pi * d 
+                        enddo
+                        c(i) = c(i) - pi * c(j)
+                    enddo
+                enddo   
+                ! write x, y, z, A, B, C, D  
+                write(20,'(3(f10.5,a), 4(e20.10,a))') x_nodes(ix), tab, &
+                    y_nodes(iy), tab, &
+                    z_nodes(iz), tab, & 
+                    ((c(i),tab), i = 1,4)
+            enddo
+        enddo
+    enddo
+    close(20)
+end subroutine XYZ_File    
