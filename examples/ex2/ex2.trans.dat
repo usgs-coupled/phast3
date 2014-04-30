@@ -71,5 +71,6 @@ PRINT_FREQUENCY
         -xyz_velocity                       400 day
 TIME_CONTROL
         -time_step                          0   10  day 
+#        -time_step                          0   2.5  day
         -time_end                           400 day
 END             
