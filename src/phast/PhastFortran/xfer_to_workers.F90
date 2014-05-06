@@ -120,11 +120,11 @@ SUBROUTINE flow_distribute
         ! *** broadcast tfx, tfy, tfz from flow solution
         ! ... create MPI structure for three real arrays
 
-        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
+        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
             xp_comm, ierrmpi)
-        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
+        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
             xp_comm, ierrmpi)
-        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE, manager, &
+        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
             xp_comm, ierrmpi)
         IF (.NOT. steady_flow) THEN
             ! *** broadcast dp
@@ -178,11 +178,11 @@ SUBROUTINE tfx_distribute
         ! *** broadcast tfx, tfy, tfz
         ! ... create MPI structure for three real arrays
 
-        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
+        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
             xp_comm, ierrmpi)
-        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
+        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
             xp_comm, ierrmpi)
-        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE, manager, &
+        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
             xp_comm, ierrmpi)
     END IF
 #endif

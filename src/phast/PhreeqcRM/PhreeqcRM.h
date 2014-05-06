@@ -3142,7 +3142,7 @@ In PHREEQC, equilibrium phases are defined by
 moles of each phase. SetUnitsPPassemblage determines whether the
 number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
 to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
 on the basis of the porosity
@@ -3223,7 +3223,7 @@ In PHREEQC, solid solutions are defined by
 moles of each component. SetUnitsSSassemblage determines whether the
 number of moles applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
 to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
 on the basis of the porosity
@@ -3250,7 +3250,7 @@ Input units for surfaces. In PHREEQC, surfaces are determined by
 moles of surface sites. SetUnitsSurface defines whether the
 number of sites applies to the volume of the cell, the volume of
 water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell; 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
+0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
 If 1 or 2 is selected, the input is converted
 to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
 on the basis of the porosity
