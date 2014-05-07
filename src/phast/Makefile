@@ -175,7 +175,9 @@ IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -ls
 # The following apply to OpenMPI versions
 OPENMPI_GFORTRAN_32=/usr/lib/openmpi
 OPENMPI_IFORT_32=/raid/home/charlton/openmpi-1.5.4/lobo07-ifort-static
-OPENMPI_GFORTRAN_64=/usr/lib64/openmpi
+#OPENMPI_GFORTRAN_64=/usr/lib64/openmpi
+#OPENMPI_GFORTRAN_64=${MPI_HOME}
+OPENMPI_GFORTRAN_64=/opt/openmpi/openmpi-1.4.5
 OPENMPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 
 # -----------------------------------------------------------------------------
@@ -315,7 +317,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
-  FFLAGS       = -O3 -fno-underscoring $(DEFINES) 
+  FFLAGS       = -O3 -fno-underscoring $(DEFINES) -I${OPENMPI_GFORTRAN_64}/include
   CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
