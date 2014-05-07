@@ -242,7 +242,7 @@ SUBROUTINE phast_manager
 #endif
 
     ! ... Cleanup reaction module
-	CALL FH_FinalizeFiles();
+	CALL FH_FinalizeFiles()
     IF (solute) THEN  
         if (RM_Destroy(rm_id) < 0) then
             write (*,*) 'RM_Destroy failed.'
@@ -397,9 +397,10 @@ SUBROUTINE CreateRM
     SAVE
     INCLUDE 'RM_interface_F.f90.inc'   
     INTEGER i, a_err, status
+    CHARACTER*32 string
   
     IF (solute) THEN  
-        ! ... make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
+        ! ... make a reaction module, makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
 #ifdef USE_MPI  
         rm_id = RM_Create(nxyz, world_comm)      
 #else
@@ -414,12 +415,15 @@ SUBROUTINE CreateRM
         status = RM_SetFilePrefix(rm_id, f3name)
         status = RM_UseSolutionDensityVolume(rm_id, 0)
         status = RM_OpenFiles(rm_id)
-        status = RM_LoadDatabase(rm_id, f2name);
-        !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
+        status = RM_LoadDatabase(rm_id, f2name)
+        !... Call phreeqc, find number of components, f1name, chem.dat, f2name, database, f3name, prefix
         status = RM_LogMessage(rm_id, "Initial PHREEQC run.") 
         status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
-        status = RM_RunString(rm_id, 1, 0, 1, "DELETE; -all")
+	! handling of semicolon need some care on some computers
+        string = 'DELETE' // char(59) // ' -all'
+        status = RM_RunString(rm_id, 1, 0, 1, trim(string))
+	if (status .ne. 0) stop
         status = RM_FindComponents(rm_id)    
         status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
         status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
@@ -470,7 +474,7 @@ SUBROUTINE InitialEquilibrationRM
         imedia = 0
         if (pr_hdf_media) imedia = 1
         CALL FH_WriteFiles(rm_id, prhdfci,  imedia, prcphrqi, &
-	        iprint_xyz(1), 0);  
+	        iprint_xyz(1), 0)  
     ENDIF       
 END SUBROUTINE InitialEquilibrationRM
     
