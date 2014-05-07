@@ -421,7 +421,7 @@ SUBROUTINE CreateRM
         status = RM_ScreenMessage(rm_id, "Initial PHREEQC run.")  
         status = RM_RunFile(rm_id, 1, 1, 1, f1name) 
         ! end of line needs care in Fortran
-        string = 'DELETE; -all' ! // char(0)
+        string = 'DELETE; -all' // char(0)
         status = RM_RunString(rm_id, 1, 0, 1, trim(string))
         if (status .ne. 0) stop "Failed DELETE in CreateRM"
         status = RM_FindComponents(rm_id)    
