@@ -423,7 +423,7 @@ SUBROUTINE CreateRM
 	! handling of semicolon need some care on some computers
         string = 'DELETE' // char(59) // ' -all'
         status = RM_RunString(rm_id, 1, 0, 1, trim(string))
-	if (status .ne. 0) stop
+        if (status .ne. 0) stop "Failed DELETE in CreateRM"
         status = RM_FindComponents(rm_id)    
         status = RM_LogMessage(rm_id, "Done with Initial PHREEQC run.")
         status = RM_ScreenMessage(rm_id, "Done with Initial PHREEQC run.")
