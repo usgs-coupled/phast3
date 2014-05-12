@@ -398,23 +398,23 @@ SUBROUTINE CreateRM
     INCLUDE 'RM_interface_F.f90.inc'   
     INTEGER i, a_err, status
     CHARACTER*32 string
-  
-    IF (solute) THEN  
-        ! ... make a reaction module, makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
+
+    ! ... make a reaction module, makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
 #ifdef USE_MPI  
-        rm_id = RM_Create(nxyz, world_comm)      
+    rm_id = RM_Create(nxyz, world_comm)      
 #else
-        rm_id = RM_Create(nxyz, nthreads)
-#endif        
+    rm_id = RM_Create(nxyz, nthreads)
+#endif 
+    status = RM_SetFilePrefix(rm_id, f3name)
+    status = RM_OpenFiles(rm_id)  
+    IF (solute) THEN         
         IF (rm_id.LT.0) THEN
             STOP
         END IF
         nthreads = RM_GetThreadCount(rm_id)
         status = RM_SetErrorHandlerMode(rm_id, 2)   ! exit
         status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
-        status = RM_SetFilePrefix(rm_id, f3name)
         status = RM_UseSolutionDensityVolume(rm_id, 0)
-        status = RM_OpenFiles(rm_id)
         status = RM_LoadDatabase(rm_id, f2name)
         !... Call phreeqc, find number of components, f1name, chem.dat, f2name, database, f3name, prefix
         status = RM_LogMessage(rm_id, "Initial PHREEQC run.") 
@@ -434,7 +434,7 @@ SUBROUTINE InitialEquilibrationRM
     USE machine_constants, ONLY: kdp
     USE mcc, ONLY:               iprint_xyz, prcphrqi, prf_chem_phrqi, prhdfci, rm_id, solute, steady_flow
     USE mcg, ONLY:               grid2chem, nxyz
-    USE mcn, ONLY:               x_node, y_node, z_node
+    USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density
     USE mcp, ONLY:               pv
     USE mcv, ONLY:               c, frac, sat, time_phreeqc
     USE hdf_media_m, ONLY:       pr_hdf_media
@@ -471,11 +471,13 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetConcentrations(rm_id, c(1,1))
         status = RM_RunCells(rm_id)   
         status = RM_GetConcentrations(rm_id, c(1,1))
-        imedia = 0
-        if (pr_hdf_media) imedia = 1
-        CALL FH_WriteFiles(rm_id, prhdfci,  imedia, prcphrqi, &
-	        iprint_xyz(1), 0)  
-    ENDIF       
+        !status = RM_GetDensity(rm_id, phreeqc_density(1))
+        !status = RM_SetDensity(rm_id, phreeqc_density(1))
+    ENDIF  
+    imedia = 0
+    if (pr_hdf_media) imedia = 1
+    CALL FH_WriteFiles(rm_id, prhdfci,  imedia, prcphrqi, &
+	    iprint_xyz(1), 0)       
 END SUBROUTINE InitialEquilibrationRM
     
 SUBROUTINE InitializeRM 
@@ -570,7 +572,7 @@ SUBROUTINE TimeStepRM
     USE mcc, ONLY:               iprint_xyz, rm_id, solute
     USE mcc_m, ONLY:             prcphrq, prhdfc
     USE mcg, ONLY:               grid2chem, nxyz
-    USE mcn, ONLY:               x_node, y_node, z_node
+    USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density
     USE mcp, ONLY:               pv
     USE mcv,  ONLY:              c, deltim, frac, indx_sol1_ic, sat, time
     USE hdf_media_m, ONLY:       pr_hdf_media
@@ -610,18 +612,19 @@ SUBROUTINE TimeStepRM
         status = RM_RunCells(rm_id)  
         CALL time_parallel(11)                                    ! 11 - 10 run cells
         status = RM_GetConcentrations(rm_id, c(1,1))
+        !status = RM_GetDensity(rm_id, phreeqc_density(1))
+        !status = RM_SetDensity(rm_id, phreeqc_density(1))
         CALL time_parallel(12)                                    ! 12 - 11 chemistry communication
-        
-        ihdf = 0
-        if (prhdfc) ihdf = 1
-        imedia = 0
-        if (pr_hdf_media) imedia = 1 
-        ixyz = 0
-        if (prcphrq) ixyz = 1        
-        CALL FH_WriteFiles(rm_id, ihdf, imedia, ixyz, &
-            iprint_xyz(1), print_restart%print_flag_integer) 
-        CALL time_parallel(13)                                    ! 13 - 12 chemistry files
     ENDIF    ! ... Done with chemistry    
+    ihdf = 0
+    if (prhdfc) ihdf = 1
+    imedia = 0
+    if (pr_hdf_media) imedia = 1 
+    ixyz = 0
+    if (prcphrq) ixyz = 1        
+    CALL FH_WriteFiles(rm_id, ihdf, imedia, ixyz, &
+        iprint_xyz(1), print_restart%print_flag_integer) 
+    CALL time_parallel(13)                                    ! 13 - 12 chemistry files
 END SUBROUTINE TimeStepRM   
     
 INTEGER FUNCTION set_components()
@@ -736,14 +739,16 @@ SUBROUTINE convert_to_moles(id, c, n)
     
 END SUBROUTINE convert_to_moles  
 SUBROUTINE Timing_barrier()
-    USE mcc, ONLY: mpi_myself
+    USE mcc, ONLY: mpi_myself, solute
     USE mpi_mod
     IMPLICIT NONE 
     INTEGER :: i
+    if (solute) then
 #ifdef USE_MPI  
-    if (mpi_myself == 0) then
-        CALL MPI_BCAST(METHOD_TIMINGBARRIER, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
-    endif 
-    CALL MPI_BARRIER(world_comm, ierrmpi)
+        if (mpi_myself == 0) then
+            CALL MPI_BCAST(METHOD_TIMINGBARRIER, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+        endif 
+        CALL MPI_BARRIER(world_comm, ierrmpi)
 #endif 
+    endif
 END SUBROUTINE Timing_barrier  
