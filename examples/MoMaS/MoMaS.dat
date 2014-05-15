@@ -1,0 +1,8 @@
+SOLUTION_MASTER_SPECIES
+    H             H+              -1     H               1.008
+    H(0)          H2               0     H              
+    H(1)          H+              -1     1              
+    E             e-               0     1               1.008
+    O             H2O              0     O               16
+    O(0)          O2               0     O              
+    O(-2)         H2O              0     1              
