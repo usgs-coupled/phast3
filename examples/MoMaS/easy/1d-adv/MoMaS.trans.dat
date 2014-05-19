@@ -53,7 +53,8 @@ UNITS
 	-kinetics                         WATER
 	-gas_phase                        WATER
 GRID
-	-uniform X 0 2.1 106 # 0.02 m
+	-uniform X 0 2.1 2 
+	-overlay_uniform X 0.01 2.09 105 # 0.02 m
 	-uniform Y 0 1 2
 	-uniform Z 0 1 2
 	-snap X 0.001
