@@ -61,6 +61,48 @@ BOOL CtrlHandler(DWORD dwCtrlType)
 
 int main(int argc, char* argv[])
 {
+
+#ifdef SKIP
+	double *a[1000];
+	double *b[1000];
+	double *c[1000];
+
+	for (int i = 0; i < 1000; i++)
+	{
+		a[i] = (double *) malloc(1000*sizeof(double));
+		b[i] = (double *) malloc(1000*sizeof(double));
+		c[i] = (double *) malloc(1000*sizeof(double));
+	}
+
+	double f;
+	for (int i = 0; i < 1000; i++)
+	{
+		for (int j = 0; j < 1000; j++)
+		{
+			f = (double)rand() / RAND_MAX;
+			a[i][j] = f;
+			f = (double)rand() / RAND_MAX;
+			b[i][j] = f;
+		}
+	}
+	std::cerr << "Start matrix multiply..." << std::endl;
+	clock_t t0 = clock();
+	for (int i = 0; i < 1000; i++)
+	{
+		for (int j = 0; j < 1000; j++)
+		{
+			c[i][j] = 0.0;
+			for (int k = 0; k < 1000; k++)
+			{
+				c[i][j] = c[i][j] + a[i][k]*b[k][j];
+			}
+		}
+	}
+	clock_t t_total = clock() - t0;
+	std::cerr << "Matric multiply time: " << (double) t_total / (double) CLOCKS_PER_SEC << std::endl;
+#endif
+
+
 	int mpi_tasks;
 	int mpi_myself;
 	try
