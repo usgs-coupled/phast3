@@ -18,8 +18,8 @@ SOLUTION_METHOD
 	-tolerance          1e-010
 	-save_directions    20
 	-maximum_iterations 500
-	-space_differencing 0.5
-	-time_differencing  0.5
+	-space_differencing 0.0 # 0.5
+	-time_differencing  1.0 # 0.5
 	-cross_dispersion   false
 	-rebalance_fraction 0.5
 	-rebalance_by_cell  false
@@ -54,16 +54,22 @@ UNITS
 	-gas_phase                        WATER
 GRID
 	-uniform X 0 2.1 2 
-	-overlay_uniform X 0.01 2.09 105 # 0.02 m
+	#-overlay_uniform X 0.01 2.09 105 # 0.02 m
+	#-overlay_uniform X 0.005 2.095 210 # 0.01
+	#-overlay_uniform X 0.0025 2.0975 420   #0.005
+	-overlay_uniform X 0.001 2.099 1050 # 0.002 m
 	-uniform Y 0 1 2
 	-uniform Z 0 1 2
-	-snap X 0.001
-	-snap Y 0.001
-	-snap Z 0.001
+	-snap X 0.0001
+	-snap Y 0.0001
+	-snap Z 0.0001
 	-chemistry_dimensions X
 	-print_orientation XY
 	-grid_origin   0  0  0
 	-grid_angle    0
+PRINT_LOCATIONS
+	-xyz_chemistry
+		-sample X 1
 MEDIA
 	-domain
 		-active                   1
@@ -76,7 +82,7 @@ MEDIA
 		-horizontal_dispersivity  0.001
 		-vertical_dispersivity    0.001
 		-tortuosity               1
-	-box 1.0 -0.001 -0.001 1.1 1.001 1.001 GRID
+	-box 1.0 -0.0001 -0.0001 1.1 1.0001 1.0001 GRID
 		-description Region B
 		-active                   1
 		-Kx                       1e-005
@@ -87,7 +93,7 @@ MEDIA
 		-horizontal_dispersivity  0.006
 		-vertical_dispersivity    0.006
 FLUX_BC
-	-box -0.001 -0.001 -0.001 0.001 1.001 1.001 GRID
+	-box -0.0001 -0.0001 -0.0001 0.0001 1.0001 1.0001 GRID
 		-face X
 		-associated_solution
 			0 seconds	0
@@ -95,7 +101,7 @@ FLUX_BC
 		-flux
 			0 seconds	0.0055
 SPECIFIED_HEAD_BC
-	-box 2.099 -0.001 -0.001 2.101 1.001 1.001 GRID
+	-box 2.0999 -0.0001 -0.0001 2.1001 1.0001 1.0001 GRID
 		-head
 			0 seconds	1
 		-associated_solution
@@ -107,7 +113,7 @@ CHEMISTRY_IC
 	-domain
 		-solution            1
 		-surface             1
-	-box 1.0 -0.001 -0.001 1.1 1.001 1.001 GRID
+	-box 1.0 -0.0001 -0.0001 1.1 1.0001 1.0001 GRID
 		-description Region B
 		-solution            11
 		-surface             11
@@ -127,7 +133,7 @@ PRINT_INITIAL
 	-solution_method            true
 	-steady_flow_velocities     false
 	-wells                      true
-	-xyz_chemistry              false
+	-xyz_chemistry              true
 	-xyz_components             false
 	-xyz_heads                  false
 	-xyz_steady_flow_velocities false
@@ -161,7 +167,7 @@ PRINT_FREQUENCY
 		-hdf_intermediate       0 
 TIME_CONTROL
 	-time_step
-		0 2
+		0 1
 	-time_change
 		6000
 	-start_time 0

@@ -107,13 +107,14 @@ END
 SELECTED_OUTPUT 1
 -reset false
 USER_PUNCH 1
--heading x1 x2 x3 x4 c1 c2 c3 c4 c5 cs1 cs2 cs3 cs4 tot_x1 tot_x2 tot_x3 tot_x4
+-heading x1 x2 x3 x4 c1 c2 c3 c4 c5 cs0 cs1 cs2 cs3 cs4 tot_x1 tot_x2 tot_x3 tot_x4
 10 C0 = MOL("H+")
 20 C1 = MOL("OH-")
 30 C2 = MOL("H[X3]+") * (TOT("[X3]")>0)
 40 C3 = MOL("[X4]H-") * (TOT("[X4]")>0)
 50 C4 = MOL("[X4]3[X3]H2-4") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
 60 C5 = MOL("[X4][X3]3H6+4") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
+65 CS0 = MOL("SOH") * (TOT("S")>0) 
 70 CS1 = MOL("SOH[X3]H3+3") * (TOT("S")>0) * (TOT("[X3]")>0)
 80 CS2 = MOL("S2O2H[X4]-3") * (TOT("S")>0) * (TOT("[X4]")>0)
 85 CS3 = MOL("BOH[X3]H3+3") * (TOT("B")>0) * (TOT("[X3]")>0)
@@ -126,7 +127,7 @@ USER_PUNCH 1
 210 X2 = MOL("H+")
 220 X3 = MOL("[X3]") * (TOT("[X3]")>0)
 230 X4 = MOL("[X4]H2") * (TOT("[X4]")>0)
-300 PUNCH x1, x2, x3, x4, c1, c2, c3, c4, c5, cs1, cs2, cs3, cs4, tot_x1, tot_x2, tot_x3, tot_x4
+300 PUNCH x1, x2, x3, x4, c1, c2, c3, c4, c5, cs0, cs1, cs2, cs3, cs4, tot_x1, tot_x2, tot_x3, tot_x4
 END
 
 
