@@ -104,10 +104,13 @@ SAVE solution 11
 SAVE surface  11
 
 END
+USER_PRINT
+10 PRINT "tot(S): ", TOT("S")
+END
 SELECTED_OUTPUT 1
 -reset false
 USER_PUNCH 1
--heading x1 x2 x3 x4 c1 c2 c3 c4 c5 cs0 cs1 cs2 cs3 cs4 tot_x1 tot_x2 tot_x3 tot_x4
+-heading x1 x2 x3 x4 c1 c2 c3 c4 c5 cs0 cs1 cs2 cs3 cs4 tot_x1 tot_x2 tot_x3 tot_x4 tot_S
 10 C0 = MOL("H+")
 20 C1 = MOL("OH-")
 30 C2 = MOL("H[X3]+") * (TOT("[X3]")>0)
@@ -127,7 +130,7 @@ USER_PUNCH 1
 210 X2 = MOL("H+")
 220 X3 = MOL("[X3]") * (TOT("[X3]")>0)
 230 X4 = MOL("[X4]H2") * (TOT("[X4]")>0)
-300 PUNCH x1, x2, x3, x4, c1, c2, c3, c4, c5, cs0, cs1, cs2, cs3, cs4, tot_x1, tot_x2, tot_x3, tot_x4
+300 PUNCH x1, x2, x3, x4, c1, c2, c3, c4, c5, cs0, cs1, cs2, cs3, cs4, tot_x1, tot_x2, tot_x3, tot_x4, TOT("S")
 END
 
 
