@@ -252,11 +252,11 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
-  FFLAGS       = -O3 -frecursive -fopenmp -fno-underscoring $(DEFINES) 
+  FFLAGS       = -O3 -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) 
   CC           = g++
   CFLAGS       = -Wall -fopenmp -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS)
@@ -270,7 +270,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
-  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring $(DEFINES) $(PHREEQC_INCLUDES)
+  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) $(PHREEQC_INCLUDES)
   CC           = g++
   CFLAGS       = -Wall -fopenmp -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS)
@@ -315,7 +315,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
-  FFLAGS       = -O3 -fno-underscoring $(DEFINES) 
+  FFLAGS       = -O3 -fno-underscoring -cpp $(DEFINES) 
   CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
@@ -790,12 +790,14 @@ aplbce_flow.o: ../PhastFortran/aplbce_flow.f90 module_dummy.o
 aplbci_flow.o: ../PhastFortran/aplbci_flow.F90 module_dummy.o
 asembl_flow.o: ../PhastFortran/asembl_flow.f90 module_dummy.o
 asmslp.o: ../PhastFortran/asmslp.F90 module_dummy.o
+asmslp_flow.o: ../PhastFortran/asmslp_flow.F90 module_dummy.o
 calcc.o: ../PhastFortran/calcc.f90 module_dummy.o
 calc_velocity.o: ../PhastFortran/calc_velocity.f90 module_dummy.o
 clog.o: ../PhastFortran/clog.f90 module_dummy.o
 closef.o: ../PhastFortran/closef.F90 module_dummy.o
 coeff_flow.o: ../PhastFortran/coeff_flow.F90 module_dummy.o
 coeff_trans.o: ../PhastFortran/coeff_trans.F90 module_dummy.o
+create_mapping.o: ../PhastFortran/create_mapping.f90 module_dummy.o
 dealloc_arr.o: ../PhastFortran/dealloc_arr.F90 module_dummy.o
 dealloc_arr_worker.o: ../PhastFortran/dealloc_arr_worker.F90 module_dummy.o
 dump.o: ../PhastFortran/dump.f90 module_dummy.o
@@ -834,7 +836,10 @@ read2.o: ../PhastFortran/read2.F90 module_dummy.o
 read2_xfer.o: ../PhastFortran/read2_xfer.F90 module_dummy.o
 read3.o: ../PhastFortran/read3.F90 module_dummy.o
 read3_xfer.o: ../PhastFortran/read3_xfer.F90 module_dummy.o
+rhsn.o: ../PhastFortran/rhsn.f90 module_dummy.o
 rhsn_flow.o: ../PhastFortran/rhsn_flow.f90 module_dummy.o
+rhsn_manager.o: ../PhastFortran/rhsn_manager.F90 module_dummy.o
+rhsn_ss_flow.o: ../PhastFortran/rhsn_ss_flow.f90 module_dummy.o
 sbcflo.o: ../PhastFortran/sbcflo.f90 module_dummy.o
 set_component_map.o: ../PhastFortran/set_component_map.F90 module_dummy.o
 simulate_ss_flow.o: ../PhastFortran/simulate_ss_flow.f90 module_dummy.o
@@ -883,6 +888,7 @@ XP_wbcflo.o: ../PhastFortran/XP_wbcflo.f90 module_dummy.o
 XP_wellsc.o: ../PhastFortran/XP_wellsc.f90 module_dummy.o
 XP_wellsr.o: ../PhastFortran/XP_wellsr.f90 module_dummy.o
 zone_flow.o: ../PhastFortran/zone_flow.f90 module_dummy.o
+zone_flow_ss.o: ../PhastFortran/zone_flow_ss.f90 module_dummy.o
 #
 #  PHAST Fortran files
 #
