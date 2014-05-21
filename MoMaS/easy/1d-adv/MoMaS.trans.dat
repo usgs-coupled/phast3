@@ -18,8 +18,8 @@ SOLUTION_METHOD
 	-tolerance          1e-010
 	-save_directions    20
 	-maximum_iterations 500
-	-space_differencing 0.0 # 0.5
-	-time_differencing  1.0 # 0.5
+	-space_differencing 0.5
+	-time_differencing  0.5
 	-cross_dispersion   false
 	-rebalance_fraction 0.5
 	-rebalance_by_cell  false
@@ -54,11 +54,13 @@ UNITS
 	-kinetics                         WATER
 	-gas_phase                        WATER
 GRID
-	-uniform X 0 2.1 2 
+	#-uniform X 0 2.1 2 
+	-uniform X 0 2.1 2101 
+	#-uniform X 0 2.1 1051 
 	#-overlay_uniform X 0.01 2.09 105 # 0.02 m
 	#-overlay_uniform X 0.005 2.095 210 # 0.01
 	#-overlay_uniform X 0.0025 2.0975 420   #0.005
-	-overlay_uniform X 0.001 2.099 1050 # 0.002 m
+	#-overlay_uniform X 0.001 2.099 1050 # 0.002 m
 	-uniform Y 0 1 2
 	-uniform Z 0 1 2
 	-snap X 0.0001
@@ -70,7 +72,7 @@ GRID
 	-grid_angle    0
 PRINT_LOCATIONS
 	-xyz_chemistry
-		-sample X 2
+		-sample X 1
 MEDIA
 	-domain
 		-active                   1
@@ -82,6 +84,9 @@ MEDIA
 		-long_dispersivity        0.01
 		-horizontal_dispersivity  0.001
 		-vertical_dispersivity    0.001
+#!		-long_dispersivity        10
+#!		-horizontal_dispersivity  1
+#!		-vertical_dispersivity    1
 		-tortuosity               1
 	-box 1.0 -0.0001 -0.0001 1.1 1.0001 1.0001 GRID
 		-description Region B
@@ -93,6 +98,9 @@ MEDIA
 		-long_dispersivity        0.06
 		-horizontal_dispersivity  0.006
 		-vertical_dispersivity    0.006
+#!		-long_dispersivity        60
+#!		-horizontal_dispersivity  6
+#!		-vertical_dispersivity    6
 FLUX_BC
 	-box -0.0001 -0.0001 -0.0001 0.0001 1.0001 1.0001 GRID
 		-face X
@@ -159,7 +167,7 @@ PRINT_FREQUENCY
 		-restart_file           0
 		-velocities             end 
 		-wells                  0 
-		-xyz_chemistry          2    seconds
+		-xyz_chemistry          10    seconds
 		-xyz_components         0
 		-xyz_heads              0
 		-xyz_velocities         0
@@ -170,7 +178,7 @@ PRINT_FREQUENCY
 		-hdf_intermediate       0 
 TIME_CONTROL
 	-time_step
-		0 1
+		0 0.005
 	-time_change
-		6000
+		10 # 6000
 	-start_time 0
