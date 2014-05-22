@@ -2679,6 +2679,118 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 		}
 		// convert Reaction module solution data to concentrations for transport
+		std::vector<double> d;  // scratch space to convert from moles to mass fraction
+		std::vector<double> solns;
+		cxxNameDouble::iterator it;
+
+		// Put solutions into a vector
+		int n = this->mpi_myself;
+		for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			// load fractions into d
+			cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
+			assert (cxxsoln_ptr);
+			int i_grid = this->backward_mapping[j][0];
+			//double v = this->pore_volume[i_grid] / this->pore_volume_zero[i_grid] * saturation[i_grid];
+			double v, dens;
+			if (this->use_solution_density_volume)
+			{
+				v = cxxsoln_ptr->Get_soln_vol();
+				dens = cxxsoln_ptr->Get_density();
+			}
+			else
+			{
+				int k = this->backward_mapping[j][0];
+				v = this->saturation[k] * this->pore_volume[k] / this->cell_volume[k];
+				if (v <= 0)
+				{
+					v = cxxsoln_ptr->Get_soln_vol();
+				}
+				dens = this->density[k];
+			}
+			this->cxxSolution2concentration(cxxsoln_ptr, d, v, dens);
+			for (int i = 0; i < (int) this->components.size(); i++)
+			{
+				solns.push_back(d[i]);
+			}
+		}
+		
+		// make buffer to recv solutions
+		double * recv_solns = NULL;
+		int * recv_counts = NULL;
+		int * recv_displs = NULL;
+		if (this->mpi_myself == 0)
+		{
+			recv_solns = new double[(size_t) this->count_chemistry * this->components.size()];
+			recv_counts = new int[this->mpi_tasks];
+			recv_displs = new int[this->mpi_tasks];
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				recv_counts[i] = (end_cell[i] - start_cell[i] + 1) * (int) this->components.size();
+				recv_displs[i] = start_cell[i] * (int) this->components.size();
+			}
+		}
+
+		// Gather to root
+		double * buf = &solns[0];
+		int my_length = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1) * (int) this->components.size();
+		MPI_Gatherv(buf, my_length, MPI_DOUBLE, 
+			recv_solns, recv_counts, recv_displs, MPI_DOUBLE, 0, phreeqcrm_comm);
+
+		// Root processes to c
+		if (mpi_myself == 0)
+		{
+			// check size and fill elements, if necessary resize
+			c.resize(this->nxyz * this->components.size());
+			std::fill(c.begin(), c.end(), INACTIVE_CELL_VALUE);
+
+			// Write vector into c
+			assert (recv_solns.size() == this->count_chemistry*this->components.size());
+			int n = 0;
+			for (int j = 0; j < count_chemistry; j++)
+			{
+				std::vector<double> d;
+				for (size_t i = 0; i < this->components.size(); i++)
+				{
+					d.push_back(recv_solns[n++]);
+				}
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					double *d_ptr = &c[*it];
+					size_t i;
+					for (i = 0; i < this->components.size(); i++)
+					{
+						d_ptr[this->nxyz * i] = d[i];
+					}
+				}
+			}
+			delete recv_solns;
+			delete recv_counts;
+			delete recv_displs;
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
+}
+#ifdef ORIG
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetConcentrations(std::vector<double> &c)
+/* ---------------------------------------------------------------------- */
+{
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETCONCENTRATIONS;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+		// convert Reaction module solution data to concentrations for transport
 		MPI_Status mpi_status;
 		std::vector<double> d;  // scratch space to convert from moles to mass fraction
 		std::vector<double> solns;
@@ -2776,6 +2888,7 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
 }
+#endif
 #else
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -7111,6 +7224,137 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
 	std::vector<double> c;
+	IRM_RESULT return_value = IRM_OK;
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETCONCENTRATIONS;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+
+	std::vector<double> c_chem, c_chem_root;
+	c_chem.resize(this->count_chemistry * this->components.size(), INACTIVE_CELL_VALUE);
+	if (this->mpi_myself == 0)
+	{
+		c_chem_root.resize(this->count_chemistry * this->components.size(), INACTIVE_CELL_VALUE);
+		for (int i = 0; i < this->count_chemistry; i++)
+		{
+			int j = this->backward_mapping[i][0];
+			for (int k = 0; k < (int) this->components.size(); k++)
+			{
+				c_chem_root[k*this->count_chemistry + i] = t[k*this->nxyz + j];
+			}
+		}
+	}
+
+	for (int i = 0; i < (int) this->components.size(); i++)
+	{
+		double * send_buf = NULL;
+		int * send_counts = NULL;
+		int * send_displs = NULL;
+		double * recv_buf = NULL;
+		int recv_count;
+		recv_count = end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1;
+		if (this->mpi_myself == 0)
+		{
+			send_buf = &c_chem_root[i * this->count_chemistry];
+			send_counts = new int[this->mpi_tasks];
+			send_displs = new int[this->mpi_tasks];
+			for (int j = 0; j < this->mpi_tasks; j++)
+			{
+				send_counts[j] = end_cell[j] - start_cell[j] + 1;
+				send_displs[j] = start_cell[j];
+			}
+			recv_buf = &c_chem[i * this->count_chemistry];
+		}
+		else
+		{
+			recv_buf = &c_chem[i * this->count_chemistry + start_cell[this->mpi_myself]];
+		}
+
+		MPI_Scatterv(send_buf, send_counts, send_displs, MPI_DOUBLE, recv_buf, recv_count, MPI_DOUBLE, 0, phreeqcrm_comm);
+		delete send_counts;
+		delete send_displs;
+	}
+	
+	c.resize(this->nxyz * this->components.size(), INACTIVE_CELL_VALUE);
+	for (int i = 0; i < this->count_chemistry; i++)
+	{
+		int j = this->backward_mapping[i][0];
+		for (int k = 0; k < (int) this->components.size(); k++)
+		{
+			c[k*this->nxyz + j] = c_chem[k*this->count_chemistry + i];
+		}
+	}
+#else
+	c = t;
+#endif
+#ifdef USE_OPENMP
+	omp_set_num_threads(this->nthreads);
+#pragma omp parallel 
+#pragma omp for
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		this->Concentrations2Solutions(n, c);
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetConcentrations");
+}
+#ifdef REVISED
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetConcentrations(const std::vector<double> &t)
+/* ---------------------------------------------------------------------- */
+{
+	std::vector<double> c;
+#if USE_MPI
+	std::vector<double> c_chem, c_chem_root;
+	if (this->mpi_myself == 0)
+	{
+		c_chem_root.resize(this->count_chemistry * this->components.size(), INACTIVE_CELL_VALUE);
+		for (int i = 0; i < this->count_chemistry; i++)
+		{
+			int j = this->backward_mapping[i][0];
+			for (int k = 0; k < (int) this->components.size(); k++)
+			{
+				c_chem_root[k*this->count_chemistry + i] = t[k*this->nxyz + j];
+			}
+		}
+	}
+	std::string methodName = "SetConcentrations";
+	IRM_RESULT result_value = SetGeneric(c_chem, (int) this->components.size() * this->count_chemistry, c_chem_root, METHOD_SETCONCENTRATIONS, methodName, INACTIVE_CELL_VALUE);
+
+	c.resize(this->nxyz * this->components.size(), INACTIVE_CELL_VALUE);
+	for (int i = 0; i < this->count_chemistry; i++)
+	{
+		int j = this->backward_mapping[i][0];
+		for (int k = 0; k < (int) this->components.size(); k++)
+		{
+			c[k*this->nxyz + j] = c_chem[k*this->count_chemistry + i];
+		}
+	}
+#else
+	c = t;
+#endif
+#ifdef USE_OPENMP
+	omp_set_num_threads(this->nthreads);
+#pragma omp parallel 
+#pragma omp for
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		this->Concentrations2Solutions(n, c);
+	}
+	return this->ReturnHandler(result_value, "PhreeqcRM::" + methodName);
+}
+#endif
+#ifdef ORIG
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetConcentrations(const std::vector<double> &t)
+/* ---------------------------------------------------------------------- */
+{
+	std::vector<double> c;
 	std::string methodName = "SetConcentrations";
 	IRM_RESULT result_value = SetGeneric(c, (int) this->components.size() * this->nxyz, t, METHOD_SETCONCENTRATIONS, methodName, INACTIVE_CELL_VALUE);
 
@@ -7125,6 +7369,7 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 	}
 	return this->ReturnHandler(result_value, "PhreeqcRM::" + methodName);
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
@@ -7260,6 +7505,7 @@ PhreeqcRM::SetErrorHandlerMode(int i)
 #ifdef USE_MPI
 		if (this->mpi_myself == 0)
 		{
+			if (this->error_handler_mode == i) return IRM_OK; 
 			int method = METHOD_SETERRORHANDLERMODE;
 			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 		}
@@ -7287,6 +7533,7 @@ PhreeqcRM::SetFilePrefix(const std::string & prefix)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->file_prefix == prefix) return IRM_OK;
 		int method = METHOD_SETFILEPREFIX;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7377,6 +7624,7 @@ PhreeqcRM::SetPartitionUZSolids(bool tf)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->partition_uz_solids == tf) return IRM_OK;
 		int method = METHOD_SETPARTITIONUZSOLIDS;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7456,6 +7704,12 @@ PhreeqcRM::SetPrintChemistryOn(bool worker, bool ip, bool utility)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->print_chemistry_on[0] == worker && 
+			this->print_chemistry_on[1] == ip &&
+			this->print_chemistry_on[2] == utility)
+		{
+			return IRM_OK;
+		}
 		int method = METHOD_SETPRINTCHEMISTRYON;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7521,6 +7775,7 @@ PhreeqcRM::SetRebalanceByCell(bool t)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->rebalance_by_cell == t) return IRM_OK;
 		int method = METHOD_SETREBALANCEBYCELL;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7541,6 +7796,7 @@ PhreeqcRM::SetRebalanceFraction(double t)
 {
 	if (mpi_myself == 0)
 	{
+		if (this->rebalance_fraction == t) return IRM_OK;
 		this->rebalance_fraction = t;
 	}
 #ifdef USE_MPI
@@ -7571,6 +7827,7 @@ PhreeqcRM::SetSelectedOutputOn(bool t)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->selected_output_on == t) return IRM_OK;
 		int method = METHOD_SETSELECTEDOUTPUTON;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7607,6 +7864,7 @@ PhreeqcRM::SetSpeciesSaveOn(bool t)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->species_save_on == t) return IRM_OK;
 		int method = METHOD_SETSPECIESSAVEON;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7670,6 +7928,7 @@ PhreeqcRM::SetTime(double t)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->time == t) return IRM_OK;
 		int method = METHOD_SETTIME;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7692,6 +7951,7 @@ PhreeqcRM::SetTimeConversion(double t)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->time_conversion == t) return IRM_OK;
 		int method = METHOD_SETTIMECONVERSION;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7714,6 +7974,7 @@ PhreeqcRM::SetTimeStep(double t)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->time_step == t) return IRM_OK;
 		int method = METHOD_SETTIMESTEP;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7735,6 +7996,7 @@ PhreeqcRM::SetUnitsExchange(int u)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->units_Exchange  == u) return IRM_OK;
 		int method = METHOD_SETUNITSEXCHANGE;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7764,6 +8026,7 @@ PhreeqcRM::SetUnitsGasPhase(int u)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->units_GasPhase  == u) return IRM_OK;
 		int method = METHOD_SETUNITSGASPHASE;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7793,6 +8056,7 @@ PhreeqcRM::SetUnitsKinetics(int u)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->units_Kinetics  == u) return IRM_OK;
 		int method = METHOD_SETUNITSKINETICS;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7822,6 +8086,7 @@ PhreeqcRM::SetUnitsPPassemblage(int u)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->units_PPassemblage  == u) return IRM_OK;
 		int method = METHOD_SETUNITSPPASSEMBLAGE;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7851,6 +8116,7 @@ PhreeqcRM::SetUnitsSolution(int u)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->units_Solution == u) return IRM_OK;
 		int method = METHOD_SETUNITSSOLUTION;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7880,6 +8146,7 @@ PhreeqcRM::SetUnitsSSassemblage(int u)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->units_SSassemblage == u) return IRM_OK;
 		int method = METHOD_SETUNITSSSASSEMBLAGE;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -7909,6 +8176,7 @@ PhreeqcRM::SetUnitsSurface(int u)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->units_Surface == u) return IRM_OK;
 		int method = METHOD_SETUNITSSURFACE;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
@@ -8189,6 +8457,7 @@ PhreeqcRM::UseSolutionDensityVolume(bool tf)
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
+		if (this->use_solution_density_volume == tf) return;
 		int method = METHOD_USESOLUTIONDENSITYVOLUME;
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
