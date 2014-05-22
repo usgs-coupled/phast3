@@ -262,8 +262,9 @@ SUBROUTINE time_parallel(i)
     integer :: i, ierr
     DOUBLE PRECISION t
     DOUBLE PRECISION, DIMENSION(0:16), save :: times
-    DOUBLE PRECISION, save :: time_flow=0, time_transfer, time_transport, time_chemistry, time_chemistry_transfer
-    DOUBLE PRECISION, save :: cum_flow=0, cum_transfer=0, cum_transport=0, cum_chemistry=0, cum_chemistry_transfer=0
+    DOUBLE PRECISION, save :: time_flow=0d0, time_transfer=0d0, time_transport=0d0, time_chemistry=0d0, time_chemistry_transfer=0d0
+    DOUBLE PRECISION, save :: cum_flow=0d0, cum_transfer=0d0, cum_transport=0d0, cum_chemistry=0d0, cum_chemistry_transfer=0d0
+    DOUBLE PRECISION, save :: c1=0d0, c2=0d0, c3=0d0, c4=0.0d0
     CHARACTER(LEN=130) :: logline
     INTEGER :: status
 #ifndef USE_MPI
@@ -340,6 +341,31 @@ SUBROUTINE time_parallel(i)
                time_chemistry_transfer, " Cumulative:", cum_chemistry_transfer
         status = RM_LogMessage(rm_id, logline)
         status = RM_ScreenMessage(rm_id, logline)  
+        
+        c1 = c1 + times(10) - times(9)
+        write (logline,"(t16,a26, f12.2,a17, f13.2)") "Chemistry send:     ", &
+               times(10) - times(9), " Cumulative:", c1
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline) 
+        
+        c2 = c2 + (times(12) - times(11))
+        write (logline,"(t16,a26, f12.2,a17, f13.2)") "Chemistry receive:  ", &
+               (times(12) - times(11)), " Cumulative:", c2
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline) 
+        
+        c3 = c3 + (times(13) - times(12)) 
+        write (logline,"(t16,a26, f12.2,a17, f13.2)") "Files 3:            ", &
+               (times(13) - times(12)), " Cumulative:", c3
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline) 
+        
+        c4 = c4 + (times(16) - times(15))
+        write (logline,"(t16,a26, f12.2,a17, f13.2)") "Other files:        ", &
+               (times(16) - times(15)), " Cumulative:", c3
+        status = RM_LogMessage(rm_id, logline)
+        status = RM_ScreenMessage(rm_id, logline)
+        
     endif
 END SUBROUTINE time_parallel
 SUBROUTINE transport_component(i)
@@ -569,7 +595,8 @@ SUBROUTINE InitializeRM
 END SUBROUTINE InitializeRM
     
 SUBROUTINE TimeStepRM    
-    USE mcc, ONLY:               iprint_xyz, rm_id, solute
+    USE mcb, ONLY:               fresur
+    USE mcc, ONLY:               iprint_xyz, rm_id, solute, steady_flow
     USE mcc_m, ONLY:             prcphrq, prhdfc
     USE mcg, ONLY:               grid2chem, nxyz
     USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density
@@ -589,17 +616,20 @@ SUBROUTINE TimeStepRM
         WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
-        status = RM_SetPoreVolume(rm_id, pv(1))
-        sat = frac
-        do i = 1, nxyz
-            if (frac(i) <= 0.0) then
-                sat(i) = 0.0
-            else if (frac(i) > 1.0) then
-                sat(i) = 1.0
-            endif
-        enddo
-        status = RM_SetSaturation(rm_id, sat(1))
-        
+        if (.not.steady_flow) then
+            status = RM_SetPoreVolume(rm_id, pv(1))
+        endif
+        if (fresur.and.(.not.steady_flow)) then
+            sat = frac
+            do i = 1, nxyz
+                if (frac(i) <= 0.0) then
+                    sat(i) = 0.0
+                else if (frac(i) > 1.0) then
+                    sat(i) = 1.0
+                endif
+            enddo
+            status = RM_SetSaturation(rm_id, sat(1))
+        endif
         status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer, 0, 0)
 	    status = 0
         if (prhdfc .or. prcphrq) status = 1
