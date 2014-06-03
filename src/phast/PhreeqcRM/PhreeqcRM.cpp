@@ -188,6 +188,20 @@ if( numCPU < 1 )
 	{
 		error_msg("MPI communicator not defined", 1);
 	}
+	double standard_task = this->TimeStandardTask();
+	//std::cerr << "Standard task " << standard_task << std::endl;
+	if (mpi_myself == 0)
+	{
+		standard_task_vector.resize(this->mpi_tasks, 0.0);
+	}
+	MPI_Gather(&standard_task, 1, MPI_DOUBLE, standard_task_vector.data(), 1, MPI_DOUBLE, 0, phreeqcrm_comm);
+	if (mpi_myself == 0)
+	{
+		for (int i = 0; i < this->mpi_tasks; i++)
+		{
+			std::cerr << "Root list of standard tasks " << i << " " << standard_task_vector[i] << std::endl;
+		}
+	}
 #endif
 	if (mpi_myself == 0)
 	{
@@ -5766,7 +5780,7 @@ PhreeqcRM::RebalanceLoad(void)
 }
 #endif
 #ifdef USE_MPI
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::RebalanceLoadPerCell(void)
@@ -5821,6 +5835,326 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		}
 	}
 
+	// Root normalizes times, calculates efficiency, rebalances work
+	double normalized_total_time = 0;
+	double max_task_time = 0;
+	// working space
+	std::vector<int> start_cell_new;
+	std::vector<int> end_cell_new;
+	start_cell_new.resize(mpi_tasks, 0);
+	end_cell_new.resize(mpi_tasks, 0);
+
+	if (mpi_myself == 0)
+	{
+		// Normalize times
+		max_task_time = 0;
+		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
+		{		
+			double task_sum = 0;
+			// normalize cell_times with standard_time
+			for (size_t j = (size_t) start_cell[i]; j <= (size_t) end_cell[i]; j++)
+			{
+				task_sum += recv_cell_times[j];
+				normalized_cell_times.push_back(recv_cell_times[j]/standard_time[i]);
+				normalized_total_time += normalized_cell_times.back();
+			}
+			task_time.push_back(task_sum);
+			max_task_time = (task_sum > max_task_time) ? task_sum : max_task_time;
+		}
+
+		// calculate efficiency
+		double efficiency = 0;
+		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
+		{
+			efficiency += task_time[i] / max_task_time * task_fraction[i];
+		}
+		std::cerr << "          Estimated efficiency of chemistry without communication: " << 
+					   (float) (100. * efficiency) << "\n";
+
+		// Split up work
+		double f_low, f_high;
+		f_high = 1 + 0.5 / ((double) mpi_tasks);
+		f_low = 1;
+		int j = 0;
+		for (size_t i = 0; i < (size_t) mpi_tasks - 1; i++)
+		{
+			if (i > 0)
+			{
+				start_cell_new[i] = end_cell_new[i - 1] + 1;
+			}
+			double sum_work = 0;
+			double temp_sum_work = 0;
+			bool next = true;
+			while (next)
+			{
+				temp_sum_work += normalized_cell_times[j] / normalized_total_time;
+				if ((temp_sum_work < task_fraction[i]) && (((size_t) count_chemistry - j) > (size_t) (mpi_tasks - i)))
+					//(temp_sum_work < f_high * task_fraction[i]) || (sum_work < 0.5 * task_fraction[i])
+					//) 
+					//&&
+					//(count_chem - j) > (mpi_tasks - i)
+					//)
+				{
+					sum_work = temp_sum_work;
+					j++;
+					next = true;
+				}
+				else
+				{
+					if (j == start_cell_new[i])
+					{
+						end_cell_new[i] = j;
+						j++;
+					}
+					else
+					{
+						end_cell_new[i] = j - 1;
+					}
+					next = false;
+				}
+			}
+		}
+		assert(j < count_chemistry);
+		assert(mpi_tasks > 1);
+		start_cell_new[mpi_tasks - 1] = end_cell_new[mpi_tasks - 2] + 1;
+		end_cell_new[mpi_tasks - 1] = count_chemistry - 1;
+
+		if (efficiency > 0.95)
+		{
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				start_cell_new[i] = start_cell[i];
+				end_cell_new[i] = end_cell[i];
+			}
+		}
+		else
+		{	
+			for (size_t i = 0; i < (size_t) this->mpi_tasks - 1; i++)
+			{
+				int	icells;
+				icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (this->rebalance_fraction) );
+				if (icells == 0)
+				{
+					icells = end_cell_new[i] - end_cell[i];
+				}
+				end_cell_new[i] = end_cell[i] + icells;
+				start_cell_new[i + 1] = end_cell_new[i] + 1;
+			}
+		}
+
+	}
+	
+	/*
+	 *   Broadcast new subcolumns
+	 */
+	
+	MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+	
+	/*
+	 *   Redefine columns
+	 */
+	int nnew = 0;
+	int old = 0;
+	int change = 0;
+	
+			std::map< std::string, std::vector<int> > transfer_pair;
+	for (int k = 0; k < this->count_chemistry; k++)
+	{
+		int i = k;
+		//int iphrq = i;			/* iphrq is 1 to count_chem */
+		int ihst = this->backward_mapping[i][0];	/* ihst is 1 to nxyz */
+		//old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
+		while (k > end_cell[old])
+		{
+			old++;
+		}
+		while (k > end_cell_new[nnew])
+		{
+			nnew++;
+		}
+
+		if (old == nnew)
+			continue;
+		change++;
+
+		// Need to send cell from old task to nnew task
+		std::ostringstream key;
+		key << old << "#" << nnew;
+		std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.find(key.str());
+		if (tp_it == transfer_pair.end())
+		{
+			std::vector<int> v;
+			v.push_back(old);
+			v.push_back(nnew);
+			transfer_pair[key.str()] = v;
+		}
+		transfer_pair[key.str()].push_back(k);
+	}
+
+	// Transfer cells
+	int transfers = 0;
+	int count=0;
+	try
+	{
+		std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.begin();
+		std::vector<int> r_vector;
+		r_vector.push_back(IRM_OK);
+		for ( ; tp_it != transfer_pair.end(); tp_it++)
+		{
+			cxxStorageBin t_bin;
+			int pold = tp_it->second[0];
+			int pnew = tp_it->second[1];
+			if (this->mpi_myself == pold)
+			{
+				for (size_t i = 2; i < tp_it->second.size(); i++)
+				{
+					int k = tp_it->second[i];
+					phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, k);
+				}			
+			}
+			transfers++;
+			try
+			{
+				this->TransferCells(t_bin, pold, pnew);
+			}
+			catch (...)
+			{
+				r_vector[0] = 1;
+			}
+
+			// Delete cells in old
+			if (this->mpi_myself == pold && r_vector[0] == 0)
+			{
+				std::ostringstream del;
+				del << "DELETE; -cell\n";
+				for (size_t i = 2; i < tp_it->second.size(); i++)
+				{
+					del << tp_it->second[i] << "\n";
+
+				}
+				try
+				{
+					int status = phast_iphreeqc_worker->RunString(del.str().c_str());
+					if (status != 0)
+					{
+						error_msg(phast_iphreeqc_worker->GetErrorString());
+					}
+					this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
+				}
+				catch (...)
+				{
+					r_vector[0] = 1;
+				}
+			}
+
+			// Also need to tranfer UZ
+			if (this->partition_uz_solids)
+			{
+				std::ostringstream uz_dump;
+				if (this->mpi_myself == pold)
+				{
+					for (size_t i = 2; i < tp_it->second.size(); i++)
+					{
+						int k = tp_it->second[i];
+						phast_iphreeqc_worker->uz_bin.Remove_Solution(k);
+						phast_iphreeqc_worker->uz_bin.dump_raw(uz_dump, k, 0);
+						phast_iphreeqc_worker->uz_bin.Remove(k);
+					}			
+				}
+				try
+				{
+					this->TransferCellsUZ(uz_dump, pold, pnew);
+				}
+				catch (...)
+				{
+					r_vector[0] = 1;
+				}
+			}
+
+			//The gather is sometimes slow for some reason
+			//this->HandleErrorsInternal(r_vector);
+			if (r_vector[0] != 0)
+				throw PhreeqcRMStop();
+		}		
+		for (int i = 0; i < this->mpi_tasks; i++)
+		{
+			start_cell[i] = start_cell_new[i];
+			end_cell[i] = end_cell_new[i];
+		}
+		if (this->mpi_myself == 0)
+		{
+			std::cerr << "          Cells shifted between processes     " << change << "\n";
+		}
+
+
+	}
+	catch (...)
+	{
+		this->ErrorHandler(IRM_FAIL, "PhreeqcRM::RebalanceLoadPerCell");
+	}
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::RebalanceLoadPerCell(void)
+/* ---------------------------------------------------------------------- */
+{
+	// Throws on error
+	if (this->mpi_tasks <= 1) return;
+	if (this->mpi_tasks > count_chemistry) return;
+	if (!this->selected_output_on) return;
+#include <time.h>
+
+	// vectors for each cell (count_chem)
+	std::vector<double> recv_cell_times, normalized_cell_times;
+	recv_cell_times.resize(this->count_chemistry);
+	
+	// vectors for each process (mpi_tasks)
+	std::vector<double> standard_time, task_fraction, task_time;
+	
+	// Assume homogeneous cluster for now
+	if (mpi_myself == 0)
+	{
+		double s0 = this->standard_task_vector[0];
+		double tasks_total = 0;
+		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
+		{
+			standard_time.push_back(s0/this->standard_task_vector[i]);   // slower is bigger number
+			//standard_time.push_back(1.0);                              // homogeneous
+			tasks_total += 1.0 / standard_time[i];
+		}
+
+		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
+		{
+			task_fraction.push_back((1.0 / standard_time[i]) / tasks_total);
+		}
+	}
+	// Collect times
+	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+	// manager
+	if (mpi_myself == 0)
+	{
+		recv_cell_times.insert(recv_cell_times.begin(), 
+			phast_iphreeqc_worker->Get_cell_clock_times().begin(),
+			phast_iphreeqc_worker->Get_cell_clock_times().end());
+	}
+
+	// workers
+	for (int i = 1; i < mpi_tasks; i++)
+	{
+		int n = end_cell[i] - start_cell[i] + 1;
+		if (mpi_myself == i)
+		{
+			MPI_Send(phast_iphreeqc_worker->Get_cell_clock_times().data(), n, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
+		}
+		if (mpi_myself == 0)
+		{
+			MPI_Status mpi_status;
+			MPI_Recv((void *) &recv_cell_times[start_cell[i]], n, MPI_DOUBLE, i, 0, phreeqcrm_comm, &mpi_status);
+		}
+	}
+	phast_iphreeqc_worker->Get_cell_clock_times().clear();
 	// Root normalizes times, calculates efficiency, rebalances work
 	double normalized_total_time = 0;
 	double max_task_time = 0;
@@ -6577,7 +6911,12 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 	int start = this->start_cell[n];
 	int end = this->end_cell[n];
 #endif
-	phast_iphreeqc_worker->Get_cell_clock_times().clear();
+	//phast_iphreeqc_worker->Get_cell_clock_times().clear();
+	if (phast_iphreeqc_worker->Get_cell_clock_times().size() == 0)
+	{
+		phast_iphreeqc_worker->Get_cell_clock_times().resize(end - start + 1, 0.0);
+		std::cerr << "Resetting timing" << std::endl;
+	}
 
 	// Make list of cells with saturation > 0.0
 	std::ostringstream soln_list;
@@ -6699,11 +7038,12 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 		int j = backward_mapping[i][0];			/* j is nxyz number */
 		if (saturation[j] > 1e-10)
 		{
-			phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
+			//phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
+			phast_iphreeqc_worker->Get_cell_clock_times()[i - start] += t_elapsed / (double) count_active;
 		}
 		else
 		{
-			phast_iphreeqc_worker->Get_cell_clock_times().push_back(0.0);
+			//phast_iphreeqc_worker->Get_cell_clock_times().push_back(0.0);
 		}
 	}
 
@@ -8496,6 +8836,25 @@ PhreeqcRM::SpeciesConcentrations2Module(std::vector<double> & species_conc)
 	}
 	return IRM_INVALIDARG;
 }
+/* ---------------------------------------------------------------------- */
+double
+PhreeqcRM::TimeStandardTask()
+/* ---------------------------------------------------------------------- */
+{
+	double a = 0.0;
+	double count = 0.0;
+	clock_t t0 = clock();
+	for (;;)
+	{
+		for (int i = 1; i < 1000; i++)
+		{
+			count += 1.0;
+			a += 1.0/sqrt(count + a);
+		}
+		if (double((clock() - t0)/CLOCKS_PER_SEC) > 1.0) break;
+	}
+	return count;
+}
 #ifdef USE_MPI
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
@@ -8545,7 +8904,6 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 	return return_value;
 }
 #endif
-
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
