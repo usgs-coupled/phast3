@@ -55,11 +55,11 @@ UNITS
 	-gas_phase                        WATER
 GRID
 	#-uniform X 0 2.1 2 
-	#-uniform X 0 2.1 1760
+	-uniform X 0 2.1 1760
 	#-uniform X 0 2.1 2101 
 	#-uniform X 0 2.1 1051
 	#-uniform X 0 2.1 22
-	-uniform X 0 2.1 43
+	#-uniform X 0 2.1 43
 	#-uniform X 0 2.1 85
 	#-uniform X 0 2.1 106
 	#-overlay_uniform X 0.01 2.09 105 # 0.02 m
@@ -173,7 +173,7 @@ PRINT_FREQUENCY
 		-restart_file           0
 		-velocities             0
 		-wells                  0 
-		-xyz_chemistry          10    seconds
+		-xyz_chemistry          1    seconds
 		-xyz_components         0
 		-xyz_heads              0
 		-xyz_velocities         0
@@ -184,7 +184,7 @@ PRINT_FREQUENCY
 		-hdf_intermediate       0 
 TIME_CONTROL
 	-time_step
-		0 5
+		0 0.1
 	-time_change
-		6000
+		10
 	-start_time 0

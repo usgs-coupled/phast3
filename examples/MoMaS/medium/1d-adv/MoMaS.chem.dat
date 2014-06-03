@@ -121,22 +121,6 @@ CP2
 log_k      -1.301029996     # 20
 END
 
-RATES
-Cc
-# dC/dt = (0.2*c3^3/X4^2 - 1)*k
-# C3 = [X4]H3+2, X4 = [X4]H4+3
-5 if TOT("[X4]") <= 0 then goto 40
-10 f = (0.2 * MOL("[X4]H3+2")^3/MOL("[X4]H4+3")^2 - 1)
-20 if f > 0 then k = 1e-2 else k = 10
-#25 th = (1-exp(-2*f*100))/(1+exp(-2*f*100))
-#26 tn = -(th-1)/2
-#27 tp = (th+1)/2
-#28 k = tn*10 + tp*1e-2
-30 rate = f * k
-40 SAVE -rate * TIME
-END
-
-
 USER_PRINT
 
 10 C0 = MOL("H+")
@@ -256,13 +240,27 @@ pH 0.6340002
 [X3]   1e-10
 [X4]   1.5
 END
-
+RATES
+Cc
+# dC/dt = (0.2*c3^3/X4^2 - 1)*k
+# C3 = [X4]H3+2, X4 = [X4]H4+3
+5 if TOT("[X4]") <= 0 then goto 40
+10 f = (0.2 * MOL("[X4]H3+2")^3/MOL("[X4]H4+3")^2 - 1)
+20 if f > 0 then k = 1e-2 else k = 10
+30 rate = f * k
+40 SAVE rate * TIME * -1
+#40 SAVE 0
+END
+#25 th = (1-exp(-2*f*100))/(1+exp(-2*f*100))
+#26 tn = -(th-1)/2
+#27 tp = (th+1)/2
+#28 k = tn*10 + tp*1e-2
 KINETICS 1
 Cc
         # 3C3 = Cc + 2X4
         # 3[X4]H3+2 = [X4]H + 2[X4]H4+3
         # if [X4]H is uncharged, then [X4]H4+3 and [X4]H3+2
-        -formula [X4]H -1
+        -formula [X4]H 1
         -m0  5
         -m   5
         #-step 2 4 6 8 10 100 300 1000 3000
@@ -289,8 +287,8 @@ USER_PUNCH 1
 62 C6 = MOL("[X3]3H10+") * (TOT("[X3]")>0)
 66 C7 = MOL("[X4]2-2") * (TOT("[X4]")>0)
 68 CS0 = MOL("SOH") + MOL("BOH")
-70 CS1 = MOL("SOH[X3]H3") * (TOT("S")>0) * (TOT("[X3]")>0)
-80 CS2 = MOL("S2O2H[X4]H2") * (TOT("S")>0) * (TOT("[X4]")>0)
+70 CS1 = MOL("SOH[X3]H3") * (TOT("S")>0) * (TOT("[X3]")>0) + MOL("BOH[X3]H3") * (TOT("B")>0) * (TOT("[X3]")>0)
+80 CS2 = MOL("S2O2H[X4]H2") * (TOT("S")>0) * (TOT("[X4]")>0) + MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
 85 CS3 = MOL("BOH[X3]H3") * (TOT("B")>0) * (TOT("[X3]")>0)
 90 CS4 = MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
 100 TOT_X1 = TOT("[X1]")
@@ -298,13 +296,13 @@ USER_PUNCH 1
 120 TOT_X3 = TOT("[X3]") + CS1 * (TOT("S")>0) + CS3 * (TOT("B")>0)
 130 TOT_X4 = TOT("[X4]") + CS2 * (TOT("S")>0) + CS4 * (TOT("B")>0)
 140 TOT_X5 = TOT("[X5]") 
-150 TOT_S = CS0 + CS1 + 2*CS2 + CS3 + 2*CS4
+150 TOT_S = CS0 + CS1 + 2*CS2 # + CS3 + 2*CS4
 200 X1 = MOL("[X1]") * (TOT("[X1]")>0)
 210 X2 = MOL("H+")
 220 X3 = MOL("[X3]-3") * (TOT("[X3]")>0)
 230 X4 = MOL("[X4]H4+3") * (TOT("[X4]")>0)
 240 X5 = MOL("[X5]-") * (TOT("[X5]")>0)
-290 kgw_L = 1 * TOT("water")/soln_vol
+290 kgw_L = 1 # * TOT("water")/soln_vol
 300 PUNCH x1*kgw_L, x2*kgw_L, x3*kgw_L, x4*kgw_L, x5*kgw_L
 310 PUNCH c1*kgw_L, c2*kgw_L, c3*kgw_L, c4*kgw_L, c5*kgw_L, c6*kgw_L, c7*kgw_L
 320 PUNCH cs0*kgw_L, cs1*kgw_L, cs2*kgw_L, cs3*kgw_L, cs4*kgw_L
