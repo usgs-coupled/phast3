@@ -1140,6 +1140,187 @@ PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 	}
 	return Concentrations2SolutionsNoH2O(n, c);
 }
+
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
+/* ---------------------------------------------------------------------- */
+{
+	// assumes H2O, total H, total O, and charge are transported
+	int i, j, k;
+
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+
+	for (j = start; j <= end; j++)
+	{		
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		i = this->backward_mapping[j][0];
+
+		switch (this->units_Solution)
+		{
+		case 1:  // mg/L to mol/L
+			{
+				//double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 1; k < (int) this->components.size(); k++)
+				{	
+					//d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
+					d.push_back(c[j * (int) this->components.size() + k]);
+				}	
+				//double h2o_mol = ptr[0] * 1e-3 / this->gfw[0];
+				double h2o_mol = c[j * (int) this->components.size()] * 1e-3 / this->gfw[0];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;
+			}
+			break;
+		case 2:  // mol/L
+			{
+				//double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 1; k < (int) this->components.size(); k++)
+				{	
+					//d.push_back(ptr[this->nxyz * k]);
+					d.push_back(c[j * (int) this->components.size() + k]);
+				}
+				//double h2o_mol = ptr[0];
+				double h2o_mol = c[j * (int) this->components.size()];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;	
+			}
+			break;
+		case 3:  // mass fraction, kg/kg solution to mol/L
+			{
+				//double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 1; k < (int) this->components.size(); k++)
+				{	
+					//d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
+					d.push_back(c[j * (int) this->components.size() + k] * 1000.0 / this->gfw[k] * density[i]);
+				}	
+				//double h2o_mol = ptr[0] * 1000.0 / this->gfw[0] * density[i];
+				double h2o_mol = c[j * (int) this->components.size()] * 1000.0 / this->gfw[0] * density[i];
+				d[0] += h2o_mol * 2.0;
+				d[1] += h2o_mol;
+			}
+			break;
+		}
+
+		// convert mol/L to moles per cell
+		for (k = 0; k < (int) this->components.size() - 1; k++)
+		{	
+			//d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
+			d[k] *= this->pore_volume[i] / this->cell_volume[i] * saturation[i];
+		}
+				
+		// update solution 
+		cxxNameDouble nd;
+		for (k = 4; k < (int) components.size(); k++)
+		{
+			if (d[k-1] < 0.0) d[k-1] = 0.0;
+			nd.add(components[k].c_str(), d[k-1]);
+		}	
+
+		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
+		if (soln_ptr)
+		{
+			soln_ptr->Update(d[0], d[1], d[2], nd);
+		}
+	}
+	return;
+}
+
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
+/* ---------------------------------------------------------------------- */
+{
+	// assumes total H, total O, and charge are transported
+	int i, j, k;
+
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+
+	for (j = start; j <= end; j++)
+	{		
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		i = this->backward_mapping[j][0];
+		//if (j < 0) continue;
+
+		switch (this->units_Solution)
+		{
+		case 1:  // mg/L to mol/L
+			{
+				//double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					//d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
+					d.push_back(c[j * (int) this->components.size() + k] * 1e-3 / this->gfw[k]);
+				}	
+			}
+			break;
+		case 2:  // mol/L
+			{
+				//double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					//d.push_back(ptr[this->nxyz * k]);
+					d.push_back(c[j * (int) this->components.size() + k]);
+				}	
+			}
+			break;
+		case 3:  // mass fraction, kg/kg solution to mol/L
+			{
+				//double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					//d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
+					d.push_back(c[j * (int) this->components.size() + k] * 1000.0 / this->gfw[k] * density[i]);
+				}	
+			}
+			break;
+		}
+
+		// convert mol/L to moles per cell
+		for (k = 0; k < (int) this->components.size(); k++)
+		{	
+			//d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
+			//d[k] *= this->pore_volume[i] / this->pore_volume[i] * saturation[i];
+			d[k] *= this->pore_volume[i] / this->cell_volume[i] * saturation[i];
+		}
+				
+		// update solution 
+		cxxNameDouble nd;
+		for (k = 3; k < (int) components.size(); k++)
+		{
+			if (d[k] < 0.0) d[k] = 0.0;
+			nd.add(components[k].c_str(), d[k]);
+		}	
+
+		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
+		if (soln_ptr)
+		{
+			soln_ptr->Update(d[0], d[1], d[2], nd);
+		}
+	}
+	return;
+}
+#ifdef ORIG
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
@@ -1311,7 +1492,7 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 	}
 	return;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 IPhreeqc * 
 PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
@@ -7223,6 +7404,87 @@ IRM_RESULT
 PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT return_value = IRM_OK;
+	std::vector<double> c_chem, c_chem_root;
+	c_chem.resize(this->count_chemistry * (int) this->components.size(), INACTIVE_CELL_VALUE);
+
+	if (this->mpi_myself == 0)
+	{
+		c_chem_root.resize(this->count_chemistry * (int) this->components.size(), INACTIVE_CELL_VALUE);
+		for (int i = 0; i < this->count_chemistry; i++)
+		{
+			int j = this->backward_mapping[i][0];
+			for (int k = 0; k < (int) this->components.size(); k++)
+			{
+				c_chem_root[i * (int) this->components.size() + k] = t[k*this->nxyz + j];
+			}
+		}
+	}
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETCONCENTRATIONS;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+
+	double * send_buf = NULL;
+	int * send_counts = NULL;
+	int * send_displs = NULL;
+	double * recv_buf = NULL;
+	int recv_count;
+	recv_count = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1) * (int) this->components.size();
+	if (this->mpi_myself == 0)
+	{
+		send_buf = &c_chem_root[0];
+		send_counts = new int[this->mpi_tasks];
+		send_displs = new int[this->mpi_tasks];
+		for (int j = 0; j < this->mpi_tasks; j++)
+		{
+			send_counts[j] = (end_cell[j] - start_cell[j] + 1) * (int) this->components.size();
+			send_displs[j] = start_cell[j] * (int) this->components.size();
+		}
+		recv_buf = &c_chem[0];
+	}
+	else
+	{
+		recv_buf = &c_chem[start_cell[this->mpi_myself] * (int) this->components.size()];
+	}
+
+	MPI_Scatterv(send_buf, send_counts, send_displs, MPI_DOUBLE, recv_buf, recv_count, MPI_DOUBLE, 0, phreeqcrm_comm);
+	delete send_counts;
+	delete send_displs;
+	
+	//c.resize(this->nxyz * this->components.size(), INACTIVE_CELL_VALUE);
+	//for (int i = 0; i < this->count_chemistry; i++)
+	//{
+	//	int j = this->backward_mapping[i][0];
+	//	for (int k = 0; k < (int) this->components.size(); k++)
+	//	{
+	//		c[k*this->nxyz + j] = c_chem[k*this->count_chemistry + i];
+	//	}
+	//}
+#endif
+#ifdef USE_OPENMP
+	omp_set_num_threads(this->nthreads);
+#pragma omp parallel 
+#pragma omp for
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+#ifdef USE_MPI
+		this->Concentrations2Solutions(n, c_chem);
+#else
+		this->Concentrations2Solutions(n, c_chem_root);
+#endif
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetConcentrations");
+}
+#ifdef REVISED
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetConcentrations(const std::vector<double> &t)
+/* ---------------------------------------------------------------------- */
+{
 	std::vector<double> c;
 	IRM_RESULT return_value = IRM_OK;
 #ifdef USE_MPI
@@ -7299,53 +7561,6 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 		this->Concentrations2Solutions(n, c);
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetConcentrations");
-}
-#ifdef REVISED
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::SetConcentrations(const std::vector<double> &t)
-/* ---------------------------------------------------------------------- */
-{
-	std::vector<double> c;
-#if USE_MPI
-	std::vector<double> c_chem, c_chem_root;
-	if (this->mpi_myself == 0)
-	{
-		c_chem_root.resize(this->count_chemistry * this->components.size(), INACTIVE_CELL_VALUE);
-		for (int i = 0; i < this->count_chemistry; i++)
-		{
-			int j = this->backward_mapping[i][0];
-			for (int k = 0; k < (int) this->components.size(); k++)
-			{
-				c_chem_root[k*this->count_chemistry + i] = t[k*this->nxyz + j];
-			}
-		}
-	}
-	std::string methodName = "SetConcentrations";
-	IRM_RESULT result_value = SetGeneric(c_chem, (int) this->components.size() * this->count_chemistry, c_chem_root, METHOD_SETCONCENTRATIONS, methodName, INACTIVE_CELL_VALUE);
-
-	c.resize(this->nxyz * this->components.size(), INACTIVE_CELL_VALUE);
-	for (int i = 0; i < this->count_chemistry; i++)
-	{
-		int j = this->backward_mapping[i][0];
-		for (int k = 0; k < (int) this->components.size(); k++)
-		{
-			c[k*this->nxyz + j] = c_chem[k*this->count_chemistry + i];
-		}
-	}
-#else
-	c = t;
-#endif
-#ifdef USE_OPENMP
-	omp_set_num_threads(this->nthreads);
-#pragma omp parallel 
-#pragma omp for
-#endif
-	for (int n = 0; n < nthreads; n++)
-	{
-		this->Concentrations2Solutions(n, c);
-	}
-	return this->ReturnHandler(result_value, "PhreeqcRM::" + methodName);
 }
 #endif
 #ifdef ORIG

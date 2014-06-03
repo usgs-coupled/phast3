@@ -272,7 +272,7 @@ SUBROUTINE time_parallel(i)
 #endif
 
 #if defined(USE_MPI)
-    CALL Timing_barrier()
+    !CALL Timing_barrier()
     t = MPI_Wtime()
 #else    
     call SYSTEM_CLOCK(t_ticks, clock_rate, clock_max)
