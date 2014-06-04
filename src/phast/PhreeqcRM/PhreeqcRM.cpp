@@ -197,9 +197,11 @@ if( numCPU < 1 )
 	MPI_Gather(&standard_task, 1, MPI_DOUBLE, standard_task_vector.data(), 1, MPI_DOUBLE, 0, phreeqcrm_comm);
 	if (mpi_myself == 0)
 	{
+		double s0 = standard_task_vector[0];
 		for (int i = 0; i < this->mpi_tasks; i++)
 		{
-			std::cerr << "Root list of standard tasks " << i << " " << standard_task_vector[i] << std::endl;
+			standard_task_vector[i] = s0 / standard_task_vector[i];  // faster is smaller
+			//std::cerr << "Root list of standard tasks " << i << " " << standard_task_vector[i] << std::endl;
 		}
 	}
 #endif
@@ -6103,7 +6105,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	// Throws on error
 	if (this->mpi_tasks <= 1) return;
 	if (this->mpi_tasks > count_chemistry) return;
-	if (!this->selected_output_on) return;
+	//if (!this->selected_output_on) return;
 #include <time.h>
 
 	// vectors for each cell (count_chem)
@@ -6120,8 +6122,8 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		double tasks_total = 0;
 		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
 		{
-			standard_time.push_back(s0/this->standard_task_vector[i]);   // slower is bigger number
-			//standard_time.push_back(1.0);                              // homogeneous
+			standard_time.push_back(this->standard_task_vector[i]);   // slower is bigger number
+			//standard_time.push_back(1.0);                           // homogeneous
 			tasks_total += 1.0 / standard_time[i];
 		}
 
@@ -8027,6 +8029,8 @@ PhreeqcRM::SetEndCells(void)
 {
 #ifdef USE_MPI
 	int ntasks = this->mpi_tasks;
+	//SetEndCellsHeterogeneous();
+	//return;
 #else
 	int ntasks = this->nthreads;
 #endif
@@ -8051,7 +8055,73 @@ PhreeqcRM::SetEndCells(void)
 		cell0 = cell0 + cells[i];
 	}
 }
+/* ---------------------------------------------------------------------- */
+void
+PhreeqcRM::SetEndCellsHeterogeneous(void)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef USE_MPI
+	int ntasks = this->mpi_tasks;
+#else
+	int ntasks = this->nthreads;
+#endif
+	
+	std::vector<double> standard_time, task_fraction;
+	if (mpi_myself == 0)
+	{
+		double s0 = this->standard_task_vector[0];
+		double tasks_total = 0;
+		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
+		{
+			standard_time.push_back(s0/this->standard_task_vector[i]);   // slower is bigger number
+			//standard_time.push_back(1.0);                              // homogeneous
+			tasks_total += 1.0 / standard_time[i];
+		}
 
+		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
+		{
+			task_fraction.push_back((1.0 / standard_time[i]) / tasks_total);
+		}
+
+		std::vector<int> cells;
+		int sum = 0;
+		for(int i = 0; i < this->mpi_tasks; i++)
+		{
+			cells.push_back((int) (task_fraction[i] * this->count_chemistry));
+			sum += cells[i];
+		}
+
+		int extra = this->count_chemistry - sum;
+		while (extra > 0)
+		{
+			for(int i = 0; i < this->mpi_tasks; i++)
+			{
+				cells[i]++;
+				extra--;
+				if (extra == 0) break;
+			}
+		}
+
+		int cell0 = 0;
+		start_cell.clear();
+		end_cell.clear();
+		for (int i = 0; i < ntasks; i++)
+		{
+			this->start_cell.push_back(cell0);
+			this->end_cell.push_back(cell0 + cells[i] - 1);
+			cell0 = cell0 + cells[i];
+		}
+	}
+	else
+	{
+		start_cell.resize(this->mpi_tasks);
+		end_cell.resize(this->mpi_tasks);
+	}
+#ifdef USE_MPI
+	MPI_Bcast((void *) start_cell.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) end_cell.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+#endif
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 PhreeqcRM::SetErrorHandlerMode(int i)
