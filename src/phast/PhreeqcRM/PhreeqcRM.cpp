@@ -8073,8 +8073,8 @@ PhreeqcRM::SetEndCellsHeterogeneous(void)
 		double tasks_total = 0;
 		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
 		{
-			standard_time.push_back(s0/this->standard_task_vector[i]);   // slower is bigger number
-			//standard_time.push_back(1.0);                              // homogeneous
+			standard_time.push_back(this->standard_task_vector[i]);   // slower is bigger number, as in more time
+			//standard_time.push_back(1.0);                           // homogeneous
 			tasks_total += 1.0 / standard_time[i];
 		}
 
