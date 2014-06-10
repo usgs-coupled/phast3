@@ -190,8 +190,10 @@ PRINT
 END
 
 KNOBS
--tol 1e-17
--step 10
+#-conv 1e-9
+#-tol 1e-16
+-diag
+-step 20
 
 #infilling solution
 SOLUTION 0 Inflow 0-5000 s
@@ -270,6 +272,7 @@ END
 
 KINETICS 1
 #-cvode
+-runge_kutta 3
 Cc
         # 3C3 = Cc + 2X4
         # 3[X4]H3+2 = [X4]H + 2[X4]H4+3

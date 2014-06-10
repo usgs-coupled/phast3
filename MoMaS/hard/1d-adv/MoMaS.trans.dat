@@ -185,7 +185,7 @@ PRINT_FREQUENCY
 		-hdf_intermediate       0 
 TIME_CONTROL
 	-time_step
-		0 0.1
+		0 0.05
 	-time_change
 		10
 	-start_time 0
