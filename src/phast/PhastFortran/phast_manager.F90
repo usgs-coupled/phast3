@@ -242,13 +242,11 @@ SUBROUTINE phast_manager
 #endif
 
     ! ... Cleanup reaction module
-	CALL FH_FinalizeFiles()
-    IF (solute) THEN  
-        if (RM_Destroy(rm_id) < 0) then
-            write (*,*) 'RM_Destroy failed.'
-        endif
-    ENDIF
+	CALL FH_FinalizeFiles() 
     status = RM_CloseFiles(rm_id)
+    if (RM_Destroy(rm_id) < 0) then
+        write (*,*) 'RM_Destroy failed.'
+    endif
 
     ! ... Cleanup PHAST
     CALL terminate_phast
