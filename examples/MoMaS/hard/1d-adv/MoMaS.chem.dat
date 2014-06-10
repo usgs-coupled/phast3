@@ -136,11 +136,13 @@ USER_PRINT
 80 CS2 = MOL("S2O2H[X4]H2") * (TOT("S")>0) * (TOT("[X4]")>0)
 85 CS3 = MOL("BOH[X3]H3") * (TOT("B")>0) * (TOT("[X3]")>0)
 90 CS4 = MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
+93 CP1 = EQUI("CP1")/SOLN_VOL
+95 CP2 = EQUI("CP2")/SOLN_VOL
 100 TOT_X1 = TOT("[X1]")
-110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 10*C6 - 8*C7 + 3*CS1 - 3*CS2 + 3*CS3 - 3*CS4
+110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 10*C6 - 8*C7 + 3*CS1 - 3*CS2 + 3*CS3 - 3*CS4 + 3*CP1 + CP2
 120 TOT_X3 = TOT("[X3]") + CS1 * (TOT("S")>0) + CS3 * (TOT("B")>0)
 130 TOT_X4 = TOT("[X4]") + CS2 * (TOT("S")>0) + CS4 * (TOT("B")>0)
-140 TOT_X5 = TOT("[X5]") 
+140 TOT_X5 = TOT("[X5]") + CP2
 150 TOT_S = CS0 + CS1 + 2*CS2 + CS3 + 2*CS4
 
 200 PRINT "X1:       ", MOL("[X1]") * (TOT("[X1]")>0)
@@ -157,6 +159,8 @@ USER_PRINT
 286 PRINT "C7:       ", C7
 290 PRINT "CS1:      ", CS1 + CS3
 300 PRINT "CS2:      ", CS2 + CS4
+310 PRINT "CP1:      ", CP1
+320 PRINT "CP2:      ", CP2
 
 400 PRINT "Total X1: ", TOT_X1
 410 PRINT "Total X2: ", TOT_X2
@@ -185,25 +189,24 @@ PRINT
 #-high
 END
 
+KNOBS
+-tol 1e-17
+-step 10
+
 #infilling solution
 SOLUTION 0 Inflow 0-5000 s
 UNITS mol/kgw
 pH  0.522878745 # [X2] = 0.3
 [X1]   0.3
 [X5]   0.3
+O(0)   1e-6
 END
-knobs
--conv 1e-10
--tol 1e-16
-##-debug_model
--step 2
-#-pe   1.2
-#-iter 200
 
 SOLUTION 1001 Initial condition medium A
 UNITS mol/kgw
 pH 0.62563
 [X4]   10
+O(0)   1e-6
 END
 
 #initial condition A
@@ -221,6 +224,7 @@ SOLUTION 1002 Initial condition medium B
 UNITS mol/kgw
 pH 0.55026
 [X4]   30
+O(0)   1e-6
 END
 
 #initial condition B
@@ -240,7 +244,9 @@ pH 0.6340002
 #[X1]   1e-10
 #[X3]   1e-10
 [X4]   1.5
+O(0)   1e-6
 END
+
 RATES
 Cc
 -start
@@ -250,14 +256,15 @@ Cc
 10 f = (0.2 * MOL("[X4]H3+2")^3/MOL("[X4]H4+3")^2 - 1)
 20 if f > 0 then k = 1e-2 else k = 10
 30 rate = f * k
-40 SAVE rate * TIME * -1
+40 SAVE rate * TIME * -1 * SOLN_VOL
 -end
+
 X5_decomposition
 -start
 # dC/dt = 0.05*X5 + 5*CP2
-10 rate = 0.05*MOL("[X5]-") + 5 * EQUI("CP2")
+10 rate = 0.05*MOL("[X5]-") + 5 * EQUI("CP2")/SOLN_VOL
 20 moles = rate * time
-30 SAVE moles
+30 SAVE moles*SOLN_VOL
 -end
 END
 
@@ -271,6 +278,7 @@ Cc
         -m0  5
         -m   5
 X5_decomposition
+#X5=[X5]-, X2=H+, X3=[X3]-3
 	-formula  [X5] -1 H +2 [X3] +1
 	-m0  100
 	-m   100
@@ -298,12 +306,14 @@ USER_PUNCH 1
 80 CS2 = MOL("S2O2H[X4]H2") * (TOT("S")>0) * (TOT("[X4]")>0) + MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
 85 CS3 = MOL("BOH[X3]H3") * (TOT("B")>0) * (TOT("[X3]")>0)
 90 CS4 = MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
+93 CP1 = EQUI("CP1")/SOLN_VOL
+95 CP2 = EQUI("CP2")/SOLN_VOL
 100 TOT_X1 = TOT("[X1]")
-110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 10*C6 - 8*C7 + 3*CS1 - 3*CS2 + 3*CS3 - 3*CS4
-120 TOT_X3 = TOT("[X3]") + CS1 * (TOT("S")>0) + CS3 * (TOT("B")>0)
-130 TOT_X4 = TOT("[X4]") + CS2 * (TOT("S")>0) + CS4 * (TOT("B")>0)
+110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 10*C6 - 8*C7 + 3*CS1 - 3*CS2 + 3*CP1 + CP2
+120 TOT_X3 = TOT("[X3]") + CS1 
+130 TOT_X4 = TOT("[X4]") + CS2 
 140 TOT_X5 = TOT("[X5]") 
-150 TOT_S = CS0 + CS1 + 2*CS2 # + CS3 + 2*CS4
+150 TOT_S = CS0 + CS1 + 2*CS2 
 200 X1 = MOL("[X1]") * (TOT("[X1]")>0)
 210 X2 = MOL("H+")
 220 X3 = MOL("[X3]-3") * (TOT("[X3]")>0)
