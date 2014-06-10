@@ -62,6 +62,9 @@
 
     CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
     CALL terminate_phast_worker
+    if (RM_Destroy(rm_id) < 0) then
+        write (*,*) 'RM_Destroy failed.'
+    endif
 #endif  
 END SUBROUTINE phast_worker
     

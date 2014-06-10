@@ -325,6 +325,7 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.hpp" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqcCallbacks.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\GasComp.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\global_structures.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\NA.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\cvdense.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\cvode.h" />
@@ -337,7 +338,6 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ExchComp.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\fwrap.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\GasPhase.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\global_structures.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolution.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolutionComp.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Keywords.h" />

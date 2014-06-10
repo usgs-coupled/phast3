@@ -198,11 +198,11 @@ End of simulation.
 Reading input data for simulation 4.
 ------------------------------------
 
--------------------------------
-End of Run after 9.726 Seconds.
--------------------------------
+--------------------------------
+End of Run after 12.681 Seconds.
+--------------------------------
 
-Number of threads:                                           1
+Number of threads:                                           3
 Number of MPI processes:                                     1
 MPI task number:                                             0
 File prefix:                                      Species_f90
@@ -378,9 +378,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 10.567 Seconds.
---------------------------------
+-------------------------------
+End of Run after 13.78 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 1
@@ -493,7 +493,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.572 Seconds.
+End of Run after 13.785 Seconds.
 --------------------------------
 
 Time:           10
@@ -606,9 +606,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 10.578 Seconds.
---------------------------------
+-------------------------------
+End of Run after 13.79 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 3
@@ -721,7 +721,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.583 Seconds.
+End of Run after 13.795 Seconds.
 --------------------------------
 
 Time:           10
@@ -834,9 +834,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 10.588 Seconds.
---------------------------------
+------------------------------
+End of Run after 13.8 Seconds.
+------------------------------
 
 Time:           10
 Chemistry cell: 5
@@ -949,7 +949,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.593 Seconds.
+End of Run after 13.805 Seconds.
 --------------------------------
 
 Time:           10
@@ -1063,7 +1063,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.598 Seconds.
+End of Run after 13.813 Seconds.
 --------------------------------
 
 Time:           10
@@ -1177,7 +1177,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.603 Seconds.
+End of Run after 13.818 Seconds.
 --------------------------------
 
 Time:           10
@@ -1291,7 +1291,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.608 Seconds.
+End of Run after 13.823 Seconds.
 --------------------------------
 
 Time:           10
@@ -1400,7 +1400,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.614 Seconds.
+End of Run after 13.828 Seconds.
 --------------------------------
 
 Time:           10
@@ -1516,9 +1516,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 10.62 Seconds.
--------------------------------
+--------------------------------
+End of Run after 13.834 Seconds.
+--------------------------------
 
 Time:           10
 Chemistry cell: 11
@@ -1634,7 +1634,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.625 Seconds.
+End of Run after 13.842 Seconds.
 --------------------------------
 
 Time:           10
@@ -1751,7 +1751,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.631 Seconds.
+End of Run after 13.848 Seconds.
 --------------------------------
 
 Time:           10
@@ -1868,7 +1868,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.636 Seconds.
+End of Run after 13.853 Seconds.
 --------------------------------
 
 Time:           10
@@ -1985,7 +1985,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.641 Seconds.
+End of Run after 13.857 Seconds.
 --------------------------------
 
 Time:           10
@@ -2102,7 +2102,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.647 Seconds.
+End of Run after 13.862 Seconds.
 --------------------------------
 
 Time:           10
@@ -2219,7 +2219,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.652 Seconds.
+End of Run after 13.867 Seconds.
 --------------------------------
 
 Time:           10
@@ -2336,7 +2336,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.658 Seconds.
+End of Run after 13.872 Seconds.
 --------------------------------
 
 Time:           10
@@ -2453,7 +2453,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.663 Seconds.
+End of Run after 13.877 Seconds.
 --------------------------------
 
 Time:           10
@@ -2570,6 +2570,6 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 10.668 Seconds.
+End of Run after 13.882 Seconds.
 --------------------------------
 

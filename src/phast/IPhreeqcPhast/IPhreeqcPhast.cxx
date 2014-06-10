@@ -30,6 +30,14 @@ IPhreeqcPhast::~IPhreeqcPhast(void)
 	{
 		IPhreeqcPhast::PhastInstances.erase(it);
 	}
+	if (this->out_stream)
+	{
+		delete this->out_stream;
+	}
+	if (this->punch_stream)
+	{
+		delete this->punch_stream;
+	}
 }
 /* ---------------------------------------------------------------------- */
 double

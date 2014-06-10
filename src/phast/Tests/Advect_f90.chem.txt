@@ -199,10 +199,10 @@ Reading input data for simulation 4.
 ------------------------------------
 
 -------------------------------
-End of Run after 3.971 Seconds.
+End of Run after 5.162 Seconds.
 -------------------------------
 
-Number of threads:                                           1
+Number of threads:                                           3
 Number of MPI processes:                                     1
 MPI task number:                                             0
 File prefix:                                      Advect_f90
@@ -329,7 +329,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.631 Seconds.
+End of Run after 6.082 Seconds.
 -------------------------------
 
 Time:           10
@@ -443,7 +443,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.638 Seconds.
+End of Run after 6.087 Seconds.
 -------------------------------
 
 Time:           10
@@ -557,7 +557,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.642 Seconds.
+End of Run after 6.092 Seconds.
 -------------------------------
 
 Time:           10
@@ -671,7 +671,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.648 Seconds.
+End of Run after 6.096 Seconds.
 -------------------------------
 
 Time:           10
@@ -785,7 +785,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.653 Seconds.
+End of Run after 6.101 Seconds.
 -------------------------------
 
 Time:           10
@@ -899,7 +899,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.661 Seconds.
+End of Run after 6.106 Seconds.
 -------------------------------
 
 Time:           10
@@ -1013,7 +1013,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.669 Seconds.
+End of Run after 6.114 Seconds.
 -------------------------------
 
 Time:           10
@@ -1127,7 +1127,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.676 Seconds.
+End of Run after 6.119 Seconds.
 -------------------------------
 
 Time:           10
@@ -1241,7 +1241,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.682 Seconds.
+End of Run after 6.124 Seconds.
 -------------------------------
 
 Time:           10
@@ -1349,9 +1349,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 4.688 Seconds.
--------------------------------
+------------------------------
+End of Run after 6.13 Seconds.
+------------------------------
 
 Time:           10
 Chemistry cell: 10
@@ -1467,7 +1467,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.695 Seconds.
+End of Run after 6.136 Seconds.
 -------------------------------
 
 Time:           10
@@ -1584,7 +1584,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.701 Seconds.
+End of Run after 6.144 Seconds.
 -------------------------------
 
 Time:           10
@@ -1701,7 +1701,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.708 Seconds.
+End of Run after 6.149 Seconds.
 -------------------------------
 
 Time:           10
@@ -1818,7 +1818,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.715 Seconds.
+End of Run after 6.154 Seconds.
 -------------------------------
 
 Time:           10
@@ -1935,7 +1935,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.721 Seconds.
+End of Run after 6.159 Seconds.
 -------------------------------
 
 Time:           10
@@ -2052,7 +2052,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.726 Seconds.
+End of Run after 6.164 Seconds.
 -------------------------------
 
 Time:           10
@@ -2169,7 +2169,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.731 Seconds.
+End of Run after 6.168 Seconds.
 -------------------------------
 
 Time:           10
@@ -2286,7 +2286,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.736 Seconds.
+End of Run after 6.173 Seconds.
 -------------------------------
 
 Time:           10
@@ -2403,7 +2403,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.741 Seconds.
+End of Run after 6.178 Seconds.
 -------------------------------
 
 Time:           10
@@ -2520,6 +2520,6 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 4.747 Seconds.
+End of Run after 6.183 Seconds.
 -------------------------------
 

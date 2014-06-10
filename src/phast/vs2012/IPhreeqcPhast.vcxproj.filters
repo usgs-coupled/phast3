@@ -358,9 +358,6 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\GasPhase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\global_structures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolution.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -515,6 +512,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Phreeqc_class.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\global_structures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

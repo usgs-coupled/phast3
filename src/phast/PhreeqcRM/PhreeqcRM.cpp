@@ -1,3 +1,7 @@
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+
 #include "PhreeqcRM.h"
 #include "PHRQ_base.h"
 #include "PHRQ_io.h"
@@ -58,6 +62,8 @@ int
 PhreeqcRM::CreateReactionModule(int nxyz, MP_TYPE nthreads)
 /* ---------------------------------------------------------------------- */
 {
+	//_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+	//_crtBreakAlloc = 5144;
 	int n = IRM_OUTOFMEMORY;
 	try
 	{
@@ -3452,9 +3458,11 @@ PhreeqcRM::GetSelectedOutputHeading(int icol, std::string &heading)
 					if (pVar.type == TT_STRING)
 					{
 						heading = pVar.sVal;
+						VarClear(&pVar);
 						return IRM_OK;
 					}
 				}
+				VarClear(&pVar);
 			}
 		}
 		else
@@ -6459,6 +6467,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 			recv_cell_times.push_back(*cit);
 			//std::cerr << "Threadxx: " << i << " " << recv_cell_times.back() << std::endl;
 		}
+		phast_iphreeqc_worker->Get_cell_clock_times().clear();
 	}
 
 	// Root normalizes times, calculates efficiency, rebalances work
@@ -6696,7 +6705,15 @@ PhreeqcRM::RunCells()
 
 	//clock_t t0 = clock();
 	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+	if (phast_iphreeqc_worker->Get_out_stream())
+	{
+		delete phast_iphreeqc_worker->Get_out_stream(); 
+	}
 	phast_iphreeqc_worker->Set_out_stream(new std::ostringstream); 
+	if (phast_iphreeqc_worker->Get_punch_stream())
+	{
+		delete phast_iphreeqc_worker->Get_punch_stream();
+	}
 	phast_iphreeqc_worker->Set_punch_stream(new std::ostringstream);
 
 	// Run cells in each process
@@ -6718,15 +6735,17 @@ PhreeqcRM::RunCells()
 			{
 				if (n == 0)
 				{
-					this->OutputMessage(this->workers[0]->Get_out_stream().str().c_str());
-					delete &this->workers[0]->Get_out_stream();
+					this->OutputMessage(this->workers[0]->Get_out_stream()->str().c_str());
+					delete this->workers[0]->Get_out_stream();
+					this->workers[0]->Set_out_stream(NULL);
 				}
 				else
 				{
-					int size = (int) this->workers[0]->Get_out_stream().str().size();
+					int size = (int) this->workers[0]->Get_out_stream()->str().size();
 					MPI_Send(&size, 1, MPI_INT, 0, 0, phreeqcrm_comm);
-					MPI_Send((void *) this->workers[0]->Get_out_stream().str().c_str(), size, MPI_CHAR, 0, 0, phreeqcrm_comm);
-					delete &this->workers[0]->Get_out_stream();
+					MPI_Send((void *) this->workers[0]->Get_out_stream()->str().c_str(), size, MPI_CHAR, 0, 0, phreeqcrm_comm);
+					delete this->workers[0]->Get_out_stream();
+					this->workers[0]->Set_out_stream(NULL);
 				}	
 			}
 			else if (this->mpi_myself == 0)
@@ -6800,7 +6819,15 @@ PhreeqcRM::RunCells()
 		for (int n = 0; n < this->nthreads; n++)
 		{
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
+			if (phast_iphreeqc_worker->Get_out_stream())
+			{
+				delete phast_iphreeqc_worker->Get_out_stream(); 
+			}
 			phast_iphreeqc_worker->Set_out_stream(new std::ostringstream); 
+			if (phast_iphreeqc_worker->Get_punch_stream())
+			{
+				delete phast_iphreeqc_worker->Get_punch_stream();
+			}
 			phast_iphreeqc_worker->Set_punch_stream(new std::ostringstream);
 		}
 		std::vector < int > r_vector;
@@ -6822,9 +6849,10 @@ PhreeqcRM::RunCells()
 		{
 			if (this->print_chemistry_on[0])
 			{
-				this->OutputMessage(this->workers[n]->Get_out_stream().str().c_str());
+				this->OutputMessage(this->workers[n]->Get_out_stream()->str().c_str());
 			}
-			delete &this->workers[n]->Get_out_stream();
+			delete this->workers[n]->Get_out_stream();
+			this->workers[n]->Set_out_stream(NULL);
 		} 	
 
 		// Count errors and write error messages
@@ -6888,6 +6916,8 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 				VarInit(&pvar1);
 				phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
 				cso.PushBack(pvar.sVal, pvar1);
+				VarClear(&pvar);
+				VarClear(&pvar1);
 			}
 			phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
 		}
@@ -6914,12 +6944,15 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 	int end = this->end_cell[n];
 #endif
 	//phast_iphreeqc_worker->Get_cell_clock_times().clear();
-	if (phast_iphreeqc_worker->Get_cell_clock_times().size() == 0)
+	
+	if (this->rebalance_by_cell)
 	{
-		phast_iphreeqc_worker->Get_cell_clock_times().resize(end - start + 1, 0.0);
-		std::cerr << "Resetting timing" << std::endl;
+		if (phast_iphreeqc_worker->Get_cell_clock_times().size() == 0)
+		{
+			phast_iphreeqc_worker->Get_cell_clock_times().resize(end - start + 1, 0.0);
+			//std::cerr << "Resetting timing" << std::endl;
+		}
 	}
-
 	// Make list of cells with saturation > 0.0
 	std::ostringstream soln_list;
 	int count_active = 0;
@@ -7035,17 +7068,20 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 		}
 	}
 	// Set cell_clock_times
-	for (int i = start; i <= end; i++)
-	{							                /* i is count_chem number */
-		int j = backward_mapping[i][0];			/* j is nxyz number */
-		if (saturation[j] > 1e-10)
-		{
-			//phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
-			phast_iphreeqc_worker->Get_cell_clock_times()[i - start] += t_elapsed / (double) count_active;
-		}
-		else
-		{
-			//phast_iphreeqc_worker->Get_cell_clock_times().push_back(0.0);
+	if (this->rebalance_by_cell)
+	{
+		for (int i = start; i <= end; i++)
+		{							                /* i is count_chem number */
+			int j = backward_mapping[i][0];			/* j is nxyz number */
+			if (saturation[j] > 1e-10 )
+			{
+				//phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
+				phast_iphreeqc_worker->Get_cell_clock_times()[i - start] += t_elapsed / (double) count_active;
+			}
+			else
+			{
+				//phast_iphreeqc_worker->Get_cell_clock_times().push_back(0.0);
+			}
 		}
 	}
 
@@ -7138,6 +7174,8 @@ PhreeqcRM::RunCellsThread(int n)
 						VarInit(&pvar1);
 						phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
 						cso.PushBack(pvar.sVal, pvar1);
+						VarClear(&pvar);
+						VarClear(&pvar1);
 					}
 					phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
 				}
@@ -7222,8 +7260,8 @@ PhreeqcRM::RunCellsThread(int n)
 							line_buff << backward_mapping[j][ib] << " ";
 						}
 						line_buff << "\n";
-						phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
-						phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
+						*phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
+						*phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
 					}
 
 					// Save selected output data
@@ -7263,7 +7301,7 @@ PhreeqcRM::RunCellsThread(int n)
 							line_buff << backward_mapping[i][ib] << " ";
 						}
 						line_buff << "\nCell is dry.\n";
-						phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
+						*phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
 					}
 					// Get selected output
 					if (this->selected_output_on)
