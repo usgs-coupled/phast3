@@ -173,7 +173,7 @@ PRINT_FREQUENCY
 		-restart_file           0
 		-velocities             0
 		-wells                  0 
-		-xyz_chemistry          1    seconds
+		-xyz_chemistry          2    seconds
 		-xyz_components         0
 		-xyz_heads              0
 		-xyz_velocities         0
