@@ -18,11 +18,11 @@ SOLUTION_METHOD
 	-tolerance          1e-010
 	-save_directions    20
 	-maximum_iterations 500
-	-space_differencing 0.5
-	-time_differencing  0.5
+	-space_differencing 0
+	-time_differencing  1
 	-cross_dispersion   false
 	-rebalance_fraction 0.5
-	-rebalance_by_cell  false
+	-rebalance_by_cell  true
 	#-threads 1
 UNITS
 	-time                             s
@@ -55,8 +55,13 @@ UNITS
 	-gas_phase                        WATER
 GRID
 	#-uniform X 0 2.1 2 
-	-uniform X 0 2.1 2101 
-	#-uniform X 0 2.1 1051 
+	-uniform X 0 2.1 1760
+	#-uniform X 0 2.1 2101 
+	#-uniform X 0 2.1 1051
+	#-uniform X 0 2.1 22
+	#-uniform X 0 2.1 43
+	#-uniform X 0 2.1 85
+	#-uniform X 0 2.1 106
 	#-overlay_uniform X 0.01 2.09 105 # 0.02 m
 	#-overlay_uniform X 0.005 2.095 210 # 0.01
 	#-overlay_uniform X 0.0025 2.0975 420   #0.005
@@ -72,7 +77,7 @@ GRID
 	-grid_angle    0
 PRINT_LOCATIONS
 	-xyz_chemistry
-		-sample X 1
+		-sample X 2
 MEDIA
 	-domain
 		-active                   1
@@ -159,15 +164,15 @@ PRINT_FREQUENCY
 		-end_of_period_default  true 
 		-flow_balance           end 
 		-force_chemistry_print  0
-		-HDF_chemistry          end 
-		-HDF_heads              end 
-		-HDF_velocities         end 
-		-heads                  end 
-		-progress_statistics    end 
+		-HDF_chemistry          0 # 2.5 s 
+		-HDF_heads              0 
+		-HDF_velocities         0 
+		-heads                  0 
+		-progress_statistics    0 
 		-restart_file           0
-		-velocities             end 
+		-velocities             0
 		-wells                  0 
-		-xyz_chemistry          10    seconds
+		-xyz_chemistry          2    seconds
 		-xyz_components         0
 		-xyz_heads              0
 		-xyz_velocities         0
@@ -178,7 +183,7 @@ PRINT_FREQUENCY
 		-hdf_intermediate       0 
 TIME_CONTROL
 	-time_step
-		0 0.005
+		0 0.05
 	-time_change
-		10 # 6000
+		10
 	-start_time 0
