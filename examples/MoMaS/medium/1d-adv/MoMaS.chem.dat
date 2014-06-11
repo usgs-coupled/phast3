@@ -1,3 +1,4 @@
+DATABASE C:\Programs\phastpp3-worker\examples\MoMaS\hard\1d-adv\phast.dat
 #![X1]   [X1]
 #![X2]   H+
 #![X3]   [X3]-3
@@ -23,7 +24,6 @@
 #!Kinetic reactant
 #!Cc     [X4]H
 
-DATABASE phast.dat
 SOLUTION_MASTER_SPECIES
     [X1]          [X1]               0     1               1
     [X3]          [X3]-3             0     1               1
@@ -182,7 +182,7 @@ USER_PRINT
 770 PRINT "log K(C7):          ", log10(MOL("[X4]2-2") * MOL("H+")^8 * MOL("[X4]H4+3")^-2) * (TOT("[X4]")>0)
 END
 PRINT
--high
+#-high
 END
 
 #infilling solution
@@ -191,15 +191,14 @@ UNITS mol/kgw
 pH  3.1491453 # [X2] = 0.3
 [X1]   0.3
 [X3]   0.3
-[X4]   1e-10
+O(0)   1e-6
 END
 
 SOLUTION 1001 Initial condition medium A
 UNITS mol/kgw
 pH 0.804992
-[X1]   1e-10
-[X3]   1e-10
 [X4]   1
+O(0)   1e-6
 END
 
 #initial condition A
@@ -213,13 +212,11 @@ SAVE solution 1
 SAVE surface 1
 END
 
-
 SOLUTION 1002 Initial condition medium B
 UNITS mol/kgw
 pH 0.713489
-[X1]   1e-10
-[X3]   1e-10
 [X4]   3
+O(0)   1e-6
 END
 
 #initial condition B
@@ -236,25 +233,24 @@ END
 SOLUTION 1001 Leaching after 5000
 UNITS mol/kgw
 pH 0.6340002
-[X1]   1e-10
-[X3]   1e-10
 [X4]   1.5
+O(0)   1e-6
 END
+
 RATES
 Cc
+-start
 # dC/dt = (0.2*c3^3/X4^2 - 1)*k
 # C3 = [X4]H3+2, X4 = [X4]H4+3
 5 if TOT("[X4]") <= 0 then goto 40
 10 f = (0.2 * MOL("[X4]H3+2")^3/MOL("[X4]H4+3")^2 - 1)
 20 if f > 0 then k = 1e-2 else k = 10
 30 rate = f * k
-40 SAVE rate * TIME * -1
-#40 SAVE 0
+40 SAVE rate * TIME * -1 * SOLN_VOL
+-end
+
 END
-#25 th = (1-exp(-2*f*100))/(1+exp(-2*f*100))
-#26 tn = -(th-1)/2
-#27 tp = (th+1)/2
-#28 k = tn*10 + tp*1e-2
+
 KINETICS 1
 Cc
         # 3C3 = Cc + 2X4
@@ -263,16 +259,7 @@ Cc
         -formula [X4]H 1
         -m0  5
         -m   5
-        #-step 2 4 6 8 10 100 300 1000 3000
-        #-cvode
 END
-#USER_PRINT
-#10 f = (0.2 * MOL("[X4]H3+2")^3/MOL("[X4]H4+3")^2 - 1)
-#20 print f
-
-#USE solution 1
-#USE surface 1
-#USE kinetics 1
 
 SELECTED_OUTPUT 1
 -reset false
@@ -292,11 +279,11 @@ USER_PUNCH 1
 85 CS3 = MOL("BOH[X3]H3") * (TOT("B")>0) * (TOT("[X3]")>0)
 90 CS4 = MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
 100 TOT_X1 = TOT("[X1]")
-110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 10*C6 - 8*C7 + 3*CS1 - 3*CS2 + 3*CS3 - 3*CS4
-120 TOT_X3 = TOT("[X3]") + CS1 * (TOT("S")>0) + CS3 * (TOT("B")>0)
-130 TOT_X4 = TOT("[X4]") + CS2 * (TOT("S")>0) + CS4 * (TOT("B")>0)
+110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 10*C6 - 8*C7 + 3*CS1 - 3*CS2 
+120 TOT_X3 = TOT("[X3]") + CS1 
+130 TOT_X4 = TOT("[X4]") + CS2 
 140 TOT_X5 = TOT("[X5]") 
-150 TOT_S = CS0 + CS1 + 2*CS2 # + CS3 + 2*CS4
+150 TOT_S = CS0 + CS1 + 2*CS2 
 200 X1 = MOL("[X1]") * (TOT("[X1]")>0)
 210 X2 = MOL("H+")
 220 X3 = MOL("[X3]-3") * (TOT("[X3]")>0)
