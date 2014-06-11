@@ -193,7 +193,7 @@ KNOBS
 #-conv 1e-9
 #-tol 1e-16
 -diag
--step 20
+-step 10
 
 #infilling solution
 SOLUTION 0 Inflow 0-5000 s
