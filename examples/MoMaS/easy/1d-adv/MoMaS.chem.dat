@@ -1,7 +1,34 @@
+DATABASE C:\Programs\phastpp3-worker\examples\MoMaS\hard\1d-adv\phast.dat
+#![X1]   [X1]
+#![X2]   H+
+#![X3]   [X3]-3
+#![X4]   [X4]H4+3
+#![X5]   [X5]-
+#!
+#!C1     OH-                   H2O = OH- + H+ + H2O
+#!C2     H[X3]-2               H+ + [X3]-3 = H[X3]-2
+#!C3     [X4]H3+2              [X4]H4+3 = [X4]H3+2 + H+
+#!C4     [X4]3[X3]H8+2         3[X4]H4+3 + [X3]-3 = [X4]3[X3]H8+2 + 4H+
+#!C5     [X4][X3]3H8-2         [X4]H4+3 + 3[X3]-3 + 4H+ = [X4][X3]3H8-2        
+#!C6     [X3]3H10+             3[X3]-3 + 10H+ = [X3]3H10+
+#!C7     [X4]2-2               2[X4]H4+3 = [X4]2-2 + 8H+
+#!
+#!CS1    SOH[X3]H3             SOH + [X3]-3 + 3H+ = SOH[X3]H3
+#!CS2    S2O2H[X4]H2           2SOH + [X4]H4+3 = S2O2H[X4]H2 + 3H+
+#!CS3    BOH[X3]H3             BOH + [X3]-3 + 3H+ = BOH[X3]H3
+#!CS4    B2O2H[X4]H2           2BOH + [X4]H4+3 = B2O2H[X4]H2 + 3H+
+#!
+#!CP1    [X3]H3                [X3]H3 = 3H+ + [X3]-3
+#!CP2    [X5]H                 [X5]H = H+ + X5-
+#!
+#!Kinetic reactant
+#!Cc     [X4]H
+
 SOLUTION_MASTER_SPECIES
-    [X1]          [X1]             0     1               1
-    [X3]          [X3]             0     1               1
-    [X4]          [X4]H2           0     1               1
+    [X1]          [X1]               0     1               1
+    [X3]          [X3]-3             0     1               1
+    [X4]          [X4]H4+3           0     1               1
+    [X5]          [X5]-              0     1               1
 SOLUTION_SPECIES   
 H+ = H+
 log_k 0
@@ -10,10 +37,13 @@ log_k 0
 [X1] = [X1]
     log_k     0
     -gamma    1000000000 0
-[X3] = [X3]
+[X3]-3 = [X3]-3
     log_k     0
     -gamma    1000000000 0
-[X4]H2 = [X4]H2
+[X4]H4+3 = [X4]H4+3
+    log_k     0
+    -gamma    1000000000 0
+[X5]- = [X5]-
     log_k     0
     -gamma    1000000000 0
 
@@ -24,22 +54,22 @@ log_k -12.0
 -gamma    1000000000 0
 
 # C2 = X2 + X3
-H+ + [X3] = H[X3]+
+H+ + [X3]-3 = H[X3]-2
 log_k 0
 -gamma    1000000000 0
 
 # C3 = -X2 + X4
-[X4]H2 = [X4]H- + H+
+[X4]H4+3 = [X4]H3+2 + H+
 log_k 0
 -gamma    1000000000 0
 
 # C4 = -4X2 + X3 + 3X4
-3[X4]H2 + [X3] = [X4]3[X3]H2-4 + 4H+
+3[X4]H4+3 + [X3]-3 = [X4]3[X3]H8+2 + 4H+
 log_k -1
 -gamma    1000000000 0
 
 # C5 = 4X2 + 3X3 + X4
-[X4]H2 + 3[X3] + 4H+ = [X4][X3]3H6+4
+[X4]H4+3 + 3[X3]-3 + 4H+ = [X4][X3]3H8-2
 log_k 35 
 -gamma    1000000000 0
 
@@ -49,10 +79,10 @@ SURFACE_SPECIES
 SOH = SOH
     log_k     0
 # S1 = 3X2 + X3 + S
-SOH + [X3] + 3H+ = SOH[X3]H3+3
+SOH + [X3]-3 + 3H+ = SOH[X3]H3
 log_K 6
 # S2 = -3X2 + x4 + 2S
-2SOH + [X4]H2 = S2O2H[X4]-3 + 3H+
+2SOH + [X4]H4+3 = S2O2H[X4]H2 + 3H+
 log_k  -0.699
 
 SURFACE_MASTER_SPECIES
@@ -61,78 +91,91 @@ SURFACE_SPECIES
 BOH = BOH
     log_k     0
 # S3 = 3X2 + X3 + S
-BOH + [X3] + 3H+ = BOH[X3]H3+3
+BOH + [X3]-3 + 3H+ = BOH[X3]H3
 log_K 6
 # S4 = -3X2 + x4 + 2S
-2BOH + [X4]H2 = B2O2H[X4]-3 + 3H+
+2BOH + [X4]H4+3 = B2O2H[X4]H2 + 3H+
 log_k 0.301
+END
 
-#!USER_PRINT
-#!
-#!10 C0 = MOL("H+")
-#!20 C1 = MOL("OH-")
-#!30 C2 = MOL("H[X3]+") * (TOT("[X3]")>0)
-#!40 C3 = MOL("[X4]H-") * (TOT("[X4]")>0)
-#!50 C4 = MOL("[X4]3[X3]H2-4") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
-#!60 C5 = MOL("[X4][X3]3H6+4") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
-#!70 CS1 = MOL("SOH[X3]H3+3") * (TOT("S")>0) * (TOT("[X3]")>0)
-#!80 CS2 = MOL("S2O2H[X4]-3") * (TOT("S")>0) * (TOT("[X4]")>0)
-#!85 CS3 = MOL("BOH[X3]H3+3") * (TOT("B")>0) * (TOT("[X3]")>0)
-#!90 CS4 = MOL("B2O2H[X4]-3") * (TOT("B")>0) * (TOT("[X4]")>0)
-#!100 TOT_X1 = TOT("[X1]")
-#!110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 3*CS1 - 3*CS2 + 3*CS3 - 3*CS4
-#!120 TOT_X3 = TOT("[X3]") + CS1 * (TOT("S")>0) + CS3 * (TOT("B")>0)
-#!130 TOT_X4 = TOT("[X4]") + CS2 * (TOT("S")>0) + CS4 * (TOT("B")>0)
-#!
-#!200 PRINT "X1:       ", MOL("[X1]") * (TOT("[X1]")>0)
-#!210 PRINT "X2:       ", MOL("H+")
-#!220 PRINT "X3:       ", MOL("[X3]") * (TOT("[X3]")>0)
-#!230 PRINT "X4:       ", MOL("[X4]H2") * (TOT("[X4]")>0)
-#!240 PRINT "C1:       ", C1
-#!250 PRINT "C2:       ", C2
-#!260 PRINT "C3:       ", C3
-#!270 PRINT "C4:       ", C4
-#!280 PRINT "C5:       ", C5
-#!290 PRINT "CS1:      ", CS1 + CS3
-#!300 PRINT "CS2:      ", CS2 + CS4
-#!
-#!400 PRINT "Total X1: ", TOT_X1
-#!410 PRINT "Total X2: ", TOT_X2
-#!420 PRINT "Total X3: ", TOT_X3
-#!430 PRINT "Total X4: ", TOT_X4
-#!
-#!500 if (TOT("S") <= 0) then goto 600
-#!540 PRINT "log K(SOH[X3]H3+3:  ", log10(MOL("SOH[X3]H3+3")/(MOL("H+")^3*MOL("SOH")*MOL("[X3]")))* (TOT("[X3]")>0)
-#!550 PRINT "log K(S2O2H[X4]-3): ", log10(MOL("S2O2H[X4]-3")*MOL("H+")^3/(MOL("SOH")^2*MOL("[X4]H2")))* (TOT("[X4]")>0)
-#!
-#!600 if (TOT("B") <= 0) then goto 700
-#!640 PRINT "log K(BOH[X3]H3+3:  ", log10(MOL("BOH[X3]H3+3")/(MOL("H+")^3*MOL("BOH")*MOL("[X3]")))* (TOT("[X3]")>0)
-#!650 PRINT "log K(B2O2H[X4]-3): ", log10(MOL("B2O2H[X4]-3")*MOL("H+")^3/(MOL("BOH")^2*MOL("[X4]H2")))* (TOT("[X4]")>0)
-#!
-#!700 REM
-#!710 PRINT "log K(C1):          ", log10(MOL("OH-") * MOL("H+")^1)
-#!720 PRINT "log K(C2):          ", log10( MOL("H[X3]+") * MOL("H+")^-1 * MOL("[X3]")^-1 ) * (TOT("[X3]")>0)
-#!730 PRINT "log K(C3):          ", log10( MOL("[X4]H-") * MOL("H+")^1 * MOL("[X4]H2")^-1 )
-#!740 PRINT "log K(C4):          ", log10( MOL("[X4]3[X3]H2-4") * MOL("H+")^4 * MOL("[X3]")^-1 * MOL("[X4]H2")^-3 )* (TOT("[X3]")>0)* (TOT("[X4]")>0)
-#!750 PRINT "log K(C5):          ", log10( MOL("[X4][X3]3H6+4") * MOL("H+")^-4 * MOL("[X3]")^-3 * MOL("[X4]H2")^-1 )* (TOT("[X3]")>0)* (TOT("[X4]")>0)
+END
+
+USER_PRINT
+
+10 C0 = MOL("H+")
+20 C1 = MOL("OH-")
+30 C2 = MOL("H[X3]-2") * (TOT("[X3]")>0)
+40 C3 = MOL("[X4]H3+2") * (TOT("[X4]")>0)
+50 C4 = MOL("[X4]3[X3]H8+2") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
+60 C5 = MOL("[X4][X3]3H8-2") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
+62 C6 = MOL("[X3]3H10+") * (TOT("[X3]")>0)
+66 C7 = MOL("[X4]2-2") * (TOT("[X4]")>0)
+68 CS0 = MOL("SOH") + MOL("BOH")
+70 CS1 = MOL("SOH[X3]H3") * (TOT("S")>0) * (TOT("[X3]")>0)
+80 CS2 = MOL("S2O2H[X4]H2") * (TOT("S")>0) * (TOT("[X4]")>0)
+85 CS3 = MOL("BOH[X3]H3") * (TOT("B")>0) * (TOT("[X3]")>0)
+90 CS4 = MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
+100 TOT_X1 = TOT("[X1]")
+110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 10*C6 - 8*C7 + 3*CS1 - 3*CS2 + 3*CS3 - 3*CS4
+120 TOT_X3 = TOT("[X3]") + CS1 * (TOT("S")>0) + CS3 * (TOT("B")>0)
+130 TOT_X4 = TOT("[X4]") + CS2 * (TOT("S")>0) + CS4 * (TOT("B")>0)
+140 TOT_X5 = TOT("[X5]") 
+150 TOT_S = CS0 + CS1 + 2*CS2 + CS3 + 2*CS4
+
+200 PRINT "X1:       ", MOL("[X1]") * (TOT("[X1]")>0)
+210 PRINT "X2:       ", MOL("H+")
+220 PRINT "X3:       ", MOL("[X3]") * (TOT("[X3]")>0)
+230 PRINT "X4:       ", MOL("[X4]H4+3") * (TOT("[X4]")>0)
+235 PRINT "X5:       ", MOL("[X5]-") * (TOT("[X5]")>0)
+240 PRINT "C1:       ", C1
+250 PRINT "C2:       ", C2
+260 PRINT "C3:       ", C3
+270 PRINT "C4:       ", C4
+280 PRINT "C5:       ", C5
+282 PRINT "C6:       ", C6
+286 PRINT "C7:       ", C7
+290 PRINT "CS1:      ", CS1 + CS3
+300 PRINT "CS2:      ", CS2 + CS4
+
+400 PRINT "Total X1: ", TOT_X1
+410 PRINT "Total X2: ", TOT_X2
+420 PRINT "Total X3: ", TOT_X3
+430 PRINT "Total X4: ", TOT_X4
+440 PRINT "Total X5: ", TOT_X5
+
+500 if (TOT("S") <= 0) then goto 600
+540 PRINT "log K(SOH[X3]H3):   ", log10(MOL("SOH[X3]H3")/(MOL("H+")^3*MOL("SOH")*MOL("[X3]-3"))) * (TOT("[X3]")>0)
+550 PRINT "log K(S2O2H[X4]H2): ", log10(MOL("S2O2H[X4]H2")*MOL("H+")^3/(MOL("SOH")^2*MOL("[X4]H4+3"))) * (TOT("[X4]")>0)
+
+600 if (TOT("B") <= 0) then goto 700
+640 PRINT "log K(BOH[X3]H3+3:  ", log10(MOL("BOH[X3]H3")/(MOL("H+")^3*MOL("BOH")*MOL("[X3]-3")))* (TOT("[X3]")>0)
+650 PRINT "log K(B2O2H[X4]H2): ", log10(MOL("B2O2H[X4]H2")*MOL("H+")^3/(MOL("BOH")^2*MOL("[X4]H4+3")))* (TOT("[X4]")>0)
+
+700 REM
+710 PRINT "log K(C1):          ", log10(MOL("OH-") * MOL("H+")^1)
+720 PRINT "log K(C2):          ", log10(MOL("H[X3]-2") * MOL("H+")^-1 * MOL("[X3]-3")^-1 ) * (TOT("[X3]")>0)
+730 PRINT "log K(C3):          ", log10(MOL("[X4]H3+2") * MOL("H+")^1 * MOL("[X4]H4+3")^-1 ) * (TOT("[X4]")>0)
+740 PRINT "log K(C4):          ", log10(MOL("[X4]3[X3]H8+2") * MOL("H+")^4 * MOL("[X3]-3")^-1 * MOL("[X4]H4+3")^-3 ) * (TOT("[X3]")>0) * (TOT("[X4]")>0)
+750 PRINT "log K(C5):          ", log10(MOL("[X4][X3]3H8-2") * MOL("H+")^-4 * MOL("[X3]-3")^-3 * MOL("[X4]H4+3")^-1 ) * (TOT("[X3]")>0)* (TOT("[X4]")>0)
+760 PRINT "log K(C6):          ", log10(MOL("[X3]3H10+") * MOL("H+")^-10 * MOL("[X3]-3")^-3 ) * (TOT("[X3]")>0)
+770 PRINT "log K(C7):          ", log10(MOL("[X4]2-2") * MOL("H+")^8 * MOL("[X4]H4+3")^-2) * (TOT("[X4]")>0)
 END
 PRINT
--high
+#-high
 END
+
 #infilling solution
 SOLUTION 0 Inflow 0-5000 s
 UNITS mol/kgw
 pH  0.61686 # [X2] = 0.3
 [X1]   0.3
 [X3]   0.3
-[X4]   1e-10
+O(0)   1e-6
 END
 
-SOLUTION 1001 Initial condition
+SOLUTION 1001 Initial condition medium A
 UNITS mol/kgw
 pH 7.0
-[X1]   1e-10
-[X3]   1e-10
 [X4]   2
 END
 
@@ -147,6 +190,7 @@ SAVE solution 1
 SAVE surface 1
 END
 
+
 #initial condition B
 SURFACE 1002 Medium B
 -no_edl
@@ -156,46 +200,39 @@ USE solution 1001
 USE surface 1002
 SAVE solution 11
 SAVE surface  11
-
 END
+
 
 SELECTED_OUTPUT 1
 -reset false
 USER_PUNCH 1
--heading x1 x2 x3 x4 c1 c2 c3 c4 c5 cs0 cs1 cs2 cs3 cs4 tot_x1 tot_x2 tot_x3 tot_x4 tot_S
+-heading x1 x2 x3 x4 x5 c1 c2 c3 c4 c5 cs0 cs1 cs2 cs3 cs4 tot_x1 tot_x2 tot_x3 tot_x4 tot_x5 tot_S
 10 C0 = MOL("H+")
 20 C1 = MOL("OH-")
-30 C2 = MOL("H[X3]+") * (TOT("[X3]")>0)
-40 C3 = MOL("[X4]H-") * (TOT("[X4]")>0)
-50 C4 = MOL("[X4]3[X3]H2-4") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
-60 C5 = MOL("[X4][X3]3H6+4") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
-65 CS0 = MOL("SOH") * (TOT("S")>0) + MOL("BOH") * (TOT("B")>0)
-70 CS1 = MOL("SOH[X3]H3+3") * (TOT("S")>0) * (TOT("[X3]")>0)
-80 CS2 = MOL("S2O2H[X4]-3") * (TOT("S")>0) * (TOT("[X4]")>0)
-85 CS3 = MOL("BOH[X3]H3+3") * (TOT("B")>0) * (TOT("[X3]")>0)
-90 CS4 = MOL("B2O2H[X4]-3") * (TOT("B")>0) * (TOT("[X4]")>0)
+30 C2 = MOL("H[X3]-2") * (TOT("[X3]")>0)
+40 C3 = MOL("[X4]H3+2") * (TOT("[X4]")>0)
+50 C4 = MOL("[X4]3[X3]H8+2") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
+60 C5 = MOL("[X4][X3]3H8-2") * (TOT("[X3]")>0) * (TOT("[X4]")>0)
+68 CS0 = MOL("SOH") + MOL("BOH")
+70 CS1 = MOL("SOH[X3]H3") * (TOT("S")>0) * (TOT("[X3]")>0) + MOL("BOH[X3]H3") * (TOT("B")>0) * (TOT("[X3]")>0)
+80 CS2 = MOL("S2O2H[X4]H2") * (TOT("S")>0) * (TOT("[X4]")>0) + MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
+85 CS3 = MOL("BOH[X3]H3") * (TOT("B")>0) * (TOT("[X3]")>0)
+90 CS4 = MOL("B2O2H[X4]H2") * (TOT("B")>0) * (TOT("[X4]")>0)
 100 TOT_X1 = TOT("[X1]")
-110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 3*CS1 - 3*CS2 + 3*CS3 - 3*CS4
-120 TOT_X3 = TOT("[X3]") + CS1 * (TOT("S")>0) + CS3 * (TOT("B")>0)
-130 TOT_X4 = TOT("[X4]") + CS2 * (TOT("S")>0) + CS4 * (TOT("B")>0)
-135 TOT_S = CS1 + 2*CS2 + CS3 + 2*CS4
+110 TOT_X2 = C0 - C1 + C2 - C3 - 4*C4 + 4*C5 + 3*CS1 - 3*CS2 
+120 TOT_X3 = TOT("[X3]") + CS1 
+130 TOT_X4 = TOT("[X4]") + CS2 
+140 TOT_X5 = TOT("[X5]") 
+150 TOT_S = CS0 + CS1 + 2*CS2 
 200 X1 = MOL("[X1]") * (TOT("[X1]")>0)
 210 X2 = MOL("H+")
-220 X3 = MOL("[X3]") * (TOT("[X3]")>0)
-230 X4 = MOL("[X4]H2") * (TOT("[X4]")>0)
-300 PUNCH x1, x2, x3, x4, c1, c2, c3, c4, c5, cs0, cs1, cs2, cs3, cs4, tot_x1, tot_x2, tot_x3, tot_x4, tot_s
+220 X3 = MOL("[X3]-3") * (TOT("[X3]")>0)
+230 X4 = MOL("[X4]H4+3") * (TOT("[X4]")>0)
+240 X5 = MOL("[X5]-") * (TOT("[X5]")>0)
+290 kgw_L = 1 # * TOT("water")/soln_vol
+300 PUNCH x1*kgw_L, x2*kgw_L, x3*kgw_L, x4*kgw_L, x5*kgw_L
+310 PUNCH c1*kgw_L, c2*kgw_L, c3*kgw_L, c4*kgw_L, c5*kgw_L
+320 PUNCH cs0*kgw_L, cs1*kgw_L, cs2*kgw_L, cs3*kgw_L, cs4*kgw_L
+330 PUNCH tot_x1*kgw_L, tot_x2*kgw_L, tot_x3*kgw_L, tot_x4*kgw_L, tot_x5*kgw_L, tot_s*kgw_L
 END
-
-
-
-
-
-
-
-
-
-
-
-
-
 
