@@ -132,8 +132,6 @@ USER_PRINT
 260 PRINT "C3:       ", C3
 270 PRINT "C4:       ", C4
 280 PRINT "C5:       ", C5
-282 PRINT "C6:       ", C6
-286 PRINT "C7:       ", C7
 290 PRINT "CS1:      ", CS1 + CS3
 300 PRINT "CS2:      ", CS2 + CS4
 
@@ -157,8 +155,6 @@ USER_PRINT
 730 PRINT "log K(C3):          ", log10(MOL("[X4]H3+2") * MOL("H+")^1 * MOL("[X4]H4+3")^-1 ) * (TOT("[X4]")>0)
 740 PRINT "log K(C4):          ", log10(MOL("[X4]3[X3]H8+2") * MOL("H+")^4 * MOL("[X3]-3")^-1 * MOL("[X4]H4+3")^-3 ) * (TOT("[X3]")>0) * (TOT("[X4]")>0)
 750 PRINT "log K(C5):          ", log10(MOL("[X4][X3]3H8-2") * MOL("H+")^-4 * MOL("[X3]-3")^-3 * MOL("[X4]H4+3")^-1 ) * (TOT("[X3]")>0)* (TOT("[X4]")>0)
-760 PRINT "log K(C6):          ", log10(MOL("[X3]3H10+") * MOL("H+")^-10 * MOL("[X3]-3")^-3 ) * (TOT("[X3]")>0)
-770 PRINT "log K(C7):          ", log10(MOL("[X4]2-2") * MOL("H+")^8 * MOL("[X4]H4+3")^-2) * (TOT("[X4]")>0)
 END
 PRINT
 #-high
@@ -201,7 +197,6 @@ USE surface 1002
 SAVE solution 11
 SAVE surface  11
 END
-
 
 SELECTED_OUTPUT 1
 -reset false

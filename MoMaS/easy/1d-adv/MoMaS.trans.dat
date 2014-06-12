@@ -78,6 +78,10 @@ GRID
 PRINT_LOCATIONS
 	-xyz_chemistry
 		-sample X 2
+		-box 0 0.0 0.5 2.1 1 1
+			-print 0
+		-box 0 0.5 0.0 2.1 1 1
+			-print 0
 MEDIA
 	-domain
 		-active                   1
