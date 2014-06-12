@@ -3861,18 +3861,19 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 				{
 					if (n_old1 >= 0)
 					{
-						std::ostringstream in;
-						in << "RUN_CELLS; -cells " << n_old1;
-						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
-						if (rtn != 0)
-						{
-							error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
-							status = IRM_FAIL;
-						}
-						else
-						{
-							this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
-						}
+						//std::ostringstream in;
+						//in << "RUN_CELLS; -cells " << n_old1;
+						//int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
+						//if (rtn != 0)
+						//{
+						//	error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
+						//	status = IRM_FAIL;
+						//}
+						//else
+						//{
+						//	this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
+						//}
+						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
 					}
 					else
 					{
@@ -3900,15 +3901,15 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 				{
 					if (this->Get_phreeqc_bin().Get_Solution(n_old2) == NULL)
 					{
-						std::ostringstream in;
-						in << "RUN_CELLS; -cells " << n_old2;
-						//status = this->RunString(0, 1, 0, in.str().c_str());
-						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
-						if (rtn != 0)
-						{
-							error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
-							status = IRM_FAIL;
-						}
+						//std::ostringstream in;
+						//in << "RUN_CELLS; -cells " << n_old2;
+						////status = this->RunString(0, 1, 0, in.str().c_str());
+						//int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
+						//if (rtn != 0)
+						//{
+						//	error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
+						//	status = IRM_FAIL;
+						//}
 						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old2);
 					}
 					mixmap.Add(n_old2, f2);
