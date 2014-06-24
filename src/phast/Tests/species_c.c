@@ -241,7 +241,7 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		// will be written to cells 18 and 19 (0 based)
 		module_cells = (int *) malloc((size_t) (2 * sizeof(int)));
 		module_cells[0] = 18;
-		module_cells[0] = 19;
+		module_cells[1] = 19;
 		status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2);
 
 		// Get a boundary condition from initial phreeqc
