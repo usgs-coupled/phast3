@@ -3820,11 +3820,8 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
  *          boundary_solution1 - list of first solution numbers to be mixed
  *          boundary_solution2 - list of second solution numbers to be mixed
  *          fraction1 - fraction of first solution 0 <= f <= 1
- *          dim - leading dimension of array boundary mass fractions
- *                must be >= to n_boundary
  *
- *   Output: c - concentrations for boundary conditions
- *             - dimensions must be >= n_boundary x n_comp
+ *   Output: destination_c - concentrations for boundary conditions
  *
  */
 	IRM_RESULT return_value = IRM_OK;
@@ -4152,11 +4149,8 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
  *          boundary_solution1 - list of first solution numbers to be mixed
  *          boundary_solution2 - list of second solution numbers to be mixed
  *          fraction1 - fraction of first solution 0 <= f <= 1
- *          dim - leading dimension of array boundary mass fractions
- *                must be >= to n_boundary
  *
  *   Output: c - concentrations for boundary conditions
- *             - dimensions must be >= n_boundary x n_comp
  *
  */
 	IRM_RESULT return_value = IRM_OK;
@@ -4193,18 +4187,18 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 				{
 					if (n_old1 >= 0)
 					{
-						std::ostringstream in;
-						in << "RUN_CELLS; -cells " << n_old1;
-						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
-						if (rtn != 0)
-						{
-							error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
-							status = IRM_FAIL;
-						}
-						else
-						{
+						//std::ostringstream in;
+						//in << "RUN_CELLS; -cells " << n_old1;
+						//int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
+						//if (rtn != 0)
+						//{
+						//	error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
+						//	status = IRM_FAIL;
+						//}
+						//else
+						//{
 							this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
-						}
+						//}
 					}
 					else
 					{
@@ -4232,15 +4226,15 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 				{
 					if (this->Get_phreeqc_bin().Get_Solution(n_old2) == NULL)
 					{
-						std::ostringstream in;
-						in << "RUN_CELLS; -cells " << n_old2;
-						//status = this->RunString(0, 1, 0, in.str().c_str());
-						int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
-						if (rtn != 0)
-						{
-							error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
-							status = IRM_FAIL;
-						}
+						//std::ostringstream in;
+						//in << "RUN_CELLS; -cells " << n_old2;
+						////status = this->RunString(0, 1, 0, in.str().c_str());
+						//int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
+						//if (rtn != 0)
+						//{
+						//	error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
+						//	status = IRM_FAIL;
+						//}
 						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old2);
 					}
 					mixmap.Add(n_old2, f2);
@@ -4438,32 +4432,34 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 #endif
 	try
 	{
-		std::ostringstream in;
-		in << "RUN_CELLS; -cell " << cell << "; -time_step 0\n";
-		// Turn off printing
-		std::vector<bool> tf = this->GetPrintChemistryOn();
-		this->print_chemistry_on[1] = false;
-		int status_ip = this->workers[this->nthreads]->RunString(in.str().c_str());
-		IRM_RESULT status = IRM_OK;
-		if (status_ip != 0) 
-		{
-			error_msg(this->workers[this->nthreads]->GetErrorString());
-			status = IRM_FAIL;
-		}
-		this->ErrorHandler(status, "RunString");
-		this->print_chemistry_on[1] = tf[1];
+		//std::ostringstream in;
+		//in << "RUN_CELLS; -cell " << cell << "; -time_step 0\n";
+		//// Turn off printing
+		//std::vector<bool> tf = this->GetPrintChemistryOn();
+		//this->print_chemistry_on[1] = false;
+		//int status_ip = this->workers[this->nthreads]->RunString(in.str().c_str());
+		//IRM_RESULT status = IRM_OK;
+		//if (status_ip != 0) 
+		//{
+		//	error_msg(this->workers[this->nthreads]->GetErrorString());
+		//	status = IRM_FAIL;
+		//}
+		//this->ErrorHandler(status, "RunString");
+		//this->print_chemistry_on[1] = tf[1];
 
 		for (size_t i = 0; i < cell_numbers.size(); i++)
 		{
+			int nchem = this->forward_mapping[cell_numbers[i]];
+			if (nchem < 0 || nchem >= this->count_chemistry) continue;
 #ifdef USE_MPI
 			int n = this->mpi_myself;
-			if (cell_numbers[i] >= start_cell[n] && cell_numbers[i] <= end_cell[n])
+			if (nchem >= start_cell[n] && nchem <= end_cell[n])
 			{
 				{
 #else				
 			for (size_t n = 0; n < nthreads; n++)
 			{
-				if (cell_numbers[i] >= start_cell[n] && cell_numbers[i] <= end_cell[n])
+				if (nchem >= start_cell[n] && nchem <= end_cell[n])
 				{
 #endif
 					cxxStorageBin cell_bin;
@@ -4473,15 +4469,15 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					cell_bin.Remove_Temperature(cell);
 					cell_bin.Remove_Pressure(cell);
 					
-					double cell_porosity_local = this->pore_volume[i] / this->cell_volume[i];
+					double cell_porosity_local = this->pore_volume[cell_numbers[i]] / this->cell_volume[cell_numbers[i]];
 					// solution
 					{
 						cxxMix mx;
 						double current_v = cell_bin.Get_Solution(cell)->Get_soln_vol();
 						double v = cell_porosity_local * saturation[i] / current_v;
 						mx.Add((int) cell, v);
-						cxxSolution cxxsoln(cell_bin.Get_Solutions(), mx, cell_numbers[i]);
-						cell_bin.Set_Solution(cell_numbers[i], &cxxsoln);
+						cxxSolution cxxsoln(cell_bin.Get_Solutions(), mx, nchem);
+						cell_bin.Set_Solution(nchem, &cxxsoln);
 					}
 
 					// for solids
@@ -4494,54 +4490,53 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					{
 						cxxMix mx;
 						mx.Add(cell, porosity_factor[this->units_PPassemblage]);
-						cxxPPassemblage cxxentity(cell_bin.Get_PPassemblages(), mx, cell_numbers[i]);
-						cell_bin.Set_PPassemblage(cell_numbers[i], &cxxentity);
+						cxxPPassemblage cxxentity(cell_bin.Get_PPassemblages(), mx, nchem);
+						cell_bin.Set_PPassemblage(nchem, &cxxentity);
 					}
 					// exchange
 					if (cell_bin.Get_Exchangers().find(cell) != cell_bin.Get_Exchangers().end())
 					{
 						cxxMix mx;
 						mx.Add(cell, porosity_factor[this->units_Exchange]);
-						cxxExchange cxxentity(cell_bin.Get_Exchangers(), mx, cell_numbers[i]);
-						cell_bin.Set_Exchange(cell_numbers[i], &cxxentity);
+						cxxExchange cxxentity(cell_bin.Get_Exchangers(), mx, nchem);
+						cell_bin.Set_Exchange(nchem, &cxxentity);
 					}
 					// surface assemblage
 					if (cell_bin.Get_Surfaces().find(cell) != cell_bin.Get_Surfaces().end())
 					{
 						cxxMix mx;
 						mx.Add(cell, porosity_factor[this->units_Surface]);
-						cxxSurface cxxentity(cell_bin.Get_Surfaces(), mx, cell_numbers[i]);
-						cell_bin.Set_Surface(cell_numbers[i], &cxxentity);
+						cxxSurface cxxentity(cell_bin.Get_Surfaces(), mx, nchem);
+						cell_bin.Set_Surface(nchem, &cxxentity);
 					}
 					// gas phase
 					if (cell_bin.Get_GasPhases().find(cell) != cell_bin.Get_GasPhases().end())
 					{
 						cxxMix mx;
 						mx.Add(cell, porosity_factor[this->units_GasPhase]);
-						cxxGasPhase cxxentity(cell_bin.Get_GasPhases(), mx, cell_numbers[i]);
-						cell_bin.Set_GasPhase(cell_numbers[i], &cxxentity);
+						cxxGasPhase cxxentity(cell_bin.Get_GasPhases(), mx, nchem);
+						cell_bin.Set_GasPhase(nchem, &cxxentity);
 					}
 					// solid solution
 					if (cell_bin.Get_SSassemblages().find(cell) != cell_bin.Get_SSassemblages().end())
 					{
 						cxxMix mx;
 						mx.Add(cell, porosity_factor[this->units_SSassemblage]);
-						cxxSSassemblage cxxentity(cell_bin.Get_SSassemblages(), mx, cell_numbers[i]);
-						cell_bin.Set_SSassemblage(cell_numbers[i], &cxxentity);
+						cxxSSassemblage cxxentity(cell_bin.Get_SSassemblages(), mx, nchem);
+						cell_bin.Set_SSassemblage(nchem, &cxxentity);
 					}
 					// solid solution
 					if (cell_bin.Get_Kinetics().find(cell) != cell_bin.Get_Kinetics().end())
 					{
 						cxxMix mx;
 						mx.Add(cell, porosity_factor[this->units_Kinetics]);
-						cxxKinetics cxxentity(cell_bin.Get_Kinetics(), mx, cell_numbers[i]);
-						cell_bin.Set_Kinetics(cell_numbers[i], &cxxentity);
+						cxxKinetics cxxentity(cell_bin.Get_Kinetics(), mx, nchem);
+						cell_bin.Set_Kinetics(nchem, &cxxentity);
 					}
-					
 #ifdef USE_MPI
-					this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, cell_numbers[i]);
+					this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, nchem);
 #else
-					this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, cell_numbers[i]);
+					this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, nchem);
 #endif
 				}
 			}
