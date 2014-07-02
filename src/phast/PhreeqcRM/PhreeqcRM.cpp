@@ -4474,7 +4474,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					{
 						cxxMix mx;
 						double current_v = cell_bin.Get_Solution(cell)->Get_soln_vol();
-						double v = cell_porosity_local * saturation[i] / current_v;
+						double v = cell_porosity_local * saturation[cell_numbers[i]] / current_v;
 						mx.Add((int) cell, v);
 						cxxSolution cxxsoln(cell_bin.Get_Solutions(), mx, nchem);
 						cell_bin.Set_Solution(nchem, &cxxsoln);
