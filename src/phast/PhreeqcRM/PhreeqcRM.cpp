@@ -12,7 +12,6 @@
 #include <assert.h>
 #include "System.h"
 #ifdef USE_GZ
-//#include "gzstream.h"
 #include <zlib.h>
 #else
 #define gzFile FILE*
@@ -34,9 +33,6 @@
 #ifdef USE_OPENMP
 #include <omp.h>
 #endif
-//#ifdef USE_MPI
-//#include <mpi.h>
-//#endif
 #include "Phreeqc.h"
 std::map<size_t, PhreeqcRM*> PhreeqcRM::Instances;
 size_t PhreeqcRM::InstancesIndex = 0;
@@ -147,38 +143,6 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	// Linux, Solaris, Aix, Mac 10.4+
 	n = sysconf( _SC_NPROCESSORS_ONLN );
 #endif
-#ifdef OTHERS
-int mib[4];
-size_t len = sizeof(numCPU); 
-
-/* set the mib for hw.ncpu */
-mib[0] = CTL_HW;
-mib[1] = HW_AVAILCPU;  // alternatively, try HW_NCPU;
-
-/* get the number of CPUs from the system */
-sysctl(mib, 2, &numCPU, &len, NULL, 0);
-
-if( numCPU < 1 ) 
-{
-     mib[1] = HW_NCPU;
-     sysctl( mib, 2, &numCPU, &len, NULL, 0 );
-
-     if( numCPU < 1 )
-     {
-          numCPU = 1;
-     }
-}
-#endif
-#ifdef SKIP
-#ifdef _WIN32
-	if (thread_count == 0)
-	{
-		char *str;
-		str = getenv("NUMBER_OF_PROCESSORS");
-		n = atoi(str);
-	}
-#endif
-#endif
 #endif
 	// Determine mpi_myself
 	this->mpi_myself = 0;
@@ -195,7 +159,6 @@ if( numCPU < 1 )
 		error_msg("MPI communicator not defined", 1);
 	}
 	double standard_task = this->TimeStandardTask();
-	//std::cerr << "Standard task " << standard_task << std::endl;
 	if (mpi_myself == 0)
 	{
 		standard_task_vector.resize(this->mpi_tasks, 0.0);
@@ -213,12 +176,6 @@ if( numCPU < 1 )
 #endif
 	if (mpi_myself == 0)
 	{
-	  //		if (nxyz_arg == NULL)
-	  //		{
-	  //			std::ostringstream errstr;
-	  //			errstr << "Number of grid cells (nxyz) not defined in creating PhreeqcRM"; 
-	  //			error_msg(errstr.str().c_str(), 1);
-	  //		}
 		this->nxyz = nxyz_arg;
 	}
 	this->component_h2o = true;
@@ -284,9 +241,7 @@ if( numCPU < 1 )
 		temp.push_back(i);
 		backward_mapping.push_back(temp);
 		saturation.push_back(1.0);
-		//old_saturation.push_back(1.0);
 		pore_volume.push_back(0.1);
-		//pore_volume_zero.push_back(0.1);
 		cell_volume.push_back(1.0);
 		print_chem_mask.push_back(0);
 		density.push_back(1.0);
@@ -317,7 +272,7 @@ PhreeqcRM::~PhreeqcRM(void)
 	}
 
 }
-#ifdef SKIP
+
 // PhreeqcRM methods
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -336,270 +291,7 @@ PhreeqcRM::CellInitialize(
 	cxxStorageBin initial_bin;
 
 	IRM_RESULT rtn = IRM_OK;
-	//double cell_porosity_local = pore_volume_zero[i] / cell_volume[i];
 	double cell_porosity_local = pore_volume[i] / cell_volume[i];
-	double porosity_factor = (1.0 - cell_porosity_local) / cell_porosity_local;
-
-	/*
-	 *   Copy solution
-	 */
-	n_old1 = initial_conditions1[i];
-	n_old2 = initial_conditions2[i];
-	if (phreeqc_bin.Get_Solutions().find(n_old1) == phreeqc_bin.Get_Solutions().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition SOLUTION " << n_old1 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	if (n_old2 > 0 && phreeqc_bin.Get_Solutions().find(n_old2) == phreeqc_bin.Get_Solutions().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition SOLUTION " << n_old2 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	f1 = fraction1[i];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		// Account for saturation of cell
-		double sat = 1.0;
-		if (saturation[i] > 0) 
-			sat = saturation[i];
-		mx.Add(n_old1, f1 * sat);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, (1 - f1) * sat);
-		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
-		initial_bin.Set_Solution(n_user_new, &cxxsoln);
-	}
-
-	/*
-	 *   Copy pp_assemblage
-	 */
-	n_old1 = initial_conditions1[this->nxyz + i];
-	n_old2 = initial_conditions2[this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_PPassemblages().find(n_old1) == phreeqc_bin.Get_PPassemblages().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old1 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	if (n_old2 > 0 && phreeqc_bin.Get_PPassemblages().find(n_old2) == phreeqc_bin.Get_PPassemblages().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old2 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	f1 = fraction1[this->nxyz + i];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (this->units_PPassemblage == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
-								  n_user_new);
-		initial_bin.Set_PPassemblage(n_user_new, &cxxentity);
-	}
-	/*
-	 *   Copy exchange assemblage
-	 */
-
-	n_old1 = initial_conditions1[2 * this->nxyz + i];
-	n_old2 = initial_conditions2[2 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_Exchangers().find(n_old1) == phreeqc_bin.Get_Exchangers().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition EXCHANGE " << n_old1 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	if (n_old2 > 0 && phreeqc_bin.Get_Exchangers().find(n_old2) == phreeqc_bin.Get_Exchangers().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition EXCHANGE " << n_old2 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	f1 = fraction1[2 * this->nxyz + i];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (this->units_Exchange == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
-		initial_bin.Set_Exchange(n_user_new, &cxxexch);
-	}
-	/*
-	 *   Copy surface assemblage
-	 */
-	n_old1 = initial_conditions1[3 * this->nxyz + i];
-	n_old2 = initial_conditions2[3 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_Surfaces().find(n_old1) == phreeqc_bin.Get_Surfaces().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition SURFACE " << n_old1 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	if (n_old2 > 0 && phreeqc_bin.Get_Surfaces().find(n_old2) == phreeqc_bin.Get_Surfaces().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition SURFACE " << n_old2 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	f1 = fraction1[3 * this->nxyz + i];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (this->units_Surface == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
-		initial_bin.Set_Surface(n_user_new, &cxxentity);
-	}
-	/*
-	 *   Copy gas phase
-	 */
-	n_old1 = initial_conditions1[4 * this->nxyz + i];
-	n_old2 = initial_conditions2[4 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_GasPhases().find(n_old1) == phreeqc_bin.Get_GasPhases().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition GAS_PHASE " << n_old1 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	if (n_old2 > 0 && phreeqc_bin.Get_GasPhases().find(n_old2) == phreeqc_bin.Get_GasPhases().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition GAS_PHASE " << n_old2 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	f1 = fraction1[4 * this->nxyz + i];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (this->units_GasPhase == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
-		initial_bin.Set_GasPhase(n_user_new, &cxxentity);
-	}
-	/*
-	 *   Copy solid solution
-	 */
-	n_old1 = initial_conditions1[5 * this->nxyz + i];
-	n_old2 = initial_conditions2[5 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old1) == phreeqc_bin.Get_SSassemblages().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old1 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	if (n_old2 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old2 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	f1 = fraction1[5 * this->nxyz + i];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (this->units_SSassemblage == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
-								  n_user_new);
-		initial_bin.Set_SSassemblage(n_user_new, &cxxentity);
-	}
-	/*
-	 *   Copy kinetics
-	 */
-	n_old1 = initial_conditions1[6 * this->nxyz + i];
-	n_old2 = initial_conditions2[6 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_Kinetics().find(n_old1) == phreeqc_bin.Get_Kinetics().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition KINETICS " << n_old1 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	if (n_old2 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
-	{
-		std::ostringstream e_stream;
-		e_stream << "Initial condition KINETICS " << n_old2 << " not found.";
-		error_set.insert(e_stream.str());
-		rtn = IRM_FAIL;
-	}
-	f1 = fraction1[6 * this->nxyz + i];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (this->units_Kinetics == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
-		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
-	}
-	this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
-	return rtn;
-}
-#endif
-// PhreeqcRM methods
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::CellInitialize(
-					int i, 
-					int n_user_new, 
-					int *initial_conditions1,
-					int *initial_conditions2, 
-					double *fraction1,
-					std::set<std::string> &error_set)
-/* ---------------------------------------------------------------------- */
-{
-	int n_old1, n_old2;
-	double f1;
-
-	cxxStorageBin initial_bin;
-
-	IRM_RESULT rtn = IRM_OK;
-	//double cell_porosity_local = pore_volume_zero[i] / cell_volume[i];
-	double cell_porosity_local = pore_volume[i] / cell_volume[i];
-	//double porosity_factor = (1.0 - cell_porosity_local) / cell_porosity_local;
 	std::vector < double > porosity_factor;
 	porosity_factor.push_back(1.0);                          // no adjustment, per liter of cell
 	porosity_factor.push_back(cell_porosity_local);          // per liter of water
@@ -885,7 +577,6 @@ PhreeqcRM::CheckCells()
 		}
 		
 		this->workers[0]->AddError(estr.str().c_str());
-		//ErrorMessage(estr.str());
 		r_vector[0] = IRM_FAIL;
 	}
 	HandleErrorsInternal(r_vector);
@@ -1189,14 +880,11 @@ PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
 		{
 		case 1:  // mg/L to mol/L
 			{
-				//double *ptr = &c[i];
 				// convert to mol/L
 				for (k = 1; k < (int) this->components.size(); k++)
 				{	
-					//d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
 					d.push_back(c[j * (int) this->components.size() + k]);
 				}	
-				//double h2o_mol = ptr[0] * 1e-3 / this->gfw[0];
 				double h2o_mol = c[j * (int) this->components.size()] * 1e-3 / this->gfw[0];
 				d[0] += h2o_mol * 2.0;
 				d[1] += h2o_mol;
@@ -1204,14 +892,11 @@ PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
 			break;
 		case 2:  // mol/L
 			{
-				//double *ptr = &c[i];
 				// convert to mol/L
 				for (k = 1; k < (int) this->components.size(); k++)
 				{	
-					//d.push_back(ptr[this->nxyz * k]);
 					d.push_back(c[j * (int) this->components.size() + k]);
 				}
-				//double h2o_mol = ptr[0];
 				double h2o_mol = c[j * (int) this->components.size()];
 				d[0] += h2o_mol * 2.0;
 				d[1] += h2o_mol;	
@@ -1219,14 +904,11 @@ PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
 			break;
 		case 3:  // mass fraction, kg/kg solution to mol/L
 			{
-				//double *ptr = &c[i];
 				// convert to mol/L
 				for (k = 1; k < (int) this->components.size(); k++)
 				{	
-					//d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
 					d.push_back(c[j * (int) this->components.size() + k] * 1000.0 / this->gfw[k] * density[i]);
 				}	
-				//double h2o_mol = ptr[0] * 1000.0 / this->gfw[0] * density[i];
 				double h2o_mol = c[j * (int) this->components.size()] * 1000.0 / this->gfw[0] * density[i];
 				d[0] += h2o_mol * 2.0;
 				d[1] += h2o_mol;
@@ -1286,39 +968,32 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
 		i = this->backward_mapping[j][0];
-		//if (j < 0) continue;
 
 		switch (this->units_Solution)
 		{
 		case 1:  // mg/L to mol/L
 			{
-				//double *ptr = &c[i];
 				// convert to mol/L
 				for (k = 0; k < (int) this->components.size(); k++)
 				{	
-					//d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
 					d.push_back(c[j * (int) this->components.size() + k] * 1e-3 / this->gfw[k]);
 				}	
 			}
 			break;
 		case 2:  // mol/L
 			{
-				//double *ptr = &c[i];
 				// convert to mol/L
 				for (k = 0; k < (int) this->components.size(); k++)
 				{	
-					//d.push_back(ptr[this->nxyz * k]);
 					d.push_back(c[j * (int) this->components.size() + k]);
 				}	
 			}
 			break;
 		case 3:  // mass fraction, kg/kg solution to mol/L
 			{
-				//double *ptr = &c[i];
 				// convert to mol/L
 				for (k = 0; k < (int) this->components.size(); k++)
 				{	
-					//d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
 					d.push_back(c[j * (int) this->components.size() + k] * 1000.0 / this->gfw[k] * density[i]);
 				}	
 			}
@@ -1354,179 +1029,6 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 	}
 	return;
 }
-#ifdef ORIG
-/* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
-/* ---------------------------------------------------------------------- */
-{
-	// assumes H2O, total H, total O, and charge are transported
-	int i, j, k;
-
-#ifdef USE_MPI
-	int start = this->start_cell[this->mpi_myself];
-	int end = this->end_cell[this->mpi_myself];
-#else
-	int start = this->start_cell[n];
-	int end = this->end_cell[n];
-#endif
-
-	for (j = start; j <= end; j++)
-	{		
-		std::vector<double> d;  // scratch space to convert from mass fraction to moles
-		// j is count_chem number
-		i = this->backward_mapping[j][0];
-		if (j < 0) continue;
-
-		switch (this->units_Solution)
-		{
-		case 1:  // mg/L to mol/L
-			{
-				double *ptr = &c[i];
-				// convert to mol/L
-				for (k = 1; k < (int) this->components.size(); k++)
-				{	
-					d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
-				}	
-				double h2o_mol = ptr[0] * 1e-3 / this->gfw[0];
-				d[0] += h2o_mol * 2.0;
-				d[1] += h2o_mol;
-			}
-			break;
-		case 2:  // mol/L
-			{
-				double *ptr = &c[i];
-				// convert to mol/L
-				for (k = 1; k < (int) this->components.size(); k++)
-				{	
-					d.push_back(ptr[this->nxyz * k]);
-				}
-				double h2o_mol = ptr[0];
-				d[0] += h2o_mol * 2.0;
-				d[1] += h2o_mol;	
-			}
-			break;
-		case 3:  // mass fraction, kg/kg solution to mol/L
-			{
-				double *ptr = &c[i];
-				// convert to mol/L
-				for (k = 1; k < (int) this->components.size(); k++)
-				{	
-					d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
-				}	
-				double h2o_mol = ptr[0] * 1000.0 / this->gfw[0] * density[i];
-				d[0] += h2o_mol * 2.0;
-				d[1] += h2o_mol;
-			}
-			break;
-		}
-
-		// convert mol/L to moles per cell
-		for (k = 0; k < (int) this->components.size() - 1; k++)
-		{	
-			//d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
-			d[k] *= this->pore_volume[i] / this->cell_volume[i] * saturation[i];
-		}
-				
-		// update solution 
-		cxxNameDouble nd;
-		for (k = 4; k < (int) components.size(); k++)
-		{
-			if (d[k-1] < 0.0) d[k-1] = 0.0;
-			nd.add(components[k].c_str(), d[k-1]);
-		}	
-
-		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
-		if (soln_ptr)
-		{
-			soln_ptr->Update(d[0], d[1], d[2], nd);
-		}
-	}
-	return;
-}
-
-/* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
-/* ---------------------------------------------------------------------- */
-{
-	// assumes total H, total O, and charge are transported
-	int i, j, k;
-
-#ifdef USE_MPI
-	int start = this->start_cell[this->mpi_myself];
-	int end = this->end_cell[this->mpi_myself];
-#else
-	int start = this->start_cell[n];
-	int end = this->end_cell[n];
-#endif
-
-	for (j = start; j <= end; j++)
-	{		
-		std::vector<double> d;  // scratch space to convert from mass fraction to moles
-		// j is count_chem number
-		i = this->backward_mapping[j][0];
-		if (j < 0) continue;
-
-		switch (this->units_Solution)
-		{
-		case 1:  // mg/L to mol/L
-			{
-				double *ptr = &c[i];
-				// convert to mol/L
-				for (k = 0; k < (int) this->components.size(); k++)
-				{	
-					d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
-				}	
-			}
-			break;
-		case 2:  // mol/L
-			{
-				double *ptr = &c[i];
-				// convert to mol/L
-				for (k = 0; k < (int) this->components.size(); k++)
-				{	
-					d.push_back(ptr[this->nxyz * k]);
-				}	
-			}
-			break;
-		case 3:  // mass fraction, kg/kg solution to mol/L
-			{
-				double *ptr = &c[i];
-				// convert to mol/L
-				for (k = 0; k < (int) this->components.size(); k++)
-				{	
-					d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
-				}	
-			}
-			break;
-		}
-
-		// convert mol/L to moles per cell
-		for (k = 0; k < (int) this->components.size(); k++)
-		{	
-			//d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
-			//d[k] *= this->pore_volume[i] / this->pore_volume[i] * saturation[i];
-			d[k] *= this->pore_volume[i] / this->cell_volume[i] * saturation[i];
-		}
-				
-		// update solution 
-		cxxNameDouble nd;
-		for (k = 3; k < (int) components.size(); k++)
-		{
-			if (d[k] < 0.0) d[k] = 0.0;
-			nd.add(components[k].c_str(), d[k]);
-		}	
-
-		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
-		if (soln_ptr)
-		{
-			soln_ptr->Update(d[0], d[1], d[2], nd);
-		}
-	}
-	return;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IPhreeqc * 
 PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
@@ -1584,7 +1086,6 @@ PhreeqcRM::Concentrations2UtilityH2O(std::vector<double> &c, std::vector<double>
 				// convert to mol/L
 				for (size_t k = 1; k < this->components.size(); k++)
 				{	
-					//d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
 					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k]);
 				}	
 				double h2o_mol = ptr[0] * 1000.0 / this->gfw[0] * density[i];
@@ -1653,7 +1154,6 @@ PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<doubl
 				// convert to mol/L
 				for (size_t k = 0; k < this->components.size(); k++)
 				{	
-					//d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k] * density[i]);
 					d.push_back(ptr[nsolns * k] * 1000.0 / this->gfw[k]);
 				}	
 			}
@@ -1796,7 +1296,6 @@ PhreeqcRM::cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<d
 	}
 
 	// convert units
-	//double vol = cxxsoln_ptr->Get_soln_vol();
 	double vol = v;
 	switch (this->units_Solution)
 	{
@@ -1863,7 +1362,6 @@ PhreeqcRM::cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector
 	}
 
 	// convert units
-	//double vol = cxxsoln_ptr->Get_soln_vol();
 	double vol = v;
 	switch (this->units_Solution)
 	{
@@ -1891,7 +1389,6 @@ PhreeqcRM::cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector
 		break;
 	case 3:  // convert to mass fraction kg/kgs
 		{
-			//double kgs = v * cxxsoln_ptr->Get_density();
 			double kgs = dens * v;
 			d.push_back(cxxsoln_ptr->Get_total_h() * this->gfw[0] / 1000. / kgs); 
 			d.push_back(cxxsoln_ptr->Get_total_o() * this->gfw[1] / 1000. / kgs); 
@@ -1943,6 +1440,8 @@ PhreeqcRM::DecodeError(int r)
 		}
 	}
 }
+// Many versions of DumpModule that may not work
+// Started considering whether root or workers write the data
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -2522,7 +2021,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 	return this->ReturnHandler(return_value, "PhreeqcRM::DumpModule");
 }
 #endif
-#ifdef THIS_DUMP_MODULE_WILL_WORK_FOR_VERY_LARGE_PROBLEMS
+#ifdef THIS_DUMP_MODULE_MAY_WORK_FOR_VERY_LARGE_PROBLEMS
 #ifdef USE_MPI
 // This one generates a strings for a certain number of solutions (block = 1000)
 // tnen writes directly from each MPI process
@@ -2769,7 +2268,6 @@ PhreeqcRM::FindComponents(void)
 #endif
 		// Always include H, O, Charge
 
-		//this->components.clear();
 		std::set<std::string> component_set;
 
 		size_t fixed_components = 3;
@@ -2906,7 +2404,6 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 			cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
 			assert (cxxsoln_ptr);
 			int i_grid = this->backward_mapping[j][0];
-			//double v = this->pore_volume[i_grid] / this->pore_volume_zero[i_grid] * saturation[i_grid];
 			double v, dens;
 			if (this->use_solution_density_volume)
 			{
@@ -2960,7 +2457,6 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 			std::fill(c.begin(), c.end(), INACTIVE_CELL_VALUE);
 
 			// Write vector into c
-			assert (recv_solns.size() == this->count_chemistry*this->components.size());
 			int n = 0;
 			for (int j = 0; j < count_chemistry; j++)
 			{
@@ -2991,119 +2487,6 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
 }
-#ifdef ORIG
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::GetConcentrations(std::vector<double> &c)
-/* ---------------------------------------------------------------------- */
-{
-	IRM_RESULT return_value = IRM_OK;
-	try
-	{
-		if (this->mpi_myself == 0)
-		{
-			int method = METHOD_GETCONCENTRATIONS;
-			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-		}
-		// convert Reaction module solution data to concentrations for transport
-		MPI_Status mpi_status;
-		std::vector<double> d;  // scratch space to convert from moles to mass fraction
-		std::vector<double> solns;
-		cxxNameDouble::iterator it;
-
-		// Put solutions into a vector
-		int n = this->mpi_myself;
-		for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
-		{
-			// load fractions into d
-			cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
-			assert (cxxsoln_ptr);
-			int i_grid = this->backward_mapping[j][0];
-			//double v = this->pore_volume[i_grid] / this->pore_volume_zero[i_grid] * saturation[i_grid];
-			double v, dens;
-			if (this->use_solution_density_volume)
-			{
-				v = cxxsoln_ptr->Get_soln_vol();
-				dens = cxxsoln_ptr->Get_density();
-			}
-			else
-			{
-				int k = this->backward_mapping[j][0];
-				v = this->saturation[k] * this->pore_volume[k] / this->cell_volume[k];
-				if (v <= 0)
-				{
-					v = cxxsoln_ptr->Get_soln_vol();
-				}
-				dens = this->density[k];
-			}
-			this->cxxSolution2concentration(cxxsoln_ptr, d, v, dens);
-			for (int i = 0; i < (int) this->components.size(); i++)
-			{
-				solns.push_back(d[i]);
-			}
-		}
-
-		// make buffer to recv solutions
-		double * recv_solns = new double[(size_t) this->count_chemistry * this->components.size()];
-
-		// gather solution vectors to root
-		for (int n = 1; n < this->mpi_tasks; n++)
-		{
-			int count = this->end_cell[n] - this->start_cell[n] + 1;
-			int num_doubles = count * (int) this->components.size();
-			if (this->mpi_myself == n)
-			{
-				MPI_Send((void *) solns.data(), num_doubles, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
-			}
-			else if (this->mpi_myself == 0)
-			{
-				MPI_Recv(recv_solns, num_doubles, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
-				for (int i = 0; i < num_doubles; i++)
-				{
-					solns.push_back(recv_solns[i]);
-				}
-			}
-		}
-
-		// delete recv buffer
-		delete recv_solns;
-
-		if (mpi_myself == 0)
-		{
-			// check size and fill elements, if necessary resize
-			c.resize(this->nxyz * this->components.size());
-			std::fill(c.begin(), c.end(), INACTIVE_CELL_VALUE);
-
-			// Write vector into c
-			assert (solns.size() == this->count_chemistry*this->components.size());
-			int n = 0;
-			for (int j = 0; j < count_chemistry; j++)
-			{
-				std::vector<double> d;
-				for (size_t i = 0; i < this->components.size(); i++)
-				{
-					d.push_back(solns[n++]);
-				}
-				std::vector<int>::iterator it;
-				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
-				{
-					double *d_ptr = &c[*it];
-					size_t i;
-					for (i = 0; i < this->components.size(); i++)
-					{
-						d_ptr[this->nxyz * i] = d[i];
-					}
-				}
-			}
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_FAIL;
-	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::GetConcentrations");
-}
-#endif
 #else
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -3391,7 +2774,6 @@ PhreeqcRM::GetSelectedOutput(std::vector<double> &so)
 			else
 			{
 				cso_it->second.Doublize(nrow_x, ncol_x, dbuffer);
-				//assert(nrow_x == nrow);
 				assert(ncol_x = ncol);
 
 				// Now write data from thread to so
@@ -3599,7 +2981,6 @@ PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 					{
 						// it is pointing to a species number, concentration
 						int rm_species_num = this->s_num2rm_species_num[it->first];
-						//species_conc[rm_species_num * nxyz + j] = it->second;
 						d[rm_species_num] = it->second;
 					}
 				}
@@ -3688,7 +3069,6 @@ PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 					{
 						// it is pointing to a species number, concentration
 						int rm_species_num = this->s_num2rm_species_num[it->first];
-						//species_conc[rm_species_num * nxyz + j] = it->second;
 						d[rm_species_num] = it->second;
 					}
 				}
@@ -3869,18 +3249,6 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 				{
 					if (n_old1 >= 0)
 					{
-						//std::ostringstream in;
-						//in << "RUN_CELLS; -cells " << n_old1;
-						//int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
-						//if (rtn != 0)
-						//{
-						//	error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
-						//	status = IRM_FAIL;
-						//}
-						//else
-						//{
-						//	this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
-						//}
 						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
 					}
 					else
@@ -3909,15 +3277,6 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 				{
 					if (this->Get_phreeqc_bin().Get_Solution(n_old2) == NULL)
 					{
-						//std::ostringstream in;
-						//in << "RUN_CELLS; -cells " << n_old2;
-						////status = this->RunString(0, 1, 0, in.str().c_str());
-						//int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
-						//if (rtn != 0)
-						//{
-						//	error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
-						//	status = IRM_FAIL;
-						//}
 						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old2);
 					}
 					mixmap.Add(n_old2, f2);
@@ -4060,21 +3419,11 @@ PhreeqcRM::InitialPhreeqc2Module(
 #endif
 			assert(forward_mapping[i] >= 0);
 			assert (cell_volume[i] > 0.0);
-			//if (pore_volume_zero[i] < 0 || cell_volume[i] <= 0)
-			//{
-			//	errstr << "Nonpositive volume in cell " << i << ": volume, " << cell_volume[i]; 
-			//	errstr << "\t initial volume, " << this->pore_volume_zero[i] << ".",
-			//		count_negative_porosity++;
-			//	//error_msg(errstr.str().c_str());
-			//	return_value = IRM_FAIL;
-			//	continue;
-			//}
 			if (pore_volume[i] < 0 || cell_volume[i] <= 0)
 			{
 				errstr << "Nonpositive volume in cell " << i << ": volume, " << cell_volume[i]; 
 				errstr << "\t initial volume, " << this->pore_volume[i] << ".",
 					count_negative_porosity++;
-				//error_msg(errstr.str().c_str());
 				return_value = IRM_FAIL;
 				continue;
 			}
@@ -4198,18 +3547,7 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 				{
 					if (n_old1 >= 0)
 					{
-						//std::ostringstream in;
-						//in << "RUN_CELLS; -cells " << n_old1;
-						//int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
-						//if (rtn != 0)
-						//{
-						//	error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
-						//	status = IRM_FAIL;
-						//}
-						//else
-						//{
-							this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
-						//}
+						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old1);
 					}
 					else
 					{
@@ -4237,15 +3575,6 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 				{
 					if (this->Get_phreeqc_bin().Get_Solution(n_old2) == NULL)
 					{
-						//std::ostringstream in;
-						//in << "RUN_CELLS; -cells " << n_old2;
-						////status = this->RunString(0, 1, 0, in.str().c_str());
-						//int rtn = this->GetWorkers()[this->nthreads]->RunString(in.str().c_str());
-						//if (rtn != 0)
-						//{
-						//	error_msg(this->GetWorkers()[this->nthreads]->GetErrorString());
-						//	status = IRM_FAIL;
-						//}
 						this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin(), n_old2);
 					}
 					mixmap.Add(n_old2, f2);
@@ -4280,107 +3609,6 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqc2SpeciesConcentrations");
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numbers_in)
-/* ---------------------------------------------------------------------- */
-{
-	/*
-	 *      Routine finds the last solution in InitialPhreeqc, equilibrates the cell,
-	 *      and copies result to list of cell numbers in the module. 
-	 */
-	IRM_RESULT return_value = IRM_OK;
-	if (this->mpi_myself == 0)
-	{
-#ifdef USE_MPI
-		if (this->mpi_myself == 0)
-		{
-			int method = METHOD_INITIALPHREEQC2MODULE;
-			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-		}
-#endif
-		// determine last solution number
-		if (cell < 0)
-		{
-			int next = this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->next_user_number(Keywords::KEY_SOLUTION);
-			if (next != 0)
-			{
-				cell = next - 1;
-			}
-		}
-		else
-		{
-			cxxSolution *soln = this->GetWorkers()[this->nthreads]->Get_solution(cell);
-			if (soln == NULL)
-				cell = -1;
-		}
-	}
-#ifdef USE_MPI	
-	MPI_Bcast(&cell, 1, MPI_INT, 0, phreeqcrm_comm);
-#endif
-	// cell not found
-	if (cell < 0)
-	{
-		return_value = IRM_INVALIDARG;
-		return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqcCell2Module");
-	}
-	std::vector< int > cell_numbers;
-	if (this->mpi_myself == 0)
-	{
-		cell_numbers = cell_numbers_in;
-	}
-	// transfer the cell to domain
-#ifdef USE_MPI
-	int n_cells;
-	if (this->mpi_myself == 0)
-	{
-		n_cells = (int) cell_numbers.size();
-	}
-	MPI_Bcast(&n_cells, 1, MPI_INT, 0, phreeqcrm_comm);
-	cell_numbers.resize(n_cells);
-	MPI_Bcast((void *) cell_numbers.data(), n_cells, MPI_INT, 0, phreeqcrm_comm);
-#endif
-	try
-	{
-		std::ostringstream in;
-		in << "RUN_CELLS; -cell " << cell << "; -time_step 0\n";
-		IRM_RESULT status = this->RunString(0, 1, 0, in.str().c_str());
-		this->ErrorHandler(status, "RunString");
-		cxxStorageBin cell_bin;
-		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(cell_bin, cell);
-		cell_bin.Remove_Mix(cell);
-		cell_bin.Remove_Reaction(cell);
-		cell_bin.Remove_Temperature(cell);
-		cell_bin.Remove_Pressure(cell);
-		for (size_t i = 0; i < cell_numbers.size(); i++)
-		{
-#ifdef USE_MPI
-			int n = this->mpi_myself;
-			if (cell_numbers[i] >= start_cell[n] && cell_numbers[i] <= end_cell[n])
-			{
-				cell_bin.Copy(cell_numbers[i], cell);
-				this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, cell_numbers[i]);
-			}
-#else				
-			for (size_t n = 0; n < nthreads; n++)
-			{
-				if (cell_numbers[i] >= start_cell[n] && cell_numbers[i] <= end_cell[n])
-				{
-					cell_bin.Copy(cell_numbers[i], cell);
-					this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(cell_bin, cell_numbers[i]);
-				}
-			}
-#endif
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_FAIL;
-	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::InitialPhreeqcCell2Module");
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numbers_in)
@@ -4443,21 +3671,6 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 #endif
 	try
 	{
-		//std::ostringstream in;
-		//in << "RUN_CELLS; -cell " << cell << "; -time_step 0\n";
-		//// Turn off printing
-		//std::vector<bool> tf = this->GetPrintChemistryOn();
-		//this->print_chemistry_on[1] = false;
-		//int status_ip = this->workers[this->nthreads]->RunString(in.str().c_str());
-		//IRM_RESULT status = IRM_OK;
-		//if (status_ip != 0) 
-		//{
-		//	error_msg(this->workers[this->nthreads]->GetErrorString());
-		//	status = IRM_FAIL;
-		//}
-		//this->ErrorHandler(status, "RunString");
-		//this->print_chemistry_on[1] = tf[1];
-
 		for (size_t i = 0; i < cell_numbers.size(); i++)
 		{
 			int nchem = this->forward_mapping[cell_numbers[i]];
@@ -5013,7 +4226,6 @@ PhreeqcRM::MpiWorker()
 	}
 	catch (...)
 	{
-		//std::cerr << "Catch in MpiWorker" << std::endl;
 		return_value = IRM_FAIL;
 	}
 #endif
@@ -5424,13 +4636,11 @@ PhreeqcRM::RebalanceLoad(void)
 			int nnew = 0;
 			int old = 0;
 			int change = 0;
-			//std::vector<std::vector<int> > change_list;
 			std::map< std::string, std::vector<int> > transfer_pair;
 			for (int k = 0; k < this->count_chemistry; k++)
 			{
 				int i = k;
 				int ihst = this->backward_mapping[i][0];	/* ihst is 1 to nxyz */
-				//old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
 				while (k > end_cell[old])
 				{
 					old++;
@@ -5797,7 +5007,6 @@ PhreeqcRM::RebalanceLoad(void)
 }
 #endif
 #ifdef USE_MPI
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 PhreeqcRM::RebalanceLoadPerCell(void)
@@ -5806,321 +5015,6 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	// Throws on error
 	if (this->mpi_tasks <= 1) return;
 	if (this->mpi_tasks > count_chemistry) return;
-#include <time.h>
-
-	// vectors for each cell (count_chem)
-	std::vector<double> recv_cell_times, normalized_cell_times;
-	recv_cell_times.resize(this->count_chemistry);
-	
-	// vectors for each process (mpi_tasks)
-	std::vector<double> standard_time, task_fraction, task_time;
-	
-	// Assume homogeneous cluster for now
-	double tasks_total = 0;
-	for (size_t i = 0; i < (size_t) mpi_tasks; i++)
-	{
-		standard_time.push_back(1.0);   // For heterogeneous cluster, need times for a standard task here
-		tasks_total += 1.0 / standard_time[i];
-	}
-
-	for (size_t i = 0; i < (size_t) mpi_tasks; i++)
-	{
-		task_fraction.push_back((1.0 / standard_time[i]) / tasks_total);
-	}
-	// Collect times
-	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
-	// manager
-	if (mpi_myself == 0)
-	{
-		recv_cell_times.insert(recv_cell_times.begin(), 
-			phast_iphreeqc_worker->Get_cell_clock_times().begin(),
-			phast_iphreeqc_worker->Get_cell_clock_times().end());
-	}
-
-	// workers
-	for (int i = 1; i < mpi_tasks; i++)
-	{
-		int n = end_cell[i] - start_cell[i] + 1;
-		if (mpi_myself == i)
-		{
-			MPI_Send(phast_iphreeqc_worker->Get_cell_clock_times().data(), n, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
-		}
-		if (mpi_myself == 0)
-		{
-			MPI_Status mpi_status;
-			MPI_Recv((void *) &recv_cell_times[start_cell[i]], n, MPI_DOUBLE, i, 0, phreeqcrm_comm, &mpi_status);
-		}
-	}
-
-	// Root normalizes times, calculates efficiency, rebalances work
-	double normalized_total_time = 0;
-	double max_task_time = 0;
-	// working space
-	std::vector<int> start_cell_new;
-	std::vector<int> end_cell_new;
-	start_cell_new.resize(mpi_tasks, 0);
-	end_cell_new.resize(mpi_tasks, 0);
-
-	if (mpi_myself == 0)
-	{
-		// Normalize times
-		max_task_time = 0;
-		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
-		{		
-			double task_sum = 0;
-			// normalize cell_times with standard_time
-			for (size_t j = (size_t) start_cell[i]; j <= (size_t) end_cell[i]; j++)
-			{
-				task_sum += recv_cell_times[j];
-				normalized_cell_times.push_back(recv_cell_times[j]/standard_time[i]);
-				normalized_total_time += normalized_cell_times.back();
-			}
-			task_time.push_back(task_sum);
-			max_task_time = (task_sum > max_task_time) ? task_sum : max_task_time;
-		}
-
-		// calculate efficiency
-		double efficiency = 0;
-		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
-		{
-			efficiency += task_time[i] / max_task_time * task_fraction[i];
-		}
-		std::cerr << "          Estimated efficiency of chemistry without communication: " << 
-					   (float) (100. * efficiency) << "\n";
-
-		// Split up work
-		double f_low, f_high;
-		f_high = 1 + 0.5 / ((double) mpi_tasks);
-		f_low = 1;
-		int j = 0;
-		for (size_t i = 0; i < (size_t) mpi_tasks - 1; i++)
-		{
-			if (i > 0)
-			{
-				start_cell_new[i] = end_cell_new[i - 1] + 1;
-			}
-			double sum_work = 0;
-			double temp_sum_work = 0;
-			bool next = true;
-			while (next)
-			{
-				temp_sum_work += normalized_cell_times[j] / normalized_total_time;
-				if ((temp_sum_work < task_fraction[i]) && (((size_t) count_chemistry - j) > (size_t) (mpi_tasks - i)))
-					//(temp_sum_work < f_high * task_fraction[i]) || (sum_work < 0.5 * task_fraction[i])
-					//) 
-					//&&
-					//(count_chem - j) > (mpi_tasks - i)
-					//)
-				{
-					sum_work = temp_sum_work;
-					j++;
-					next = true;
-				}
-				else
-				{
-					if (j == start_cell_new[i])
-					{
-						end_cell_new[i] = j;
-						j++;
-					}
-					else
-					{
-						end_cell_new[i] = j - 1;
-					}
-					next = false;
-				}
-			}
-		}
-		assert(j < count_chemistry);
-		assert(mpi_tasks > 1);
-		start_cell_new[mpi_tasks - 1] = end_cell_new[mpi_tasks - 2] + 1;
-		end_cell_new[mpi_tasks - 1] = count_chemistry - 1;
-
-		if (efficiency > 0.95)
-		{
-			for (int i = 0; i < this->mpi_tasks; i++)
-			{
-				start_cell_new[i] = start_cell[i];
-				end_cell_new[i] = end_cell[i];
-			}
-		}
-		else
-		{	
-			for (size_t i = 0; i < (size_t) this->mpi_tasks - 1; i++)
-			{
-				int	icells;
-				icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (this->rebalance_fraction) );
-				if (icells == 0)
-				{
-					icells = end_cell_new[i] - end_cell[i];
-				}
-				end_cell_new[i] = end_cell[i] + icells;
-				start_cell_new[i + 1] = end_cell_new[i] + 1;
-			}
-		}
-
-	}
-	
-	/*
-	 *   Broadcast new subcolumns
-	 */
-	
-	MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
-	MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
-	
-	/*
-	 *   Redefine columns
-	 */
-	int nnew = 0;
-	int old = 0;
-	int change = 0;
-	
-			std::map< std::string, std::vector<int> > transfer_pair;
-	for (int k = 0; k < this->count_chemistry; k++)
-	{
-		int i = k;
-		//int iphrq = i;			/* iphrq is 1 to count_chem */
-		int ihst = this->backward_mapping[i][0];	/* ihst is 1 to nxyz */
-		//old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
-		while (k > end_cell[old])
-		{
-			old++;
-		}
-		while (k > end_cell_new[nnew])
-		{
-			nnew++;
-		}
-
-		if (old == nnew)
-			continue;
-		change++;
-
-		// Need to send cell from old task to nnew task
-		std::ostringstream key;
-		key << old << "#" << nnew;
-		std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.find(key.str());
-		if (tp_it == transfer_pair.end())
-		{
-			std::vector<int> v;
-			v.push_back(old);
-			v.push_back(nnew);
-			transfer_pair[key.str()] = v;
-		}
-		transfer_pair[key.str()].push_back(k);
-	}
-
-	// Transfer cells
-	int transfers = 0;
-	int count=0;
-	try
-	{
-		std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.begin();
-		std::vector<int> r_vector;
-		r_vector.push_back(IRM_OK);
-		for ( ; tp_it != transfer_pair.end(); tp_it++)
-		{
-			cxxStorageBin t_bin;
-			int pold = tp_it->second[0];
-			int pnew = tp_it->second[1];
-			if (this->mpi_myself == pold)
-			{
-				for (size_t i = 2; i < tp_it->second.size(); i++)
-				{
-					int k = tp_it->second[i];
-					phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, k);
-				}			
-			}
-			transfers++;
-			try
-			{
-				this->TransferCells(t_bin, pold, pnew);
-			}
-			catch (...)
-			{
-				r_vector[0] = 1;
-			}
-
-			// Delete cells in old
-			if (this->mpi_myself == pold && r_vector[0] == 0)
-			{
-				std::ostringstream del;
-				del << "DELETE; -cell\n";
-				for (size_t i = 2; i < tp_it->second.size(); i++)
-				{
-					del << tp_it->second[i] << "\n";
-
-				}
-				try
-				{
-					int status = phast_iphreeqc_worker->RunString(del.str().c_str());
-					if (status != 0)
-					{
-						error_msg(phast_iphreeqc_worker->GetErrorString());
-					}
-					this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
-				}
-				catch (...)
-				{
-					r_vector[0] = 1;
-				}
-			}
-
-			// Also need to tranfer UZ
-			if (this->partition_uz_solids)
-			{
-				std::ostringstream uz_dump;
-				if (this->mpi_myself == pold)
-				{
-					for (size_t i = 2; i < tp_it->second.size(); i++)
-					{
-						int k = tp_it->second[i];
-						phast_iphreeqc_worker->uz_bin.Remove_Solution(k);
-						phast_iphreeqc_worker->uz_bin.dump_raw(uz_dump, k, 0);
-						phast_iphreeqc_worker->uz_bin.Remove(k);
-					}			
-				}
-				try
-				{
-					this->TransferCellsUZ(uz_dump, pold, pnew);
-				}
-				catch (...)
-				{
-					r_vector[0] = 1;
-				}
-			}
-
-			//The gather is sometimes slow for some reason
-			//this->HandleErrorsInternal(r_vector);
-			if (r_vector[0] != 0)
-				throw PhreeqcRMStop();
-		}		
-		for (int i = 0; i < this->mpi_tasks; i++)
-		{
-			start_cell[i] = start_cell_new[i];
-			end_cell[i] = end_cell_new[i];
-		}
-		if (this->mpi_myself == 0)
-		{
-			std::cerr << "          Cells shifted between processes     " << change << "\n";
-		}
-
-
-	}
-	catch (...)
-	{
-		this->ErrorHandler(IRM_FAIL, "PhreeqcRM::RebalanceLoadPerCell");
-	}
-}
-#endif
-/* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::RebalanceLoadPerCell(void)
-/* ---------------------------------------------------------------------- */
-{
-	// Throws on error
-	if (this->mpi_tasks <= 1) return;
-	if (this->mpi_tasks > count_chemistry) return;
-	//if (!this->selected_output_on) return;
 #include <time.h>
 
 	// vectors for each cell (count_chem)
@@ -6226,11 +5120,6 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 			{
 				temp_sum_work += normalized_cell_times[j] / normalized_total_time;
 				if ((temp_sum_work < task_fraction[i]) && (((size_t) count_chemistry - j) > (size_t) (mpi_tasks - i)))
-					//(temp_sum_work < f_high * task_fraction[i]) || (sum_work < 0.5 * task_fraction[i])
-					//) 
-					//&&
-					//(count_chem - j) > (mpi_tasks - i)
-					//)
 				{
 					sum_work = temp_sum_work;
 					j++;
@@ -6299,9 +5188,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	for (int k = 0; k < this->count_chemistry; k++)
 	{
 		int i = k;
-		//int iphrq = i;			/* iphrq is 1 to count_chem */
 		int ihst = this->backward_mapping[i][0];	/* ihst is 1 to nxyz */
-		//old_saturation[ihst] = saturation[ihst];    /* update all old_frac */
 		while (k > end_cell[old])
 		{
 			old++;
@@ -6465,14 +5352,12 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	for (size_t i = 0; i < (size_t) this->nthreads; i++)
 	{
 		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[i];
-		//std::cerr << "Thread: " << i << " " << phast_iphreeqc_worker->Get_cell_clock_times().size() << std::endl;
 		std::vector<double>::const_iterator cit;
 		for (cit = phast_iphreeqc_worker->Get_cell_clock_times().begin();
 			cit != phast_iphreeqc_worker->Get_cell_clock_times().end();
 			cit++)
 		{
 			recv_cell_times.push_back(*cit);
-			//std::cerr << "Threadxx: " << i << " " << recv_cell_times.back() << std::endl;
 		}
 		phast_iphreeqc_worker->Get_cell_clock_times().clear();
 	}
@@ -6649,7 +5534,6 @@ PhreeqcRM::ReturnHandler(IRM_RESULT result, const std::string & e_string)
 {
 	if (result < 0)
 	{
-		//if (this->mpi_myself == 0)
 		{
 			this->DecodeError(result);
 			this->ErrorMessage(e_string);
@@ -6957,7 +5841,6 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 		if (phast_iphreeqc_worker->Get_cell_clock_times().size() == 0)
 		{
 			phast_iphreeqc_worker->Get_cell_clock_times().resize(end - start + 1, 0.0);
-			//std::cerr << "Resetting timing" << std::endl;
 		}
 	}
 	// Make list of cells with saturation > 0.0
@@ -7084,12 +5967,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 			int j = backward_mapping[i][0];			/* j is nxyz number */
 			if (saturation[j] > 1e-6 )
 			{
-				//phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
 				phast_iphreeqc_worker->Get_cell_clock_times()[i - start] += t_elapsed / (double) count_active;
-			}
-			else
-			{
-				//phast_iphreeqc_worker->Get_cell_clock_times().push_back(0.0);
 			}
 		}
 	}
@@ -7238,7 +6116,6 @@ PhreeqcRM::RunCellsThread(int n)
 				if (active)
 				{
 					// set cell number, pore volume got Basic functions
-					//phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
 					phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume[j], this->saturation[j], cell_volume[j]);
 
 					// Set print flags
@@ -7632,8 +6509,6 @@ PhreeqcRM::Scale_solids(int n, int iphrq, LDBLE frac)
 	 * repartition solids for partially saturated cells
 	 */
 
-	//if (equal(old_frac[ihst], new_frac, 1e-8) == TRUE)  return(OK);
-
 	n_user = iphrq;
 	cxxMix cxxmix;
 	cxxmix.Add(n_user, frac);
@@ -7684,45 +6559,6 @@ PhreeqcRM::ScreenMessage(const std::string &str)
 {
 	this->phreeqcrm_io.screen_msg(str.c_str());
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::SetCellVolume(const std::vector<double> &t)
-/* ---------------------------------------------------------------------- */
-{
-	IRM_RESULT return_value = IRM_OK;
-	try
-	{
-#ifdef USE_MPI
-		if (this->mpi_myself == 0)
-		{
-			int method = METHOD_SETCELLVOLUME;
-			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-		}
-#endif
-		if ((int) this->cell_volume.size() < this->nxyz)
-		{
-			this->cell_volume.resize(this->nxyz);
-		}
-		if (mpi_myself == 0)
-		{
-			if (t == NULL) 
-			{
-					this->ErrorHandler(IRM_INVALIDARG, "NULL pointer in SetCellVolume");
-			}
-			memcpy(this->cell_volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_FAIL;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->cell_volume.data(), this->nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
-#endif
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetCellVolume");
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetCellVolume(const std::vector<double> &t)
@@ -7738,13 +6574,6 @@ IRM_RESULT
 PhreeqcRM::SetChemistryFileName(const char * cn)
 /* ---------------------------------------------------------------------- */
 {
-//#ifdef USE_MPI
-//	if (this->mpi_myself == 0)
-//	{
-//		int method = METHOD_SETCHEMISTRYFILENAME;
-//		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-//	}
-//#endif
 	IRM_RESULT return_value = IRM_OK;
 	int l = 0;
 	if (this->mpi_myself == 0)
@@ -7842,17 +6671,8 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 	MPI_Scatterv(send_buf, send_counts, send_displs, MPI_DOUBLE, recv_buf, recv_count, MPI_DOUBLE, 0, phreeqcrm_comm);
 	delete send_counts;
 	delete send_displs;
-	
-	//c.resize(this->nxyz * this->components.size(), INACTIVE_CELL_VALUE);
-	//for (int i = 0; i < this->count_chemistry; i++)
-	//{
-	//	int j = this->backward_mapping[i][0];
-	//	for (int k = 0; k < (int) this->components.size(); k++)
-	//	{
-	//		c[k*this->nxyz + j] = c_chem[k*this->count_chemistry + i];
-	//	}
-	//}
 #endif
+
 #ifdef USE_OPENMP
 	omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
@@ -7868,112 +6688,6 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetConcentrations");
 }
-#ifdef REVISED
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::SetConcentrations(const std::vector<double> &t)
-/* ---------------------------------------------------------------------- */
-{
-	std::vector<double> c;
-	IRM_RESULT return_value = IRM_OK;
-#ifdef USE_MPI
-	if (this->mpi_myself == 0)
-	{
-		int method = METHOD_SETCONCENTRATIONS;
-		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-	}
-
-	std::vector<double> c_chem, c_chem_root;
-	c_chem.resize(this->count_chemistry * this->components.size(), INACTIVE_CELL_VALUE);
-	if (this->mpi_myself == 0)
-	{
-		c_chem_root.resize(this->count_chemistry * this->components.size(), INACTIVE_CELL_VALUE);
-		for (int i = 0; i < this->count_chemistry; i++)
-		{
-			int j = this->backward_mapping[i][0];
-			for (int k = 0; k < (int) this->components.size(); k++)
-			{
-				c_chem_root[k*this->count_chemistry + i] = t[k*this->nxyz + j];
-			}
-		}
-	}
-
-	for (int i = 0; i < (int) this->components.size(); i++)
-	{
-		double * send_buf = NULL;
-		int * send_counts = NULL;
-		int * send_displs = NULL;
-		double * recv_buf = NULL;
-		int recv_count;
-		recv_count = end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1;
-		if (this->mpi_myself == 0)
-		{
-			send_buf = &c_chem_root[i * this->count_chemistry];
-			send_counts = new int[this->mpi_tasks];
-			send_displs = new int[this->mpi_tasks];
-			for (int j = 0; j < this->mpi_tasks; j++)
-			{
-				send_counts[j] = end_cell[j] - start_cell[j] + 1;
-				send_displs[j] = start_cell[j];
-			}
-			recv_buf = &c_chem[i * this->count_chemistry];
-		}
-		else
-		{
-			recv_buf = &c_chem[i * this->count_chemistry + start_cell[this->mpi_myself]];
-		}
-
-		MPI_Scatterv(send_buf, send_counts, send_displs, MPI_DOUBLE, recv_buf, recv_count, MPI_DOUBLE, 0, phreeqcrm_comm);
-		delete send_counts;
-		delete send_displs;
-	}
-	
-	c.resize(this->nxyz * this->components.size(), INACTIVE_CELL_VALUE);
-	for (int i = 0; i < this->count_chemistry; i++)
-	{
-		int j = this->backward_mapping[i][0];
-		for (int k = 0; k < (int) this->components.size(); k++)
-		{
-			c[k*this->nxyz + j] = c_chem[k*this->count_chemistry + i];
-		}
-	}
-#else
-	c = t;
-#endif
-#ifdef USE_OPENMP
-	omp_set_num_threads(this->nthreads);
-#pragma omp parallel 
-#pragma omp for
-#endif
-	for (int n = 0; n < nthreads; n++)
-	{
-		this->Concentrations2Solutions(n, c);
-	}
-	return this->ReturnHandler(return_value, "PhreeqcRM::SetConcentrations");
-}
-#endif
-#ifdef ORIG
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::SetConcentrations(const std::vector<double> &t)
-/* ---------------------------------------------------------------------- */
-{
-	std::vector<double> c;
-	std::string methodName = "SetConcentrations";
-	IRM_RESULT result_value = SetGeneric(c, (int) this->components.size() * this->nxyz, t, METHOD_SETCONCENTRATIONS, methodName, INACTIVE_CELL_VALUE);
-
-#ifdef USE_OPENMP
-	omp_set_num_threads(this->nthreads);
-#pragma omp parallel 
-#pragma omp for
-#endif
-	for (int n = 0; n < nthreads; n++)
-	{
-		this->Concentrations2Solutions(n, c);
-	}
-	return this->ReturnHandler(result_value, "PhreeqcRM::" + methodName);
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
@@ -7990,13 +6704,6 @@ IRM_RESULT
 PhreeqcRM::SetDatabaseFileName(const char * db)
 /* ---------------------------------------------------------------------- */
 {
-//#ifdef USE_MPI
-//	if (this->mpi_myself == 0)
-//	{
-//		int method = METHOD_SETDATABASEFILENAME;
-//		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-//	}
-//#endif
 	IRM_RESULT return_value = IRM_OK;
 	int l = 0;
 	if (this->mpi_myself == 0)
@@ -8033,13 +6740,6 @@ IRM_RESULT
 PhreeqcRM::SetDumpFileName(const std::string & cn)
 /* ---------------------------------------------------------------------- */
 {
-//#ifdef USE_MPI
-//	if (this->mpi_myself == 0)
-//	{
-//		int method = METHOD_SETDUMPFILENAME;
-//		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
-//	}
-//#endif
 	IRM_RESULT return_value = IRM_OK;
 	int l = 0;
 	if (this->mpi_myself == 0)
@@ -8055,14 +6755,7 @@ PhreeqcRM::SetDumpFileName(const std::string & cn)
 			this->dump_file_name.append(".dmp");
 		}
 	}
-//#ifdef USE_MPI
-//	MPI_Bcast(&l, 1, MPI_INT, 0, phreeqcrm_comm);
-//	if (l > 0)
-//	{
-//		this->dump_file_name.resize(l);
-//		MPI_Bcast((void *) this->dump_file_name.c_str(), l, MPI_CHAR, 0, phreeqcrm_comm);
-//	}
-//#endif
+
 	if (l == 0)
 	{
 		return_value = IRM_INVALIDARG;
@@ -8076,8 +6769,6 @@ PhreeqcRM::SetEndCells(void)
 {
 #ifdef USE_MPI
 	int ntasks = this->mpi_tasks;
-	//SetEndCellsHeterogeneous();
-	//return;
 #else
 	int ntasks = this->nthreads;
 #endif
@@ -8513,20 +7204,6 @@ PhreeqcRM::SetSelectedOutputOn(bool t)
 #endif
 	return IRM_OK;
 }
-///* ---------------------------------------------------------------------- */
-//IRM_RESULT 
-//PhreeqcRM::SetStopMessage(bool t)
-///* ---------------------------------------------------------------------- */
-//{
-//	if (mpi_myself == 0)
-//	{
-//		this->stop_message = t;
-//	}
-//#ifdef USE_MPI
-//	MPI_Bcast(&this->stop_message, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
-//#endif
-//	return IRM_OK;
-//}
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -8973,54 +7650,6 @@ PhreeqcRM::TimeStandardTask()
 	return count;
 }
 #ifdef USE_MPI
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
-/* ---------------------------------------------------------------------- */
-{
-	// Throws on error
-	IRM_RESULT return_value = IRM_OK;
-	try
-	{
-		if (this->mpi_myself == old)
-		{
-			std::ostringstream raw_stream;
-			t_bin.dump_raw(raw_stream, 0);
-
-			int size = (int) raw_stream.str().size();
-			MPI_Send(&size, 1, MPI_INT, nnew, 0, phreeqcrm_comm);
-			MPI_Send((void *) raw_stream.str().c_str(), size, MPI_CHAR, nnew, 0, phreeqcrm_comm);	
-		}
-		else if (this->mpi_myself == nnew)
-		{	
-			MPI_Status mpi_status;
-			// Transfer cells		
-			int size;
-			MPI_Recv(&size, 1, MPI_INT, old, 0, phreeqcrm_comm, &mpi_status);
-			std::vector<char> raw_buffer;
-			raw_buffer.resize(size + 1);
-			MPI_Recv((void *) raw_buffer.data(), size, MPI_CHAR, old, 0, phreeqcrm_comm, &mpi_status);
-			raw_buffer[size] = '\0';
-
-			// RunString to enter in module
-			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
-			int status = phast_iphreeqc_worker->RunString(raw_buffer.data());
-			if (status != 0)
-			{
-				error_msg(phast_iphreeqc_worker->GetErrorString());
-			}
-			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
-		}
-	}
-	catch (...)
-	{
-		return_value = IRM_FAIL;
-	}
-	this->ErrorHandler(return_value, "PhreeqcRM::TransferCells");
-	return return_value;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
@@ -9168,160 +7797,4 @@ PhreeqcRM::WarningMessage(const std::string &str)
 {
 	this->phreeqcrm_io.warning_msg(str.c_str());
 }
-#ifdef SKIP
-#ifdef USE_MPI
-/* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count, 
-			int * solution_number, const std::string &fn)
-/* ---------------------------------------------------------------------- */
-{
-	// solution_list is Fortran nxyz number
-	MPI_Bcast(solution_number, 1, MPI_INT, 0, phreeqcrm_comm);
-	if (*solution_number == 0) return;
-	MPI_Bcast(bc_solution_count, 1, MPI_INT, 0, phreeqcrm_comm);
 
-	// Broadcast solution list
-	std::vector<int> my_solution_list;
-	if (mpi_myself == 0)
-	{
-		MPI_Bcast(solution_list, *bc_solution_count, MPI_INT, 0, phreeqcrm_comm);
-	}
-	else
-	{
-		my_solution_list.resize((size_t) bc_solution_count);
-		MPI_Bcast(my_solution_list.data(), *bc_solution_count, MPI_INT, 0, phreeqcrm_comm);
-	}
-
-	std::ofstream ofs;
-	// Open file on root
-	if (this->mpi_myself == 0)
-	{
-		ofs.open(fn.c_str(), std::ios_base::app);
-		if (!ofs.is_open())
-		{
-			std::ostringstream e_msg;
-			e_msg << "Could not open file. " << fn;
-			this->ErrorHandler(IRM_FAIL, e_msg.str());
-		}
-	}
-
-	// dump solutions to oss
-	std::ostringstream oss;
-	for (int i = 0; i < *bc_solution_count; i++)
-	{
-		int raw_number = *solution_number + i;
-		int n_fort = solution_list[i];
-		int n_chem = this->forward_mapping[n_fort - 1];
-		if (n_chem >= this->start_cell[this->mpi_myself] || 
-			n_chem <= this->end_cell[this->mpi_myself])
-		{
-			oss << "# Fortran cell " << n_fort << ". Time " << (this->time) * (this->time_conversion) << "\n";
-			this->workers[0]->Get_solution(n_chem)->dump_raw(oss, 0, &raw_number);
-		}
-	}
-
-	// Write root solutions
-	if (this->mpi_myself == 0 && oss.str().size() > 0)
-	{
-		ofs << oss.str();
-	}
-
-	// Retrieve from nonroot processes
-	std::vector<char> char_buffer;
-	for (int i = 1; i < this->mpi_tasks; i++)
-	{
-		int buffer_length = 0;
-		MPI_Status mpi_status;
-
-		// Send dump string to root
-		if (mpi_myself == i)
-		{
-			buffer_length = (int) oss.str().size();
-			MPI_Send(&buffer_length, 1, MPI_INT, 0, 0, phreeqcrm_comm);
-			if (buffer_length > 0)
-			{
-				MPI_Send((void *) oss.str().c_str(), buffer_length, MPI_CHAR, 0, 0,
-					phreeqcrm_comm);
-			}
-		}
-		// Write dump string to file
-		else if (mpi_myself == 0)
-		{
-			MPI_Recv(&buffer_length, 1, MPI_INT, i, 0, phreeqcrm_comm,
-				&mpi_status);			
-			if (buffer_length > 0)
-			{
-				char_buffer.resize(buffer_length + 1);
-				MPI_Recv(char_buffer.data(), buffer_length, MPI_CHAR, i, 0,
-					phreeqcrm_comm, &mpi_status);
-				char_buffer[buffer_length] = '\0';
-				ofs << char_buffer.data(); 
-			}
-		}
-	}
-
-	// Final write
-	if (this->mpi_myself == 0)
-	{
-		ofs << "# Done with zone for time step." << std::endl;
-		ofs.close();
-	}
-
-	return;
-}
-#else
-/* ---------------------------------------------------------------------- */
-void
-PhreeqcRM::Write_bc_raw(int *solution_list, int * bc_solution_count, 
-			int * solution_number, const std::string &fn)
-/* ---------------------------------------------------------------------- */
-{
-	if (*solution_number == 0) return;
-	std::ofstream ofs;
-	ofs.open(fn.c_str(), std::ios_base::app);
-	if (!ofs.is_open())
-	{
-		std::ostringstream e_msg;
-		e_msg << "Could not open file. " << fn;
-		this->ErrorHandler(IRM_FAIL, e_msg.str().c_str());
-	}
-
-	int raw_number = *solution_number;
-	for (int i = 0; i < *bc_solution_count; i++)
-	{
-		int n_fort = solution_list[i];
-		int n_chem = this->forward_mapping[n_fort - 1];
-		if (n_chem >= 0)
-		{
-			IPhreeqcPhast * phast_iphreeqc_worker = NULL;
-			for (int j = 0; j < this->nthreads; j++)
-			{
-				if (j >= start_cell[j] && j <= end_cell[j])
-				{
-					phast_iphreeqc_worker = this->workers[j];
-				}
-			}
-			if (phast_iphreeqc_worker)
-			{
-				ofs << "# Fortran cell " << n_fort << ". Time " << (this->time) * (this->time_conversion) << "\n";
-				cxxSolution *soln_ptr=  phast_iphreeqc_worker->Get_solution(n_chem);
-				soln_ptr->dump_raw(ofs, 0, &raw_number);
-				raw_number++;
-			}
-			else
-			{
-				assert(false);
-			}
-		}
-		else
-		{
-			assert(false);
-		}
-	}
-	ofs << "# Done with zone for time step." << std::endl;
-	ofs.close();
-	return;
-}
-#endif
-#endif
