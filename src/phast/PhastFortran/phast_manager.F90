@@ -85,7 +85,7 @@ SUBROUTINE phast_manager
 ! ... Use Reaction Module to equilbrate cells  
 !
     CALL InitialEquilibrationRM
-	!TODO CALL zone_flow_write_chem()
+	CALL zone_flow_write_chem()
     IF (solute) THEN
         CALL init2_3        
     ENDIF
@@ -210,7 +210,7 @@ SUBROUTINE phast_manager
             IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
                 CALL zone_flow_write_heads
             ENDIF
-	        ! TODO CALL zone_flow_write_chem()
+	        CALL zone_flow_write_chem()
             IF (.NOT.steady_flow) THEN
                 CALL write4
             ENDIF
@@ -435,6 +435,7 @@ SUBROUTINE CreateRM
         IF (rm_id.LT.0) THEN
             STOP
         END IF
+        status = RM_SetComponentH2O(rm_id, 1)
         nthreads = RM_GetThreadCount(rm_id)
         status = RM_SetErrorHandlerMode(rm_id, 2)   ! exit
         status = RM_SetPrintChemistryOn(rm_id, 0, 1, 0) 
@@ -493,7 +494,7 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetTime(rm_id, time_phreeqc) 
         status = RM_SetTimeStep(rm_id, deltim_dummy) 
         status = RM_SetConcentrations(rm_id, c(1,1))
-        status = RM_RunCells(rm_id)   
+        status = RM_RunCells(rm_id)     
         status = RM_GetConcentrations(rm_id, c(1,1))
         !status = RM_GetDensity(rm_id, phreeqc_density(1))
         !status = RM_SetDensity(rm_id, phreeqc_density(1))
@@ -581,7 +582,7 @@ SUBROUTINE InitializeRM
             f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1   
         
         CALL process_restart_files()
-        status = RM_GetConcentrations(rm_id, c(1,1))      
+        status = RM_GetConcentrations(rm_id, c(1,1))          
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
             STAT = a_err)
@@ -589,7 +590,7 @@ SUBROUTINE InitializeRM
             PRINT *, "Array deallocation failed: InitializeRM"  
             STOP
         ENDIF
-    ENDIF        ! ... solute
+            ENDIF        ! ... solute
 END SUBROUTINE InitializeRM
     
 SUBROUTINE TimeStepRM    

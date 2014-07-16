@@ -18,6 +18,7 @@
 #endif
 #include "KDtree/KDtree.h"
 #include "Phreeqc.h"
+#include "Solution.h"
 #include "IPhreeqc.h"
 #include "H5Cpp.h"
 #include "hdf.h"
@@ -63,6 +64,7 @@ public:
 	void SetHDFInvariant(bool tf) {this->HDFInvariant = tf;}
 	bool GetXYZInitialized(void) {return this->XYZInitialized;}
 	void SetXYZInitialized(bool tf) {this->XYZInitialized = tf;}
+	std::map< std::string, std::ostream * > &GetBcZoneOstreams(void) {return this->BcZoneOstreams;}
 	std::vector< std::ostream * > &GetXYZOstreams(void) {return this->XYZOstreams;}
 	std::vector< std::string > &GetHeadings(void) {return this->Headings;}
 	void SetHeadings(std::vector< std::string > &h) {this->Headings = h;}
@@ -73,6 +75,7 @@ public:
 	IRM_RESULT WriteHDF(int id, int *print_hdf, int *print_media);
 	IRM_RESULT WriteRestart(int id, int *print_restart);
 	IRM_RESULT WriteXYZ(int id, int *print_xyz, int *xyz_mask);
+    IRM_RESULT WriteBcRaw(int *id, double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l);
 
 protected:
 	bool HDFInitialized;
@@ -87,6 +90,7 @@ protected:
 	double * saturation;  // only root
 	int    * mapping;     // only root
 	int    * ic;
+	std::map <std::string, std::ostream * > BcZoneOstreams;
 };
 FileHandler file_handler;
 // Constructor
@@ -818,6 +822,13 @@ FH_FinalizeFiles()
 		delete file_handler.GetXYZOstreams()[iso];
 	}
 	file_handler.GetXYZOstreams().clear();
+
+	std::map< std::string, std::ostream * >::iterator it;
+	for (it = file_handler.GetBcZoneOstreams().begin(); it != file_handler.GetBcZoneOstreams().end(); it++)
+	{
+		delete it->second;
+	}
+	file_handler.GetBcZoneOstreams().clear();
 }
 //
 // Wrappers
@@ -860,4 +871,90 @@ FH_WriteFiles(int *id_in, int *print_hdf, int *print_media, int *print_xyz, int 
 {
 	int id = *id_in;
 	file_handler.WriteFiles(id, print_hdf, print_media, print_xyz, xyz_mask, print_restart);
+}
+/* ---------------------------------------------------------------------- */
+void
+FH_WriteBcRaw(int *id, double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
+/* ---------------------------------------------------------------------- */
+{
+	file_handler.WriteBcRaw(id, c, solution_list, bc_solution_count, solution_number, prefix, prefix_l);
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+FileHandler::WriteBcRaw(int *id, double *c_in, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
+/* ---------------------------------------------------------------------- */
+{
+	// c                 array of concentrations
+	// solution_list     set of cells to write
+	// bc_solution_count number of cells in solution_list
+	// solution_number   number to assign to the first cell (increment for each additional cell)
+	// prefix            file name
+
+	if (*solution_number == 0) return IRM_OK;
+	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		// Open file
+		std::string fn(prefix, prefix_l);
+		fn = trim_right(fn);
+		
+		std::ofstream *ofs;
+		if(this->BcZoneOstreams.find(fn) == this->BcZoneOstreams.end())
+		{
+			ofs = new(std::ofstream);
+			ofs->open(fn.c_str(), std::ios_base::app);
+			if (!ofs->is_open())
+			{
+				std::ostringstream errstr;
+				errstr << "Boundary condition file could not be opened for writing: " << fn;
+				error_msg(errstr.str().c_str(), 1);
+				delete ofs;
+				throw PhreeqcRMStop();
+			}
+			BcZoneOstreams[fn] = ofs;
+		}
+		else
+		{
+			ofs = (ofstream *) BcZoneOstreams.find(fn)->second;
+		}
+		// Create std vector of concentrations
+		std::vector<double> c;
+		c.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
+		memcpy(c.data(), c_in, Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
+
+		//
+		int raw_number = *solution_number;
+		std::vector<double> tc;
+		std::vector<double> p_atm;
+		tc.push_back(15.0);
+		p_atm.push_back(1.0);
+		for (int i = 0; i < *bc_solution_count; i++)
+		{
+			std::ostringstream oss;
+			int n_fort = solution_list[i];
+			int n_chem = Reaction_module_ptr->GetForwardMapping()[n_fort - 1];
+			if (n_chem >= 0)
+			{
+				// Put concentrations for n_chem into a vector
+				std::vector<double> cell;
+				for(int i = 0; i < Reaction_module_ptr->GetComponentCount(); i++)
+				{
+					cell.push_back(c[i*Reaction_module_ptr->GetGridCellCount() + n_fort - 1]);
+				}
+				Reaction_module_ptr->Concentrations2Utility(cell, tc, p_atm);
+				oss << "# Fortran cell " << n_fort << ". Time " << Reaction_module_ptr->GetTime() << "\n";
+				Reaction_module_ptr->GetWorkers()[Reaction_module_ptr->GetThreadCount()]->Get_solution(1)->dump_raw(oss,0,&raw_number);
+				raw_number++;
+				*ofs << oss.str();
+			}
+			else
+			{
+				assert(false);
+			}
+		}
+		//*solution_number = raw_number;
+		*ofs << "# Done with zone for time step." << std::endl;
+	}
+	return IRM_OK;
 }

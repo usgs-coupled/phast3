@@ -14,6 +14,7 @@
 #define FH_SetPointers                  FC_FUNC_ (fh_setpointers,                   FH_SETPOINTERS)
 #define FH_SetRestartName               FC_FUNC_ (fh_setrestartname,                FH_SETRESTARTNAME)
 #define FH_WriteFiles                   FC_FUNC_ (fh_writefiles,                    FH_WRITEFILES)
+#define FH_WriteBcRaw                   FC_FUNC_ (fh_writebcraw,                    FH_WRITEBCRAW)
 #endif
 #if defined(__cplusplus)
 extern "C" {
@@ -24,7 +25,7 @@ void FH_ProcessRestartFiles(int *id, int *initial_conditions1_in, int *initial_c
 void FH_SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation = NULL, int *mapping = NULL);
 void FH_SetRestartName(const char *name, long nchar);
 void FH_WriteFiles(int *id, int *print_hdf, int *print_media, int *print_xyz, int *xyz_mask, int *print_restart);
-
+void FH_WriteBcRaw(int *id, double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l);
 #if defined(__cplusplus)
 }
 #endif

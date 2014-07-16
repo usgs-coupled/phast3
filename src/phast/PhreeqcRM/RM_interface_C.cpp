@@ -245,7 +245,6 @@ RM_GetConcentrations(int id, double * c)
 		if (c != NULL)
 		{
 			std::vector<double> c_vector;
-			// todo ...........
 			c_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
 			IRM_RESULT return_value = Reaction_module_ptr->GetConcentrations(c_vector);
 			if (return_value == IRM_OK)
@@ -407,7 +406,6 @@ RM_GetSelectedOutput(int id, double * so)
 		if (so != NULL)
 		{
 			std::vector<double> so_vector;
-			// todo ...........
 			so_vector.resize(Reaction_module_ptr->GetSelectedOutputColumnCount() * 
 				Reaction_module_ptr->GetSelectedOutputRowCount());
 			IRM_RESULT return_value = Reaction_module_ptr->GetSelectedOutput(so_vector);
@@ -1507,25 +1505,4 @@ RM_WarningMessage(int id, const char *err_str)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void RM_write_bc_raw(
-			int id,
-			int *solution_list, 
-			int bc_solution_count, 
-			int solution_number, 
-			char *prefix)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		std::string fn(prefix, prefix_l);
-		Reaction_module_ptr->Write_bc_raw(
-			solution_list, 
-			bc_solution_count,
-			solution_number, 
-			fn);
-	}
-}
-#endif
+

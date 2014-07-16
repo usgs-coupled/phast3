@@ -11209,6 +11209,7 @@ read_zone_budget(void)
 						"-write_heads_xyzt identifier is obsolete.\n"
 						"Using write_xyzt to give a prefix for .heads.xyzt, .soln.xyzt, and .soln.bc files.\n%s",
 						tag);
+					warning_msg(error_string);
 			}
 		case 11:				/* write_xyzt */
 			{
