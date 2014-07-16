@@ -256,7 +256,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
-  FFLAGS       = -O3 -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) 
+  FFLAGS       = -g -O3 -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) 
   CC           = g++
   CFLAGS       = -Wall -fopenmp -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS)
@@ -779,7 +779,7 @@ solver_direct_mod.o: ../PhastFortran/solver_direct_mod.f90 mach_mod.o modules_g.
 	${FC} -c ${FFLAGS} $<
 solver_iter_mod.o: ../PhastFortran/solver_iter_mod.f90 mach_mod.o modules_g.o modules_manager.o XP_module.o
 	${FC} -c ${FFLAGS} $<
-XP_module.o: ../PhastFortran/XP_module.f90 mach_mod.o modules_g.o
+XP_module.o: ../PhastFortran/XP_module.F90 mach_mod.o modules_g.o
 	${FC} -c ${FFLAGS} $<
 
 # -----------------------------------------------------------------------------
