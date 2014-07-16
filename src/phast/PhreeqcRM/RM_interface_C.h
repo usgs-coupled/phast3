@@ -4597,11 +4597,6 @@ status = RM_WarningMessage(id, "Parameter is out of range, using default")
 Called by root and (or) workers; only root writes to the log file.
  */
 IRM_RESULT RM_WarningMessage(int id, const char *warn_str);
-void RM_write_bc_raw(int id,
-                int *solution_list,
-                int bc_solution_count,
-                int solution_number,
-                const char *prefix);
 
 #if defined(__cplusplus)
 }

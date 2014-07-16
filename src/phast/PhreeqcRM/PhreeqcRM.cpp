@@ -1237,8 +1237,15 @@ PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
 		// convert mol/L to moles per cell
 		for (k = 0; k < (int) this->components.size() - 1; k++)
 		{	
-			//d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
-			d[k] *= this->pore_volume[i] / this->cell_volume[i] * saturation[i];
+			if (saturation[i] > 0.0)
+			{
+				d[k] *= this->pore_volume[i] / this->cell_volume[i] * saturation[i];
+			}
+			else
+			{
+				d[k] *= this->pore_volume[i] / this->cell_volume[i];
+			}
+
 		}
 				
 		// update solution 
@@ -1275,7 +1282,7 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 #endif
 
 	for (j = start; j <= end; j++)
-	{		
+	{	
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
 		i = this->backward_mapping[j][0];
@@ -1321,9 +1328,14 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 		// convert mol/L to moles per cell
 		for (k = 0; k < (int) this->components.size(); k++)
 		{	
-			//d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
-			//d[k] *= this->pore_volume[i] / this->pore_volume[i] * saturation[i];
-			d[k] *= this->pore_volume[i] / this->cell_volume[i] * saturation[i];
+			if (saturation[i] > 0.0)
+			{
+				d[k] *= this->pore_volume[i] / this->cell_volume[i] * saturation[i];
+			}
+			else
+			{
+				d[k] *= this->pore_volume[i] / this->cell_volume[i];
+			}
 		}
 				
 		// update solution 
@@ -3115,7 +3127,6 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 				// load fractions into d
 				cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
 				assert (cxxsoln_ptr);
-				int i_grid = this->backward_mapping[j][0];
 				double v, dens;
 				if (this->use_solution_density_volume)
 				{
@@ -5089,7 +5100,7 @@ PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 		s1 = 1.0;
 		s2 = 1.0;
 	}
-	else if (new_frac <= 1e-10)
+	else if (new_frac <= 1e-6)
 	{
 		/* put everything in unsaturated zone */
 		uz1 = 1.0;
@@ -6953,10 +6964,12 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 	std::ostringstream soln_list;
 	int count_active = 0;
 	int range_start = -1, range_end = -1;
+
+	// Find first active cell
 	for (int i = start; i <= end; i++)
-	{		
+	{	
 		int j = backward_mapping[i][0];			/* j is nxyz number */
-		if (this->saturation[j] > 1e-10) 
+		if (this->saturation[j] > 1e-6) 
 		{
 			range_start = i;
 			range_end = i;
@@ -6968,7 +6981,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 	{
 		int first_active = range_start;
 		for (int i = first_active + 1; i <= end; i++)
-		{							    /* i is count_chem number */
+		{		  					                /* i is count_chem number */
 			int j = backward_mapping[i][0];			/* j is nxyz number */
 			if (this->saturation[j] > 1e-10) 
 			{
@@ -7046,7 +7059,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 			for (int i = start; i <= end; i++)
 			{							                /* i is count_chem number */
 				int j = backward_mapping[i][0];			/* j is nxyz number */
-				if (saturation[j] > 1e-10)
+				if (saturation[j] > 1e-6)
 				{
 					types.clear();
 					longs.clear();
@@ -7069,7 +7082,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 		for (int i = start; i <= end; i++)
 		{							                /* i is count_chem number */
 			int j = backward_mapping[i][0];			/* j is nxyz number */
-			if (saturation[j] > 1e-10 )
+			if (saturation[j] > 1e-6 )
 			{
 				//phast_iphreeqc_worker->Get_cell_clock_times().push_back(t_elapsed / (double) count_active);
 				phast_iphreeqc_worker->Get_cell_clock_times()[i - start] += t_elapsed / (double) count_active;
@@ -7216,7 +7229,7 @@ PhreeqcRM::RunCellsThread(int n)
 
 				// ignore small saturations
 				bool active = true;
-				if (this->saturation[j] <= 1e-10) 
+				if (this->saturation[j] <= 1e-6) 
 				{
 					this->saturation[j] = 0.0;
 					active = false;
@@ -7249,11 +7262,11 @@ PhreeqcRM::RunCellsThread(int n)
 					{
 						std::ostringstream line_buff;
 						line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
-						line_buff << "Chemistry cell: " << j << "\n";
+						line_buff << "Chemistry cell: " << i << "\n";
 						line_buff << "Grid cell(s):   ";
-						for (size_t ib = 0; ib < this->backward_mapping[j].size(); ib++)
+						for (size_t ib = 0; ib < this->backward_mapping[i].size(); ib++)
 						{
-							line_buff << backward_mapping[j][ib] << " ";
+							line_buff << backward_mapping[i][ib] << " ";
 						}
 						line_buff << "\n";
 						*phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
@@ -7290,7 +7303,7 @@ PhreeqcRM::RunCellsThread(int n)
 					{
 						std::ostringstream line_buff;
 						line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
-						line_buff << "Chemistry cell: " << j + 1 << "\n";
+						line_buff << "Chemistry cell: " << i << "\n";
 						line_buff << "Grid cell(s):   ";
 						for (size_t ib = 0; ib < this->backward_mapping[i].size(); ib++)
 						{

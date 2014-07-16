@@ -132,7 +132,14 @@ int main(int argc, char* argv[])
 #endif
 #endif // SKIP_REWRITE_PHAST
 		//int tmpDbgFlag;
-
+#if defined(WIN32_MEMORY_DEBUG)
+	int tmpDbgFlag;
+	tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+	//tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
+	tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
+	///tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
+	_CrtSetDbgFlag(tmpDbgFlag);
+#endif
 		//  _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
 		//  _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
 		//  _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
@@ -143,7 +150,7 @@ int main(int argc, char* argv[])
 		//tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
 		///*tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;*/
 		//tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
-		///*tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;*/
+		///*tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;*/ // really slow?
 		//_CrtSetDbgFlag(tmpDbgFlag);
 		//_crtBreakAlloc = 198;
 		
