@@ -75,7 +75,7 @@ SUBROUTINE time_step_save
      	if (nlbc > 0) then
 	   xp_list(local_component_map(i))%clbc_n = xp_list(local_component_map(i))%clbc
 	endif
-     	if (nlbc > 0) then
+     	if (nrbc > 0) then
 	   xp_list(local_component_map(i))%crbc_n = xp_list(local_component_map(i))%crbc
 	endif
      ENDIF
