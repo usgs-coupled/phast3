@@ -1296,7 +1296,6 @@ PhreeqcRM::cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<d
 	}
 
 	// convert units
-	double vol = v;
 	switch (this->units_Solution)
 	{
 	case 1:  // convert to mg/L 
@@ -1362,7 +1361,6 @@ PhreeqcRM::cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector
 	}
 
 	// convert units
-	double vol = v;
 	switch (this->units_Solution)
 	{
 	case 1:  // convert to mg/L 
@@ -2344,7 +2342,6 @@ PhreeqcRM::FindComponents(void)
 					throw PhreeqcRMStop();
 				}
 			}
-			int n = phast_iphreeqc_worker->PhreeqcPtr->count_s_x;
 			species_names.clear();
 			species_z.clear();
 			s_num2rm_species_num.clear();
@@ -3380,7 +3377,6 @@ PhreeqcRM::InitialPhreeqc2Module(
 		this->Get_phreeqc_bin().Clear();
 		this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 
-		size_t array_size = (size_t) (7 * this->nxyz);
 
 #ifdef USE_MPI
 		//
@@ -3681,7 +3677,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 			{
 				{
 #else				
-			for (size_t n = 0; n < nthreads; n++)
+			for (int n = 0; n < nthreads; n++)
 			{
 				if (nchem >= start_cell[n] && nchem <= end_cell[n])
 				{
@@ -6807,7 +6803,6 @@ PhreeqcRM::SetEndCellsHeterogeneous(void)
 	std::vector<double> standard_time, task_fraction;
 	if (mpi_myself == 0)
 	{
-		double s0 = this->standard_task_vector[0];
 		double tasks_total = 0;
 		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
 		{
@@ -7561,7 +7556,6 @@ PhreeqcRM::SpeciesConcentrations2Module(std::vector<double> & species_conc)
 #endif
 	if (this->species_save_on)
 	{
-		size_t nspecies = this->species_names.size();
 #ifdef USE_MPI
 		if (this->mpi_myself > 0)
 		{
@@ -7781,7 +7775,6 @@ PhreeqcRM::UseSolutionDensityVolume(bool tf)
 		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 	}
 #endif
-	IRM_RESULT return_value = IRM_OK;
 	if (mpi_myself == 0)
 	{
 		this->use_solution_density_volume = tf;
