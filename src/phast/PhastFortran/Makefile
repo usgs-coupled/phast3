@@ -1029,7 +1029,7 @@ modules_manager.o : ../modules_manager.f90 mach_mod.o
 	${FC} -c ${FFLAGS} $<
 ##modules_worker.o : ../modules_worker.f90 mach_mod.o
 ##	${FC} -c ${FFLAGS} $<
-XP_module.o:   	../XP_module.f90 modules_g.o mach_mod.o
+XP_module.o:   	../XP_module.F90 modules_g.o mach_mod.o
 	${FC} -c ${FFLAGS} $<
 
 mpi_mod.o:		../mpi_mod.F90   mpi_windows.inc
