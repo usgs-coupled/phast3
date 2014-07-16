@@ -329,9 +329,6 @@ INTEGER FUNCTION mpi_methods(method)
     else if (method == METHOD_INIT3DISTRIBUTE) then
         if (debug) write(*,*) "METHOD_INIT3DISTRIBUTE"
         CALL init3_distribute
-    !else if (method == METHOD_ZONEFLOWWRITECHEM) then
-    !    if (debug) write(*,*) "METHOD_ZONEFLOWWRITECHEM"
-    !    CALL zone_flow_write_chem
     else if (method == METHOD_FLOWDISTRIBUTE) then
         if (debug) write(*,*) "METHOD_FLOWDISTRIBUTE"
         CALL flow_distribute
