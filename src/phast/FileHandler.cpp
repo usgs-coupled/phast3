@@ -507,7 +507,6 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 		int local_mpi_myself = RM_GetMpiMyself(id);
 		int nso = RM_GetSelectedOutputCount(id);
 		int nxyz = RM_GetSelectedOutputRowCount(id); 
-		double current_time = RM_GetTimeConversion(id) * RM_GetTime(id);
 		//
 		// Initialize HDF
 		//
@@ -516,7 +515,6 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 			for (int iso = 0; iso < nso; iso++)
 			{
 				int status;
-				int f_iso = iso + 1;
 				int n_user = RM_GetNthSelectedOutputUserNumber(id, iso);
 				if (n_user >= 0)
 				{
@@ -562,7 +560,7 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 					if (status >= 0)
 					{
 						local_selected_out.resize((size_t) (nxyz*ncol));
-						int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						RM_GetSelectedOutput(id, local_selected_out.data());
 						if ( !this->GetHDFInvariant())
 						{
 							HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
@@ -594,7 +592,6 @@ FileHandler::WriteRestart(int id, int *print_restart)
 		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
 		if (print_restart != 0)
 		{
-			int mpi_tasks = Reaction_module_ptr->GetMpiTasks();
 			gzFile restart_file;
 #ifdef USE_GZ
 			std::string temp_name("temp_restart_file.gz");
@@ -687,8 +684,6 @@ FileHandler::WriteXYZ(int id, int *print_xyz, int *xyz_mask)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
-		int local_mpi_myself = RM_GetMpiMyself(id);
-
 		int nso = RM_GetSelectedOutputCount(id);
 		int nxyz = RM_GetSelectedOutputRowCount(id); 
 		double current_time = RM_GetTimeConversion(id) * RM_GetTime(id);
@@ -759,7 +754,7 @@ FileHandler::WriteXYZ(int id, int *print_xyz, int *xyz_mask)
 					{
 						this->Get_io()->Set_punch_ostream(this->GetXYZOstreams()[iso]);
 						local_selected_out.resize((size_t) (nxyz*ncol));
-						int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						RM_GetSelectedOutput(id, local_selected_out.data());
 
 						// write xyz file
 #ifdef OLD_STYLE_XYZ
