@@ -150,6 +150,9 @@ SUBROUTINE dealloc_arr
           dwb, dwt,  &
           wfrac, nkswel,  &
           mxf_wel,  &
+          wrangl,  &
+          wrid,  &
+          wrruf,  &
           STAT = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "array deallocation failed: dealloc_arr, read2, point 6"  
