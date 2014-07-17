@@ -96,8 +96,12 @@ SUBROUTINE phast_manager
     CALL write2_2                             
     IF (steady_flow) THEN
         CALL write3
-        CALL write4
+        CALL write4                                       ! calls calc_velocity
     ENDIF
+    imedia = 0
+    if (pr_hdf_media) imedia = 1
+    CALL FH_WriteFiles(rm_id, prhdfci,  imedia, prcphrqi, & ! Needs to be after calc_velocity    
+        iprint_xyz(1), 0) 
     CALL flow_distribute                                  ! distribute  initial p and c_w to workers from manager
     IF(errexe .OR. errexi) GO TO 50
 !
@@ -223,7 +227,7 @@ SUBROUTINE phast_manager
             ixyz = 0
             if (prcphrq) ixyz = 1        
             CALL FH_WriteFiles(rm_id, ihdf, imedia, ixyz, &
-                iprint_xyz(1), print_restart%print_flag_integer)                                                            ! calc_velocity needs to be called before write_hdf (FH_WriteFiles)
+                iprint_xyz(1), print_restart%print_flag_integer)   ! Needs to be after calc_velocity                                                         ! calc_velocity needs to be called before write_hdf (FH_WriteFiles)
             IF (prhdfii == 1) THEN
                 CALL write_hdf_intermediate     
             ENDIF
@@ -478,7 +482,7 @@ SUBROUTINE InitialEquilibrationRM
     INCLUDE 'RM_interface_F.f90.inc' 
     DOUBLE PRECISION :: deltim_dummy
     CHARACTER(LEN=130) :: logline1
-    INTEGER :: stop_msg, status, i, imedia
+    INTEGER :: stop_msg, status, i !, imedia
     
     ! ...  Initial equilibrate
     IF (solute) THEN
@@ -509,10 +513,10 @@ SUBROUTINE InitialEquilibrationRM
         !status = RM_GetDensity(rm_id, phreeqc_density(1))
         !status = RM_SetDensity(rm_id, phreeqc_density(1))
     ENDIF  
-    imedia = 0
-    if (pr_hdf_media) imedia = 1
-    CALL FH_WriteFiles(rm_id, prhdfci,  imedia, prcphrqi, &
-	    iprint_xyz(1), 0)       
+    !imedia = 0
+    !if (pr_hdf_media) imedia = 1
+    !CALL FH_WriteFiles(rm_id, prhdfci,  imedia, prcphrqi, &
+	   ! iprint_xyz(1), 0)       
 END SUBROUTINE InitialEquilibrationRM
     
 SUBROUTINE InitializeRM 
