@@ -226,7 +226,28 @@ SUBROUTINE dealloc_arr
   END IF
 
   IF(num_flo_zones > 0) THEN
-     ! ... Deallocate zone arrays for local flow rates: mcb2_m
+      ! ... Deallocate zone arrays for local flow rates: mcb2_m
+      do i = 1, num_flo_zones
+          if (seg_well(i)%num_wellseg > 0) then
+              DEALLOCATE(seg_well(i)%iwel_no,  &  
+                seg_well(i)%ks_no,  &         
+                STAT = da_err)
+              IF (da_err /= 0) THEN  
+                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1"  
+                  STOP
+              ENDIF
+          endif
+          if (zone_ib(i)%num_int_faces > 0) then
+              DEALLOCATE(zone_ib(i)%mcell_no,  &  
+                zone_ib(i)%face_indx,  &        
+                STAT = da_err)
+              IF (da_err /= 0) THEN  
+                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1"  
+                  STOP
+              ENDIF
+          endif          
+      enddo
+     
      DEALLOCATE (zone_title, zone_number, &
           zone_ib, lnk_bc2zon, seg_well,  &
           zone_filename_heads,  &
