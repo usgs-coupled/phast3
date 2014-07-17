@@ -174,6 +174,7 @@ SUBROUTINE closef
     CALL myclose(fupmp3, st(fupmp3))  
     CALL myclose(fuvmap, st(fuvmap))  
     CALL myclose(fuich, st(fuich))
+    DEALLOCATE(restart_files)
 END SUBROUTINE closef
 
 SUBROUTINE myclose(funit, st)

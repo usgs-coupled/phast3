@@ -35,6 +35,7 @@ SUBROUTINE phast_manager
     END INTERFACE
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err
+    INTEGER :: ihdf, imedia, ixyz
     INTEGER status
     !     ------------------------------------------------------------------
     errexi=.FALSE.
@@ -212,8 +213,17 @@ SUBROUTINE phast_manager
             ENDIF
 	        CALL zone_flow_write_chem()
             IF (.NOT.steady_flow) THEN
-                CALL write4
+                CALL write4                                 ! calc_velocity called
             ENDIF
+            ! write files
+            ihdf = 0
+            if (prhdfc) ihdf = 1
+            imedia = 0
+            if (pr_hdf_media) imedia = 1 
+            ixyz = 0
+            if (prcphrq) ixyz = 1        
+            CALL FH_WriteFiles(rm_id, ihdf, imedia, ixyz, &
+                iprint_xyz(1), print_restart%print_flag_integer)                                                            ! calc_velocity needs to be called before write_hdf (FH_WriteFiles)
             IF (prhdfii == 1) THEN
                 CALL write_hdf_intermediate     
             ENDIF
@@ -606,7 +616,7 @@ SUBROUTINE TimeStepRM
     IMPLICIT NONE
     SAVE
     INCLUDE 'RM_interface_F.f90.inc' 
-    INTEGER stop_msg, status, i, ihdf, ixyz, imedia
+    INTEGER stop_msg, status, i !, ihdf, ixyz, imedia
     CHARACTER(LEN=130) :: logline1
     
     stop_msg = 0
@@ -645,14 +655,14 @@ SUBROUTINE TimeStepRM
         !status = RM_SetDensity(rm_id, phreeqc_density(1))
         CALL time_parallel(12)                                    ! 12 - 11 chemistry communication
     ENDIF    ! ... Done with chemistry    
-    ihdf = 0
-    if (prhdfc) ihdf = 1
-    imedia = 0
-    if (pr_hdf_media) imedia = 1 
-    ixyz = 0
-    if (prcphrq) ixyz = 1        
-    CALL FH_WriteFiles(rm_id, ihdf, imedia, ixyz, &
-        iprint_xyz(1), print_restart%print_flag_integer) 
+    !ihdf = 0
+    !if (prhdfc) ihdf = 1
+    !imedia = 0
+    !if (pr_hdf_media) imedia = 1 
+    !ixyz = 0
+    !if (prcphrq) ixyz = 1        
+    !CALL FH_WriteFiles(rm_id, ihdf, imedia, ixyz, &
+    !    iprint_xyz(1), print_restart%print_flag_integer) 
     CALL time_parallel(13)                                    ! 13 - 12 chemistry files
 END SUBROUTINE TimeStepRM   
     
