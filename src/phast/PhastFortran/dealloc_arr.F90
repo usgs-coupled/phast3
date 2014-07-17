@@ -229,6 +229,8 @@ SUBROUTINE dealloc_arr
      ! ... Deallocate zone arrays for local flow rates: mcb2_m
      DEALLOCATE (zone_title, zone_number, &
           zone_ib, lnk_bc2zon, seg_well,  &
+          zone_filename_heads,  &
+          zone_write_heads,  &
           STAT = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1"  

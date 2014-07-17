@@ -5,9 +5,6 @@
 #include "PHRQ_io.h"
 #include <string>
 #include <map>
-//#ifdef USE_OPENMP
-//#include <omp.h>
-//#endif
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
