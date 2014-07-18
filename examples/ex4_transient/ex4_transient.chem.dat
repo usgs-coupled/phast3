@@ -110,6 +110,15 @@ SURFACE 2
         -equil solution 2
         SurfOH          0.14     600.    30.
 END
+#!EXCHANGE_MIX 2
+#!	2 0.33
+#!END
+#!EQUILIBRIUM_PHASES_MIX 2
+#!	2 0.33
+#!END
+#!SURFACE_MIX 2
+#!	2 0.33
+#!END
 SELECTED_OUTPUT
         -file ex4_transient.dummy.sel
         -reset false

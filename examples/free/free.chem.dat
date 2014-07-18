@@ -1,11 +1,11 @@
 SOLUTION_MASTER_SPECIES
-	Ntg		Ntg	0	Ntg		28.0134 # N2 gas        
+#	Ntg		Ntg	0	Ntg		28.0134 # N2 gas        
 SOLUTION_SPECIES        
-        Ntg = Ntg # N2
+#        Ntg = Ntg # N2
 PHASES
-Ntg(g)
-	Ntg = Ntg
-	-analytic -58.453 1.81800e-3  3199  17.909 -27460
+#Ntg(g)
+#	Ntg = Ntg
+#	-analytic -58.453 1.81800e-3  3199  17.909 -27460
 SOLUTION_MASTER_SPECIES
         A       A       0       A       1
 SOLUTION_SPECIES
@@ -132,36 +132,36 @@ END
 #
 # This makes the first water in cell 4 (0-based)
 # 
-SOLUTION 2
-	A        1.0 mmol/kgw
-	Na	 1
-	Br	 1
-END
-EQUILIBRIUM_PHASES 1
-        Calcite  0 1
-END
-EXCHANGE 1              
-        NaX             2.0
-END
-EXCHANGE_MIX 10
-	1 2e-6
-END
-EQUILIBRIUM_PHASES_MIX 10
-	1 2e-6
-END
-# reacted water in cell 0
-USE solution 1
-USE exchange 1
-USE equilibrium_phases 1
-SAVE solution 1
-END
-# reacted water from cell 0 plus solution 2 react in cell 4
-MIX 
-	1 0.99725e-6
-	2 1e-6
-USE exchange 10
-USE equilibrium_phases 10
-END
+#!SOLUTION 2
+#!	A        1.0 mmol/kgw
+#!	Na	 1
+#!	Br	 1
+#!END
+#!EQUILIBRIUM_PHASES 1
+#!        Calcite  0 1
+#!END
+#!EXCHANGE 1              
+#!        NaX             2.0
+#!END
+#!EXCHANGE_MIX 10
+#!	1 2e-6
+#!END
+#!EQUILIBRIUM_PHASES_MIX 10
+#!	1 2e-6
+#!END
+#!# reacted water in cell 0
+#!USE solution 1
+#!USE exchange 1
+#!USE equilibrium_phases 1
+#!SAVE solution 1
+#!END
+#!# reacted water from cell 0 plus solution 2 react in cell 4
+#!MIX 
+#!	1 0.99725e-6
+#!	2 1e-6
+#!USE exchange 10
+#!USE equilibrium_phases 10
+#!END
 #
 # This makes the first water in cell 5 (1-based) in old PHAST
 #

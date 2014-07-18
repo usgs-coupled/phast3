@@ -346,29 +346,33 @@ subroutine Setup()
     double precision pi, d
     
     ! spatial
-    nx = 26
+    nx = 39
     xmin = 0.0d0 
-    xmax = 100.0d0
-    ny = 22
-    ymin = 0.0d0
+    xmax = 150.0d0
+    ny = 27
+    ymin = -5.0d0
     !ymax = 41.0d0
     ymax = 20.5
-    nz = 14
-    zmin = 0.0d0
+    
+    nz = 19
+    zmin = -5.0d0
     !zmax = 25.0d0
     zmax = 12.5d0
     allocate (x_nodes(nx), y_nodes(ny), z_nodes(nz))
     x_nodes(1) = 0.0d0
-    do i = 2, nx
+    do i = 2, nx - 1
         x_nodes(i) = x_nodes(i - 1) + 4.0
     enddo
-    y_nodes(1) = 0.0d0
-    y_nodes(2) = 0.5d0
+    x_nodes(nx) = xmax
+    
+    y_nodes(1) = -5.0d0
+    y_nodes(2) = -4.5d0
     do i = 3, ny
         y_nodes(i) = y_nodes(i - 1) + 1.0d0
     enddo
-    z_nodes(1) = 0.0d0
-    z_nodes(2) = 0.5d0
+    
+    z_nodes(1) = -5.0d0
+    z_nodes(2) = -4.5d0
     do i = 3, nz
         z_nodes(i) = z_nodes(i - 1) + 1.0d0
     enddo
@@ -430,7 +434,7 @@ subroutine XY_plane()
     allocate(c_save_x(nx))
     z = 12.5d0
     OPEN (20,FILE='Sun6_3.xy.out')
-    write(20,'(a)') '         X         Y         Z         A         B         C         D'
+    write(20,'(a)') '         x         y         z         A         B         C         D'
     !write(20,'(102(f10.2))') z, (x_nodes(i), i = 1, nx)
     do iy=1,ny
         do ix=1,nx
@@ -467,7 +471,7 @@ subroutine XZ_plane()
     integer i, ix, iz, j, l
     Y = 12.5d0
     OPEN (20,FILE='Sun6_3.xz.out')
-    write(20,'(a)') '         X         Y         Z         A         B         C         D'
+    write(20,'(a)') '         x         y         z         A         B         C         D'
     do iz=1,nz
         do ix=1,nx
             do i = 1, 4
@@ -503,9 +507,9 @@ subroutine XYZ_File()
     OPEN (20,FILE='Sun6_3.xyz.out')
     !write(20,'(a)') '         X         Y         Z         A         B         C         D'
     tab = char(9)
-    write(20,'(14a)') '         X',tab, &
-                      '         Y',tab, &
-                      '         Z',tab, &
+    write(20,'(14a)') '         x',tab, &
+                      '         y',tab, &
+                      '         z',tab, &
                       '         A',tab, &
                       '         B',tab, &
                       '         C',tab, &
