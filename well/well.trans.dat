@@ -44,7 +44,7 @@ WELL 2
                 -diameter       1
                 -elevation      0.      -10.
         2200    2000
-                -pumping_rate   0	0
+                -pumping_rate   0	1e-6
 		-xy_coordinate_system  grid
 		-z_coordinate_system  grid
 		-solution 	0	2
@@ -52,7 +52,7 @@ WELL 3
         2400    2000
                 -diameter       1
                 -elevation      0.      -10.
-                -pumping_rate   0	0
+                -pumping_rate   0	1e-6
 		-solution 	0	2
 SPECIFIED_HEAD_BC
         -zone   0 0 0 -100 4000 0

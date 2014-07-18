@@ -8,7 +8,8 @@ SOLUTION_METHOD
         -space_differencing           0
         -time_differencing            1
         -cross_dispersion             false
-        -rebalance_fraction           0.0
+        -rebalance_by_cell            true
+        -rebalance_fraction           0.5
 UNITS
         -time                         yr
         -horizontal_grid              m
