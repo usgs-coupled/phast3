@@ -940,13 +940,13 @@ SUBROUTINE read2
 !!$     IF(fresur .AND. (nfbc > 0 .OR. nrbc > 0)) THEN
         ! ... Allocate space for zone volume cell index data,
         ! ...     optional flux bc data, optional river bc data: mcb2_m
-        ALLOCATE (zone_col(num_flo_zones), lnk_cfbc2zon(num_flo_zones),  &
-             lnk_crbc2zon(num_flo_zones),  &
-             stat = a_err)
-        IF (a_err /= 0) THEN  
-           PRINT *, "array allocation failed: read2, flow zones.1.1"  
-           STOP
-        ENDIF
+     ALLOCATE (zone_col(num_flo_zones), lnk_cfbc2zon(num_flo_zones),  &
+     lnk_crbc2zon(num_flo_zones),  &
+     stat = a_err)
+     IF (a_err /= 0) THEN  
+         PRINT *, "array allocation failed: read2, flow zones.1.1"  
+         STOP
+     ENDIF
 !!$     END IF
      izn = 0
      DO

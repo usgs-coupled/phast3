@@ -257,7 +257,7 @@ SUBROUTINE dealloc_arr
         PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1"  
         STOP
      ENDIF
-     IF(fresur .AND. (nfbc > 0 .OR. nrbc > 0)) THEN
+     !IF(fresur .AND. (nfbc > 0 .OR. nrbc > 0)) THEN
         ! ... Deallocate space for zone volume cell index data,
         ! ...     optional flux bc data, optional river bc data: mcb2_m
         DEALLOCATE(zone_col, lnk_cfbc2zon, lnk_crbc2zon,  &
@@ -266,7 +266,7 @@ SUBROUTINE dealloc_arr
            PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.1"  
            STOP
         ENDIF
-     END IF
+     !END IF
   END IF
   ! ... Deallocate init2_1 arrays
   ! ... Deallocate the mask for cross dispersion calculation: mcg

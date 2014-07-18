@@ -302,7 +302,7 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[i];
 	n_old2 = initial_conditions2[i];
-	if (phreeqc_bin.Get_Solutions().find(n_old1) == phreeqc_bin.Get_Solutions().end())
+	if (n_old1 > 0 && phreeqc_bin.Get_Solutions().find(n_old1) == phreeqc_bin.Get_Solutions().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLUTION " << n_old1 << " not found.";

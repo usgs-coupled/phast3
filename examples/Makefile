@@ -25,7 +25,7 @@ endif
 endif
 
 ifeq ($(CFG), CYGWIN)
-  TOPDIR=/cygdrive/c/programs/phastpp
+  TOPDIR=/cygdrive/c/programs/phastpp3-worker
   TEST=$(TOPDIR)/examples
 # 32 bit Release
 #  PHAST_INPUT=C:/Program\ Files\ \(x86\)/USGS/phast-2.0.4799/bin/phastinput.exe
@@ -33,8 +33,9 @@ ifeq ($(CFG), CYGWIN)
 
 
 # 64 bit Release
-  PHAST_INPUT=C:/Program\ Files/USGS/phast-2.0.4799/bin/phastinput.exe
-  PHAST=C:/Program\ Files/USGS/phast-2.0.4799/bin/phast-ser.exe
+  PHAST_INPUT=$(TOPDIR)/src/phastinput/vs2012/x64/Release/phastinput.exe
+ # PHAST=$(TOPDIR)/src/phast/vs2012/x64/ser_debug/phast.exe
+#  PHAST=$(TOPDIR)/src/phast/vs2012/x64/ser/phast.exe
 
   #PHAST_INPUT=$(TOPDIR)/src/phastinput/vc80/Release/phastinput.exe
   #PHAST=$(TOPDIR)/src/phast/win32_2005/ser/phast.exe

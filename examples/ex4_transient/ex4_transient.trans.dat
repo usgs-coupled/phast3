@@ -12,10 +12,15 @@ UNITS
         -leaky_k                              m/sec
         -leaky_thickness                      m
         -flux                                 m/yr
+        -river_width                          m
+        -river_depth                          m
         -river_bed_thickness                  m
         -river_bed_hydraulic_conductivity     m/s     
         -well_diameter                        in
         -well_flow_rate                       L/day
+        -equilibrium_phases                   water
+        -exchange                             water
+        -surface                              water
 GRID
         -uniform x    0    90000    16
         -uniform y    0    48000    9
@@ -92,11 +97,13 @@ RIVER 3 North Canadian River
                 -solution                     0         1
 FLUX_BC
         -zone   27000. 3000. 400.  90000. 45000. 400.
+        	-face Z
                 -flux                         0         -0.01
 					      3000      -0.02		
                 -associated_solution          0         1
 					      4000      2
 	-zone   57000. 3000. 400.  90000. 45000. 400.
+        	-face Z
                 -flux                         0         -0.03
 					      3100      -0.04		
                 -associated_solution          0         2
@@ -116,6 +123,7 @@ SPECIFIED_HEAD_BC
 					      6200     2					      
 LEAKY_BC
         -zone   0. 48000. 0. 27000. 48000. 400.
+                -face Y
                 -hydraulic                    1.5e-5
                 -thickness                   30000.
                 -head                         0         305.0
@@ -123,6 +131,7 @@ LEAKY_BC
                 -associated                   0         1
 					      8000      2
        -zone 0 0 0 39000 0 400
+                -face Y
                 -hydraulic_conductivity       1.5E-5
                 -thickness                    20000
                 -head                         0         320

@@ -150,8 +150,8 @@ SOLUTION_METHOD
      -time_differencing                1
      -cross_dispersion                 false
      -rebalance_fraction               0.5
-     -rebalance_by_cell                false
-     #-thread                           4
+     -rebalance_by_cell                true
+     #-thread                           1
 TIME_CONTROL
      -time_step                        0         20000 years
      -time_change                      1000000   years
@@ -166,4 +166,5 @@ PRINT_FREQUENCY
           -HDF_chemistry               1         step 
           -XYZ_chemistry               500000    y
           -XYZ_well                    1         step
+          -restart_file                1000000   y
 END
