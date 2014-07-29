@@ -1,6 +1,7 @@
 #if defined(USE_MPI)
 #include <mpi.h>
 #endif
+#include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
