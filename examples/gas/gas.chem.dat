@@ -1,0 +1,314 @@
+TITLE 1
+
+SOLUTION_MASTER_SPECIES
+Sulfate	Sulfate-2	0.0	96.064   96.064
+
+SOLUTION_SPECIES
+Sulfate-2 = Sulfate-2
+	-log_k	0.0
+
+Sulfate-2 + H+ = H(Sulfate)-
+	-log_k	1.988
+	-delta_h 3.85	kcal
+	-analytic	-56.889	0.006473	2307.9	19.8858	0.0
+
+Na+ + Sulfate-2= Na(Sulfate)-
+	-log_k	0.7
+	-delta_h 1.120	kcal
+
+Ca+2 + Sulfate-2 = Ca(Sulfate)
+	-log_k	2.25
+	-delta_h 1.325	kcal
+
+
+Ca+2 + H(Sulfate)- = CaH(Sulfate)+
+	-log_k	  1.08
+
+Mg+2 + Sulfate-2= Mg(Sulfate)
+	-log_k	2.37
+	-delta_h 4.550	kcal
+
+
+PHASES
+H2(g)_140_600
+	H2 = H2
+	log_k 		 -3.23
+
+H2S(g)_140_600
+	H2S  =  H+ + HS-
+	log_k   	-8.19
+
+CH4(g)_140_600
+	CH4 = CH4
+	log_k		-3.24
+
+CO2(g)_140_600
+	CO2 = CO2
+	log_k  		-2.26
+
+H2O(g)_140_600
+	H2O = H2O
+	log_k   	-0.69
+
+Sulfur_140_600
+	S + 2H+ + 2e- = H2S
+	log_k  		2.66
+
+Calcite_140_600
+	CaCO3 = CO3-2 + Ca+2
+	log_k		-9.44
+
+Anhydrite_140_600
+	Ca(Sulfate) = Ca+2 + Sulfate-2
+	log_k     -5.54
+
+Dolomite_140_600
+	CaMg(CO3)2 = Ca+2 + Mg+2 + 2CO3-2
+	log_k 		-18.01  
+
+
+
+RATES
+TSR_Seal     
+-start
+10 if (TOT("C(-4)") >= TOT("Sulfate")) then S1 = TOT("Sulfate")
+20 if (TOT("C(-4)") < TOT("Sulfate")) then S1 = TOT("C(-4)")
+30 if (S1 <= 1e-8) then goto 200
+40	rate = -1.0e-15 #* TOT("Sulfate") / (TOT("Sulfate") + 1e-8) * TOT("C(-4)") / (TOT("C(-4)") + 1e-8)
+50	dS1 = rate * time
+60 if (dS1 > S1) then dS1 = S1
+200 save dS1
+-end
+
+TSR_Gascap
+-start
+10 if (TOT("C(-4)") >= TOT("Sulfate")) then S2 = TOT("Sulfate")
+20 if (TOT("C(-4)") < TOT("Sulfate")) then S2 = TOT("C(-4)")
+30 if (S2 <= 1e-8) then goto 200
+40	rate = -4.5e-15 #* TOT("Sulfate") / (TOT("Sulfate") + 1e-8) * TOT("C(-4)") / (TOT("C(-4)") + 1e-8)
+50	dS2 = rate * time
+60 if (dS2 > S2) then dS2 = S2
+200 save dS2
+-end
+
+TSR_GWC
+-start
+10 if (TOT("C(-4)") >= TOT("Sulfate")) then S3 = TOT("Sulfate")
+20 if (TOT("C(-4)") < TOT("Sulfate")) then S3 = TOT("C(-4)")
+30 if (S3 <= 1e-8) then goto 200
+40	rate = -9.0e-15 # * TOT("Sulfate") / (TOT("Sulfate") + 1e-8) * TOT("C(-4)") / (TOT("C(-4)") + 1e-8)
+50	dS3 = rate * time
+60 if (dS3 > S3) then dS3 = S3
+200 save dS3
+-end
+
+TSR_Waterleg
+-start
+10 if (TOT("C(-4)") >= TOT("Sulfate")) then S4 = TOT("Sulfate")
+20 if (TOT("C(-4)") < TOT("Sulfate")) then S42 = TOT("C(-4)")
+30 if (S4 <= 1e-8) then goto 200
+40	rate = -4.5e-15 # * TOT("Sulfate") / (TOT("Sulfate") + 1e-8) * TOT("C(-4)") / (TOT("C(-4)") + 1e-8)
+50	dS4 = rate * time
+60 if (dS4 > S4) then dS4 = S4
+200 save dS4
+-end
+
+
+SOLUTION 1    #Anhydrite seal
+pH     5.569
+#pe     -0.198
+temp   140
+units  mol/kgw
+C		8.595e-02   
+Ca     		2.013e-02   
+Cl     		1.500e+00   
+Na    		1.500e+00   
+Sulfate   	1.170e-02
+#S(6)     	1.170e-02
+#S 1e-10
+END
+
+EQUILIBRIUM_PHASES 1
+Anhydrite_140_600       0.0	1973.6     dissolve_only
+Sulfur_140_600		0.0	0.0
+Calcite_140_600	        0.0	26.0
+Dolomite_140_600        0.0     0.0 
+END
+
+GAS_PHASE 1
+-fixed_pressure
+-pressure 	        600.0
+-temperature            140.0
+CH4(g)_140_600	  	0.0
+CO2(g)_140_600		0.0
+H2(g)_140_600  		0.0
+H2S(g)_140_600		0.0
+#H2O(g)_140_600          0.0
+END
+
+KINETICS 1
+TSR_Seal
+#-formula CH4 1.0 Sulfate-2 1.0 CO3-2 -1.0 S-2 -1.0 H+ -2.0 H2O -1.0
+-formula Sulfate +1 SO4 -1
+-m0 0.0
+-m 0.0 
+#-cvode
+END
+
+
+SOLUTION 2   # Gascap
+pH	          6.015
+pe	          -4.633 
+temp              140.0
+units             mol/kgw
+C                 3.366e-01   
+Ca                3.158e-03   
+Cl                1.501e+00   
+Mg                1.809e-02   
+Na                1.501e+00   
+#S 1e-10 
+END
+
+EQUILIBRIUM_PHASES 2
+Sulfur_140_600 		  0.0 0.0
+Calcite_140_600           0.0 26.0
+Dolomite_140_600          0.0 125.4 
+END
+
+GAS_PHASE 2
+-fixed_pressure
+-pressure 	          600.0
+-temperature              140.0
+-volume                   19.0
+CH4(g)_140_600 	  	  582.0
+CO2(g)_140_600 		  18.0
+H2(g)_140_600   	  0.0
+H2S(g)_140_600 		  0.0
+#H2O(g)_140_600            0.0
+END
+
+KINETICS 2
+TSR_Gascap
+#-formula CH4 1.0 Sulfate-2 1.0 CO3-2 -1.0 S-2 -1.0 H+ -2.0 H2O -1.0
+-formula Sulfate +1 SO4 -1
+-m0 0.0
+-m 0.0 
+#-cvode
+END
+
+
+SOLUTION 3  # GWC
+pH	          6.015
+pe	          -4.633 
+temp              140.0
+units             mol/kgw
+C                 3.366e-01   
+Ca                3.158e-03   
+Cl                1.501e+00   
+Mg                1.809e-02   
+Na                1.501e+00  
+#S 1e-10
+END
+
+EQUILIBRIUM_PHASES 3
+Sulfur_140_600 		  0.0 0.0
+Calcite_140_600           0.0 26.0
+Dolomite_140_600          0.0 125.4 
+END
+
+
+GAS_PHASE 3
+-fixed_pressure
+-pressure 	          600.0
+-temperature              140.0
+CH4(g)_140_600 	  	  0.0
+CO2(g)_140_600 		  0.0
+H2(g)_140_600   	  0.0
+H2S(g)_140_600 		  0.0
+#H2O(g)_140_600            0.0
+END
+
+KINETICS 3
+TSR_GWC
+#-formula CH4 1.0 Sulfate-2 1.0 CO3-2 -1.0 S-2 -1.0 H+ -2.0 H2O -1.0
+-formula Sulfate +1 SO4 -1
+-m0 0.0
+-m 0.0 
+#-cvode
+END
+
+SOLUTION 4    #water leg
+pH	          6.015
+pe	          -4.633 
+temp              140.0
+units             mol/kgw
+C                 3.366e-01   
+Ca                3.158e-03   
+Cl                1.501e+00   
+Mg                1.809e-02   
+Na                1.501e+00   
+#S 1e-10    
+END
+
+EQUILIBRIUM_PHASES 4
+Sulfur_140_600 		  0.0 0.0
+Calcite_140_600           0.0 26.0
+Dolomite_140_600          0.0 125.4  
+END
+
+
+GAS_PHASE 4
+-fixed_pressure
+-pressure 	        600.0
+-temperature            140.0
+CH4(g)_140_600	  	0.0
+CO2(g)_140_600		0.0
+H2(g)_140_600  		0.0
+H2S(g)_140_600		0.0
+#H2O(g)_140_600          0.0
+END
+
+KINETICS 4
+TSR_Waterleg
+#-formula CH4 1.0 Sulfate-2 1.0 CO3-2 -1.0 S-2 -1.0 H+ -2.0 H2O -1.0
+-formula Sulfate +1 SO4 -1
+-m0 0.0
+-m 0.0 
+#-cvode
+END
+
+
+SELECTED_OUTPUT
+                -reset false
+		
+USER_PUNCH
+        -headings pH pe H2O-g Ca S(6) C(+4) CH4(aq) S(-2) Um_Calcite Um_Anhydrite Sulfur Um_Dolomite CH4(g) CO2(g) H2S(g) H2S-mol% CH4-mol% Mg Dolomite 
+
+10 PUNCH -LA("H+")
+20 PUNCH -LA("e-")
+30 PUNCH TOTMOLE("water")
+40 PUNCH TOT("Ca")
+50 PUNCH TOT("Sulfate")
+60 PUNCH TOT("C(4)")
+70 PUNCH TOT("C(-4)")
+80 PUNCH TOT("S(-2)")
+90 PUNCH EQUI("Calcite_140_600") - 26
+100 If (EQUI("Anhydrite_140_600") > 70) THEN PUNCH EQUI("Anhydrite_140_160") - 1973.6 ELSE PUNCH 0.0
+110 PUNCH EQUI("Sulfur_140_600")
+120 If (EQUI("Dolomite_140_600") > 70) THEN PUNCH EQUI("Dolomite_140_600") - 125.4 ELSE PUNCH EQUI("Dolomite_140_600") 
+130 PUNCH Gas("CH4(g)_140_600")
+140 PUNCH GAS("CO2(g)_140_600")
+150 PUNCH GAS("H2S(g)_140_600")
+160 If (Gas("CH4(g)_140_600") + Gas("CO2(g)_140_600") + GAS("H2S(g)_140_600") + GAS("H2(g)_140_600")) > 0.5 THEN PUNCH GAS("H2S(g)_140_600") / (Gas("CH4(g)_140_600") + Gas("CO2(g)_140_600") + GAS("H2S(g)_140_600") + GAS("H2(g)_140_600")) * 100 ELSE PUNCH 0 
+170 If (Gas("CH4(g)_140_600") + Gas("CO2(g)_140_600") + GAS("H2S(g)_140_600") + GAS("H2(g)_140_600")) > 0.5 THEN PUNCH GAS("CH4(g)_140_600") / (Gas("CH4(g)_140_600") + Gas("CO2(g)_140_600") + GAS("H2S(g)_140_600") + GAS("H2(g)_140_600")) * 100 ELSE PUNCH 0 
+180 PUNCH TOT("Mg")
+190 PUNCH EQUI("Dolomite_140_600")
+END
+KNOBS
+#-debug_model true
+#-tolerance 1e-17
+#-scale
+#-diag
+#-delay
+#RUN_CELLS
+#   -cells 1-4
