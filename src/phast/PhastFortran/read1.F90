@@ -71,11 +71,11 @@ SUBROUTINE read1
 8004 FORMAT(TR5,A/TR5,I5,I8)  
 
      ! ... number of threads, multithreaded version only
-     READ(fuins, *) nthreads  
-     IF (print_rde) WRITE(furde, 8004) 'C.1.9 .. number of threads', nthreads
-#if defined(USE_MPI)
-     nthreads = -1
-#endif
+!     READ(fuins, *) nthreads  
+!     IF (print_rde) WRITE(furde, 8004) 'C.1.9 .. number of threads', nthreads
+!#if defined(USE_MPI)
+!     nthreads = -1
+!#endif
 
   ENDIF
 END SUBROUTINE read1
