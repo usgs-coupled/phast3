@@ -50,13 +50,13 @@ UNITS
 	-kinetics                         WATER
 	-gas_phase                        WATER
 GRID
-	-uniform X 0 1000 41
-	-uniform Y 0 2 3
+	-uniform X 0 1000 11
+	-uniform Y 0 2 2
 	-uniform Z 0 80 81
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
-	-chemistry_dimensions XYZ
+	-chemistry_dimensions XZ
 	-print_orientation XY
 	-grid_origin   0  0  0
 	-grid_angle    0
@@ -426,7 +426,7 @@ PRINT_FREQUENCY
 		-conductances           0
 		-end_of_period_default  end 
 		-flow_balance           end 
-		-force_chemistry_print  0
+		-force_chemistry_print  0   years
 		-HDF_chemistry          50   years
 		-heads                  end 
 		-progress_statistics    end 
@@ -436,6 +436,6 @@ PRINT_FREQUENCY
 		 
 TIME_CONTROL
 -time_step 0 10  years
--time_end  100 years
+-time_end  50 years
 
 END
