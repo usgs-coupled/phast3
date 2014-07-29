@@ -6091,7 +6091,7 @@ PhreeqcRM::RunCellsThread(int n)
 				phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) MPI_Wtime());
 #else
 				phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) clock());
-#endif
+#endif			
 				// Set local print flags
 				bool pr_chem = pr_chemistry_on && (this->print_chem_mask[j] != 0);
 
@@ -6127,6 +6127,7 @@ PhreeqcRM::RunCellsThread(int n)
 					if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
 					{
 						error_msg(phast_iphreeqc_worker->GetErrorString());
+						*phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
 						throw PhreeqcRMStop();
 					}
 

@@ -18,7 +18,7 @@
 #define PHAST_SUB FC_FUNC_(phast_sub, PHAST_SUB)
 #endif
 
-extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);
+extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself, int *nthreads);
 
 #if WIN32
 #include <windows.h>
@@ -101,8 +101,11 @@ int main(int argc, char* argv[])
 	clock_t t_total = clock() - t0;
 	std::cerr << "Matric multiply time: " << (double) t_total / (double) CLOCKS_PER_SEC << std::endl;
 #endif
-
-
+	int nthreads = 0;
+	if (argc > 1)
+	{
+		sscanf(argv[1], "%d", &nthreads);
+	}
 	int mpi_tasks;
 	int mpi_myself;
 	try
@@ -154,7 +157,7 @@ int main(int argc, char* argv[])
 		//_CrtSetDbgFlag(tmpDbgFlag);
 		//_crtBreakAlloc = 198;
 		
-		PHAST_SUB(&mpi_tasks, &mpi_myself);
+		PHAST_SUB(&mpi_tasks, &mpi_myself, &nthreads);
 
 #if defined(USE_MPI)
 		MPI_Finalize();

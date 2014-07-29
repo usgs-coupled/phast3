@@ -47,18 +47,15 @@
     ! ... Receive memory allocation data, solute
     CALL read1_distribute
 
-    !IF (solute) THEN
-        ! ... Make a PhreeqcRM
-        rm_id = RM_Create(nxyz, MPI_COMM_WORLD)
-        IF (rm_id.LT.0) THEN
-            WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
-            STOP 
-        END IF
-        time_phreeqc = 0._kdp
-        nthreads = RM_GetThreadCount(rm_id)
-        status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
-        status = RM_MpiWorker(rm_id)                               ! loop until calculation is done
-    !ENDIF        ! ... solute
+    ! ... Make a PhreeqcRM
+    rm_id = RM_Create(nxyz, MPI_COMM_WORLD)
+    IF (rm_id.LT.0) THEN
+        WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
+        STOP 
+    END IF
+    nthreads = RM_GetThreadCount(rm_id)
+    status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
+    status = RM_MpiWorker(rm_id)
 
     CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
     CALL terminate_phast_worker
