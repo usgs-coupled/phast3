@@ -355,7 +355,7 @@ copy $(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
       <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;OMPI_IMPORTS;USE_MPI;USE_GZ;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;OMPI_IMPORTS;USE_MPI;USE_GZ;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
