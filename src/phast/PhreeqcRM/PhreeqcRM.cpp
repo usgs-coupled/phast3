@@ -7560,9 +7560,9 @@ PhreeqcRM::SpeciesConcentrations2Module(std::vector<double> & species_conc)
 #ifdef USE_MPI
 		if (this->mpi_myself > 0)
 		{
-			species_conc.resize(nspecies * this->nxyz, 0.0);
+			species_conc.resize(this->species_names.size() * this->nxyz, 0.0);
 		}
-		MPI_Bcast(species_conc.data(), (int) nspecies * nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
+		MPI_Bcast(species_conc.data(), (int) this->species_names.size() * nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
 		for (int n = this->mpi_myself; n < this->mpi_myself + 1; n++)
 #else
  		for (int n = 0; n < this->nthreads; n++)
