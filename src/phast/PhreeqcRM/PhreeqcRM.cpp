@@ -138,7 +138,7 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo( &sysinfo );
 
-	n = sysinfo.dwNumberOfProcessors;
+	n = (int) sysinfo.dwNumberOfProcessors;
 #else
 	// Linux, Solaris, Aix, Mac 10.4+
 	n = sysconf( _SC_NPROCESSORS_ONLN );
@@ -302,36 +302,39 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[i];
 	n_old2 = initial_conditions2[i];
-	if (n_old1 > 0 && phreeqc_bin.Get_Solutions().find(n_old1) == phreeqc_bin.Get_Solutions().end())
+	if (n_old1 >= 0 && phreeqc_bin.Get_Solutions().find(n_old1) == phreeqc_bin.Get_Solutions().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLUTION " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 > 0 && phreeqc_bin.Get_Solutions().find(n_old2) == phreeqc_bin.Get_Solutions().end())
+	if (n_old2 >= 0 && phreeqc_bin.Get_Solutions().find(n_old2) == phreeqc_bin.Get_Solutions().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLUTION " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	f1 = fraction1[i];
-	if (n_old1 >= 0)
+	if (rtn == IRM_OK)
 	{
-		cxxMix mx;
-		// Account for saturation of cell
-		double current_v = phreeqc_bin.Get_Solution(n_old1)->Get_soln_vol();
-		double v = f1 * cell_porosity_local * saturation[i] / current_v;
-		mx.Add(n_old1, v);
-		if (n_old2 >= 0)
+		f1 = fraction1[i];
+		if (n_old1 >= 0)
 		{
-			current_v = phreeqc_bin.Get_Solution(n_old2)->Get_soln_vol();
-			v = (1.0 - f1) * cell_porosity_local * saturation[i] / current_v;
-			mx.Add(n_old2, v);
+			cxxMix mx;
+			// Account for saturation of cell
+			double current_v = phreeqc_bin.Get_Solution(n_old1)->Get_soln_vol();
+			double v = f1 * cell_porosity_local * saturation[i] / current_v;
+			mx.Add(n_old1, v);
+			if (n_old2 >= 0)
+			{
+				current_v = phreeqc_bin.Get_Solution(n_old2)->Get_soln_vol();
+				v = (1.0 - f1) * cell_porosity_local * saturation[i] / current_v;
+				mx.Add(n_old2, v);
+			}
+			cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
+			initial_bin.Set_Solution(n_user_new, &cxxsoln);
 		}
-		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
-		initial_bin.Set_Solution(n_user_new, &cxxsoln);
 	}
 
 	/*
@@ -339,32 +342,35 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[this->nxyz + i];
 	n_old2 = initial_conditions2[this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_PPassemblages().find(n_old1) == phreeqc_bin.Get_PPassemblages().end())
+	if (n_old1 >= 0 && phreeqc_bin.Get_PPassemblages().find(n_old1) == phreeqc_bin.Get_PPassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 > 0 && phreeqc_bin.Get_PPassemblages().find(n_old2) == phreeqc_bin.Get_PPassemblages().end())
+	if (n_old2 >= 0 && phreeqc_bin.Get_PPassemblages().find(n_old2) == phreeqc_bin.Get_PPassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	f1 = fraction1[this->nxyz + i];
-	if (n_old1 >= 0)
+	if (rtn == IRM_OK)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		
-		mx.Multiply(porosity_factor[this->units_PPassemblage]);
-		cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
-								  n_user_new);
-		initial_bin.Set_PPassemblage(n_user_new, &cxxentity);
+		f1 = fraction1[this->nxyz + i];
+		if (n_old1 >= 0)
+		{
+			cxxMix mx;
+			mx.Add(n_old1, f1);
+			if (n_old2 >= 0)
+				mx.Add(n_old2, 1 - f1);
+
+			mx.Multiply(porosity_factor[this->units_PPassemblage]);
+			cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
+				n_user_new);
+			initial_bin.Set_PPassemblage(n_user_new, &cxxentity);
+		}
 	}
 	/*
 	 *   Copy exchange assemblage
@@ -372,153 +378,171 @@ PhreeqcRM::CellInitialize(
 
 	n_old1 = initial_conditions1[2 * this->nxyz + i];
 	n_old2 = initial_conditions2[2 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_Exchangers().find(n_old1) == phreeqc_bin.Get_Exchangers().end())
+	if (n_old1 >= 0 && phreeqc_bin.Get_Exchangers().find(n_old1) == phreeqc_bin.Get_Exchangers().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EXCHANGE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 > 0 && phreeqc_bin.Get_Exchangers().find(n_old2) == phreeqc_bin.Get_Exchangers().end())
+	if (n_old2 >= 0 && phreeqc_bin.Get_Exchangers().find(n_old2) == phreeqc_bin.Get_Exchangers().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EXCHANGE " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	f1 = fraction1[2 * this->nxyz + i];
-	if (n_old1 >= 0)
+	if (rtn == IRM_OK)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->units_Exchange]);
-		cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
-		initial_bin.Set_Exchange(n_user_new, &cxxexch);
+		f1 = fraction1[2 * this->nxyz + i];
+		if (n_old1 >= 0)
+		{
+			cxxMix mx;
+			mx.Add(n_old1, f1);
+			if (n_old2 >= 0)
+				mx.Add(n_old2, 1 - f1);
+			mx.Multiply(porosity_factor[this->units_Exchange]);
+			cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
+			initial_bin.Set_Exchange(n_user_new, &cxxexch);
+		}
 	}
 	/*
 	 *   Copy surface assemblage
 	 */
 	n_old1 = initial_conditions1[3 * this->nxyz + i];
 	n_old2 = initial_conditions2[3 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_Surfaces().find(n_old1) == phreeqc_bin.Get_Surfaces().end())
+	if (n_old1 >= 0 && phreeqc_bin.Get_Surfaces().find(n_old1) == phreeqc_bin.Get_Surfaces().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SURFACE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 > 0 && phreeqc_bin.Get_Surfaces().find(n_old2) == phreeqc_bin.Get_Surfaces().end())
+	if (n_old2 >= 0 && phreeqc_bin.Get_Surfaces().find(n_old2) == phreeqc_bin.Get_Surfaces().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SURFACE " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	f1 = fraction1[3 * this->nxyz + i];
-	if (n_old1 >= 0)
+	if (rtn == IRM_OK)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->units_Surface]);
-		cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
-		initial_bin.Set_Surface(n_user_new, &cxxentity);
+		f1 = fraction1[3 * this->nxyz + i];
+		if (n_old1 >= 0)
+		{
+			cxxMix mx;
+			mx.Add(n_old1, f1);
+			if (n_old2 >= 0)
+				mx.Add(n_old2, 1 - f1);
+			mx.Multiply(porosity_factor[this->units_Surface]);
+			cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
+			initial_bin.Set_Surface(n_user_new, &cxxentity);
+		}
 	}
 	/*
 	 *   Copy gas phase
 	 */
 	n_old1 = initial_conditions1[4 * this->nxyz + i];
 	n_old2 = initial_conditions2[4 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_GasPhases().find(n_old1) == phreeqc_bin.Get_GasPhases().end())
+	if (n_old1 >= 0 && phreeqc_bin.Get_GasPhases().find(n_old1) == phreeqc_bin.Get_GasPhases().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition GAS_PHASE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 > 0 && phreeqc_bin.Get_GasPhases().find(n_old2) == phreeqc_bin.Get_GasPhases().end())
+	if (n_old2 >= 0 && phreeqc_bin.Get_GasPhases().find(n_old2) == phreeqc_bin.Get_GasPhases().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition GAS_PHASE " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	f1 = fraction1[4 * this->nxyz + i];
-	if (n_old1 >= 0)
+	if (rtn == IRM_OK)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->units_GasPhase]);
-		cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
-		initial_bin.Set_GasPhase(n_user_new, &cxxentity);
+		f1 = fraction1[4 * this->nxyz + i];
+		if (n_old1 >= 0)
+		{
+			cxxMix mx;
+			mx.Add(n_old1, f1);
+			if (n_old2 >= 0)
+				mx.Add(n_old2, 1 - f1);
+			mx.Multiply(porosity_factor[this->units_GasPhase]);
+			cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
+			initial_bin.Set_GasPhase(n_user_new, &cxxentity);
+		}
 	}
 	/*
 	 *   Copy solid solution
 	 */
 	n_old1 = initial_conditions1[5 * this->nxyz + i];
 	n_old2 = initial_conditions2[5 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old1) == phreeqc_bin.Get_SSassemblages().end())
+	if (n_old1 >= 0 && phreeqc_bin.Get_SSassemblages().find(n_old1) == phreeqc_bin.Get_SSassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
+	if (n_old2 >= 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	f1 = fraction1[5 * this->nxyz + i];
-	if (n_old1 >= 0)
+	if (rtn == IRM_OK)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->units_SSassemblage]);
-		cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
-								  n_user_new);
-		initial_bin.Set_SSassemblage(n_user_new, &cxxentity);
+		f1 = fraction1[5 * this->nxyz + i];
+		if (n_old1 >= 0)
+		{
+			cxxMix mx;
+			mx.Add(n_old1, f1);
+			if (n_old2 >= 0)
+				mx.Add(n_old2, 1 - f1);
+			mx.Multiply(porosity_factor[this->units_SSassemblage]);
+			cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
+				n_user_new);
+			initial_bin.Set_SSassemblage(n_user_new, &cxxentity);
+		}
 	}
 	/*
 	 *   Copy kinetics
 	 */
 	n_old1 = initial_conditions1[6 * this->nxyz + i];
 	n_old2 = initial_conditions2[6 * this->nxyz + i];
-	if (n_old1 > 0 && phreeqc_bin.Get_Kinetics().find(n_old1) == phreeqc_bin.Get_Kinetics().end())
+	if (n_old1 >= 0 && phreeqc_bin.Get_Kinetics().find(n_old1) == phreeqc_bin.Get_Kinetics().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition KINETICS " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
+	if (n_old2 >= 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition KINETICS " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	f1 = fraction1[6 * this->nxyz + i];
-	if (n_old1 >= 0)
+	if (rtn == IRM_OK)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		mx.Multiply(porosity_factor[this->units_Kinetics]);
-		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
-		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
+		f1 = fraction1[6 * this->nxyz + i];
+		if (n_old1 >= 0)
+		{
+			cxxMix mx;
+			mx.Add(n_old1, f1);
+			if (n_old2 >= 0)
+				mx.Add(n_old2, 1 - f1);
+			mx.Multiply(porosity_factor[this->units_Kinetics]);
+			cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
+			initial_bin.Set_Kinetics(n_user_new, &cxxentity);
+		}
 	}
-	this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
+	if (rtn == IRM_OK)
+	{
+		this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
+	}
 	return rtn;
 }
 /* ---------------------------------------------------------------------- */
