@@ -857,7 +857,7 @@ IRM_RESULT
 PhreeqcRM::CloseFiles(void)
 /* ---------------------------------------------------------------------- */
 {
-	
+	this->phreeqcrm_error_string.clear();
 	// open echo and log file, prefix.log.txt
 	this->phreeqcrm_io.log_close();
 
@@ -871,6 +871,7 @@ void
 PhreeqcRM::Concentrations2Solutions(int n, std::vector<double> &c)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	if (this->component_h2o)
 	{
 		return Concentrations2SolutionsH2O(n, c);
@@ -1058,6 +1059,7 @@ IPhreeqc *
 PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	if (this->component_h2o)
 	{
 		return Concentrations2UtilityH2O(c, tc, p_atm);
@@ -1208,6 +1210,7 @@ IRM_RESULT
 PhreeqcRM::CreateMapping(std::vector<int> &grid2chem)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
@@ -1470,6 +1473,7 @@ IRM_RESULT
 PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	bool dump = false;
 	
 	// return if dump_on is false
@@ -1705,6 +1709,7 @@ IRM_RESULT
 PhreeqcRM::DumpModule(bool dump_on, bool append)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	bool dump = false;
 
 	// return if dump_on is false
@@ -1812,6 +1817,7 @@ IRM_RESULT
 PhreeqcRM::DumpModule(bool dump_on, bool append)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -1973,6 +1979,7 @@ IRM_RESULT
 PhreeqcRM::DumpModule(bool dump_on, bool append)
 /* ---------------------------------------------------------------------- */
 {	
+	this->phreeqcrm_error_string.clear();
 	// return if dump_on is false
 	if (!dump_on) return IRM_OK;
 
@@ -2052,6 +2059,7 @@ IRM_RESULT
 PhreeqcRM::DumpModule(bool dump_on, bool append)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	bool dump = false;
 
 	// return if dump_on is false
@@ -2157,6 +2165,7 @@ IRM_RESULT
 PhreeqcRM::DumpModule(bool dump_on, bool append)
 /* ---------------------------------------------------------------------- */
 {	
+	this->phreeqcrm_error_string.clear();
 	// return if dump_on is false
 	if (!dump_on) return IRM_OK;
 
@@ -2234,6 +2243,7 @@ PhreeqcRM::ErrorMessage(const std::string &error_string, bool prepend)
 	if (prepend)
 		estr << "ERROR: "; 
 	estr << error_string << std::endl;
+	this->phreeqcrm_error_string.append(estr.str().c_str());
 	this->phreeqcrm_io.output_msg(estr.str().c_str());
 	this->phreeqcrm_io.error_msg(estr.str().c_str());
 	this->phreeqcrm_io.log_msg(estr.str().c_str());
@@ -2279,6 +2289,7 @@ PhreeqcRM::FindComponents(void)
  *		n_comp, which is total, including H, O, elements, and Charge
  *      names, which contains character strings with names of components
  */
+	this->phreeqcrm_error_string.clear();
 	try
 	{
 #ifdef USE_MPI
@@ -2404,6 +2415,7 @@ IRM_RESULT
 PhreeqcRM::GetConcentrations(std::vector<double> &c)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
@@ -2514,6 +2526,7 @@ IRM_RESULT
 PhreeqcRM::GetConcentrations(std::vector<double> &c)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	// convert Reaction module solution data to hst mass fractions
 	IRM_RESULT return_value = IRM_OK;
 	try
@@ -2575,6 +2588,7 @@ IRM_RESULT
 PhreeqcRM::GetDensity(std::vector<double> & density_arg)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	try
 	{
 #ifdef USE_MPI
@@ -2653,10 +2667,58 @@ PhreeqcRM::GetDensity(std::vector<double> & density_arg)
 	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
+std::string
+PhreeqcRM::GetErrorString(void)
+/* ---------------------------------------------------------------------- */
+{
+	std::string errstr;
+	try
+	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETERRORSTRING;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+		for (int n = 1; n < this->mpi_tasks; n++)
+		{
+			if (this->mpi_myself == n)
+			{
+					int l = (int) this->phreeqcrm_error_string.size(); 
+					MPI_Send((void *) &l, 1, MPI_INT, 0, 0, phreeqcrm_comm);
+					if (l > 0)
+					{
+						MPI_Send((void *) this->phreeqcrm_error_string.c_str(), l, MPI_CHAR, 0, 0, phreeqcrm_comm);
+					}
+			}
+			else if (this->mpi_myself == 0)
+			{	
+				MPI_Status mpi_status;
+				int l;
+				MPI_Recv(&l, 1, MPI_INT, n, 0, phreeqcrm_comm, &mpi_status);
+				if (l > 0)
+				{
+					char *errstr = new char[l + 1];
+					MPI_Recv(errstr, l, MPI_CHAR, n, 0, phreeqcrm_comm, &mpi_status);
+					this->phreeqcrm_error_string.append(errstr);
+					delete []errstr;
+				}
+			}
+		}
+#endif
+	}
+	catch (...)
+	{
+		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetGetErrorString");
+	}
+	return this->phreeqcrm_error_string;;
+}
+/* ---------------------------------------------------------------------- */
 int
 PhreeqcRM::GetNthSelectedOutputUserNumber(int i)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	int return_value = IRM_OK;
 	try
 	{
@@ -2683,7 +2745,7 @@ IRM_RESULT
 PhreeqcRM::GetSelectedOutput(std::vector<double> &so)
 /* ---------------------------------------------------------------------- */
 {
-	
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
@@ -2826,6 +2888,7 @@ int
 PhreeqcRM::GetSelectedOutputColumnCount()
 /* ---------------------------------------------------------------------- */
 {	
+	this->phreeqcrm_error_string.clear();
 	try
 	{
 		if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
@@ -2850,6 +2913,7 @@ int
 PhreeqcRM::GetSelectedOutputCount(void)
 /* ---------------------------------------------------------------------- */
 {	
+	this->phreeqcrm_error_string.clear();
 	return (int) this->workers[0]->CSelectedOutputMap.size();
 }
 /* ---------------------------------------------------------------------- */
@@ -2857,6 +2921,7 @@ IRM_RESULT
 PhreeqcRM::GetSelectedOutputHeading(int icol, std::string &heading)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	try
 	{
 		if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
@@ -2894,6 +2959,7 @@ int
 PhreeqcRM::GetSelectedOutputRowCount()
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	return this->nxyz;
 }
 /* ---------------------------------------------------------------------- */
@@ -2901,6 +2967,7 @@ const std::vector<double> &
 PhreeqcRM::GetSolutionVolume(void)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	try
 	{
 #ifdef USE_MPI
@@ -2979,6 +3046,7 @@ IRM_RESULT
 PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	if (this->mpi_myself == 0)
 	{
 		int method = METHOD_GETSPECIESCONCENTRATIONS;
@@ -3074,6 +3142,7 @@ IRM_RESULT
 PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	if (this->species_save_on)
 	{
 		size_t nspecies = this->species_names.size();
@@ -3213,6 +3282,7 @@ IRM_RESULT
 PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c, 
 					std::vector < int > & boundary_solution1)
 {
+	this->phreeqcrm_error_string.clear();
 	std::vector< int > dummy;
 	std::vector< double > dummy1;
 	return InitialPhreeqc2Concentrations(destination_c, boundary_solution1, dummy, dummy1);
@@ -3236,6 +3306,7 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
  *   Output: destination_c - concentrations for boundary conditions
  *
  */
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	this->Get_phreeqc_bin().Clear();
 	try
@@ -3335,6 +3406,7 @@ PhreeqcRM::InitialPhreeqc2Module(
 					std::vector < int >    & initial_conditions1_in)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	std::vector<int> i_dummy;
 	std::vector<double> d_dummy;
 	return InitialPhreeqc2Module(initial_conditions1_in, i_dummy, d_dummy);
@@ -3366,6 +3438,7 @@ PhreeqcRM::InitialPhreeqc2Module(
 	 *      exchangers, surface complexers, gases, solid solution assemblages,
 	 *      and kinetics for each cell.
 	 */
+	this->phreeqcrm_error_string.clear();
 	int i, j;
 	IRM_RESULT return_value = IRM_OK;
 	try
@@ -3510,6 +3583,7 @@ IRM_RESULT
 PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destination_c, 
 					std::vector < int > & boundary_solution1)
 {
+	this->phreeqcrm_error_string.clear();
 	std::vector< int > dummy;
 	std::vector< double > dummy1;
 	return InitialPhreeqc2SpeciesConcentrations(destination_c, boundary_solution1, dummy, dummy1);
@@ -3533,6 +3607,7 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
  *   Output: c - concentrations for boundary conditions
  *
  */
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	this->Get_phreeqc_bin().Clear();
 	try
@@ -3638,6 +3713,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 	 *      Routine finds the last solution in InitialPhreeqc, equilibrates the cell,
 	 *      and copies result to list of cell numbers in the module. 
 	 */
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -3835,6 +3911,7 @@ IRM_RESULT
 PhreeqcRM::LoadDatabase(const std::string &database)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -3910,13 +3987,14 @@ PhreeqcRM::MpiWorker()
 	IRM_RESULT return_value = IRM_OK;
 #ifdef USE_MPI
 	bool debug_worker = false;
-	try
+	bool loop_break = false;
+	while (!loop_break)
 	{
-		bool loop_break = false;
-		while (!loop_break)
+		try
 		{
 			return_value = IRM_OK;
 			int method;
+			//std::cerr << "Worker waiting..." << std::endl;
 			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
 			switch (method)
 			{
@@ -3950,6 +4028,12 @@ PhreeqcRM::MpiWorker()
 				{
 					std::vector<double> dummy;
 					this->GetDensity(dummy);
+				}
+				break;
+			case METHOD_GETERRORSTRING:
+				if (debug_worker) std::cerr << "METHOD_GETERRORSTRING" << std::endl;
+				{
+					this->GetErrorString();
 				}
 				break;
 			case METHOD_GETSELECTEDOUTPUT:
@@ -4243,10 +4327,10 @@ PhreeqcRM::MpiWorker()
 			}
 			this->ErrorHandler(return_value, "Task returned error in MpiWorker.");
 		}
-	}
-	catch (...)
-	{
-		return_value = IRM_FAIL;
+		catch (...)
+		{
+			return_value = IRM_FAIL;
+		}
 	}
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::MpiWorker");
@@ -4271,6 +4355,7 @@ PhreeqcRM::OpenFiles(void)
 {
 	// opens error file, log file, and output file
 	// error_file is stderr
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	try
 	{
@@ -4312,6 +4397,7 @@ void
 PhreeqcRM::PartitionUZ(int n, int iphrq, int ihst, double new_frac)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	int n_user;
 	double s1, s2, uz1, uz2;
 
@@ -5588,6 +5674,7 @@ PhreeqcRM::RunCells()
 /*
  *   Routine runs reactions for each cell
  */
+	this->phreeqcrm_error_string.clear();
 	if (mpi_myself == 0)
 	{
 		int method = METHOD_RUNCELLS;
@@ -5710,6 +5797,7 @@ PhreeqcRM::RunCells()
 /*
  *   Update solution compositions in sz_bin
  */
+	this->phreeqcrm_error_string.clear();
 	// check that all solutions are defined
 	if (this->need_error_check)
 	{
@@ -6254,6 +6342,7 @@ PhreeqcRM::RunFile(bool workers, bool initial_phreeqc, bool utility, const std::
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -6389,6 +6478,7 @@ PhreeqcRM::RunString(bool workers, bool initial_phreeqc, bool utility, const std
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -6585,6 +6675,7 @@ IRM_RESULT
 PhreeqcRM::SetCellVolume(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	std::string methodName = "SetCellVolume";
 	IRM_RESULT return_value = SetGeneric(this->cell_volume, this->nxyz, t, METHOD_SETCELLVOLUME, methodName);
 	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
@@ -6595,6 +6686,7 @@ IRM_RESULT
 PhreeqcRM::SetChemistryFileName(const char * cn)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	int l = 0;
 	if (this->mpi_myself == 0)
@@ -6621,6 +6713,7 @@ IRM_RESULT
 PhreeqcRM::SetComponentH2O(bool tf)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -6643,6 +6736,7 @@ IRM_RESULT
 PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	std::vector<double> c_chem, c_chem_root;
 	c_chem.resize(this->count_chemistry * (int) this->components.size(), INACTIVE_CELL_VALUE);
@@ -6713,6 +6807,7 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 IRM_RESULT 
 PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)
 {
+	this->phreeqcrm_error_string.clear();
 	int return_value = IRM_INVALIDARG;
 	if (i >= 0)
 	{
@@ -6752,6 +6847,7 @@ IRM_RESULT
 PhreeqcRM::SetDensity(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	std::string methodName = "SetDensity";
 	IRM_RESULT result_value = SetGeneric(this->density, this->nxyz, t, METHOD_SETDENSITY, methodName);
 	return this->ReturnHandler(result_value, "PhreeqcRM::" + methodName);
@@ -6761,6 +6857,7 @@ IRM_RESULT
 PhreeqcRM::SetDumpFileName(const std::string & cn)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = IRM_OK;
 	int l = 0;
 	if (this->mpi_myself == 0)
@@ -6885,6 +6982,7 @@ IRM_RESULT
 PhreeqcRM::SetErrorHandlerMode(int i)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 		if (this->mpi_myself == 0)
 		{
@@ -6913,6 +7011,7 @@ IRM_RESULT
 PhreeqcRM::SetFilePrefix(const std::string & prefix)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -6980,6 +7079,7 @@ IRM_RESULT
 PhreeqcRM::SetMpiWorkerCallbackC(int (*fcn)(int *method, void *cookie))
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	this->mpi_worker_callback_c = fcn;
 	return IRM_OK;
 }
@@ -6988,6 +7088,7 @@ IRM_RESULT
 PhreeqcRM::SetMpiWorkerCallbackCookie( void *cookie)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	this->mpi_worker_callback_cookie = cookie;
 	return IRM_OK;
 }
@@ -6996,6 +7097,7 @@ IRM_RESULT
 PhreeqcRM::SetMpiWorkerCallbackFortran(int (*fcn)(int *method))
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	this->mpi_worker_callback_fortran = fcn;
 	return IRM_OK;
 }
@@ -7004,6 +7106,7 @@ IRM_RESULT
 PhreeqcRM::SetPartitionUZSolids(bool tf)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7031,6 +7134,7 @@ IRM_RESULT
 PhreeqcRM::SetPoreVolume(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	std::string methodName = "SetPoreVolume";
 	IRM_RESULT return_value = SetGeneric(this->pore_volume, this->nxyz, t, METHOD_SETPOREVOLUME, methodName);
 	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
@@ -7041,6 +7145,7 @@ IRM_RESULT
 PhreeqcRM::SetPressure(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	std::string methodName = "SetPressure";
 	IRM_RESULT return_value = SetGeneric(this->pressure, this->nxyz, t, METHOD_SETPRESSURE, methodName);
 
@@ -7084,6 +7189,7 @@ IRM_RESULT
 PhreeqcRM::SetPrintChemistryOn(bool worker, bool ip, bool utility)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7118,6 +7224,7 @@ IRM_RESULT
 PhreeqcRM::SetPrintChemistryMask(std::vector<int> & m)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7155,6 +7262,7 @@ IRM_RESULT
 PhreeqcRM::SetRebalanceByCell(bool t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7177,6 +7285,7 @@ IRM_RESULT
 PhreeqcRM::SetRebalanceFraction(double t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	if (mpi_myself == 0)
 	{
 		if (this->rebalance_fraction == t) return IRM_OK;
@@ -7198,6 +7307,7 @@ IRM_RESULT
 PhreeqcRM::SetSaturation(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	std::string methodName = "SetSaturation";
 	IRM_RESULT return_value = SetGeneric(this->saturation, this->nxyz, t, METHOD_SETSATURATION, methodName);
 	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
@@ -7207,6 +7317,7 @@ IRM_RESULT
 PhreeqcRM::SetSelectedOutputOn(bool t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7230,6 +7341,7 @@ IRM_RESULT
 PhreeqcRM::SetSpeciesSaveOn(bool t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7258,6 +7370,7 @@ IRM_RESULT
 PhreeqcRM::SetTemperature(const std::vector<double> &t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 	IRM_RESULT return_value = SetGeneric(this->tempc, this->nxyz, t, METHOD_SETTEMPERATURE, "SetTemperature");
 
 #ifdef USE_OPENMP
@@ -7294,6 +7407,7 @@ IRM_RESULT
 PhreeqcRM::SetTime(double t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7317,6 +7431,7 @@ IRM_RESULT
 PhreeqcRM::SetTimeConversion(double t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7340,6 +7455,7 @@ IRM_RESULT
 PhreeqcRM::SetTimeStep(double t)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7362,6 +7478,7 @@ IRM_RESULT
 PhreeqcRM::SetUnitsExchange(int u)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7392,6 +7509,7 @@ IRM_RESULT
 PhreeqcRM::SetUnitsGasPhase(int u)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7422,6 +7540,7 @@ IRM_RESULT
 PhreeqcRM::SetUnitsKinetics(int u)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7452,6 +7571,7 @@ IRM_RESULT
 PhreeqcRM::SetUnitsPPassemblage(int u)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7482,6 +7602,7 @@ IRM_RESULT
 PhreeqcRM::SetUnitsSolution(int u)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7512,6 +7633,7 @@ IRM_RESULT
 PhreeqcRM::SetUnitsSSassemblage(int u)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7542,6 +7664,7 @@ IRM_RESULT
 PhreeqcRM::SetUnitsSurface(int u)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7572,6 +7695,7 @@ IRM_RESULT
 PhreeqcRM::SpeciesConcentrations2Module(std::vector<double> & species_conc)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
@@ -7792,6 +7916,7 @@ void
 PhreeqcRM::UseSolutionDensityVolume(bool tf)
 /* ---------------------------------------------------------------------- */
 {
+	this->phreeqcrm_error_string.clear();
 #ifdef USE_MPI
 	if (this->mpi_myself == 0)
 	{
