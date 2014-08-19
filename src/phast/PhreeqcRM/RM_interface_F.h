@@ -25,6 +25,8 @@
 #define RM_GetComponentCount               FC_FUNC_ (rm_getcomponentcount,             RM_GETCOMPONENTCOUNT)
 #define RM_GetConcentrations               FC_FUNC_ (rm_getconcentrations,             RM_GETCONCENTRATIONS)
 #define RM_GetDensity                      FC_FUNC_ (rm_getdensity,                    RM_GETDENSITY)
+#define RM_GetErrorString                  FC_FUNC_ (rm_geterrorstring,                RM_GETERRORSTRING)
+#define RM_GetErrorStringLength            FC_FUNC_ (rm_geterrorstringlength,          RM_GETERRORSTRINGLENGTH)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
 #define RM_GetGfw                          FC_FUNC_ (rm_getgfw,                        RM_GETGFW)
 #define RM_GetGridCellCount                FC_FUNC_ (rm_getgridcellcount,              RM_GETGRIDCELLCOUNT)
@@ -117,6 +119,8 @@ IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1);
 int        RM_GetComponentCount(int * id);
 IRM_RESULT RM_GetConcentrations(int *id, double *c);
 IRM_RESULT RM_GetDensity(int *id, double *density);
+IRM_RESULT RM_GetErrorString(int *id, char *prefix, size_t l);
+int        RM_GetErrorStringLength(int *id);
 IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, size_t l);
 IRM_RESULT RM_GetGfw(int *id, double * gfw);
 int        RM_GetGridCellCount(int *id);

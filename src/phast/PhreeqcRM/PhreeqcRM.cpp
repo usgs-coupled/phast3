@@ -2671,7 +2671,11 @@ std::string
 PhreeqcRM::GetErrorString(void)
 /* ---------------------------------------------------------------------- */
 {
-	std::string errstr;
+	std::string cummulative_error_string;
+	if (this->mpi_myself == 0)
+	{
+		cummulative_error_string.append(this->phreeqcrm_error_string);
+	}
 	try
 	{
 #ifdef USE_MPI
@@ -2693,6 +2697,7 @@ PhreeqcRM::GetErrorString(void)
 			}
 			else if (this->mpi_myself == 0)
 			{	
+				std::string errstr;
 				MPI_Status mpi_status;
 				int l;
 				MPI_Recv(&l, 1, MPI_INT, n, 0, phreeqcrm_comm, &mpi_status);
@@ -2700,7 +2705,7 @@ PhreeqcRM::GetErrorString(void)
 				{
 					char *errstr = new char[l + 1];
 					MPI_Recv(errstr, l, MPI_CHAR, n, 0, phreeqcrm_comm, &mpi_status);
-					this->phreeqcrm_error_string.append(errstr);
+					cummulative_error_string.append(errstr);
 					delete []errstr;
 				}
 			}
@@ -2711,7 +2716,7 @@ PhreeqcRM::GetErrorString(void)
 	{
 		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetGetErrorString");
 	}
-	return this->phreeqcrm_error_string;;
+	return cummulative_error_string;
 }
 /* ---------------------------------------------------------------------- */
 int

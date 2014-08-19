@@ -88,6 +88,17 @@
             INTEGER, INTENT(in) :: id
             DOUBLE PRECISION, INTENT(out) :: density
         END FUNCTION RM_GetDensity 
+
+        INTEGER FUNCTION RM_GetErrorString(id, errstr)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, INTENT(out) :: errstr
+        END FUNCTION RM_GetErrorString 
+
+        INTEGER FUNCTION RM_GetErrorStringLength(id)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetErrorStringLength 
         
         INTEGER FUNCTION RM_GetFilePrefix(id, prefix)
             IMPLICIT NONE

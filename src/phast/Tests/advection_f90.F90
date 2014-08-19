@@ -59,6 +59,8 @@
     character(100)                                :: svalue
     integer                                       :: iphreeqc_id, iphreeqc_id1
     integer                                       :: dump_on, append
+    character(len=:), allocatable                 :: errstr
+    integer                                       :: l
 
     nxyz = 40
 #ifdef USE_MPI
@@ -77,6 +79,7 @@
 	id = RM_Create(nxyz, nthreads);
 #endif
     status = RM_SetErrorHandlerMode(id, 2)  ! exit on error
+    !status = RM_SetErrorHandlerMode(id, 0)  ! return on error
     status = RM_SetComponentH2O(id, 0)
 	status = RM_SetRebalanceFraction(id, 0.5d0)
 	status = RM_SetRebalanceByCell(id, 1)
@@ -141,6 +144,17 @@
 
     ! Load database
     status = RM_LoadDatabase(id, "phreeqc.dat") 
+    if (status .ne. 0) then
+        l = RM_GetErrorStringLength(id)
+        allocate (character(len=l) :: errstr)
+        write(*,*) "Start of error string: "
+        status = RM_GetErrorString(id, errstr)
+        write(*,"(A)") errstr
+        write(*,*) "End of error string."
+        deallocate(errstr)
+		status = RM_Destroy(id);
+        stop
+    endif 
     
     ! Run file to define solutions and reactants for initial conditions, selected output
     ! There are three types of IPhreeqc instances in PhreeqcRM

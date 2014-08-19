@@ -611,26 +611,24 @@ Called by root and (or) workers.
  */
 	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
 /**
-Returns a standard string containing error messages related to the last call to a PhreeqcRM method
+Returns a standard string containing error messages related to the last call to a PhreeqcRM method.
 @retval                 Error messages related to the last call to a PhreeqcRM method. 
 @see                    @ref GetErrorHandlerMode.
 @par C++ Example:
 @htmlonly
 <CODE>
 <PRE>  
-std::ostringstream oss;
-oss << phreeqc_rm.GetErrorString();
-if (oss.str().c_str().size() > 0)
+if (status != IRM_OK)
 {
-  std::cerr << "Error messages: \n" << oss.str() << std::endl;
+  std::cerr << phreeqc_rm.GetErrorString(); 
 }
 </PRE>
 </CODE> 
 @endhtmlonly
 @par MPI:
-Called by root.
+Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	std::string                                  GetErrorString();
+	std::string                                  GetErrorString(void);
 /**
 Returns the file prefix for the output (.chem.txt) and log files (.log.txt). 
 @retval std::string     The file prefix as set by @ref SetFilePrefix, or "myrun", by default. 
