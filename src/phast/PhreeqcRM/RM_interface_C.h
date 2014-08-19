@@ -99,7 +99,7 @@ IRM_RESULT        RM_CloseFiles(int id);
 /**
 @a N sets of component concentrations are converted to SOLUTIONs numbered 1-@a n in the Utility IPhreeqc.
 The solutions can be reacted and manipulated with the methods of IPhreeqc. If solution concentration units
-(@ref SetUnitsSolution) is per liter, one liter of solution is created in the Utility instance; if solution
+(@ref RM_SetUnitsSolution) is per liter, one liter of solution is created in the Utility instance; if solution
 concentration units are mass fraction, one kilogram of solution is created in the Utility instance.
 The motivation for this
 method is the mixing of solutions in wells, where it may be necessary to calculate solution properties
@@ -769,6 +769,117 @@ status = RM_GetDensity(id, density(1))
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_GetDensity(int id, double *density);
+/**
+Returns a string containing error messages related to the last call to a PhreeqcRM method to 
+the character argument (@a errstr).
+@param id               The instance @a id returned from @ref RM_Create.
+@param errstr           The error string related to the last call to a PhreeqcRM method.
+@param l                Maximum number of characters that can be written to the argument (@a errstr) (C only).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+if (status != IRM_OK)
+{
+  l = RM_GetErrorStringLength(id);
+  errstr = (char *) malloc((size_t) (l * sizeof(char) + 1));
+  RM_GetErrorString(id, errstr, l+1);
+  fprintf(stderr,"%s", errstr);
+  free(errstr);
+  RM_Destroy(id);
+  exit(1);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_GetErrorString(id, errstr)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  CHARACTER, INTENT(out) :: errstr
+END FUNCTION RM_GetErrorString 
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>
+character(len=:), allocatable :: errstr
+integer l
+if (status .ne. 0) then
+  l = RM_GetErrorStringLength(id)
+  allocate (character(len=l) :: errstr)
+  status = RM_GetErrorString(id, errstr)
+  write(*,"(A)") errstr
+  deallocate(errstr)
+  status = RM_Destroy(id)
+  stop
+endif </PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker..
+ */
+IRM_RESULT RM_GetErrorString(int id, char *errstr, size_t l);
+/**
+Returns the length of the string that contains error messages related to the last call to a PhreeqcRM method. 
+@param id               The instance @a id returned from @ref RM_Create.
+@retval int             Length of the error message string (for C, equivalent to strlen, does not include terminating \0).
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>  
+if (status != IRM_OK)
+{
+  l = RM_GetErrorStringLength(id);
+  errstr = (char *) malloc((size_t) (l * sizeof(char) + 1));
+  RM_GetErrorString(id, errstr, l+1);
+  fprintf(stderr,"%s", errstr);
+  free(errstr);
+  RM_Destroy(id);
+  exit(1);
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_GetErrorStringLength(id)   
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+END FUNCTION RM_GetErrorString 
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>
+character(len=:), allocatable :: errstr
+integer l
+if (status .ne. 0) then
+  l = RM_GetErrorStringLength(id)
+  allocate (character(len=l) :: errstr)
+  status = RM_GetErrorString(id, errstr)
+  write(*,"(A)") errstr
+  deallocate(errstr)
+  status = RM_Destroy(id)
+  stop
+endif 
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker..
+ */
+int RM_GetErrorStringLength(int id);
 /**
 Returns the reaction-module file prefix to the character argument (@a prefix).
 @param id               The instance @a id returned from @ref RM_Create.
@@ -4519,7 +4630,7 @@ specified values of density and solution volume.
 Only the following databases distributed with PhreeqcRM have molar volume information 
 needed to accurately calculate density and solution volume: phreeqc.dat, Amm.dat, and pitzer.dat.
 Density is only used when converting to transport units of mass fraction. 
-
+@param id               The instance @a id returned from @ref RM_Create.
 @param tf          @a True indicates that the solution density and volume as 
 calculated by PHREEQC will be used to calculate transport concentrations. 
 @a False indicates that the solution density set by @ref RM_SetDensity and the volume determined by the 
@@ -4556,7 +4667,7 @@ status = RM_UseSolutionDensityVolume(id, 0)
 </CODE>
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_UseSolutionDensityVolume(int id, int tf);
 /**

@@ -56,6 +56,8 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		char svalue[100];
 		int iphreeqc_id, iphreeqc_id1;
 		int dump_on, append;
+		char * errstr = NULL;
+		int l;
 
 		nxyz = 40;
 #ifdef USE_MPI
@@ -75,6 +77,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		id = RM_Create(nxyz, nthreads);
 #endif
 		status = RM_SetErrorHandlerMode(id, 2);
+		//status = RM_SetErrorHandlerMode(id, 0);
 		status = RM_SetComponentH2O(id, 0);
 		status = RM_SetRebalanceFraction(id, 0.5);
 		status = RM_SetRebalanceByCell(id, 1);
@@ -137,6 +140,19 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		// Load database
 		status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
 		status = RM_LoadDatabase(id, "phreeqc.dat"); 
+		if (status != IRM_OK)
+		{
+			l = RM_GetErrorStringLength(id);
+			errstr = (char *) malloc((size_t) (l * sizeof(char) + 1));
+			RM_GetErrorString(id, errstr, l+1);
+			fprintf(stderr,"Beginning of error string:\n");
+			fprintf(stderr,"%s", errstr);
+			fprintf(stderr,"End of error string.\n");
+			free(errstr);
+			errstr = NULL;
+			RM_Destroy(id);
+			exit(1);
+		}
 
 		// Run file to define solutions and reactants for initial conditions, selected output
 		// There are three types of IPhreeqc instances in PhreeqcRM

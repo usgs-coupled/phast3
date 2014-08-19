@@ -287,6 +287,33 @@ RM_GetDensity(int id, double * d)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
+RM_GetErrorString(int id, char *errstr, size_t l)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves file prefix in prefix
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		strncpy(errstr, Reaction_module_ptr->GetErrorString().c_str(), l);
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int 
+RM_GetErrorStringLength(int id)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves file prefix in prefix
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return (int) (Reaction_module_ptr->GetErrorString().size());
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT 
 RM_GetFilePrefix(int id, char *prefix, int l)
 /* ---------------------------------------------------------------------- */
 {
