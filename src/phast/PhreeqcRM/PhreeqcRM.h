@@ -37,6 +37,7 @@ typedef enum {
 	METHOD_FINDCOMPONENTS,
 	METHOD_GETCONCENTRATIONS,
 	METHOD_GETDENSITY,
+	METHOD_GETERRORSTRING,
 	METHOD_GETSELECTEDOUTPUT,
 	METHOD_GETSOLUTIONVOLUME,
 	METHOD_GETSPECIESCONCENTRATIONS,
@@ -609,6 +610,27 @@ phreeqc_rm.OutputMessage(oss.str());
 Called by root and (or) workers.
  */
 	int                                       GetErrorHandlerMode(void) {return this->error_handler_mode;}
+/**
+Returns a standard string containing error messages related to the last call to a PhreeqcRM method
+@retval                 Error messages related to the last call to a PhreeqcRM method. 
+@see                    @ref GetErrorHandlerMode.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>  
+std::ostringstream oss;
+oss << phreeqc_rm.GetErrorString();
+if (oss.str().c_str().size() > 0)
+{
+  std::cerr << "Error messages: \n" << oss.str() << std::endl;
+}
+</PRE>
+</CODE> 
+@endhtmlonly
+@par MPI:
+Called by root.
+ */
+	std::string                                  GetErrorString();
 /**
 Returns the file prefix for the output (.chem.txt) and log files (.log.txt). 
 @retval std::string     The file prefix as set by @ref SetFilePrefix, or "myrun", by default. 
@@ -3459,6 +3481,7 @@ protected:
 	int error_count;
 	int error_handler_mode;                 // 0, return code; 1, throw; 2 exit;
 	bool need_error_check;
+	std::string phreeqcrm_error_string;
 
 	// threading
 	int nthreads;

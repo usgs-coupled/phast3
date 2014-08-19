@@ -34,6 +34,7 @@ int advection_cpp()
 		IRM_RESULT status;
 
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // 1 = throw exception on error
+		//status = phreeqc_rm.SetErrorHandlerMode(0);
 		status = phreeqc_rm.SetComponentH2O(false);
 		status = phreeqc_rm.SetRebalanceFraction(0.5);
 		status = phreeqc_rm.SetRebalanceByCell(true);
@@ -117,6 +118,14 @@ int advection_cpp()
 		// Load database
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
 
+		// if ErrorHandlerMode is 0
+		if (status != IRM_OK)
+		{
+			std::cerr << "...Begin error string:\n";
+			std::cerr << phreeqc_rm.GetErrorString(); // retrieve error messages if needed
+			std::cerr << "...End error string.\n";
+			throw PhreeqcRMStop();
+		}
 		// Run file to define solutions and reactants for initial conditions, selected output
 		bool workers = true;             // One or more IPhreeqcs for doing the reaction calculations for transport
 		bool initial_phreeqc = true;     // This is the InitialPhreeqc instance for accumulating initial and boundary conditions
@@ -360,12 +369,18 @@ int advection_cpp()
 	{
 		std::string e_string = "Advection_cpp failed with an error in PhreeqcRM.";
 		std::cerr << e_string << std::endl;
+#ifdef USE_MPI
+		MPI_Abort(MPI_COMM_WORLD, 1);
+#endif
 		return IRM_FAIL;
 	}
 	catch (...)
 	{
 		std::string e_string = "Advection_cpp failed with an unhandled exception.";
 		std::cerr << e_string << std::endl;
+#ifdef USE_MPI
+		MPI_Abort(MPI_COMM_WORLD, 1);
+#endif
 		return IRM_FAIL;
 	}
 	return EXIT_SUCCESS;
@@ -521,14 +536,20 @@ int units_tester()
 	}
 	catch (PhreeqcRMStop)
 	{
-		std::string e_string = "Advection_cpp failed with an error in PhreeqcRM.";
+		std::string e_string = "Units tester failed with an error in PhreeqcRM.";
 		std::cerr << e_string << std::endl;
+#ifdef USE_MPI
+		MPI_Abort(MPI_COMM_WORLD, 1);
+#endif
 		return IRM_FAIL;
 	}
 	catch (...)
 	{
-		std::string e_string = "Advection_cpp failed with an unhandled exception.";
+		std::string e_string = "Units tester failed with an unhandled exception.";
 		std::cerr << e_string << std::endl;
+#ifdef USE_MPI
+		MPI_Abort(MPI_COMM_WORLD, 1);
+#endif
 		return IRM_FAIL;
 	}
 	return EXIT_SUCCESS;
