@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="merge_debug|Win32">
-      <Configuration>merge_debug</Configuration>
+    <ProjectConfiguration Include="mpi_debug|Win32">
+      <Configuration>mpi_debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="merge_debug|x64">
-      <Configuration>merge_debug</Configuration>
+    <ProjectConfiguration Include="mpi_debug|x64">
+      <Configuration>mpi_debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="merge|Win32">
-      <Configuration>merge</Configuration>
+    <ProjectConfiguration Include="mpi|Win32">
+      <Configuration>mpi</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="merge|x64">
-      <Configuration>merge</Configuration>
+    <ProjectConfiguration Include="mpi|x64">
+      <Configuration>mpi</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ser_debug|Win32">
-      <Configuration>ser_debug</Configuration>
+    <ProjectConfiguration Include="mt_debug|Win32">
+      <Configuration>mt_debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ser_debug|x64">
-      <Configuration>ser_debug</Configuration>
+    <ProjectConfiguration Include="mt_debug|x64">
+      <Configuration>mt_debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ser|Win32">
-      <Configuration>ser</Configuration>
+    <ProjectConfiguration Include="mt|Win32">
+      <Configuration>mt</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ser|x64">
-      <Configuration>ser</Configuration>
+    <ProjectConfiguration Include="mt|x64">
+      <Configuration>mt</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -41,42 +41,42 @@
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ser|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mt|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ser|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mt|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -84,42 +84,42 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="HDF5.props" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='merge|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="HDF5.props" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ser|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mt|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="HDF5.props" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="HDF5.props" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="HDF5.props" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="HDF5.props" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ser|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mt|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="HDF5.props" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="HDF5.props" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
@@ -127,25 +127,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">ser_debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">ser_debug\c\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">ser\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">ser\c\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ser|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ser|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">merge\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">merge\c\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='merge|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='merge|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">$(Configuration)\c\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'">ser_debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'">ser_debug\c\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mt|Win32'">ser\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mt|Win32'">ser\c\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mt|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mt|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'">merge\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'">merge\c\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'">$(Configuration)\c\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'">true</PostBuildEventUseInBuild>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(BOOSTROOT);$(ProjectDir)..;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -172,7 +172,7 @@
 copy $(DEV_HDF5_LIBDLL)\hdf5dll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
@@ -204,7 +204,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
 copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mt|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -223,14 +223,14 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     </ClCompile>
     <Link>
       <AdditionalDependencies>zdll.lib;phastpp.lib;IPhreeqcPhast.lib;hdf5dll.lib;gmp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_BOOST_THREAD32_LIB);$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(DEV_ZLIB122_LIB)\..\zlib1.dll $(OutDir)
 copy $(DEV_HDF5_LIBDLL)\hdf5dll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mt|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
@@ -260,7 +260,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
 copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -285,7 +285,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <Command>copy $(DEV_ZLIB122_LIB)\..\zlib1.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
@@ -315,7 +315,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
@@ -346,7 +346,7 @@ copy $(DEV_HDF5_LIBDLL)\*.dll $(OutDir)
 copy $(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
@@ -386,7 +386,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     <ClCompile Include="..\phast_main.cpp" />
     <ClCompile Include="..\gzstream.cxx" />
     <ClCompile Include="..\KDtree\KDtree.cpp">
-      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">Level3</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'">Level3</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\KDtree\kdtree2.cpp" />
     <ClCompile Include="..\KDtree\Point.cpp" />
