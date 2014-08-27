@@ -43,9 +43,11 @@ BOOL CtrlHandler(DWORD dwCtrlType)
 		case CTRL_BREAK_EVENT:
 		case CTRL_SHUTDOWN_EVENT:
 			OutputDebugString("CtrlHandler Catch\n");
+#ifdef SKIP_REWRITE_PHAST //-------------------------------------------------------------------------
 			HDFFinalize();
 			//write_restart(rate_sim_time_end * rate_cnvtmi);
 			//WriteRestartFile(0);
+#endif // SKIP_REWRITE_PHAST
 			ExitProcess(1);
 			return TRUE;
 		default:
@@ -130,11 +132,9 @@ int main(int argc, char* argv[])
 		mpi_tasks = 1;
 		mpi_myself = 0;
 #endif
-#ifdef SKIP_REWRITE_PHAST //-------------------------------------------------------------------------
 #if WIN32
 		SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE);
 #endif
-#endif // SKIP_REWRITE_PHAST
 		//int tmpDbgFlag;
 #if defined(WIN32_MEMORY_DEBUG)
 	int tmpDbgFlag;
