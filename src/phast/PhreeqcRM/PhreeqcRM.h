@@ -3402,9 +3402,9 @@ protected:
 	IRM_RESULT                                CheckCells();
 	int                                       CheckSelectedOutput();
 	IPhreeqc *                                Concentrations2UtilityH2O(std::vector<double> &c_in, 
-		                                           std::vector<double> t_in, std::vector<double> p_in);
+		                                           std::vector<double> &t_in, std::vector<double> &p_in);
 	IPhreeqc *                                Concentrations2UtilityNoH2O(std::vector<double> &c_in, 
-		                                           std::vector<double> t_in, std::vector<double> p_in);
+		                                           std::vector<double> &t_in, std::vector<double> &p_in);
 	void                                      Concentrations2Solutions(int n, std::vector<double> &c);
 	void                                      Concentrations2SolutionsH2O(int n, std::vector<double> &c);
 	void                                      Concentrations2SolutionsNoH2O(int n, std::vector<double> &c);

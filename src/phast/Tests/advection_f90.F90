@@ -152,7 +152,7 @@
         write(*,"(A)") errstr
         write(*,*) "End of error string."
         deallocate(errstr)
-		status = RM_Destroy(id);
+        status = RM_Destroy(id);
         stop
     endif 
     
