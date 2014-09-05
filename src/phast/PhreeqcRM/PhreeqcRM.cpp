@@ -1068,7 +1068,7 @@ PhreeqcRM::Concentrations2Utility(std::vector<double> &c, std::vector<double> tc
 }
 /* ---------------------------------------------------------------------- */
 IPhreeqc * 
-PhreeqcRM::Concentrations2UtilityH2O(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
+PhreeqcRM::Concentrations2UtilityH2O(std::vector<double> &c, std::vector<double> &tc, std::vector<double> &p_atm)
 /* ---------------------------------------------------------------------- */
 {
 	size_t ncomps = this->components.size();
@@ -1142,7 +1142,7 @@ PhreeqcRM::Concentrations2UtilityH2O(std::vector<double> &c, std::vector<double>
 
 /* ---------------------------------------------------------------------- */
 IPhreeqc * 
-PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<double> tc, std::vector<double> p_atm)
+PhreeqcRM::Concentrations2UtilityNoH2O(std::vector<double> &c, std::vector<double> &tc, std::vector<double> &p_atm)
 /* ---------------------------------------------------------------------- */
 {
 	size_t ncomps = this->components.size();
@@ -2239,14 +2239,19 @@ void
 PhreeqcRM::ErrorMessage(const std::string &error_string, bool prepend)
 /* ---------------------------------------------------------------------- */
 {
-	std::ostringstream estr;
-	if (prepend)
-		estr << "ERROR: "; 
-	estr << error_string << std::endl;
-	this->phreeqcrm_error_string.append(estr.str().c_str());
-	this->phreeqcrm_io.output_msg(estr.str().c_str());
-	this->phreeqcrm_io.error_msg(estr.str().c_str());
-	this->phreeqcrm_io.log_msg(estr.str().c_str());
+#ifdef USE_OPENMP
+#pragma omp critical 
+#endif
+	{
+		std::ostringstream estr;
+		if (prepend)
+			estr << "ERROR: "; 
+		estr << error_string << std::endl;
+		this->phreeqcrm_error_string.append(estr.str().c_str());
+		this->phreeqcrm_io.output_msg(estr.str().c_str());
+		this->phreeqcrm_io.error_msg(estr.str().c_str());
+		this->phreeqcrm_io.log_msg(estr.str().c_str());
+	}
 }
 /* ---------------------------------------------------------------------- */
 bool
@@ -7943,6 +7948,11 @@ void
 PhreeqcRM::WarningMessage(const std::string &str)
 /* ---------------------------------------------------------------------- */
 {
-	this->phreeqcrm_io.warning_msg(str.c_str());
+#ifdef USE_OPENMP
+#pragma omp critical 
+#endif
+	{
+		this->phreeqcrm_io.warning_msg(str.c_str());
+	}
 }
 
