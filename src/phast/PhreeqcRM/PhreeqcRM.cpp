@@ -5713,6 +5713,7 @@ PhreeqcRM::RunCells()
 
 	//clock_t t0 = clock();
 	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+	phast_iphreeqc_worker->PhreeqcPtr->Set_run_cells_one_step(true);
 	if (phast_iphreeqc_worker->Get_out_stream())
 	{
 		delete phast_iphreeqc_worker->Get_out_stream(); 
@@ -5828,6 +5829,7 @@ PhreeqcRM::RunCells()
 		for (int n = 0; n < this->nthreads; n++)
 		{
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
+			phast_iphreeqc_worker->PhreeqcPtr->Set_run_cells_one_step(true);
 			if (phast_iphreeqc_worker->Get_out_stream())
 			{
 				delete phast_iphreeqc_worker->Get_out_stream(); 
