@@ -11,42 +11,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="..\..\PhreeqcRM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="advection_cpp.cpp">
+    <ClCompile Include="..\..\RM_interface_C.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="advection_c.c">
+    <ClCompile Include="..\..\RM_interface_F.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="species_cpp.cpp">
+    <ClCompile Include="..\advection_c.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="species_c.c">
+    <ClCompile Include="..\advection_cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\PhreeqcRM.cpp">
+    <ClCompile Include="..\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\RM_interface_C.cpp">
+    <ClCompile Include="..\species_c.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\RM_interface_F.cpp">
+    <ClCompile Include="..\species_cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h">
+    <ClInclude Include="..\..\IrmResult.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\PhreeqcRM\RM_interface_C.h">
+    <ClInclude Include="..\..\PhreeqcRM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\PhreeqcRM\RM_interface_F.h">
+    <ClInclude Include="..\..\RM_interface_C.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\PhreeqcRM\IrmResult.h">
+    <ClInclude Include="..\..\RM_interface_F.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
