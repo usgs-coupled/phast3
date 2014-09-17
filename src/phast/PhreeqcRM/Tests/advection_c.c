@@ -15,7 +15,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int mpi_myself = 0;
 		int i, j;
 		int nxyz; 
+#ifndef USE_MPI
 		int nthreads;
+#endif
 		int id;
 		int status;
 		double * cell_vol;

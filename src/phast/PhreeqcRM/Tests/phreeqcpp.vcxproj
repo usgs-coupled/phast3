@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="merge_debug|Win32">
-      <Configuration>merge_debug</Configuration>
+    <ProjectConfiguration Include="mpi_debug|Win32">
+      <Configuration>mpi_debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="merge_debug|x64">
-      <Configuration>merge_debug</Configuration>
+    <ProjectConfiguration Include="mpi_debug|x64">
+      <Configuration>mpi_debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="merge|Win32">
-      <Configuration>merge</Configuration>
+    <ProjectConfiguration Include="mpi|Win32">
+      <Configuration>mpi</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="merge|x64">
-      <Configuration>merge</Configuration>
+    <ProjectConfiguration Include="mpi|x64">
+      <Configuration>mpi</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ser_debug|Win32">
-      <Configuration>ser_debug</Configuration>
+    <ProjectConfiguration Include="mt_debug|Win32">
+      <Configuration>mt_debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ser_debug|x64">
-      <Configuration>ser_debug</Configuration>
+    <ProjectConfiguration Include="mt_debug|x64">
+      <Configuration>mt_debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ser|Win32">
-      <Configuration>ser</Configuration>
+    <ProjectConfiguration Include="mt|Win32">
+      <Configuration>mt</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ser|x64">
-      <Configuration>ser</Configuration>
+    <ProjectConfiguration Include="mt|x64">
+      <Configuration>mt</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -41,42 +41,42 @@
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ser|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mt|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ser|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mt|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
@@ -84,67 +84,59 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='merge|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ser|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mt|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ser|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mt|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC70.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">ser_debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">ser_debug\c\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">ser\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">ser\c\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ser|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ser|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">merge\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">merge\c\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='merge|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='merge|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">$(Configuration)\c\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mt|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mt|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'">true</PostBuildEventUseInBuild>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(BOOSTROOT);$(ProjectDir)..;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>THREADED_PHAST;GZIP_RESTART;USE_GZ;USE_PHRQ_ALLOC;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_OPENMP;_DEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -157,22 +149,22 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_ZLIB123_X64_LIB);$(DEV_BOOST_THREAD32_LIB);$(DEV_IFC_LIB);$(SolutionDir)$(OUTDIR);$(SolutionDir)Debug;$(SolutionDir)FortranAdvect\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(OUTDIR);$(SolutionDir)Debug;$(SolutionDir)FortranAdvect\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(ProjectDir)..;$(DEV_ZLIB123_X64_INC);$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>USE_OPENMP;USE_GZ;USE_PHRQ_ALLOC;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(ProjectDir)..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_OPENMP;_DEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -186,24 +178,25 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_ZLIB123_X64_LIB);$(DEV_IFC_X64_LIB);$(OUTDIR);$(SolutionDir)$(platform)\Debug;$(SolutionDir)FortranAdvect\$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR);$(SolutionDir)$(platform)\Debug;$(SolutionDir)FortranAdvect\$(platform)\$(Configuration)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy $(DEV_ZLIB123_X64_LIB)\zlib1.dll  $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mt|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);$(ProjectDir)..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>THREADED_PHAST;NDEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_OPENMP;NDEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -216,12 +209,12 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_BOOST_THREAD32_LIB);$(DEV_IFC_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release;$(SolutionDir)FortranAdvect\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release;$(SolutionDir)FortranAdvect\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mt|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
@@ -230,9 +223,9 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>THREADED_PHAST;NDEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_OPENMP;NDEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -243,18 +236,18 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release;$(SolutionDir)FortranAdvect\$(platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release;$(SolutionDir)FortranAdvect\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_MPICH2_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_MPI;NDEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -265,14 +258,14 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IPhreeqcPhast.lib;fmpich2.lib;mpi.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_MPICH2_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release;$(SolutionDir)FortranAdvect\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(MSMPI_LIB32);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release;$(SolutionDir)FortranAdvect\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
@@ -280,8 +273,8 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(DEV_ZLIB123_X64_INC);$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>OMPI_IMPORTS;USE_GZ;NDEBUG;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_MPI;NDEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -292,19 +285,19 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_ZLIB123_X64_LIB);$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release;$(SolutionDir)FortranAdvect\$(platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release;$(SolutionDir)FortranAdvect\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_MPICH2_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_MPI;_DEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -318,15 +311,15 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IPhreeqcPhast.lib;fmpich2.lib;mpi.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_MPICH2_LIB);$(OUTDIR);$(SolutionDir)Debug;$(SolutionDir)Lib1\$(Configuration);$(SolutionDir)FortranAdvect\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(MSMPI_LIB32);$(OUTDIR);$(SolutionDir)Debug;$(SolutionDir)FortranAdvect\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
@@ -334,12 +327,12 @@
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_MPICH2_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_MPI;_DEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -348,8 +341,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>fmpich2.lib;mpi.lib;IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_MPICH2_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug;$(SolutionDir)FortranAdvect\$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OutDir);%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Debug;$(SolutionDir)FortranAdvect\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -357,38 +350,34 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\gzstream.cxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    <ClCompile Include="..\PhreeqcRM.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    <ClCompile Include="..\RM_interface_C.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\RM_interface_F.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+    <ClCompile Include="..\RM_interface_F.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="advection_c.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">CompileAsC</CompileAs>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='mt_debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='mt_debug|x64'">CompileAsC</CompileAs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="advection_cpp.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="species_c.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="species_cpp.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">false</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\gzstream.h" />
     <ClInclude Include="..\PhreeqcRM\IrmResult.h" />
     <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h" />
     <ClInclude Include="..\PhreeqcRM\RM_interface_C.h" />
