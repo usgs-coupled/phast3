@@ -207,9 +207,18 @@
     <ClCompile Include="..\IPhreeqcPhast\fwrap3Phast.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\fwrap4Phast.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\fwrap5Phast.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\fwrap6Phast.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\fwrap7Phast.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\fwrap8Phast.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\fwrap6Phast.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap7Phast.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\fwrap8Phast.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\IPhreeqcPhast\fwrapPhast.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhast.cxx" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhastLib.cpp" />
@@ -219,9 +228,18 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap3.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap4.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap5.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap6.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap7.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap8.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap6.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap7.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap8.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqcLib.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\advection.cpp" />
