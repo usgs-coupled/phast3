@@ -424,7 +424,35 @@ RM_GetNthSelectedOutputUserNumber(int * id, int * i)
 	}
 	return IRM_BADINSTANCE;
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_GetSaturation(int *id, double * sat)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves saturation for all grid nodes in sat
+	// size of sat must be the number of grid nodes
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		IRM_RESULT return_value = IRM_OK;
+		std::vector <double> sat_vector;
+		Reaction_module_ptr->GetSaturation(sat_vector);
+		if ((int) sat_vector.size() == Reaction_module_ptr->GetGridCellCount())
+		{
+			memcpy(sat, sat_vector.data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+		}
+		else
+		{
+			for (int i = 0; i < Reaction_module_ptr->GetGridCellCount(); i++)
+			{
+				sat[i] = INACTIVE_CELL_VALUE;
+			}
+			return_value = IRM_FAIL;
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_GetSelectedOutput(int * id, double * so)
 /* ---------------------------------------------------------------------- */
@@ -1016,7 +1044,7 @@ RM_ScreenMessage(int *id, const char *err_str, size_t l)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP_RV
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_SetCellVolume(int *id, double *t)
@@ -1035,7 +1063,7 @@ RM_SetCellVolume(int *id, double *t)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_SetComponentH2O(int *id, int *tf)
@@ -1178,6 +1206,7 @@ RM_SetPartitionUZSolids(int *id, int *t)
 	}
 	return IRM_BADINSTANCE;
 }
+#ifdef SKIP_RV
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 /* ---------------------------------------------------------------------- */
@@ -1192,6 +1221,24 @@ IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
 		memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
 		return Reaction_module_ptr->SetPoreVolume(v_vector);
+	}
+	return IRM_BADINSTANCE;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT RM_SetPorosity(int *id, double *t)
+/* ---------------------------------------------------------------------- */
+{
+	// Sets the current porosity of cells, which may change due to 
+	// compressibility of the water and media.
+	// size of t is the number of grid cells
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> v_vector;
+		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
+		memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
+		return Reaction_module_ptr->SetPorosity(v_vector);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -1276,6 +1323,25 @@ IRM_RESULT RM_SetRebalanceByCell(int *id, int *method)
 	}
 	return IRM_BADINSTANCE;
 }
+/* ---------------------------------------------------------------------- */
+IRM_RESULT 
+RM_SetRepresentativeVolume(int *id, double *t)
+/* ---------------------------------------------------------------------- */
+{
+	// Sets the pore volume of a cell, can be an absolute volume
+	// or a relative volume
+	// size of t is number of grid nodes
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> v_vector;
+		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
+		memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
+		return Reaction_module_ptr->SetRepresentativeVolume(v_vector);
+	}
+	return IRM_BADINSTANCE;
+}
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT RM_SetSaturation(int *id, double *t)
 /* ---------------------------------------------------------------------- */
