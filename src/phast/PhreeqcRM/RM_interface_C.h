@@ -3607,6 +3607,7 @@ status = RM_SetPartitionUZSolids(id, 0)
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetPartitionUZSolids(int id, int tf);
+#ifdef SKIP_RV
 /**
 Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume
 to the cell volume (@ref RM_SetCellVolume). The volume of water in a cell is the porosity times the saturation
@@ -3652,6 +3653,52 @@ status = RM_SetPoreVolume(id, pv(1))
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetPoreVolume(int id, double *vol);
+#endif
+/**
+Set the porosity for each cell. 
+The volume of water in a cell is the product of the porosity, the saturation
+(@ref RM_SetSaturation), and the representative volume (@ref RM_SetRepresentativeVolume).
+@param id               The instance @a id returned from @ref RM_Create.
+@param por              Array of porosities, unitless. Default is 0.1. Size of array is @a nxyz, where @a nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_GetSaturation, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>
+por = (double *) malloc((size_t) (nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) por[i] = 0.2;
+status = RM_SetPorosity(id, por);
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_SetPorosity(id, por)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in) :: por
+END FUNCTION RM_SetPorosity
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>
+allocate(por(nxyz))
+por = 0.2
+status = RM_SetPorosity(id, por(1))
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+IRM_RESULT RM_SetPorosity(int id, double *por);
 /**
 Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
 databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat.

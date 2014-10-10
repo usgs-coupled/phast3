@@ -241,8 +241,12 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 		temp.push_back(i);
 		backward_mapping.push_back(temp);
 		saturation.push_back(1.0);
+#ifdef SKIP_RV
 		pore_volume.push_back(0.1);
 		cell_volume.push_back(1.0);
+#endif
+		rv.push_back(1.0);
+		porosity.push_back(0.1);
 		print_chem_mask.push_back(0);
 		density.push_back(1.0);
 		pressure.push_back(1.0);
@@ -291,11 +295,19 @@ PhreeqcRM::CellInitialize(
 	cxxStorageBin initial_bin;
 
 	IRM_RESULT rtn = IRM_OK;
+#ifdef SKIP_RV
 	double cell_porosity_local = pore_volume[i] / cell_volume[i];
+#endif
+	double cell_porosity_local = this->porosity[i];
 	std::vector < double > porosity_factor;
+#ifdef SKIP_RV
 	porosity_factor.push_back(1.0);                          // no adjustment, per liter of cell
 	porosity_factor.push_back(cell_porosity_local);          // per liter of water
 	porosity_factor.push_back(1.0 - cell_porosity_local);    // per liter of rock
+#endif
+	porosity_factor.push_back(this->rv[i]);                              // no adjustment, per liter of rv
+	porosity_factor.push_back(this->rv[i]*cell_porosity_local);          // per liter of water in rv
+	porosity_factor.push_back(this->rv[i]*(1.0 - cell_porosity_local));  // per liter of rock in rv
 
 	/*
 	 *   Copy solution
@@ -940,7 +952,7 @@ PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
 			}
 			break;
 		}
-
+#ifdef SKIP_RV
 		// convert mol/L to moles per cell
 		for (k = 0; k < (int) this->components.size() - 1; k++)
 		{	
@@ -954,7 +966,20 @@ PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
 			}
 
 		}
-				
+#endif	
+		// convert mol/L to moles per cell
+		for (k = 0; k < (int) this->components.size() - 1; k++)
+		{	
+			if (saturation[i] > 0.0)
+			{
+				d[k] *= this->porosity[i] * saturation[i] * this->rv[i];
+			}
+			else
+			{
+				d[k] *= this->porosity[i] * this->rv[i];
+			}
+
+		}
 		// update solution 
 		cxxNameDouble nd;
 		for (k = 4; k < (int) components.size(); k++)
@@ -1024,7 +1049,7 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 			}
 			break;
 		}
-
+#ifdef SKIP_RV
 		// convert mol/L to moles per cell
 		for (k = 0; k < (int) this->components.size(); k++)
 		{	
@@ -1037,7 +1062,19 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 				d[k] *= this->pore_volume[i] / this->cell_volume[i];
 			}
 		}
-				
+#endif	
+		// convert mol/L to moles per cell
+		for (k = 0; k < (int) this->components.size(); k++)
+		{	
+			if (saturation[i] > 0.0)
+			{
+				d[k] *= this->porosity[i] * saturation[i] * this->rv[i];
+			}
+			else
+			{
+				d[k] *= this->porosity[i] * this->rv[i];
+			}
+		}
 		// update solution 
 		cxxNameDouble nd;
 		for (k = 3; k < (int) components.size(); k++)
@@ -2451,7 +2488,10 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 			else
 			{
 				int k = this->backward_mapping[j][0];
+#ifdef SKIP_RV
 				v = this->saturation[k] * this->pore_volume[k] / this->cell_volume[k];
+#endif
+				v = this->saturation[k] * this->porosity[k] * this->rv[k];
 				if (v <= 0)
 				{
 					v = cxxsoln_ptr->Get_soln_vol();
@@ -2558,8 +2598,11 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 				else
 				{
 					int k = this->backward_mapping[j][0];
+#ifdef SKIP_RV
 					v = saturation[k] * pore_volume[k] / cell_volume[k];
-					dens = density[k];
+#endif
+					v =  this->saturation[k]  * this->porosity[k] * this->rv[k];
+					dens = this->density[k];
 					if (v <= 0)
 					{
 						v = cxxsoln_ptr->Get_soln_vol();
@@ -2749,7 +2792,89 @@ PhreeqcRM::GetNthSelectedOutputUserNumber(int i)
 	this->ReturnHandler(PhreeqcRM::Int2IrmResult(return_value, true), "PhreeqcRM::GetNthSelectedOutputUserNumber");
 	return return_value;
 }
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetSaturation(std::vector<double> & sat_arg)
+/* ---------------------------------------------------------------------- */
+{
+	this->phreeqcrm_error_string.clear();
+	try
+	{
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETSATURATION;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+#endif
+		sat_arg.clear();
+		std::vector<double> local_sat;
+		local_sat.resize(this->nxyz, INACTIVE_CELL_VALUE);
+		std::vector<double> dbuffer;
 
+#ifdef USE_MPI
+		int n = this->mpi_myself;
+		for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+		{
+			double v = this->workers[0]->Get_solution(i)->Get_soln_vol();
+			for(size_t j = 0; j < backward_mapping[i].size(); j++)
+			{
+				int n = backward_mapping[i][j];
+				local_sat[n] = v / (this->rv[n] * this->porosity[n]);
+			}
+		}
+		for (int n = 0; n < this->mpi_tasks; n++)
+		{
+			if (this->mpi_myself == n)
+			{
+				if (this->mpi_myself == 0)
+				{
+					continue;
+				}
+				else
+				{
+					int l = this->end_cell[n] - this->start_cell[n] + 1;
+					MPI_Send((void *) &local_sat[this->start_cell[n]], l, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
+				}
+			}
+			else if (this->mpi_myself == 0)
+			{	
+				std::vector<double> dbuffer;
+				MPI_Status mpi_status;
+				int l = this->end_cell[n] - this->start_cell[n] + 1;
+				dbuffer.resize(l);
+				MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
+				for (int i = 0; i < l; i++)
+				{
+					local_sat[this->start_cell[n] +i] = dbuffer[i];
+				}
+			}
+		}
+#else
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
+			{
+				double v = this->workers[n]->Get_solution(i)->Get_soln_vol();
+				for(size_t j = 0; j < backward_mapping[i].size(); j++)
+				{
+					int n = backward_mapping[i][j];
+					local_sat[n] = v / (this->rv[n] * this->porosity[n]);
+				}
+			}
+		}
+#endif
+		if (mpi_myself == 0)
+		{
+			sat_arg = local_sat;
+		}
+	}
+	catch (...)
+	{
+		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetDensity");
+	}
+	return IRM_OK;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::GetSelectedOutput(std::vector<double> &so)
@@ -3521,11 +3646,31 @@ PhreeqcRM::InitialPhreeqc2Module(
 			if (j < 0)	continue;
 #endif
 			assert(forward_mapping[i] >= 0);
+#ifdef SKIP_RV
 			assert (cell_volume[i] > 0.0);
 			if (pore_volume[i] < 0 || cell_volume[i] <= 0)
 			{
 				errstr << "Nonpositive volume in cell " << i << ": volume, " << cell_volume[i]; 
 				errstr << "\t initial volume, " << this->pore_volume[i] << ".",
+					count_negative_porosity++;
+				return_value = IRM_FAIL;
+				continue;
+			}
+#endif
+			assert (this->porosity[i] >= 0.0);
+			if (this->porosity[i] < 0.0)
+			{
+				errstr << "Nonpositive porosity in cell " << i << ": porosity, " << this->porosity[i]; 
+				errstr <<  ".",
+					count_negative_porosity++;
+				return_value = IRM_FAIL;
+				continue;
+			}
+			assert (this->rv[i] >= 0.0);
+			if (this->rv[i] < 0.0)
+			{
+				errstr << "Nonpositive representative volume in cell " << i << ": representative volume, " << this->rv[i]; 
+				errstr << ".",
 					count_negative_porosity++;
 				return_value = IRM_FAIL;
 				continue;
@@ -3798,13 +3943,18 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 					cell_bin.Remove_Reaction(cell);
 					cell_bin.Remove_Temperature(cell);
 					cell_bin.Remove_Pressure(cell);
-					
+#ifdef SKIP_RV					
 					double cell_porosity_local = this->pore_volume[cell_numbers[i]] / this->cell_volume[cell_numbers[i]];
+#endif
+					double cell_porosity_local = this->porosity[cell_numbers[i]];
 					// solution
 					{
 						cxxMix mx;
 						double current_v = cell_bin.Get_Solution(cell)->Get_soln_vol();
+#ifdef SKIP_RV
 						double v = cell_porosity_local * saturation[cell_numbers[i]] / current_v;
+#endif
+						double v = cell_porosity_local * this->saturation[cell_numbers[i]] * this->rv[cell_numbers[i]] / current_v;
 						mx.Add((int) cell, v);
 						cxxSolution cxxsoln(cell_bin.Get_Solutions(), mx, nchem);
 						cell_bin.Set_Solution(nchem, &cxxsoln);
@@ -3812,9 +3962,15 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 
 					// for solids
 					std::vector < double > porosity_factor;
+#ifdef SKIP_RV
 					porosity_factor.push_back(1.0);                          // no adjustment, per liter of cell
 					porosity_factor.push_back(cell_porosity_local);          // per liter of water
 					porosity_factor.push_back(1.0 - cell_porosity_local);    // per liter of rock
+#endif
+					porosity_factor.push_back(this->rv[i]);                         // per liter of rv
+					porosity_factor.push_back(this->rv[i]*cell_porosity_local);          // per liter of water
+					porosity_factor.push_back(this->rv[i]*(1.0 - cell_porosity_local));    // per liter of rock
+
 					// pp_assemblage
 					if (cell_bin.Get_PPassemblages().find(cell) != cell_bin.Get_PPassemblages().end())
 					{
@@ -4046,6 +4202,13 @@ PhreeqcRM::MpiWorker()
 					this->GetErrorString();
 				}
 				break;
+			case METHOD_GETSATURATION:
+				if (debug_worker) std::cerr << "METHOD_GETSATURATION" << std::endl;
+				{
+					std::vector<double> dummy;
+					this->GetSaturation(dummy);
+				}
+				break;
 			case METHOD_GETSELECTEDOUTPUT:
 				if (debug_worker) std::cerr << "METHOD_GETSELECTEDOUTPUT" << std::endl;
 				{
@@ -4112,6 +4275,7 @@ PhreeqcRM::MpiWorker()
 					return_value = this->RunString(dummy, dummy, dummy, c_dummy);
 				}
 				break;
+#ifdef SKIP_RV
 			case METHOD_SETCELLVOLUME:
 				if (debug_worker) std::cerr << "METHOD_SETCELLVOLUME" << std::endl;
 				{
@@ -4119,6 +4283,7 @@ PhreeqcRM::MpiWorker()
 					this->SetCellVolume(dummy);
 				}
 				break;
+#endif
 			case METHOD_SETCOMPONENTH2O:
 				if (debug_worker) std::cerr << "METHOD_SETCOMPONENTH2O" << std::endl;
 				{
@@ -4161,11 +4326,20 @@ PhreeqcRM::MpiWorker()
 					return_value = this->SetPartitionUZSolids(dummy);
 				}
 				break;
+#ifdef SKIP_RV
 			case METHOD_SETPOREVOLUME:
 				if (debug_worker) std::cerr << "METHOD_SETPOREVOLUME" << std::endl;
 				{
 					std::vector<double> dummy;
 					this->SetPoreVolume(dummy);
+				}
+				break;
+#endif
+			case METHOD_SETPOROSITY:
+				if (debug_worker) std::cerr << "METHOD_SETPOROSITY" << std::endl;
+				{
+					std::vector<double> dummy;
+					this->SetPorosity(dummy);
 				}
 				break;
 			case METHOD_SETPRESSURE:
@@ -4201,6 +4375,13 @@ PhreeqcRM::MpiWorker()
 				{
 					double dummy = 0.0;
 					return_value = this->SetRebalanceFraction(dummy);
+				}
+				break;
+			case METHOD_SETREPRESENTATIVEVOLUME:
+				if (debug_worker) std::cerr << "METHOD_SETREPRESENTATIVEVOLUME" << std::endl;
+				{
+					std::vector<double> dummy;
+					this->SetRepresentativeVolume(dummy);
 				}
 				break;
 			case METHOD_SETSATURATION:
@@ -6236,7 +6417,9 @@ PhreeqcRM::RunCellsThread(int n)
 				if (active)
 				{
 					// set cell number, pore volume got Basic functions
+#ifdef SKIP_RV
 					phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume[j], this->saturation[j], cell_volume[j]);
+#endif
 
 					// Set print flags
 					phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
@@ -6682,6 +6865,7 @@ PhreeqcRM::ScreenMessage(const std::string &str)
 {
 	this->phreeqcrm_io.screen_msg(str.c_str());
 }
+#ifdef SKIP_RV
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetCellVolume(const std::vector<double> &t)
@@ -6692,7 +6876,7 @@ PhreeqcRM::SetCellVolume(const std::vector<double> &t)
 	IRM_RESULT return_value = SetGeneric(this->cell_volume, this->nxyz, t, METHOD_SETCELLVOLUME, methodName);
 	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetChemistryFileName(const char * cn)
@@ -7140,7 +7324,7 @@ PhreeqcRM::SetPartitionUZSolids(bool tf)
 	}
 	return IRM_OK;
 }
-
+#ifdef SKIP_RV
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetPoreVolume(const std::vector<double> &t)
@@ -7151,7 +7335,17 @@ PhreeqcRM::SetPoreVolume(const std::vector<double> &t)
 	IRM_RESULT return_value = SetGeneric(this->pore_volume, this->nxyz, t, METHOD_SETPOREVOLUME, methodName);
 	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
 }
-
+#endif
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetPorosity(const std::vector<double> &t)
+/* ---------------------------------------------------------------------- */
+{
+	this->phreeqcrm_error_string.clear();
+	std::string methodName = "SetPorosity";
+	IRM_RESULT return_value = SetGeneric(this->porosity, this->nxyz, t, METHOD_SETPOROSITY, methodName);
+	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetPressure(const std::vector<double> &t)
@@ -7313,7 +7507,16 @@ PhreeqcRM::SetRebalanceFraction(double t)
 #endif
 	return IRM_OK;
 }
-
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetRepresentativeVolume(const std::vector<double> &t)
+/* ---------------------------------------------------------------------- */
+{
+	this->phreeqcrm_error_string.clear();
+	std::string methodName = "SetRepresentativeVolume";
+	IRM_RESULT return_value = SetGeneric(this->rv, this->nxyz, t, METHOD_SETREPRESENTATIVEVOLUME, methodName);
+	return this->ReturnHandler(return_value, "PhreeqcRM::" + methodName);
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetSaturation(const std::vector<double> &t)
@@ -7749,7 +7952,10 @@ PhreeqcRM::SpeciesConcentrations2Module(std::vector<double> & species_conc)
 				cxxNameDouble nd;
 				std::vector<double> d;
 				d.resize(3,0.0);
+#ifdef SKIP_RV
 				solution_totals.multiply(this->pore_volume[i] / this->cell_volume[i] * this->saturation[i]);
+#endif
+				solution_totals.multiply(this->porosity[i] * this->saturation[i] * this->rv[i]);
 				cxxNameDouble::iterator it = solution_totals.begin();
 				for ( ; it != solution_totals.end(); it++)
 				{

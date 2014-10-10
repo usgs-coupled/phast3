@@ -138,6 +138,12 @@
             INTEGER, INTENT(in) :: id, n
         END FUNCTION RM_GetNthSelectedOutputUserNumber 
         
+        INTEGER FUNCTION RM_GetSaturation(id, sat)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, INTENT(out) :: sat
+        END FUNCTION RM_GetSaturation
+        
         INTEGER FUNCTION RM_GetSelectedOutput(id, so)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
@@ -317,11 +323,11 @@
             CHARACTER, INTENT(in) :: str
         END FUNCTION RM_ScreenMessage   
  		     
-        INTEGER FUNCTION RM_SetCellVolume(id, vol)   
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: vol
-        END FUNCTION RM_SetCellVolume
+        !INTEGER FUNCTION RM_SetCellVolume(id, vol)   
+        !    IMPLICIT NONE
+        !    INTEGER, INTENT(in) :: id
+        !    DOUBLE PRECISION, INTENT(in) :: vol
+        !END FUNCTION RM_SetCellVolume
  		     
         INTEGER FUNCTION RM_SetComponentH2O(id, tf)   
             IMPLICIT NONE
@@ -380,11 +386,17 @@
             INTEGER, INTENT(in)  :: tf
         END FUNCTION RM_SetPartitionUZSolids 
 
-        INTEGER FUNCTION RM_SetPoreVolume(id, pv)   
+        !INTEGER FUNCTION RM_SetPoreVolume(id, pv)   
+        !    IMPLICIT NONE
+        !    INTEGER, INTENT(in) :: id
+        !    DOUBLE PRECISION, INTENT(in) :: pv
+        !END FUNCTION RM_SetPoreVolume 
+
+        INTEGER FUNCTION RM_SetPorosity(id, por)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: pv
-        END FUNCTION RM_SetPoreVolume 
+            DOUBLE PRECISION, INTENT(in) :: por
+        END FUNCTION RM_SetPorosity 
 
         INTEGER FUNCTION RM_SetPressure(id, p)   
             IMPLICIT NONE
@@ -415,6 +427,12 @@
             INTEGER, INTENT(in) :: id
             DOUBLE PRECISION, INTENT(in)  :: f
         END FUNCTION RM_SetRebalanceFraction
+		
+        INTEGER FUNCTION RM_SetRepresentativeVolume(id, rv)   
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, INTENT(in) :: rv
+        END FUNCTION RM_SetRepresentativeVolume 
 
         INTEGER FUNCTION RM_SetSaturation(id, sat)
             IMPLICIT NONE

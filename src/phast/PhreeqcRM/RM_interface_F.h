@@ -34,6 +34,7 @@
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
 #define RM_GetMpiTasks                     FC_FUNC_ (rm_getmpitasks,                   RM_GETMPITASKS)
 #define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
+#define RM_GetSaturation                   FC_FUNC_ (rm_getsaturation,                 RM_GETSATURATION)
 #define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
 #define RM_GetSelectedOutputColumnCount    FC_FUNC_ (rm_getselectedoutputcolumncount,  RM_GETSELECTEDOUTPUTCOLUMNCOUNT)
 #define RM_GetSelectedOutputCount          FC_FUNC_ (rm_getselectedoutputcount,        RM_GETSELECTEDOUTPUTCOUNT)
@@ -64,7 +65,9 @@
 #define RM_RunFile                         FC_FUNC_ (rm_runfile,                          RM_RUNFILE)
 #define RM_RunString                       FC_FUNC_ (rm_runstring,                     RM_RUNSTRING)
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
+#ifdef SKIP
 #define RM_SetCellVolume				   FC_FUNC_ (rm_setcellvolume,                 RM_SETCELLVOLUME)
+#endif
 #define RM_SetComponentH2O				   FC_FUNC_ (rm_setcomponenth2o,               RM_SETCOMPONENTH2O)
 #define RM_SetConcentrations			   FC_FUNC_ (rm_setconcentrations,             RM_SETCONCENTRATIONS)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
@@ -74,12 +77,16 @@
 #define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
 #define RM_SetMpiWorkerCallback            FC_FUNC_ (rm_setmpiworkercallback,          RM_SETMPIWORKERCALLBACK)
 #define RM_SetPartitionUZSolids            FC_FUNC_ (rm_setpartitionuzsolids,          RM_SETPARTITIONUZSOLIDS)
+#ifdef SKIP_RV
 #define RM_SetPoreVolume                   FC_FUNC_ (rm_setporevolume,                 RM_SETPOREVOLUME)
+#endif
+#define RM_SetPorosity                     FC_FUNC_ (rm_setporosity,                   RM_SETPOROSITY)
 #define RM_SetPrintChemistryMask           FC_FUNC_ (rm_setprintchemistrymask,         RM_SETPRINTCHEMISTRYMASK)
 #define RM_SetPrintChemistryOn             FC_FUNC_ (rm_setprintchemistryon,           RM_SETPRINTCHEMISTRYON)
 #define RM_SetPressure                     FC_FUNC_ (rm_setpressure,                   RM_SETPRESSURE)
 #define RM_SetRebalanceFraction            FC_FUNC_ (rm_setrebalancefraction,          RM_SETREBALANCEFRACTION)
 #define RM_SetRebalanceByCell              FC_FUNC_ (rm_setrebalancebycell,            RM_SETREBALANCEBYCELL)
+#define RM_SetRepresentativeVolume		   FC_FUNC_ (rm_setrepresentativevolume,       RM_SETREPRESENTATIVEVOLUME)
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
 #define RM_SetSpeciesSaveOn                FC_FUNC_ (rm_setspeciessaveon,              RM_SETSPECIESSAVEON)
@@ -128,6 +135,7 @@ int        RM_GetIPhreeqcId(int *id, int *i);
 int        RM_GetMpiMyself(int *id);
 int        RM_GetMpiTasks(int *id);
 int        RM_GetNthSelectedOutputUserNumber(int *id, int *i);
+IRM_RESULT RM_GetSaturation(int *id, double *sat);
 IRM_RESULT RM_GetSelectedOutput(int *id, double *so);
 int        RM_GetSelectedOutputColumnCount(int *id);
 int        RM_GetSelectedOutputCount(int *id);
@@ -176,7 +184,9 @@ IRM_RESULT RM_RunCells(int *id);
 IRM_RESULT RM_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility, const char *chem_name, size_t l = 0);
 IRM_RESULT RM_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string, size_t l = 0);
 IRM_RESULT RM_ScreenMessage(int *id, const char *str, size_t l = 0);
+#ifdef SKIP_RV
 IRM_RESULT RM_SetCellVolume(int *id, double *t);
+#endif
 IRM_RESULT RM_SetComponentH2O(int *id, int *tf);
 IRM_RESULT RM_SetConcentrations(int *id, double *t);
 IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
@@ -186,7 +196,10 @@ IRM_RESULT RM_SetErrorHandlerMode(int *id, int *mode);
 IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix, size_t l = 0);
 IRM_RESULT RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1));
 IRM_RESULT RM_SetPartitionUZSolids(int *id, int *t);
+#ifdef SKIP_RV
 IRM_RESULT RM_SetPoreVolume(int *id, double *t);
+#endif
+IRM_RESULT RM_SetPorosity(int *id, double *t);
 IRM_RESULT RM_SetPressure(int *id, double *t);
 IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t);
 IRM_RESULT RM_SetPrintChemistryOn(int *id, int *worker, int *ip, int *utility);
