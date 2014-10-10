@@ -39,7 +39,7 @@ SUBROUTINE dealloc_arr
   ! ... Deallocate node information arrays: mcn
   DEALLOCATE (rm, x, y, z, x_node, y_node, z_node,  &
        x_face, y_face, z_face,  pv, &
-       pv0, volume,  &
+       pv0, volume, por, &
        phreeqc_density, &
        STAT = da_err)
   IF (da_err /= 0) THEN  

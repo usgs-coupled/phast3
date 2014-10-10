@@ -473,7 +473,7 @@ SUBROUTINE InitialEquilibrationRM
     USE machine_constants, ONLY: kdp
     USE mcc, ONLY:               iprint_xyz, prcphrqi, prf_chem_phrqi, prhdfci, rm_id, solute, steady_flow
     USE mcg, ONLY:               grid2chem, nxyz
-    USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density
+    USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density, pv0, por, volume
     USE mcp, ONLY:               pv
     USE mcv, ONLY:               c, frac, sat, time_phreeqc
     USE hdf_media_m, ONLY:       pr_hdf_media
@@ -493,7 +493,19 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_ScreenMessage(rm_id, logline1)
         stop_msg = 0
         deltim_dummy = 0._kdp
+#ifdef SKIP_RV       
         status = RM_SetPoreVolume(rm_id, pv(1))
+#endif 
+        ! Set porosity
+        do i = 1, nxyz
+            if (volume(i) .ne. 0.0d0) then
+                por(i) = pv0(i)/volume(i)
+            else
+                por(i) = 1.0d0
+            endif
+        enddo
+        status = RM_SetPorosity(rm_id, por(1))
+
         sat = 1.0
         do i = 1, nxyz
             if (frac(i) <= 0.0) then
@@ -525,7 +537,7 @@ SUBROUTINE InitializeRM
     USE mcc, ONLY:  iprint_chem,iprint_xyz, prcphrqi, prhdfci, rebalance_fraction_f, rebalance_method_f, rm_id, solute, steady_flow
     USE mcch, ONLY: num_restart_files, restart_files
     USE mcg, ONLY:  grid2chem, nxyz
-    USE mcn, ONLY:  x_node, y_node, z_node, pv0, volume
+    USE mcn, ONLY:  x_node, y_node, z_node, pv0, volume, por
     USE mcp, ONLY:  cnvtmi
     USE mcv, ONLY:  c, frac, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
     USE mcv_m, ONLY: exchange_units, gasphase_units, kinetics_units, ppassemblage_units, ssassemblage_units, surface_units
@@ -555,7 +567,9 @@ SUBROUTINE InitializeRM
         status = RM_SetUnitsSSassemblage(rm_id, ssassemblage_units)
         status = RM_SetUnitsSurface(rm_id, surface_units)            
         status = RM_SetTimeConversion(rm_id, cnvtmi)
+#ifdef SKIP_RV   
         status = RM_SetPoreVolume(rm_id, pv0(1))
+#endif        
         status = RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
 	    status = 0
         if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
@@ -567,7 +581,19 @@ SUBROUTINE InitializeRM
             ipartition_uz_solids = 0
         endif
         status = RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
+#ifdef SKIP_RV        
         status = RM_SetCellVolume(rm_id, volume(1))
+#endif    
+        ! Set porosity
+        do i = 1, nxyz
+            if (volume(i) .ne. 0.0d0) then
+                por(i) = pv0(i)/volume(i)
+            else
+                por(i) = 1.0d0
+            endif
+        enddo
+        status = RM_SetPorosity(rm_id, por(1))
+        
         status = RM_SetRebalanceFraction(rm_id, rebalance_fraction_f)
         status = RM_SetRebalanceByCell(rm_id, rebalance_method_f)
 
@@ -612,7 +638,7 @@ SUBROUTINE TimeStepRM
     USE mcc, ONLY:               iprint_xyz, rm_id, solute, steady_flow
     USE mcc_m, ONLY:             prcphrq, prhdfc
     USE mcg, ONLY:               grid2chem, nxyz
-    USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density
+    USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density, volume, por
     USE mcp, ONLY:               pv
     USE mcv,  ONLY:              c, deltim, frac, indx_sol1_ic, sat, time
     USE hdf_media_m, ONLY:       pr_hdf_media
@@ -630,7 +656,17 @@ SUBROUTINE TimeStepRM
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
         if (.not.steady_flow) then
+#ifdef SKIP_RV            
             status = RM_SetPoreVolume(rm_id, pv(1))
+#endif            
+            do i = 1, nxyz
+                if (volume(i) .ne. 0.0d0) then
+                    por(i) = pv(i)/volume(i)
+                else
+                    por(i) = 1.0d0
+                endif
+            enddo
+            status = RM_SetPorosity(rm_id, por(1))            
         endif
         if (fresur.and.(.not.steady_flow)) then
             sat = frac

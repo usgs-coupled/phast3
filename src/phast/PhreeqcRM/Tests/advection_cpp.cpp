@@ -56,15 +56,15 @@ int advection_cpp()
 		double time_conversion = 1.0 / 86400;
 		status = phreeqc_rm.SetTimeConversion(time_conversion);     // days
 
-		// Set cell volume
-		std::vector<double> cell_vol;
-		cell_vol.resize(nxyz, 1);
-		status = phreeqc_rm.SetCellVolume(cell_vol);
+		// Set representative volume
+		std::vector<double> rv;
+		rv.resize(nxyz, 1.0);
+		status = phreeqc_rm.SetRepresentativeVolume(rv);
 
-		// Set current pore volume
-		std::vector<double> pv;
-		pv.resize(nxyz, 0.2);
-		status = phreeqc_rm.SetPoreVolume(pv);
+		// Set porosity
+		std::vector<double> por;
+		por.resize(nxyz, 0.2);
+		status = phreeqc_rm.SetPorosity(por);
 
 		// Set saturation
 		std::vector<double> sat;
@@ -85,7 +85,6 @@ int advection_cpp()
 		const std::vector<bool> & print_on = phreeqc_rm.GetPrintChemistryOn();
 		bool rebalance = phreeqc_rm.GetRebalanceByCell();
 		double f_rebalance = phreeqc_rm.GetRebalanceFraction();
-		const std::vector<double> &  current_sat = phreeqc_rm.GetSaturation();
 		bool so_on = phreeqc_rm.GetSelectedOutputOn();
 		const std::vector<double> &  tempc = phreeqc_rm.GetTemperature();
 		int units_exchange = phreeqc_rm.GetUnitsExchange();
@@ -96,9 +95,8 @@ int advection_cpp()
 		int units_ss_exchange = phreeqc_rm.GetUnitsSSassemblage();
 		int units_surface = phreeqc_rm.GetUnitsSurface();
 
-
 		// Partitioning of uz solids
-		//status = phreeqc_rm.SetPartitionUZSolids(false);
+		status = phreeqc_rm.SetPartitionUZSolids(false);
 
 		// For demonstation, two equivalent rows by symmetry
 		std::vector<int> grid2chem;
@@ -206,6 +204,10 @@ int advection_cpp()
 		bc2.resize(nbound, -1);                     // no bc2 solution for mixing
 		bc_f1.resize(nbound, 1.0);                  // mixing fraction for bc1
 		status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc, bc1, bc2, bc_f1);
+		
+		// get current saturation
+		std::vector<double> current_sat;
+		status = phreeqc_rm.GetSaturation(current_sat);
 
 		// Initial equilibration of cells
 		double time = 0.0;
@@ -247,12 +249,12 @@ int advection_cpp()
 			bool print_chemistry_on = (steps == nsteps - 1) ? true : false;
 			status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on); 
 			status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); // workers, initial_phreeqc, utility
-			status = phreeqc_rm.SetPoreVolume(pv);            // If pore volume changes due to compressibility
+			status = phreeqc_rm.SetPorosity(por);             // If pororosity changes due to compressibility
 			status = phreeqc_rm.SetSaturation(sat);           // If saturation changes
 			status = phreeqc_rm.SetTemperature(temperature);  // If temperature changes
 			status = phreeqc_rm.SetPressure(pressure);        // If pressure changes
 			status = phreeqc_rm.SetConcentrations(c);         // Transported concentrations
-			status = phreeqc_rm.SetTimeStep(time_step);				 // Time step for kinetic reactions
+			status = phreeqc_rm.SetTimeStep(time_step);		  // Time step for kinetic reactions
 			time += time_step;
 			status = phreeqc_rm.SetTime(time);
 
@@ -361,6 +363,11 @@ int advection_cpp()
 		status = phreeqc_rm.SetDumpFileName("advection_cpp.dmp");
 		status = phreeqc_rm.DumpModule(dump_on, append);    // gz disabled unless compiled with #define USE_GZ
 
+		// Get pointer to worker
+		const std::vector < IPhreeqcPhast *> & w = phreeqc_rm.GetWorkers();
+		w[0]->AccumulateLine("Delete; -all");
+		iphreeqc_result = w[0]->RunAccumulated();
+
 		// Clean up
 		status = phreeqc_rm.CloseFiles();
 		status = phreeqc_rm.MpiWorkerBreak();
@@ -440,15 +447,15 @@ int units_tester()
 		status = phreeqc_rm.SetUnitsSSassemblage(1);  // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 		status = phreeqc_rm.SetUnitsKinetics(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 
-		// Set cell volume
-		std::vector<double> cell_vol;
-		cell_vol.resize(nxyz, 1);
-		status = phreeqc_rm.SetCellVolume(cell_vol);
+		// Set representative volume
+		std::vector<double> rv;
+		rv.resize(nxyz, 1.0);
+		status = phreeqc_rm.SetRepresentativeVolume(rv);
 
-		// Set current pore volume
-		std::vector<double> pv;
-		pv.resize(nxyz, 0.2);
-		status = phreeqc_rm.SetPoreVolume(pv);
+		// Set current porosity
+		std::vector<double> por;
+		por.resize(nxyz, 0.2);
+		status = phreeqc_rm.SetPorosity(por);
 
 		// Set saturation
 		std::vector<double> sat;

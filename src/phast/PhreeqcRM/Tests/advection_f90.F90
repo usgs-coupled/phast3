@@ -24,8 +24,8 @@
     integer :: id
     integer :: status
     !integer :: partition_uz_solids
-    double precision, dimension(:), allocatable   :: cell_vol
-    double precision, dimension(:), allocatable   :: pv
+    double precision, dimension(:), allocatable   :: rv
+    double precision, dimension(:), allocatable   :: por
     double precision, dimension(:), allocatable   :: sat
     integer,          dimension(:), allocatable   :: print_chemistry_mask
     integer,          dimension(:), allocatable   :: grid2chem
@@ -103,14 +103,14 @@
     status = RM_SetTimeConversion(id, dble(1.0 / 86400.0)) ! days
     
     ! Set cell volume
-    allocate(cell_vol(nxyz))
-    cell_vol = 1.0
-    status = RM_SetCellVolume(id, cell_vol(1))
+    allocate(rv(nxyz))
+    rv = 1.0
+    status = RM_SetRepresentativeVolume(id, rv(1))
     
     ! Set current pore volume
-    allocate(pv(nxyz))
-    pv = 0.2
-    status = RM_SetPoreVolume(id, pv(1))
+    allocate(por(nxyz))
+    por = 0.2
+    status = RM_SetPorosity(id, por(1))
     
     ! Set saturation
     allocate(sat(nxyz))
@@ -268,7 +268,7 @@
         call advect_f90(c, bc_conc, ncomps, nxyz)
         
         ! Send any new conditions to module
-        status = RM_SetPoreVolume(id, pv(1))               ! If pore volume changes 
+        status = RM_SetPorosity(id, por(1))               ! If pore volume changes 
         status = RM_SetSaturation(id, sat(1))              ! If saturation changes
         status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
         status = RM_SetPressure(id, pressure(1))           ! If pressure changes
@@ -357,8 +357,8 @@
 	status = RM_CloseFiles(id)
 	status = RM_MpiWorkerBreak(id)
 	status = RM_Destroy(id)
-    deallocate(cell_vol);
-    deallocate(pv);
+    deallocate(rv);
+    deallocate(por);
     deallocate(sat);
     deallocate(print_chemistry_mask);
     deallocate(grid2chem);

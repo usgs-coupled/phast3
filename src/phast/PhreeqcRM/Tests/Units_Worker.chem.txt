@@ -28,7 +28,7 @@ Using pure phase assemblage 0.
                                                       Moles in assemblage
 Phase               SI  log IAP  log K(T, P)   Initial       Final       Delta
 
-Calcite           0.00    -8.48     -8.48   7.998e-001  7.998e-001  0.000e+000
+Calcite           0.00    -8.48     -8.48   8.000e-001  8.000e-001 -4.117e-005
 
 -----------------------------Solution composition------------------------------
 
@@ -42,7 +42,7 @@ Calcite           0.00    -8.48     -8.48   7.998e-001  7.998e-001  0.000e+000
 ----------------------------Description of solution----------------------------
 
                                        pH  =   9.926      Charge balance
-                                       pe  =  -5.310      Adjusted to redox equilibrium
+                                       pe  =  -4.459      Adjusted to redox equilibrium
        Specific Conductance (µS/cm, 25°C)  = 4951
                           Density (g/cm³)  =   0.99887
                                Volume (L)  =   0.20000
@@ -52,11 +52,11 @@ Calcite           0.00    -8.48     -8.48   7.998e-001  7.998e-001  0.000e+000
                  Total alkalinity (eq/kg)  =  4.132e-004
                        Total CO2 (mol/kg)  =  2.066e-004
                          Temperature (°C)  =  25.00
-                  Electrical balance (eq)  = -5.621e-018
+                  Electrical balance (eq)  = -5.997e-019
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
-                               Iterations  =   1
-                                  Total H  = 2.212056e+001
-                                  Total O  = 1.106040e+001
+                               Iterations  =  17
+                                  Total H  = 2.212048e+001
+                                  Total O  = 1.106037e+001
 
 ----------------------------Distribution of species----------------------------
 
@@ -66,8 +66,8 @@ Calcite           0.00    -8.48     -8.48   7.998e-001  7.998e-001  0.000e+000
    OH-            1.040e-004  8.526e-005    -3.983    -4.069    -0.086     -3.89
    H+             1.380e-010  1.185e-010    -9.860    -9.926    -0.066      0.00
    H2O            5.551e+001  9.985e-001     1.744    -0.001     0.000     18.07
-C(-4)        6.531e-021
-   CH4            6.531e-021  6.598e-021   -20.185   -20.181     0.004     32.22
+C(-4)        1.021e-027
+   CH4            1.021e-027  1.032e-027   -26.991   -26.986     0.004     32.22
 C(4)         2.066e-004
    HCO3-          1.023e-004  8.545e-005    -3.990    -4.068    -0.078     24.95
    CO3-2          6.941e-005  3.380e-005    -4.159    -4.471    -0.312     -4.58
@@ -83,15 +83,15 @@ Ca           2.066e-004
    CaHCO3+        1.272e-007  1.068e-007    -6.895    -6.971    -0.076      9.79
 Cl           4.358e-002
    Cl-            4.358e-002  3.584e-002    -1.361    -1.446    -0.085     18.24
-H(0)         8.205e-013
-   H2             4.102e-013  4.144e-013   -12.387   -12.383     0.004     28.61
+H(0)         1.632e-014
+   H2             8.158e-015  8.241e-015   -14.088   -14.084     0.004     28.61
 Na           4.358e-002
    Na+            4.356e-002  3.622e-002    -1.361    -1.441    -0.080     -1.23
    NaCO3-         2.753e-005  2.280e-005    -4.560    -4.642    -0.082     -0.66
    NaHCO3         1.723e-006  1.741e-006    -5.764    -5.759     0.004      1.80
    NaOH           3.057e-016  3.088e-016   -15.515   -15.510     0.004     (0)  
 O(0)         0.000e+000
-   O2             0.000e+000  0.000e+000   -67.621   -67.616     0.004     30.40
+   O2             0.000e+000  0.000e+000   -64.218   -64.213     0.004     30.40
 
 ------------------------------Saturation indices-------------------------------
 
@@ -99,12 +99,12 @@ O(0)         0.000e+000
 
   Aragonite        -0.14     -8.48   -8.34  CaCO3
   Calcite           0.00     -8.48   -8.48  CaCO3
-  CH4(g)          -17.34    -20.18   -2.84  CH4
+  CH4(g)          -24.14    -26.99   -2.84  CH4
   CO2(g)           -6.18     -7.64   -1.46  CO2
-  H2(g)            -9.28    -12.38   -3.10  H2
+  H2(g)           -10.98    -14.08   -3.10  H2
   H2O(g)           -1.50     -0.00    1.50  H2O
   Halite           -4.46     -2.89    1.57  NaCl
-  O2(g)           -64.72    -67.62   -2.89  O2
+  O2(g)           -61.32    -64.21   -2.89  O2
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -118,7 +118,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.972 Seconds.
+End of Run after 2.086 Seconds.
 -------------------------------
 
 Time:           0
@@ -155,20 +155,20 @@ Using solution 1.
 ----------------------------Description of solution----------------------------
 
                                        pH  =   6.950      Charge balance
-                                       pe  =  10.419      Adjusted to redox equilibrium
+                                       pe  =  10.422      Adjusted to redox equilibrium
        Specific Conductance (µS/cm, 25°C)  = 86932
                           Density (g/cm³)  =   1.03837
                                Volume (L)  =   0.20000
                         Activity of water  =   0.964
                            Ionic strength  =  1.062e+000
                        Mass of water (kg)  =  1.955e-001
-                 Total alkalinity (eq/kg)  = -3.877e-017
+                 Total alkalinity (eq/kg)  = -4.353e-017
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  25.00
-                  Electrical balance (eq)  =  8.366e-017
+                  Electrical balance (eq)  =  8.249e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
-                               Iterations  =   0
+                               Iterations  =   6
                                   Total H  = 2.170705e+001
                                   Total O  = 1.085353e+001
 
@@ -182,13 +182,13 @@ Using solution 1.
    H2O            5.551e+001  9.639e-001     1.744    -0.016     0.000     18.07
 Cl           1.062e+000
    Cl-            1.062e+000  6.433e-001     0.026    -0.192    -0.218     18.97
-H(0)         2.027e-038
-   H2             1.013e-038  1.294e-038   -37.994   -37.888     0.106     28.61
+H(0)         1.995e-038
+   H2             9.977e-039  1.274e-038   -38.001   -37.895     0.106     28.61
 Na           1.062e+000
    Na+            1.062e+000  7.807e-001     0.026    -0.107    -0.134     -0.27
    NaOH           5.316e-018  6.789e-018   -17.274   -17.168     0.106     (0)  
-O(0)         3.621e-017
-   O2             1.811e-017  2.312e-017   -16.742   -16.636     0.106     30.40
+O(0)         3.736e-017
+   O2             1.868e-017  2.386e-017   -16.729   -16.622     0.106     30.40
 
 ------------------------------Saturation indices-------------------------------
 
@@ -197,7 +197,7 @@ O(0)         3.621e-017
   H2(g)           -34.79    -37.89   -3.10  H2
   H2O(g)           -1.52     -0.02    1.50  H2O
   Halite           -1.87     -0.30    1.57  NaCl
-  O2(g)           -13.74    -16.64   -2.89  O2
+  O2(g)           -13.73    -16.62   -2.89  O2
 
 **For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
   For ideal gases, phi = 1.
@@ -211,7 +211,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.979 Seconds.
+End of Run after 2.126 Seconds.
 -------------------------------
 
 Time:           0
@@ -259,7 +259,7 @@ Using solution 2.
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  25.00
-                  Electrical balance (eq)  = -6.505e-017
+                  Electrical balance (eq)  = -4.684e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.213101e+001
@@ -304,6 +304,6 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 0.985 Seconds.
+End of Run after 2.158 Seconds.
 -------------------------------
 

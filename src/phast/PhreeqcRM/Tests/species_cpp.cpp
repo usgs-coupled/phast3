@@ -50,14 +50,14 @@ int species_cpp()
 		double time_conversion = 1.0 / 86400;
 		status = phreeqc_rm.SetTimeConversion(time_conversion);     // days
 		// Set cell volume
-		std::vector<double> cell_vol;
-		cell_vol.resize(nxyz, 1);
-		status = phreeqc_rm.SetCellVolume(cell_vol);
+		std::vector<double> rv;
+		rv.resize(nxyz, 1.0);
+		status = phreeqc_rm.SetRepresentativeVolume(rv);
 
 		// Set current pore volume
-		std::vector<double> pv;
-		pv.resize(nxyz, 0.2);
-		status = phreeqc_rm.SetPoreVolume(pv);
+		std::vector<double> por;
+		por.resize(nxyz, 0.2);
+		status = phreeqc_rm.SetPorosity(por);
 
 		// Set saturation
 		std::vector<double> sat;
@@ -226,10 +226,10 @@ int species_cpp()
 			bool print_chemistry_on = (steps == nsteps - 1) ? true : false;
 			status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on); 
 			status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); // workers, initial_phreeqc, utility
-			status = phreeqc_rm.SetPoreVolume(pv);            // If pore volume changes due to compressibility
-			status = phreeqc_rm.SetSaturation(sat);           // If saturation changes
-			status = phreeqc_rm.SetTemperature(temperature);  // If temperature changes
-			status = phreeqc_rm.SetPressure(pressure);        // If pressure changes
+			status = phreeqc_rm.SetPorosity(por);                    // If porosity changes due to compressibility
+			status = phreeqc_rm.SetSaturation(sat);                  // If saturation changes
+			status = phreeqc_rm.SetTemperature(temperature);         // If temperature changes
+			status = phreeqc_rm.SetPressure(pressure);               // If pressure changes
 			status = phreeqc_rm.SpeciesConcentrations2Module(c);     // Transported concentrations
 			time = time + time_step;
 			status = phreeqc_rm.SetTime(time);

@@ -1648,16 +1648,17 @@ Called by root and (or) workers.
 	double                                    GetTimeStep(void) {return this->time_step;} 
 /**
 Returns the input units for exchangers.
-In PHREEQC, exchangers are defined by
-moles of exchange sites. SetUnitsExchange determines whether the
-number of sites applies to the volume of the cell, the volume of
-water in the cell, or the volume of rock in the cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
+In PHREEQC input, exchangers are defined by moles of exchange sites (@a Mp).
+@ref SetUnitsExchange specifies how the number of moles of exchange sites in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are 
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
+
 @retval                 Input units for exchangers.
-@see                    @ref SetUnitsExchange, @ref SetCellVolume, @ref SetPoreVolume.
+@see                    @ref SetUnitsExchange, @ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -1672,16 +1673,17 @@ Called by root and (or) workers.
 	int                                       GetUnitsExchange(void) {return this->units_Exchange;}
 /**
 Returns the input units for gas phases.
-In PHREEQC, gas phases are defined by
-moles of component gases. GetUnitsGasPhase determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in the cell, or the volume of rock in the cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
-@retval                 Input units for gas phases.
-@see                    @ref SetUnitsGasPhase, @ref SetCellVolume, @ref SetPoreVolume.
+In PHREEQC input, gas phases are defined by moles of component gases (@a Mp).
+@ref SetUnitsGasPhase specifies how the number of moles of component gases in a reaction cell (@aMc)
+is calculated from the input value (@a Mp).
+
+Options are
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
+
+@retval                 Input units for gas phases (0, 1, or 2).
+@see                    @ref SetUnitsGasPhase, @ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -1696,16 +1698,17 @@ Called by root and (or) workers.
 	int                                       GetUnitsGasPhase(void) {return this->units_GasPhase;}
 /**
 Returns the input units for kinetic reactants.
-In PHREEQC, kinetics are defined by
-moles of kinetic reactant. GetUnitsKinetics determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in the cell, or the volume of rock in the cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
-@retval                 Input units for kinetic reactants.
-@see                    @ref SetUnitsKinetics, @ref SetCellVolume, @ref SetPoreVolume.
+In PHREEQC input, kinetics are defined by moles of kinetic reactants (@Mp). 
+@ref SetUnitsKinetics specifies how the number of moles of kinetic reactants in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are 
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
+
+@retval                 Input units for kinetic reactants (0, 1, or 2).
+@see                    @ref SetUnitsKinetics, @ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -1720,16 +1723,17 @@ Called by root and (or) workers.
 	int                                       GetUnitsKinetics(void) {return this->units_Kinetics;}
 /**
 Returns the input units for pure phase assemblages (equilibrium phases).
-In PHREEQC, equilibrium phases are defined by
-moles of each phase. GetUnitsPPassemblage determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in the cell, or the volume of rock in the cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
-@retval                 Input units for equilibrium phases.
-@see                    @ref SetUnitsPPassemblage, @ref SetCellVolume, @ref SetPoreVolume.
+In PHREEQC input, equilibrium phases are defined by moles of each phase (@a Mp).
+@ref SetUnitsPPassemblage specifies how the number of moles of phases in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp).
+
+Options are
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
+
+@retval                 Input units for equilibrium phases (0, 1, or 2).
+@see                    @ref SetUnitsPPassemblage, @ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -1754,40 +1758,36 @@ transport concentrations by
 @ref GetConcentrations.
 @n@n
 To convert from mg/L to moles
-of element in a cell, mg/L is converted to mol/L and
+of element in the representative volume of a reaction cell, mg/L is converted to mol/L and
 multiplied by the solution volume,
-which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
-times saturation (@ref SetSaturation).
+which is the product of porosity (@ref SetPorosity), saturation (@ref SetSaturation), and 
+representative volume (@ref SetRepresentativevolume).
 To convert from mol/L to moles
 of element in a cell, mol/L is
-multiplied by the solution volume,
-which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
-times saturation (@ref SetSaturation).
+multiplied by the solution volume.
 To convert from mass fraction to moles
 of element in a cell, kg/kgs is converted to mol/kgs, multiplied by density
 (@ref SetDensity) and
-multiplied by the solution volume,
-which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
-times saturation (@ref SetSaturation).
+multiplied by the solution volume.
 @n@n
 To convert from moles
-of element in a cell to mg/L, the number of moles of an element is divided by the
+of element in the representative volume of a reaction cell to mg/L, the number of moles of an element is divided by the
 solution volume resulting in mol/L, and then converted to
 mg/L.
 To convert from moles
-of element in a cell to mol/L,  the number of moles of an element is divided by the
+of element in the representative volume of a reaction cell to mol/L,  the number of moles of an element is divided by the
 solution volume resulting in mol/L.
 To convert from moles
-of element in a cell to mass fraction, the number of moles of an element is converted to kg and divided
-by the total mass of the solution.
+of element in the representative volume of a reaction cell to mass fraction, 
+the number of moles of an element is converted to kg and divided by the total mass of the solution.
 Two options are available for the volume and mass of solution 
 that are used in converting to transport concentrations: (1) the volume and mass of solution are
-calculated by PHREEQC, or (2) the volume of solution is the product of porosity and saturation, 
+calculated by PHREEQC, or (2) the volume of solution is the product of porosity, saturation, and representative volume,
 and the mass of solution is volume times density as defined by @ref SetDensity. 
 Which option is used is determined by @ref UseSolutionDensityVolume.
 @retval                 Units for concentrations in transport.
-@see                    @ref SetUnitsSolution, @ref SetCellVolume, @ref SetDensity, 
-@ref SetPoreVolume, @ref UseSolutionDensityVolume.
+@see                    @ref Concentrations2Utility, @ref GetConcentrations, @ref SetConcentrations, @ref SetDensity, 
+@ref SetPorosity, @ref SetRepresentativeVolume, @ref SetUnitsSolution, @ref UseSolutionDensityVolume. 
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -1802,16 +1802,17 @@ Called by root and (or) workers.
 	int                                       GetUnitsSolution(void) {return this->units_Solution;}
 /**
 Returns the input units for solid-solution assemblages.
-In PHREEQC, solid solutions are defined by
-moles of each component. GetUnitsSSassemblage determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in the cell, or the volume of rock in the cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
-@retval                 Input units for solid solutions.
-@see                    @ref SetUnitsSSassemblage, @ref SetCellVolume, @ref SetPoreVolume.
+In PHREEQC input, solid solutions are defined by moles of each component (@a Mp).
+@ref SetUnitsSSassemblage specifies how the number of moles in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
+
+@retval                 Input units for solid solutions (0, 1, or 2).
+@see                    @ref SetUnitsSSassemblage, @ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -1826,16 +1827,17 @@ Called by root and (or) workers.
 	int                                       GetUnitsSSassemblage(void) {return this->units_SSassemblage;}
 /**
 Returns the input units for surfaces.
-In PHREEQC, surfaces are defined by
-moles of each surface sites. GetUnitsSurface determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in the cell, or the volume of rock in the cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
-@retval                 Input units for solid surfaces.
-@see                    @ref SetUnitsSurface, @ref SetCellVolume, @ref SetPoreVolume.
+In PHREEQC input, surfaces are defined by moles of surface sites  (@a Mp).
+@ref SetUnitsSurface specifies how the number of moles of surface sites in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
+
+@retval                 Input units for solid surfaces (0, 1, or 2).
+@see                    @ref SetUnitsSurface, @ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -1861,7 +1863,9 @@ one Utility instance.
 @htmlonly
 <CODE>
 <PRE>
-IPhreeqc * utility_ptr = phreeqc_rm.GetIPhreeqcInstances()[phreeqc_rm.GetThreadCount() + 1];
+const std::vector < IPhreeqcPhast *> & w = phreeqc_rm.GetWorkers();
+w[0]->AccumulateLine("Delete; -all");
+int iphreeqc_result = w[0]->RunAccumulated();
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1880,7 +1884,7 @@ is the dimension of the vector @a boundary_solution1.
 @param boundary_solution1  Vector of solution index numbers that refer to solutions in the InitialPhreeqc instance.
 Size is @a n_boundary.
 @retval IRM_RESULT         0 is success, negative is failure (See @ref DecodeError).
-@see                  @ref FindComponents, @ref GetComponentCount.
+@see                       @ref FindComponents, @ref GetComponentCount.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -1901,7 +1905,7 @@ Called by root.
 													std::vector < int >    & boundary_solution1);
 /**
 Fills a vector (@a destination_c) with concentrations from solutions in the InitialPhreeqc instance.
-The method is used to obtain concentrations for boundary conditions. If a negative value
+The method is used to obtain concentrations for boundary conditions that are mixtures of solutions. If a negative value
 is used for a cell in @a boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
 will be used for that cell. Concentrations may be a mixture of two
 solutions, @a boundary_solution1 and @a boundary_solution2, with a mixing fraction for @a boundary_solution1 of
@@ -1928,8 +1932,8 @@ std::vector<double> bc_conc, bc_f1;
 std::vector<int> bc1, bc2;
 int nbound = 1;
 bc1.resize(nbound, 0);                      // solution 0 from InitialIPhreeqc instance
-bc2.resize(nbound, -1);                     // no bc2 solution for mixing
-bc_f1.resize(nbound, 1.0);                  // mixing fraction for bc1
+bc2.resize(nbound, 1);                      // solution 1 from InitialIPhreeqc instance
+bc_f1.resize(nbound, 0.4);                  // mixing fraction for bc1, result is 0.4/0.6 mix
 status = phreeqc_rm.InitialPhreeqc2Concentrations(bc_conc, bc1, bc2, bc_f1);
 </PRE>
 </CODE>
@@ -1952,7 +1956,7 @@ for each cell of the model, without mixing.
 (5) SOLID_SOLUTIONS, and (6) KINETICS. 
 The definition initial_solution1[3*nxyz + 99] = 2, indicates that 
 cell 99 (0 based) contains the SURFACE definition (index 3) defined by SURFACE 2 in the InitialPhreeqc instance
-(either by @ref RunFile or @ref RunString).
+(created in the InitialPhreeqc instance either by @ref RunFile or @ref RunString).
 @param initial_conditions1 Vector of solution and reactant index numbers that refer to 
 definitions in the InitialPhreeqc instance.
 Size is 7 times @a nxyz. The order of definitions is given above.
@@ -1982,8 +1986,7 @@ status = phreeqc_rm.InitialPhreeqc2Module(ic1);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                InitialPhreeqc2Module(
-													std::vector < int >    & initial_conditions1);
+	IRM_RESULT  InitialPhreeqc2Module(std::vector < int >    & initial_conditions1);
 /**
 Transfer solutions and reactants from the InitialPhreeqc instance to the reaction-module workers, possibly with mixing.
 In its simplest form, @a  initial_conditions1 is used to select initial conditions, including solutions and reactants,
@@ -2046,10 +2049,10 @@ status = phreeqc_rm.InitialPhreeqc2Module(ic1, ic2, f1);
 @par MPI:
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
-	IRM_RESULT                                InitialPhreeqc2Module(
-													std::vector < int >    & initial_conditions1,
-													std::vector < int >    & initial_conditions2,	
-													std::vector < double > & fraction1);
+	IRM_RESULT InitialPhreeqc2Module(
+		std::vector < int >    & initial_conditions1,
+		std::vector < int >    & initial_conditions2,	
+		std::vector < double > & fraction1);
 /**
 Fills a vector @a destination_c with aqueous species concentrations from solutions in the InitialPhreeqc instance.
 This method is intended for use with multicomponent-diffusion transport calculations, 
@@ -2072,8 +2075,6 @@ std::vector<double> bc_conc, bc_f1;
 std::vector<int> bc1, bc2;
 int nbound = 1;
 bc1.resize(nbound, 0);                      // solution 0 from Initial IPhreeqc instance
-bc2.resize(nbound, -1);                     // no bc2 solution for mixing
-bc_f1.resize(nbound, 1.0);                  // mixing fraction for bc1
 status = phreeqc_rm.InitialPhreeqc2SpeciesConcentrations(bc_conc, bc1);
 </PRE>
 </CODE>
@@ -2100,7 +2101,7 @@ The dimension of @a species_c is @a nspecies times @a n_boundary,
 where @a nspecies is the number of aqueous species returned from @ref GetSpeciesCount, and @a n_boundary is the dimension
 of @a boundary_solution1.
 @param boundary_solution1  Vector of solution index numbers that refer to solutions in the InitialPhreeqc instance.
-@param boundary_solution2  Vector of solution index numbers that that refer to solutions in the InitialPhreeqc instance
+@param boundary_solution2  Vector of solution index numbers that refer to solutions in the InitialPhreeqc instance
 and are defined to mix with @a boundary_solution1. Size is same as @a boundary_solution1.
 @param fraction1           Vector of fractions of @a boundary_solution1 that mix with (1 - @a fraction1) of @a boundary_solution2.
 Size is same as @a boundary_solution1.
@@ -2116,7 +2117,7 @@ int nbound = 1;
 bc1.resize(nbound, 0);                      // solution 0 from Initial IPhreeqc instance
 bc2.resize(nbound, -1);                     // no bc2 solution for mixing
 bc_f1.resize(nbound, 1.0);                  // mixing fraction for bc1
-status = phreeqc_rm.InitialPhreeqc2SpeciesConcentrations(bc_conc, bc1);
+status = phreeqc_rm.InitialPhreeqc2SpeciesConcentrations(bc_conc, bc1, bc2, bc_f1);
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2136,8 +2137,8 @@ If MIX @a n exists, it is used for the definition of the solution.
 If @a n is negative, @a n is redefined to be the largest solution or MIX number in the InitialPhreeqc instance.
 All reactants for each cell in the list @a cell_numbers are removed before the cell
 definition is copied from the InitialPhreeqc instance to the workers.
-@param n                  Cell number refers to a solution or MIX and associated reactants in the InitialPhreeqc instance.
-@param cell_numbers       A vector of module cell numbers in the user's grid-cell numbering system that 
+@param n                  Number that refers to a solution or MIX and associated reactants in the InitialPhreeqc instance.
+@param cell_numbers       A vector of grid-cell numbers (user's grid-cell numbering system) that 
 will be populated with cell @a n from the InitialPhreeqc instance.
 @retval IRM_RESULT        0 is success, negative is failure (See @ref DecodeError).
 @see                      @ref InitialPhreeqc2Module.
@@ -2208,14 +2209,14 @@ Called by root or workers.
  */
 	int                                       MpiAbort();
 /**
-MPI only. Workers (processes with @ref GetMpiMyself > 0) must call MpiWorker to be able to
+MPI only. Nonroot processes (processes with @ref GetMpiMyself > 0) must call MpiWorker to be able to
 respond to messages from the root to accept data, perform calculations,
 or return data within the reaction module. 
 MpiWorker contains a loop that reads a message from root, performs a
 task, and waits for another message from root. 
 @ref SetConcentrations, @ref RunCells, and @ref GetConcentrations
 are examples of methods that send a message from root to get the workers to perform a task. 
-The workers will respond to all methods that are designated "workers must be in the loop of RM_MpiWorker" 
+The workers will respond to all methods that are designated "workers must be in the loop of MpiWorker" 
 in the MPI section of the method documentation.
 The workers will continue to respond to messages from root until root calls
 @ref MpiWorkerBreak.
@@ -2223,12 +2224,12 @@ The workers will continue to respond to messages from root until root calls
 (Advanced) The list of tasks that the workers perform can be extended by using @ref SetMpiWorkerCallbackC.
 It is then possible to use the MPI processes to perform other developer-defined tasks, 
 such as transport calculations, without exiting from the MpiWorker loop. 
-Alternatively, root calls @ref MpiWorkerBreak to allow the workers to continue past a call to RM_MpiWorker. 
+Alternatively, root calls @ref MpiWorkerBreak to allow the workers to continue past a call to MpiWorker. 
 The workers perform developer-defined calculations, and then MpiWorker is called again to respond to
 requests from root to perform reaction-module tasks.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError). 
 MpiWorker returns a value only when @ref MpiWorkerBreak is called by root.
-@see                    @ref MpiWorkerBreak, @ref SetMpiWorkerCallbackC, @ref SetMpiWorkerCallbackCookie (C only).
+@see                    @ref MpiWorkerBreak, @ref SetMpiWorkerCallbackC, @ref SetMpiWorkerCallbackCookie.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -2252,7 +2253,7 @@ Called by all workers.
  */
 	IRM_RESULT                                MpiWorker();
 /**
-MPI only. This method is called by root to force workers (processes with @ref GetMpiMyself > 0) 
+MPI only. This method is called by root to force nonroot processes (processes with @ref GetMpiMyself > 0) 
 to return from a call to @ref MpiWorker.
 @ref MpiWorker contains a loop that reads a message from root, performs a
 task, and waits for another message from root. The workers respond to all methods that are designated
@@ -2319,13 +2320,14 @@ Called by root.
  */
 	void                                      OutputMessage(const std::string &str);
 /**
-Runs a reaction step for all of the cells in the reaction module.
-The current set of concentrations of the components (@ref SetConcentrations) is used
-in the calculations. The length of time over which kinetic reactions are integrated is set
+Runs a reaction step for all reaction cells in the reaction module.
+Normally, tranport concentrations are transferred to the reaction cells (@ref SetConcentrations) before
+reaction calculations are run. The length of time over which kinetic reactions are integrated is set
 by @ref SetTimeStep. Other properties that may need to be updated as a result of the transport
-calculations include pore volume, saturation, temperature, and pressure.
+calculations include porosity (@ref SetPorosity), saturation (@ref SetSaturation), 
+temperature (@ref SetTemperature), and pressure (@ref SetPressure).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetConcentrations,  @ref SetPoreVolume,
+@see                    @ref SetConcentrations,  @ref SetPorosity,
 @ref SetTemperature, @ref SetPressure, @ref SetSaturation, @ref SetTimeStep.
 @par C++ Example:
 @htmlonly
@@ -2333,7 +2335,7 @@ calculations include pore volume, saturation, temperature, and pressure.
 <PRE>
 status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on); 
 status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); 
-status = phreeqc_rm.SetPoreVolume(pv);            // If pore volume changes due to compressibility
+status = phreeqc_rm.SetPorosity(por);             // If porosity changes 
 status = phreeqc_rm.SetSaturation(sat);           // If saturation changes
 status = phreeqc_rm.SetTemperature(temperature);  // If temperature changes
 status = phreeqc_rm.SetPressure(pressure);        // If pressure changes
@@ -2450,27 +2452,25 @@ Called by root, workers must be in the loop of @ref MpiWorker.
 #endif
 /**
 Select whether to include H2O in the component list. 
-By default, the total concentrations of H and O are included
-in the list of components that need to be transported (@ref FindComponents).
-However, the concentrations of H and O must be known
+The concentrations of H and O must be known
 accurately (8 to 10 significant digits) for the numerical method of 
 PHREEQC to produce accurate pH and pe values.
 Because most of the H and O are in the water species,
 it may be more robust (require less accuracy in transport) to 
-transport the excess H and O (the H and O not in water) and water. 
-PhreeqcRM will then add the H and O from water to the excess quantities 
-to arrive at total H and total O concentrations for reaction calculations.
-A value of @a true will cause water and the excess H and O to be included in the list of components. 
+transport the excess H and O (the H and O not in water) and water.
+The default setting (@a true) is to include water, excess H, and excess O as components.
+A setting of @a false will include total H and total O as components.
 SetComponentH2O must be called before @ref FindComponents.
-@param tf               @a True, excess H, excess O, and water are included in the component list;
-@a False, total H and O are included in the list of components.
+
+@param tf               @a True (default), excess H, excess O, and water are included in the component list;
+@a False, total H and O are included in the component list.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
 @see                    @ref FindComponents.
 @par C++ Example:
 @htmlonly
 <CODE>
 <PRE>
-status = phreeqc_rm.SetComponentH2O(false);
+status = phreeqc_rm.SetComponentH2O(true);
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2479,19 +2479,19 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetComponentH2O(bool tf);
 /**
-Use the vector of concentrations to set the moles of components in each cell.
-Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
-to the volume (@ref SetCellVolume).
-The volume of water in a cell is the porosity times the saturation (@ref SetSaturation).
+Use the vector of concentrations (@a c) to set the moles of components in each reaction cell.
+The volume of water in a cell is the product of porosity (@ref SetPorosity), saturation (@ref SetSaturation),
+and reference volume (@ref SetReferenceVolume).
 The moles of each component are determined by the volume of water and per liter concentrations.
 If concentration units (@ref SetUnitsSolution) are mass fraction, the
-density (as determined by @ref SetDensity) is used to convert from mass fraction to per liter.
+density (as specified by @ref SetDensity) is used to convert from mass fraction to per mass per liter.
 @param c               Vector of component concentrations. Size of vector is @a ncomps times @a nxyz, 
 where @a ncomps is the number of components as determined
 by @ref FindComponents or @ref GetComponentCount and
 @a nxyz is the number of grid cells in the user's model (@ref GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume, @ref SetSaturation, @ref SetUnitsSolution.
+@see                    @ref SetDensity, @ref SetPorosity, @ref SetReferenceVolume, 
+@ref SetSaturation, @ref SetUnitsSolution.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -2500,7 +2500,7 @@ std::vector<double> c;
 c.resize(nxyz * components.size());
 ...
 AdvectCpp(c, bc_conc, ncomps, nxyz, nbound);
-status = phreeqc_rm.SetPoreVolume(pv);            // If pore volume changes due to compressibility
+status = phreeqc_rm.SetPorosity(por);             // If porosity changes 
 status = phreeqc_rm.SetSaturation(sat);           // If saturation changes
 status = phreeqc_rm.SetTemperature(temperature);  // If temperature changes
 status = phreeqc_rm.SetPressure(pressure);        // If pressure changes
@@ -2523,8 +2523,9 @@ the argument @a n_user selects which of the SELECTED_OUTPUT definitions will be 
 for selected-output operations.
 @param n_user           User number of the SELECTED_OUTPUT data block that is to be used.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref GetNthSelectedOutputUserNumber, @ref GetSelectedOutput, @ref GetSelectedOutputColumnCount,
-@ref GetSelectedOutputCount, @ref GetSelectedOutputRowCount, @ref GetSelectedOutputHeading,
+@see                    @ref GetNthSelectedOutputUserNumber, @ref GetSelectedOutput, 
+@ref GetSelectedOutputColumnCount, @ref GetSelectedOutputCount, 
+@ref GetSelectedOutputRowCount, @ref GetSelectedOutputHeading,
 @ref SetSelectedOutputOn.
 @par C++ Example:
 @htmlonly
@@ -2548,15 +2549,15 @@ Called by root.
  */
 	IRM_RESULT								  SetCurrentSelectedOutputUserNumber(int n_user);
 /**
-Set the density for each cell. These density values are used 
+Set the density for each reaction cell. These density values are used 
 when converting from transported mass-fraction concentrations (@ref SetUnitsSolution) to
 produce per liter concentrations during a call to @ref SetConcentrations. 
-They are also used when converting from module concentrations to transport concentrations
-of mass fraction (@ref GetConcentrations), if @ref UseSolutionDensityVolume is set to @a false.
+They are also used when converting from reaction-cell concentrations to transport concentrations
+(@ref GetConcentrations), if @ref UseSolutionDensityVolume is set to @a false.
 @param density          Vector of densities. Size of vector is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref GetGridCellCount, @ref SetConcentrations, 
+@see                    @ref GetConcentrations, @ref GetGridCellCount, @ref SetConcentrations, 
 @ref SetUnitsSolution, @ref UseSolutionDensityVolume.
 @par C++ Example:
 @htmlonly
@@ -2702,8 +2703,9 @@ status = phreeqc_rm.MpiWorker();
 
 int mpi_methods(int method, void *cookie)
 {
-  // this method is called by MpiWorker
+  // this method is called by MpiWorker 
   // because it was registered by SetMpiWorkerCallbackC
+  // The cookie is the pointer that was set with SetMpiWorkerCallbackCookie
   int return_value;
   return_value = 0;
   if (method == 1000)
@@ -2784,22 +2786,19 @@ Called by workers, before call to @ref MpiWorker.
 	IRM_RESULT								  SetMpiWorkerCallbackCookie(void * cookie);
 /**
 MPI and Fortran only. Defines a callback function that allows additional tasks to be done
-by the workers. See documentation of PhreeqcRM for C and Fortran, method RM_SetMpiWorkerCallback.
+by the workers. See documentation of PhreeqcRM for C and Fortran, method SetMpiWorkerCallback.
  */
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
 /**
 Sets the property for partitioning solids between the saturated and unsaturated 
 parts of a partially saturated cell. 
 
-
-The value has meaning only when saturations 
-less than 1.0 are encountered. 
 The option is intended to be used by saturated-only 
 flow codes that allow a variable water table.
 The value has meaning only when saturations 
 less than 1.0 are encountered. The partially saturated cells 
 may have a small water-to-rock ratio that causes 
-reactions to proceed slowly relative to fully saturated cells. 
+reactions to proceed differently relative to fully saturated cells. 
 By setting  @ref SetPartitionUZSolids to true, the
 amounts of solids and gases are partioned according to the saturation. 
 If a cell has a saturation of 0.5, then
@@ -2852,7 +2851,8 @@ Called by root, workers must be in the loop of @ref MpiWorker.
 	IRM_RESULT                                SetPoreVolume(const std::vector<double> &vol); 
 #endif
 /**
-Set the porosity for each cell. The volume of water in a reaction cell is the product of porosity, saturation
+Set the porosity for each reaction cell. 
+The volume of water in a reaction cell is the product of porosity, saturation
 (@ref SetSaturation), and representative volume (@ref SetRepresentativeVolume).
 @param por              Vector of porosities, unitless. Default is 0.1. 
 Size of vector is @a nxyz, where @a nxyz is the number
@@ -2875,7 +2875,7 @@ Called by root, workers must be in the loop of @ref MpiWorker.
 	IRM_RESULT                                SetPorosity(const std::vector<double> &por); 
 
 /**
-Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
+Set the pressure for each reaction cell. Pressure effects are considered only in three of the
 databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat.
 @param p                Vector of pressures, in atm. Size of vector is @a nxyz, 
 where @a nxyz is the number of grid cells in the user's model (@ref GetGridCellCount).
@@ -2896,7 +2896,8 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetPressure(const std::vector<double> &p); 
 /**
-Enable or disable detailed output for each cell. Printing for a cell will occur only when the
+Enable or disable detailed output for each reaction cell. 
+Printing for a reaction cell will occur only when the
 printing is enabled with @ref SetPrintChemistryOn and the @a cell_mask value is 1.
 @param cell_mask        Vector of integers. Size of vector is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref GetGridCellCount). A value of 0 will
@@ -2922,7 +2923,7 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetPrintChemistryMask(std::vector<int> & cell_mask);
 /**
-Property that enables or disables printing detailed output from reaction calculations 
+Set property that enables or disables printing detailed output from reaction calculations 
 to the output file for a set of cells defined by @ref SetPrintChemistryMask. 
 The detailed output prints all of the output typical of a PHREEQC reaction calculation, 
 which includes solution descriptions and the compositions of all other reactants. 
@@ -2942,7 +2943,7 @@ when printing detailed output for the workers is disabled.
 @param utility          @a True, enable detailed printing in the Utility instance; 
 @a False, disable detailed printing in the Utility instance.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetPrintChemistryMask.
+@see                    @ref OpenFiles, @ref RunFile, @ref RunString, @ref SetPrintChemistryMask.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -2956,11 +2957,14 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetPrintChemistryOn(bool workers, bool initial_phreeqc, bool utility); 
 /**
+Set the load-balancing algorithm. 
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
 thread or process takes the same amount of time to run its part of a @ref RunCells
-calculation. Two algorithms are available; one uses the average time to run a set of
-cells, and the other accounts for cells that were not run because saturation was zero (default).
-The methods are similar, and it is not clear that one is better than the other.
+calculation. Two algorithms are available; one uses individual times for each cell and 
+accounts for cells that were not run because 
+saturation was zero (default), and 
+the other assigns an average time to all cells.
+The methods are similar, but limited testing indicates the default method performs better.
 @param tf           @a True, indicates individual cell times are used in rebalancing (default); 
 @a False, indicates average times are used in rebalancing.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
@@ -2978,15 +2982,16 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetRebalanceByCell(bool tf); 
 /**
+Sets the fraction of cells that are transferred among threads or processes when rebalancing. 
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
 thread or process takes the same amount of time to run its part of a @ref RunCells
 calculation. The rebalancing transfers cell calculations among threads or processes to
-try to achieve an optimum balance. SetRebalanceFraction
+try to achieve an optimum balance. @a SetRebalanceFraction
 adjusts the calculated optimum number of cell transfers by a fraction from 0 to 1.0 to
 determine the actual number of cell transfers. A value of zero eliminates
 load rebalancing. A value less than 1.0 is suggested to slow the approach to the optimum cell
 distribution and avoid possible oscillations
-where too many cells are transferred at one iteration, requiring reverse transfers at the next iteration.
+when too many cells are transferred at one iteration, requiring reverse transfers at the next iteration.
 Default is 0.5.
 
 @param f                Fraction from 0.0 to 1.0.
@@ -3005,14 +3010,19 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetRebalanceFraction(double f); 
 /**
-Set the representative volume of each reaction cell. By default the representative volume of each reaction cell is 1 liter. 
-The volume of water in a reaction cell is determined by the procuct of the representative volume, the porosity (@ref SetPorosity), 
-and the saturation (@rev SetSaturation). PHREEQC will have fewer numerical problems if the water volume for a reaction cell is
-within a couple orders of magnitude of 1.0. Very small water volumes caused by very small porosities and (or) very small saturations 
-may cause non-convergence of the numerical method. In these cases, a larger representative volume may help, but it must be remembered
-that increasing the representative volume also increases the number of moles of the reactants in the cell (minerals, surfaces, exchangers, 
+Set the representative volume of each reaction cell. 
+By default the representative volume of each reaction cell is 1 liter. 
+The volume of water in a reaction cell is determined by the procuct of the representative volume, 
+the porosity (@ref SetPorosity), and the saturation (@rev SetSaturation). 
+The numerical method of PHREEQC is more robust if the water volume for a reaction cell is
+within a couple orders of magnitude of 1.0. 
+Small water volumes caused by small porosities and (or) small saturations (and (or) small representative volumes)
+may cause non-convergence of the numerical method. 
+In these cases, a larger representative volume may help. Note
+that increasing the representative volume also increases 
+the number of moles of the reactants in the reaction cell (minerals, surfaces, exchangers, 
 and others), which are defined as moles per representative volume.
-@param rv              Vector of representative volumes, in liters. 
+@param rv              Vector of representative volumes, in liters. Default is 1.0 liter.
 Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
@@ -3032,14 +3042,19 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetRepresentativeVolume(const std::vector<double> &rv);
 /**
-Set the saturation of each cell. Saturation is a fraction ranging from 0 to 1.
-Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
-to the cell volume (@ref SetCellVolume). The volume of water in a cell is the porosity times the saturation.
+Set the saturation of each reaction cell. Saturation is a fraction ranging from 0 to 1.
+The volume of water in a cell is the product of porosity (@ref SetPorosity), saturation, (@ref SetSaturation),
+and representative volume (@ref SetRepresentativeVolume). As a result of a reaction calculation, 
+solution properties (density and volume) will change; 
+the databases phreeqc.dat, Amm.dat, and pitzer.dat have the molar volume data to calculate these changes. The methods @ref GetDensity, 
+@ref GetSolutionVolume, and @ref GetSaturation can be used to account 
+for these changes in the succeeding transport calculation. 
 
-@param sat              Vector of saturations, unitless. Size of vector is @a nxyz, 
+@param sat              Vector of saturations, unitless. Default 1.0. Size of vector is @a nxyz, 
 where @a nxyz is the number of grid cells in the user's model (@ref GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume.
+@see                    @ref GetDensity, @ref GetSaturation, @ref GetSolutionVolume, 
+@ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -3210,20 +3225,20 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetUnitsExchange(int option);
 /**
-Input units for gas phases. In PHREEQC, gas phases are defined by
-moles of component gases. SetUnitsGasPhase determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
-on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
+Set input units for gas phases. 
+In PHREEQC input, gas phases are defined by moles of component gases (@a Mp). 
+@a SetUnitsGasPhase specifies how the number of moles of component gases in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
 
 @param option           Units option for gas phases: 0, 1, or 2. 
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume, 
-@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@see                    @ref GetUnitsGasPhase, @ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module, 
+@ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -3237,27 +3252,29 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetUnitsGasPhase(int option);
 /**
-Input units for kinetic reactants. In PHREEQC, kinetics are defined by
-moles of kinetic reactant. SetUnitsKinetics determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
-on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
+Set input units for kinetic reactants. 
+
+In PHREEQC input, kinetics are defined by moles of kinetic reactants (@a Mp). 
+@a SetUnitsKinetics specifies how the number of moles of kinetic reactants in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are 
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
+
 @n@n
 Note that the volume of water in a cell in the reaction module is equal
-to the porosity times the saturation, which is usually much less than 1 liter.
-It is important to write the
-RATES definitions for KINETICS to account for the current volume of water,
+to the product of porosity, the saturation (@ref SetSaturation), and representative volume (@ref SetRepresentativeVolume), 
+which is usually less than 1 liter.
+It is important to write the RATES definitions for KINETICS to account for the current volume of water,
 often by calculating the rate of reaction per liter of water and multiplying by the
 volume of water (Basic function SOLN_VOL).
 
 @param option           Units option for kinetic reactants: 0, 1, or 2. 
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume, 
-@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@see                    @ref GetUnitsKinetics, @ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module, 
+@ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -3271,21 +3288,20 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetUnitsKinetics(int option);
 /**
-Input units for pure phase assemblages (equilibrium phases).
-In PHREEQC, equilibrium phases are defined by
-moles of each phase. SetUnitsPPassemblage determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
-on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
+Set input units for pure phase assemblages (equilibrium phases).
+In PHREEQC input, equilibrium phases are defined by moles of each phase (@a Mp). 
+@a SetUnitsPPassemblage specifies how the number of moles of phases in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are 
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
 
 @param option           Units option for equilibrium phases: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume, 
-@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@see                    @ref GetUnitsPPassemblage, @ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module, 
+@ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -3305,24 +3321,20 @@ PHREEQC defines solutions by the number of moles of each
 element in the solution.
 @n@n
 To convert from mg/L to moles
-of element in a cell, mg/L is converted to mol/L and
+of element in the representative volume of a reaction cell, mg/L is converted to mol/L and
 multiplied by the solution volume,
-which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
-times saturation (@ref SetSaturation).
+which is the product of porosity (@ref SetPorosity), saturation (@ref SetSaturation), 
+and representative volume (@ref SetRepresentativeVolume).
 To convert from mol/L to moles
-of element in a cell, mol/L is
-multiplied by the solution volume,
-which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
-times saturation (@ref SetSaturation).
+of element in the representative volume of a reaction cell, mol/L is
+multiplied by the solution volume.
 To convert from mass fraction to moles
-of element in a cell, kg/kgs is converted to mol/kgs, multiplied by density
+of element in the representative volume of a reaction cell, kg/kgs is converted to mol/kgs, multiplied by density
 (@ref SetDensity) and
-multiplied by the solution volume,
-which is porosity (@ref SetCellVolume, @ref SetPoreVolume)
-times saturation (@ref SetSaturation).
+multiplied by the solution volume.
 @n@n
 To convert from moles
-of element in a cell to mg/L, the number of moles of an element is divided by the
+of element in the representative volume of a reaction cell to mg/L, the number of moles of an element is divided by the
 solution volume resulting in mol/L, and then converted to mg/L.
 To convert from moles
 of element in a cell to mol/L,  the number of moles of an element is divided by the
@@ -3332,12 +3344,13 @@ of element in a cell to mass fraction, the number of moles of an element is conv
 by the total mass of the solution.
 Two options are available for the volume and mass of solution 
 that are used in converting to transport concentrations: (1) the volume and mass of solution are
-calculated by PHREEQC, or (2) the volume of solution is the product of porosity and saturation, 
+calculated by PHREEQC, or (2) the volume of solution is the product of porosity (@ref SetPorosity), 
+saturation (@ref SetSaturation), and representative volume (@ref SetRepresentativeVolume),
 and the mass of solution is volume times density as defined by @ref SetDensity. 
 Which option is used is determined by @ref UseSolutionDensityVolume.
 @param option           Units option for solutions: 1, 2, or 3, default is 1, mg/L.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetDensity, @ref SetPoreVolume, @ref SetSaturation,
+@see                    @ref SetDensity, @ref SetPorosity, @ref SetRepresentativeVolume, @ref SetSaturation,
 @ref UseSolutionDensityVolume.
 @par C++ Example:
 @htmlonly
@@ -3352,21 +3365,20 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetUnitsSolution(int option);
 /**
-Input units for solid-solution assemblages.
-In PHREEQC, solid solutions are defined by
-moles of each component. SetUnitsSSassemblage determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
-on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
+Set nput units for solid-solution assemblages.
+In PHREEQC, solid solutions are defined by moles of each component (@a Mp). 
+@a SetUnitsSSassemblage specifies how the number of moles of solid-solution components in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are 
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
 
 @param option           Units option for solid solutions: 0, 1, or 2. 
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume, 
-@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@see                    @ref GetUnitsSSassemblage, @ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module, 
+@ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -3380,20 +3392,20 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetUnitsSSassemblage(int option);
 /**
-Input units for surfaces. In PHREEQC, surfaces are determined by
-moles of surface sites. SetUnitsSurface defines whether the
-number of sites applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
-on the basis of the porosity
-(@ref SetCellVolume and @ref SetPoreVolume).
+Set input units for surfaces. 
+In PHREEQC input, surfaces are defined by moles of surface sites (@a Mp). 
+@a SetUnitsSurface specifies how the number of moles of surface sites in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are 
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
 
 @param option           Units option for surfaces: 0, 1, or 2. 
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume, 
-@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@see                    @ref GetUnitsSurface, @ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module, 
+@ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -3624,7 +3636,7 @@ protected:
 	std::vector<double> standard_task_vector;   // root only
 
 private:
-	friend class RM_interface;
+	//friend class RM_interface;
 	static std::map<size_t, PhreeqcRM*> Instances;
 	static size_t InstancesIndex;
 

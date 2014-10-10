@@ -2855,7 +2855,13 @@ PhreeqcRM::GetSaturation(std::vector<double> & sat_arg)
 		{
 			for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
 			{
-				double v = this->workers[n]->Get_solution(i)->Get_soln_vol();
+				cxxSolution * soln_ptr = this->workers[n]->Get_solution(i);
+				double v;
+				if (!soln_ptr)
+				{
+					this->ErrorHandler(IRM_FAIL, "Solution not found for solution volume.");	
+				}
+				v = soln_ptr->Get_soln_vol();
 				for(size_t j = 0; j < backward_mapping[i].size(); j++)
 				{
 					int n = backward_mapping[i][j];
@@ -2871,7 +2877,7 @@ PhreeqcRM::GetSaturation(std::vector<double> & sat_arg)
 	}
 	catch (...)
 	{
-		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetDensity");
+		this->ReturnHandler(IRM_FAIL, "PhreeqcRM::GetSaturation");
 	}
 	return IRM_OK;
 }
