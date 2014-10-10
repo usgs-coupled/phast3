@@ -117,7 +117,7 @@ SUBROUTINE worker_init1
         ! ... Allocate node information arrays: mcn
         ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
             x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
-            pv0(nxyz), volume(nxyz), & ! tort(npmz), &
+            pv0(nxyz), volume(nxyz), por(nxyz), & ! tort(npmz), &
             phreeqc_density(nxyz), &
             STAT = a_err)
         IF (a_err /= 0) THEN  

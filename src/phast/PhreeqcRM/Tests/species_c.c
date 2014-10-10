@@ -21,8 +21,8 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 #endif
 		int id;
 		int status;
-		double * cell_vol;
-		double * pv;
+		double * rv;
+		double * por;
 		double * sat;
 		int * print_chemistry_mask;
 		int * grid2chem;
@@ -101,14 +101,14 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		status = RM_SetTimeConversion(id, 1.0 / 86400.0); // days
 
 		// Set cell volume
-		cell_vol = (double *) malloc((size_t) (nxyz * sizeof(double)));
-		for (i = 0; i < nxyz; i++) cell_vol[i] = 1.0;
-		status = RM_SetCellVolume(id, cell_vol);
+		rv = (double *) malloc((size_t) (nxyz * sizeof(double)));
+		for (i = 0; i < nxyz; i++) rv[i] = 1.0;
+		status = RM_SetRepresentativeVolume(id, rv);
     
 		// Set current pore volume
-		pv = (double *) malloc((size_t) (nxyz * sizeof(double)));
-		for (i = 0; i < nxyz; i++) pv[i] = 0.2;
-		status = RM_SetPoreVolume(id, pv);
+		por = (double *) malloc((size_t) (nxyz * sizeof(double)));
+		for (i = 0; i < nxyz; i++) por[i] = 0.2;
+		status = RM_SetPorosity(id, por);
     
 		// Set saturation
 		sat = (double *) malloc((size_t) (nxyz * sizeof(double)));
@@ -302,7 +302,7 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			species_advect_c(species_c, bc_conc, nspecies, nxyz, nbound);
         
 			// Send any new conditions to module
-			status = RM_SetPoreVolume(id, pv);             // If pore volume changes 
+			status = RM_SetPorosity(id, por);              // If porosity changes 
 			status = RM_SetSaturation(id, sat);            // If saturation changes
 			status = RM_SetTemperature(id, temperature);   // If temperature changes
 			status = RM_SetPressure(id, pressure);         // If pressure changes
@@ -405,8 +405,8 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		status = RM_MpiWorkerBreak(id);
 		status = RM_Destroy(id);
 		// free space
-		free(cell_vol);
-		free(pv);
+		free(rv);
+		free(por);
 		free(sat);
 		free(print_chemistry_mask);
 		free(grid2chem);

@@ -65,7 +65,7 @@
 #define RM_RunFile                         FC_FUNC_ (rm_runfile,                          RM_RUNFILE)
 #define RM_RunString                       FC_FUNC_ (rm_runstring,                     RM_RUNSTRING)
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
-#ifdef SKIP
+#ifdef SKIP_RV
 #define RM_SetCellVolume				   FC_FUNC_ (rm_setcellvolume,                 RM_SETCELLVOLUME)
 #endif
 #define RM_SetComponentH2O				   FC_FUNC_ (rm_setcomponenth2o,               RM_SETCOMPONENTH2O)
@@ -205,6 +205,7 @@ IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t);
 IRM_RESULT RM_SetPrintChemistryOn(int *id, int *worker, int *ip, int *utility);
 IRM_RESULT RM_SetRebalanceByCell(int *id, int *method);
 IRM_RESULT RM_SetRebalanceFraction(int *id, double *f);
+IRM_RESULT RM_SetRepresentativeVolume(int *id, double *t);
 IRM_RESULT RM_SetSaturation(int *id, double *t);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output);
 IRM_RESULT RM_SetSpeciesSaveOn(int *id, int *save_on);

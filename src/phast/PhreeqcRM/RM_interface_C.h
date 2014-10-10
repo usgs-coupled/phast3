@@ -2939,6 +2939,7 @@ status = RM_ScreenMessage(id, string);
 Called by root and (or) workers.
  */
 IRM_RESULT RM_ScreenMessage(int id, const char *str);
+#ifdef SKIP_RV
 /**
 Set the volume of each cell. Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
 to the cell volume. The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
@@ -2984,6 +2985,7 @@ status = RM_SetCellVolume(id, cell_vol(1))
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetCellVolume(int id, double *vol);
+#endif
 /**
 Select whether to include H2O in the component list. By default, the total concentrations of H and O are included
 in the list of components that need to be transported (@ref RM_FindComponents).
@@ -3938,6 +3940,7 @@ status = RM_SetRebalanceFraction(id, 0.5d0)
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetRebalanceFraction(int id, double f);
+IRM_RESULT RM_SetRepresentativeVolume(int id, double *t);
 /**
 Set the saturation of each cell. Saturation is a fraction ranging from 0 to 1.
 Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)

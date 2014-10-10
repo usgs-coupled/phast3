@@ -54,10 +54,17 @@ SUBROUTINE dealloc_arr_worker
             STOP
         ENDIF
     endif 
+    if (allocated(por)) then
+        DEALLOCATE (por, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.21"  
+            STOP
+        ENDIF
+    endif
     if (allocated(phreeqc_density)) then
         DEALLOCATE (phreeqc_density, STAT = da_err)     
         IF (da_err /= 0) THEN  
-            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.2"  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.22"  
             STOP
         ENDIF
     endif 

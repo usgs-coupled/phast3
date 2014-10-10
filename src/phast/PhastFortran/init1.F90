@@ -44,7 +44,7 @@ SUBROUTINE init1
   ! ... Allocate node information arrays: mcn
   ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
        x_face(nx-1), y_face(ny-1), z_face(nz-1),  &
-       pv0(nxyz),  &
+       pv0(nxyz), por(nxyz), &
        phreeqc_density(nxyz), &
        STAT = a_err)
   IF (a_err /= 0) THEN  
@@ -60,8 +60,9 @@ SUBROUTINE init1
   ENDIF
 !!$  ! ... store index numbers for natural numbering
 !!$  call mtoijk_orig
-  volume = 0
-  pv0 = 0
+  volume = 0.0d0
+  pv0 = 0.0d0
+  por = 1.0d0
   ibc = 0
   ibc_string = '         '
   char_ibc =   '         '
