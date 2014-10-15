@@ -224,46 +224,45 @@ SUBROUTINE dealloc_arr
         STOP
      ENDIF
   END IF
-
   IF(num_flo_zones > 0) THEN
       ! ... Deallocate zone arrays for local flow rates: mcb2_m
       do i = 1, num_flo_zones
-          if (seg_well(i)%num_wellseg > 0) then
-              DEALLOCATE(seg_well(i)%iwel_no,  &  
-                seg_well(i)%ks_no,  &         
-                STAT = da_err)
-              IF (da_err /= 0) THEN  
-                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1"  
-                  STOP
-              ENDIF
+          if (nwel > 0) then
+              if (seg_well(i)%num_wellseg > 0) then
+                  DEALLOCATE(seg_well(i)%iwel_no, seg_well(i)%ks_no, STAT = da_err)
+                  IF (da_err /= 0) THEN  
+                      PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.1"  
+                      STOP
+                  ENDIF
+              endif
           endif
           if (zone_ib(i)%num_int_faces > 0) then
               DEALLOCATE(zone_ib(i)%mcell_no,  &  
                 zone_ib(i)%face_indx,  &        
                 STAT = da_err)
               IF (da_err /= 0) THEN  
-                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1"  
+                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
                   STOP
               ENDIF
           endif          
       enddo
-     
-     DEALLOCATE (zone_title, zone_number, &
+
+      DEALLOCATE (zone_title, zone_number, &
           zone_ib, lnk_bc2zon, seg_well,  &
           zone_filename_heads,  &
           zone_write_heads,  &
           STAT = da_err)
-     IF (da_err /= 0) THEN  
-        PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1"  
-        STOP
-     ENDIF
+      IF (da_err /= 0) THEN  
+          PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.3"  
+          STOP
+      ENDIF
      !IF(fresur .AND. (nfbc > 0 .OR. nrbc > 0)) THEN
         ! ... Deallocate space for zone volume cell index data,
         ! ...     optional flux bc data, optional river bc data: mcb2_m
         DEALLOCATE(zone_col, lnk_cfbc2zon, lnk_crbc2zon,  &
              STAT = da_err)
         IF (da_err /= 0) THEN  
-           PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.1"  
+           PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.4"  
            STOP
         ENDIF
      !END IF

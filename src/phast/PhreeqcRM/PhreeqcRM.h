@@ -3049,6 +3049,7 @@ solution properties (density and volume) will change;
 the databases phreeqc.dat, Amm.dat, and pitzer.dat have the molar volume data to calculate these changes. The methods @ref GetDensity, 
 @ref GetSolutionVolume, and @ref GetSaturation can be used to account 
 for these changes in the succeeding transport calculation. 
+@a SetRepresentativeVolume should be called before initial conditions are defined for the reaction cells.
 
 @param sat              Vector of saturations, unitless. Default 1.0. Size of vector is @a nxyz, 
 where @a nxyz is the number of grid cells in the user's model (@ref GetGridCellCount).
@@ -3070,7 +3071,7 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetSaturation(const std::vector<double> &sat); 
 /**
-This property determines whether selected-output results are available to be retrieved
+Set the property that controls whether selected-output results are available to be retrieved
 with @ref GetSelectedOutput. @a True indicates that selected-output results
 will be accumulated during @ref RunCells and can be retrieved with @ref GetSelectedOutput;
 @a False indicates that selected-output results will not
@@ -3093,13 +3094,13 @@ Called by root, workers must be in the loop of @ref MpiWorker.
 	IRM_RESULT                                SetSelectedOutputOn(bool tf);
 /**
 Sets the value of the species-save property.
-This method enables use of PhreeqcRM with multicomponent-diffusion transport calculations.
+This method enables or disables use of PhreeqcRM with multicomponent-diffusion transport calculations.
 By default, concentrations of aqueous species are not saved. 
 Setting the species-save property to @a true allows
 aqueous species concentrations to be retrieved
 with @ref GetSpeciesConcentrations, and solution compositions to be set with
 @ref SpeciesConcentrations2Module.
-SetSpeciesSaveOn must be called before calls to @ref FindComponents.
+@a SetSpeciesSaveOn must be called before calls to @ref FindComponents.
 
 @param save_on          @a True indicates species concentrations are saved; 
 @a False indicates species concentrations are not saved.
@@ -3120,10 +3121,11 @@ Called by root and (or) workers.
  */
 	IRM_RESULT                                SetSpeciesSaveOn(bool save_on);
 /**
-Set the temperature for each cell for reaction calculations. If SetTemperature is not called, 
+Set the temperature for each reaction cell. If SetTemperature is not called, 
 worker solutions will have temperatures as defined in  
 input files (@ref RunFile) or input strings (@ref RunString).
-@param t                Vector of temperatures, in degrees C. Size of vector is @a nxyz, where @a nxyz is the number
+@param t                Vector of temperatures, in degrees C. 
+Size of vector is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
 @see                    @ref GetPressure, @ref SetPressure, @ref GetTemperature.
@@ -3160,7 +3162,7 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetTime(double time);
 /**
-Set a factor to convert to user time units. Factor times seconds produces user time units.
+Set a factor to convert from seconds to user time units. Factor times seconds produces user time units.
 
 @param conv_factor      Factor to convert seconds to user time units.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
@@ -3182,7 +3184,7 @@ Called by root, workers must be in the loop of @ref MpiWorker.
 Set current time step for the reaction module. This is the length
 of time over which kinetic reactions are integrated.
 
-@param time_step        Current time step, in seconds.
+@param time_step        Time step, in seconds.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
 @see                    @ref SetTime, @ref SetTimeConversion.
 @par C++ Example:
@@ -3199,19 +3201,20 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetTimeStep(double time_step);
 /**
-Input units for exchangers. In PHREEQC, exchangers are defined by
-moles of exchange sites. SetUnitsExchange determines whether the
-number of sites applies to the volume of the cell, the volume of
-water in the cell, or the volume of rock in the cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref InitialPhreeqc2Module and @ref InitialPhreeqcCell2Module 
-on the basis of the porosity (@ref SetCellVolume and @ref SetPoreVolume).
+Sets input units for exchangers. 
+In PHREEQC input, exchangers are defined by moles of exchange sites (@a Mp).
+SetUnitsExchange specifies how the number of moles of exchange sites in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp). 
+
+Options are 
+0, Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume); 
+1, Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @P is porosity (@ref SetPorosity); or
+2, Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
 
 @param option           Units option for exchangers: 0, 1, or 2. 
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetPoreVolume, 
-@ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module.
+@see                    @ref GetUnitsExchange, @ref InitialPhreeqc2Module, @ref InitialPhreeqcCell2Module, 
+@ref SetPorosity, @ref SetRepresentativeVolume.
 @par C++ Example:
 @htmlonly
 <CODE>
@@ -3425,7 +3428,8 @@ This method is intended for use with multicomponent-diffusion transport calculat
 and @ref SetSpeciesSaveOn must be set to @a true.
 The method determines the total concentration of a component 
 by summing the molarities of the individual species times the stoichiometric
-coefficient of the element in each species.
+coefficient of the element in each species. 
+Solution compositions in the reaction cells are updated with these component concentrations.
 
 @param species_conc     Vector of aqueous species concentrations. Dimension of the array is @a nspecies times @a nxyz,
 where  @a nspecies is the number of aqueous species (@ref GetSpeciesCount),
@@ -3458,28 +3462,28 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT								  SpeciesConcentrations2Module(std::vector<double> & species_conc); 
 /**
-Determines the volume and density to use when converting from the reaction-module concentrations
+Determines the volume and density to use when converting from the reaction-cell concentrations
 to transport concentrations (@ref GetConcentrations). 
 Two options are available to convert concentration units: 
 (1) the density and solution volume calculated by PHREEQC are used, or 
 (2) the specified density (@ref SetDensity) 
-and solution volume defined by the product of 
-@ref SetSaturation, @ref SetPoreVolume, and @ref SetCellVolume are used.
+and solution volume is determined by the product of saturation, 
+(@ref SetSaturation), porosity (@ref SetPorosity), and representative volume (@ref SetCellVolume).
 Transport models that consider density-dependent flow will probably use the 
 PHREEQC-calculated density and solution volume (default), 
 whereas transport models that assume constant-density flow will probably use
 specified values of density and solution volume. 
-Only the following databases distributed with PhreeqcRM have molar volume information 
+Only the following databases distributed with PhreeqcRM have molar-volume information 
 needed to accurately calculate density and solution volume: phreeqc.dat, Amm.dat, and pitzer.dat.
-Density is only used when converting to transport units of mass fraction. 
+Density is only used when converting to or from transport units of mass fraction. 
 
 @param tf          @a True indicates that the solution density and volume as 
 calculated by PHREEQC will be used to calculate transport concentrations. 
 @a False indicates that the solution density set by @ref SetDensity and the volume determined by the 
-product of  @ref SetSaturation, @ref SetPoreVolume, 
-and @ref SetCellVolume will be used to calculate transport concentrations.
-@see                    @ref GetConcentrations, @ref SetCellVolume, @ref SetDensity, 
-@ref SetPoreVolume, @ref SetSaturation.
+product of  @ref SetSaturation, @ref SetPorosity, and @ref SetRepresentativeVolume, 
+will be used to calculate concentrations retrieved by @ref GetConcentrations.
+@see                    @ref GetConcentrations,  @ref SetDensity, 
+@ref SetPorosity, @ref SetRepresentativeVolume, @ref SetSaturation.
 @par C++ Example:
 @htmlonly
 <CODE>

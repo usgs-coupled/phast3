@@ -348,7 +348,7 @@ SUBROUTINE rhsn
               if(hrbc > zerbc(ls)) then      ! ... treat as river
                   IF(qn <= 0._kdp) THEN           ! ... Outflow
                       qm_net = qm_net + den0*qn
-                      sfvrb(lc) = sfvrb(lc) + qn
+                      sfvrb(lc) = sfvrb(lc) + qn     
                   ELSE                            ! ... Inflow
                       ! ... Limit the flow rate for a river leakage
                       qlim = brbc(ls)*(denrbc(ls)*phirbc_n(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &

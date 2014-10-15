@@ -827,7 +827,7 @@ SUBROUTINE sumcal1
                  !END DO
              ENDIF
          end if             
-     END DO
+     END DO     
      qfrbc(lc) = qm_net
      sfrb(lc) = sfrb(lc) + qfrbc(lc)
      stfrbc = stfrbc + ufdt1*qfrbc(lc)

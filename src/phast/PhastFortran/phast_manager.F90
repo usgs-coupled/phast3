@@ -267,7 +267,7 @@ SUBROUTINE phast_manager
 END SUBROUTINE phast_manager
 
 SUBROUTINE time_parallel(i)
-    USE mcc, only: rm_id
+    USE mcc, only: rm_id, solute
     USE mpi_mod
     IMPLICIT none   
     INCLUDE "RM_interface_F.f90.inc"
@@ -345,38 +345,40 @@ SUBROUTINE time_parallel(i)
                time_transfer, " Cumulative:", cum_transfer
         status = RM_LogMessage(rm_id, logline)
         status = RM_ScreenMessage(rm_id, logline)
-        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry:           ", &
-               time_chemistry, " Cumulative:", cum_chemistry
-        status = RM_LogMessage(rm_id, logline)
-        status = RM_ScreenMessage(rm_id, logline) 
-        write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry messages:  ", &
-               time_chemistry_transfer, " Cumulative:", cum_chemistry_transfer
-        status = RM_LogMessage(rm_id, logline)
-        status = RM_ScreenMessage(rm_id, logline)  
-        
-        c1 = c1 + times(10) - times(9)
-        write (logline,"(t16,a26, f12.2,a17, f13.2)") "Chemistry send:     ", &
-               times(10) - times(9), " Cumulative:", c1
-        status = RM_LogMessage(rm_id, logline)
-        status = RM_ScreenMessage(rm_id, logline) 
-        
-        c2 = c2 + (times(12) - times(11))
-        write (logline,"(t16,a26, f12.2,a17, f13.2)") "Chemistry receive:  ", &
-               (times(12) - times(11)), " Cumulative:", c2
-        status = RM_LogMessage(rm_id, logline)
-        status = RM_ScreenMessage(rm_id, logline) 
-        
-        c3 = c3 + (times(13) - times(12)) 
-        write (logline,"(t16,a26, f12.2,a17, f13.2)") "Files 3:            ", &
-               (times(13) - times(12)), " Cumulative:", c3
-        status = RM_LogMessage(rm_id, logline)
-        status = RM_ScreenMessage(rm_id, logline) 
-        
-        c4 = c4 + (times(16) - times(15))
-        write (logline,"(t16,a26, f12.2,a17, f13.2)") "Other files:        ", &
-               (times(16) - times(15)), " Cumulative:", c3
-        status = RM_LogMessage(rm_id, logline)
-        status = RM_ScreenMessage(rm_id, logline)
+        if (solute) then
+            write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry:           ", &
+            time_chemistry, " Cumulative:", cum_chemistry
+            status = RM_LogMessage(rm_id, logline)
+            status = RM_ScreenMessage(rm_id, logline) 
+            write (logline,"(t6,a26, f12.2,a17, f13.2)") "Time chemistry messages:  ", &
+            time_chemistry_transfer, " Cumulative:", cum_chemistry_transfer
+            status = RM_LogMessage(rm_id, logline)
+            status = RM_ScreenMessage(rm_id, logline)  
+
+            c1 = c1 + times(10) - times(9)
+            write (logline,"(t16,a26, f12.2,a17, f13.2)") "Chemistry send:     ", &
+            times(10) - times(9), " Cumulative:", c1
+            status = RM_LogMessage(rm_id, logline)
+            status = RM_ScreenMessage(rm_id, logline) 
+
+            c2 = c2 + (times(12) - times(11))
+            write (logline,"(t16,a26, f12.2,a17, f13.2)") "Chemistry receive:  ", &
+            (times(12) - times(11)), " Cumulative:", c2
+            status = RM_LogMessage(rm_id, logline)
+            status = RM_ScreenMessage(rm_id, logline) 
+
+            c3 = c3 + (times(13) - times(12)) 
+            write (logline,"(t16,a26, f12.2,a17, f13.2)") "Files 3:            ", &
+            (times(13) - times(12)), " Cumulative:", c3
+            status = RM_LogMessage(rm_id, logline)
+            status = RM_ScreenMessage(rm_id, logline) 
+
+            c4 = c4 + (times(16) - times(15))
+            write (logline,"(t16,a26, f12.2,a17, f13.2)") "Other files:        ", &
+            (times(16) - times(15)), " Cumulative:", c3
+            status = RM_LogMessage(rm_id, logline)
+            status = RM_ScreenMessage(rm_id, logline)
+        endif
         
     endif
 END SUBROUTINE time_parallel
