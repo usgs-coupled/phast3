@@ -639,7 +639,7 @@ SUBROUTINE read2
   ! ... River b.c. 
   IF(nrbc > 0) THEN  
      ! ... Allocate scratch space for river data
-     ALLOCATE (umbc(nxy), uabc(nxy), ukbc(nxy), uzebc(nxy),  &
+     ALLOCATE (umbc(2*nxy), uabc(2*nxy), ukbc(2*nxy), uzebc(2*nxy),  &
           stat = a_err)
      IF (a_err /= 0) THEN  
         PRINT *, "array allocation failed: read2, river"  
