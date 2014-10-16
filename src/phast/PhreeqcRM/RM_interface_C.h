@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 /**
-Abort the program. Result will be interpreted as
+Abort the program. @a Result will be interpreted as
 an IRM_RESULT value and decoded; @a err_str will be printed; and the reaction module
 will be destroyed. If using MPI, an MPI_Abort message will be sent before the reaction
 module is destroyed. If the @a id is an invalid instance, RM_Abort will return a value of
@@ -99,16 +99,16 @@ IRM_RESULT        RM_CloseFiles(int id);
 /**
 @a N sets of component concentrations are converted to SOLUTIONs numbered 1-@a n in the Utility IPhreeqc.
 The solutions can be reacted and manipulated with the methods of IPhreeqc. If solution concentration units
-(@ref RM_SetUnitsSolution) is per liter, one liter of solution is created in the Utility instance; if solution
+(@ref RM_SetUnitsSolution) are per liter, one liter of solution is created in the Utility instance; if solution
 concentration units are mass fraction, one kilogram of solution is created in the Utility instance.
 The motivation for this
 method is the mixing of solutions in wells, where it may be necessary to calculate solution properties
 (pH for example) or react the mixture to form scale minerals. The code fragments below make a mixture of
-concentrations and then calculates the pH of the mixture.
+concentrations and then calculate the pH of the mixture.
 @param id            The instance @a id returned from @ref RM_Create.
 @param c             Array of concentrations to be made SOLUTIONs in Utility IPhreeqc. Array storage is equivalent to Fortran (n,ncomps).
 @param n             The number of sets of concentrations.
-@param tc            Array of temperatures to apply to the SOLUTIONs, in degrees C. Array of size @a n.
+@param tc            Array of temperatures to apply to the SOLUTIONs, in degree C. Array of size @a n.
 @param p_atm         Array of pressures to apply to the SOLUTIONs, in atm. Array of size n.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).
 @par C Example:
@@ -175,7 +175,7 @@ the preprocessor directive USE_OPENMP, the reaction module is multithreaded.
 If the code is compiled with the preprocessor directive USE_MPI, the reaction
 module will use MPI and multiple processes. If neither preprocessor directive is used,
 the reaction module will be serial (unparallelized).
-@param nxyz                   The number of grid cells in the in the user's model.
+@param nxyz                   The number of grid cells in the user's model.
 @param thread_count_or_communicator               When using OPENMP, the number of worker threads to be used.
 If @a thread_count_or_communicator <= 0, the number of threads is set equal to the number of processors of the computer.
 When using MPI, the argument is the MPI communicator to use within the reaction module.
@@ -241,7 +241,7 @@ nxyz = 40
 </CODE>
 @endhtmlonly
 @par MPI:
-Called by root and workers. The value of nthreads is ignored.
+Called by root and workers. 
  */
 #ifdef USE_MPI
 int RM_Create(int nxyz, MPI_Comm comm);
@@ -249,12 +249,12 @@ int RM_Create(int nxyz, MPI_Comm comm);
 int RM_Create(int nxyz, int nthreads);
 #endif
 /**
-Provides a mapping from grid cells in the user's model to cells for which chemistry needs to be run.
+Provides a mapping from grid cells in the user's model to reaction cells in PhreeqcRM.
 The mapping is used to eliminate inactive cells and to use symmetry to decrease the number of cells for which chemistry must be run.
 The mapping may be many-to-one to account for symmetry.
-Default is a one-to-one mapping--all user grid cells are chemistry cells (equivalent to @a grid2chem values of 0,1,2,3,...,@a nxyz-1).
-@param id                   The instance @a id returned from @ref RM_Create.
-@param grid2chem        An array of integers: Nonnegative is a chemistry cell number (0 based), negative is an inactive cell. Array of size @a nxyz (number of grid cells).
+Default is a one-to-one mapping--all user grid cells are reaction cells (equivalent to @a grid2chem values of 0,1,2,3,...,@a nxyz-1).
+@param id               The instance @a id returned from @ref RM_Create.
+@param grid2chem        An array of integers: Nonnegative is a reaction cell number (0 based), negative is an inactive cell. Array of size @a nxyz (number of grid cells).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @par C Example:
 @htmlonly
@@ -302,7 +302,7 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_CreateMapping (int id, int *grid2chem);
 /**
-If @a e is negative, this method prints an error message corresponding to IRM_RESULT @a e. If @a e is non-negative, this method does nothing.
+If @a e is negative, this method prints an error message corresponding to IRM_RESULT @a e. If @a e is non-negative, no action is taken.
 @param id                   The instance @a id returned from @ref RM_Create.
 @param e                    An IRM_RESULT value returned by one of the reaction-module methods.
 @retval IRM_RESULT          0 is success, negative is failure (See @ref RM_DecodeError).
@@ -406,7 +406,7 @@ Writes the contents of all workers to file in _RAW formats, including SOLUTIONs 
 <PRE>
 dump_on = 1;
 append = 0;
-status = RM_SetDumpFileName(id, "advection_c.dmp.gz");
+status = RM_SetDumpFileName(id, "advection_c.dmp");
 status = RM_DumpModule(id, dump_on, append);
 </PRE>
 </CODE>
@@ -429,7 +429,7 @@ END FUNCTION RM_DumpModule
 <CODE>
 <PRE>      dump_on = 1
 append = 0
-status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")
+status = RM_SetDumpFileName(id, "advection_f90.dmp")
 status = RM_DumpModule(id, dump_on, append)
 </PRE>
 </CODE>
@@ -443,13 +443,13 @@ Send an error message to the screen, the output file, and the log file.
 @param id               The instance @a id returned from @ref RM_Create.
 @param errstr           String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage.
+@see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage.
 
 @par C Example:
 @htmlonly
 <CODE>
 <PRE>
-status = RM_ErrorMessage(id, "Goodby world");
+status = RM_ErrorMessage(id, "Goodbye world");
 </PRE>
 </CODE>
 @endhtmlonly
@@ -469,7 +469,7 @@ END FUNCTION RM_ErrorMessage
 @htmlonly
 <CODE>
 <PRE>
-status = RM_ErrorMessage(id, "Goodby world")
+status = RM_ErrorMessage(id, "Goodbye world")
 </PRE>
 </CODE>
 @endhtmlonly
@@ -481,19 +481,22 @@ IRM_RESULT RM_ErrorMessage(int id, const char *errstr);
 Returns the number of items in the list of all elements in the InitialPhreeqc instance.
 Elements are those that have been defined in a solution or any other reactant (EQUILIBRIUM_PHASE, KINETICS, and others).
 The method can be called multiple times and the list that is created is cummulative.
-The list is the set of components that needs to be transported. By default the list includes total H and total O concentrations;
-for numerical accuracy in transport, the list may be defined to include excess H and O (the H and O not contained in water)
-and the water concentration (@ref RM_SetComponentH2O).
+The list is the set of components that needs to be transported. 
+By default the list
+includes water, excess H and excess O (the H and O not contained in water);
+alternatively, the list may be set to contain total H and total O (@ref SetComponentH2O),
+which requires transport results to be accurate to eight or nine significant digits.
 If multicomponent diffusion (MCD) is to be modeled, there is a capability to retrieve aqueous species concentrations
-(@ref RM_GetSpeciesConcentrations) and to set new solution concentrations after MCD from the individual species concentrations
+(@ref RM_GetSpeciesConcentrations) and to set new solution concentrations after MCD by using individual species concentrations
 (@ref RM_SpeciesConcentrations2Module). To use these methods the save-species property needs to be turned on (@ref RM_SetSpeciesSaveOn).
 If the save-species property is on, RM_FindComponents will generate
 a list of aqueous species (@ref RM_GetSpeciesCount, @ref RM_GetSpeciesName), their diffusion coefficients at 25 C (@ref RM_GetSpeciesD25),
 their charge (@ref RM_GetSpeciesZ).
 @param id            The instance @a id returned from @ref RM_Create.
 @retval              Number of components currently in the list, or IRM_RESULT error code (see @ref RM_DecodeError).
-@see                 @ref RM_GetComponent, @ref RM_SetSpeciesSaveOn, @ref RM_GetSpeciesConcentrations, @ref RM_SpeciesConcentrations2Module,
-@ref RM_GetSpeciesCount, @ref RM_GetSpeciesName, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ, @ref RM_SetComponentH2O.
+@see                 @ref RM_GetComponent, @ref RM_SetSpeciesSaveOn, @ref RM_GetSpeciesConcentrations, 
+@ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesName, 
+@ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ, @ref RM_SetComponentH2O.
 @par C Example:
 @htmlonly
 <CODE>
@@ -630,11 +633,11 @@ Called by root and (or) workers.
  */
 IRM_RESULT RM_GetComponent(int id, int num, char *chem_name, int l);
 /**
-Returns the number of components in the reaction-module component list.
-@param id               The instance @a id returned from @ref RM_Create.
-@retval                 The number of components in the reaction-module component list.
+Returns the number of components in the reaction-module component list. 
 The component list is generated by calls to @ref RM_FindComponents.
 The return value from the last call to @ref RM_FindComponents is equal to the return value from RM_GetComponentCount.
+@param id               The instance @a id returned from @ref RM_Create.
+@retval                 The number of components in the reaction-module component list, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetComponent.
 @par C Example:
 @htmlonly
@@ -668,7 +671,7 @@ Called by root.
  */
 int RM_GetComponentCount(int id);
 /**
-Transfer solution concentrations from each cell 
+Transfer solution concentrations from each reaction cell 
 to the concentration array given in the argument list (@a c).
 Units of concentration for @a c are defined by @ref RM_SetUnitsSolution. 
 For concentration units of per liter, 
@@ -677,18 +680,24 @@ For mass fraction concentration units,
 the solution mass is used to calculate concentrations for @a c.
 Two options are available for the volume and mass of solution 
 that are used in converting to transport concentrations: (1) the volume and mass of solution are
-calculated by PHREEQC, or (2) the volume of solution is the product of porosity and saturation, 
-and the mass of solution is volume times density as defined by @ref RM_SetDensity. 
-Which option is used is determined by @ref RM_UseSolutionDensityVolume.
-For option 1, the databases that have partial molar volume definitions needed 
+calculated by PHREEQC, or 
+(2) the volume of solution is the product of saturation (@ref SetSaturation),
+porosity (@ref SetPorosity), and representative volume (@ref SetRepresentativeVolume),
+and the mass of solution is volume times density as defined by @ref SetDensity.
+@ref UseSolutionDensityVolume determines which option is used.
+For option 1, the databases that have partial molar volume definitions needed
 to accurately calculate solution volume are
-phreeqc.dat, Amm.dat, and pitzer.dat  
+phreeqc.dat, Amm.dat, and pitzer.dat. 
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param c                Array to receive the concentrations. Dimension of the array is equivalent to Fortran (@a nxyz, @a ncomps),
 where @a nxyz is the number of user grid cells and @a ncomps is the result of @ref RM_FindComponents or @ref RM_GetComponentCount.
 Values for inactive cells are set to 1e30.
-@see                    @ref RM_FindComponents, @ref RM_GetComponentCount, 
-@ref RM_SetConcentrations, @ref RM_SetDensity, @ref RM_SetUnitsSolution, @ref RM_UseSolutionDensityVolume.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+
+@see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_GetSaturation,
+@ref RM_SetConcentrations, @ref RM_SetDensity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation,
+@ref RM_SetUnitsSolution, @ref RM_UseSolutionDensityVolume.
 @par C Example:
 @htmlonly
 <CODE>
@@ -726,13 +735,16 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_GetConcentrations(int id, double *c);
 /**
-Transfer solution densities from the module workers to the density array given in the argument list (@a density).
-@param id                   The instance @a id returned from @ref RM_Create.
-@param density              Array to receive the densities. Dimension of the array is @a nxyz,
-where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount). Values for inactive cells are set to 1e30.
+Transfer solution densities from the reaction cells to the array given in the argument list (@a density). 
 Densities are those calculated by the reaction module.
 Only the following databases distributed with PhreeqcRM have molar volume information needed to accurately calculate density:
 phreeqc.dat, Amm.dat, and pitzer.dat.
+
+@param id                   The instance @a id returned from @ref RM_Create.
+@param density              Array to receive the densities. Dimension of the array is @a nxyz,
+where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount). Values for inactive cells are set to 1e30.
+@retval IRM_RESULT          0 is success, negative is failure (See @ref RM_DecodeError).
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -772,10 +784,12 @@ IRM_RESULT RM_GetDensity(int id, double *density);
 /**
 Returns a string containing error messages related to the last call to a PhreeqcRM method to 
 the character argument (@a errstr).
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param errstr           The error string related to the last call to a PhreeqcRM method.
 @param l                Maximum number of characters that can be written to the argument (@a errstr) (C only).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -823,7 +837,7 @@ endif </PRE>
 </CODE>
 @endhtmlonly
 @par MPI:
-Called by root, workers must be in the loop of @ref RM_MpiWorker..
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_GetErrorString(int id, char *errstr, size_t l);
 /**
@@ -989,8 +1003,8 @@ Called by root.
 IRM_RESULT RM_GetGfw(int id, double * gfw);
 /**
 Returns the number of grid cells in the user's model, which is defined in the call to @ref RM_Create.
-The mapping from grid cells to chemistry cells is defined by @ref RM_CreateMapping.
-The number of chemistry cells may be less than the number of grid cells if
+The mapping from grid cells to reaction cells is defined by @ref RM_CreateMapping.
+The number of reaction cells may be less than the number of grid cells if
 there are inactive regions or symmetry in the model definition.
 @param id               The instance @a id returned from @ref RM_Create.
 @retval                 Number of grid cells in the user's model, negative is failure (See @ref RM_DecodeError).
@@ -1031,18 +1045,24 @@ Called by root and (or) workers.
  */
 int        RM_GetGridCellCount(int id);
 /**
-Returns an IPhreeqc id for one of the IPhreeqc instances in the reaction module.
-The threaded version has @a nthreads, as defined in @ref RM_Create.
-The number of threads can be determined by @ref RM_GetThreadCount.
-There will be @a nthreads + 2 IPhreeqc instances. The first @a nthreads (0 based) will be the workers, the
-next (@a nthreads) is the InitialPhreeqc instance, and the next (@a nthreads + 1) is the Utility instance. Getting
-the IPhreeqc id for one of these allows the user to use any of the IPhreeqc methods
-on that instance. For MPI, each process has three IPhreeqc instances, one worker (0),
-one InitialPhreeqc instance (1), and one Utility instance (2).
+Returns an IPhreeqc id for the @a ith IPhreeqc instance in the reaction module.
+
+
+For the threaded version, there are @a nthreads + 2 IPhreeqc instances, where
+@a nthreads is defined in the constructor (@ref PhreeqcRM::PhreeqcRM).
+The number of threads can be determined by @ref GetThreadCount.
+The first @a nthreads (0 based) instances will be the workers, the
+next (@a nthreads) is the InitialPhreeqc instance, and the next (@a nthreads + 1) is the Utility instance.
+Getting the IPhreeqc pointer for one of these instances allows the user to use any of the IPhreeqc methods
+on that instance.
+For MPI, each process has exactly three IPhreeqc instances, one worker (number 0),
+one InitialPhreeqc instance (number 1), and one Utility instance (number 2).
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param i                The number of the IPhreeqc instance to be retrieved (0 based).
-@retval                 IPhreeqc id for the ith IPhreeqc instance, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_Create, @ref RM_GetThreadCount, documentation for IPhreeqc.
+@retval                 IPhreeqc id for the @a ith IPhreeqc instance, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_Create, @ref RM_GetThreadCount. 
+See IPhreeqc documentation for descriptions of IPhreeqc methods.
 @par C Example:
 @htmlonly
 <CODE>
@@ -1170,7 +1190,7 @@ Called by root and (or) workers.
  */
 int        RM_GetMpiTasks(int id);
 /**
-Returns the user number for the nth selected-output definition.
+Returns the user number for the @a nth selected-output definition.
 Definitions are sorted by user number. Phreeqc allows multiple selected-output
 definitions, each of which is assigned a nonnegative integer identifier by the
 user. The number of definitions can be obtained by @ref RM_GetSelectedOutputCount.
@@ -1181,7 +1201,7 @@ that user number for selected-output processing.
 @param id               The instance @a id returned from @ref RM_Create.
 @param n                The sequence number of the selected-output definition for which the user number will be returned.
 Fortran, 1 based; C, 0 based.
-@retval                 The user number of the nth selected-output definition, negative is failure (See @ref RM_DecodeError).
+@retval                 The user number of the @a nth selected-output definition, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount,
 @ref RM_GetSelectedOutputHeading,
@@ -1298,6 +1318,61 @@ enddo
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT        RM_GetSelectedOutput(int id, double *so);
+
+/**
+Returns a vector of saturations (@a sat) as calculated by the reaction module.
+Reactions will change the volume of solution in a cell.
+The transport code must decide whether to ignore or account for the change in solution volume due to reactions.
+Following reactions, the cell saturation is calculated as solution volume (@ref RM_GetSolutionVolume)
+divided by the product of representative volume (@ref RM_SetRepresentativeVolume) and the porosity (@ref RM_SetPorosity).
+The cell saturation returned by @a RM_GetSaturation may be less than or greater than the saturation set by the transport code
+(@ref RM_SetSaturation), and may be greater than or less than 1.0, even in fully saturated simulations.
+Only the following databases distributed with PhreeqcRM have molar volume information needed
+to accurately calculate solution volume and saturation: phreeqc.dat, Amm.dat, and pitzer.dat.
+
+@param sat_calc              Vector to receive the saturations. Dimension of the array is set to @a nxyz,
+where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount).
+Values for inactive cells are set to 1e30.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+
+@see                    @ref RM_GetSolutionVolume, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+sat_calc = (double *) malloc((size_t) (nxyz * sizeof(double)));
+status = RM_RunCells(id);
+status = RM_GetSaturation(id, sat_calc);
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_GetSaturation(id, sat)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(out) :: sat
+END FUNCTION RM_GetSaturation
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>
+allocate(sat_calc(nxyz))
+status = RM_RunCells(id)
+status = RM_GetSaturation(id, sat_calc(1))
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+IRM_RESULT               RM_GetSaturation(int id, double *sat_calc);
+
 /**
 Returns the number of columns in the current selected-output definition. @ref RM_SetCurrentSelectedOutputUserNumber
 determines which of the selected-output definitions is used.
@@ -1549,7 +1624,7 @@ Called by root.
  */
 int        RM_GetSelectedOutputRowCount(int id);
 /**
-Transfer solution volumes from the module workers to the array given in the argument list (@a vol).
+Transfer solution volumes from the reaction cells to the array given in the argument list (@a vol).
 @param id                   The instance @a id returned from @ref RM_Create.
 @param vol                  Array to receive the solution volumes. Dimension of the array is (@a nxyz),
 where @a nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. 
