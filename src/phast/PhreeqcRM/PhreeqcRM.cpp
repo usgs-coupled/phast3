@@ -128,7 +128,12 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	// constructor
 	//
 : PHRQ_base(io)
+, phreeqc_bin(NULL)
+, phreeqcrm_io(NULL)
 {
+	this->phreeqc_bin = new cxxStorageBin();
+	this->phreeqcrm_io = new PHRQ_io();
+
 	// second argument is threads for OPENMP or COMM for MPI
     int thread_count = 1;
 
@@ -276,6 +281,8 @@ PhreeqcRM::~PhreeqcRM(void)
 		PhreeqcRM::Instances.erase(it);
 	}
 
+	delete this->phreeqc_bin;
+	delete this->phreeqcrm_io;
 }
 
 // PhreeqcRM methods
@@ -315,14 +322,14 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[i];
 	n_old2 = initial_conditions2[i];
-	if (n_old1 >= 0 && phreeqc_bin.Get_Solutions().find(n_old1) == phreeqc_bin.Get_Solutions().end())
+	if (n_old1 >= 0 && phreeqc_bin->Get_Solutions().find(n_old1) == phreeqc_bin->Get_Solutions().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLUTION " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 >= 0 && phreeqc_bin.Get_Solutions().find(n_old2) == phreeqc_bin.Get_Solutions().end())
+	if (n_old2 >= 0 && phreeqc_bin->Get_Solutions().find(n_old2) == phreeqc_bin->Get_Solutions().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLUTION " << n_old2 << " not found.";
@@ -336,16 +343,16 @@ PhreeqcRM::CellInitialize(
 		{
 			cxxMix mx;
 			// Account for saturation of cell
-			double current_v = phreeqc_bin.Get_Solution(n_old1)->Get_soln_vol();
+			double current_v = phreeqc_bin->Get_Solution(n_old1)->Get_soln_vol();
 			double v = f1 * cell_porosity_local * saturation[i] / current_v;
 			mx.Add(n_old1, v);
 			if (n_old2 >= 0)
 			{
-				current_v = phreeqc_bin.Get_Solution(n_old2)->Get_soln_vol();
+				current_v = phreeqc_bin->Get_Solution(n_old2)->Get_soln_vol();
 				v = (1.0 - f1) * cell_porosity_local * saturation[i] / current_v;
 				mx.Add(n_old2, v);
 			}
-			cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
+			cxxSolution cxxsoln(phreeqc_bin->Get_Solutions(), mx, n_user_new);
 			initial_bin.Set_Solution(n_user_new, &cxxsoln);
 		}
 	}
@@ -355,14 +362,14 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[this->nxyz + i];
 	n_old2 = initial_conditions2[this->nxyz + i];
-	if (n_old1 >= 0 && phreeqc_bin.Get_PPassemblages().find(n_old1) == phreeqc_bin.Get_PPassemblages().end())
+	if (n_old1 >= 0 && phreeqc_bin->Get_PPassemblages().find(n_old1) == phreeqc_bin->Get_PPassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 >= 0 && phreeqc_bin.Get_PPassemblages().find(n_old2) == phreeqc_bin.Get_PPassemblages().end())
+	if (n_old2 >= 0 && phreeqc_bin->Get_PPassemblages().find(n_old2) == phreeqc_bin->Get_PPassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old2 << " not found.";
@@ -380,7 +387,7 @@ PhreeqcRM::CellInitialize(
 				mx.Add(n_old2, 1 - f1);
 
 			mx.Multiply(porosity_factor[this->units_PPassemblage]);
-			cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
+			cxxPPassemblage cxxentity(phreeqc_bin->Get_PPassemblages(), mx,
 				n_user_new);
 			initial_bin.Set_PPassemblage(n_user_new, &cxxentity);
 		}
@@ -391,14 +398,14 @@ PhreeqcRM::CellInitialize(
 
 	n_old1 = initial_conditions1[2 * this->nxyz + i];
 	n_old2 = initial_conditions2[2 * this->nxyz + i];
-	if (n_old1 >= 0 && phreeqc_bin.Get_Exchangers().find(n_old1) == phreeqc_bin.Get_Exchangers().end())
+	if (n_old1 >= 0 && phreeqc_bin->Get_Exchangers().find(n_old1) == phreeqc_bin->Get_Exchangers().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EXCHANGE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 >= 0 && phreeqc_bin.Get_Exchangers().find(n_old2) == phreeqc_bin.Get_Exchangers().end())
+	if (n_old2 >= 0 && phreeqc_bin->Get_Exchangers().find(n_old2) == phreeqc_bin->Get_Exchangers().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EXCHANGE " << n_old2 << " not found.";
@@ -415,7 +422,7 @@ PhreeqcRM::CellInitialize(
 			if (n_old2 >= 0)
 				mx.Add(n_old2, 1 - f1);
 			mx.Multiply(porosity_factor[this->units_Exchange]);
-			cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
+			cxxExchange cxxexch(phreeqc_bin->Get_Exchangers(), mx, n_user_new);
 			initial_bin.Set_Exchange(n_user_new, &cxxexch);
 		}
 	}
@@ -424,14 +431,14 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[3 * this->nxyz + i];
 	n_old2 = initial_conditions2[3 * this->nxyz + i];
-	if (n_old1 >= 0 && phreeqc_bin.Get_Surfaces().find(n_old1) == phreeqc_bin.Get_Surfaces().end())
+	if (n_old1 >= 0 && phreeqc_bin->Get_Surfaces().find(n_old1) == phreeqc_bin->Get_Surfaces().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SURFACE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 >= 0 && phreeqc_bin.Get_Surfaces().find(n_old2) == phreeqc_bin.Get_Surfaces().end())
+	if (n_old2 >= 0 && phreeqc_bin->Get_Surfaces().find(n_old2) == phreeqc_bin->Get_Surfaces().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SURFACE " << n_old2 << " not found.";
@@ -448,7 +455,7 @@ PhreeqcRM::CellInitialize(
 			if (n_old2 >= 0)
 				mx.Add(n_old2, 1 - f1);
 			mx.Multiply(porosity_factor[this->units_Surface]);
-			cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
+			cxxSurface cxxentity(phreeqc_bin->Get_Surfaces(), mx, n_user_new);
 			initial_bin.Set_Surface(n_user_new, &cxxentity);
 		}
 	}
@@ -457,14 +464,14 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[4 * this->nxyz + i];
 	n_old2 = initial_conditions2[4 * this->nxyz + i];
-	if (n_old1 >= 0 && phreeqc_bin.Get_GasPhases().find(n_old1) == phreeqc_bin.Get_GasPhases().end())
+	if (n_old1 >= 0 && phreeqc_bin->Get_GasPhases().find(n_old1) == phreeqc_bin->Get_GasPhases().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition GAS_PHASE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 >= 0 && phreeqc_bin.Get_GasPhases().find(n_old2) == phreeqc_bin.Get_GasPhases().end())
+	if (n_old2 >= 0 && phreeqc_bin->Get_GasPhases().find(n_old2) == phreeqc_bin->Get_GasPhases().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition GAS_PHASE " << n_old2 << " not found.";
@@ -481,7 +488,7 @@ PhreeqcRM::CellInitialize(
 			if (n_old2 >= 0)
 				mx.Add(n_old2, 1 - f1);
 			mx.Multiply(porosity_factor[this->units_GasPhase]);
-			cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
+			cxxGasPhase cxxentity(phreeqc_bin->Get_GasPhases(), mx, n_user_new);
 			initial_bin.Set_GasPhase(n_user_new, &cxxentity);
 		}
 	}
@@ -490,14 +497,14 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[5 * this->nxyz + i];
 	n_old2 = initial_conditions2[5 * this->nxyz + i];
-	if (n_old1 >= 0 && phreeqc_bin.Get_SSassemblages().find(n_old1) == phreeqc_bin.Get_SSassemblages().end())
+	if (n_old1 >= 0 && phreeqc_bin->Get_SSassemblages().find(n_old1) == phreeqc_bin->Get_SSassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 >= 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
+	if (n_old2 >= 0 && phreeqc_bin->Get_SSassemblages().find(n_old2) == phreeqc_bin->Get_SSassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old2 << " not found.";
@@ -514,7 +521,7 @@ PhreeqcRM::CellInitialize(
 			if (n_old2 >= 0)
 				mx.Add(n_old2, 1 - f1);
 			mx.Multiply(porosity_factor[this->units_SSassemblage]);
-			cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
+			cxxSSassemblage cxxentity(phreeqc_bin->Get_SSassemblages(), mx,
 				n_user_new);
 			initial_bin.Set_SSassemblage(n_user_new, &cxxentity);
 		}
@@ -524,14 +531,14 @@ PhreeqcRM::CellInitialize(
 	 */
 	n_old1 = initial_conditions1[6 * this->nxyz + i];
 	n_old2 = initial_conditions2[6 * this->nxyz + i];
-	if (n_old1 >= 0 && phreeqc_bin.Get_Kinetics().find(n_old1) == phreeqc_bin.Get_Kinetics().end())
+	if (n_old1 >= 0 && phreeqc_bin->Get_Kinetics().find(n_old1) == phreeqc_bin->Get_Kinetics().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition KINETICS " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
 		rtn = IRM_FAIL;
 	}
-	if (n_old2 >= 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
+	if (n_old2 >= 0 && phreeqc_bin->Get_SSassemblages().find(n_old2) == phreeqc_bin->Get_SSassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition KINETICS " << n_old2 << " not found.";
@@ -548,7 +555,7 @@ PhreeqcRM::CellInitialize(
 			if (n_old2 >= 0)
 				mx.Add(n_old2, 1 - f1);
 			mx.Multiply(porosity_factor[this->units_Kinetics]);
-			cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
+			cxxKinetics cxxentity(phreeqc_bin->Get_Kinetics(), mx, n_user_new);
 			initial_bin.Set_Kinetics(n_user_new, &cxxentity);
 		}
 	}
@@ -872,10 +879,10 @@ PhreeqcRM::CloseFiles(void)
 {
 	this->phreeqcrm_error_string.clear();
 	// open echo and log file, prefix.log.txt
-	this->phreeqcrm_io.log_close();
+	this->phreeqcrm_io->log_close();
 
 	// output_file is prefix.chem.txt
-	this->phreeqcrm_io.output_close();
+	this->phreeqcrm_io->output_close();
 
 	return IRM_OK;
 }
@@ -2286,9 +2293,9 @@ PhreeqcRM::ErrorMessage(const std::string &error_string, bool prepend)
 			estr << "ERROR: "; 
 		estr << error_string << std::endl;
 		this->phreeqcrm_error_string.append(estr.str().c_str());
-		this->phreeqcrm_io.output_msg(estr.str().c_str());
-		this->phreeqcrm_io.error_msg(estr.str().c_str());
-		this->phreeqcrm_io.log_msg(estr.str().c_str());
+		this->phreeqcrm_io->output_msg(estr.str().c_str());
+		this->phreeqcrm_io->error_msg(estr.str().c_str());
+		this->phreeqcrm_io->log_msg(estr.str().c_str());
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -3519,7 +3526,7 @@ PhreeqcRM::InitialPhreeqc2Concentrations(std::vector < double > &destination_c,
 				
 				// Make concentrations in destination_c
 				std::vector<double> d;
-				cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
+				cxxSolution	cxxsoln(phreeqc_bin->Get_Solutions(), mixmap, 0);
 				double v = cxxsoln.Get_soln_vol();
 				double dens = cxxsoln.Get_density();
 				cxxSolution2concentration(&cxxsoln, d, v, dens);
@@ -3839,7 +3846,7 @@ PhreeqcRM::InitialPhreeqc2SpeciesConcentrations(std::vector < double > &destinat
 				this->ErrorHandler(status, "Second solution for InitialPhreeqc2Concentrations");
 				
 				// Make concentrations in destination_c
-				cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
+				cxxSolution	cxxsoln(phreeqc_bin->Get_Solutions(), mixmap, 0);
 				std::vector<double> d;
 				d.resize(this->species_names.size(), 0);
 				std::map<int, double>::iterator it = cxxsoln.Get_species_map().begin();
@@ -4139,7 +4146,7 @@ void
 PhreeqcRM::LogMessage(const std::string &str)
 /* ---------------------------------------------------------------------- */
 {
-	this->phreeqcrm_io.log_msg(str.c_str());
+	this->phreeqcrm_io->log_msg(str.c_str());
 }
 /* ---------------------------------------------------------------------- */
 int
@@ -4559,21 +4566,21 @@ PhreeqcRM::OpenFiles(void)
 	{
 		if (this->mpi_myself == 0)
 		{
-			this->phreeqcrm_io.Set_error_ostream(&std::cerr);
+			this->phreeqcrm_io->Set_error_ostream(&std::cerr);
 
 			// open echo and log file, prefix.log.txt
 			std::string ln = this->file_prefix;
 			ln.append(".log.txt");
-			if (!this->phreeqcrm_io.log_open(ln.c_str()))
+			if (!this->phreeqcrm_io->log_open(ln.c_str()))
 			{
 				this->ErrorHandler(IRM_FAIL, "Failed to open .log.txt file");
 			}
-			this->phreeqcrm_io.Set_log_on(true);
+			this->phreeqcrm_io->Set_log_on(true);
 
 			// prefix.chem.txt
 			std::string cn = this->file_prefix;
 			cn.append(".chem.txt");
-			if(!this->phreeqcrm_io.output_open(cn.c_str()))
+			if(!this->phreeqcrm_io->output_open(cn.c_str()))
 				this->ErrorHandler(IRM_FAIL, "Failed to open .chem.txt file");
 		}
 	}
@@ -4588,7 +4595,7 @@ void
 PhreeqcRM::OutputMessage(const std::string &str)
 /* ---------------------------------------------------------------------- */
 {
-	this->phreeqcrm_io.output_msg(str.c_str());
+	this->phreeqcrm_io->output_msg(str.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -6870,7 +6877,7 @@ void
 PhreeqcRM::ScreenMessage(const std::string &str)
 /* ---------------------------------------------------------------------- */
 {
-	this->phreeqcrm_io.screen_msg(str.c_str());
+	this->phreeqcrm_io->screen_msg(str.c_str());
 }
 #ifdef SKIP_RV
 /* ---------------------------------------------------------------------- */
@@ -8167,7 +8174,14 @@ PhreeqcRM::WarningMessage(const std::string &str)
 #pragma omp critical 
 #endif
 	{
-		this->phreeqcrm_io.warning_msg(str.c_str());
+		this->phreeqcrm_io->warning_msg(str.c_str());
 	}
 }
 
+/* ---------------------------------------------------------------------- */
+IPhreeqc *
+PhreeqcRM::GetIPhreeqcPointer(int i)
+/* ---------------------------------------------------------------------- */
+{
+	return (i >= 0 && i < this->nthreads + 2) ? this->workers[i] : NULL;
+}

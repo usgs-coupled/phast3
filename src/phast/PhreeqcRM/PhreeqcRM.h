@@ -15,6 +15,8 @@ class IPhreeqcPhast;
 //#include "StorageBin.h"
 class cxxStorageBin;
 class cxxNameDouble;
+class cxxSolution;
+class PHRQ_io;
 #include <vector>
 #include <list>
 #include <set>
@@ -770,7 +772,7 @@ IPhreeqc * util_ptr = phreeqc_rm.GetIPhreeqcPointer(phreeqc_rm.GetThreadCount() 
 @par MPI:
 Called by root and (or) workers.
  */
-	IPhreeqc *                                GetIPhreeqcPointer(int i) {return (i >= 0 && i < this->nthreads + 2) ? this->workers[i] : NULL;}
+	IPhreeqc *                                GetIPhreeqcPointer(int i);
 /**
 Returns the MPI process (task) number. For the MPI version,
 the root task number is zero, and all MPI tasks have unique task numbers greater than zero.
@@ -3551,7 +3553,7 @@ protected:
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v, double dens);
 	void                                      cxxSolution2concentrationH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v, double dens);
 	void                                      cxxSolution2concentrationNoH2O(cxxSolution * cxxsoln_ptr, std::vector<double> & d, double v, double dens);
-	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
+	cxxStorageBin &                           Get_phreeqc_bin(void) {return *this->phreeqc_bin;}
 	IRM_RESULT                                HandleErrorsInternal(std::vector< int > & r);
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
@@ -3578,7 +3580,7 @@ protected:
 	std::string chemistry_file_name;
 	std::string dump_file_name;
 	std::string file_prefix;
-	cxxStorageBin * phreeqc_bin;
+	cxxStorageBin *phreeqc_bin;
 	int mpi_myself;
 	int mpi_tasks;
 	std::vector <std::string> components;	// list of components to be transported
@@ -3630,7 +3632,7 @@ protected:
 	std::vector<IPhreeqcPhast *> workers;
 	std::vector<int> start_cell;
 	std::vector<int> end_cell;
-	PHRQ_io phreeqcrm_io;
+	PHRQ_io *phreeqcrm_io;
 
 	// mpi
 #ifdef USE_MPI
