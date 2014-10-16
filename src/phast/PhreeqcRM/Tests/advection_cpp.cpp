@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include "PhreeqcRM.h"
+#include "IPhreeqc.hpp"
+#include "IPhreeqcPhast.h"
+
 #if defined(USE_MPI)
 #include <mpi.h>
 #endif
