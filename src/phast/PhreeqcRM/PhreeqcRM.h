@@ -10,9 +10,8 @@
 #define MP_TYPE int
 #endif
 #include "PHRQ_base.h"
-//#include "IPhreeqcPhast.h"
 class IPhreeqcPhast;
-//#include "StorageBin.h"
+
 class cxxStorageBin;
 class cxxNameDouble;
 class cxxSolution;
@@ -772,6 +771,7 @@ IPhreeqc * util_ptr = phreeqc_rm.GetIPhreeqcPointer(phreeqc_rm.GetThreadCount() 
 @par MPI:
 Called by root and (or) workers.
  */
+//	IPhreeqc *                                GetIPhreeqcPointer(int i) {return (i >= 0 && i < this->nthreads + 2) ? (IPhreeqc *) this->workers[i] : NULL;}
 	IPhreeqc *                                GetIPhreeqcPointer(int i);
 /**
 Returns the MPI process (task) number. For the MPI version,
@@ -3580,7 +3580,7 @@ protected:
 	std::string chemistry_file_name;
 	std::string dump_file_name;
 	std::string file_prefix;
-	cxxStorageBin *phreeqc_bin;
+	cxxStorageBin * phreeqc_bin;
 	int mpi_myself;
 	int mpi_tasks;
 	std::vector <std::string> components;	// list of components to be transported
