@@ -7,6 +7,7 @@
 #include <iostream>
 #include "FileHandler.h"
 #include "RM_interface_C.h"
+#include "IPhreeqcPhast.h"
 #ifdef USE_GZ
 #include "gzstream.h"
 #else
