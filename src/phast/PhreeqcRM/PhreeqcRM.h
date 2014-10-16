@@ -9,7 +9,6 @@
 #else
 #define MP_TYPE int
 #endif
-//!#include "PHRQ_base.h"
 class IPhreeqcPhast;
 
 class cxxStorageBin;
@@ -96,7 +95,7 @@ typedef enum {
 	METHOD_USESOLUTIONDENSITYVOLUME
 } MPI_METHOD;
 
-class PhreeqcRM //!: public PHRQ_base
+class PhreeqcRM
 {
 public:
 	static void             CleanupReactionModuleInstances(void);
@@ -3633,6 +3632,7 @@ protected:
 	std::vector<int> start_cell;
 	std::vector<int> end_cell;
 	PHRQ_io *phreeqcrm_io;
+	bool delete_phreeqcrm_io;
 
 	// mpi
 #ifdef USE_MPI

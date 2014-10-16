@@ -1,6 +1,9 @@
 //#define _CRTDBG_MAP_ALLOC
 //#include <stdlib.h>
 //#include <crtdbg.h>
+#if defined(USE_OPENMP) && defined(USE_MPI)
+#error "Cannot define both USE_OPENMP and USE_MPI at the same time."
+#endif
 
 #include "PhreeqcRM.h"
 #include "PHRQ_base.h"
@@ -127,14 +130,16 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	//
 	// constructor
 	//
-//!: PHRQ_base(io)
-//!, phreeqc_bin(NULL)
-//!, phreeqcrm_io(NULL)
 : phreeqc_bin(NULL)
 , phreeqcrm_io(io)
+, delete_phreeqcrm_io(false)
 {
 	this->phreeqc_bin = new cxxStorageBin();
-	this->phreeqcrm_io = new PHRQ_io();
+	if (this->phreeqcrm_io == NULL)
+	{
+		this->phreeqcrm_io = new PHRQ_io();
+		this->delete_phreeqcrm_io = true;
+	}
 
 	// second argument is threads for OPENMP or COMM for MPI
     int thread_count = 1;
@@ -284,7 +289,10 @@ PhreeqcRM::~PhreeqcRM(void)
 	}
 
 	delete this->phreeqc_bin;
-	delete this->phreeqcrm_io;
+	if (delete_phreeqcrm_io)
+	{
+		delete this->phreeqcrm_io;
+	}
 }
 
 // PhreeqcRM methods
