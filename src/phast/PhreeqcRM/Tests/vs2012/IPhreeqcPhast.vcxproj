@@ -113,7 +113,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(ProjectDir)../../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)../../IPhreeqcPhast;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -325,6 +325,9 @@
     <ClCompile Include="..\..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Temperature.cxx" />
     <ClCompile Include="..\..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Use.cpp" />
     <ClCompile Include="..\..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.cxx" />
+    <ClCompile Include="..\..\PhreeqcRM.cpp" />
+    <ClCompile Include="..\..\RM_interface_C.cpp" />
+    <ClCompile Include="..\..\RM_interface_F.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\..\IPhreeqcPhast\IPhreeqc\IPhreeqcF.f">
