@@ -44,6 +44,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		double time, time_step;
 		double * density;
 		double * volume;
+		double * sat_calc;
 		double * temperature;
 		double * pressure;
 		int isteps, nsteps;
@@ -272,6 +273,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		volume = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		pressure = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		temperature = (double *) malloc((size_t) (nxyz * sizeof(double)));
+		sat_calc = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		for (i = 0; i < nxyz; i++) 
 		{
 			density[i] = 1.0;
@@ -327,6 +329,7 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			status = RM_GetConcentrations(id, c);          // Concentrations after reaction 
 			status = RM_GetDensity(id, density);           // Density after reaction
 			status = RM_GetSolutionVolume(id, volume);     // Solution volume after reaction
+			status = RM_GetSaturation(id, sat_calc);       // Saturation after reaction
  
 			// Print results at last time step
 			if (isteps == nsteps - 1) 
