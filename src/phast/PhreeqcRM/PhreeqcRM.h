@@ -9,7 +9,7 @@
 #else
 #define MP_TYPE int
 #endif
-#include "PHRQ_base.h"
+//!#include "PHRQ_base.h"
 class IPhreeqcPhast;
 
 class cxxStorageBin;
@@ -96,7 +96,7 @@ typedef enum {
 	METHOD_USESOLUTIONDENSITYVOLUME
 } MPI_METHOD;
 
-class PhreeqcRM : public PHRQ_base
+class PhreeqcRM //!: public PHRQ_base
 {
 public:
 	static void             CleanupReactionModuleInstances(void);

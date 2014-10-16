@@ -127,9 +127,11 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	//
 	// constructor
 	//
-: PHRQ_base(io)
-, phreeqc_bin(NULL)
-, phreeqcrm_io(NULL)
+//!: PHRQ_base(io)
+//!, phreeqc_bin(NULL)
+//!, phreeqcrm_io(NULL)
+: phreeqc_bin(NULL)
+, phreeqcrm_io(io)
 {
 	this->phreeqc_bin = new cxxStorageBin();
 	this->phreeqcrm_io = new PHRQ_io();
@@ -157,12 +159,12 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	phreeqcrm_comm = data_for_parallel_processing;
 	if (MPI_Comm_size(phreeqcrm_comm, &this->mpi_tasks) != MPI_SUCCESS)
 	{
-		error_msg("MPI communicator not defined", 1);
+		this->ErrorMessage("MPI communicator not defined", 1);
 	}
 
 	if (MPI_Comm_rank(phreeqcrm_comm, &this->mpi_myself) != MPI_SUCCESS)
 	{
-		error_msg("MPI communicator not defined", 1);
+		this->ErrorMessage("MPI communicator not defined", 1);
 	}
 	double standard_task = this->TimeStandardTask();
 	if (mpi_myself == 0)
@@ -1933,7 +1935,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 			status = this->workers[0]->RunString(in.str().c_str());
 			if (status != 0)
 			{
-				error_msg(this->workers[0]->GetErrorString());
+				this->ErrorMessage(this->workers[0]->GetErrorString());
 			}
 			r_values.push_back(status);
 		}
@@ -2001,7 +2003,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 				status = this->GetWorkers()[0]->RunString(clr.str().c_str());
 				if (status != 0)
 				{
-					error_msg(this->workers[0]->GetErrorString());
+					this->ErrorMessage(this->workers[0]->GetErrorString());
 				}
 				r_values.push_back(status);
 			}
@@ -2064,7 +2066,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 			int status = this->workers[n]->RunString(in.str().c_str());
 			if (status != 0)
 			{
-				error_msg(this->workers[n]->GetErrorString());
+				this->ErrorMessage(this->workers[n]->GetErrorString());
 			}
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 		}
@@ -2423,7 +2425,7 @@ PhreeqcRM::FindComponents(void)
 				int status = phast_iphreeqc_worker->RunString(in.str().c_str());
 				if (status != 0)
 				{
-					error_msg(phast_iphreeqc_worker->GetErrorString());
+					this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 					throw PhreeqcRMStop();
 				}
 			}
@@ -2447,7 +2449,7 @@ PhreeqcRM::FindComponents(void)
 				int status = phast_iphreeqc_worker->RunString(in.str().c_str());
 				if (status != 0)
 				{
-					error_msg(phast_iphreeqc_worker->GetErrorString());
+					this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 					throw PhreeqcRMStop();
 				}
 			}
@@ -3735,7 +3737,7 @@ PhreeqcRM::InitialPhreeqc2Module(
 			r_values[n] = this->GetWorkers()[0]->RunString(delete_command.str().c_str());	
 			if (r_values[n] != 0)
 			{
-				error_msg(this->GetWorkers()[0]->GetErrorString());
+				this->ErrorMessage(this->GetWorkers()[0]->GetErrorString());
 			}
 		}
 		this->HandleErrorsInternal(r_values);
@@ -5019,7 +5021,7 @@ PhreeqcRM::RebalanceLoad(void)
 						int status = phast_iphreeqc_worker->RunString(del.str().c_str());
 						if (status != 0)
 						{
-							error_msg(phast_iphreeqc_worker->GetErrorString());
+							this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 						}
 						this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 					}
@@ -5288,7 +5290,7 @@ PhreeqcRM::RebalanceLoad(void)
 			int status = old_worker->RunString(del.str().c_str());
 			if (status != 0)
 			{
-				error_msg(old_worker->GetErrorString());
+				this->ErrorMessage(old_worker->GetErrorString());
 			}
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 
@@ -5573,7 +5575,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 					int status = phast_iphreeqc_worker->RunString(del.str().c_str());
 					if (status != 0)
 					{
-						error_msg(phast_iphreeqc_worker->GetErrorString());
+						this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 					}
 					this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString");
 				}
@@ -5809,7 +5811,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 			int status = old_worker->RunString(del.str().c_str());
 			if (status != 0)
 			{
-				error_msg(old_worker->GetErrorString());
+				this->ErrorMessage(old_worker->GetErrorString());
 			}
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in RebalanceLoadPerCell");
 
@@ -6103,7 +6105,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 		input << "SOLUTION " << next << "; DELETE; -solution " << next << "\n";
 		if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
 		{
-			error_msg(phast_iphreeqc_worker->GetErrorString());
+			this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 			throw PhreeqcRMStop();
 		}
 		std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
@@ -6233,7 +6235,7 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 
 		if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
 		{
-			error_msg(phast_iphreeqc_worker->GetErrorString());
+			this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 			throw PhreeqcRMStop();
 		}
 	}
@@ -6357,7 +6359,7 @@ PhreeqcRM::RunCellsThread(int n)
 				input << "SOLUTION " << next << "; DELETE; -solution " << next << "\n";
 				if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) 
 				{
-					error_msg(phast_iphreeqc_worker->GetErrorString());
+					this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 					throw PhreeqcRMStop();
 				}
 				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
@@ -6447,7 +6449,7 @@ PhreeqcRM::RunCellsThread(int n)
 					input << "END" << "\n";
 					if (phast_iphreeqc_worker->RunString(input.str().c_str()) != 0) 
 					{
-						error_msg(phast_iphreeqc_worker->GetErrorString());
+						this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 						*phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
 						throw PhreeqcRMStop();
 					}
@@ -6796,7 +6798,7 @@ PhreeqcRM::RunStringThread(int n, std::string & input)
 		// Run chemistry file
 		if (iphreeqc_phast_worker->RunString(input.c_str()) > 0) 
 		{
-			error_msg(iphreeqc_phast_worker->GetErrorString());
+			this->ErrorMessage(iphreeqc_phast_worker->GetErrorString());
 			throw PhreeqcRMStop();
 		}
 
@@ -8091,7 +8093,7 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 			int status = phast_iphreeqc_worker->RunString(string_buffer);
 			if (status != 0)
 			{
-				error_msg(phast_iphreeqc_worker->GetErrorString());
+				this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 			}
 //#endif
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
