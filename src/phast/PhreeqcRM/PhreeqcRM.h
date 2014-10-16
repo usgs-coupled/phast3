@@ -9,13 +9,22 @@
 #else
 #define MP_TYPE int
 #endif
-//#include "PHRQ_base.h"
-#include "IPhreeqcPhast.h"
+#include "PHRQ_base.h"
+//#include "IPhreeqcPhast.h"
+class IPhreeqcPhast;
 //#include "StorageBin.h"
+class cxxStorageBin;
+class cxxNameDouble;
 #include <vector>
 #include <list>
 #include <set>
+#include <map>
 
+#if defined(_WINDLL)
+#define IPQ_DLL_EXPORT __declspec(dllexport)
+#else
+#define IPQ_DLL_EXPORT
+#endif
 class PHRQ_io;
 class IPhreeqc;
 /**
@@ -86,7 +95,7 @@ typedef enum {
 	METHOD_USESOLUTIONDENSITYVOLUME
 } MPI_METHOD;
 
-class PhreeqcRM: public PHRQ_base
+class PhreeqcRM : public PHRQ_base
 {
 public:
 	static void             CleanupReactionModuleInstances(void);
@@ -3551,7 +3560,7 @@ protected:
 	IRM_RESULT                                RunFileThread(int n);
 	IRM_RESULT                                RunStringThread(int n, std::string & input);
 	IRM_RESULT                                RunCellsThreadNoPrint(int n);
-	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
+	void                                      Scale_solids(int n, int iphrq, double frac);
 	IRM_RESULT                                SetChemistryFileName(const char * prefix = NULL);
 	IRM_RESULT                                SetDatabaseFileName(const char * db = NULL);
 	void                                      SetEndCells(void);
@@ -3569,7 +3578,7 @@ protected:
 	std::string chemistry_file_name;
 	std::string dump_file_name;
 	std::string file_prefix;
-	cxxStorageBin phreeqc_bin;
+	cxxStorageBin * phreeqc_bin;
 	int mpi_myself;
 	int mpi_tasks;
 	std::vector <std::string> components;	// list of components to be transported

@@ -34,6 +34,7 @@
 #include <omp.h>
 #endif
 #include "Phreeqc.h"
+#include "IPhreeqcPhast.h"
 std::map<size_t, PhreeqcRM*> PhreeqcRM::Instances;
 size_t PhreeqcRM::InstancesIndex = 0;
 
