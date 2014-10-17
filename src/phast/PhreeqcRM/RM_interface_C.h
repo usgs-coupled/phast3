@@ -1322,7 +1322,7 @@ IRM_RESULT        RM_GetSelectedOutput(int id, double *so);
 /**
 Returns a vector of saturations (@a sat) as calculated by the reaction module.
 Reactions will change the volume of solution in a cell.
-The transport code must decide whether to ignore or account for the change in solution volume due to reactions.
+The transport code must decide whether to ignore or account for this change in solution volume due to reactions.
 Following reactions, the cell saturation is calculated as solution volume (@ref RM_GetSolutionVolume)
 divided by the product of representative volume (@ref RM_SetRepresentativeVolume) and the porosity (@ref RM_SetPorosity).
 The cell saturation returned by @a RM_GetSaturation may be less than or greater than the saturation set by the transport code
@@ -1625,14 +1625,17 @@ Called by root.
 int        RM_GetSelectedOutputRowCount(int id);
 /**
 Transfer solution volumes from the reaction cells to the array given in the argument list (@a vol).
-@param id                   The instance @a id returned from @ref RM_Create.
-@param vol                  Array to receive the solution volumes. Dimension of the array is (@a nxyz),
-where @a nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. 
 Solution volumes are those calculated by the reaction module.
 Only the following databases distributed with PhreeqcRM have molar volume information 
 needed to accurately calculate solution volume:
 phreeqc.dat, Amm.dat, and pitzer.dat.
+
+@param id                   The instance @a id returned from @ref RM_Create.
+@param vol                  Array to receive the solution volumes. Dimension of the array is (@a nxyz),
+where @a nxyz is the number of user grid cells. Values for inactive cells are set to 1e30. 
 @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_GetSaturation.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -1677,16 +1680,21 @@ The list of aqueous
 species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
 Solution volumes used to calculate mol/L are calculated by the reaction module.
-Only the following databases distributed with PhreeqcRM have molar volume information needed to accurately calculate solution volume:
+Only the following databases distributed with PhreeqcRM have molar volume information 
+needed to accurately calculate solution volume:
 phreeqc.dat, Amm.dat, and pitzer.dat.
+
 @param id               The instance @a id returned from @ref RM_Create.
-@param species_conc     Array to receive the aqueous species concentrations. Dimension of the array is (@a nxyz, @a nspecies),
-where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount), and @a nspecies is the number of aqueous species (@ref RM_GetSpeciesCount).
+@param species_conc     Array to receive the aqueous species concentrations. 
+Dimension of the array is (@a nxyz, @a nspecies),
+where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount), 
+and @a nspecies is the number of aqueous species (@ref RM_GetSpeciesCount).
 Concentrations are moles per liter.
 Values for inactive cells are set to 1e30.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -1738,12 +1746,14 @@ and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The list of aqueous
 species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT      The number of aqueous species, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, 
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, 
 @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -1794,6 +1804,7 @@ and @ref RM_SetSpeciesSaveOn must be set to @a true.
 Diffusion coefficients are defined in SOLUTION_SPECIES data blocks, normally in the database file.
 Databases distributed with the reaction module that have diffusion coefficients defined are
 phreeqc.dat, Amm.dat, and pitzer.dat.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param diffc            Array to receive the diffusion coefficients at 25 C, m^2/s.
 Dimension of the array is @a nspecies,
@@ -1801,6 +1812,7 @@ where @a nspecies is is the number of aqueous species (@ref RM_GetSpeciesCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -1842,20 +1854,22 @@ Called by root and (or) workers.
  */
 IRM_RESULT RM_GetSpeciesD25(int id, double *diffc);
 /**
-Transfers the name of the ith aqueous species to the character argument (@a name).
+Transfers the name of the @a ith aqueous species to the character argument (@a name).
 This method is intended for use with multicomponent-diffusion transport calculations,
 and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The list of aqueous
 species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
+
 @param id               The instance @a id returned from @ref RM_Create.
-@param i                Number of the species in the species list. Fortran, 1 based; C, 0 based.
+@param i                Sequence number of the species in the species list. Fortran, 1 based; C, 0 based.
 @param name             Character array to receive the species name.
 @param length           Maximum length of string that can be stored in the character array (C only).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount,
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -1907,15 +1921,17 @@ Called by root and (or) workers.
 IRM_RESULT RM_GetSpeciesName(int id, int i, char * name, int length);
 /**
 Returns the value of the species-save property.
-This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SetSpeciesSaveOn must be set to @a true.
-The return value indicates whether aqueous species concentrations are being saved in the reaction
-module.
+By default, concentrations of aqueous species are not saved. Setting the species-save property to true allows
+aqueous species concentrations to be retrieved
+with @ref RM_GetSpeciesConcentrations, and solution compositions to be set with
+@ref RM_SpeciesConcentrations2Module.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT      0, species are not saved; 1, species are saved; negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount,
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_SetSpeciesSaveOn.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -1964,14 +1980,16 @@ int RM_GetSpeciesSaveOn(int id);
 Transfers the charge of each aqueous species to the array argument (@a  z).
 This method is intended for use with multicomponent-diffusion transport calculations,
 and @ref RM_SetSpeciesSaveOn must be set to @a true.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param z                Array that receives the charge for each aqueous species.
 Dimension of the array is @a nspecies,
 where @a nspecies is is the number of aqueous species (@ref RM_GetSpeciesCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount,
-@ref RM_GetSpeciesD25,
-@ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+@ref RM_GetSpeciesD25, @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, 
+@ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -2192,6 +2210,7 @@ solutions, @a boundary_solution1 and @a boundary_solution2, with a mixing fracti
 A negative value for @a boundary_solution2 implies no mixing, and the associated value for @a fraction1 is ignored.
 If @a boundary_solution2 and fraction1 are omitted (Fortran) or NULL (C),
 no mixing is used; concentrations are derived from @a boundary_solution1 only.
+
 @param id                  The instance @a id returned from @ref RM_Create.
 @param c                   Array of concentrations extracted from the InitialPhreeqc instance.
 The dimension of @a c is equivalent to Fortran allocation (@a n_boundary, @a ncomp),
@@ -2205,7 +2224,8 @@ Size is @a n_boundary. Optional in Fortran, may be NULL in C.
 @param fraction1           Fraction of @a boundary_solution1 that mixes with (1-@a fraction1) of @a boundary_solution2.
 Size is (n_boundary). Optional in Fortran, may be NULL in C.
 @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
-@see                  @ref RM_FindComponents, @ref RM_GetComponentCount.
+@see                       @ref RM_FindComponents, @ref RM_GetComponentCount.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -2281,7 +2301,7 @@ It is also possible to mix solutions and reactants to obtain the initial conditi
 @a Fraction1 contains the mixing fraction for @a initial_conditions1, whereas (1 - @a fraction1) is the mixing fraction for
 @a initial_conditions2.
 In Fortran, initial_conditions1(100, 4) = 2, initial_conditions2(100, 4) = 3, fraction1(100, 4) = 0.25 indicates that
-cell 99 (0 based) contains a mixtrue of 0.25 SURFACE 2 and 0.75 SURFACE 3, where the surface compositions have been defined in the
+cell 99 (0 based) contains a mixture of 0.25 SURFACE 2 and 0.75 SURFACE 3, where the surface compositions have been defined in the
 InitialPhreeqc instance. The same definition in C would be initial_solution1[3*nxyz + 99] = 2, initial_solution2[3*nxyz + 99] = 3,
 fraction1[3*nxyz + 99] = 0.25.
 If the user number in @a initial_conditions2 is negative, no mixing occurs.
@@ -2399,6 +2419,7 @@ solutions, @a boundary_solution1 and @a boundary_solution2, with a mixing fracti
 A negative value for @a boundary_solution2 implies no mixing, and the associated value for @a fraction1 is ignored.
 If @a boundary_solution2 and @a fraction1 are omitted (Fortran) or NULL (C),
 no mixing is used; concentrations are derived from @a boundary_solution1 only.
+
 @param id                  The instance @a id returned from @ref RM_Create.
 @param species_c           Array of aqueous concentrations extracted from the InitialPhreeqc instance.
 The dimension of @a species_c is equivalent to Fortran allocation (@a n_boundary, @a nspecies),
@@ -2473,7 +2494,7 @@ IRM_RESULT RM_InitialPhreeqc2SpeciesConcentrations(
                 int *boundary_solution2,
                 double *fraction1);
 /**
-A cell numbered @a n in the InitialPhreeqc instance is selected to populate a series of cells in the reaction-module workers.
+A cell numbered @a n in the InitialPhreeqc instance is selected to populate a series of cells.
 All reactants with the number @a n are transferred along with the solution.
 If MIX @a n exists, it is used for the definition of the solution.
 If @a n is negative, @a n is redefined to be the largest solution or MIX number in the InitialPhreeqc instance.
@@ -2619,8 +2640,8 @@ Called by root.
 IRM_RESULT RM_LogMessage(int id, const char *str);
 /**
 MPI only. Workers (processes with @ref RM_GetMpiMyself > 0) must call RM_MpiWorker to be able to
-respond to messages from the root to accept data, perform calculations,
-or return data. RM_MpiWorker contains a loop that reads a message from root, performs a
+respond to messages from the root to accept data, perform calculations, and
+(or) return data. RM_MpiWorker contains a loop that reads a message from root, performs a
 task, and waits for another message from root. @ref RM_SetConcentrations, @ref RM_RunCells, and @ref RM_GetConcentrations
 are examples of methods that send a message from root to get the workers to perform a task. The workers will
 respond to all methods that are designated "workers must be in the loop of RM_MpiWorker" in the
@@ -2633,10 +2654,12 @@ It is then possible to use the MPI processes to perform other developer-defined 
 exiting from the RM_MpiWorker loop. Alternatively, root calls @ref RM_MpiWorkerBreak to allow the workers to continue
 past a call to RM_MpiWorker. The workers perform developer-defined calculations, and then RM_MpiWorker is called again to respond to
 requests from root to perform reaction-module tasks.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). RM_MpiWorker returns a value only when
 @ref RM_MpiWorkerBreak is called by root.
 @see                    @ref RM_MpiWorkerBreak, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie (C only).
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -2818,19 +2841,20 @@ Called by root.
 IRM_RESULT RM_OutputMessage(int id, const char *str);
 /**
 Runs a reaction step for all of the cells in the reaction module.
-The current set of concentrations of the components (@ref RM_SetConcentrations) is used
-in the calculations. The length of time over which kinetic reactions are integrated is set
+Normally, tranport concentrations are transferred to the reaction cells (@ref RM_SetConcentrations) before
+reaction calculations are run. The length of time over which kinetic reactions are integrated is set
 by @ref RM_SetTimeStep. Other properties that may need to be updated as a result of the transport
-calculations include pore volume, saturation, temperature, and pressure.
+calculations include porosity (@ref RM_SetPorosity), saturation (@ref RM_SetSaturation),
+temperature (@ref RM_SetTemperature), and pressure (@ref RM_SetPressure).
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetConcentrations,  @ref RM_SetPoreVolume,
-@ref RM_SetTemperature, @ref RM_SetPressure, @ref RM_SetSaturation, @ref RM_SetTimeStep.
+@see                    @ref RM_SetConcentrations,  @ref RM_SetPorosity,
+@ref RM_SetPressure, @ref RM_SetSaturation, @ref RM_SetTemperature, @ref RM_SetTimeStep.
 @par C Example:
 @htmlonly
 <CODE>
 <PRE>
-status = RM_SetPoreVolume(id, pv);             // If pore volume changes
+status = RM_SetPorosity(id, por);              // If porosity changes
 status = RM_SetSaturation(id, sat);            // If saturation changes
 status = RM_SetTemperature(id, temperature);   // If temperature changes
 status = RM_SetPressure(id, pressure);         // If pressure changes
@@ -2858,7 +2882,7 @@ END FUNCTION RM_RunCells
 @htmlonly
 <CODE>
 <PRE>
-status = RM_SetPoreVolume(id, pv(1))               ! If pore volume changes
+status = RM_SetPorosity(id, por(1))                ! If pore volume changes
 status = RM_SetSaturation(id, sat(1))              ! If saturation changes
 status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
 status = RM_SetPressure(id, pressure(1))           ! If pressure changes
@@ -2977,7 +3001,7 @@ Print message to the screen.
 @param id               The instance @a id returned from @ref RM_Create.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_ErrorMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage.
+@see                    @ref RM_ErrorMessage,  @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_WarningMessage.
 @par C Example:
 @htmlonly
 <CODE>
@@ -3062,21 +3086,23 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 IRM_RESULT RM_SetCellVolume(int id, double *vol);
 #endif
 /**
-Select whether to include H2O in the component list. By default, the total concentrations of H and O are included
-in the list of components that need to be transported (@ref RM_FindComponents).
-However, the concentrations of H and O must be known
-accurately (8 to 10 significant digits) for the numerical method of PHREEQC to produce accurate pH and pe values.
+Select whether to include H2O in the component list.
+The concentrations of H and O must be known
+accurately (8 to 10 significant digits) for the numerical method of
+PHREEQC to produce accurate pH and pe values.
 Because most of the H and O are in the water species,
-it may be more robust (require less accuracy in transport) to transport the excess H and O (the H and O not
-in water) and water. PhreeqcRM will then add the H and O from water to the excess quantities to arrive at
-total H and total O concentrations for reaction calculations.
-A value of 1 will cause water and the excess H and O to be included in the list of components. RM_SetComponentH2O
-must be called before @ref RM_FindComponents.
+it may be more robust (require less accuracy in transport) to
+transport the excess H and O (the H and O not in water) and water.
+The default setting (@a true) is to include water, excess H, and excess O as components.
+A setting of @a false will include total H and total O as components.
+SetComponentH2O must be called before @ref FindComponents.
+
 @param id               The instance id returned from @ref RM_Create.
-@param tf               0, total H and O are included in the list of components; 1, excess H, excess O, and water
+@param tf               0, total H and O are included in the component list; 1, excess H, excess O, and water
 are included in the component list.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -3110,19 +3136,21 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetComponentH2O(int id, int tf);
 /**
-Use the vector of concentrations to set the moles of components in each cell.
-Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
-to the volume (@ref RM_SetCellVolume).
-The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
+Use the vector of concentrations (@a c) to set the moles of components in each reaction cell.
+The volume of water in a cell is the product of porosity (@ref RM_SetPorosity), saturation (@ref RM_SetSaturation),
+and reference volume (@ref RM_SetRepresentativeVolume).
 The moles of each component are determined by the volume of water and per liter concentrations.
 If concentration units (@ref RM_SetUnitsSolution) are mass fraction, the
-density (as determined by @ref RM_SetDensity) is used to convert from mass fraction to per liter.
+density (as specified by @ref RM_SetDensity) is used to convert from mass fraction to per mass per liter.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param c                Array of component concentrations. Size of array is Fortran (@a nxyz, @a ncomps), where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount), and @a ncomps is the number of components as determined
 by @ref RM_FindComponents or @ref RM_GetComponentCount.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume, @ref RM_SetSaturation, @ref RM_SetUnitsSolution.
+@see                    @ref RM_SetDensity, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume,
+@ref RM_SetSaturation, @ref RM_SetUnitsSolution.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -3130,7 +3158,7 @@ by @ref RM_FindComponents or @ref RM_GetComponentCount.
 c = (double *) malloc((size_t) (ncomps * nxyz * sizeof(double)));
 ...
 advect_c(c, bc_conc, ncomps, nxyz, nbound);
-status = RM_SetPoreVolume(id, pv);             // If pore volume changes
+status = RM_SetPoosity(id, por);               // If porosity changes
 status = RM_SetSaturation(id, sat);            // If saturation changes
 status = RM_SetTemperature(id, temperature);   // If temperature changes
 status = RM_SetPressure(id, pressure);         // If pressure changes
@@ -3163,7 +3191,7 @@ END FUNCTION RM_SetConcentrations
 allocate(c(nxyz, ncomps))
 ...
 call advect_f90(c, bc_conc, ncomps, nxyz)
-status = RM_SetPoreVolume(id, pv(1))               ! If pore volume changes
+status = RM_SetPorosity(id, pv(1))                 ! If porosity changes
 status = RM_SetSaturation(id, sat(1))              ! If saturation changes
 status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
 status = RM_SetPressure(id, pressure(1))           ! If pressure changes
@@ -3242,17 +3270,19 @@ Called by root.
  */
 IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int id, int n_user);
 /**
-Set the density for each cell. These density values are used 
+Set the density for each reaction cell. These density values are used 
 when converting from transported mass fraction concentrations (@ref RM_SetUnitsSolution) to
 produce per liter concentrations during a call to @ref RM_SetConcentrations.
 They are also used when converting from module concentrations to transport concentrations
 of mass fraction (@ref RM_GetConcentrations), if @ref RM_UseSolutionDensityVolume is set to @a false.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param density          Array of densities. Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetConcentrations, @ref RM_SetConcentrations, 
 @ref RM_SetUnitsSolution, @ref RM_UseSolutionDensityVolume.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -3302,7 +3332,7 @@ Set the name of the dump file. It is the name used by @ref RM_DumpModule.
 @htmlonly
 <CODE>
 <PRE>
-status = RM_SetDumpFileName(id, "advection_c.dmp.gz");
+status = RM_SetDumpFileName(id, "advection_c.dmp");
 dump_on = 1;
 append = 0;
 status = RM_DumpModule(id, dump_on, append);
@@ -3325,7 +3355,7 @@ END FUNCTION RM_SetDumpFileName
 @htmlonly
 <CODE>
 <PRE>
-status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")
+status = RM_SetDumpFileName(id, "advection_f90.dmp")
 dump_on = 1
 append = 0
 status = RM_DumpModule(id, dump_on, append)
@@ -3450,7 +3480,7 @@ The motivation for this method is to allow the workers to perform other
 tasks, for instance, parallel transport calculations, within the structure
 of @ref RM_MpiWorker. The callback function
 can be used to allow the workers to receive data, perform transport calculations,
-and send results, without leaving the loop of @ref RM_MpiWorker. Alternatively,
+and (or) send results, without leaving the loop of @ref RM_MpiWorker. Alternatively,
 it is possible for the workers to return from @ref RM_MpiWorker
 by a call to @ref RM_MpiWorkerBreak by root. The workers could then call
 subroutines to receive data, calculate transport, and send data,
@@ -3631,27 +3661,30 @@ Called by workers, before call to @ref RM_MpiWorker.
 IRM_RESULT RM_SetMpiWorkerCallbackCookie(int id, void *cookie);
 /**
 Sets the property for partitioning solids between the saturated and unsaturated 
-parts of a partially saturated cell. The value has meaning only when saturations 
-less than 1.0 are encountered. Unexpected results may
-occur in partially saturated cells for models that try to account for a free surface, but 
-consider only saturated-zone flow and transport. The partially saturated cells 
-see a smaller volume of water, 
-even though, physically, recharge water is percolating through these cells. 
-It takes a longer time for reactions to occur in these cells than in cells 
-that are fully saturated. By setting  RM_SetPartitionUZSolids to true, the
-amounts of solids and gases are partioned according to the saturation. 
+parts of a partially saturated cell. 
+
+The option is intended to be used by saturated-only
+flow codes that allow a variable water table.
+The value has meaning only when saturations
+less than 1.0 are encountered. The partially saturated cells
+may have a small water-to-rock ratio that causes
+reactions to proceed differently relative to fully saturated cells.
+By setting  @a RM_SetPartitionUZSolids to true, the
+amounts of solids and gases are partioned according to the saturation.
 If a cell has a saturation of 0.5, then
 the water interacts with only half of the solids and gases; the other half is unreactive
-until the water table rises. As the saturation in a cell varies, 
+until the water table rises. As the saturation in a cell varies,
 solids and gases are transferred between the
-saturated and unsaturated (unreactive) reservoirs of the cell. 
-Unsaturated-zone flow and transport codes will probably use the default (false), 
-which assumes all gases and solids are reactive regardless of saturation.  
+saturated and unsaturated (unreactive) reservoirs of the cell.
+Unsaturated-zone flow and transport codes will probably use the default (false),
+which assumes all gases and solids are reactive regardless of saturation.
+
 @param id       The instance @a id returned from @ref RM_Create.
 @param tf       @a True, the fraction of solids and gases available for 
 reaction is equal to the saturation; 
 @a False (default), all solids and gases are reactive regardless of saturation.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -3732,8 +3765,8 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 IRM_RESULT RM_SetPoreVolume(int id, double *vol);
 #endif
 /**
-Set the porosity for each cell. 
-The volume of water in a cell is the product of the porosity, the saturation
+Set the porosity for each reaction cell. 
+The volume of water in a reaction cell is the product of the porosity, the saturation
 (@ref RM_SetSaturation), and the representative volume (@ref RM_SetRepresentativeVolume).
 @param id               The instance @a id returned from @ref RM_Create.
 @param por              Array of porosities, unitless. Default is 0.1. Size of array is @a nxyz, where @a nxyz is the number
@@ -3777,7 +3810,7 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetPorosity(int id, double *por);
 /**
-Set the pressure for each cell for reaction calculations. Pressure effects are considered only in three of the
+Set the pressure for each reaction cell. Pressure effects are considered only in three of the
 databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat.
 @param id               The instance @a id returned from @ref RM_Create.
 @param p                Array of pressures, in atm. Size of array is @a nxyz, where @a nxyz is the number
@@ -3821,14 +3854,17 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetPressure(int id, double *p);
 /**
-Enable or disable detailed output for each cell. Printing for a cell will occur only when the
+Enable or disable detailed output for each reaction cell. 
+Printing for a cell will occur only when the
 printing is enabled with @ref RM_SetPrintChemistryOn and the @a cell_mask value is 1.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param cell_mask        Array of integers. Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount). A value of 0 will
 disable printing detailed output for the cell; a value of 1 will enable printing detailed output for a cell.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetPrintChemistryOn.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -3879,9 +3915,11 @@ typical of a PHREEQC reaction calculation, which includes solution descriptions 
 all other reactants. The output can be several hundred lines per cell, which can lead to a very
 large output file (prefix.chem.txt, @ref RM_OpenFiles). For the worker instances, the output can be limited to a set of cells
 (@ref RM_SetPrintChemistryMask) and, in general, the
-amount of information printed can be limited by use of options in the PRINT data block of PHREEQC (applied by using @ref RM_RunFile or
-@ref RM_RunString). Printing the detailed output for the workers is generally used only for debugging, and PhreeqcRM will run
+amount of information printed can be limited by use of options in the PRINT data block of PHREEQC 
+(applied by using @ref RM_RunFile or @ref RM_RunString). 
+Printing the detailed output for the workers is generally used only for debugging, and PhreeqcRM will run
 significantly faster when printing detailed output for the workers is disabled.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param workers          0, disable detailed printing in the worker instances, 1, enable detailed printing
 in the worker instances.
@@ -3925,16 +3963,21 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 IRM_RESULT RM_SetPrintChemistryOn(int id, int workers, int initial_phreeqc, int utility);
 
 /**
+Set the load-balancing algorithm.
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
 thread or process takes the same amount of time to run its part of a @ref RM_RunCells
-calculation. Two algorithms are available; one uses the average time to run a set of
-cells, and the other accounts for cells that were not run because saturation was zero (default).
-The methods are similar, and it is not clear that one is better than the other.
+calculation. Two algorithms are available; one uses individual times for each cell and
+accounts for cells that were not run because
+saturation was zero (default), and
+the other assigns an average time to all cells.
+The methods are similar, but limited testing indicates the default method performs better.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param method           0, indicates average times are used in rebalancing; 1 indicates individual
 cell times are used in rebalancing (default).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetRebalanceFraction.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -3968,21 +4011,23 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetRebalanceByCell(int id, int method);
 /**
+Sets the fraction of cells that are transferred among threads or processes when rebalancing.
 PhreeqcRM attempts to rebalance the load of each thread or process such that each
 thread or process takes the same amount of time to run its part of a @ref RM_RunCells
 calculation. The rebalancing transfers cell calculations among threads or processes to
-try to achieve an optimum balance. RM_SetRebalanceFraction
+try to achieve an optimum balance. @a RM_SetRebalanceFraction
 adjusts the calculated optimum number of cell transfers by a fraction from 0 to 1.0 to
-determine the number of cell transfers that actually are made. A value of zero eliminates
+determine the actual number of cell transfers. A value of zero eliminates
 load rebalancing. A value less than 1.0 is suggested to slow the approach to the optimum cell
 distribution and avoid possible oscillations
-where too many cells are transferred at one iteration, requiring reverse transfers at the next iteration.
+when too many cells are transferred at one iteration, requiring reverse transfers at the next iteration.
 Default is 0.5.
 
 @param id               The instance @a id returned from @ref RM_Create.
 @param f                Fraction from 0.0 to 1.0.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetRebalanceByCell.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4015,16 +4060,81 @@ status = RM_SetRebalanceFraction(id, 0.5d0)
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetRebalanceFraction(int id, double f);
-IRM_RESULT RM_SetRepresentativeVolume(int id, double *t);
 /**
-Set the saturation of each cell. Saturation is a fraction ranging from 0 to 1.
-Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
-to the cell volume (@ref RM_SetCellVolume). The volume of water in a cell is the porosity times the saturation.
+Set the representative volume of each reaction cell.
+By default the representative volume of each reaction cell is 1 liter.
+The volume of water in a reaction cell is determined by the procuct of the representative volume,
+the porosity (@ref RM_SetPorosity), and the saturation (@ref RM_SetSaturation).
+The numerical method of PHREEQC is more robust if the water volume for a reaction cell is
+within a couple orders of magnitude of 1.0.
+Small water volumes caused by small porosities and (or) small saturations (and (or) small representative volumes)
+may cause non-convergence of the numerical method.
+In these cases, a larger representative volume may help. Note
+that increasing the representative volume also increases
+the number of moles of the reactants in the reaction cell (minerals, surfaces, exchangers,
+and others), which are defined as moles per representative volume.
+
+@param rv              Vector of representative volumes, in liters. Default is 1.0 liter.
+Size of array is @a nxyz, where @a nxyz is the number
+of grid cells in the user's model (@ref RM_GetGridCellCount).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+@see                    @ref RM_SetPorosity, @ref RM_SetSaturation.
+
+@par C Example:
+@htmlonly
+<CODE>
+<PRE>
+double * rv;
+rv = (double *) malloc((size_t) (nxyz * sizeof(double)));
+for (i = 0; i < nxyz; i++) rv[i] = 1.0;
+status = RM_SetRepresentativeVolume(id, rv);
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_SetRebalanceFraction(id, f)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(in)  :: f
+END FUNCTION RM_SetRebalanceFraction
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>
+double precision, dimension(:), allocatable   :: rv
+allocate(rv(nxyz))
+rv = 1.0
+status = RM_SetRepresentativeVolume(id, rv(1))
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+IRM_RESULT RM_SetRepresentativeVolume(int id, double *rv);
+/**
+Set the saturation of each reaction cell. Saturation is a fraction ranging from 0 to 1.
+The volume of water in a cell is the product of porosity (@ref RM_SetPorosity), saturation (@a RM_SetSaturation),
+and representative volume (@ref RM_SetRepresentativeVolume). As a result of a reaction calculation,
+solution properties (density and volume) will change;
+the databases phreeqc.dat, Amm.dat, and pitzer.dat have the molar volume data to calculate these changes. 
+The methods @ref RM_GetDensity, @ref RM_GetSolutionVolume, and @ref RM_GetSaturation 
+can be used to account for these changes in the succeeding transport calculation.
+@a RM_SetRepresentativeVolume should be called before initial conditions are defined for the reaction cells.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param sat              Array of saturations, unitless. Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume.
+@see                    @ref RM_GetDensity, @ref RM_GetSaturation, @ref RM_GetSolutionVolume,
+@ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4063,13 +4173,16 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
 IRM_RESULT RM_SetSaturation(int id, double *sat);
 /**
 Setting determines whether selected-output results are available to be retrieved
-with @ref RM_GetSelectedOutput. Zero indicates that selected-output results will not
-be accumulated during @ref RM_RunCells; 1 indicates that selected-output results
-will be accumulated during @ref RM_RunCells and can be retrieved with @ref RM_GetSelectedOutput.
+with @ref RM_GetSelectedOutput. @a 1 indicates that selected-output results
+will be accumulated during @ref RunCells and can be retrieved with @ref RM_GetSelectedOutput;
+@a 0 indicates that selected-output results will not
+be accumulated during @ref RM_RunCells.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param selected_output  0, disable selected output; 1, enable selected output.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetSelectedOutput, @ref RM_SetPrintChemistryOn.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4110,6 +4223,7 @@ aqueous species concentrations to be retrieved
 with @ref RM_GetSpeciesConcentrations, and solution compositions to be set with
 @ref RM_SpeciesConcentrations2Module.
 RM_SetSpeciesSaveOn must be called before calls to @ref RM_FindComponents.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param save_on          0, indicates species concentrations are not saved; 1, indicates species concentrations are
 saved.
@@ -4117,6 +4231,7 @@ saved.
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount,
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesSaveOn, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4149,12 +4264,17 @@ Called by root and (or) workers.
  */
 IRM_RESULT RM_SetSpeciesSaveOn(int id, int save_on);
 /**
-Set the temperature for each cell for reaction calculations.
+Set the temperature for each reaction cell. If @a RM_SetTemperature is not called,
+worker solutions will have temperatures as defined by initial conditions 
+(@ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module).
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param t                Array of temperatures, in degrees C. Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetPressure.
+@see                    @ref RM_InitialPhreeqc2Module, 
+@ref RM_InitialPhreeqcCell2Module, @ref RM_SetPressure.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4311,20 +4431,22 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetTimeStep(int id, double time_step);
 /**
-Input units for exchangers. In PHREEQC, exchangers are defined by
-moles of exchange sites. RM_SetUnitsExchange determines whether the
-number of sites applies to the volume of the cell, the volume of
-water in the cell, or the volume of rock in the cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
-on the basis of the porosity
-(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+Sets input units for exchangers.
+In PHREEQC input, exchangers are defined by moles of exchange sites (@a Mp).
+SetUnitsExchange specifies how the number of moles of exchange sites in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp).
+
+Options are
+0, @a Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume);
+1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref SetPorosity); or
+2, @a Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param option           Units option for exchangers: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
-@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
+@see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
+@ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
+
 @par C Example:
 @htmlonly
 <CODE>

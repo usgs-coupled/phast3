@@ -45,6 +45,7 @@
     double precision, dimension(:,:), allocatable :: c
     double precision                              :: time, time_step
     double precision, dimension(:), allocatable   :: density
+    double precision, dimension(:), allocatable   :: sat_calc
     double precision, dimension(:), allocatable   :: volume
     double precision, dimension(:), allocatable   :: temperature
     double precision, dimension(:), allocatable   :: pressure
@@ -245,7 +246,7 @@
     
     ! Transient loop
     nsteps = 10
-    allocate(density(nxyz), pressure(nxyz), temperature(nxyz), volume(nxyz))
+    allocate(density(nxyz), pressure(nxyz), temperature(nxyz), volume(nxyz), sat_calc(nxyz))
     volume = 1.0
     density = 1.0
     pressure = 2.0
@@ -297,6 +298,7 @@
         status = RM_GetConcentrations(id, c(1,1))          ! Concentrations after reaction
         status = RM_GetDensity(id, density(1))             ! Density after reaction
         status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after reaction
+        status = RM_GetSaturation(id, sat_calc(1))         ! Saturation after reaction
  
         ! Print results at last time step
         if (isteps == nsteps) then
@@ -348,7 +350,7 @@
     status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
 
 	! Dump results   
-	status = RM_SetDumpFileName(id, "advection_f90.dmp.gz")  
+	status = RM_SetDumpFileName(id, "advection_f90.dmp")  
     dump_on = 1
     append = 0  
     status = RM_DumpModule(id, dump_on, append)    
