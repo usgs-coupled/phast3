@@ -4433,12 +4433,12 @@ IRM_RESULT RM_SetTimeStep(int id, double time_step);
 /**
 Sets input units for exchangers.
 In PHREEQC input, exchangers are defined by moles of exchange sites (@a Mp).
-SetUnitsExchange specifies how the number of moles of exchange sites in a reaction cell (@a Mc)
+@a RM_SetUnitsExchange specifies how the number of moles of exchange sites in a reaction cell (@a Mc)
 is calculated from the input value (@a Mp).
 
 Options are
-0, @a Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref SetRepresentativeVolume);
-1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref SetPorosity); or
+0, @a Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref RM_SetRepresentativeVolume);
+1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref RM_SetPorosity); or
 2, @a Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-P)*RV.
 
 @param id               The instance @a id returned from @ref RM_Create.
@@ -4480,20 +4480,21 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsExchange(int id, int option);
 /**
-Input units for gas phases. In PHREEQC, gas phases are defined by
-moles of component gases. RM_SetUnitsGasPhase determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
-on the basis of the porosity
-(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
-@param id               The instance @a id returned from @ref RM_Create.
+Set input units for gas phases.
+In PHREEQC input, gas phases are defined by moles of component gases (@a Mp).
+@a RM_SetUnitsGasPhase specifies how the number of moles of component gases in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp).
+
+Options are
+0, @a Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref RM_SetRepresentativeVolume);
+1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref RM_SetPorosity); or
+2, @a Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-@a P)*RV.
+
 @param option           Units option for gas phases: 0, 1, or 2.
-@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
-@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
+@ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4527,27 +4528,32 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsGasPhase(int id, int option);
 /**
-Input units for kinetic reactants. In PHREEQC, kinetics are defined by
-moles of kinetic reactant. RM_SetUnitsKinetics determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
-cell on the basis of the porosity
-(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+Set input units for kinetic reactants.
+
+In PHREEQC input, kinetics are defined by moles of kinetic reactants (@a Mp).
+@a RM_SetUnitsKinetics specifies how the number of moles of kinetic reactants in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp).
+
+Options are
+0, @a Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref RM_SetRepresentativeVolume);
+1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref RM_SetPorosity); or
+2, @a Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-@a P)*RV.
+
 @n@n
 Note that the volume of water in a cell in the reaction module is equal
-to the porosity times the saturation, which is usually much less than 1 liter.
-It is important to write the
-RATES definitions for KINETICS to account for the current volume of water,
+to the product of porosity (@ref RM_SetPorosity), the saturation (@ref RM_SetSaturation), 
+and representative volume (@ref RM_SetRepresentativeVolume),
+which is usually less than 1 liter.
+It is important to write the RATES definitions for KINETICS to account for the current volume of water,
 often by calculating the rate of reaction per liter of water and multiplying by the
 volume of water (Basic function SOLN_VOL).
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param option           Units option for kinetic reactants: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
-@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
+@see                     @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
+@ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4581,21 +4587,22 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsKinetics(int id, int option);
 /**
-Input units for pure phase assemblages (equilibrium phases).
-In PHREEQC, equilibrium phases are defined by
-moles of each phase. RM_SetUnitsPPassemblage determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
-on the basis of the porosity
-(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+Set input units for pure phase assemblages (equilibrium phases).
+In PHREEQC input, equilibrium phases are defined by moles of each phase (@a Mp).
+@a RM_SetUnitsPPassemblage specifies how the number of moles of phases in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp).
+
+Options are
+0, @a Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref RM_SetRepresentativeVolume);
+1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref RM_SetPorosity); or
+2, @a Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-@a P)*RV.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param option           Units option for equilibrium phases: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
-@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
+@see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
+@ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4635,47 +4642,45 @@ PHREEQC defines solutions by the number of moles of each
 element in the solution.
 @n@n
 To convert from mg/L to moles
-of element in a cell, mg/L is converted to mol/L and
+of element in the representative volume of a reaction cell, mg/L is converted to mol/L and
 multiplied by the solution volume,
-which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
-times saturation (@ref RM_SetSaturation).
+which is the product of porosity (@ref RM_SetPorosity), saturation (@ref RM_SetSaturation),
+and representative volume (@ref RM_SetRepresentativeVolume).
 To convert from mol/L to moles
-of element in a cell, mol/L is
-multiplied by the solution volume,
-which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
-times saturation (@ref RM_SetSaturation).
+of element in the representative volume of a reaction cell, mol/L is
+multiplied by the solution volume.
 To convert from mass fraction to moles
-of element in a cell, kg/kgs is converted to mol/kgs, multiplied by density
+of element in the representative volume of a reaction cell, kg/kgs is converted to mol/kgs, multiplied by density
 (@ref RM_SetDensity) and
-multiplied by the solution volume,
-which is porosity (@ref RM_SetCellVolume, @ref RM_SetPoreVolume)
-times saturation (@ref RM_SetSaturation).
+multiplied by the solution volume.
 @n@n
 To convert from moles
-of element in a cell to mg/L, the number of moles of an element is divided by the
-calculated solution volume resulting in mol/L, and then converted to
-mg/L.
+of element in the representative volume of a reaction cell to mg/L, the number of moles of an element is divided by the
+solution volume resulting in mol/L, and then converted to mg/L.
 To convert from moles
 of element in a cell to mol/L,  the number of moles of an element is divided by the
 solution volume resulting in mol/L.
 To convert from moles
 of element in a cell to mass fraction, the number of moles of an element is converted to kg and divided
 by the total mass of the solution.
-Two options are available for the volume and mass of solution 
+Two options are available for the volume and mass of solution
 that are used in converting to transport concentrations: (1) the volume and mass of solution are
-calculated by PHREEQC, or (2) the volume of solution is the product of porosity and saturation, 
-and the mass of solution is volume times density as defined by @ref RM_SetDensity. 
+calculated by PHREEQC, or (2) the volume of solution is the product of porosity (@ref RM_SetPorosity),
+saturation (@ref RM_SetSaturation), and representative volume (@ref RM_SetRepresentativeVolume),
+and the mass of solution is volume times density as defined by @ref RM_SetDensity.
 Which option is used is determined by @ref RM_UseSolutionDensityVolume.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param option           Units option for solutions: 1, 2, or 3, default is 1, mg/L.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetDensity, @ref RM_SetPoreVolume, 
-@ref RM_SetSaturation, @ref RM_UseSolutionDensityVolume.
+@see                    @ref SetDensity, @ref SetPorosity, @ref SetRepresentativeVolume, @ref SetSaturation,
+@ref UseSolutionDensityVolume.
+
 @par C Example:
 @htmlonly
 <CODE>
 <PRE>
-status = RM_SetUnitsSurface(id, 1);
+status = RM_SetUnitsSolution(id, 1);
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4683,11 +4688,11 @@ status = RM_SetUnitsSurface(id, 1);
 @htmlonly
 <CODE>
 <PRE>
-INTEGER FUNCTION RM_SetUnitsSurface(id, option)
+INTEGER FUNCTION RM_SetUnitsSolution(id, option)
   IMPLICIT NONE
   INTEGER, INTENT(in) :: id
   INTEGER, INTENT(in) :: option
-END FUNCTION RM_SetUnitsSurface
+END FUNCTION RM_SetUnitsSolution
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4695,7 +4700,7 @@ END FUNCTION RM_SetUnitsSurface
 @htmlonly
 <CODE>
 <PRE>
-status = RM_SetUnitsSurface(id, 1)
+status = RM_SetUnitsSolution(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4704,21 +4709,22 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsSolution(int id, int option);
 /**
-Input units for solid-solution assemblages.
-In PHREEQC, solid solutions are defined by
-moles of each component. RM_SetUnitsSSassemblage determines whether the
-number of moles applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
-on the basis of the porosity
-(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+Set input units for solid-solution assemblages.
+In PHREEQC, solid solutions are defined by moles of each component (@a Mp).
+@a RM_SetUnitsSSassemblage specifies how the number of moles of solid-solution components in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp).
+
+Options are
+0, @a Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref RM_SetRepresentativeVolume);
+1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref RM_SetPorosity); or
+2, @a Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-@a P)*RV.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param option           Units option for solid solutions: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
-@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
+@see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
+@ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4752,20 +4758,22 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsSSassemblage(int id, int option);
 /**
-Input units for surfaces. In PHREEQC, surfaces are determined by
-moles of surface sites. RM_SetUnitsSurface defines whether the
-number of sites applies to the volume of the cell, the volume of
-water in a cell, or the volume of rock in a cell. Options are
-0, mol/L of cell (default); 1, mol/L of water in the cell; 2 mol/L of rock in the cell.
-If 1 or 2 is selected, the input is converted
-to mol/L of cell by @ref RM_InitialPhreeqc2Module and @ref RM_InitialPhreeqcCell2Module
-on the basis of the porosity
-(@ref RM_SetCellVolume and @ref RM_SetPoreVolume).
+Set input units for surfaces.
+In PHREEQC input, surfaces are defined by moles of surface sites (@a Mp).
+@a RM_SetUnitsSurface specifies how the number of moles of surface sites in a reaction cell (@a Mc)
+is calculated from the input value (@a Mp).
+
+Options are
+0, @a Mp is mol/L of RV (default),    @a Mc = @a Mp*RV, where RV is the representative volume (@ref RM_SetRepresentativeVolume);
+1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref RM_SetPorosity); or
+2, @a Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-@a P)*RV.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param option           Units option for surfaces: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetPoreVolume,
-@ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module.
+@see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
+@ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
+
 @par C Example:
 @htmlonly
 <CODE>
@@ -4799,23 +4807,24 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsSurface(int id, int option);
 /**
-Set solution concentrations in the reaction module based on the array of aqueous species concentrations.
-This
-method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SetSpeciesSaveOn must be set to @a true.
-The method determines the
-total concentration of a component by summing the molarities of the individual species times the stoichiometric
+Set solution concentrations in the reaction cells based on the array of aqueous species concentrations.
+This method is intended for use with multicomponent-diffusion transport calculations,
+and @ref RM_SetSpeciesSaveOn must be set to @a true. The list of aqueous
+species is determined by @ref RM_FindComponents and includes all
+aqueous species that can be made from the set of components.
+The method determines the total concentration of a component by summing the molarities 
+of the individual species times the stoichiometric
 coefficient of the element in each species.
+
 @param id               The instance @a id returned from @ref RM_Create.
 @param species_conc     Array of aqueous species concentrations. Dimension of the array is (@a nxyz, @a nspecies),
 where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount), and @a nspecies is the number of aqueous species (@ref RM_GetSpeciesCount).
 Concentrations are moles per liter.
-The list of aqueous
-species is determined by @ref RM_FindComponents and includes all
-aqueous species that can be made from the set of components.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
+@see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, 
+@ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
+
 @par C Example:
 @htmlonly
 <CODE>
