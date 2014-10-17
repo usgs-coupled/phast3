@@ -355,7 +355,7 @@
     status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
 
 	! Dump results   
-	status = RM_SetDumpFileName(id, "species_f90.dmp.gz")  
+	status = RM_SetDumpFileName(id, "species_f90.dmp")  
     dump_on = 1
     append = 0  
     status = RM_DumpModule(id, dump_on, append)    

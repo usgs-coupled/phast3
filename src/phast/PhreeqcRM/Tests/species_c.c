@@ -398,7 +398,7 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		// Dump results
 		dump_on = 1;
 		append = 0;
-		status = RM_SetDumpFileName(id, "species_c.dmp.gz");
+		status = RM_SetDumpFileName(id, "species_c.dmp");
 		status = RM_DumpModule(id, dump_on, append);   
 
 		status = RM_CloseFiles(id);
