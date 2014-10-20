@@ -4807,14 +4807,16 @@ Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetUnitsSurface(int id, int option);
 /**
-Set solution concentrations in the reaction cells based on the array of aqueous species concentrations.
+Set solution concentrations in the reaction cells
+based on the vector of aqueous species concentrations (@a species_conc).
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref RM_SetSpeciesSaveOn must be set to @a true. The list of aqueous
-species is determined by @ref RM_FindComponents and includes all
+and @ref SetSpeciesSaveOn must be set to @a true.
+The list of aqueous species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
-The method determines the total concentration of a component by summing the molarities 
-of the individual species times the stoichiometric
+The method determines the total concentration of a component
+by summing the molarities of the individual species times the stoichiometric
 coefficient of the element in each species.
+Solution compositions in the reaction cells are updated with these component concentrations.
 
 @param id               The instance @a id returned from @ref RM_Create.
 @param species_conc     Array of aqueous species concentrations. Dimension of the array is (@a nxyz, @a nspecies),
@@ -4877,8 +4879,9 @@ to transport concentrations (@ref RM_GetConcentrations).
 Two options are available to convert concentration units: 
 (1) the density and solution volume calculated by PHREEQC are used, or 
 (2) the specified density (@ref RM_SetDensity) 
-and solution volume defined by the product of 
-@ref RM_SetSaturation, @ref RM_SetPoreVolume, and @ref RM_SetCellVolume are used.
+and solution volume are defined by the product of 
+saturation (@ref RM_SetSaturation), porosity (@ref SetPorosity), 
+and representative volume (@ref SetRepresentativeVolume).
 Transport models that consider density-dependent flow will probably use the 
 PHREEQC-calculated density and solution volume (default), 
 whereas transport models that assume constant-density flow will probably use
@@ -4886,14 +4889,15 @@ specified values of density and solution volume.
 Only the following databases distributed with PhreeqcRM have molar volume information 
 needed to accurately calculate density and solution volume: phreeqc.dat, Amm.dat, and pitzer.dat.
 Density is only used when converting to transport units of mass fraction. 
+
 @param id               The instance @a id returned from @ref RM_Create.
-@param tf          @a True indicates that the solution density and volume as 
-calculated by PHREEQC will be used to calculate transport concentrations. 
+@param tf               @a True indicates that the solution density and volume as 
+calculated by PHREEQC will be used to calculate concentrations. 
 @a False indicates that the solution density set by @ref RM_SetDensity and the volume determined by the 
-product of  @ref RM_SetSaturation, @ref RM_SetPoreVolume, 
-and @ref RM_SetCellVolume will be used to calculate transport concentrations.
-@see                    @ref RM_GetConcentrations, @ref RM_SetCellVolume, @ref RM_SetDensity, 
-@ref RM_SetPoreVolume, @ref RM_SetSaturation.
+product of  @ref SetSaturation, @ref SetPorosity, and @ref SetRepresentativeVolume,
+will be used to calculate concentrations retrieved by @ref GetConcentrations.
+@see                    @ref RM_GetConcentrations, @ref RM_SetDensity, 
+@ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
 @par C Example:
 @htmlonly
 <CODE>

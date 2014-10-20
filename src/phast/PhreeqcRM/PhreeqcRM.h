@@ -3498,8 +3498,9 @@ to transport concentrations (@ref GetConcentrations).
 Two options are available to convert concentration units:
 (1) the density and solution volume calculated by PHREEQC are used, or
 (2) the specified density (@ref SetDensity)
-and solution volume is determined by the product of saturation,
-(@ref SetSaturation), porosity (@ref SetPorosity), and representative volume (@ref SetRepresentativeVolume).
+and solution volume are determined by the product of 
+saturation (@ref SetSaturation), porosity (@ref SetPorosity), 
+and representative volume (@ref SetRepresentativeVolume).
 Transport models that consider density-dependent flow will probably use the
 PHREEQC-calculated density and solution volume (default),
 whereas transport models that assume constant-density flow will probably use
@@ -3509,7 +3510,7 @@ needed to accurately calculate density and solution volume: phreeqc.dat, Amm.dat
 Density is only used when converting to or from transport units of mass fraction.
 
 @param tf          @a True indicates that the solution density and volume as
-calculated by PHREEQC will be used to calculate transport concentrations.
+calculated by PHREEQC will be used to calculate concentrations.
 @a False indicates that the solution density set by @ref SetDensity and the volume determined by the
 product of  @ref SetSaturation, @ref SetPorosity, and @ref SetRepresentativeVolume,
 will be used to calculate concentrations retrieved by @ref GetConcentrations.
