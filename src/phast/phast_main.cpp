@@ -103,6 +103,7 @@ int main(int argc, char* argv[])
 	}
 	clock_t t_total = clock() - t0;
 	std::cerr << "Matric multiply time: " << (double) t_total / (double) CLOCKS_PER_SEC << std::endl;
+	exit(4);
 #endif
 	int nthreads = 0;
 	if (argc > 1)

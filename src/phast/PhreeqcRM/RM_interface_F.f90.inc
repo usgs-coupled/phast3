@@ -4,7 +4,7 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             INTEGER, INTENT(in) :: result
-            CHARACTER, INTENT(in) :: str
+            CHARACTER, INTENT(in) :: str(*)
         END FUNCTION RM_Abort
 
         INTEGER FUNCTION RM_CloseFiles(id)
@@ -15,9 +15,9 @@
         INTEGER FUNCTION RM_Concentrations2Utility(id, c, n, tc, p_atm)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: c
+            DOUBLE PRECISION, INTENT(in) :: c(*)
             INTEGER, INTENT(in) :: n
-            DOUBLE PRECISION, INTENT(in) :: tc, p_atm
+            DOUBLE PRECISION, INTENT(in) :: tc(*), p_atm(*)
         END FUNCTION RM_Concentrations2Utility  
        
         INTEGER FUNCTION RM_Create(nxyz, nthreads) 
@@ -29,7 +29,7 @@
 		INTEGER FUNCTION RM_CreateMapping(id, grid2chem)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: grid2chem
+            INTEGER, INTENT(in) :: grid2chem(*)
         END FUNCTION RM_CreateMapping
 
 		INTEGER FUNCTION RM_DecodeError(id, e)
@@ -53,7 +53,7 @@
         INTEGER FUNCTION RM_ErrorMessage(id, errstr)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: errstr
+            CHARACTER, INTENT(in) :: errstr(*)
         END FUNCTION RM_ErrorMessage
         
         INTEGER FUNCTION RM_FindComponents(id) 
@@ -69,7 +69,7 @@
         INTEGER FUNCTION RM_GetComponent(id, num, comp_name)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id, num
-            CHARACTER, INTENT(out) :: comp_name
+            CHARACTER, INTENT(out) :: comp_name(*)
         END FUNCTION RM_GetComponent 
         
         INTEGER FUNCTION RM_GetComponentCount(id)
@@ -80,19 +80,19 @@
         INTEGER FUNCTION RM_GetConcentrations(id, c)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out)  :: c
+            DOUBLE PRECISION, INTENT(out)  :: c(*)
         END FUNCTION RM_GetConcentrations 
 
         INTEGER FUNCTION RM_GetDensity(id, density)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: density
+            DOUBLE PRECISION, INTENT(out) :: density(*)
         END FUNCTION RM_GetDensity 
 
         INTEGER FUNCTION RM_GetErrorString(id, errstr)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(out) :: errstr
+            CHARACTER, INTENT(out) :: errstr(*)
         END FUNCTION RM_GetErrorString 
 
         INTEGER FUNCTION RM_GetErrorStringLength(id)   
@@ -103,13 +103,13 @@
         INTEGER FUNCTION RM_GetFilePrefix(id, prefix)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(out) :: prefix
+            CHARACTER, INTENT(out) :: prefix(*)
         END FUNCTION RM_GetFilePrefix
 
         INTEGER FUNCTION RM_GetGfw(id, gfw)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: gfw
+            DOUBLE PRECISION, INTENT(out) :: gfw(*)
         END FUNCTION RM_GetGfw 
 
         INTEGER FUNCTION RM_GetGridCellCount(id)
@@ -141,13 +141,13 @@
         INTEGER FUNCTION RM_GetSaturation(id, sat)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: sat
+            DOUBLE PRECISION, INTENT(out) :: sat(*)
         END FUNCTION RM_GetSaturation
         
         INTEGER FUNCTION RM_GetSelectedOutput(id, so)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: so
+            DOUBLE PRECISION, INTENT(out) :: so(*)
         END FUNCTION RM_GetSelectedOutput
         
         INTEGER FUNCTION RM_GetSelectedOutputColumnCount(id)
@@ -163,7 +163,7 @@
         INTEGER FUNCTION RM_GetSelectedOutputHeading(id, icol, heading)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id, icol
-            CHARACTER, INTENT(out) :: heading
+            CHARACTER, INTENT(out) :: heading(*)
         END FUNCTION RM_GetSelectedOutputHeading
         
         INTEGER FUNCTION RM_GetSelectedOutputRowCount(id)
@@ -174,13 +174,13 @@
         INTEGER FUNCTION RM_GetSolutionVolume(id, vol)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: vol
+            DOUBLE PRECISION, INTENT(out) :: vol(*)
         END FUNCTION RM_GetSolutionVolume 
 
         INTEGER FUNCTION RM_GetSpeciesConcentrations(id, species_conc)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: species_conc
+            DOUBLE PRECISION, INTENT(out) :: species_conc(*)
         END FUNCTION RM_GetSpeciesConcentrations 
 
         INTEGER FUNCTION RM_GetSpeciesCount(id)
@@ -191,13 +191,13 @@
         INTEGER FUNCTION RM_GetSpeciesD25(id, diffc)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: diffc
+            DOUBLE PRECISION, INTENT(out) :: diffc(*)
         END FUNCTION RM_GetSpeciesD25 
 
         INTEGER FUNCTION RM_GetSpeciesName(id, i, name)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id, i
-            CHARACTER, INTENT(out) :: name
+            CHARACTER, INTENT(out) :: name(*)
         END FUNCTION RM_GetSpeciesName
 
         INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
@@ -208,7 +208,7 @@
         INTEGER FUNCTION RM_GetSpeciesZ(id, z)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: z
+            DOUBLE PRECISION, INTENT(out) :: z(*)
         END FUNCTION RM_GetSpeciesZ 
         
         INTEGER FUNCTION RM_GetThreadCount(id)
@@ -243,38 +243,38 @@
         INTEGER FUNCTION RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: ic1
-            INTEGER, INTENT(in), OPTIONAL :: ic2
-            DOUBLE PRECISION, INTENT(in), OPTIONAL :: f1
+            INTEGER, INTENT(in) :: ic1(*)
+            INTEGER, INTENT(in), OPTIONAL :: ic2(*)
+            DOUBLE PRECISION, INTENT(in), OPTIONAL :: f1(*)
         END FUNCTION RM_InitialPhreeqc2Module    
 		 
         INTEGER FUNCTION RM_InitialPhreeqcCell2Module(id, n_user, module_cell, dim_module_cell)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             INTEGER, INTENT(in) :: n_user
-            INTEGER, INTENT(in) :: module_cell
+            INTEGER, INTENT(in) :: module_cell(*)
             INTEGER, INTENT(in) :: dim_module_cell
         END FUNCTION RM_InitialPhreeqcCell2Module   
 
         INTEGER FUNCTION RM_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1)   
                 IMPLICIT NONE
                 INTEGER, INTENT(in) :: id
-                DOUBLE PRECISION, INTENT(OUT) :: species_c
-                INTEGER, INTENT(IN) :: n_boundary, bc_sol1
-                INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
-                DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
+                DOUBLE PRECISION, INTENT(OUT) :: species_c(*)
+                INTEGER, INTENT(IN) :: n_boundary, bc_sol1(*)
+                INTEGER, INTENT(IN), OPTIONAL :: bc_sol2(*)
+                DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1(*)
         END FUNCTION RM_InitialPhreeqc2SpeciesConcentrations          
         
         INTEGER FUNCTION RM_LoadDatabase(id, db) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: db
+            CHARACTER, INTENT(in) :: db(*)
         END FUNCTION RM_LoadDatabase 
         
         INTEGER FUNCTION RM_LogMessage(id, str) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: str
+            CHARACTER, INTENT(in) :: str(*)
         END FUNCTION RM_LogMessage
 
         INTEGER FUNCTION RM_MpiWorker(id) 
@@ -295,7 +295,7 @@
         INTEGER FUNCTION RM_OutputMessage(id, str)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: str
+            CHARACTER, INTENT(in) :: str(*)
         END FUNCTION RM_OutputMessage
         
         INTEGER FUNCTION RM_RunCells(id)   
@@ -307,26 +307,26 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             INTEGER, INTENT(in) :: workers, initial_phreeqc, utility
-            CHARACTER, INTENT(in) :: chem_name
+            CHARACTER, INTENT(in) :: chem_name(*)
         END FUNCTION RM_RunFile   
         
         INTEGER FUNCTION RM_RunString(id, initial_phreeqc, workers, utility, input_string)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             INTEGER, INTENT(in) :: initial_phreeqc, workers, utility
-            CHARACTER, INTENT(in) :: input_string
+            CHARACTER, INTENT(in) :: input_string(*)
         END FUNCTION RM_RunString   
         
         INTEGER FUNCTION RM_ScreenMessage(id, str) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: str
+            CHARACTER, INTENT(in) :: str(*)
         END FUNCTION RM_ScreenMessage   
  		     
         !INTEGER FUNCTION RM_SetCellVolume(id, vol)   
         !    IMPLICIT NONE
         !    INTEGER, INTENT(in) :: id
-        !    DOUBLE PRECISION, INTENT(in) :: vol
+        !    DOUBLE PRECISION, INTENT(in) :: vol(*)
         !END FUNCTION RM_SetCellVolume
  		     
         INTEGER FUNCTION RM_SetComponentH2O(id, tf)   
@@ -338,7 +338,7 @@
         INTEGER FUNCTION RM_SetConcentrations(id, c)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: c
+            DOUBLE PRECISION, INTENT(in) :: c(*)
         END FUNCTION RM_SetConcentrations
  		     
         INTEGER FUNCTION RM_SetCurrentSelectedOutputUserNumber(id, n_user)   
@@ -356,7 +356,7 @@
         INTEGER FUNCTION RM_SetDumpFileName(id, name) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: name
+            CHARACTER, INTENT(in) :: name(*)
         END FUNCTION RM_SetDumpFileName   
 
         INTEGER FUNCTION RM_SetErrorHandlerMode(id, i)
@@ -368,14 +368,14 @@
         INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: prefix
+            CHARACTER, INTENT(in) :: prefix(*)
         END FUNCTION RM_SetFilePrefix  
 
         INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
 			INTEGER, INTENT(IN) :: id
 			INTERFACE
 			  INTEGER FUNCTION fcn(method_number)
-				INTEGER, INTENT(in) :: method_number
+				INTEGER, INTENT(in) :: method_number(*)
 			  END FUNCTION 
 			END INTERFACE
         END FUNCTION RM_SetMpiWorkerCallback
@@ -389,19 +389,19 @@
         !INTEGER FUNCTION RM_SetPoreVolume(id, pv)   
         !    IMPLICIT NONE
         !    INTEGER, INTENT(in) :: id
-        !    DOUBLE PRECISION, INTENT(in) :: pv
+        !    DOUBLE PRECISION, INTENT(in) :: pv(*)
         !END FUNCTION RM_SetPoreVolume 
 
         INTEGER FUNCTION RM_SetPorosity(id, por)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: por
+            DOUBLE PRECISION, INTENT(in) :: por(*)
         END FUNCTION RM_SetPorosity 
 
         INTEGER FUNCTION RM_SetPressure(id, p)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: p
+            DOUBLE PRECISION, INTENT(in) :: p(*)
         END FUNCTION RM_SetPressure        
         
         INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)   
@@ -431,13 +431,13 @@
         INTEGER FUNCTION RM_SetRepresentativeVolume(id, rv)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: rv
+            DOUBLE PRECISION, INTENT(in) :: rv(*)
         END FUNCTION RM_SetRepresentativeVolume 
 
         INTEGER FUNCTION RM_SetSaturation(id, sat)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: sat
+            DOUBLE PRECISION, INTENT(in) :: sat(*)
         END FUNCTION RM_SetSaturation 
 
         INTEGER FUNCTION RM_SetSelectedOutputOn(id, tf)
@@ -455,7 +455,7 @@
         INTEGER FUNCTION RM_SetTemperature(id, t)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t
+            DOUBLE PRECISION, INTENT(in) :: t(*)
         END FUNCTION RM_SetTemperature 
 		     
         INTEGER FUNCTION RM_SetTime(id, time)   
@@ -521,7 +521,7 @@
         INTEGER FUNCTION RM_SpeciesConcentrations2Module(id, species_conc)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: species_conc
+            DOUBLE PRECISION, INTENT(in) :: species_conc(*)
         END FUNCTION RM_SpeciesConcentrations2Module  
 
         INTEGER FUNCTION RM_UseSolutionDensityVolume(id, tf)
@@ -533,7 +533,7 @@
         INTEGER FUNCTION RM_WarningMessage(id, str) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: str
+            CHARACTER, INTENT(in) :: str(*)
         END FUNCTION RM_WarningMessage
 		 
     END INTERFACE

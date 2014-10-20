@@ -506,7 +506,7 @@ SUBROUTINE InitialEquilibrationRM
                 por(i) = 1.0d0
             endif
         enddo
-        status = RM_SetPorosity(rm_id, por(1))
+        status = RM_SetPorosity(rm_id, por)
 
         sat = 1.0
         do i = 1, nxyz
@@ -523,7 +523,8 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_SetTimeStep(rm_id, deltim_dummy) 
         status = RM_SetConcentrations(rm_id, c(1,1))
         status = RM_RunCells(rm_id)     
-        status = RM_GetConcentrations(rm_id, c(1,1))
+        !status = RM_GetConcentrations(rm_id, c(1,1))
+        status = RM_GetConcentrations(rm_id, c)
         !status = RM_GetDensity(rm_id, phreeqc_density(1))
         !status = RM_SetDensity(rm_id, phreeqc_density(1))
     ENDIF  
@@ -594,7 +595,7 @@ SUBROUTINE InitializeRM
                 por(i) = 1.0d0
             endif
         enddo
-        status = RM_SetPorosity(rm_id, por(1))
+        status = RM_SetPorosity(rm_id, por)
         
         status = RM_SetRebalanceFraction(rm_id, rebalance_fraction_f)
         status = RM_SetRebalanceByCell(rm_id, rebalance_method_f)
@@ -668,7 +669,7 @@ SUBROUTINE TimeStepRM
                     por(i) = 1.0d0
                 endif
             enddo
-            status = RM_SetPorosity(rm_id, por(1))            
+            status = RM_SetPorosity(rm_id, por)            
         endif
         if (fresur.and.(.not.steady_flow)) then
             sat = frac
