@@ -57,8 +57,8 @@ SUBROUTINE write5
   INTEGER :: status
   CHARACTER(LEN=100) :: string, svalue, line
   INTEGER :: iphreeqc_id, vtype
-  DOUBLE PRECISION :: tc, p_atm
-  DOUBLE PRECISION :: c_well(100)
+  DOUBLE PRECISION, dimension(:), allocatable :: tc, p_atm
+  DOUBLE PRECISION, dimension(:), allocatable :: c_well
   DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: dcmax_temp
   !     ------------------------------------------------------------------
   !...
@@ -774,6 +774,7 @@ SUBROUTINE write5
         endif
         status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -alkalinity");
         string = "RUN_CELLS; -cell 1"
+        allocate(c_well(ns), tc(1), p_atm(1))
         DO  iwel=1,nwel
            mkt=mwel(iwel,nkswel(iwel))
            u2=0.d0
@@ -804,7 +805,7 @@ SUBROUTINE write5
               !CALL RM_calculate_well_ph(u10, ph, alk)
               tc = 25.0
               p_atm = 1.0
-              iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well(1), 1, tc, p_atm)
+              iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well, 1, tc, p_atm)
               status = RunString(iphreeqc_id, string)
               if (status .ne. 0) then
                   status = RM_ErrorMessage(rm_id, "Well calculation of pH, write5.")
@@ -821,6 +822,7 @@ SUBROUTINE write5
                    (u10(is),ACHAR(9),is=1,ns),ph,ACHAR(9), alk, ACHAR(9)
            ENDIF
         END DO
+        deallocate(c_well, tc, p_atm)
         ntprtem = ntprtem+1
      END IF
      DEALLOCATE (chu10a, chu11a, cwkt_mol, &

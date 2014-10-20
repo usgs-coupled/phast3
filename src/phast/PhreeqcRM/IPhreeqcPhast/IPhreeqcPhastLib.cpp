@@ -26,7 +26,9 @@ IPhreeqcPhastLib::CreateIPhreeqcPhast(void)
 	IPhreeqcPhast* IPhreeqcPhastPtr;
 	try
 	{
+#ifdef USE_OPENMP
 		#pragma omp critical(IPhreeqcPhastLib)
+#endif
 		{
 			IPhreeqcPhastPtr = new IPhreeqcPhast;
 		}
@@ -48,7 +50,9 @@ IPhreeqcPhastLib::DestroyIPhreeqcPhast(int id)
 	{
 		if (IPhreeqc *ptr = IPhreeqcPhastLib::GetInstance(id))
 		{
+#ifdef USE_OPENMP
 			#pragma omp critical(IPhreeqcPhastLib)
+#endif
 			{
 				delete ptr;
 			}
@@ -63,7 +67,9 @@ IPhreeqcPhastLib::GetInstance(int id)
 {
 	std::map<size_t, IPhreeqcPhast*>::iterator it;
 	bool found=false;
+#ifdef USE_OPENMP
 	#pragma omp critical(IPhreeqcLib)
+#endif
 	{
 		it = IPhreeqcPhast::PhastInstances.find(size_t(id));
 		found = (it != IPhreeqcPhast::PhastInstances.end());

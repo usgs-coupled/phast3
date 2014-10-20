@@ -19,6 +19,7 @@ class PHRQ_io;
 #include <list>
 #include <set>
 #include <map>
+#include <string>
 
 #if defined(_WINDLL)
 #define IPQ_DLL_EXPORT __declspec(dllexport)

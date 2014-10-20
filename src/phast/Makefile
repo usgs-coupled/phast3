@@ -10,7 +10,7 @@
 #
 
 PROGRAM = phast
-
+PROFILE=
 all: gfortran 
 
 SERIAL_GFORTRAN_DIR           = serial_gfortran
@@ -156,8 +156,8 @@ openmpi_intel_64_debug:
 # =============================================================================
 
 SRC              = ../IPHreeqcPhast/IPhreeqc/phreeqcpp/phreeqc
-PHREEQC_INCLUDES = -I.. -I../PhreeqcRM -I../IPhreeqcPhast -I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp 
-PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../KDtree
+PHREEQC_INCLUDES = -I.. -I../PhreeqcRM -I../PhreeqcRM/IPhreeqcPhast -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp 
+PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM:../PhreeqcRM/IPhreeqcPhast:../PhreeqcRM/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp:../KDtree
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
@@ -256,11 +256,11 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
-  FFLAGS       = -g -O3 -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) 
+  FFLAGS       = $(PROFILE) -g -O3 -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) 
   CC           = g++
-  CFLAGS       = -Wall -fopenmp -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = $(PROFILE) -Wall -fopenmp -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) -lgomp -lm ${HASH_STYLE} ${HDF5_LIBS_64}
+  LD_FLAGS     = $(PROFILE) $(LIBGFORTRAN_64) -lgomp -lm ${HASH_STYLE} ${HDF5_LIBS_64}
   LINKER       = $(CXX)
 endif
 
@@ -903,14 +903,17 @@ clean:
 
 depends:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast -I../PhreeqcRM \
-	-I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp \
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I.. \
+	-I../PhreeqcRM -I../PhreeqcRM/IPhreeqcPhast \
+	-I../PhreeqcRM/IPhreeqcPhast/IPhreeqc \
+	-I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp \
 	-I../KDtree \
 	../*.cxx ../*.cpp \
-	../IPhreeqcPhast/*.cpp 	../IPhreeqcPhast/*.cxx \
 	../PhreeqcRM/*.cpp \
-	../IPhreeqcPhast/IPhreeqc/*.cpp ../IPhreeqcPhast/IPhreeqc/*.c \
-	../IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cxx ../IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cpp \
+	../PhreeqcRM/IPhreeqcPhast/*.cpp 	../PhreeqcRM/IPhreeqcPhast/*.cxx \
+	../PhreeqcRM/IPhreeqcPhast/IPhreeqc/*.cpp ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/*.c \
+	../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cxx \
+	../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cpp \
 	../KDtree/*.cpp $(PHASTINPUT_FILES) > ../dependencies
 #	cd temp_dependency_dir; gfortran -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast \
 #	../PhastFortran/*.f90 ../PhastFortran/*.F90 \
