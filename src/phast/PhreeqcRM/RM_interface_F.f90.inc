@@ -234,10 +234,10 @@
         INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1)   
                 IMPLICIT NONE
                 INTEGER, INTENT(in) :: id
-                DOUBLE PRECISION, INTENT(OUT) :: c
-                INTEGER, INTENT(IN) :: n_boundary, bc_sol1
-                INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
-                DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
+                DOUBLE PRECISION, INTENT(OUT) :: c(*)
+                INTEGER, INTENT(IN) :: n_boundary, bc_sol1(*)
+                INTEGER, INTENT(IN), OPTIONAL :: bc_sol2(*)
+                DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1(*)
         END FUNCTION RM_InitialPhreeqc2Concentrations    
         
         INTEGER FUNCTION RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
@@ -350,7 +350,7 @@
         INTEGER FUNCTION RM_SetDensity(id, density)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: density
+            DOUBLE PRECISION, INTENT(in) :: density(*)
         END FUNCTION RM_SetDensity 
         
         INTEGER FUNCTION RM_SetDumpFileName(id, name) 
@@ -413,7 +413,7 @@
         INTEGER FUNCTION RM_SetPrintChemistryMask(id, cell_mask)   
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: cell_mask
+            INTEGER, INTENT(in) :: cell_mask(*)
         END FUNCTION RM_SetPrintChemistryMask 
         
         INTEGER FUNCTION RM_SetRebalanceByCell(id, method)
