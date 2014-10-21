@@ -166,16 +166,8 @@ libphreeqcrm_la_SOURCES=\
 
 
 include_HEADERS=\
-	$(top_srcdir)/IrmResult.h\
-	$(top_srcdir)/PhreeqcRM.h\
-	$(top_srcdir)/RM_interface_C.h\
-	$(top_srcdir)/RM_interface_F.h\
-	$(top_srcdir)/IPhreeqcPhast/IPhreeqcPhast.h\
-        $(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
-        $(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
-        $(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
-        $(top_srcdir)/IPhreeqcPhast/IPhreeqc/Var.h\
-	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h\
-        $(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h\
-        $(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h\
-	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h
+	IrmResult.h\
+	PhreeqcRM.h\
+	RM_interface_C.h\
+	RM_interface_F.h
+

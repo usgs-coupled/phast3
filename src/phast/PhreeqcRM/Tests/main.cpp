@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 	
-extern void advection_f90_(void);
+extern void advection_f90(void);
 extern void advection_c(void);
 extern void species_f90(void);
 extern void species_c(void);
@@ -57,13 +57,13 @@ int main(int argc, char* argv[])
 	mpi_myself = 0;
 #endif
 
-	//units_tester();
-	//advection_cpp();
-	advection_f90_();
+	units_tester();
+	advection_cpp();
+	advection_f90();
 	advection_c();
 
 	species_cpp();
-	//species_f90();
+	species_f90();
 	species_c();
 
 
