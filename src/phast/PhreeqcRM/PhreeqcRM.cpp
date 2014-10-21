@@ -32,10 +32,18 @@
 #include "cxxKinetics.h"
 #include "GasPhase.h"
 #include "CSelectedOutput.hxx"
+
 #include <time.h>
-#ifdef USE_OPENMP
+
+#if defined(USE_OPENMP)
 #include <omp.h>
-#endif
+#if defined(_WIN32)
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif /* _WIN32 */
+#endif /* USE_OPENMP */
+
 #include "Phreeqc.h"
 #include "IPhreeqcPhast.h"
 std::map<size_t, PhreeqcRM*> PhreeqcRM::Instances;

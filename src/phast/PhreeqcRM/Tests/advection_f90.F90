@@ -60,7 +60,7 @@
     character(100)                                :: svalue
     integer                                       :: iphreeqc_id, iphreeqc_id1
     integer                                       :: dump_on, append
-    character(len=:), allocatable                 :: errstr
+    character(LEN=1), dimension(:), allocatable                     :: errstr
     integer                                       :: l
 
     nxyz = 40
@@ -144,13 +144,14 @@
 	nchem = RM_GetChemistryCellCount(id)
 
     ! Load database
-    status = RM_LoadDatabase(id, "phreeqc.dat") 
+    status = RM_LoadDatabase(id, "phreeqc.dat.xxx") 
     if (status .ne. 0) then
         l = RM_GetErrorStringLength(id)
-        allocate (character(len=l) :: errstr)
+    !!    allocate (character(l) :: errstr)
+        allocate (errstr(l))
         write(*,*) "Start of error string: "
-        status = RM_GetErrorString(id, errstr)
-        write(*,"(A)") errstr
+        status = RM_GetErrorString(id, errstr(1))
+        write(*,"(A)") (errstr(i), i=1,l)
         write(*,*) "End of error string."
         deallocate(errstr)
         status = RM_Destroy(id);
@@ -173,20 +174,20 @@
     ncomps = RM_FindComponents(id)
     
     ! Print some of the reaction module information		
-    write(string1, "(A,I)") "Number of threads:                                ", RM_GetThreadCount(id)
+    write(string1, "(A,I10)") "Number of threads:                                ", RM_GetThreadCount(id)
 	status = RM_OutputMessage(id, string1)
-	write(string1, "(A,I)") "Number of MPI processes:                          ", RM_GetMpiTasks(id)
+	write(string1, "(A,I10)") "Number of MPI processes:                          ", RM_GetMpiTasks(id)
 	status = RM_OutputMessage(id, string1)
-	write(string1, "(A,I)") "MPI task number:                                  ", RM_GetMpiMyself(id)
+	write(string1, "(A,I10)") "MPI task number:                                  ", RM_GetMpiMyself(id)
 	status = RM_OutputMessage(id, string1)
 	status = RM_GetFilePrefix(id, string)
 	write(string1, "(A,A)") "File prefix:                                      ", string
 	status = RM_OutputMessage(id, trim(string1))
-	write(string1, "(A,I)") "Number of grid cells in the user's model:         ", RM_GetGridCellCount(id)
+	write(string1, "(A,I10)") "Number of grid cells in the user's model:         ", RM_GetGridCellCount(id)
 	status = RM_OutputMessage(id, trim(string1))
-	write(string1, "(A,I)") "Number of chemistry cells in the reaction module: ", RM_GetChemistryCellCount(id)
+	write(string1, "(A,I10)") "Number of chemistry cells in the reaction module: ", RM_GetChemistryCellCount(id)
 	status = RM_OutputMessage(id, trim(string1))
-	write(string1, "(A,I)") "Number of components for transport:               ", RM_GetComponentCount(id)
+	write(string1, "(A,I10)") "Number of components for transport:               ", RM_GetComponentCount(id)
 	status = RM_OutputMessage(id, trim(string1))
     allocate(components(ncomps))
     allocate(gfw(ncomps))
@@ -342,12 +343,12 @@
 	string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
 	! Alternatively, utility pointer is worker number nthreads + 1 
 	iphreeqc_id1 = RM_GetIPhreeqcId(id, RM_GetThreadCount(id) + 1)
-	status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")
-	status = SetOutputFileOn(iphreeqc_id, .true.)
-	status = RunString(iphreeqc_id, string)
-	if (status .ne. 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
-	status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
-    status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
+	!! status = SetOutputFileName(iphreeqc_id, "utility_f90.txt")
+	!! status = SetOutputFileOn(iphreeqc_id, .true.)
+	!! status = RunString(iphreeqc_id, string)
+	!! if (status .ne. 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
+	!! status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
+    !! status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
 
 	! Dump results   
 	status = RM_SetDumpFileName(id, "advection_f90.dmp")  
