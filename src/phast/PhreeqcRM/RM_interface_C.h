@@ -49,7 +49,7 @@ END FUNCTION RM_Abort
 @htmlonly
 <CODE>
 <PRE>
-iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
+iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm)
 string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
 status = RunString(iphreeqc_id, string)
 if (status .ne. 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
@@ -157,7 +157,7 @@ enddo
 allocate(tc(1), p_atm(1))
 tc(1) = 15.0
 p_atm(1) = 3.0
-iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
+iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm)
 string = "SELECTED_OUTPUT 5; -pH; RUN_CELLS; -cells 1"
 status = RunString(iphreeqc_id, string)
 status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
@@ -176,9 +176,9 @@ If the code is compiled with the preprocessor directive USE_MPI, the reaction
 module will use MPI and multiple processes. If neither preprocessor directive is used,
 the reaction module will be serial (unparallelized).
 @param nxyz                   The number of grid cells in the user's model.
-@param thread_count_or_communicator               When using OPENMP, the number of worker threads to be used.
-If @a thread_count_or_communicator <= 0, the number of threads is set equal to the number of processors of the computer.
-When using MPI, the argument is the MPI communicator to use within the reaction module.
+@param nthreads (or @a comm, MPI)       When using OPENMP, the argument (@a nthreads) is the number of worker threads to be used.
+If @a nthreads <= 0, the number of threads is set equal to the number of processors of the computer.
+When using MPI, the argument (@a comm) is the MPI communicator to use within the reaction module.
 @retval Id of the PhreeqcRM instance, negative is failure (See @ref RM_DecodeError).
 @see                 @ref RM_Destroy
 @par C Example:
@@ -293,7 +293,7 @@ do i = 1, nxyz/2
   grid2chem(i) = i - 1
   grid2chem(i+nxyz/2) = i - 1
 enddo
-status = RM_CreateMapping(id, grid2chem(1))
+status = RM_CreateMapping(id, grid2chem)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -348,7 +348,7 @@ END FUNCTION RM_DecodeError
 @htmlonly
 <CODE>
 <PRE>
-status = RM_CreateMapping(id, grid2chem(1))
+status = RM_CreateMapping(id, grid2chem)
 if (status < 0) status = RM_DecodeError(id, status)
 </PRE>
 </CODE>
@@ -484,7 +484,7 @@ The method can be called multiple times and the list that is created is cummulat
 The list is the set of components that needs to be transported. 
 By default the list
 includes water, excess H and excess O (the H and O not contained in water);
-alternatively, the list may be set to contain total H and total O (@ref SetComponentH2O),
+alternatively, the list may be set to contain total H and total O (@ref RM_SetComponentH2O),
 which requires transport results to be accurate to eight or nine significant digits.
 If multicomponent diffusion (MCD) is to be modeled, there is a capability to retrieve aqueous species concentrations
 (@ref RM_GetSpeciesConcentrations) and to set new solution concentrations after MCD by using individual species concentrations
@@ -681,10 +681,10 @@ the solution mass is used to calculate concentrations for @a c.
 Two options are available for the volume and mass of solution 
 that are used in converting to transport concentrations: (1) the volume and mass of solution are
 calculated by PHREEQC, or 
-(2) the volume of solution is the product of saturation (@ref SetSaturation),
-porosity (@ref SetPorosity), and representative volume (@ref SetRepresentativeVolume),
-and the mass of solution is volume times density as defined by @ref SetDensity.
-@ref UseSolutionDensityVolume determines which option is used.
+(2) the volume of solution is the product of saturation (@ref RM_SetSaturation),
+porosity (@ref RM_SetPorosity), and representative volume (@ref RM_SetRepresentativeVolume),
+and the mass of solution is volume times density as defined by @ref RM_SetDensity.
+@ref RM_UseSolutionDensityVolume determines which option is used.
 For option 1, the databases that have partial molar volume definitions needed
 to accurately calculate solution volume are
 phreeqc.dat, Amm.dat, and pitzer.dat. 
@@ -726,7 +726,7 @@ END FUNCTION RM_GetConcentrations
 <PRE>
 allocate(c(nxyz, ncomps))
 status = RM_RunCells(id)
-status = RM_GetConcentrations(id, c(1,1))
+status = RM_GetConcentrations(id, c)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -773,7 +773,7 @@ END FUNCTION RM_GetDensity
 <PRE>
 allocate(density(nxyz))
 status = RM_RunCells(id)
-status = RM_GetDensity(id, density(1))
+status = RM_GetDensity(id, density)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -988,7 +988,7 @@ double precision, dimension(:), allocatable   :: gfw
 ncomps = RM_FindComponents(id)
 allocate(components(ncomps))
 allocate(gfw(ncomps))
-status = RM_GetGfw(id, gfw(1))
+status = RM_GetGfw(id, gfw)
 do i = 1, ncomps
   status = RM_GetComponent(id, i, components(i))
   write(string,"(A10, F15.4)") components(i), gfw(i)
@@ -1049,8 +1049,8 @@ Returns an IPhreeqc id for the @a ith IPhreeqc instance in the reaction module.
 
 
 For the threaded version, there are @a nthreads + 2 IPhreeqc instances, where
-@a nthreads is defined in the constructor (@ref PhreeqcRM::PhreeqcRM).
-The number of threads can be determined by @ref GetThreadCount.
+@a nthreads is defined in the constructor (@ref RM_Create).
+The number of threads can be determined by @ref RM_GetThreadCount.
 The first @a nthreads (0 based) instances will be the workers, the
 next (@a nthreads) is the InitialPhreeqc instance, and the next (@a nthreads + 1) is the Utility instance.
 Getting the IPhreeqc pointer for one of these instances allows the user to use any of the IPhreeqc methods
@@ -1247,7 +1247,7 @@ do isel = 1, RM_GetSelectedOutputCount(id)
   write(*,*) "Selected output user number:     ", n_user);
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  status = RM_GetSelectedOutput(id, selected_out)
   ! Process results here
   deallocate(selected_out)
 enddo
@@ -1307,7 +1307,7 @@ do isel = 1, RM_GetSelectedOutputCount(id)
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  status = RM_GetSelectedOutput(id, selected_out)
   ! Process results here
   deallocate(selected_out)
 enddo
@@ -1330,10 +1330,11 @@ The cell saturation returned by @a RM_GetSaturation may be less than or greater 
 Only the following databases distributed with PhreeqcRM have molar volume information needed
 to accurately calculate solution volume and saturation: phreeqc.dat, Amm.dat, and pitzer.dat.
 
+@param id               The instance @a id returned from @ref RM_Create.
 @param sat_calc              Vector to receive the saturations. Dimension of the array is set to @a nxyz,
 where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount).
 Values for inactive cells are set to 1e30.
-@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 
 @see                    @ref RM_GetSolutionVolume, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
 @par C++ Example:
@@ -1364,7 +1365,7 @@ END FUNCTION RM_GetSaturation
 <PRE>
 allocate(sat_calc(nxyz))
 status = RM_RunCells(id)
-status = RM_GetSaturation(id, sat_calc(1))
+status = RM_GetSaturation(id, sat_calc)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1418,7 +1419,7 @@ do isel = 1, RM_GetSelectedOutputCount(id)
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  status = RM_GetSelectedOutput(id, selected_out)
   ! Process results here
   deallocate(selected_out)
 enddo
@@ -1474,7 +1475,7 @@ do isel = 1, RM_GetSelectedOutputCount(id)
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  status = RM_GetSelectedOutput(id, selected_out)
   ! Process results here
   deallocate(selected_out)
 enddo
@@ -1604,7 +1605,7 @@ do isel = 1, RM_GetSelectedOutputCount(id)
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  status = RM_GetSelectedOutput(id, selected_out)
   ! Print results
   do i = 1, RM_GetSelectedOutputRowCount(id)
     write(*,*) "Cell number ", i
@@ -1664,7 +1665,7 @@ END FUNCTION RM_GetSolutionVolume
 <PRE>
 allocate(volume(nxyz))
 status = RM_RunCells(id)
-status = RM_GetSolutionVolume(id, volume(1))
+status = RM_GetSolutionVolume(id, volume)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1731,7 +1732,7 @@ nspecies = RM_GetSpeciesCount(id)
 nxyz = RM_GetGridCellCount(id)
 allocate(species_c(nxyz, nspecies))
 status = RM_RunCells(id)
-status = RM_GetSpeciesConcentrations(id, species_c(1,1))
+status = RM_GetSpeciesConcentrations(id, species_c)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1789,7 +1790,7 @@ nspecies = RM_GetSpeciesCount(id)
 nxyz = RM_GetGridCellCount(id)
 allocate(species_c(nxyz, nspecies))
 status = RM_RunCells(id)
-status = RM_GetSpeciesConcentrations(id, species_c(1,1))
+status = RM_GetSpeciesConcentrations(id, species_c)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2270,7 +2271,7 @@ allocate(bc_conc(nbound, ncomps))
 bc1 = 0           ! solution 0 from InitialPhreeqc instance
 bc2 = -1          ! no bc2 solution for mixing
 bc_f1 = 1.0       ! mixing fraction for bc1
-status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
+status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2392,9 +2393,9 @@ do i = 1, nxyz
   ic1(i,6) = -1      ! Solid solutions none
   ic1(i,7) = -1      ! Kinetics none
 enddo
-status = RM_InitialPhreeqc2Module(id, ic1(1,1), ic2(1,1), f1(1,1))1))
+status = RM_InitialPhreeqc2Module(id, ic1, ic2, f1)1))
 ! No mixing is defined, so the following is equivalent
-status = RM_InitialPhreeqc2Module(id, ic1(1,1))
+status = RM_InitialPhreeqc2Module(id, ic1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2479,7 +2480,7 @@ allocate(bc_conc(nbound, ncomps))
 bc1 = 0           ! solution 0 from InitialPhreeqc instance
 bc2 = -1          ! no bc2 solution for mixing
 bc_f1 = 1.0       ! mixing fraction for bc1
-status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
+status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2544,7 +2545,7 @@ module_cells(1) = 18
 module_cells(2) = 19
 ! n will be the largest SOLUTION number in InitialPhreeqc instance
 ! copies solution and reactants to cells 18 and 19
-status = RM_InitialPhreeqcCell2Module(id, -1, module_cells(1), 2)
+status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2882,16 +2883,16 @@ END FUNCTION RM_RunCells
 @htmlonly
 <CODE>
 <PRE>
-status = RM_SetPorosity(id, por(1))                ! If pore volume changes
-status = RM_SetSaturation(id, sat(1))              ! If saturation changes
-status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
-status = RM_SetPressure(id, pressure(1))           ! If pressure changes
-status = RM_SetConcentrations(id, c(1,1))          ! Transported concentrations
+status = RM_SetPorosity(id, por)                ! If pore volume changes
+status = RM_SetSaturation(id, sat)              ! If saturation changes
+status = RM_SetTemperature(id, temperature)     ! If temperature changes
+status = RM_SetPressure(id, pressure)           ! If pressure changes
+status = RM_SetConcentrations(id, c)          ! Transported concentrations
 status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
 status = RM_RunCells(id)
-status = RM_GetConcentrations(id, c(1,1))          ! Concentrations after reaction
-status = RM_GetDensity(id, density(1))             ! Density after reaction
-status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after reaction
+status = RM_GetConcentrations(id, c)          ! Concentrations after reaction
+status = RM_GetDensity(id, density)             ! Density after reaction
+status = RM_GetSolutionVolume(id, volume)       ! Solution volume after reaction
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3076,7 +3077,7 @@ END FUNCTION RM_SetCellVolume
 <PRE>
 allocate(cell_vol(nxyz))
 cell_vol = 1.0
-status = RM_SetCellVolume(id, cell_vol(1))
+status = RM_SetCellVolume(id, cell_vol)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3095,7 +3096,7 @@ it may be more robust (require less accuracy in transport) to
 transport the excess H and O (the H and O not in water) and water.
 The default setting (@a true) is to include water, excess H, and excess O as components.
 A setting of @a false will include total H and total O as components.
-SetComponentH2O must be called before @ref FindComponents.
+@a RM_SetComponentH2O must be called before @ref RM_FindComponents.
 
 @param id               The instance id returned from @ref RM_Create.
 @param tf               0, total H and O are included in the component list; 1, excess H, excess O, and water
@@ -3191,17 +3192,17 @@ END FUNCTION RM_SetConcentrations
 allocate(c(nxyz, ncomps))
 ...
 call advect_f90(c, bc_conc, ncomps, nxyz)
-status = RM_SetPorosity(id, pv(1))                 ! If porosity changes
-status = RM_SetSaturation(id, sat(1))              ! If saturation changes
-status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
-status = RM_SetPressure(id, pressure(1))           ! If pressure changes
-status = RM_SetConcentrations(id, c(1,1))          ! Transported concentrations
+status = RM_SetPorosity(id, por)                 ! If porosity changes
+status = RM_SetSaturation(id, sat)              ! If saturation changes
+status = RM_SetTemperature(id, temperature))     ! If temperature changes
+status = RM_SetPressure(id, pressure)           ! If pressure changes
+status = RM_SetConcentrations(id, c)          ! Transported concentrations
 status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
 status = RM_SetTime(id, time)                      ! Current time
 status = RM_RunCells(id)
-status = RM_GetConcentrations(id, c(1,1))          ! Concentrations after reaction
-status = RM_GetDensity(id, density(1))             ! Density after reaction
-status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after reaction
+status = RM_GetConcentrations(id, c)          ! Concentrations after reaction
+status = RM_GetDensity(id, density)             ! Density after reaction
+status = RM_GetSolutionVolume(id, volume)       ! Solution volume after reaction
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3258,7 +3259,7 @@ do isel = 1, RM_GetSelectedOutputCount(id)
   status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
   col = RM_GetSelectedOutputColumnCount(id)
   allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out(1,1))
+  status = RM_GetSelectedOutput(id, selected_out)
   ! Process results here
   deallocate(selected_out)
 enddo
@@ -4074,6 +4075,7 @@ that increasing the representative volume also increases
 the number of moles of the reactants in the reaction cell (minerals, surfaces, exchangers,
 and others), which are defined as moles per representative volume.
 
+@param id               The instance @a id returned from @ref RM_Create.
 @param rv              Vector of representative volumes, in liters. Default is 1.0 liter.
 Size of array is @a nxyz, where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount).
@@ -4174,7 +4176,7 @@ IRM_RESULT RM_SetSaturation(int id, double *sat);
 /**
 Setting determines whether selected-output results are available to be retrieved
 with @ref RM_GetSelectedOutput. @a 1 indicates that selected-output results
-will be accumulated during @ref RunCells and can be retrieved with @ref RM_GetSelectedOutput;
+will be accumulated during @ref RM_RunCells and can be retrieved with @ref RM_GetSelectedOutput;
 @a 0 indicates that selected-output results will not
 be accumulated during @ref RM_RunCells.
 
@@ -4490,8 +4492,9 @@ Options are
 1, @a Mp is mol/L of water in the RV, @a Mc = @a Mp*P*RV, where @a P is porosity (@ref RM_SetPorosity); or
 2, @a Mp is mol/L of rock in the RV,  @a Mc = @a Mp*(1-@a P)*RV.
 
+@param id               The instance @a id returned from @ref RM_Create.
 @param option           Units option for gas phases: 0, 1, or 2.
-@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
 
@@ -4673,8 +4676,8 @@ Which option is used is determined by @ref RM_UseSolutionDensityVolume.
 @param id               The instance @a id returned from @ref RM_Create.
 @param option           Units option for solutions: 1, 2, or 3, default is 1, mg/L.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref SetDensity, @ref SetPorosity, @ref SetRepresentativeVolume, @ref SetSaturation,
-@ref UseSolutionDensityVolume.
+@see                    @ref RM_SetDensity, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation,
+@ref RM_UseSolutionDensityVolume.
 
 @par C Example:
 @htmlonly
@@ -4810,7 +4813,7 @@ IRM_RESULT RM_SetUnitsSurface(int id, int option);
 Set solution concentrations in the reaction cells
 based on the vector of aqueous species concentrations (@a species_conc).
 This method is intended for use with multicomponent-diffusion transport calculations,
-and @ref SetSpeciesSaveOn must be set to @a true.
+and @ref RM_SetSpeciesSaveOn must be set to @a true.
 The list of aqueous species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
 The method determines the total concentration of a component
@@ -4880,8 +4883,8 @@ Two options are available to convert concentration units:
 (1) the density and solution volume calculated by PHREEQC are used, or 
 (2) the specified density (@ref RM_SetDensity) 
 and solution volume are defined by the product of 
-saturation (@ref RM_SetSaturation), porosity (@ref SetPorosity), 
-and representative volume (@ref SetRepresentativeVolume).
+saturation (@ref RM_SetSaturation), porosity (@ref RM_SetPorosity), 
+and representative volume (@ref RM_SetRepresentativeVolume).
 Transport models that consider density-dependent flow will probably use the 
 PHREEQC-calculated density and solution volume (default), 
 whereas transport models that assume constant-density flow will probably use
@@ -4894,8 +4897,8 @@ Density is only used when converting to transport units of mass fraction.
 @param tf               @a True indicates that the solution density and volume as 
 calculated by PHREEQC will be used to calculate concentrations. 
 @a False indicates that the solution density set by @ref RM_SetDensity and the volume determined by the 
-product of  @ref SetSaturation, @ref SetPorosity, and @ref SetRepresentativeVolume,
-will be used to calculate concentrations retrieved by @ref GetConcentrations.
+product of  @ref RM_SetSaturation, @ref RM_SetPorosity, and @ref RM_SetRepresentativeVolume,
+will be used to calculate concentrations retrieved by @ref RM_GetConcentrations.
 @see                    @ref RM_GetConcentrations, @ref RM_SetDensity, 
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
 @par C Example:
