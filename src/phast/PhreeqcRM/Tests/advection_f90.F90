@@ -252,9 +252,10 @@
     pressure = 2.0
     temperature = 20.0
     status = RM_SetDensity(id, density)
+    
     status = RM_SetTemperature(id, temperature)
     status = RM_SetPressure(id, pressure)
-    time_step = 86400
+    time_step = 86400.0
     status = RM_SetTimeStep(id, time_step)
     do isteps = 1, nsteps
         ! Advection calculation
