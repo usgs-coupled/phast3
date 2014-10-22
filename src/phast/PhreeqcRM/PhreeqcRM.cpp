@@ -104,7 +104,7 @@ PhreeqcRM::DestroyReactionModule(int id)
 	return retval;
 }
 /* ---------------------------------------------------------------------- */
-inline void
+void
 PhreeqcRM::ErrorHandler(int result, const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
