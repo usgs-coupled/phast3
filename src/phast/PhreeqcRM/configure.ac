@@ -113,5 +113,9 @@ AC_CHECK_FUNCS([isnan],    , AC_CHECK_LIB(m, isnan))
 
 AC_CONFIG_FILES([
   Makefile
+  Tests/Makefile
+  Tests/advect.pqi
+  Tests/phreeqc.dat
+  Tests/units.pqi
 ])
 AC_OUTPUT
