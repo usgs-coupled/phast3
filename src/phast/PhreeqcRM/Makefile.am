@@ -22,6 +22,7 @@ libphreeqcrm_la_SOURCES=\
 	IPhreeqcPhast/IPhreeqc/CVar.hxx\
 	IPhreeqcPhast/IPhreeqc/Debug.h\
 	IPhreeqcPhast/IPhreeqc/ErrorReporter.hxx\
+	IPhreeqcPhast/IPhreeqc/IPhreeqcF.f\
 	IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp\
 	IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
@@ -166,8 +167,15 @@ libphreeqcrm_la_SOURCES=\
 
 
 include_HEADERS=\
-	IrmResult.h\
-	PhreeqcRM.h\
-	RM_interface_C.h\
-	RM_interface_F.h
+	$(top_srcdir)/IrmResult.h\
+	$(top_srcdir)/PhreeqcRM.h\
+	$(top_srcdir)/RM_interface_C.h\
+	$(top_srcdir)/RM_interface_F.h\
+	$(top_srcdir)/IPhreeqcPhast/IPhreeqcPhast.h\
+	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
+	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
+	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
+	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/Var.h
 
+
+SUBDIRS = Tests
