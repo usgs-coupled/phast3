@@ -156,6 +156,12 @@
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
+    <PostBuildEvent>
+      <Command>copy ..\advect.pqi.in ..\advect.pqi
+copy ..\phreeqc.dat.in ..\phreeqc.dat
+copy ..\units.pqi.in ..\units.pqi
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='openmp_debug|x64'">
     <Midl>
@@ -186,8 +192,10 @@
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy ..\advect.pqi.in ..\advect.pqi
+copy ..\phreeqc.dat.in ..\phreeqc.dat
+copy ..\units.pqi.in ..\units.pqi
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='openmp|Win32'">
@@ -212,6 +220,12 @@
       <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command>copy ..\advect.pqi.in ..\advect.pqi
+copy ..\phreeqc.dat.in ..\phreeqc.dat
+copy ..\units.pqi.in ..\units.pqi
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='openmp|x64'">
@@ -240,6 +254,12 @@
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
+    <PostBuildEvent>
+      <Command>copy ..\advect.pqi.in ..\advect.pqi
+copy ..\phreeqc.dat.in ..\phreeqc.dat
+copy ..\units.pqi.in ..\units.pqi
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'">
     <ClCompile>
@@ -263,6 +283,12 @@
       <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(MSMPI_LIB32);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command>copy ..\advect.pqi.in ..\advect.pqi
+copy ..\phreeqc.dat.in ..\phreeqc.dat
+copy ..\units.pqi.in ..\units.pqi
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">
@@ -289,6 +315,12 @@
       <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command>copy ..\advect.pqi.in ..\advect.pqi
+copy ..\phreeqc.dat.in ..\phreeqc.dat
+copy ..\units.pqi.in ..\units.pqi
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'">
@@ -317,6 +349,12 @@
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <PostBuildEvent>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command>copy ..\advect.pqi.in ..\advect.pqi
+copy ..\phreeqc.dat.in ..\phreeqc.dat
+copy ..\units.pqi.in ..\units.pqi
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">
@@ -347,6 +385,12 @@
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <PostBuildEvent>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command>copy ..\advect.pqi.in ..\advect.pqi
+copy ..\phreeqc.dat.in ..\phreeqc.dat
+copy ..\units.pqi.in ..\units.pqi
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
