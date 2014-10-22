@@ -231,7 +231,7 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	this->partition_uz_solids = false;
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
-	this->time_conversion = NULL;				// scalar conversion factor for time
+	this->time_conversion = 1.;				// scalar conversion factor for time
 	this->rebalance_by_cell = true;
 	this->rebalance_fraction = 0.5;				// parameter for rebalancing process load for parallel	
 
