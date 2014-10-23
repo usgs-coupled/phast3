@@ -375,7 +375,7 @@
 			INTEGER, INTENT(IN) :: id
 			INTERFACE
 			  INTEGER FUNCTION fcn(method_number)
-				INTEGER, INTENT(in) :: method_number(*)
+				INTEGER, INTENT(in) :: method_number
 			  END FUNCTION 
 			END INTERFACE
         END FUNCTION RM_SetMpiWorkerCallback
