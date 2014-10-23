@@ -160,7 +160,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(OUTDIR)IPhreeqcPhast;$(OUTDIR)FortranAdvect;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -195,7 +195,7 @@ copy ..\units.pqi.in ..\units.pqi
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR)IPhreeqcPhast;$(OUTDIR)FortranAdvect</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -227,7 +227,7 @@ copy ..\units.pqi.in ..\units.pqi
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(OUTDIR)IPhreeqcPhast;$(OUTDIR)FortranAdvect;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -260,7 +260,7 @@ copy ..\units.pqi.in ..\units.pqi
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(OUTDIR)IPhreeqcPhast;$(OUTDIR)FortranAdvect;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -290,7 +290,7 @@ copy ..\units.pqi.in ..\units.pqi
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(MSMPI_LIB32);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(MSMPI_LIB32);$(OUTDIR)IPhreeqcPhast;$(OUTDIR)FortranAdvect;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -322,7 +322,7 @@ copy ..\units.pqi.in ..\units.pqi
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR)IPhreeqcPhast;$(OUTDIR)FortranAdvect;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -354,7 +354,7 @@ copy ..\units.pqi.in ..\units.pqi
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(MSMPI_LIB32);$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(MSMPI_LIB32);$(OUTDIR)IPhreeqcPhast;$(OUTDIR)FortranAdvect;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -390,7 +390,7 @@ copy ..\units.pqi.in ..\units.pqi
     </ClCompile>
     <Link>
       <AdditionalDependencies>IPhreeqcPhast.lib;FortranAdvect.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR)IPhreeqcPhast;$(OUTDIR)FortranAdvect;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
