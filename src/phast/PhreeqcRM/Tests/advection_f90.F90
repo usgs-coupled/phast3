@@ -150,7 +150,7 @@ subroutine advection_f90()
      !!    allocate (character(l) :: errstr)
      allocate (errstr(l))
      write(*,*) "Start of error string: "
-     status = RM_GetErrorString(id, errstr(1))
+     status = RM_GetErrorString(id, errstr)
      write(*,"(A)") (errstr(i), i=1,l)
      write(*,*) "End of error string."
      deallocate(errstr)

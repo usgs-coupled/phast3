@@ -407,29 +407,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\IPhreeqcPhast\fwrap2Phast.cpp" />
-    <ClCompile Include="..\..\IPhreeqcPhast\fwrap3Phast.cpp" />
-    <ClCompile Include="..\..\IPhreeqcPhast\fwrap4Phast.cpp" />
-    <ClCompile Include="..\..\IPhreeqcPhast\fwrap5Phast.cpp" />
-    <ClCompile Include="..\..\IPhreeqcPhast\fwrap6Phast.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\IPhreeqcPhast\fwrap7Phast.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\IPhreeqcPhast\fwrap8Phast.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\IPhreeqcPhast\fwrapPhast.cpp" />
     <ClCompile Include="..\..\IPhreeqcPhast\IPhreeqcPhast.cxx" />
     <ClCompile Include="..\..\IPhreeqcPhast\IPhreeqcPhastLib.cpp" />
     <ClCompile Include="..\..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.cpp" />
@@ -557,7 +534,6 @@
     </CustomBuildStep>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\IPhreeqcPhast\fwrapPhast.h" />
     <ClInclude Include="..\..\IPhreeqcPhast\IPhreeqcPhast.h" />
     <ClInclude Include="..\..\IPhreeqcPhast\IPhreeqcPhastLib.h" />
     <ClInclude Include="..\..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.hxx" />

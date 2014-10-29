@@ -287,7 +287,7 @@ RM_GetDensity(int id, double * d)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
-RM_GetErrorString(int id, char *errstr, size_t l)
+RM_GetErrorString(int id, char *errstr, int l)
 /* ---------------------------------------------------------------------- */
 {
 	// Retrieves file prefix in prefix
