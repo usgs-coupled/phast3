@@ -17,30 +17,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\fwrap2Phast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\fwrap3Phast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\fwrap4Phast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\fwrap5Phast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\fwrap6Phast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\fwrap7Phast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\fwrap8Phast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\fwrapPhast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\PhreeqcRM\IPhreeqcPhast\IPhreeqcPhast.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -322,9 +298,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\PhreeqcRM\IPhreeqcPhast\fwrapPhast.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\PhreeqcRM\IPhreeqcPhast\IPhreeqcPhast.h">
       <Filter>Header Files</Filter>
     </ClInclude>

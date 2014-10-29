@@ -839,7 +839,7 @@ endif </PRE>
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
-IRM_RESULT RM_GetErrorString(int id, char *errstr, size_t l);
+IRM_RESULT RM_GetErrorString(int id, char *errstr, int l);
 /**
 Returns the length of the string that contains error messages related to the last call to a PhreeqcRM method. 
 @param id               The instance @a id returned from @ref RM_Create.

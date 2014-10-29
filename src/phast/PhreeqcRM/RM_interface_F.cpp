@@ -11,7 +11,8 @@
 #endif
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_Abort(int *id, int *result, const char * str, size_t l)
+IRM_RESULT
+RM_Abort(int *id, int *result, const char * str, size_t l)
 /* ---------------------------------------------------------------------- */
 {
 	// decodes error
@@ -78,7 +79,8 @@ RM_Concentrations2Utility(int *id, double *c, int *n, double *tc, double *p_atm)
 }
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
-int RM_Create(int *nxyz, int *nthreads)
+int
+RM_Create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -88,7 +90,8 @@ int RM_Create(int *nxyz, int *nthreads)
 }
 #else
 /* ---------------------------------------------------------------------- */
-int RM_Create(int *nxyz, int *nthreads)
+int
+RM_Create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -98,7 +101,8 @@ int RM_Create(int *nxyz, int *nthreads)
 }
 #endif
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_CreateMapping(int *id, int *grid2chem)
+IRM_RESULT
+RM_CreateMapping(int *id, int *grid2chem)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -117,7 +121,8 @@ IRM_RESULT RM_CreateMapping(int *id, int *grid2chem)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_DecodeError(int *id, int *e)
+IRM_RESULT
+RM_DecodeError(int *id, int *e)
 /* ---------------------------------------------------------------------- */
 {
 	// Prints the error message for IRM_RESULT e
@@ -130,7 +135,8 @@ IRM_RESULT RM_DecodeError(int *id, int *e)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_Destroy(int *id)
+IRM_RESULT
+RM_Destroy(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	// Destroys reaction module
@@ -138,7 +144,8 @@ IRM_RESULT RM_Destroy(int *id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_DumpModule(int *id, int *dump_on, int *append)
+IRM_RESULT
+RM_DumpModule(int *id, int *dump_on, int *append)
 /* ---------------------------------------------------------------------- */
 {	
 	// Dumps raw format of all chemistry cells to file defined by
@@ -183,7 +190,8 @@ RM_FindComponents(int *id)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetChemistryCellCount(int * id)
+int
+RM_GetChemistryCellCount(int * id)
 /* ---------------------------------------------------------------------- */
 {
 	// Returns the number of chemistry cells <= number of grid cells
@@ -196,7 +204,8 @@ int RM_GetChemistryCellCount(int * id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1)
+IRM_RESULT
+RM_GetComponent(int * id, int * num, char *chem_name, size_t l1)
 /* ---------------------------------------------------------------------- */
 {
 	// Retrieves the component name in position num to chem_name
@@ -218,7 +227,8 @@ IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, size_t l1)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetComponentCount(int * id)
+int
+RM_GetComponentCount(int * id)
 /* ---------------------------------------------------------------------- */
 {
 	// Returns the number of components 
@@ -280,7 +290,7 @@ RM_GetDensity(int *id, double * d)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_GetErrorString(int * id, char *errstr, size_t l)
 /* ---------------------------------------------------------------------- */
 {
@@ -294,7 +304,7 @@ RM_GetErrorString(int * id, char *errstr, size_t l)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+int
 RM_GetErrorStringLength(int * id)
 /* ---------------------------------------------------------------------- */
 {
@@ -308,7 +318,7 @@ RM_GetErrorStringLength(int * id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_GetFilePrefix(int * id, char *prefix, size_t l)
 /* ---------------------------------------------------------------------- */
 {
@@ -343,7 +353,8 @@ RM_GetGfw(int *id, double * gfw)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int RM_GetGridCellCount(int * id)
+int
+RM_GetGridCellCount(int * id)
 /* ---------------------------------------------------------------------- */
 {
 	// Returns the number of grid cells
@@ -355,7 +366,7 @@ int RM_GetGridCellCount(int * id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+int
 RM_GetIPhreeqcId(int * id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
@@ -381,7 +392,7 @@ RM_GetIPhreeqcId(int * id, int * i)
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+int
 RM_GetMpiMyself(int * id)
 	/* ---------------------------------------------------------------------- */
 {
@@ -396,7 +407,7 @@ RM_GetMpiMyself(int * id)
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+int
 RM_GetMpiTasks(int * id)
 	/* ---------------------------------------------------------------------- */
 {
@@ -411,7 +422,7 @@ RM_GetMpiTasks(int * id)
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+int
 RM_GetNthSelectedOutputUserNumber(int * id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
@@ -454,7 +465,8 @@ RM_GetSaturation(int *id, double * sat)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_GetSelectedOutput(int * id, double * so)
+IRM_RESULT
+RM_GetSelectedOutput(int * id, double * so)
 /* ---------------------------------------------------------------------- */
 {
 	// Retrieves selected output for the currently selected selected output
@@ -477,7 +489,7 @@ IRM_RESULT RM_GetSelectedOutput(int * id, double * so)
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+int
 RM_GetSelectedOutputColumnCount(int * id)
 /* ---------------------------------------------------------------------- */
 {
@@ -491,8 +503,9 @@ RM_GetSelectedOutputColumnCount(int * id)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetSelectedOutputCount(int * id)
-	/* ---------------------------------------------------------------------- */
+int
+RM_GetSelectedOutputCount(int * id)
+/* ---------------------------------------------------------------------- */
 {
 	// Returns the number of selected output definitions (different user numbers) that have been defined
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
@@ -504,8 +517,9 @@ int RM_GetSelectedOutputCount(int * id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_GetSelectedOutputHeading(int * id, int *icol, char *heading, size_t length)
-	/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_GetSelectedOutputHeading(int * id, int *icol, char *heading, size_t length)
+/* ---------------------------------------------------------------------- */
 {
 	// Returns the heading at position icol (numbered from 0)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
@@ -523,8 +537,9 @@ IRM_RESULT RM_GetSelectedOutputHeading(int * id, int *icol, char *heading, size_
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetSelectedOutputRowCount(int * id)
-	/* ---------------------------------------------------------------------- */
+int
+RM_GetSelectedOutputRowCount(int * id)
+/* ---------------------------------------------------------------------- */
 {
 	// Returns the number of rows for the currently selected selected output = number of grid cells
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
@@ -609,7 +624,7 @@ RM_GetSpeciesD25(int *id, double * diffc)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_GetSpeciesName(int *id, int *i_in, char *name, size_t length)
 /* ---------------------------------------------------------------------- */
 {
@@ -629,7 +644,8 @@ RM_GetSpeciesName(int *id, int *i_in, char *name, size_t length)
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetSpeciesSaveOn(int *id)
+int
+RM_GetSpeciesSaveOn(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
@@ -654,7 +670,7 @@ RM_GetSpeciesZ(int *id, double * z)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int 
+int
 RM_GetThreadCount(int * id)
 /* ---------------------------------------------------------------------- */
 {
@@ -669,8 +685,9 @@ RM_GetThreadCount(int * id)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-double RM_GetTime(int * id)
-	/* ---------------------------------------------------------------------- */
+double
+RM_GetTime(int * id)
+/* ---------------------------------------------------------------------- */
 {
 	// Retrieves current simulation time, in seconds
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
@@ -682,8 +699,9 @@ double RM_GetTime(int * id)
 }
 
 /* ---------------------------------------------------------------------- */
-double RM_GetTimeConversion(int * id)
-	/* ---------------------------------------------------------------------- */
+double
+RM_GetTimeConversion(int * id)
+/* ---------------------------------------------------------------------- */
 {
 	// Retrieves conversion factor such that seconds times conversion factor is user time
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
@@ -696,7 +714,7 @@ double RM_GetTimeConversion(int * id)
 
 /* ---------------------------------------------------------------------- */
 double RM_GetTimeStep(int * id)
-	/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
 {
 	// Retrieves current time step, in seconds
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
@@ -885,7 +903,7 @@ RM_InitialPhreeqc2SpeciesConcentrations(
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_LoadDatabase(int * id, const char *db_name, size_t l)
 /* ---------------------------------------------------------------------- */
 {
@@ -978,7 +996,7 @@ RM_OutputMessage(int *id, const char *str, size_t l)
 
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_RunCells(int *id)
 /* ---------------------------------------------------------------------- */
 {
@@ -993,7 +1011,7 @@ RM_RunCells(int *id)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_RunFile(int *id, int *workers, int *initial_phreeqc, int *utility, const char *chem_name, size_t l)
 /* ---------------------------------------------------------------------- */
 {
@@ -1011,7 +1029,7 @@ RM_RunFile(int *id, int *workers, int *initial_phreeqc, int *utility, const char
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_RunString(int *id, int *workers, int *initial_phreeqc, int *utility, const char *input_string, size_t l)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1046,7 +1064,7 @@ RM_ScreenMessage(int *id, const char *err_str, size_t l)
 }
 #ifdef SKIP_RV
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetCellVolume(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1065,7 +1083,7 @@ RM_SetCellVolume(int *id, double *t)
 }
 #endif
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetComponentH2O(int *id, int *tf)
 /* ---------------------------------------------------------------------- */
 {
@@ -1077,7 +1095,7 @@ RM_SetComponentH2O(int *id, int *tf)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetConcentrations(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1097,7 +1115,8 @@ RM_SetConcentrations(int *id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetCurrentSelectedOutputUserNumber(int * id, int * i)
+IRM_RESULT
+RM_SetCurrentSelectedOutputUserNumber(int * id, int * i)
 /* ---------------------------------------------------------------------- */
 {
 	// i is the user number of the selected output that is to be 
@@ -1188,7 +1207,7 @@ RM_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1))
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetPartitionUZSolids(int *id, int *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1208,7 +1227,8 @@ RM_SetPartitionUZSolids(int *id, int *t)
 }
 #ifdef SKIP_RV
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPoreVolume(int *id, double *t)
+IRM_RESULT
+RM_SetPoreVolume(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	// Sets the current pore volume of the cell, which may change due to 
@@ -1226,7 +1246,8 @@ IRM_RESULT RM_SetPoreVolume(int *id, double *t)
 }
 #endif
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPorosity(int *id, double *t)
+IRM_RESULT
+RM_SetPorosity(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	// Sets the current porosity of cells, which may change due to 
@@ -1243,7 +1264,8 @@ IRM_RESULT RM_SetPorosity(int *id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPressure(int *id, double *t)
+IRM_RESULT
+RM_SetPressure(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	// Sets the current pressure for each cell
@@ -1278,7 +1300,8 @@ RM_SetPrintChemistryOn(int *id,	 int *worker, int *ip, int *utility)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t)
+IRM_RESULT
+RM_SetPrintChemistryMask(int *id, int *t)
 /* ---------------------------------------------------------------------- */
 {
 	// Sets flags to print or not print chemistry for each cell
@@ -1296,7 +1319,8 @@ IRM_RESULT RM_SetPrintChemistryMask(int *id, int *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetRebalanceFraction(int *id, double *f)
+IRM_RESULT
+RM_SetRebalanceFraction(int *id, double *f)
 /* ---------------------------------------------------------------------- */
 {
 	// Scalar value 0.0-1.0, for rebalanceing cells among threads or processes
@@ -1311,7 +1335,8 @@ IRM_RESULT RM_SetRebalanceFraction(int *id, double *f)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetRebalanceByCell(int *id, int *method)
+IRM_RESULT
+RM_SetRebalanceByCell(int *id, int *method)
 /* ---------------------------------------------------------------------- */
 {
 	// alternative rebalancing method is used if method != 0
@@ -1324,7 +1349,7 @@ IRM_RESULT RM_SetRebalanceByCell(int *id, int *method)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetRepresentativeVolume(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1343,7 +1368,8 @@ RM_SetRepresentativeVolume(int *id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetSaturation(int *id, double *t)
+IRM_RESULT
+RM_SetSaturation(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	// Sets the current saturation for each cell
@@ -1387,7 +1413,8 @@ RM_SetSpeciesSaveOn(int *id, int *save_on)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetTemperature(int *id, double *t)
+IRM_RESULT
+RM_SetTemperature(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	// Sets the current temperature for each cell
@@ -1404,7 +1431,7 @@ IRM_RESULT RM_SetTemperature(int *id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetTime(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1418,7 +1445,8 @@ RM_SetTime(int *id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT RM_SetTimeConversion(int *id, double *t)
+IRM_RESULT
+RM_SetTimeConversion(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -1433,7 +1461,7 @@ IRM_RESULT RM_SetTimeConversion(int *id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetTimeStep(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -1446,7 +1474,7 @@ RM_SetTimeStep(int *id, double *t)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetUnitsExchange (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1459,7 +1487,7 @@ RM_SetUnitsExchange (int *id, int *u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetUnitsGasPhase (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1472,7 +1500,7 @@ RM_SetUnitsGasPhase (int *id, int *u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetUnitsKinetics (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1485,7 +1513,7 @@ RM_SetUnitsKinetics (int *id, int *u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetUnitsPPassemblage (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1498,7 +1526,7 @@ RM_SetUnitsPPassemblage (int *id, int *u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetUnitsSolution (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1511,7 +1539,7 @@ RM_SetUnitsSolution (int *id, int *u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetUnitsSSassemblage (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1524,7 +1552,7 @@ RM_SetUnitsSSassemblage (int *id, int *u)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT 
+IRM_RESULT
 RM_SetUnitsSurface (int *id, int *u)
 /* ---------------------------------------------------------------------- */
 {	
@@ -1544,11 +1572,15 @@ RM_SpeciesConcentrations2Module(int *id, double * species_conc)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		IRM_RESULT return_value = IRM_OK;
-		std::vector<double> species_conc_vector;
-		species_conc_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetSpeciesCount());
-		memcpy(species_conc_vector.data(), species_conc, species_conc_vector.size()*sizeof(double));
-		return_value = Reaction_module_ptr->SpeciesConcentrations2Module(species_conc_vector);
+		if (species_conc)
+		{
+			IRM_RESULT return_value = IRM_OK;
+			std::vector<double> species_conc_vector;
+			species_conc_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetSpeciesCount());
+			memcpy(species_conc_vector.data(), species_conc, species_conc_vector.size()*sizeof(double));
+			return_value = Reaction_module_ptr->SpeciesConcentrations2Module(species_conc_vector);
+		}
+		return IRM_INVALIDARG;
 	}
 	return IRM_BADINSTANCE;
 }

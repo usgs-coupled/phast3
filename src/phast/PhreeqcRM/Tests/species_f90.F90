@@ -104,17 +104,17 @@ subroutine species_f90()
   ! Set representative volume
   allocate(rv(nxyz))
   rv = 1.0
-  status = RM_SetRepresentativeVolume(id, rv(1))
+  status = RM_SetRepresentativeVolume(id, rv)
 
   ! Set current porosity
   allocate(por(nxyz))
   por = 0.2
-  status = RM_SetPorosity(id, por(1))
+  status = RM_SetPorosity(id, por)
 
   ! Set saturation
   allocate(sat(nxyz))
   sat = 1.0
-  status = RM_SetSaturation(id, sat(1))
+  status = RM_SetSaturation(id, sat)
 
   ! Set cells to print chemistry when print chemistry is turned on
   allocate(print_chemistry_mask(nxyz))
@@ -122,7 +122,7 @@ subroutine species_f90()
      print_chemistry_mask(i) = 1
      print_chemistry_mask(i+nxyz/2) = 0
   enddo
-  status = RM_SetPrintChemistryMask(id, print_chemistry_mask(1))
+  status = RM_SetPrintChemistryMask(id, print_chemistry_mask)
 
   ! Set printing of chemistry file to false
   status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
@@ -137,7 +137,7 @@ subroutine species_f90()
      grid2chem(i) = i - 1
      grid2chem(i+nxyz/2) = i - 1
   enddo
-  status = RM_CreateMapping(id, grid2chem(1))  
+  status = RM_CreateMapping(id, grid2chem)  
   if (status < 0) status = RM_DecodeError(id, status) 
   nchem = RM_GetChemistryCellCount(id)
 
@@ -177,7 +177,7 @@ subroutine species_f90()
   status = RM_OutputMessage(id, trim(string1))
   allocate(components(ncomps))
   allocate(gfw(ncomps))
-  status = RM_GetGfw(id, gfw(1))
+  status = RM_GetGfw(id, gfw)
   do i = 1, ncomps
      status = RM_GetComponent(id, i, components(i))
      write(string,"(A10, F15.4)") components(i), gfw(i)
@@ -188,8 +188,8 @@ subroutine species_f90()
 
   nspecies = RM_GetSpeciesCount(id) 
   allocate(species_z(nspecies), species_d(nspecies))
-  status = RM_GetSpeciesZ(id, species_z(1));
-  status = RM_GetSpeciesD25(id, species_d(1));
+  status = RM_GetSpeciesZ(id, species_z);
+  status = RM_GetSpeciesD25(id, species_d);
   do i = 1, nspecies
      status = RM_GetSpeciesName(id, i, string);
      write(string1,"(A12)") trim(string)
@@ -215,9 +215,9 @@ subroutine species_f90()
      ic1(i,6) = -1      ! Solid solutions none
      ic1(i,7) = -1      ! Kinetics none
   enddo
-  status = RM_InitialPhreeqc2Module(id, ic1(1,1), ic2(1,1), f1(1,1))
+  status = RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
   ! No mixing is defined, so the following is equivalent
-  ! status = RM_InitialPhreeqc2Module(id, ic1(1,1))
+  ! status = RM_InitialPhreeqc2Module(id, ic1)
 
   ! alternative for setting initial conditions
   ! cell number in second argument (-1 indicates last solution, 40 in this case)
@@ -227,7 +227,7 @@ subroutine species_f90()
   allocate (module_cells(2))
   module_cells(1) = 18
   module_cells(2) = 19
-  status = RM_InitialPhreeqcCell2Module(id, -1, module_cells(1), 2)
+  status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2)
 
   ! Get a boundary condition from initial phreeqc
   nbound = 1
@@ -236,8 +236,8 @@ subroutine species_f90()
   bc1 = 0           ! solution 0 from Initial IPhreeqc instance
   bc2 = -1          ! no bc2 solution for mixing
   bc_f1 = 1.0       ! mixing fraction for bc1 
-  !status = RM_InitialPhreeqc2Concentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
-  status = RM_InitialPhreeqc2SpeciesConcentrations(id, bc_conc(1,1), nbound, bc1(1), bc2(1), bc_f1(1))
+  !status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1)
+  status = RM_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, nbound, bc1, bc2, bc_f1)
 
   ! Initial equilibration of cells
   time = 0.0
@@ -247,8 +247,8 @@ subroutine species_f90()
   status = RM_SetTime(id, time)
   status = RM_SetTimeStep(id, time_step)
   status = RM_RunCells(id) 
-  status = RM_GetConcentrations(id, c(1,1))
-  status = RM_GetSpeciesConcentrations(id, species_c(1,1))
+  status = RM_GetConcentrations(id, c)
+  status = RM_GetSpeciesConcentrations(id, species_c)
 
   ! Transient loop
   nsteps = 10
@@ -257,9 +257,9 @@ subroutine species_f90()
   density = 1.0
   pressure = 2.0
   temperature = 20.0
-  status = RM_SetDensity(id, density(1))
-  status = RM_SetTemperature(id, temperature(1))
-  status = RM_SetPressure(id, pressure(1))
+  status = RM_SetDensity(id, density)
+  status = RM_SetTemperature(id, temperature)
+  status = RM_SetPressure(id, pressure)
   time_step = 86400
   status = RM_SetTimeStep(id, time_step)
   do isteps = 1, nsteps
@@ -275,12 +275,12 @@ subroutine species_f90()
      call species_advect_f90(species_c, bc_conc, nspecies, nxyz)
 
      ! Send any new conditions to module
-     status = RM_SetPorosity(id, por(1))                ! If porosity changes 
-     status = RM_SetSaturation(id, sat(1))              ! If saturation changes
-     status = RM_SetTemperature(id, temperature(1))     ! If temperature changes
-     status = RM_SetPressure(id, pressure(1))           ! If pressure changes
-     !status = RM_SetConcentrations(id, c(1,1))          ! Transported concentrations
-     status = RM_SpeciesConcentrations2Module(id, species_c(1,1))          ! Transported concentrations
+     status = RM_SetPorosity(id, por)                ! If porosity changes 
+     status = RM_SetSaturation(id, sat)              ! If saturation changes
+     status = RM_SetTemperature(id, temperature)     ! If temperature changes
+     status = RM_SetPressure(id, pressure)           ! If pressure changes
+     !status = RM_SetConcentrations(id, c)          ! Transported concentrations
+     status = RM_SpeciesConcentrations2Module(id, species_c)          ! Transported concentrations
      status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
      time = time + time_step
      status = RM_SetTime(id, time)                      ! Current time
@@ -302,10 +302,10 @@ subroutine species_f90()
      status = RM_RunCells(id)  
 
      ! Retrieve reacted concentrations, density, volume
-     status = RM_GetConcentrations(id, c(1,1))          ! Concentrations after reaction
-     status = RM_GetSpeciesConcentrations(id, species_c(1,1))          ! Species concentrations after reaction
-     status = RM_GetDensity(id, density(1))             ! Density after reaction
-     status = RM_GetSolutionVolume(id, volume(1))       ! Solution volume after reaction
+     status = RM_GetConcentrations(id, c)          ! Concentrations after reaction
+     status = RM_GetSpeciesConcentrations(id, species_c)          ! Species concentrations after reaction
+     status = RM_GetDensity(id, density)             ! Density after reaction
+     status = RM_GetSolutionVolume(id, volume)       ! Solution volume after reaction
 
      ! Print results at last time step
      if (isteps == nsteps) then
@@ -316,7 +316,7 @@ subroutine species_f90()
            write(*,*) "Selected output user number:     ", n_user
            col = RM_GetSelectedOutputColumnCount(id)
            allocate(selected_out(nxyz,col))
-           status = RM_GetSelectedOutput(id, selected_out(1,1))
+           status = RM_GetSelectedOutput(id, selected_out)
            ! Print results
            do i = 1, RM_GetSelectedOutputRowCount(id)/2
               write(*,*) "Cell number ", i
@@ -345,7 +345,7 @@ subroutine species_f90()
   allocate(tc(1), p_atm(1))
   tc(1) = 15.0
   p_atm(1) = 3.0
-  iphreeqc_id = RM_Concentrations2Utility(id, c_well(1,1), 1, tc(1), p_atm(1))
+  iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm)
   string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
   status = SetOutputFileName(iphreeqc_id, "species_utility_f90.txt")
   status = SetOutputFileOn(iphreeqc_id, .true.)
