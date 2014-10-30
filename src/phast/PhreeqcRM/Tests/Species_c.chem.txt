@@ -198,12 +198,12 @@ End of simulation.
 Reading input data for simulation 4.
 ------------------------------------
 
---------------------------------
-End of Run after 15.908 Seconds.
---------------------------------
+-------------------------------
+End of Run after 14.63 Seconds.
+-------------------------------
 
-Number of threads:                                1
-Number of MPI processes:                          4
+Number of threads:                                3
+Number of MPI processes:                          1
 MPI task number:                                  0
 File prefix:                                      Species_c
 Number of grid cells in the user's model:         40
@@ -379,7 +379,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.073 Seconds.
+End of Run after 15.685 Seconds.
 --------------------------------
 
 Time:           10
@@ -493,7 +493,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.074 Seconds.
+End of Run after 15.691 Seconds.
 --------------------------------
 
 Time:           10
@@ -607,7 +607,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.075 Seconds.
+End of Run after 15.697 Seconds.
 --------------------------------
 
 Time:           10
@@ -721,7 +721,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.076 Seconds.
+End of Run after 15.704 Seconds.
 --------------------------------
 
 Time:           10
@@ -779,7 +779,7 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.759e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -3.298e-017
+                 Total alkalinity (eq/kg)  =  7.358e-021
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
@@ -834,9 +834,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
---------------------------------
-End of Run after 16.116 Seconds.
---------------------------------
+-------------------------------
+End of Run after 15.71 Seconds.
+-------------------------------
 
 Time:           10
 Chemistry cell: 5
@@ -893,12 +893,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.211e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  =  2.741e-018
+                 Total alkalinity (eq/kg)  =  6.905e-019
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  3.385e-014
+                  Electrical balance (eq)  =  3.386e-014
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
                                Iterations  =   5
                                   Total H  = 2.216295e+001
@@ -949,7 +949,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.117 Seconds.
+End of Run after 15.716 Seconds.
 --------------------------------
 
 Time:           10
@@ -1007,7 +1007,7 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -2.932e-017
+                 Total alkalinity (eq/kg)  =  4.927e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
@@ -1063,7 +1063,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.151 Seconds.
+End of Run after 15.727 Seconds.
 --------------------------------
 
 Time:           10
@@ -1121,12 +1121,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  =  7.763e-019
+                 Total alkalinity (eq/kg)  =  9.240e-019
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  =  5.241e-015
+                  Electrical balance (eq)  =  5.245e-015
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
                                Iterations  =  11
                                   Total H  = 2.216293e+001
@@ -1177,7 +1177,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.152 Seconds.
+End of Run after 15.734 Seconds.
 --------------------------------
 
 Time:           10
@@ -1286,7 +1286,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.152 Seconds.
+End of Run after 15.741 Seconds.
 --------------------------------
 
 Time:           10
@@ -1342,7 +1342,7 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -2.338e-015
+                 Total alkalinity (eq/kg)  = -2.289e-015
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
@@ -1395,7 +1395,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.153 Seconds.
+End of Run after 15.747 Seconds.
 --------------------------------
 
 Time:           10
@@ -1452,12 +1452,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.498e-018
+                 Total alkalinity (eq/kg)  = -1.610e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -1.091e-016
+                  Electrical balance (eq)  = -6.842e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.216266e+001
@@ -1512,7 +1512,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.153 Seconds.
+End of Run after 15.755 Seconds.
 --------------------------------
 
 Time:           10
@@ -1569,12 +1569,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.617e-018
+                 Total alkalinity (eq/kg)  = -1.610e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -5.370e-017
+                  Electrical balance (eq)  = -6.842e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.216266e+001
@@ -1628,9 +1628,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 16.18 Seconds.
--------------------------------
+--------------------------------
+End of Run after 15.766 Seconds.
+--------------------------------
 
 Time:           10
 Chemistry cell: 12
@@ -1686,12 +1686,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.617e-018
+                 Total alkalinity (eq/kg)  = -1.610e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -5.370e-017
+                  Electrical balance (eq)  = -6.842e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.216266e+001
@@ -1745,9 +1745,9 @@ End of simulation.
 Reading input data for simulation 2.
 ------------------------------------
 
--------------------------------
-End of Run after 16.18 Seconds.
--------------------------------
+--------------------------------
+End of Run after 15.772 Seconds.
+--------------------------------
 
 Time:           10
 Chemistry cell: 13
@@ -1803,12 +1803,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -5.153e-017
+                 Total alkalinity (eq/kg)  = -1.610e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -4.373e-017
+                  Electrical balance (eq)  = -6.842e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.216266e+001
@@ -1863,7 +1863,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.181 Seconds.
+End of Run after 15.779 Seconds.
 --------------------------------
 
 Time:           10
@@ -1920,12 +1920,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -5.110e-017
+                 Total alkalinity (eq/kg)  = -1.610e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -8.673e-017
+                  Electrical balance (eq)  = -6.842e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.216266e+001
@@ -1980,7 +1980,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.182 Seconds.
+End of Run after 15.785 Seconds.
 --------------------------------
 
 Time:           10
@@ -2037,12 +2037,12 @@ X               2.200e-004 mol
                         Activity of water  =   1.000
                            Ionic strength  =  1.200e-003
                        Mass of water (kg)  =  1.996e-001
-                 Total alkalinity (eq/kg)  = -1.514e-018
+                 Total alkalinity (eq/kg)  = -1.610e-018
                     Total carbon (mol/kg)  =  0.000e+000
                        Total CO2 (mol/kg)  =  0.000e+000
                          Temperature (°C)  =  20.00
                            Pressure (atm)  =  2.00
-                  Electrical balance (eq)  = -8.670e-017
+                  Electrical balance (eq)  = -6.842e-017
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   0
                                   Total H  = 2.216266e+001
@@ -2097,7 +2097,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.183 Seconds.
+End of Run after 15.791 Seconds.
 --------------------------------
 
 Time:           10
@@ -2214,7 +2214,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.184 Seconds.
+End of Run after 15.798 Seconds.
 --------------------------------
 
 Time:           10
@@ -2331,7 +2331,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.185 Seconds.
+End of Run after 15.804 Seconds.
 --------------------------------
 
 Time:           10
@@ -2448,7 +2448,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.185 Seconds.
+End of Run after 15.811 Seconds.
 --------------------------------
 
 Time:           10
@@ -2565,6 +2565,6 @@ Reading input data for simulation 2.
 ------------------------------------
 
 --------------------------------
-End of Run after 16.186 Seconds.
+End of Run after 15.817 Seconds.
 --------------------------------
 

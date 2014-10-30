@@ -594,9 +594,34 @@ INTEGER FUNCTION RM_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_bounda
     INTEGER, INTENT(IN), DIMENSION(:) :: bc_sol1
     INTEGER, INTENT(IN), DIMENSION(:), OPTIONAL :: bc_sol2
     DOUBLE PRECISION, INTENT(IN), DIMENSION(:), OPTIONAL :: f1
+	if (rmf_debug) call Chk_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1) 
     RM_InitialPhreeqc2SpeciesConcentrations = RMF_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1)
 END FUNCTION RM_InitialPhreeqc2SpeciesConcentrations          
         
+SUBROUTINE Chk_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1) 
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, INTENT(IN), DIMENSION(:,:) :: species_c
+    INTEGER, INTENT(IN) :: n_boundary 
+    INTEGER, INTENT(IN), DIMENSION(:) :: bc_sol1
+    INTEGER, INTENT(IN), DIMENSION(:) , OPTIONAL :: bc_sol2
+    DOUBLE PRECISION, INTENT(IN), DIMENSION(:) , OPTIONAL :: f1
+    INTEGER :: errors, nspecies
+    nspecies = RM_GetSpeciesCount(id)
+    errors = 0
+    errors = errors + Chk_Double2D(id, species_c, n_boundary, nspecies, "concentration", "RM_InitialPhreeqc2SpeciesConcentrations")
+    errors = errors + Chk_Integer1D(id, bc_sol1, n_boundary, "bc_sol1", "RM_InitialPhreeqc2SpeciesConcentrations")
+    if (present(bc_sol2)) then
+        errors = errors + Chk_Integer1D(id, bc_sol2, n_boundary, "bc_sol2", "RM_InitialPhreeqc2SpeciesConcentrations")
+    endif
+    if (present(f1)) then
+        errors = errors + Chk_Double1D(id, f1, n_boundary, "f1", "RM_InitialPhreeqc2SpeciesConcentrations")
+    endif
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_InitialPhreeqc2SpeciesConcentrations")
+    endif
+END SUBROUTINE Chk_InitialPhreeqc2SpeciesConcentrations
+
 INTEGER FUNCTION RM_LoadDatabase(id, db) 
     IMPLICIT NONE
     INTEGER RMF_LoadDatabase
@@ -688,9 +713,22 @@ INTEGER FUNCTION RM_SetConcentrations(id, c)
     INTEGER RMF_SetConcentrations
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, DIMENSION(:,:), INTENT(in) :: c
+	if (rmf_debug) call Chk_SetConcentrations(id, c)
     RM_SetConcentrations = RMF_SetConcentrations(id, c)
 END FUNCTION RM_SetConcentrations
- 		     
+ 	
+SUBROUTINE Chk_SetConcentrations(id, c)
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, INTENT(in), DIMENSION(:,:) :: c
+    INTEGER :: errors
+    errors = 0
+    errors = errors + Chk_Double2D(id, c, rmf_nxyz, rmf_ncomps, "concentration", "RM_SetConcentrations")
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_SetConcentrations")
+    endif
+END SUBROUTINE Chk_SetConcentrations
+
 INTEGER FUNCTION RM_SetCurrentSelectedOutputUserNumber(id, n_user)   
     IMPLICIT NONE
     INTEGER RMF_SetCurrentSelectedOutputUserNumber
@@ -704,8 +742,21 @@ INTEGER FUNCTION RM_SetDensity(id, density)
     INTEGER RMF_SetDensity
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, DIMENSION(:), INTENT(in) :: density
+	if (rmf_debug) call Chk_SetDensity(id, density)
     RM_SetDensity = RMF_SetDensity(id, density)
 END FUNCTION RM_SetDensity 
+
+SUBROUTINE Chk_SetDensity(id, density)
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, INTENT(in), DIMENSION(:) :: density
+    INTEGER :: errors
+    errors = 0
+    errors = errors + Chk_Double1D(id, density, rmf_nxyz, "density", "RM_SetDensity")
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_SetDensity")
+    endif
+END SUBROUTINE Chk_SetDensity
         
 INTEGER FUNCTION RM_SetDumpFileName(id, name) 
     IMPLICIT NONE
@@ -756,17 +807,43 @@ INTEGER FUNCTION RM_SetPorosity(id, por)
     INTEGER RMF_SetPorosity
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, DIMENSION(:), INTENT(in) :: por
+	if (rmf_debug) call Chk_SetPorosity(id, por)
     RM_SetPorosity = RMF_SetPorosity(id, por)
 END FUNCTION RM_SetPorosity 
+
+SUBROUTINE Chk_SetPorosity(id, por)
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, INTENT(in), DIMENSION(:) :: por
+    INTEGER :: errors
+    errors = 0
+    errors = errors + Chk_Double1D(id, por, rmf_nxyz, "porosity", "RM_SetPorosity")
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_SetPorosity")
+    endif
+END SUBROUTINE Chk_SetPorosity
 
 INTEGER FUNCTION RM_SetPressure(id, p)   
     IMPLICIT NONE
     INTEGER RMF_SetPressure
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, DIMENSION(:), INTENT(in) :: p
+	if (rmf_debug) call Chk_SetPressure(id, p)
     RM_SetPressure = RMF_SetPressure(id, p)
 END FUNCTION RM_SetPressure        
-        
+  
+SUBROUTINE Chk_SetPressure(id, p) 
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, INTENT(in), DIMENSION(:) :: p
+    INTEGER :: errors
+    errors = 0
+    errors = errors + Chk_Double1D(id, p, rmf_nxyz, "pressure", "RM_SetPressure")
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_SetPressure")
+    endif
+END SUBROUTINE Chk_SetPressure
+
 INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)   
     IMPLICIT NONE
     INTEGER RMF_SetPrintChemistryOn
@@ -780,9 +857,22 @@ INTEGER FUNCTION RM_SetPrintChemistryMask(id, cell_mask)
     INTEGER RMF_SetPrintChemistryMask
     INTEGER, INTENT(in) :: id
     INTEGER, DIMENSION(:), INTENT(in) :: cell_mask
+	if (rmf_debug) call Chk_SetPrintChemistryMask(id, cell_mask)
     RM_SetPrintChemistryMask = RMF_SetPrintChemistryMask(id, cell_mask)
 END FUNCTION RM_SetPrintChemistryMask 
-        
+ 
+SUBROUTINE Chk_SetPrintChemistryMask(id, cell_mask)
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    INTEGER, INTENT(in), DIMENSION(:) :: cell_mask
+    INTEGER :: errors
+    errors = 0
+    errors = errors + Chk_Integer1D(id, cell_mask, rmf_nxyz, "cell_mask", "RM_SetPrintChemistryMask")
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_SetPrintChemistryMask")
+    endif
+END SUBROUTINE Chk_SetPrintChemistryMask
+
 INTEGER FUNCTION RM_SetRebalanceByCell(id, method)
     IMPLICIT NONE
     INTEGER RMF_SetRebalanceByCell
@@ -812,8 +902,21 @@ INTEGER FUNCTION RM_SetSaturation(id, sat)
     INTEGER RMF_SetSaturation
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, DIMENSION(:), INTENT(in) :: sat
+	if (rmf_debug) call Chk_SetSaturation(id, sat)
     RM_SetSaturation = RMF_SetSaturation(id, sat)
 END FUNCTION RM_SetSaturation 
+
+SUBROUTINE Chk_SetSaturation(id, sat)
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, INTENT(in), DIMENSION(:) :: sat
+    INTEGER :: errors
+    errors = 0
+    errors = errors + Chk_Double1D(id, sat, rmf_nxyz, "sataturation", "RM_SetSaturation")
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_SetSaturation")
+    endif
+END SUBROUTINE Chk_SetSaturation
 
 INTEGER FUNCTION RM_SetSelectedOutputOn(id, tf)
     IMPLICIT NONE
@@ -836,9 +939,22 @@ INTEGER FUNCTION RM_SetTemperature(id, t)
     INTEGER RMF_SetTemperature
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, DIMENSION(:), INTENT(in) :: t
+	if (rmf_debug) call Chk_SetTemperature(id, t)
     RM_SetTemperature = RMF_SetTemperature(id, t)
 END FUNCTION RM_SetTemperature 
-		     
+
+SUBROUTINE Chk_SetTemperature(id, t)
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, INTENT(in), DIMENSION(:) :: t
+    INTEGER :: errors
+    errors = 0
+    errors = errors + Chk_Double1D(id, t, rmf_nxyz, "temperature", "RM_SetTemperature")
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_SetTemperature")
+    endif
+END SUBROUTINE Chk_SetTemperature
+
 INTEGER FUNCTION RM_SetTime(id, time)   
     IMPLICIT NONE
     INTEGER RMF_SetTime
@@ -924,8 +1040,22 @@ INTEGER FUNCTION RM_SpeciesConcentrations2Module(id, species_conc)
     INTEGER RMF_SpeciesConcentrations2Module
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, DIMENSION(:,:), INTENT(in) :: species_conc
+	if (rmf_debug) call Chk_SpeciesConcentrations2Module(id, species_conc)
     RM_SpeciesConcentrations2Module = RMF_SpeciesConcentrations2Module(id, species_conc)
 END FUNCTION RM_SpeciesConcentrations2Module  
+
+SUBROUTINE Chk_SpeciesConcentrations2Module(id, species_conc)
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, DIMENSION(:,:), INTENT(in) :: species_conc
+    INTEGER :: errors, nspecies
+    nspecies = RM_GetSpeciesCount(id)
+    errors = 0
+    errors = errors + Chk_Double2D(id, species_conc, rmf_nxyz, nspecies, "species_conc", "RM_SpeciesConcentrations2Module")
+    if (errors .gt. 0) then
+        errors = RM_Abort(id, -3, "Invalid argument in RM_SpeciesConcentrations2Module")
+    endif
+END SUBROUTINE Chk_SpeciesConcentrations2Module
 
 INTEGER FUNCTION RM_UseSolutionDensityVolume(id, tf)
     IMPLICIT NONE
