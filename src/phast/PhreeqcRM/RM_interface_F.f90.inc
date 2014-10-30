@@ -1,539 +1,717 @@
     INTERFACE
-        
-        INTEGER FUNCTION RM_Abort(id, result, str)
+        INTEGER(KIND=C_INT) FUNCTION RMF_Abort(id, result, str) &
+			BIND(C, NAME='RMF_Abort')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: result
-            CHARACTER, INTENT(in) :: str(*)
-        END FUNCTION RM_Abort
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: result
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: str(*)
+        END FUNCTION RMF_Abort
 
-        INTEGER FUNCTION RM_CloseFiles(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_CloseFiles(id) &
+			BIND(C, NAME='RMF_CloseFiles')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_CloseFiles
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_CloseFiles
         
-        INTEGER FUNCTION RM_Concentrations2Utility(id, c, n, tc, p_atm)
+        INTEGER(KIND=C_INT) FUNCTION RMF_Concentrations2Utility(id, c, n, tc, p_atm) &
+			BIND(C, NAME='RMF_Concentrations2Utility')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: c(*)
-            INTEGER, INTENT(in) :: n
-            DOUBLE PRECISION, INTENT(in) :: tc(*), p_atm(*)
-        END FUNCTION RM_Concentrations2Utility  
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: c(*)
+            INTEGER(KIND=C_INT), INTENT(in) :: n
+            REAL(KIND=C_DOUBLE), INTENT(in) :: tc(*), p_atm(*)
+        END FUNCTION RMF_Concentrations2Utility  
        
-        INTEGER FUNCTION RM_Create(nxyz, nthreads) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_Create(nxyz, nthreads) &
+			BIND(C, NAME='RMF_Create') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: nxyz
-			INTEGER, INTENT(in) :: nthreads
-        END FUNCTION RM_Create
+            INTEGER(KIND=C_INT), INTENT(in) :: nxyz
+			INTEGER(KIND=C_INT), INTENT(in) :: nthreads
+        END FUNCTION RMF_Create
 
-		INTEGER FUNCTION RM_CreateMapping(id, grid2chem)
+		INTEGER(KIND=C_INT) FUNCTION RMF_CreateMapping(id, grid2chem) &
+			BIND(C, NAME='RMF_CreateMapping')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: grid2chem(*)
-        END FUNCTION RM_CreateMapping
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: grid2chem(*)
+        END FUNCTION RMF_CreateMapping
 
-		INTEGER FUNCTION RM_DecodeError(id, e)
+		INTEGER(KIND=C_INT) FUNCTION RMF_DecodeError(id, e) &
+			BIND(C, NAME='RMF_DecodeError')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: e
-        END FUNCTION RM_DecodeError
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: e
+        END FUNCTION RMF_DecodeError
         
-        INTEGER FUNCTION RM_Destroy(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_Destroy(id) &
+			BIND(C, NAME='RMF_Destroy')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_Destroy
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_Destroy
         
-        INTEGER FUNCTION RM_DumpModule(id, dump_on, append) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_DumpModule(id, dump_on, append) &
+			BIND(C, NAME='RMF_DumpModule')
+			USE ISO_C_BINDING 
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: dump_on
-            INTEGER, INTENT(in) :: append
-        END FUNCTION RM_DumpModule
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: dump_on
+            INTEGER(KIND=C_INT), INTENT(in) :: append
+        END FUNCTION RMF_DumpModule
         
-        INTEGER FUNCTION RM_ErrorMessage(id, errstr)
+        INTEGER(KIND=C_INT) FUNCTION RMF_ErrorMessage(id, errstr) &
+			BIND(C, NAME='RMF_ErrorMessage')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: errstr(*)
-        END FUNCTION RM_ErrorMessage
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: errstr(*)
+        END FUNCTION RMF_ErrorMessage
         
-        INTEGER FUNCTION RM_FindComponents(id) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_FindComponents(id) &
+			BIND(C, NAME='RMF_FindComponents') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_FindComponents  
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_FindComponents  
 
-        INTEGER FUNCTION RM_GetChemistryCellCount(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetChemistryCellCount(id) &
+			BIND(C, NAME='RMF_GetChemistryCellCount')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetChemistryCellCount 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetChemistryCellCount 
         
-        INTEGER FUNCTION RM_GetComponent(id, num, comp_name)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetComponent(id, num, comp_name, l) &
+			BIND(C, NAME='RMF_GetComponent')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id, num
-            CHARACTER, INTENT(out) :: comp_name(*)
-        END FUNCTION RM_GetComponent 
+            INTEGER(KIND=C_INT), INTENT(in) :: id, num, l
+            CHARACTER(KIND=C_CHAR), INTENT(out) :: comp_name(*)
+        END FUNCTION RMF_GetComponent 
         
-        INTEGER FUNCTION RM_GetComponentCount(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetComponentCount(id) &
+			BIND(C, NAME='RMF_GetComponentCount')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetComponentCount 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetComponentCount 
 
-        INTEGER FUNCTION RM_GetConcentrations(id, c)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetConcentrations(id, c) &
+			BIND(C, NAME='RMF_GetConcentrations')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out)  :: c(*)
-        END FUNCTION RM_GetConcentrations 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out)  :: c(*)
+        END FUNCTION RMF_GetConcentrations 
 
-        INTEGER FUNCTION RM_GetDensity(id, density)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetDensity(id, density) &
+			BIND(C, NAME='RMF_GetDensity')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: density(*)
-        END FUNCTION RM_GetDensity 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out) :: density(*)
+        END FUNCTION RMF_GetDensity 
 
-        INTEGER FUNCTION RM_GetErrorString(id, errstr)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetErrorString(id, errstr, l) &
+			BIND(C, NAME='RMF_GetErrorString')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(out) :: errstr(*)
-        END FUNCTION RM_GetErrorString 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+			INTEGER(KIND=C_INT), INTENT(in) :: l
+            CHARACTER(KIND=C_CHAR), INTENT(out) :: errstr(*)
+        END FUNCTION RMF_GetErrorString 
 
-        INTEGER FUNCTION RM_GetErrorStringLength(id)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetErrorStringLength(id) &
+			BIND(C, NAME='RMF_GetErrorStringLength')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetErrorStringLength 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetErrorStringLength 
         
-        INTEGER FUNCTION RM_GetFilePrefix(id, prefix)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetFilePrefix(id, prefix, l) &
+			BIND(C, NAME='RMF_GetFilePrefix')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(out) :: prefix(*)
-        END FUNCTION RM_GetFilePrefix
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: l
+            CHARACTER(KIND=C_CHAR), INTENT(out) :: prefix(*)
+        END FUNCTION RMF_GetFilePrefix
 
-        INTEGER FUNCTION RM_GetGfw(id, gfw)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetGfw(id, gfw) &
+			BIND(C, NAME='RMF_GetGfw')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: gfw(*)
-        END FUNCTION RM_GetGfw 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out) :: gfw(*)
+        END FUNCTION RMF_GetGfw 
 
-        INTEGER FUNCTION RM_GetGridCellCount(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetGridCellCount(id) &
+			BIND(C, NAME='RMF_GetGridCellCount')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetGridCellCount
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetGridCellCount
         
-        INTEGER FUNCTION RM_GetIPhreeqcId(id, i)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetIPhreeqcId(id, i) &
+			BIND(C, NAME='RMF_GetIPhreeqcId')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: i
-        END FUNCTION RM_GetIPhreeqcId
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: i
+        END FUNCTION RMF_GetIPhreeqcId
         
-        INTEGER FUNCTION RM_GetMpiMyself(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetMpiMyself(id) &
+			BIND(C, NAME='RMF_GetMpiMyself')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetMpiMyself
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetMpiMyself
         
-        INTEGER FUNCTION RM_GetMpiTasks(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetMpiTasks(id) &
+			BIND(C, NAME='RMF_GetMpiTasks')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetMpiTasks
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetMpiTasks
         
-        INTEGER FUNCTION RM_GetNthSelectedOutputUserNumber(id, n)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetNthSelectedOutputUserNumber(id, n) &
+			BIND(C, NAME='RMF_GetNthSelectedOutputUserNumber')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id, n
-        END FUNCTION RM_GetNthSelectedOutputUserNumber 
+            INTEGER(KIND=C_INT), INTENT(in) :: id, n
+        END FUNCTION RMF_GetNthSelectedOutputUserNumber 
         
-        INTEGER FUNCTION RM_GetSaturation(id, sat)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSaturation(id, sat) &
+			BIND(C, NAME='RMF_GetSaturation')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: sat(*)
-        END FUNCTION RM_GetSaturation
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out) :: sat(*)
+        END FUNCTION RMF_GetSaturation
         
-        INTEGER FUNCTION RM_GetSelectedOutput(id, so)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSelectedOutput(id, so) &
+			BIND(C, NAME='RMF_GetSelectedOutput')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: so(*)
-        END FUNCTION RM_GetSelectedOutput
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out) :: so(*)
+        END FUNCTION RMF_GetSelectedOutput
         
-        INTEGER FUNCTION RM_GetSelectedOutputColumnCount(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSelectedOutputColumnCount(id) &
+			BIND(C, NAME='RMF_GetSelectedOutputColumnCount')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetSelectedOutputColumnCount
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetSelectedOutputColumnCount
         
-        INTEGER FUNCTION RM_GetSelectedOutputCount(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSelectedOutputCount(id) &
+			BIND(C, NAME='RMF_GetSelectedOutputCount')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetSelectedOutputCount
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetSelectedOutputCount
         
-        INTEGER FUNCTION RM_GetSelectedOutputHeading(id, icol, heading)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSelectedOutputHeading(id, icol, heading, l) &
+			BIND(C, NAME='RMF_GetSelectedOutputHeading')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id, icol
-            CHARACTER, INTENT(out) :: heading(*)
-        END FUNCTION RM_GetSelectedOutputHeading
+            INTEGER(KIND=C_INT), INTENT(in) :: id, icol, l
+            CHARACTER(KIND=C_CHAR), INTENT(out) :: heading(*)
+        END FUNCTION RMF_GetSelectedOutputHeading
         
-        INTEGER FUNCTION RM_GetSelectedOutputRowCount(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSelectedOutputRowCount(id) &
+			BIND(C, NAME='RMF_GetSelectedOutputRowCount')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetSelectedOutputRowCount
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetSelectedOutputRowCount
 
-        INTEGER FUNCTION RM_GetSolutionVolume(id, vol)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSolutionVolume(id, vol) &
+			BIND(C, NAME='RMF_GetSolutionVolume')  
+			USE ISO_C_BINDING 
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: vol(*)
-        END FUNCTION RM_GetSolutionVolume 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out) :: vol(*)
+        END FUNCTION RMF_GetSolutionVolume 
 
-        INTEGER FUNCTION RM_GetSpeciesConcentrations(id, species_conc)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSpeciesConcentrations(id, species_conc) &
+			BIND(C, NAME='RMF_GetSpeciesConcentrations')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: species_conc(*)
-        END FUNCTION RM_GetSpeciesConcentrations 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out) :: species_conc(*)
+        END FUNCTION RMF_GetSpeciesConcentrations 
 
-        INTEGER FUNCTION RM_GetSpeciesCount(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSpeciesCount(id) &
+			BIND(C, NAME='RMF_GetSpeciesCount')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetSpeciesCount
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetSpeciesCount
 
-        INTEGER FUNCTION RM_GetSpeciesD25(id, diffc)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSpeciesD25(id, diffc) &
+			BIND(C, NAME='RMF_GetSpeciesD25')  
+			USE ISO_C_BINDING 
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: diffc(*)
-        END FUNCTION RM_GetSpeciesD25 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out) :: diffc(*)
+        END FUNCTION RMF_GetSpeciesD25 
 
-        INTEGER FUNCTION RM_GetSpeciesName(id, i, name)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSpeciesName(id, i, name, l) &
+			BIND(C, NAME='RMF_GetSpeciesName')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id, i
-            CHARACTER, INTENT(out) :: name(*)
-        END FUNCTION RM_GetSpeciesName
+            INTEGER(KIND=C_INT), INTENT(in) :: id, i, l
+            CHARACTER(KIND=C_CHAR), INTENT(out) :: name(*)
+        END FUNCTION RMF_GetSpeciesName
 
-        INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSpeciesSaveOn(id) &
+			BIND(C, NAME='RMF_GetSpeciesSaveOn')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetSpeciesSaveOn
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetSpeciesSaveOn
 
-        INTEGER FUNCTION RM_GetSpeciesZ(id, z)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetSpeciesZ(id, z) &
+			BIND(C, NAME='RMF_GetSpeciesZ')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(out) :: z(*)
-        END FUNCTION RM_GetSpeciesZ 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out) :: z(*)
+        END FUNCTION RMF_GetSpeciesZ 
         
-        INTEGER FUNCTION RM_GetThreadCount(id)
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetThreadCount(id) &
+			BIND(C, NAME='RMF_GetThreadCount')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetThreadCount
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetThreadCount
         
-        DOUBLE PRECISION FUNCTION RM_GetTime(id)
+        REAL(KIND=C_DOUBLE) FUNCTION RMF_GetTime(id) &
+			BIND(C, NAME='RMF_GetTime')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetTime
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetTime
         
-        DOUBLE PRECISION FUNCTION RM_GetTimeConversion(id)
+        REAL(KIND=C_DOUBLE) FUNCTION RMF_GetTimeConversion(id) &
+			BIND(C, NAME='RMF_GetTimeConversion')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetTimeConversion
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetTimeConversion
         
-        DOUBLE PRECISION FUNCTION RM_GetTimeStep(id)
+        REAL(KIND=C_DOUBLE) FUNCTION RMF_GetTimeStep(id) &
+			BIND(C, NAME='RMF_GetTimeStep')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetTimeStep 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_GetTimeStep 
 
-        INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1)   
-                IMPLICIT NONE
-                INTEGER, INTENT(in) :: id
-                DOUBLE PRECISION, INTENT(OUT) :: c(*)
-                INTEGER, INTENT(IN) :: n_boundary, bc_sol1(*)
-                INTEGER, INTENT(IN), OPTIONAL :: bc_sol2(*)
-                DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1(*)
-        END FUNCTION RM_InitialPhreeqc2Concentrations    
-        
-        INTEGER FUNCTION RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1) &
+			BIND(C, NAME='RMF_InitialPhreeqc2Concentrations')
+			USE ISO_C_BINDING   
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: ic1(*)
-            INTEGER, INTENT(in), OPTIONAL :: ic2(*)
-            DOUBLE PRECISION, INTENT(in), OPTIONAL :: f1(*)
-        END FUNCTION RM_InitialPhreeqc2Module    
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(OUT) :: c(*)
+            INTEGER(KIND=C_INT), INTENT(IN) :: n_boundary, bc_sol1(*)
+            INTEGER(KIND=C_INT), INTENT(IN), OPTIONAL :: bc_sol2(*)
+            REAL(KIND=C_DOUBLE), INTENT(IN), OPTIONAL :: f1(*)
+        END FUNCTION RMF_InitialPhreeqc2Concentrations    
+        
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Module(id, ic1, ic2, f1) &
+			BIND(C, NAME='RMF_InitialPhreeqc2Module')
+			USE ISO_C_BINDING
+            IMPLICIT NONE
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: ic1(*)
+            INTEGER(KIND=C_INT), INTENT(in), OPTIONAL :: ic2(*)
+            REAL(KIND=C_DOUBLE), INTENT(in), OPTIONAL :: f1(*)
+        END FUNCTION RMF_InitialPhreeqc2Module    
 		 
-        INTEGER FUNCTION RM_InitialPhreeqcCell2Module(id, n_user, module_cell, dim_module_cell)
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqcCell2Module(id, n_user, module_cell, dim_module_cell) &
+			BIND(C, NAME='RMF_InitialPhreeqcCell2Module')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: n_user
-            INTEGER, INTENT(in) :: module_cell(*)
-            INTEGER, INTENT(in) :: dim_module_cell
-        END FUNCTION RM_InitialPhreeqcCell2Module   
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: n_user
+            INTEGER(KIND=C_INT), INTENT(in) :: module_cell(*)
+            INTEGER(KIND=C_INT), INTENT(in) :: dim_module_cell
+        END FUNCTION RMF_InitialPhreeqcCell2Module   
 
-        INTEGER FUNCTION RM_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1) &
+			BIND(C, NAME='RMF_InitialPhreeqc2SpeciesConcentrations')   
+			USE ISO_C_BINDING
                 IMPLICIT NONE
-                INTEGER, INTENT(in) :: id
-                DOUBLE PRECISION, INTENT(OUT) :: species_c(*)
-                INTEGER, INTENT(IN) :: n_boundary, bc_sol1(*)
-                INTEGER, INTENT(IN), OPTIONAL :: bc_sol2(*)
-                DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1(*)
-        END FUNCTION RM_InitialPhreeqc2SpeciesConcentrations          
+                INTEGER(KIND=C_INT), INTENT(in) :: id
+                REAL(KIND=C_DOUBLE), INTENT(OUT) :: species_c(*)
+                INTEGER(KIND=C_INT), INTENT(IN) :: n_boundary, bc_sol1(*)
+                INTEGER(KIND=C_INT), INTENT(IN), OPTIONAL :: bc_sol2(*)
+                REAL(KIND=C_DOUBLE), INTENT(IN), OPTIONAL :: f1(*)
+        END FUNCTION RMF_InitialPhreeqc2SpeciesConcentrations          
         
-        INTEGER FUNCTION RM_LoadDatabase(id, db) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_LoadDatabase(id, db) &
+			BIND(C, NAME='RMF_LoadDatabase') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: db(*)
-        END FUNCTION RM_LoadDatabase 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: db(*)
+        END FUNCTION RMF_LoadDatabase 
         
-        INTEGER FUNCTION RM_LogMessage(id, str) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_LogMessage(id, str) &
+			BIND(C, NAME='RMF_LogMessage') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: str(*)
-        END FUNCTION RM_LogMessage
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: str(*)
+        END FUNCTION RMF_LogMessage
 
-        INTEGER FUNCTION RM_MpiWorker(id) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_MpiWorker(id) &
+			BIND(C, NAME='RMF_MpiWorker') 
+			USE ISO_C_BINDING
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_MpiWorker
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_MpiWorker
 
-        INTEGER FUNCTION RM_MpiWorkerBreak(id) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_MpiWorkerBreak(id) &
+			BIND(C, NAME='RMF_MpiWorkerBreak') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_MpiWorkerBreak
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_MpiWorkerBreak
         
-        INTEGER FUNCTION RM_OpenFiles(id) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_OpenFiles(id) &
+			BIND(C, NAME='RMF_OpenFiles') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_OpenFiles
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_OpenFiles
         
-        INTEGER FUNCTION RM_OutputMessage(id, str)
+        INTEGER(KIND=C_INT) FUNCTION RMF_OutputMessage(id, str) &
+			BIND(C, NAME='RMF_OutputMessage')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: str(*)
-        END FUNCTION RM_OutputMessage
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: str(*)
+        END FUNCTION RMF_OutputMessage
         
-        INTEGER FUNCTION RM_RunCells(id)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_RunCells(id) &
+			BIND(C, NAME='RMF_RunCells')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-        END FUNCTION RM_RunCells  
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+        END FUNCTION RMF_RunCells  
         
-        INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, chem_name)
+        INTEGER(KIND=C_INT) FUNCTION RMF_RunFile(id, workers, initial_phreeqc, utility, chem_name) &
+			BIND(C, NAME='RMF_RunFile')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: workers, initial_phreeqc, utility
-            CHARACTER, INTENT(in) :: chem_name(*)
-        END FUNCTION RM_RunFile   
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: workers, initial_phreeqc, utility
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: chem_name(*)
+        END FUNCTION RMF_RunFile   
         
-        INTEGER FUNCTION RM_RunString(id, initial_phreeqc, workers, utility, input_string)
+        INTEGER(KIND=C_INT) FUNCTION RMF_RunString(id, initial_phreeqc, workers, utility, input_string) &
+			BIND(C, NAME='RMF_RunString')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: initial_phreeqc, workers, utility
-            CHARACTER, INTENT(in) :: input_string(*)
-        END FUNCTION RM_RunString   
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: initial_phreeqc, workers, utility
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: input_string(*)
+        END FUNCTION RMF_RunString   
         
-        INTEGER FUNCTION RM_ScreenMessage(id, str) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_ScreenMessage(id, str) &
+			BIND(C, NAME='RMF_ScreenMessage') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: str(*)
-        END FUNCTION RM_ScreenMessage   
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: str(*)
+        END FUNCTION RMF_ScreenMessage   
  		     
-        !INTEGER FUNCTION RM_SetCellVolume(id, vol)   
+        !INTEGER(KIND=C_INT) FUNCTION RMF_SetCellVolume(id, vol)   
         !    IMPLICIT NONE
-        !    INTEGER, INTENT(in) :: id
-        !    DOUBLE PRECISION, INTENT(in) :: vol(*)
-        !END FUNCTION RM_SetCellVolume
+        !    INTEGER(KIND=C_INT), INTENT(in) :: id
+        !    REAL(KIND=C_DOUBLE), INTENT(in) :: vol(*)
+        !END FUNCTION RMF_SetCellVolume
  		     
-        INTEGER FUNCTION RM_SetComponentH2O(id, tf)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetComponentH2O(id, tf) &
+			BIND(C, NAME='RMF_SetComponentH2O')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: tf
-        END FUNCTION RM_SetComponentH2O
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: tf
+        END FUNCTION RMF_SetComponentH2O
  		     
-        INTEGER FUNCTION RM_SetConcentrations(id, c)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetConcentrations(id, c) &
+			BIND(C, NAME='RMF_SetConcentrations')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: c(*)
-        END FUNCTION RM_SetConcentrations
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: c(*)
+        END FUNCTION RMF_SetConcentrations
  		     
-        INTEGER FUNCTION RM_SetCurrentSelectedOutputUserNumber(id, n_user)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetCurrentSelectedOutputUserNumber(id, n_user) &
+			BIND(C, NAME='RMF_SetCurrentSelectedOutputUserNumber') 
+			USE ISO_C_BINDING  
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: n_user
-        END FUNCTION RM_SetCurrentSelectedOutputUserNumber
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: n_user
+        END FUNCTION RMF_SetCurrentSelectedOutputUserNumber
 
-        INTEGER FUNCTION RM_SetDensity(id, density)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetDensity(id, density) &
+			BIND(C, NAME='RMF_SetDensity')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: density(*)
-        END FUNCTION RM_SetDensity 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: density(*)
+        END FUNCTION RMF_SetDensity 
         
-        INTEGER FUNCTION RM_SetDumpFileName(id, name) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetDumpFileName(id, name) &
+			BIND(C, NAME='RMF_SetDumpFileName') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: name(*)
-        END FUNCTION RM_SetDumpFileName   
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: name(*)
+        END FUNCTION RMF_SetDumpFileName   
 
-        INTEGER FUNCTION RM_SetErrorHandlerMode(id, i)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetErrorHandlerMode(id, i) &
+			BIND(C, NAME='RMF_SetErrorHandlerMode')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: i
-        END FUNCTION RM_SetErrorHandlerMode        
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: i
+        END FUNCTION RMF_SetErrorHandlerMode        
 		        
-        INTEGER FUNCTION RM_SetFilePrefix(id, prefix) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetFilePrefix(id, prefix) &
+			BIND(C, NAME='RMF_SetFilePrefix') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: prefix(*)
-        END FUNCTION RM_SetFilePrefix  
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: prefix(*)
+        END FUNCTION RMF_SetFilePrefix  
 
-        INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
-			INTEGER, INTENT(IN) :: id
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetMpiWorkerCallback(id, fcn) &
+			BIND(C, NAME='RMF_SetMpiWorkerCallback')
+			USE ISO_C_BINDING
+			INTEGER(KIND=C_INT), INTENT(in) :: id
 			INTERFACE
-			  INTEGER FUNCTION fcn(method_number)
+				INTEGER FUNCTION fcn(method_number)
 				INTEGER, INTENT(in) :: method_number
-			  END FUNCTION 
+				END FUNCTION 
 			END INTERFACE
-        END FUNCTION RM_SetMpiWorkerCallback
+        END FUNCTION RMF_SetMpiWorkerCallback
 				
-        INTEGER FUNCTION RM_SetPartitionUZSolids(id, tf)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetPartitionUZSolids(id, tf) &
+			BIND(C, NAME='RMF_SetPartitionUZSolids')  
+			USE ISO_C_BINDING 
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in)  :: tf
-        END FUNCTION RM_SetPartitionUZSolids 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in)  :: tf
+        END FUNCTION RMF_SetPartitionUZSolids 
 
-        !INTEGER FUNCTION RM_SetPoreVolume(id, pv)   
+        !INTEGER(KIND=C_INT) FUNCTION RMF_SetPoreVolume(id, pv)  
         !    IMPLICIT NONE
-        !    INTEGER, INTENT(in) :: id
-        !    DOUBLE PRECISION, INTENT(in) :: pv(*)
-        !END FUNCTION RM_SetPoreVolume 
+        !    INTEGER(KIND=C_INT), INTENT(in) :: id
+        !    REAL(KIND=C_DOUBLE), INTENT(in) :: pv(*)
+        !END FUNCTION RMF_SetPoreVolume 
 
-        INTEGER FUNCTION RM_SetPorosity(id, por)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetPorosity(id, por) &
+			BIND(C, NAME='RMF_SetPorosity')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: por(*)
-        END FUNCTION RM_SetPorosity 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: por(*)
+        END FUNCTION RMF_SetPorosity 
 
-        INTEGER FUNCTION RM_SetPressure(id, p)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetPressure(id, p) &
+			BIND(C, NAME='RMF_SetPressure')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: p(*)
-        END FUNCTION RM_SetPressure        
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: p(*)
+        END FUNCTION RMF_SetPressure        
         
-        INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetPrintChemistryOn(id, worker, initial_phreeqc, utility) &
+			BIND(C, NAME='RMF_SetPrintChemistryOn')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: worker, initial_phreeqc, utility
-        END FUNCTION RM_SetPrintChemistryOn 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: worker, initial_phreeqc, utility
+        END FUNCTION RMF_SetPrintChemistryOn 
 
-        INTEGER FUNCTION RM_SetPrintChemistryMask(id, cell_mask)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetPrintChemistryMask(id, cell_mask) &
+			BIND(C, NAME='RMF_SetPrintChemistryMask') 
+			USE ISO_C_BINDING  
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: cell_mask(*)
-        END FUNCTION RM_SetPrintChemistryMask 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: cell_mask(*)
+        END FUNCTION RMF_SetPrintChemistryMask 
         
-        INTEGER FUNCTION RM_SetRebalanceByCell(id, method)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetRebalanceByCell(id, method) &
+			BIND(C, NAME='RMF_SetRebalanceByCell')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in)  :: method
-        END FUNCTION RM_SetRebalanceByCell
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in)  :: method
+        END FUNCTION RMF_SetRebalanceByCell
         
-        INTEGER FUNCTION RM_SetRebalanceFraction(id, f)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetRebalanceFraction(id, f) &
+			BIND(C, NAME='RMF_SetRebalanceFraction')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in)  :: f
-        END FUNCTION RM_SetRebalanceFraction
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in)  :: f
+        END FUNCTION RMF_SetRebalanceFraction
 		
-        INTEGER FUNCTION RM_SetRepresentativeVolume(id, rv)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetRepresentativeVolume(id, rv) &
+			BIND(C, NAME='RMF_SetRepresentativeVolume') 
+			USE ISO_C_BINDING  
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: rv(*)
-        END FUNCTION RM_SetRepresentativeVolume 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: rv(*)
+        END FUNCTION RMF_SetRepresentativeVolume 
 
-        INTEGER FUNCTION RM_SetSaturation(id, sat)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetSaturation(id, sat) &
+			BIND(C, NAME='RMF_SetSaturation')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: sat(*)
-        END FUNCTION RM_SetSaturation 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: sat(*)
+        END FUNCTION RMF_SetSaturation 
 
-        INTEGER FUNCTION RM_SetSelectedOutputOn(id, tf)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetSelectedOutputOn(id, tf) &
+			BIND(C, NAME='RMF_SetSelectedOutputOn')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: tf
-        END FUNCTION RM_SetSelectedOutputOn   
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: tf
+        END FUNCTION RMF_SetSelectedOutputOn   
 
-        INTEGER FUNCTION RM_SetSpeciesSaveOn(id, save_on)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetSpeciesSaveOn(id, save_on) &
+			BIND(C, NAME='RMF_SetSpeciesSaveOn')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: save_on
-        END FUNCTION RM_SetSpeciesSaveOn
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: save_on
+        END FUNCTION RMF_SetSpeciesSaveOn
 
-        INTEGER FUNCTION RM_SetTemperature(id, t)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetTemperature(id, t) &
+			BIND(C, NAME='RMF_SetTemperature')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: t(*)
-        END FUNCTION RM_SetTemperature 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: t(*)
+        END FUNCTION RMF_SetTemperature 
 		     
-        INTEGER FUNCTION RM_SetTime(id, time)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetTime(id, time) &
+			BIND(C, NAME='RMF_SetTime')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: time
-        END FUNCTION RM_SetTime 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: time
+        END FUNCTION RMF_SetTime 
 		     
-        INTEGER FUNCTION RM_SetTimeConversion(id, conv_factor)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetTimeConversion(id, conv_factor) &
+			BIND(C, NAME='RMF_SetTimeConversion') 
+			USE ISO_C_BINDING  
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: conv_factor
-        END FUNCTION RM_SetTimeConversion 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: conv_factor
+        END FUNCTION RMF_SetTimeConversion 
 		     
-        INTEGER FUNCTION RM_SetTimeStep(id, time_step)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetTimeStep(id, time_step) &
+			BIND(C, NAME='RMF_SetTimeStep')  
+			USE ISO_C_BINDING 
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: time_step
-        END FUNCTION RM_SetTimeStep 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: time_step
+        END FUNCTION RMF_SetTimeStep 
 
-        INTEGER FUNCTION RM_SetUnitsExchange(id, option)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetUnitsExchange(id, option) &
+			BIND(C, NAME='RMF_SetUnitsExchange')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: option
-        END FUNCTION RM_SetUnitsExchange 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: option
+        END FUNCTION RMF_SetUnitsExchange 
 
-        INTEGER FUNCTION RM_SetUnitsGasPhase(id, option)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetUnitsGasPhase(id, option) &
+			BIND(C, NAME='RMF_SetUnitsGasPhase')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: option
-        END FUNCTION RM_SetUnitsGasPhase 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: option
+        END FUNCTION RMF_SetUnitsGasPhase 
 
-        INTEGER FUNCTION RM_SetUnitsKinetics(id, option)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetUnitsKinetics(id, option) &
+			BIND(C, NAME='RMF_SetUnitsKinetics')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: option
-        END FUNCTION RM_SetUnitsKinetics 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: option
+        END FUNCTION RMF_SetUnitsKinetics 
 
-        INTEGER FUNCTION RM_SetUnitsPPassemblage(id, option)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetUnitsPPassemblage(id, option) &
+			BIND(C, NAME='RMF_SetUnitsPPassemblage')  
+			USE ISO_C_BINDING 
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: option
-        END FUNCTION RM_SetUnitsPPassemblage
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: option
+        END FUNCTION RMF_SetUnitsPPassemblage
 
-        INTEGER FUNCTION RM_SetUnitsSolution(id, option)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetUnitsSolution(id, option) &
+			BIND(C, NAME='RMF_SetUnitsSolution')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: option
-        END FUNCTION RM_SetUnitsSolution  
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: option
+        END FUNCTION RMF_SetUnitsSolution  
 
-        INTEGER FUNCTION RM_SetUnitsSSassemblage(id, option)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetUnitsSSassemblage(id, option) &
+			BIND(C, NAME='RMF_SetUnitsSSassemblage')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: option
-        END FUNCTION RM_SetUnitsSSassemblage  
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: option
+        END FUNCTION RMF_SetUnitsSSassemblage  
 
-        INTEGER FUNCTION RM_SetUnitsSurface(id, option)   
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetUnitsSurface(id, option) &
+			BIND(C, NAME='RMF_SetUnitsSurface')   
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: option
-        END FUNCTION RM_SetUnitsSurface  
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: option
+        END FUNCTION RMF_SetUnitsSurface  
 
-        INTEGER FUNCTION RM_SpeciesConcentrations2Module(id, species_conc)
+        INTEGER(KIND=C_INT) FUNCTION RMF_SpeciesConcentrations2Module(id, species_conc) &
+			BIND(C, NAME='RMF_SpeciesConcentrations2Module')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            DOUBLE PRECISION, INTENT(in) :: species_conc(*)
-        END FUNCTION RM_SpeciesConcentrations2Module  
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: species_conc(*)
+        END FUNCTION RMF_SpeciesConcentrations2Module  
 
-        INTEGER FUNCTION RM_UseSolutionDensityVolume(id, tf)
+        INTEGER(KIND=C_INT) FUNCTION RMF_UseSolutionDensityVolume(id, tf) &
+			BIND(C, NAME='RMF_UseSolutionDensityVolume')
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, INTENT(in) :: tf
-        END FUNCTION RM_UseSolutionDensityVolume 
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: tf
+        END FUNCTION RMF_UseSolutionDensityVolume 
         
-        INTEGER FUNCTION RM_WarningMessage(id, str) 
+        INTEGER(KIND=C_INT) FUNCTION RMF_WarningMessage(id, str) &
+			BIND(C, NAME='RMF_WarningMessage') 
+			USE ISO_C_BINDING
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            CHARACTER, INTENT(in) :: str(*)
-        END FUNCTION RM_WarningMessage
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: str(*)
+        END FUNCTION RMF_WarningMessage
 		 
     END INTERFACE
