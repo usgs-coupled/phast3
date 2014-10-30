@@ -1,11 +1,12 @@
 
 
-subroutine advection_f90()    
+subroutine advection_f90()  
+  USE PhreeqcRM
   implicit none
 #ifdef USE_MPI    
   INCLUDE 'mpif.h'
 #endif
-  INCLUDE 'RM_interface_F.f90.inc'
+  !INCLUDE 'RM_interface_F.f90.inc'
   INCLUDE 'IPhreeqc.f90.inc'
   interface
      subroutine advect_f90(c, bc_conc, ncomps, nxyz)
@@ -60,7 +61,8 @@ subroutine advection_f90()
   character(100)                                :: svalue
   integer                                       :: iphreeqc_id, iphreeqc_id1
   integer                                       :: dump_on, append
-  character(LEN=1), dimension(:), allocatable   :: errstr
+  !character(LEN=1), dimension(:), allocatable   :: errstr
+  character(LEN=:), allocatable                 :: errstr
   integer                                       :: l
 
   nxyz = 40
@@ -147,11 +149,11 @@ subroutine advection_f90()
   status = RM_LoadDatabase(id, "phreeqc.dat") 
   if (status .ne. 0) then
      l = RM_GetErrorStringLength(id)
-     !!    allocate (character(l) :: errstr)
-     allocate (errstr(l))
+     allocate (character(len=l) :: errstr)
+     !!allocate (errstr(l))
      write(*,*) "Start of error string: "
      status = RM_GetErrorString(id, errstr)
-     write(*,"(A)") (errstr(i), i=1,l)
+     write(*,"(A)") (errstr(i:i), i=1,l)
      write(*,*) "End of error string."
      deallocate(errstr)
      status = RM_Destroy(id);
