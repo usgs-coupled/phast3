@@ -193,7 +193,7 @@ subroutine advection_f90()
   status = RM_OutputMessage(id, trim(string1))
   allocate(components(ncomps))
   allocate(gfw(ncomps))
-  status = RM_GetGfw(id, gfw(1))
+  status = RM_GetGfw(id, gfw)
   do i = 1, ncomps
      status = RM_GetComponent(id, i, components(i))
      write(string,"(A10, F15.4)") components(i), gfw(i)
