@@ -299,7 +299,8 @@ RMF_GetErrorString(int * id, char *errstr, int * l)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		strncpy(errstr, Reaction_module_ptr->GetErrorString().c_str(), *l);
+		//strncpy(errstr, Reaction_module_ptr->GetErrorString().c_str(), *l);
+		padfstring(errstr, Reaction_module_ptr->GetErrorString().c_str(), *l);
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -327,7 +328,8 @@ RMF_GetFilePrefix(int * id, char *prefix, int *l)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		strncpy(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), *l);
+		//strncpy(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), *l);
+		padfstring(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), *l);
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -530,7 +532,8 @@ RMF_GetSelectedOutputHeading(int * id, int *icol, char *heading, int *length)
 		IRM_RESULT return_value = Reaction_module_ptr->GetSelectedOutputHeading(*icol - 1, head);
 		if (return_value == IRM_OK)
 		{
-			strncpy(heading, head.c_str(), *length);
+			//strncpy(heading, head.c_str(), *length);
+			padfstring(heading, head.c_str(), *length);
 		}
 		return return_value;
 	}
@@ -636,7 +639,8 @@ RMF_GetSpeciesName(int *id, int *i_in, char *name, int *length)
 		const std::vector<std::string> & names = Reaction_module_ptr->GetSpeciesNames();
 		if (i >= 0 && i < (int) names.size())
 		{
-			strncpy(name, names[i].c_str(), *length);
+			//strncpy(name, names[i].c_str(), *length);
+			padfstring(name, names[i].c_str(), *length);  
 			return IRM_OK;
 		}
 		return IRM_INVALIDARG;

@@ -118,7 +118,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.086 Seconds.
+End of Run after 1.051 Seconds.
 -------------------------------
 
 Time:           0
@@ -211,7 +211,7 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.126 Seconds.
+End of Run after 1.061 Seconds.
 -------------------------------
 
 Time:           0
@@ -304,6 +304,6 @@ Reading input data for simulation 2.
 ------------------------------------
 
 -------------------------------
-End of Run after 2.158 Seconds.
+End of Run after 1.068 Seconds.
 -------------------------------
 
