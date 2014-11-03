@@ -5,11 +5,22 @@
 #include "PHRQ_io.h"
 #include <string>
 #include <map>
-#include "fwrap.h"
+//#include "fwrap.h"
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
 
+static void
+rmpadfstring(char *dest, const char *src, unsigned int len)
+{
+    size_t sofar;
+
+    for (sofar = 0; (sofar < len) && (*src != '\0'); ++sofar)
+        *dest++ = *src++;
+
+    while (sofar++ < len)
+        *dest++ = ' ';
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RMF_Abort(int *id, int *result, const char * str)
@@ -217,7 +228,7 @@ RMF_GetComponent(int * id, int * num, char *chem_name, int * l1)
 		{
 			if (l1 > 0 && *num > 0 && *num <= Reaction_module_ptr->GetComponentCount())
 			{
-				padfstring(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), *l1);
+				rmpadfstring(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), (unsigned int) *l1);
 				//strncpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), *l1);
 				return IRM_OK;
 			}
@@ -300,7 +311,7 @@ RMF_GetErrorString(int * id, char *errstr, int * l)
 	if (Reaction_module_ptr)
 	{
 		//strncpy(errstr, Reaction_module_ptr->GetErrorString().c_str(), *l);
-		padfstring(errstr, Reaction_module_ptr->GetErrorString().c_str(), *l);
+		rmpadfstring(errstr, Reaction_module_ptr->GetErrorString().c_str(), (unsigned int) *l);
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -329,7 +340,7 @@ RMF_GetFilePrefix(int * id, char *prefix, int *l)
 	if (Reaction_module_ptr)
 	{
 		//strncpy(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), *l);
-		padfstring(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), *l);
+		rmpadfstring(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), (unsigned int) *l);
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -533,7 +544,7 @@ RMF_GetSelectedOutputHeading(int * id, int *icol, char *heading, int *length)
 		if (return_value == IRM_OK)
 		{
 			//strncpy(heading, head.c_str(), *length);
-			padfstring(heading, head.c_str(), *length);
+			rmpadfstring(heading, head.c_str(), (unsigned int) *length);
 		}
 		return return_value;
 	}
@@ -640,7 +651,7 @@ RMF_GetSpeciesName(int *id, int *i_in, char *name, int *length)
 		if (i >= 0 && i < (int) names.size())
 		{
 			//strncpy(name, names[i].c_str(), *length);
-			padfstring(name, names[i].c_str(), *length);  
+			rmpadfstring(name, names[i].c_str(), (unsigned int) *length);  
 			return IRM_OK;
 		}
 		return IRM_INVALIDARG;
