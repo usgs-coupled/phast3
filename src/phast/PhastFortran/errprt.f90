@@ -3,6 +3,7 @@ SUBROUTINE errprt(ie1,ie2)
   ! ...      message
 !!$  USE f_units
   USE mcc
+  USE PhreeqcRM
   INTEGER, INTENT(IN) :: ie1, ie2
   INTEGER :: ie
   CHARACTER(LEN=130) :: erline

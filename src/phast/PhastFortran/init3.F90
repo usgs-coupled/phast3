@@ -16,9 +16,10 @@ SUBROUTINE init3
   USE mcw_m
   USE mg3_m
   USE print_control_mod
+  USE PhreeqcRM
   IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
   SAVE
-  INCLUDE 'RM_interface_F.f90.inc'
   INTERFACE
      SUBROUTINE load_indx_bc(ibct,indx1_bc,indx2_bc,mxf_bc,mbc,nbc)
        USE machine_constants, ONLY: kdp
@@ -50,8 +51,8 @@ SUBROUTINE init3
            mxf_wel(iwel) = 1._kdp
         END DO
         !status = RM_InitialPhreeqc2Concentrations(rm_id, cwkt(1,1), nwel, nwel, &
-        status = RM_InitialPhreeqc2Concentrations(rm_id, cwkt(1,1), nwel, &
-            indx1_wel(1), indx2_wel(1), mxf_wel(1))
+        status = RM_InitialPhreeqc2Concentrations(rm_id, cwkt, nwel, &
+            indx1_wel, indx2_wel, mxf_wel)
      END IF
      DO  iwel=1,nwel
         IF(wqmeth(iwel) == 12 .OR. wqmeth(iwel) == 13) THEN
@@ -74,8 +75,8 @@ SUBROUTINE init3
         !$$        CALL load_indx_bc(1,indx1_sbc,indx2_sbc,mxf_sbc,msbc,nsbc)
         !status = RM_InitialPhreeqc2Concentrations(rm_id, csbc(1,1), nsbc, nsbc_seg, &
         !    indx1_sbc(1), indx2_sbc(1), mxf_sbc(1))
-        status = RM_InitialPhreeqc2Concentrations(rm_id, csbc(1,1), nsbc, &
-            indx1_sbc(1), indx2_sbc(1), mxf_sbc(1))        
+        status = RM_InitialPhreeqc2Concentrations(rm_id, csbc, nsbc, &
+            indx1_sbc, indx2_sbc, mxf_sbc)        
 
         ! ***** special patch for b.c. install for 3 components
         !        csbc(1:nsbc_seg,1) = mxf_sbc(1:nsbc_seg)
@@ -233,8 +234,8 @@ SUBROUTINE init3
      IF(solute) THEN                          ! ... Load the associated concentrations
         !$$        CALL load_indx_bc(2, indx1_fbc, indx2_fbc, mxf_fbc, mfbc, nfbc_seg)
         !status = RM_InitialPhreeqc2Concentrations(rm_id, cfbc(1,1), nfbc_seg, nfbc_seg, &
-        status = RM_InitialPhreeqc2Concentrations(rm_id, cfbc(1,1), nfbc_seg, &
-            indx1_fbc(1), indx2_fbc(1), mxf_fbc(1))
+        status = RM_InitialPhreeqc2Concentrations(rm_id, cfbc, nfbc_seg, &
+            indx1_fbc, indx2_fbc, mxf_fbc)
      END IF
   END IF
   ! *** no broadcast of qsflx as no pure diffusive solute b.c. is enabled at present
@@ -246,8 +247,8 @@ SUBROUTINE init3
      END DO
      IF(solute) THEN               ! ... Load the associated concentrations
         !status = RM_InitialPhreeqc2Concentrations(rm_id, clbc(1,1), nlbc_seg, nlbc_seg, &
-        status = RM_InitialPhreeqc2Concentrations(rm_id, clbc(1,1), nlbc_seg, &
-            indx1_lbc(1), indx2_lbc(1), mxf_lbc(1))
+        status = RM_InitialPhreeqc2Concentrations(rm_id, clbc, nlbc_seg, &
+            indx1_lbc, indx2_lbc, mxf_lbc)
      END IF
   END IF
   ! ... River leakage b.c.
@@ -258,8 +259,8 @@ SUBROUTINE init3
      END DO
      IF(solute) THEN               ! ... Load the associated concentrations
         !status = RM_InitialPhreeqc2Concentrations(rm_id, crbc(1,1), nrbc_seg, nrbc_seg, &
-        status = RM_InitialPhreeqc2Concentrations(rm_id, crbc(1,1), nrbc_seg, &
-            indx1_rbc(1), indx2_rbc(1), mxf_rbc(1))
+        status = RM_InitialPhreeqc2Concentrations(rm_id, crbc, nrbc_seg, &
+            indx1_rbc, indx2_rbc, mxf_rbc)
      END IF
   END IF
   ! ... Drain leakage b.c.

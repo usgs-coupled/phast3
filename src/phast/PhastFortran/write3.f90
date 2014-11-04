@@ -20,7 +20,9 @@ SUBROUTINE write3
   USE mcw
   USE mcw_m
   USE mg3_m
+  USE PhreeqcRM
   IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
   INTERFACE
       SUBROUTINE convert_to_moles(id, c, n)
           IMPLICIT NONE 
@@ -28,7 +30,6 @@ SUBROUTINE write3
           INTEGER, INTENT(in) :: id, n
       END SUBROUTINE
   END INTERFACE
-  INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX
   CHARACTER(LEN=11) :: blank = '           ', ucc, up1c, up2c, uqc, utc

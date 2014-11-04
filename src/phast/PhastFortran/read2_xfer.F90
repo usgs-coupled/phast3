@@ -313,8 +313,9 @@ SUBROUTINE read2_xfer_w
   USE mcw
   USE mg2_m
   USE mpi_mod
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTEGER :: a_err
   INTEGER :: nr
   CHARACTER(LEN=130) :: logline1

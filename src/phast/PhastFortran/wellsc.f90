@@ -24,8 +24,9 @@ SUBROUTINE wellsc
   USE mcw
   USE mcw_m
   USE phys_const
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC INT
   REAL(KIND=kdp) :: arwb, fpr3, frflm, frflp, lgren, ren, summob,  &
        szzw, uclm, uclp, udnkt, udnlm, udnlp, udnsur, uehwkt,  &
