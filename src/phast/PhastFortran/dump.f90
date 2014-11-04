@@ -20,8 +20,9 @@ SUBROUTINE dump_hst
   USE mcv_m
   USE mcw
   USE mcw_m
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   CHARACTER(LEN=130) :: logline1, logline2, logline3
   INTEGER :: status
   !     ------------------------------------------------------------------

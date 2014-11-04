@@ -18,8 +18,9 @@ SUBROUTINE init2_post_ss
   USE mg2_m
   USE print_control_mod
   USE phys_const
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   REAL(KIND=kdp) :: u0, u1, uc, ut
   INTEGER :: imod, iis, iwel, k, l, m, mt, nr, nsa
   CHARACTER(LEN=130) error_line

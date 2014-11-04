@@ -1,8 +1,9 @@
 SUBROUTINE CreateMappingFortran(initial_conditions)
       USE mcg, only: nx, ny, nz, nxy, nxyz, naxes, grid2chem
       USE mcc, only: mpi_myself, rm_id
+      USE PhreeqcRM
       IMPLICIT NONE
-      INCLUDE "RM_interface_F.f90.inc"
+      !INCLUDE "RM_interface_F.f90.inc"
       INTEGER :: status
       ! 
 ! calculate mapping from full set of cells to subset needed for chemistry

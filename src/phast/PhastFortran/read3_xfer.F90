@@ -87,8 +87,9 @@ SUBROUTINE read3_xfer_w
   USE mpi_mod
   USE print_control_mod
   USE rewi_mod
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTEGER :: a_err, ic, icall, isegbc, iis, iwel, uwelseqno, uisolw,  &
        uisolbc1, uisolbc2
   INTEGER, SAVE :: ntd=0

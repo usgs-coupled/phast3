@@ -20,7 +20,9 @@ SUBROUTINE write2_2
   USE mcw_m
   USE mg2_m
   USE phys_const
+  USE PhreeqcRM
   IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
   INTERFACE
       SUBROUTINE convert_to_moles(id, c, n)
           IMPLICIT NONE 
@@ -29,7 +31,6 @@ SUBROUTINE write2_2
       END SUBROUTINE
   END INTERFACE 
   INCLUDE 'IPhreeqc.f90.inc'
-  INCLUDE 'RM_interface_F.f90.inc'
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
 !!$  CHARACTER(LEN=11) :: chu2, chu3, fmt1
@@ -61,7 +62,7 @@ SUBROUTINE write2_2
   INTEGER :: a_err
   CHARACTER(LEN=100) :: string, svalue, line
   INTEGER :: iphreeqc_id, nthreads, status, vtype
-  DOUBLE PRECISION, allocatable, dimension(:) :: c_well
+  DOUBLE PRECISION, allocatable, dimension(:,:) :: c_well
   DOUBLE PRECISION, allocatable, dimension(:) :: tc, p_atm
   !     ------------------------------------------------------------------
   !...
@@ -87,7 +88,7 @@ SUBROUTINE write2_2
      status = RunString(iphreeqc_id, string)
      string = "RUN_CELLS; -cell 1"
      IF(solute .AND. prtic_well_timser) THEN
-        allocate(c_well(ns), tc(1), p_atm(1))
+        allocate(c_well(1,ns), tc(1), p_atm(1))
         ! ... Write static data to file 'FUPLT' for temporal plots
         WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+2,'(1pe15.7,a)) '
         DO  iwel=1,nwel
@@ -102,7 +103,7 @@ SUBROUTINE write2_2
            tc = 25.0
            p_atm = 1.0
            do i = 1, ns
-               c_well(i) = c(m,i)
+               c_well(1,i) = c(m,i)
            enddo       
            iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well, 1, tc, p_atm)
            status = RunString(iphreeqc_id, string)

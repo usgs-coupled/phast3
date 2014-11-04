@@ -12,8 +12,9 @@ SUBROUTINE wbbal
   USE mcv_m
   USE mcw
   USE mcw_m
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC int  
   REAL(KIND=kdp) :: uqhw, uqwm, uqwmi
   INTEGER :: a_err, da_err, iis, iwel, iwfss, ks, m, mkt, nks, nsa

@@ -16,8 +16,9 @@ SUBROUTINE XP_wellsr_thread(xp)
   USE mcw, ONLY: nwel, wqmeth, nkswel, mwel, wi, pwsurs, pwkts, wrisl, wrangl, &
     twrend, tolfpw, mxitqw, tolqw
   USE XP_module, ONLY: Transporter
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC INT
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: sum1, sumdnz, summob, ucwkt, udnkt, udnsur,  &
@@ -578,8 +579,9 @@ SUBROUTINE XP_wellsr(xp)
   USE mcv
   USE mcw
   USE XP_module, ONLY: Transporter
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC INT
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: sum1, sumdnz, summob, ucwkt, udnkt, udnsur,  &

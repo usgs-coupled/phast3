@@ -21,8 +21,9 @@ SUBROUTINE sumcal1
   USE mcw
   USE mcw_m
   USE mg2_m, ONLY: hdprnt, wt_elev
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTERFACE
      SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
        USE machine_constants, ONLY: kdp

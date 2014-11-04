@@ -15,8 +15,9 @@ SUBROUTINE timestep
   USE mpi_mod
 #endif
   USE print_control_mod
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC NINT
   REAL(KIND=kdp) :: adc, adp, adt, uctc, udtim, uptc, utime, uttc, udeltim, utimchg
   INTEGER :: iis

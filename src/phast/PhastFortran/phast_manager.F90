@@ -23,9 +23,10 @@ SUBROUTINE phast_manager
 #endif
     USE print_control_mod
     USE XP_module, ONLY: Transporter
-    IMPLICIT NONE 
+  USE PhreeqcRM
+  IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
     SAVE
-    INCLUDE 'RM_interface_F.f90.inc'
     INTERFACE
         INTEGER FUNCTION set_fdtmth()
         END FUNCTION set_fdtmth
@@ -269,8 +270,9 @@ END SUBROUTINE phast_manager
 SUBROUTINE time_parallel(i)
     USE mcc, only: rm_id, solute
     USE mpi_mod
-    IMPLICIT none   
-    INCLUDE "RM_interface_F.f90.inc"
+  USE PhreeqcRM
+  IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
     integer :: i, ierr
     DOUBLE PRECISION t
     DOUBLE PRECISION, DIMENSION(0:16), save :: times
@@ -433,9 +435,10 @@ SUBROUTINE CreateRM
     USE mcs,  ONLY: nthreads
     USE mcv,  ONLY: ns
     USE mpi_mod
-    IMPLICIT NONE
-    SAVE
-    INCLUDE 'RM_interface_F.f90.inc'   
+  USE PhreeqcRM
+  IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
+    SAVE 
     INTEGER i, a_err, status
     CHARACTER*32 string
 
@@ -479,9 +482,10 @@ SUBROUTINE InitialEquilibrationRM
     USE mcp, ONLY:               pv
     USE mcv, ONLY:               c, frac, sat, time_phreeqc
     USE hdf_media_m, ONLY:       pr_hdf_media
-    IMPLICIT NONE
+  USE PhreeqcRM
+  IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
     SAVE
-    INCLUDE 'RM_interface_F.f90.inc' 
     DOUBLE PRECISION :: deltim_dummy
     CHARACTER(LEN=130) :: logline1
     INTEGER :: stop_msg, status, i !, imedia
@@ -514,14 +518,14 @@ SUBROUTINE InitialEquilibrationRM
                 sat(i) = 0.0
             endif
         enddo
-        status = RM_SetSaturation(rm_id, sat(1))
+        status = RM_SetSaturation(rm_id, sat)
         status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi, 0, 0)
 	    status = 0
 	    if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)
         status = RM_SetTime(rm_id, time_phreeqc) 
         status = RM_SetTimeStep(rm_id, deltim_dummy) 
-        status = RM_SetConcentrations(rm_id, c(1,1))
+        status = RM_SetConcentrations(rm_id, c)
         status = RM_RunCells(rm_id)     
         !status = RM_GetConcentrations(rm_id, c(1,1))
         status = RM_GetConcentrations(rm_id, c)
@@ -545,9 +549,10 @@ SUBROUTINE InitializeRM
     USE mcv, ONLY:  c, frac, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
     USE mcv_m, ONLY: exchange_units, gasphase_units, kinetics_units, ppassemblage_units, ssassemblage_units, surface_units
 
-    IMPLICIT NONE
+  USE PhreeqcRM
+  IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
     SAVE
-    INCLUDE 'RM_interface_F.f90.inc'
     INTERFACE    
         SUBROUTINE CreateMappingFortran(ic)
             implicit none
@@ -573,7 +578,7 @@ SUBROUTINE InitializeRM
 #ifdef SKIP_RV   
         status = RM_SetPoreVolume(rm_id, pv0(1))
 #endif        
-        status = RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
+        status = RM_SetPrintChemistryMask(rm_id, iprint_chem)
 	    status = 0
         if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
         status = RM_SetSelectedOutputOn(rm_id, status)
@@ -602,7 +607,7 @@ SUBROUTINE InitializeRM
 
         ! ... Define mapping from 3D domain to chemistry
         CALL CreateMappingFortran(indx_sol1_ic)
-        status = RM_CreateMapping(rm_id, grid2chem(1))        
+        status = RM_CreateMapping(rm_id, grid2chem)        
         ! ... Make arrays in the correct order
         ALLOCATE(ic1_reordered(nxyz,7), ic2_reordered(nxyz,7), f1_reordered(nxyz,7),   &
         STAT = a_err)
@@ -620,12 +625,12 @@ SUBROUTINE InitializeRM
           
         ! ... Distribute chemistry initial conditions
         status = RM_InitialPhreeqc2Module(rm_id, &
-            ic1_reordered(1,1),           & ! Fortran nxyz x 7 end-member 1 
-            ic2_reordered(1,1),           & ! Fortran nxyz x 7 end-member 2
-            f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1   
+            ic1_reordered,           & ! Fortran nxyz x 7 end-member 1 
+            ic2_reordered,           & ! Fortran nxyz x 7 end-member 2
+            f1_reordered)              ! Fortran nxyz x 7 fraction of end-member 1   
         
         CALL process_restart_files()
-        status = RM_GetConcentrations(rm_id, c(1,1))          
+        status = RM_GetConcentrations(rm_id, c)          
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
             STAT = a_err)
@@ -646,9 +651,10 @@ SUBROUTINE TimeStepRM
     USE mcv,  ONLY:              c, deltim, frac, indx_sol1_ic, sat, time
     USE hdf_media_m, ONLY:       pr_hdf_media
     USE print_control_mod, ONLY: print_force_chemistry, print_hdf_chemistry, print_restart
-    IMPLICIT NONE
+  USE PhreeqcRM
+  IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
     SAVE
-    INCLUDE 'RM_interface_F.f90.inc' 
     INTEGER stop_msg, status, i !, ihdf, ixyz, imedia
     CHARACTER(LEN=130) :: logline1
     
@@ -680,7 +686,7 @@ SUBROUTINE TimeStepRM
                     sat(i) = 1.0
                 endif
             enddo
-            status = RM_SetSaturation(rm_id, sat(1))
+            status = RM_SetSaturation(rm_id, sat)
         endif
         status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer, 0, 0)
 	    status = 0
@@ -689,11 +695,11 @@ SUBROUTINE TimeStepRM
         
         status = RM_SetTime(rm_id, time) 
         status = RM_SetTimeStep(rm_id, deltim) 
-        status = RM_SetConcentrations(rm_id, c(1,1))
+        status = RM_SetConcentrations(rm_id, c)
         CALL time_parallel(10)                                    ! 10 - 9 chemistry communication
         status = RM_RunCells(rm_id)  
         CALL time_parallel(11)                                    ! 11 - 10 run cells
-        status = RM_GetConcentrations(rm_id, c(1,1))
+        status = RM_GetConcentrations(rm_id, c)
         !status = RM_GetDensity(rm_id, phreeqc_density(1))
         !status = RM_SetDensity(rm_id, phreeqc_density(1))
         CALL time_parallel(12)                                    ! 12 - 11 chemistry communication
@@ -714,9 +720,10 @@ INTEGER FUNCTION set_components()
     USE mcch, ONLY:              comp_name
     USE mcv, ONLY:               ns
     USE mpi_mod
-    IMPLICIT NONE 
+  USE PhreeqcRM
+  IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
     SAVE
-    INCLUDE 'RM_interface_F.f90.inc'  
     integer method, a_err, i, status
     ! makes the list of components on the Fortran side.
 #ifdef USE_MPI    
@@ -793,8 +800,9 @@ SUBROUTINE run_transport
 END SUBROUTINE run_transport    
     
 SUBROUTINE convert_to_moles(id, c, n)
-    IMPLICIT NONE 
-    INCLUDE "RM_interface_F.f90.inc"
+  USE PhreeqcRM
+  IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
     DOUBLE PRECISION, INTENT(inout), DIMENSION(:,:) :: c
     INTEGER, INTENT(in) :: id, n
     DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: gfw
@@ -809,7 +817,7 @@ SUBROUTINE convert_to_moles(id, c, n)
             PRINT *, "Array allocation failed: convert_to_moles"
             STOP
         ENDIF 
-        status = RM_GetGfw(id, gfw(1))
+        status = RM_GetGfw(id, gfw)
         DO i = 1, n        
             DO k = 1, ncomps    
                 ! kg/kgs * 1000 / gfw = mol/kgs

@@ -19,8 +19,9 @@ SUBROUTINE wellsr_ss_flow
   USE mcv_m
   USE mcw
   USE mcw_m
+  USE PhreeqcRM
   IMPLICIT NONE
-  INCLUDE "RM_interface_F.f90.inc"
+  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC INT
   REAL(KIND=kdp) :: sum1, sumdnz, summob, udnkt, udnsur,  &
        upm, upwkt, upwsur, uqvsur, uqwm, uqwmi,  &

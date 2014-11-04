@@ -22,7 +22,9 @@ SUBROUTINE write5
   USE mcw_m
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE print_control_mod
+  USE PhreeqcRM
   IMPLICIT NONE
+  !INCLUDE "RM_interface_F.f90.inc"
   INTERFACE
       SUBROUTINE convert_to_moles(id, c, n)
           IMPLICIT NONE 
@@ -31,7 +33,6 @@ SUBROUTINE write5
       END SUBROUTINE
   END INTERFACE 
   INCLUDE 'IPhreeqc.f90.inc'
-  INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX, INT
   CHARACTER(LEN=39) :: fmt2, fmt4
@@ -58,7 +59,7 @@ SUBROUTINE write5
   CHARACTER(LEN=100) :: string, svalue, line
   INTEGER :: iphreeqc_id, vtype
   DOUBLE PRECISION, dimension(:), allocatable :: tc, p_atm
-  DOUBLE PRECISION, dimension(:), allocatable :: c_well
+  DOUBLE PRECISION, dimension(:,:), allocatable :: c_well
   DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: dcmax_temp
   !     ------------------------------------------------------------------
   !...
@@ -774,7 +775,7 @@ SUBROUTINE write5
         endif
         status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -alkalinity");
         string = "RUN_CELLS; -cell 1"
-        allocate(c_well(ns), tc(1), p_atm(1))
+        allocate(c_well(1,ns), tc(1), p_atm(1))
         DO  iwel=1,nwel
            mkt=mwel(iwel,nkswel(iwel))
            u2=0.d0
@@ -787,7 +788,7 @@ SUBROUTINE write5
               !              u2=pwkt(iwel)/(den0*gz)+zwt(iwel)  !***incorrect
               DO  is=1,ns
                  u10(is)=cwkt_mol(iwel,is)
-                 c_well(is) = c(mkt,is)
+                 c_well(1,is) = c(mkt,is)
               END DO
            ELSE
               ! ... Observation well Q=0 ,WQMETH=0
@@ -795,7 +796,7 @@ SUBROUTINE write5
               IF (solute) THEN
                  DO  is=1,ns
                     u10(is)=c_mol(mkt,is)
-                    c_well(is) = c(mkt,is)
+                    c_well(1,is) = c(mkt,is)
                  END DO
               ENDIF
            END IF
