@@ -59,11 +59,15 @@ int main(int argc, char* argv[])
 
 	units_tester();
 	advection_cpp();
+#if defined(TEST_FORTRAN)
 	advection_f90();
+#endif
 	advection_c();
 
 	species_cpp();
+#if defined(TEST_FORTRAN)
 	species_f90();
+#endif
 	species_c();
 
 
