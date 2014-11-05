@@ -21,7 +21,6 @@ SUBROUTINE read3
   USE rewi_mod
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifrd.inc'
   INTERFACE
      FUNCTION uppercase(string) RESULT(outstring)

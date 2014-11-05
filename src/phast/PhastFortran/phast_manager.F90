@@ -25,7 +25,6 @@ SUBROUTINE phast_manager
     USE XP_module, ONLY: Transporter
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
     SAVE
     INTERFACE
         INTEGER FUNCTION set_fdtmth()
@@ -272,7 +271,6 @@ SUBROUTINE time_parallel(i)
     USE mpi_mod
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
     integer :: i, ierr
     DOUBLE PRECISION t
     DOUBLE PRECISION, DIMENSION(0:16), save :: times
@@ -435,9 +433,8 @@ SUBROUTINE CreateRM
     USE mcs,  ONLY: nthreads
     USE mcv,  ONLY: ns
     USE mpi_mod
-  USE PhreeqcRM
-  IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
+    USE PhreeqcRM
+    IMPLICIT NONE
     SAVE 
     INTEGER i, a_err, status
     CHARACTER*32 string
@@ -482,9 +479,8 @@ SUBROUTINE InitialEquilibrationRM
     USE mcp, ONLY:               pv
     USE mcv, ONLY:               c, frac, sat, time_phreeqc
     USE hdf_media_m, ONLY:       pr_hdf_media
-  USE PhreeqcRM
-  IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
+    USE PhreeqcRM
+    IMPLICIT NONE
     SAVE
     DOUBLE PRECISION :: deltim_dummy
     CHARACTER(LEN=130) :: logline1
@@ -549,9 +545,8 @@ SUBROUTINE InitializeRM
     USE mcv, ONLY:  c, frac, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
     USE mcv_m, ONLY: exchange_units, gasphase_units, kinetics_units, ppassemblage_units, ssassemblage_units, surface_units
 
-  USE PhreeqcRM
-  IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
+    USE PhreeqcRM
+    IMPLICIT NONE
     SAVE
     INTERFACE    
         SUBROUTINE CreateMappingFortran(ic)
@@ -651,9 +646,8 @@ SUBROUTINE TimeStepRM
     USE mcv,  ONLY:              c, deltim, frac, indx_sol1_ic, sat, time
     USE hdf_media_m, ONLY:       pr_hdf_media
     USE print_control_mod, ONLY: print_force_chemistry, print_hdf_chemistry, print_restart
-  USE PhreeqcRM
-  IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
+    USE PhreeqcRM
+    IMPLICIT NONE
     SAVE
     INTEGER stop_msg, status, i !, ihdf, ixyz, imedia
     CHARACTER(LEN=130) :: logline1
@@ -720,9 +714,8 @@ INTEGER FUNCTION set_components()
     USE mcch, ONLY:              comp_name
     USE mcv, ONLY:               ns
     USE mpi_mod
-  USE PhreeqcRM
-  IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
+    USE PhreeqcRM
+    IMPLICIT NONE
     SAVE
     integer method, a_err, i, status
     ! makes the list of components on the Fortran side.
@@ -800,9 +793,8 @@ SUBROUTINE run_transport
 END SUBROUTINE run_transport    
     
 SUBROUTINE convert_to_moles(id, c, n)
-  USE PhreeqcRM
-  IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
+    USE PhreeqcRM
+    IMPLICIT NONE
     DOUBLE PRECISION, INTENT(inout), DIMENSION(:,:) :: c
     INTEGER, INTENT(in) :: id, n
     DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: gfw

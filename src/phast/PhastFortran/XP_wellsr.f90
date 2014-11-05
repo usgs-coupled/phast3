@@ -18,7 +18,6 @@ SUBROUTINE XP_wellsr_thread(xp)
   USE XP_module, ONLY: Transporter
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC INT
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: sum1, sumdnz, summob, ucwkt, udnkt, udnsur,  &
@@ -581,7 +580,6 @@ SUBROUTINE XP_wellsr(xp)
   USE XP_module, ONLY: Transporter
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC INT
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: sum1, sumdnz, summob, ucwkt, udnkt, udnsur,  &

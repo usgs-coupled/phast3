@@ -14,7 +14,6 @@ SUBROUTINE write1
   USE mcv_m
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INTEGER :: i
   CHARACTER(LEN=11) :: fmt1
   CHARACTER(LEN=130) :: logline1, logline2

@@ -19,7 +19,6 @@ SUBROUTINE terminate_phast
 #endif
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   !
   CHARACTER(LEN=160) :: fname
   CHARACTER(LEN=130) :: logline1

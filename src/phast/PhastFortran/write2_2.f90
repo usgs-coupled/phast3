@@ -22,7 +22,6 @@ SUBROUTINE write2_2
   USE phys_const
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INTERFACE
       SUBROUTINE convert_to_moles(id, c, n)
           IMPLICIT NONE 

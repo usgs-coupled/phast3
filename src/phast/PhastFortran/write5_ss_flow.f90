@@ -24,7 +24,6 @@ SUBROUTINE write5_ss_flow
   USE print_control_mod
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX, INT
   CHARACTER(LEN=46) :: aformt = '(TR5,A43,1PE12.4,TR1,A7,TR1,A,3(1PG10.3,A),2A)'

@@ -18,7 +18,6 @@ SUBROUTINE init3
   USE print_control_mod
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   SAVE
   INTERFACE
      SUBROUTINE load_indx_bc(ibct,indx1_bc,indx2_bc,mxf_bc,mbc,nbc)

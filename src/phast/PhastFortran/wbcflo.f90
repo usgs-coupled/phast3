@@ -17,7 +17,6 @@ SUBROUTINE wbcflo
   USE mcw_m
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   REAL(KIND=kdp) :: uqhw, uqwm
   INTEGER :: a_err, da_err, i, iis, iwel, iwfss, j, k, ks, m, nsa
   LOGICAL :: florev

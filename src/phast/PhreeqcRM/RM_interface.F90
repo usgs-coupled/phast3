@@ -1,5 +1,4 @@
 MODULE PhreeqcRM
-    !USE ISO_C_BINDING
     IMPLICIT NONE
     SAVE
 #if defined(NDEBUG)
@@ -9,7 +8,6 @@ MODULE PhreeqcRM
 #endif     
     INTEGER :: rmf_nxyz=-1
     INTEGER :: rmf_ncomps=-1
-!INCLUDE 'RM_interface_F.f90.inc'
     CONTAINS
 
 INTEGER FUNCTION RM_Abort(id, rslt, str)

@@ -20,7 +20,6 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
   USE XP_module, ONLY: Transporter
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   TYPE (Transporter) :: xp
   INTEGER, INTENT(IN) :: iwel
   INTEGER, INTENT(IN) :: iwfss
@@ -435,7 +434,6 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
   USE phys_const
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INTEGER, INTENT(IN) :: iwel
   INTEGER, INTENT(IN) :: iwfss
   REAL(KIND=kdp), INTENT(IN) :: uqwmr
