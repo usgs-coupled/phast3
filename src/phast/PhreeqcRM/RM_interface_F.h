@@ -5,7 +5,7 @@
 #define RMF_INTERFACE_F_H
 
 #if defined(_MSC_VER)
-#define FC_FUNC_(name,NAME) NAME
+//#define FC_FUNC_(name,NAME) NAME
 #endif
 
 #if defined(FC_FUNC_)
