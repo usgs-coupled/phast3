@@ -7,22 +7,16 @@ lib_LTLIBRARIES=libphreeqcrm.la
 libphreeqcrm_la_SOURCES=\
 	PhreeqcRM.cpp\
 	RM_interface_C.cpp\
-	RM_interface_F.cpp\
-	IPhreeqcPhast/fwrapPhast.cpp\
-	IPhreeqcPhast/fwrapPhast.h\
 	IPhreeqcPhast/IPhreeqcPhast.cxx\
 	IPhreeqcPhast/IPhreeqcPhast.h\
 	IPhreeqcPhast/IPhreeqcPhastLib.cpp\
 	IPhreeqcPhast/IPhreeqcPhastLib.h\
-	IPhreeqcPhast/IPhreeqc/fwrap.cpp\
-	IPhreeqcPhast/IPhreeqc/fwrap.h\
 	IPhreeqcPhast/IPhreeqc/thread.h\
 	IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp\
 	IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx\
 	IPhreeqcPhast/IPhreeqc/CVar.hxx\
 	IPhreeqcPhast/IPhreeqc/Debug.h\
 	IPhreeqcPhast/IPhreeqc/ErrorReporter.hxx\
-	IPhreeqcPhast/IPhreeqc/IPhreeqcF.f\
 	IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp\
 	IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
@@ -170,12 +164,32 @@ include_HEADERS=\
 	$(top_srcdir)/IrmResult.h\
 	$(top_srcdir)/PhreeqcRM.h\
 	$(top_srcdir)/RM_interface_C.h\
-	$(top_srcdir)/RM_interface_F.h\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqcPhast.h\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/Var.h
+
+
+if BUILD_FORTRAN
+
+DEFS+=\
+	-DTEST_FORTRAN
+
+libphreeqcrm_la_SOURCES+=\
+	RM_interface.F90\
+	RM_interface_F.cpp\
+	IPhreeqcPhast/IPhreeqc/fwrap.cpp\
+	IPhreeqcPhast/IPhreeqc/fwrap.h\
+	IPhreeqcPhast/IPhreeqc/IPhreeqcF.f
+
+include_HEADERS+=\
+	$(top_srcdir)/RM_interface_F.h\
+	$(top_srcdir)/RM_interface_F.f90.inc\
+	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
+	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f.inc
+
+endif
 
 
 SUBDIRS = Tests
