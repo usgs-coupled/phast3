@@ -995,7 +995,8 @@ INTEGER FUNCTION RM_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_bounda
     INTEGER, INTENT(IN), DIMENSION(:), OPTIONAL :: bc_sol2
     DOUBLE PRECISION, INTENT(IN), DIMENSION(:), OPTIONAL :: f1
 	if (rmf_debug) call Chk_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1) 
-    RM_InitialPhreeqc2SpeciesConcentrations = RMF_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1)
+    RM_InitialPhreeqc2SpeciesConcentrations = &
+         RMF_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1)
 END FUNCTION RM_InitialPhreeqc2SpeciesConcentrations          
         
 SUBROUTINE Chk_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1) 
@@ -1335,27 +1336,27 @@ INTEGER FUNCTION RM_SetFilePrefix(id, prefix)
 END FUNCTION RM_SetFilePrefix  
 
 INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
-	USE ISO_C_BINDING
-    IMPLICIT NONE
-    INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_SetMpiWorkerCallback(id, fcn) &
-			BIND(C, NAME='RMF_SetMpiWorkerCallback')
-			USE ISO_C_BINDING
-			INTEGER(KIND=C_INT), INTENT(in) :: id
-			INTERFACE
-				INTEGER FUNCTION fcn(method_number)
-				INTEGER, INTENT(in) :: method_number
-				END FUNCTION 
-			END INTERFACE
-        END FUNCTION RMF_SetMpiWorkerCallback
-	END INTERFACE
-	INTEGER, INTENT(IN) :: id
-	INTERFACE
-		INTEGER FUNCTION fcn(method_number)
-		INTEGER, INTENT(in) :: method_number
-		END FUNCTION 
-    END INTERFACE
-    RM_SetMpiWorkerCallback = RMF_SetMpiWorkerCallback(id, fcn)
+  USE ISO_C_BINDING
+  IMPLICIT NONE
+  INTERFACE
+     INTEGER(KIND=C_INT) FUNCTION RMF_SetMpiWorkerCallback(id, fcn) &
+          BIND(C, NAME='RMF_SetMpiWorkerCallback')
+       USE ISO_C_BINDING
+       INTEGER(KIND=C_INT), INTENT(in) :: id
+       INTERFACE
+          INTEGER FUNCTION fcn(method_number) BIND(C)
+            INTEGER, INTENT(in) :: method_number
+          END FUNCTION fcn
+       END INTERFACE
+     END FUNCTION RMF_SetMpiWorkerCallback
+  END INTERFACE
+  INTEGER, INTENT(IN) :: id
+  INTERFACE
+     INTEGER FUNCTION fcn(method_number)
+       INTEGER, INTENT(in) :: method_number
+     END FUNCTION fcn
+  END INTERFACE
+  RM_SetMpiWorkerCallback = RMF_SetMpiWorkerCallback(id, fcn)
 END FUNCTION RM_SetMpiWorkerCallback
 
 INTEGER FUNCTION RM_SetPartitionUZSolids(id, tf)   
