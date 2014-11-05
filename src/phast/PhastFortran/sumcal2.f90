@@ -18,7 +18,6 @@ SUBROUTINE sumcal2
   USE mg2_m, ONLY: hdprnt
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INTEGER :: status
   !
   !$$  CHARACTER(LEN=50) :: aform = '(TR5,A45,T47,1PE12.4,TR1,A7,T66,A,3(1PG10.3,A),2A)'

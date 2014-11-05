@@ -14,7 +14,6 @@ SUBROUTINE write3_ss_flow
   USE mg3_m
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=11) :: blank = '           ', ucc, up1c, up2c, uqc, utc
   CHARACTER(LEN=4) :: limit

@@ -25,8 +25,6 @@ SUBROUTINE closef
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
-  !$$  INTEGER, INTENT(IN) :: mpi_myself     !*** always 0
   CHARACTER(LEN=6), DIMENSION(50) :: st
   INTEGER :: da_err, i1p, i2p, ifu, ip, izn  
   CHARACTER(LEN=130) :: logline1, logline2, logline3

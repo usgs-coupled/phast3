@@ -25,7 +25,6 @@ SUBROUTINE asmslp_flow
   USE solver_iter_mod
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INTERFACE
      SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
        USE machine_constants, ONLY: kdp

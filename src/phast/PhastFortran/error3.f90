@@ -15,7 +15,6 @@ SUBROUTINE error3
   USE print_control_mod
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INTRINSIC INDEX
   CHARACTER(LEN=9) :: cibc
   CHARACTER(LEN=130) :: logline1

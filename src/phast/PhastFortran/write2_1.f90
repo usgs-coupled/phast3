@@ -24,7 +24,6 @@ SUBROUTINE write2_1
   USE ld_seg_mod
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
   CHARACTER(LEN=7) :: cw1

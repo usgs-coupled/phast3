@@ -193,7 +193,6 @@ SUBROUTINE init3_bcast_w
   USE XP_module, ONLY: Transporter
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   TYPE (Transporter) :: xp
   INTEGER :: ls
   INTEGER, SAVE :: ntd=0

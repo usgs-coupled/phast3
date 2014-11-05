@@ -19,9 +19,8 @@
     USE print_control_mod
     USE XP_module, ONLY: Transporter
     USE mpi_mod
-  USE PhreeqcRM
-  IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
+    USE PhreeqcRM
+    IMPLICIT NONE
     INTERFACE
         integer function mpi_methods(method)
             integer, intent(in) :: method

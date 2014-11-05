@@ -17,7 +17,6 @@ SUBROUTINE error4
   USE mg2_m
   USE PhreeqcRM
   IMPLICIT NONE
-  !INCLUDE "RM_interface_F.f90.inc"
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX
   CHARACTER(LEN=9) :: cibc
