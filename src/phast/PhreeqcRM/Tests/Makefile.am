@@ -1,0 +1,47 @@
+##EXTRA_DIST = test_c.vcproj test_cxx.vcproj test_f90.vfproj test_f.vfproj main77.f main.f90
+
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/IPhreeqcPhast -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(top_builddir)
+
+TESTS = test
+check_PROGRAMS = test
+
+test_SOURCES = advection_c.c advection_cpp.cpp main.cpp species_c.c species_cpp.cpp
+test_LDADD = $(top_builddir)/libphreeqcrm.la
+test_LINK = $(CXXLINK)
+
+
+DISTCLEANFILES =\
+	species_cpp.dmp\
+	Species_cpp.log.txt\
+	species_c.dmp\
+	advection_c.dmp\
+	Advect_c.chem.txt\
+	Units_Worker.chem.txt\
+	Species_c.chem.txt\
+	Units_InitialPhreeqc_1.log.txt\
+	species_utility_c.txt\
+	Advect_cpp.chem.txt\
+	Species_c.log.txt\
+	utility_c.txt\
+	advection_cpp.dmp\
+	Units_InitialPhreeqc_2.log.txt\
+	species_utility_cpp.txt\
+	Units_Worker.log.txt\
+	Units_utility.out\
+	Advect_cpp.log.txt\
+	Species_cpp.chem.txt\
+	Units_InitialPhreeqc_2.chem.txt\
+	Advect_c.log.txt\
+	utility_cpp.txt\
+	Units_InitialPhreeqc_1.chem.txt
+
+if BUILD_FORTRAN
+
+test_SOURCES+=\
+	advection_f90.F90\
+	species_f90.F90
+
+test_LDADD+=$(FCLIBS)
+
+endif
+
