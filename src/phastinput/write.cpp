@@ -1047,6 +1047,74 @@ write_bc_static(void)
 
 	if (count_river_segments > 0)
 	{
+		// Calculate total area for each cell
+		
+		for (i = 0; i < count_cells; i++)
+		{
+			if (cells[i].specified)
+				continue;
+			cells[i].river_area = 0.0;
+			for (j = 0; j < cells[i].count_river_polygons; j++)
+			{
+				area =
+					cells[i].river_polygons[j].area *
+					units.horizontal.input_to_si *
+					units.horizontal.input_to_si;
+				cells[i].river_area += area;
+			}
+		}
+
+		// Calculate average properties for cell
+		for (i = 0; i < count_cells; i++)
+		{
+			if (cells[i].specified)
+				continue;
+			cells[i].river_leakance_avg = 0.0;
+			cells[i].river_z_avg = 0.0;
+			for (j = 0; j < cells[i].count_river_polygons; j++)
+			{
+				area =
+					cells[i].river_polygons[j].area *
+					units.horizontal.input_to_si *
+					units.horizontal.input_to_si;
+				river_number = cells[i].river_polygons[j].river_number;
+				point_number = cells[i].river_polygons[j].point_number;
+
+				// river_k_avg
+				w0 = cells[i].river_polygons[j].w;
+				w1 = 1. - w0;
+				river_k =
+					(rivers[river_number].points[point_number].k * w0 +
+					 rivers[river_number].points[point_number +
+												 1].k * w1) *
+					units.river_bed_k.input_to_si;
+
+				// river_thickness_avg
+				thickness =
+					(rivers[river_number].points[point_number].thickness *
+					 w0 + rivers[river_number].points[point_number +
+													  1].thickness * w1) *
+					units.river_bed_thickness.input_to_si;
+				
+				// river_leakance_avg
+				leakance =
+					river_k / thickness * fluid_viscosity / (fluid_density * GRAVITY);
+				cells[i].river_leakance_avg += leakance * area / cells[i].river_area;
+
+				
+				// river_z_avg
+				/*  calculate bottom elevations, convert to SI */
+				z0 = rivers[river_number].points[point_number].z_grid *
+						units.vertical.input_to_si;
+
+				z1 = rivers[river_number].points[point_number + 1].z_grid *
+						units.vertical.input_to_si;
+				z = (z0 * w0 + z1 * w1);
+				cells[i].river_z_avg += z * area / cells[i].river_area;
+			}
+		}
+
+		// write results
 		int segment = 1;
 		for (i = 0; i < count_cells; i++)
 		{
@@ -1064,68 +1132,10 @@ write_bc_static(void)
 					units.horizontal.input_to_si *
 					units.horizontal.input_to_si;
 					/*units.river_width.input_to_si;*/ /* Area now calculated in grid units */
-				river_number = cells[i].river_polygons[j].river_number;
-				point_number = cells[i].river_polygons[j].point_number;
-				w0 = cells[i].river_polygons[j].w;
-				w1 = 1. - w0;
-				river_k =
-					(rivers[river_number].points[point_number].k * w0 +
-					 rivers[river_number].points[point_number +
-												 1].k * w1) *
-					units.river_bed_k.input_to_si;
-				thickness =
-					(rivers[river_number].points[point_number].thickness *
-					 w0 + rivers[river_number].points[point_number +
-													  1].thickness * w1) *
-					units.river_bed_thickness.input_to_si;
-
-				leakance =
-					river_k / thickness * fluid_viscosity / (fluid_density *
-															 GRAVITY);
-
-				/*  calculate bottom elevations, convert to SI */
-#ifdef SKIP
-				if (rivers[river_number].points[point_number].z_user_defined ==
-					FALSE)
-				{
-					z0 = rivers[river_number].points[point_number].
-						current_head * units.head.input_to_si -
-						rivers[river_number].points[point_number].depth *
-						units.vertical.input_to_si;
-				}
-				else
-				{
-					z0 = rivers[river_number].points[point_number].z *
-						units.vertical.input_to_si;
-				}
-#endif
-				z0 = rivers[river_number].points[point_number].z_grid *
-						units.vertical.input_to_si;
-#ifdef SKIP
-				if (rivers[river_number].points[point_number + 1].z_defined ==
-					FALSE)
-				{
-					z1 = rivers[river_number].points[point_number +
-													 1].current_head *
-						units.head.input_to_si -
-						rivers[river_number].points[point_number +
-													1].depth *
-						units.vertical.input_to_si;
-				}
-				else
-				{
-					z1 = rivers[river_number].points[point_number +
-													 1].z *
-						units.vertical.input_to_si;
-				}
-#endif
-				z1 = rivers[river_number].points[point_number + 1].z_grid *
-						units.vertical.input_to_si;
-				z = (z0 * w0 + z1 * w1);
 
 				/* segment number, cell no., area, leakance, z */
 				output_msg(OUTPUT_HST, "%d %d %e %e %e\n", segment, i + 1,
-						   area, leakance, z);
+						   area, cells[i].river_leakance_avg, cells[i].river_z_avg);
 				segment++;
 			}
 		}
@@ -2046,6 +2056,30 @@ write_bc_transient(void)
 			   "C.3.6.2 .. river segment number, head, solution 1, solution 2, weight solution 1\n");
 	if (count_river_segments > 0 && river_defined == TRUE)
 	{
+		// calculate average head
+		for (i = 0; i < count_cells; i++)
+		{
+			//if (cells[i].cell_active == FALSE) continue;
+			if (cells[i].bc_type == BC_info::BC_SPECIFIED)
+				continue;
+			cells[i].head_avg = 0.0;
+			for (j = 0; j < cells[i].count_river_polygons; j++)
+			{
+				double area =
+					cells[i].river_polygons[j].area *
+					units.horizontal.input_to_si *
+					units.horizontal.input_to_si;
+				river_number = cells[i].river_polygons[j].river_number;
+				point_number = cells[i].river_polygons[j].point_number;
+				w0 = cells[i].river_polygons[j].w;
+				w1 = 1. - w0;
+				head =
+					(rivers[river_number].points[point_number].current_head *
+					 w0 + rivers[river_number].points[point_number + 1].current_head * w1) *
+					units.head.input_to_si;
+				cells[i].head_avg += head * area / cells[i].river_area;
+			}
+		}
 		k = 1;
 		for (i = 0; i < count_cells; i++)
 		{
@@ -2141,7 +2175,7 @@ write_bc_transient(void)
 				//if (rivers[river_number].update == TRUE) {
 				// Write all rivers if anything changes
 				assert(0.0 <= w0 && w0 <= 1.0);
-				output_msg(OUTPUT_HST, "%d %e %d %d %e\n", k, head, solution1,
+				output_msg(OUTPUT_HST, "%d %e %d %d %e\n", k, cells[i].head_avg, solution1,
 						   solution2, w0);
 				/* Debug
 				   fprintf(stderr,"%d %d %e %d %d %e\n", point_number, k, head, solution1, solution2, w0);
