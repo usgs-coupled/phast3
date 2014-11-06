@@ -1352,7 +1352,7 @@ INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
   END INTERFACE
   INTEGER, INTENT(IN) :: id
   INTERFACE
-     INTEGER FUNCTION fcn(method_number)
+     INTEGER FUNCTION fcn(method_number) BIND(C)
        INTEGER, INTENT(in) :: method_number
      END FUNCTION fcn
   END INTERFACE
