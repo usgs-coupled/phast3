@@ -167,9 +167,9 @@
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy ..\advect.pqi.in ..\advect.pqi
-copy ..\phreeqc.dat.in ..\phreeqc.dat
-copy ..\units.pqi.in ..\units.pqi
+      <Command>copy ..\advect.pqi.in advect.pqi
+copy ..\phreeqc.dat.in phreeqc.dat
+copy ..\units.pqi.in units.pqi
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -202,9 +202,9 @@ copy ..\units.pqi.in ..\units.pqi
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy ..\advect.pqi.in ..\advect.pqi
-copy ..\phreeqc.dat.in ..\phreeqc.dat
-copy ..\units.pqi.in ..\units.pqi
+      <Command>copy ..\advect.pqi.in advect.pqi
+copy ..\phreeqc.dat.in phreeqc.dat
+copy ..\units.pqi.in units.pqi
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -232,9 +232,9 @@ copy ..\units.pqi.in ..\units.pqi
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy ..\advect.pqi.in ..\advect.pqi
-copy ..\phreeqc.dat.in ..\phreeqc.dat
-copy ..\units.pqi.in ..\units.pqi
+      <Command>copy ..\advect.pqi.in advect.pqi
+copy ..\phreeqc.dat.in phreeqc.dat
+copy ..\units.pqi.in units.pqi
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -265,9 +265,9 @@ copy ..\units.pqi.in ..\units.pqi
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy ..\advect.pqi.in ..\advect.pqi
-copy ..\phreeqc.dat.in ..\phreeqc.dat
-copy ..\units.pqi.in ..\units.pqi
+      <Command>copy ..\advect.pqi.in advect.pqi
+copy ..\phreeqc.dat.in phreeqc.dat
+copy ..\units.pqi.in units.pqi
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -295,9 +295,9 @@ copy ..\units.pqi.in ..\units.pqi
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy ..\advect.pqi.in ..\advect.pqi
-copy ..\phreeqc.dat.in ..\phreeqc.dat
-copy ..\units.pqi.in ..\units.pqi
+      <Command>copy ..\advect.pqi.in advect.pqi
+copy ..\phreeqc.dat.in phreeqc.dat
+copy ..\units.pqi.in units.pqi
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -327,9 +327,9 @@ copy ..\units.pqi.in ..\units.pqi
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy ..\advect.pqi.in ..\advect.pqi
-copy ..\phreeqc.dat.in ..\phreeqc.dat
-copy ..\units.pqi.in ..\units.pqi
+      <Command>copy ..\advect.pqi.in advect.pqi
+copy ..\phreeqc.dat.in phreeqc.dat
+copy ..\units.pqi.in units.pqi
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -361,9 +361,9 @@ copy ..\units.pqi.in ..\units.pqi
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy ..\advect.pqi.in ..\advect.pqi
-copy ..\phreeqc.dat.in ..\phreeqc.dat
-copy ..\units.pqi.in ..\units.pqi
+      <Command>copy ..\advect.pqi.in advect.pqi
+copy ..\phreeqc.dat.in phreeqc.dat
+copy ..\units.pqi.in units.pqi
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -397,9 +397,9 @@ copy ..\units.pqi.in ..\units.pqi
     <PostBuildEvent>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>copy ..\advect.pqi.in ..\advect.pqi
-copy ..\phreeqc.dat.in ..\phreeqc.dat
-copy ..\units.pqi.in ..\units.pqi
+      <Command>copy ..\advect.pqi.in advect.pqi
+copy ..\phreeqc.dat.in phreeqc.dat
+copy ..\units.pqi.in units.pqi
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
