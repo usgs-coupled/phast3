@@ -189,10 +189,15 @@ include_HEADERS+=\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f.inc
 
+install-data-hook:
+	@if test -n "$(FC_MODEXT)"; then \
+	  $(INSTALL_DATA) $(top_builddir)/*.$(FC_MODEXT) $(DESTDIR)$(includedir)/. ; \
+	fi
+
 mostlyclean-local: clean-modules
 .PHONY: clean-modules
 clean-modules:
-	-test -z $(FC_MODEXT) || rm -f *.$(FC_MODEXT)
+	-test -z $(FC_MODEXT) || $(RM) *.$(FC_MODEXT)
 
 endif
 
