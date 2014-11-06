@@ -9,8 +9,7 @@ test_SOURCES = advection_c.c advection_cpp.cpp main.cpp species_c.c species_cpp.
 test_LDADD = $(top_builddir)/libphreeqcrm.la
 test_LINK = $(CXXLINK)
 
-
-DISTCLEANFILES =\
+CLEANFILES =\
 	species_cpp.dmp\
 	Species_cpp.log.txt\
 	species_c.dmp\
