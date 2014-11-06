@@ -6,7 +6,6 @@ subroutine advection_f90()
 #ifdef USE_MPI    
   INCLUDE 'mpif.h'
 #endif
-  !INCLUDE 'RM_interface_F.f90.inc'
   INCLUDE 'IPhreeqc.f90.inc'
   interface
      subroutine advect_f90(c, bc_conc, ncomps, nxyz)

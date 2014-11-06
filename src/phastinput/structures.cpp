@@ -209,6 +209,10 @@ cell_init(struct cell *cell_ptr)
 		malloc_error();
 	river_polygon_init(cell_ptr->river_polygons);
 	cell_ptr->count_river_polygons = 0;
+	cell_ptr->river_area = 0.0;
+	cell_ptr->river_leakance_avg = 0.0;
+	cell_ptr->river_z_avg = 0.0;
+	cell_ptr->head_avg = 0.0;
 	cell_ptr->river_starting_segment_fortran = 0;
 	cell_ptr->drain_starting_segment_fortran = 0;
 	cell_ptr->flux_starting_segment_fortran = 0;

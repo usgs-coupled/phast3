@@ -485,6 +485,10 @@ struct cell
 		drain_segments;			// segments attached to correct vertical cell
 	int
 		count_river_polygons;
+	double river_area;
+	double river_leakance_avg;
+	double river_z_avg;
+	double head_avg;
 	int
 		river_starting_segment_fortran;
 	int
