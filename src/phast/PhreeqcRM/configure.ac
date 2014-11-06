@@ -28,21 +28,24 @@ AC_MSG_CHECKING([if Fortran interface included])
 AC_ARG_ENABLE([fortran],
      [AC_HELP_STRING([--enable-fortran],
                      [include the Fortran interface @<:@default=yes@:>@])],
-     [IPQ_FORTRAN=$enableval],
-     [IPQ_FORTRAN=yes])
+     [IRM_FORTRAN=$enableval],
+     [IRM_FORTRAN=yes])
 
-if test "X$IPQ_FORTRAN" = "Xyes"; then
+if test "X$IRM_FORTRAN" = "Xyes"; then
   AC_MSG_RESULT(yes)
   AC_PROG_FC
   AC_FC_LIBRARY_LDFLAGS
   AC_FC_WRAPPERS 
   AC_FC_MAIN
+  AC_FC_MODULE_EXTENSION
+  AC_FC_MODULE_FLAG
+  AC_FC_MODULE_OUTPUT_FLAG
   AC_SUBST(F77, $FC)
   AC_SUBST(FFLAGS, $FCFLAGS) 
 else
   AC_MSG_RESULT(no)
 fi
-AM_CONDITIONAL([BUILD_FORTRAN], [test "X$IPQ_FORTRAN" = "Xyes"])
+AM_CONDITIONAL([BUILD_FORTRAN], [test "X$IRM_FORTRAN" = "Xyes"])
 
 AC_PROG_LIBTOOL
 
