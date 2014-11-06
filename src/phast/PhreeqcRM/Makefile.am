@@ -189,6 +189,11 @@ include_HEADERS+=\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f.inc
 
+mostlyclean-local: clean-modules
+.PHONY: clean-modules
+clean-modules:
+	-test -z $(FC_MODEXT) || rm -f *.$(FC_MODEXT)
+
 endif
 
 
