@@ -194,6 +194,11 @@ install-data-hook:
 	  $(INSTALL_DATA) $(top_builddir)/*.$(FC_MODEXT) $(DESTDIR)$(includedir)/. ; \
 	fi
 
+uninstall-hook:
+	@if test -n "$(FC_MODEXT)"; then \
+	  $(RM) $(DESTDIR)$(includedir)/[pP][hH][rR][eE][eE][qQ][cC][rR][mM].$(FC_MODEXT) ; \
+	fi
+
 mostlyclean-local: clean-modules
 .PHONY: clean-modules
 clean-modules:
