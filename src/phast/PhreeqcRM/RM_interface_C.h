@@ -1258,6 +1258,62 @@ enddo
 Called by root.
  */
 int        RM_GetNthSelectedOutputUserNumber(int id, int n);
+
+/**
+Returns a vector of saturations (@a sat) as calculated by the reaction module.
+Reactions will change the volume of solution in a cell.
+The transport code must decide whether to ignore or account for this change in solution volume due to reactions.
+Following reactions, the cell saturation is calculated as solution volume (@ref RM_GetSolutionVolume)
+divided by the product of representative volume (@ref RM_SetRepresentativeVolume) and the porosity (@ref RM_SetPorosity).
+The cell saturation returned by @a RM_GetSaturation may be less than or greater than the saturation set by the transport code
+(@ref RM_SetSaturation), and may be greater than or less than 1.0, even in fully saturated simulations.
+Only the following databases distributed with PhreeqcRM have molar volume information needed
+to accurately calculate solution volume and saturation: phreeqc.dat, Amm.dat, and pitzer.dat.
+
+@param id               The instance @a id returned from @ref RM_Create.
+@param sat_calc              Vector to receive the saturations. Dimension of the array is set to @a nxyz,
+where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount).
+Values for inactive cells are set to 1e30.
+@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
+
+@see                    @ref RM_GetSolutionVolume, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+sat_calc = (double *) malloc((size_t) (nxyz * sizeof(double)));
+status = RM_RunCells(id);
+status = RM_GetSaturation(id, sat_calc);
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Interface:
+@htmlonly
+<CODE>
+<PRE>
+INTEGER FUNCTION RM_GetSaturation(id, sat)
+  IMPLICIT NONE
+  INTEGER, INTENT(in) :: id
+  DOUBLE PRECISION, INTENT(out) :: sat
+END FUNCTION RM_GetSaturation
+</PRE>
+</CODE>
+@endhtmlonly
+@par Fortran90 Example:
+@htmlonly
+<CODE>
+<PRE>
+allocate(sat_calc(nxyz))
+status = RM_RunCells(id)
+status = RM_GetSaturation(id, sat_calc)
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root, workers must be in the loop of @ref RM_MpiWorker.
+ */
+IRM_RESULT               RM_GetSaturation(int id, double *sat_calc);
+
 /**
 Populates an array with values from the current selected-output definition. @ref RM_SetCurrentSelectedOutputUserNumber
 determines which of the selected-output definitions is used to populate the array.
@@ -1318,61 +1374,6 @@ enddo
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT        RM_GetSelectedOutput(int id, double *so);
-
-/**
-Returns a vector of saturations (@a sat) as calculated by the reaction module.
-Reactions will change the volume of solution in a cell.
-The transport code must decide whether to ignore or account for this change in solution volume due to reactions.
-Following reactions, the cell saturation is calculated as solution volume (@ref RM_GetSolutionVolume)
-divided by the product of representative volume (@ref RM_SetRepresentativeVolume) and the porosity (@ref RM_SetPorosity).
-The cell saturation returned by @a RM_GetSaturation may be less than or greater than the saturation set by the transport code
-(@ref RM_SetSaturation), and may be greater than or less than 1.0, even in fully saturated simulations.
-Only the following databases distributed with PhreeqcRM have molar volume information needed
-to accurately calculate solution volume and saturation: phreeqc.dat, Amm.dat, and pitzer.dat.
-
-@param id               The instance @a id returned from @ref RM_Create.
-@param sat_calc              Vector to receive the saturations. Dimension of the array is set to @a nxyz,
-where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount).
-Values for inactive cells are set to 1e30.
-@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-
-@see                    @ref RM_GetSolutionVolume, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
-@par C++ Example:
-@htmlonly
-<CODE>
-<PRE>
-sat_calc = (double *) malloc((size_t) (nxyz * sizeof(double)));
-status = RM_RunCells(id);
-status = RM_GetSaturation(id, sat_calc);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSaturation(id, sat)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: sat
-END FUNCTION RM_GetSaturation
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(sat_calc(nxyz))
-status = RM_RunCells(id)
-status = RM_GetSaturation(id, sat_calc)
-</PRE>
-</CODE>
-@endhtmlonly
-@par MPI:
-Called by root, workers must be in the loop of @ref RM_MpiWorker.
- */
-IRM_RESULT               RM_GetSaturation(int id, double *sat_calc);
 
 /**
 Returns the number of columns in the current selected-output definition. @ref RM_SetCurrentSelectedOutputUserNumber
@@ -2455,35 +2456,6 @@ status = RM_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, nbound, bc1, bc2, 
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(OUT) :: c
-  INTEGER, INTENT(IN) :: n_boundary, bc_sol1
-  INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
-  DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
-END FUNCTION RM_InitialPhreeqc2Concentrations
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-nbound = 1
-allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
-allocate(bc_conc(nbound, ncomps))
-bc1 = 0           ! solution 0 from InitialPhreeqc instance
-bc2 = -1          ! no bc2 solution for mixing
-bc_f1 = 1.0       ! mixing fraction for bc1
-status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1)
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root.
  */
@@ -2556,6 +2528,7 @@ IRM_RESULT RM_InitialPhreeqcCell2Module(int id,
                 int n,		                            // InitialPhreeqc cell number
                 int *module_numbers,		            // Module cell numbers
                 int dim_module_numbers);			    // Number of module cell numbers
+
 /**
 Load a database for all IPhreeqc instances--workers, InitialPhreeqc, and Utility. All definitions
 of the reaction module are cleared (SOLUTION_SPECIES, PHASES, SOLUTIONs, etc.), and the database is read.
