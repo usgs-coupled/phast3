@@ -1,5 +1,5 @@
 /*! @file RM_interface_C.h
-	@brief C/Fortran Documentation
+	@brief C Documentation of the geochemical reaction module PhreeqcRM.
 */
 #ifdef USE_MPI
 #include "mpi.h"
@@ -21,7 +21,7 @@ IRM_BADINSTANCE, otherwise the program will exit with a return code of 4.
 @param err_str       String to be printed as an error message.
 @retval IRM_RESULT   Program will exit before returning unless @a id is an invalid reaction module id.
 @see                 @ref RM_Destroy, @ref RM_ErrorMessage.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -29,30 +29,6 @@ iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm);
 strcpy(str, "SELECTED_OUTPUT 5; -pH; RUN_CELLS; -cells 1");
 status = RunString(iphreeqc_id, str);
 if (status != 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_Abort(id, result, str)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: result
-  CHARACTER, INTENT(in) :: str
-END FUNCTION RM_Abort
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm)
-string = "SELECTED_OUTPUT 5; -pH;RUN_CELLS; -cells 1"
-status = RunString(iphreeqc_id, string)
-if (status .ne. 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
 </PRE>
 </CODE>
 @endhtmlonly
@@ -65,30 +41,11 @@ Close the output and log files.
 @param id            The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).
 @see                 @ref RM_OpenFiles, @ref RM_SetFilePrefix
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_CloseFiles(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_CloseFiles(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_CloseFiles
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_CloseFiles(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -111,7 +68,7 @@ concentrations and then calculate the pH of the mixture.
 @param tc            Array of temperatures to apply to the SOLUTIONs, in degree C. Array of size @a n.
 @param p_atm         Array of pressures to apply to the SOLUTIONs, in atm. Array of size n.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -132,39 +89,6 @@ status = GetSelectedOutputValue2(iphreeqc_id, 1, 0, &vtype, &pH, svalue, 100);
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_Concentrations2Utility(id, c, n, tc, p_atm)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: c
-  INTEGER, INTENT(in) :: n
-  DOUBLE PRECISION, INTENT(in) :: tc, p_atm
-END FUNCTION RM_Concentrations2Utility
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate (c_well(1,ncomps))
-do i = 1, ncomps
-  c_well(1,i) = 0.5 * c(1,i) + 0.5 * c(10,i)
-enddo
-allocate(tc(1), p_atm(1))
-tc(1) = 15.0
-p_atm(1) = 3.0
-iphreeqc_id = RM_Concentrations2Utility(id, c_well, 1, tc, p_atm)
-string = "SELECTED_OUTPUT 5; -pH; RUN_CELLS; -cells 1"
-status = RunString(iphreeqc_id, string)
-status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
-status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called only by root.
  */
@@ -181,7 +105,7 @@ If @a nthreads <= 0, the number of threads is set equal to the number of process
 When using MPI, the argument (@a comm) is the MPI communicator to use within the reaction module.
 @retval Id of the PhreeqcRM instance, negative is failure (See @ref RM_DecodeError).
 @see                 @ref RM_Destroy
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -205,41 +129,6 @@ nxyz = 40;
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_Create(nxyz, nthreads)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: nxyz
-  INTEGER, INTENT(in), OPTIONAL :: nthreads
-END FUNCTION RM_Create
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-nxyz = 40
-#ifdef USE_MPI
-  id = RM_Create(nxyz, MPI_COMM_WORLD)
-  call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
-  if (status .ne. MPI_SUCCESS) then
-    stop "Failed to get mpi_myself"
-  endif
-  if (mpi_myself > 0) then
-    status = RM_MpiWorker(id);
-    status = RM_Destroy(id);
-    return
-  endif
-#else
-  nthreads = 3;
-  id = RM_Create(nxyz, nthreads);
-#endif
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root and workers. 
  */
@@ -256,7 +145,7 @@ Default is a one-to-one mapping--all user grid cells are reaction cells (equival
 @param id               The instance @a id returned from @ref RM_Create.
 @param grid2chem        An array of integers: Nonnegative is a reaction cell number (0 based), negative is an inactive cell. Array of size @a nxyz (number of grid cells).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -268,32 +157,6 @@ for (i = 0; i < nxyz/2; i++)
   grid2chem[i+nxyz/2] = i;
 }
 status = RM_CreateMapping(id, grid2chem);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_CreateMapping(id, grid2chem)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: grid2chem
-END FUNCTION RM_CreateMappingM_Create
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-! For demonstation, two equivalent rows by symmetry
-allocate(grid2chem(nxyz))
-do i = 1, nxyz/2
-  grid2chem(i) = i - 1
-  grid2chem(i+nxyz/2) = i - 1
-enddo
-status = RM_CreateMapping(id, grid2chem)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -323,33 +186,12 @@ typedef enum {
 </PRE>
 </CODE>
 @endhtmlonly
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_CreateMapping(id, grid2chem);
 if (status < 0) status = RM_DecodeError(id, status);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_DecodeError(id, e)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: e
-END FUNCTION RM_DecodeError
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_CreateMapping(id, grid2chem)
-if (status < 0) status = RM_DecodeError(id, status)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -362,30 +204,11 @@ Destroys a reaction module.
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT   0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_Destroy(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_Destroy(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_Destroy
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_Destroy(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -400,7 +223,7 @@ Writes the contents of all workers to file in _RAW formats, including SOLUTIONs 
 @param append           Signal to append to the contents of the dump file: 1 true, 0 false.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetDumpFileName
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -408,29 +231,6 @@ dump_on = 1;
 append = 0;
 status = RM_SetDumpFileName(id, "advection_c.dmp");
 status = RM_DumpModule(id, dump_on, append);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_DumpModule(id, dump_on, append)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: dump_on
-  INTEGER, INTENT(in) :: append
-END FUNCTION RM_DumpModule
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>      dump_on = 1
-append = 0
-status = RM_SetDumpFileName(id, "advection_f90.dmp")
-status = RM_DumpModule(id, dump_on, append)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -445,31 +245,11 @@ Send an error message to the screen, the output file, and the log file.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_ErrorMessage(id, "Goodbye world");
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_ErrorMessage(id, errstr)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(in) :: errstr
-END FUNCTION RM_ErrorMessage
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_ErrorMessage(id, "Goodbye world")
 </PRE>
 </CODE>
 @endhtmlonly
@@ -497,7 +277,7 @@ their charge (@ref RM_GetSpeciesZ).
 @see                 @ref RM_GetComponent, @ref RM_SetSpeciesSaveOn, @ref RM_GetSpeciesConcentrations, 
 @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesName, 
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ, @ref RM_SetComponentH2O.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -509,30 +289,6 @@ for (i = 0; i < ncomps; i++)
   components[i] = (char *) malloc((size_t) (100 * sizeof(char *)));
   status = RM_GetComponent(id, i, components[i], 100);
 }
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_FindComponents(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_FindComponents
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-! Get list of components
-ncomps = RM_FindComponents(id)
-allocate(components(ncomps))
-do i = 1, ncomps
-  status = RM_GetComponent(id, i, components(i))
-enddo
 </PRE>
 </CODE>
 @endhtmlonly
@@ -547,32 +303,12 @@ The number of chemistry cells is less than or equal to the number of cells in th
 @param id            The instance @a id returned from @ref RM_Create.
 @retval              Number of chemistry cells, or IRM_RESULT error code (see @ref RM_DecodeError).
 @see                 @ref RM_CreateMapping, @ref RM_GetGridCellCount.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_CreateMapping(id, grid2chem);
 nchem = RM_GetChemistryCellCount(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetChemistryCellCount(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetChemistryCellCount
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_CreateMapping(id, grid2chem)
-nchem = RM_GetChemistryCellCount(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -583,12 +319,12 @@ int        RM_GetChemistryCellCount(int id);
 /**
 Retrieves an item from the reaction-module component list that was generated by calls to @ref RM_FindComponents.
 @param id               The instance @a id returned from @ref RM_Create.
-@param num              The number of the component to be retrieved. Fortran, 1 based; C, 0 based.
+@param num              The number of the component to be retrieved. C, 0 based.
 @param chem_name        The string value associated with component @a num.
-@param l                The length of the maximum number of characters for @a chem_name (C only).
+@param l                The length of the maximum number of characters for @a chem_name.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetComponentCount
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -603,31 +339,6 @@ for (i = 0; i < ncomps; i++)
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetComponent(id, num, comp_name)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id, num
-  CHARACTER, INTENT(out) :: comp_name
-END FUNCTION RM_GetComponent
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-! Get list of components
-ncomps = RM_FindComponents(id)
-allocate(components(ncomps))
-do i = 1, ncomps
-  status = RM_GetComponent(id, i, components(i))
-enddo
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root and (or) workers.
  */
@@ -639,30 +350,11 @@ The return value from the last call to @ref RM_FindComponents is equal to the re
 @param id               The instance @a id returned from @ref RM_Create.
 @retval                 The number of components in the reaction-module component list, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetComponent.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 ncomps1 = RM_GetComponentCount(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetComponentCount(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetComponentCount
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-ncomps1 = RM_GetComponentCount(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -698,35 +390,13 @@ Values for inactive cells are set to 1e30.
 @see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_GetSaturation,
 @ref RM_SetConcentrations, @ref RM_SetDensity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation,
 @ref RM_SetUnitsSolution, @ref RM_UseSolutionDensityVolume.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 c = (double *) malloc((size_t) (ncomps * nxyz * sizeof(double)));
 status = RM_RunCells(id);
 status = RM_GetConcentrations(id, c);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetConcentrations(id, c)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out)  :: c
-END FUNCTION RM_GetConcentrations
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(c(nxyz, ncomps))
-status = RM_RunCells(id)
-status = RM_GetConcentrations(id, c)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -745,35 +415,13 @@ phreeqc.dat, Amm.dat, and pitzer.dat.
 where @a nxyz is the number of user grid cells (@ref RM_GetGridCellCount). Values for inactive cells are set to 1e30.
 @retval IRM_RESULT          0 is success, negative is failure (See @ref RM_DecodeError).
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 density = (double *) malloc((size_t) (nxyz * sizeof(double)));
 status = RM_RunCells(id);
 status = RM_GetDensity(id, density);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetDensity(id, density)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: density
-END FUNCTION RM_GetDensity
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(density(nxyz))
-status = RM_RunCells(id)
-status = RM_GetDensity(id, density)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -787,10 +435,10 @@ the character argument (@a errstr).
 
 @param id               The instance @a id returned from @ref RM_Create.
 @param errstr           The error string related to the last call to a PhreeqcRM method.
-@param l                Maximum number of characters that can be written to the argument (@a errstr) (C only).
+@param l                Maximum number of characters that can be written to the argument (@a errstr).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>  
@@ -806,35 +454,6 @@ if (status != IRM_OK)
 }
 </PRE>
 </CODE> 
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetErrorString(id, errstr)   
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(out) :: errstr
-END FUNCTION RM_GetErrorString 
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-character(len=:), allocatable :: errstr
-integer l
-if (status .ne. 0) then
-  l = RM_GetErrorStringLength(id)
-  allocate (character(len=l) :: errstr)
-  status = RM_GetErrorString(id, errstr)
-  write(*,"(A)") errstr
-  deallocate(errstr)
-  status = RM_Destroy(id)
-  stop
-endif </PRE>
-</CODE>
 @endhtmlonly
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
@@ -844,7 +463,7 @@ IRM_RESULT RM_GetErrorString(int id, char *errstr, int l);
 Returns the length of the string that contains error messages related to the last call to a PhreeqcRM method. 
 @param id               The instance @a id returned from @ref RM_Create.
 @retval int             Length of the error message string (for C, equivalent to strlen, does not include terminating \0).
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>  
@@ -861,35 +480,6 @@ if (status != IRM_OK)
 </PRE>
 </CODE> 
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetErrorStringLength(id)   
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetErrorString 
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-character(len=:), allocatable :: errstr
-integer l
-if (status .ne. 0) then
-  l = RM_GetErrorStringLength(id)
-  allocate (character(len=l) :: errstr)
-  status = RM_GetErrorString(id, errstr)
-  write(*,"(A)") errstr
-  deallocate(errstr)
-  status = RM_Destroy(id)
-  stop
-endif 
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker..
  */
@@ -898,10 +488,10 @@ int RM_GetErrorStringLength(int id);
 Returns the reaction-module file prefix to the character argument (@a prefix).
 @param id               The instance @a id returned from @ref RM_Create.
 @param prefix           Character string where the prefix is written.
-@param l                Maximum number of characters that can be written to the argument (@a prefix) (C only).
+@param l                Maximum number of characters that can be written to the argument (@a prefix).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetFilePrefix.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -911,30 +501,6 @@ strcpy(str1, "File prefix: ");
 strcat(str1, str);
 strcat(str1, "\n");
 status = RM_OutputMessage(id, str1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetFilePrefix(id, prefix)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(out) :: prefix
-END FUNCTION RM_GetFilePrefix
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-character(100) :: string
-character(200) :: string1
-status = RM_GetFilePrefix(id, string)
-string1 = "File prefix: "//string;
-status = RM_OutputMessage(id, string1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -949,7 +515,7 @@ Returns the gram formula weights (g/mol) for the components in the reaction-modu
 where @a ncomps is the number of components in the component list.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetComponentCount, @ref RM_GetComponent.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -967,36 +533,6 @@ for (i = 0; i < ncomps; i++)
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetGfw(id, gfw)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: gfw
-END FUNCTION RM_GetGfw
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-character(100),   dimension(:), allocatable   :: components
-double precision, dimension(:), allocatable   :: gfw
-ncomps = RM_FindComponents(id)
-allocate(components(ncomps))
-allocate(gfw(ncomps))
-status = RM_GetGfw(id, gfw)
-do i = 1, ncomps
-  status = RM_GetComponent(id, i, components(i))
-  write(string,"(A10, F15.4)") components(i), gfw(i)
-  status = RM_OutputMessage(id, string)
-enddo
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root.
  */
@@ -1009,34 +545,13 @@ there are inactive regions or symmetry in the model definition.
 @param id               The instance @a id returned from @ref RM_Create.
 @retval                 Number of grid cells in the user's model, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create,  @ref RM_CreateMapping.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 nxyz = RM_GetGridCellCount(id);
 sprintf(str1, "Number of grid cells in the user's model: %d\n", nxyz);
 status = RM_OutputMessage(id, str1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetGridCellCount(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetGridCellCount
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-nxyz = RM_GetGridCellCount(id)
-write(string1, "(A,I)") "Number of grid cells in the user's model: ", nxyz
-status = RM_OutputMessage(id, trim(string1))
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1063,33 +578,12 @@ one InitialPhreeqc instance (number 1), and one Utility instance (number 2).
 @retval                 IPhreeqc id for the @a ith IPhreeqc instance, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create, @ref RM_GetThreadCount. 
 See IPhreeqc documentation for descriptions of IPhreeqc methods.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 // Utility pointer is worker number nthreads + 1
 iphreeqc_id1 = RM_GetIPhreeqcId(id, RM_GetThreadCount(id) + 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetIPhreeqcId(id, i)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: i
-END FUNCTION RM_GetIPhreeqcId
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-! Utility pointer is worker number nthreads + 1
-iphreeqc_id1 = RM_GetIPhreeqcId(id, RM_GetThreadCount(id) + 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1108,32 +602,12 @@ constructing the reaction modules (@ref RM_Create).
 @param id               The instance @a id returned from @ref RM_Create.
 @retval                 The MPI task number for a process, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetMpiTasks.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 sprintf(str1, "MPI task number:  %d\n", RM_GetMpiMyself(id));
 status = RM_OutputMessage(id, str1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetMpiMyself(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetMpiMyself
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-write(string1, "(A,I)") "MPI task number: ", RM_GetMpiMyself(id)
-status = RM_OutputMessage(id, string1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1154,34 +628,13 @@ The root task number is zero, and all workers have a task number greater than ze
 @retval                 The number of MPI  processes assigned to the reaction module,
 negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetMpiMyself, @ref RM_Create.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 mpi_tasks = RM_GetMpiTasks(id);
 sprintf(str1, "Number of MPI processes: %d\n", mpi_tasks);
 status = RM_OutputMessage(id, str1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetMpiTasks(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetMpiTasks
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-mpi_tasks = RM_GetMpiTasks(id)
-write(string1, "(A,I)") "Number of MPI processes: ", mpi_tasks
-status = RM_OutputMessage(id, string1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1200,13 +653,13 @@ in sequence. @ref RM_SetCurrentSelectedOutputUserNumber is then used to select
 that user number for selected-output processing.
 @param id               The instance @a id returned from @ref RM_Create.
 @param n                The sequence number of the selected-output definition for which the user number will be returned.
-Fortran, 1 based; C, 0 based.
+C, 0 based.
 @retval                 The user number of the @a nth selected-output definition, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount,
 @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1222,35 +675,6 @@ for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
   // Process results here
   free(selected_out);
 }
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetNthSelectedOutputUserNumber(id, n)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id, n
-END FUNCTION RM_GetNthSelectedOutputUserNumber
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
-  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
-  write(*,*) "Selected output sequence number: ", isel);
-  write(*,*) "Selected output user number:     ", n_user);
-  col = RM_GetSelectedOutputColumnCount(id)
-  allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out)
-  ! Process results here
-  deallocate(selected_out)
-enddo
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1277,35 +701,13 @@ Values for inactive cells are set to 1e30.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 
 @see                    @ref RM_GetSolutionVolume, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
-@par C++ Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 sat_calc = (double *) malloc((size_t) (nxyz * sizeof(double)));
 status = RM_RunCells(id);
 status = RM_GetSaturation(id, sat_calc);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSaturation(id, sat)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: sat
-END FUNCTION RM_GetSaturation
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(sat_calc(nxyz))
-status = RM_RunCells(id)
-status = RM_GetSaturation(id, sat_calc)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1325,7 +727,7 @@ columns in the selected-output definition (@ref RM_GetSelectedOutputColumnCount)
 @see                    @ref RM_GetNthSelectedOutputUserNumber,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1339,34 +741,6 @@ for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
   // Process results here
   free(selected_out);
 }
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSelectedOutput(id, so)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: so
-END FUNCTION RM_GetSelectedOutput
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
-  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
-  col = RM_GetSelectedOutputColumnCount(id)
-  allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out)
-  ! Process results here
-  deallocate(selected_out)
-enddo
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1383,7 +757,7 @@ determines which of the selected-output definitions is used.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1397,33 +771,6 @@ for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
   // Process results here
   free(selected_out);
 }
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSelectedOutputColumnCount(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetSelectedOutputColumnCount
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
-  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
-  col = RM_GetSelectedOutputColumnCount(id)
-  allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out)
-  ! Process results here
-  deallocate(selected_out)
-enddo
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1439,7 +786,7 @@ determines which of the selected-output definitions is used.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1456,33 +803,6 @@ for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSelectedOutputCount(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetSelectedOutputCount
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
-  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
-  col = RM_GetSelectedOutputColumnCount(id)
-  allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out)
-  ! Process results here
-  deallocate(selected_out)
-enddo
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root.
  */
@@ -1492,14 +812,14 @@ Returns a selected output heading. The number of headings is determined by @ref 
 @ref RM_SetCurrentSelectedOutputUserNumber
 determines which of the selected-output definitions is used.
 @param id               The instance @a id returned from @ref RM_Create.
-@param icol             The sequence number of the heading to be retrieved. Fortran, 1 based; C, 0 based.
+@param icol             The sequence number of the heading to be retrieved. C, 0 based.
 @param heading          A string buffer to receive the heading.
-@param length           The maximum number of characters that can be written to the string buffer (C only).
+@param length           The maximum number of characters that can be written to the string buffer.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput,
 @ref RM_GetSelectedOutputColumnCount, @ref RM_GetSelectedOutputCount,
 @ref RM_GetSelectedOutputRowCount, @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1518,34 +838,6 @@ for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSelectedOutputHeading(id, icol, heading)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id, icol
-  CHARACTER, INTENT(out) :: heading
-END FUNCTION RM_GetSelectedOutputHeading
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel);
-  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
-  col = RM_GetSelectedOutputColumnCount(id)
-  do j = 1, col
-    status = RM_GetSelectedOutputHeading(id, j, heading)
-    write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading)
-  enddo
-enddo
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root.
  */
@@ -1559,7 +851,7 @@ grid cells in the user's model, and is equal to @ref RM_GetGridCellCount.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput, @ref RM_GetSelectedOutputColumnCount,
 @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_SetCurrentSelectedOutputUserNumber, @ref RM_SetSelectedOutputOn.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1586,41 +878,6 @@ for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSelectedOutputRowCount(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetSelectedOutputRowCount
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel)
-  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
-  col = RM_GetSelectedOutputColumnCount(id)
-  allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out)
-  ! Print results
-  do i = 1, RM_GetSelectedOutputRowCount(id)
-    write(*,*) "Cell number ", i
-    write(*,*) "     Selected output: "
-    do j = 1, col
-      status = RM_GetSelectedOutputHeading(id, j, heading)
-      write(*,'(10x,i2,A2,A10,A2,f10.4)') j, " ", trim(heading),": ", selected_out(i,j)
-    enddo
-  enddo
-  deallocate(selected_out)
-enddo
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root.
  */
@@ -1638,35 +895,13 @@ where @a nxyz is the number of user grid cells. Values for inactive cells are se
 @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetSaturation.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 volume = (double *) malloc((size_t) (nxyz * sizeof(double)));
 status = RM_RunCells(id);
 status = RM_GetSolutionVolume(id, volume);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSolutionVolume(id, vol)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: vol
-END FUNCTION RM_GetSolutionVolume
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(volume(nxyz))
-status = RM_RunCells(id)
-status = RM_GetSolutionVolume(id, volume)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1697,7 +932,7 @@ Values for inactive cells are set to 1e30.
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1708,32 +943,6 @@ nxyz = RM_GetGridCellCount(id);
 species_c = (double *) malloc((size_t) (nxyz * nspecies * sizeof(double)));
 status = RM_RunCells(id);
 status = RM_GetSpeciesConcentrations(id, species_c);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSpeciesConcentrations(id, species_conc)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: species_conc
-END FUNCTION RM_GetSpeciesConcentrations
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetSpeciesSaveOn(id, 1)
-ncomps = RM_FindComponents(id)
-nspecies = RM_GetSpeciesCount(id)
-nxyz = RM_GetGridCellCount(id)
-allocate(species_c(nxyz, nspecies))
-status = RM_RunCells(id)
-status = RM_GetSpeciesConcentrations(id, species_c)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1756,7 +965,7 @@ aqueous species that can be made from the set of components.
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, 
 @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1767,31 +976,6 @@ nxyz = RM_GetGridCellCount(id);
 species_c = (double *) malloc((size_t) (nxyz * nspecies * sizeof(double)));
 status = RM_RunCells(id);
 status = RM_GetSpeciesConcentrations(id, species_c);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSpeciesCount(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetSpeciesCount
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetSpeciesSaveOn(id, 1)
-ncomps = RM_FindComponents(id)
-nspecies = RM_GetSpeciesCount(id)
-nxyz = RM_GetGridCellCount(id)
-allocate(species_c(nxyz, nspecies))
-status = RM_RunCells(id)
-status = RM_GetSpeciesConcentrations(id, species_c)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1815,7 +999,7 @@ where @a nspecies is is the number of aqueous species (@ref RM_GetSpeciesCount).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1824,30 +1008,6 @@ ncomps = RM_FindComponents(id);
 nspecies = RM_GetSpeciesCount(id);
 diffc = (double *) malloc((size_t) (nspecies * sizeof(double)));
 status = RM_GetSpeciesD25(id, diffc);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSpeciesD25(id, diffc)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: diffc
-END FUNCTION RM_GetSpeciesD25
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetSpeciesSaveOn(id, 1)
-ncomps = RM_FindComponents(id)
-nspecies = RM_GetSpeciesCount(id)
-allocate(diffc(nspecies))
-status = RM_GetSpeciesD25(id, diffc)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1864,15 +1024,15 @@ species is determined by @ref RM_FindComponents and includes all
 aqueous species that can be made from the set of components.
 
 @param id               The instance @a id returned from @ref RM_Create.
-@param i                Sequence number of the species in the species list. Fortran, 1 based; C, 0 based.
+@param i                Sequence number of the species in the species list. C, 0 based.
 @param name             Character array to receive the species name.
-@param length           Maximum length of string that can be stored in the character array (C only).
+@param length           Maximum length of string that can be stored in the character array.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents, @ref RM_GetSpeciesConcentrations, @ref RM_GetSpeciesCount,
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_SpeciesConcentrations2Module, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1886,34 +1046,6 @@ for (i = 0; i < nspecies; i++)
   status = RM_GetSpeciesName(id, i, name, 100);
   fprintf(stderr, "%s\n", name);
 }
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSpeciesName(id, i, name)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id, i
-  CHARACTER, INTENT(out) :: name
-END FUNCTION RM_GetSpeciesName
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-char*100 name
-...
-status = RM_SetSpeciesSaveOn(id, 1)
-ncomps = RM_FindComponents(id)
-nspecies = RM_GetSpeciesCount(id)
-do i = 1, nspecies
-  status = RM_GetSpeciesName(id, i, name)
-  write(*,*) name
-enddo
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1934,7 +1066,7 @@ with @ref RM_GetSpeciesConcentrations, and solution compositions to be set with
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, @ref RM_SetSpeciesSaveOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -1947,30 +1079,6 @@ else
 {
   fprintf(stderr, "Reaction module is not saving species concentrations\n");
 }
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetSpeciesSaveOn
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-save_on = RM_GetSpeciesSaveOn(id)
-if (save_on .ne. 0) then
-  write(*,*) "Reaction module is saving species concentrations"
-else
-  write(*,*) "Reaction module is not saving species concentrations"
-end
 </PRE>
 </CODE>
 @endhtmlonly
@@ -1992,7 +1100,7 @@ where @a nspecies is is the number of aqueous species (@ref RM_GetSpeciesCount).
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module, 
 @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2001,30 +1109,6 @@ ncomps = RM_FindComponents(id);
 nspecies = RM_GetSpeciesCount(id);
 z = (double *) malloc((size_t) (nspecies * sizeof(double)));
 status = RM_GetSpeciesZ(id, z);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSpeciesZ(id, z)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(out) :: z
-END FUNCTION RM_GetSpeciesZ
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetSpeciesSaveOn(id, 1)
-ncomps = RM_FindComponents(id)
-nspecies = RM_GetSpeciesCount(id)
-allocate(z(nspecies))
-status = RM_GetSpeciesZ(id, z)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2039,32 +1123,12 @@ MPI version, the number of threads is always one for each process.
 @param id               The instance @a id returned from @ref RM_Create.
 @retval                 The number of threads, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetMpiTasks.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 sprintf(str1, "Number of threads: %d\n", RM_GetThreadCount(id));
 status = RM_OutputMessage(id, str1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetThreadCount(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetThreadCount
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-write(string1, "(A,I)") "Number of threads: ", RM_GetThreadCount(id)
-status = RM_OutputMessage(id, string1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2079,34 +1143,13 @@ returned value is equal to the default (0.0) or the last time set by @ref RM_Set
 @retval                 The current simulation time in seconds.
 @see                    @ref RM_GetTimeConversion, @ref RM_GetTimeStep, @ref RM_SetTime,
 @ref RM_SetTimeConversion, @ref RM_SetTimeStep.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 sprintf(str, "%s%10.1f%s", "Beginning reaction calculation ",
         RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
 status = RM_LogMessage(id, str);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-DOUBLE PRECISION FUNCTION RM_GetTime(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetTime
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
-      RM_GetTime(id) * RM_GetTimeConversion(id), " days"
-status = RM_LogMessage(id, string);
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2123,34 +1166,13 @@ of cell chemistry (@ref RM_SetPrintChemistryOn), which is rare. Default conversi
 @param id               The instance @a id returned from @ref RM_Create.
 @retval                 Multiplier to convert seconds to another time unit.
 @see                    @ref RM_GetTime, @ref RM_GetTimeStep, @ref RM_SetTime, @ref RM_SetTimeConversion, @ref RM_SetTimeStep.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 sprintf(str, "%s%10.1f%s", "Beginning reaction calculation ",
         RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
 status = RM_LogMessage(id, str);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-DOUBLE PRECISION FUNCTION RM_GetTimeConversion(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetTimeConversion
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
-      RM_GetTime(id) * RM_GetTimeConversion(id), " days"
-status = RM_LogMessage(id, string);
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2167,34 +1189,13 @@ returned value is equal to the default (0.0) or the last time step set by @ref R
 @retval                 The current simulation time step in seconds.
 @see                    @ref RM_GetTime, @ref RM_GetTimeConversion, @ref RM_SetTime,
 @ref RM_SetTimeConversion, @ref RM_SetTimeStep.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 sprintf(str, "%s%10.1f%s", "          Time step                  ",
         RM_GetTimeStep(id) * RM_GetTimeConversion(id), " days\n");
 status = RM_LogMessage(id, str);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-DOUBLE PRECISION FUNCTION RM_GetTimeStep(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetTimeStep
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-write(string, "(A32,F15.1,A)") "          Time step             ", &
-      RM_GetTimeStep(id) * RM_GetTimeConversion(id), " days"
-status = RM_LogMessage(id, string);
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2210,7 +1211,7 @@ will be used for that cell. Concentrations may be a mixture of two
 solutions, @a boundary_solution1 and @a boundary_solution2, with a mixing fraction for @a boundary_solution1 1 of
 @a fraction1 and mixing fraction for @a boundary_solution2 of (1 - @a fraction1).
 A negative value for @a boundary_solution2 implies no mixing, and the associated value for @a fraction1 is ignored.
-If @a boundary_solution2 and fraction1 are omitted (Fortran) or NULL (C),
+If @a boundary_solution2 and fraction1 are NULL,
 no mixing is used; concentrations are derived from @a boundary_solution1 only.
 
 @param id                  The instance @a id returned from @ref RM_Create.
@@ -2222,13 +1223,13 @@ where @a ncomp is the number of components returned from @ref RM_FindComponents 
 Size is @a n_boundary.
 @param boundary_solution2  Array of solution index numbers that that refer to solutions in the InitialPhreeqc instance
 and are defined to mix with @a boundary_solution1.
-Size is @a n_boundary. Optional in Fortran, may be NULL in C.
+Size is @a n_boundary. May be NULL in C.
 @param fraction1           Fraction of @a boundary_solution1 that mixes with (1-@a fraction1) of @a boundary_solution2.
-Size is (n_boundary). Optional in Fortran, may be NULL in C.
+Size is (n_boundary). May be NULL in C.
 @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
 @see                       @ref RM_FindComponents, @ref RM_GetComponentCount.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2244,35 +1245,6 @@ for (i = 0; i < nbound; i++)
   bc_f1[i]        = 1.0;     // mixing fraction for bc1
 }
 status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(OUT) :: c
-  INTEGER, INTENT(IN) :: n_boundary, bc_sol1
-  INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
-  DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
-END FUNCTION RM_InitialPhreeqc2Concentrations
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-nbound = 1
-allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
-allocate(bc_conc(nbound, ncomps))
-bc1 = 0           ! solution 0 from InitialPhreeqc instance
-bc2 = -1          ! no bc2 solution for mixing
-bc_f1 = 1.0       ! mixing fraction for bc1
-status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2293,21 +1265,19 @@ for each cell of the model, without mixing.
 @a Initial_conditions1 is dimensioned (@a nxyz, 7), where @a nxyz is the number of grid cells in the user's model
 (@ref RM_GetGridCellCount). The dimension of 7 refers to solutions and reactants in the following order:
 (1) SOLUTIONS, (2) EQUILIBRIUM_PHASES, (3) EXCHANGE, (4) SURFACE, (5) GAS_PHASE,
-(6) SOLID_SOLUTIONS, and (7) KINETICS. In Fortran, initial_conditions1(100, 4) = 2, indicates that
+(6) SOLID_SOLUTIONS, and (7) KINETICS. In C, initial_solution1[3*nxyz + 99] = 2, indicates that
 cell 99 (0 based) contains the SURFACE definition with user number 2 that has been defined in the
 InitialPhreeqc instance (either by @ref RM_RunFile or @ref RM_RunString).
-The same definition in C would be initial_solution1[3*nxyz + 99] = 2.
 @n@n
 It is also possible to mix solutions and reactants to obtain the initial conditions for cells. For mixing,
 @a initials_conditions2 contains numbers for a second entity that mixes with the entity defined in @a initial_conditions1.
 @a Fraction1 contains the mixing fraction for @a initial_conditions1, whereas (1 - @a fraction1) is the mixing fraction for
 @a initial_conditions2.
-In Fortran, initial_conditions1(100, 4) = 2, initial_conditions2(100, 4) = 3, fraction1(100, 4) = 0.25 indicates that
+In C, initial_solution1[3*nxyz + 99] = 2, initial_solution2[3*nxyz + 99] = 3,
+fraction1[3*nxyz + 99] = 0.25 indicates that
 cell 99 (0 based) contains a mixture of 0.25 SURFACE 2 and 0.75 SURFACE 3, where the surface compositions have been defined in the
-InitialPhreeqc instance. The same definition in C would be initial_solution1[3*nxyz + 99] = 2, initial_solution2[3*nxyz + 99] = 3,
-fraction1[3*nxyz + 99] = 0.25.
-If the user number in @a initial_conditions2 is negative, no mixing occurs.
-If @a initials_conditions2 and @a fraction1 are omitted (Fortran) or NULL (C),
+InitialPhreeqc instance. If the user number in @a initial_conditions2 is negative, no mixing occurs.
+If @a initials_conditions2 and @a fraction1 are NULL,
 no mixing is used, and initial conditions are derived solely from @a initials_conditions1.
 
 @param id                  The instance @a id returned from @ref RM_Create.
@@ -2318,13 +1288,13 @@ Negative values are ignored, resulting in no definition of that entity for that 
 Nonnegative values of @a initial_conditions2 result in mixing with the entities defined in @a initial_conditions1.
 Negative values result in no mixing.
 Size is (@a nxyz,7). The order of definitions is given above.
-Optional in Fortran, may be NULL in C; omitting or setting to NULL results in no mixing.
+May be NULL in C; setting to NULL results in no mixing.
 @param fraction1           Fraction of initial_conditions1 that mixes with (1-@a fraction1) of initial_conditions2.
 Size is (nxyz,7). The order of definitions is given above.
-Optional in Fortran, may be NULL in C; omitting or setting to NULL results in no mixing.
+May be NULL in C; setting to NULL results in no mixing.
 @retval IRM_RESULT          0 is success, negative is failure (See @ref RM_DecodeError).
 @see                        @ref RM_InitialPhreeqcCell2Module.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2363,43 +1333,6 @@ status = RM_InitialPhreeqc2Module(id, ic1, NULL, NULL);
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: ic1
-  INTEGER, INTENT(in), OPTIONAL :: ic2
-  DOUBLE PRECISION, INTENT(in), OPTIONAL :: f1
-END FUNCTION RM_InitialPhreeqc2Module
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(ic1(nxyz,7), ic2(nxyz,7), f1(nxyz,7))
-ic1 = -1
-ic2 = -1
-f1 = 1.0
-do i = 1, nxyz
-  ic1(i,1) = 1       ! Solution 1
-  ic1(i,2) = -1      ! Equilibrium phases none
-  ic1(i,3) = 1       ! Exchange 1
-  ic1(i,4) = -1      ! Surface none
-  ic1(i,5) = -1      ! Gas phase none
-  ic1(i,6) = -1      ! Solid solutions none
-  ic1(i,7) = -1      ! Kinetics none
-enddo
-status = RM_InitialPhreeqc2Module(id, ic1, ic2, f1)1))
-! No mixing is defined, so the following is equivalent
-status = RM_InitialPhreeqc2Module(id, ic1)
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
@@ -2419,7 +1352,7 @@ Concentrations may be a mixture of two
 solutions, @a boundary_solution1 and @a boundary_solution2, with a mixing fraction for @a boundary_solution1 1 of
 @a fraction1 and mixing fraction for @a boundary_solution2 of (1 - @a fraction1).
 A negative value for @a boundary_solution2 implies no mixing, and the associated value for @a fraction1 is ignored.
-If @a boundary_solution2 and @a fraction1 are omitted (Fortran) or NULL (C),
+If @a boundary_solution2 and @a fraction1 are NULL,
 no mixing is used; concentrations are derived from @a boundary_solution1 only.
 
 @param id                  The instance @a id returned from @ref RM_Create.
@@ -2431,12 +1364,12 @@ where @a nspecies is the number of aqueous species returned from @ref RM_GetSpec
 Size is @a n_boundary.
 @param boundary_solution2  Array of solution index numbers that that refer to solutions in the InitialPhreeqc instance
 and are defined to mix with @a boundary_solution1.
-Size is @a n_boundary. Optional in Fortran, may be NULL in C.
+Size is @a n_boundary. May be NULL in C.
 @param fraction1           Fraction of @a boundary_solution1 that mixes with (1-@a fraction1) of @a boundary_solution2.
-Size is @a n_boundary. Optional in Fortran, may be NULL in C.
+Size is @a n_boundary. May be NULL in C.
 @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
 @see                  @ref RM_FindComponents, @ref RM_GetSpeciesCount, @ref RM_SetSpeciesSaveOn.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2481,7 +1414,7 @@ cell @a n from the InitialPhreeqc instance.
 @param dim_module_numbers The number of cell numbers in the @a module_numbers list.
 @retval IRM_RESULT        0 is success, negative is failure (See @ref RM_DecodeError).
 @see                      @ref RM_InitialPhreeqc2Module.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2491,33 +1424,6 @@ module_cells[1] = 19;
 // n will be the largest SOLUTION number in InitialPhreeqc instance
 // copies solution and reactants to cells 18 and 19
 status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_InitialPhreeqcCell2Module(id, n_user, module_cell, dim_module_cell)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: n_user
-  INTEGER, INTENT(in) :: module_cell
-  INTEGER, INTENT(in) :: dim_module_cell
-END FUNCTION RM_InitialPhreeqcCell2Module
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate (module_cells(2))
-module_cells(1) = 18
-module_cells(2) = 19
-! n will be the largest SOLUTION number in InitialPhreeqc instance
-! copies solution and reactants to cells 18 and 19
-status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2536,31 +1442,11 @@ of the reaction module are cleared (SOLUTION_SPECIES, PHASES, SOLUTIONs, etc.), 
 @param db_name          String containing the database name.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_Create.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_LoadDatabase(id, "phreeqc.dat");
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_LoadDatabase(id, db)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(in) :: db
-END FUNCTION RM_LoadDatabase
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_LoadDatabase(id, "phreeqc.dat")
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2575,35 +1461,13 @@ Print a message to the log file.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_OpenFiles, @ref RM_ErrorMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 sprintf(str, "%s%10.1f%s", "Beginning transport calculation      ",
         RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
 status = RM_LogMessage(id, str);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_LogMessage(id, str)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(in) :: str
-END FUNCTION RM_LogMessage
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
-      RM_GetTime(id) * RM_GetTimeConversion(id), " days"
-status = RM_LogMessage(id, string);
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2632,32 +1496,13 @@ requests from root to perform reaction-module tasks.
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError). RM_MpiWorker returns a value only when
 @ref RM_MpiWorkerBreak is called by root.
-@see                    @ref RM_MpiWorkerBreak, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie (C only).
+@see                    @ref RM_MpiWorkerBreak, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_MpiWorker(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_MpiWorker(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_MpiWorker
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_MpiWorker(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2675,31 +1520,12 @@ MPI section of the method documentation.
 The workers will continue to respond to messages from root until root calls RM_MpiWorkerBreak.
 @param id               The instance @a id returned from @ref RM_Create.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_MpiWorker, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie (C only).
-@par C Example:
+@see                    @ref RM_MpiWorker, @ref RM_SetMpiWorkerCallback, @ref RM_SetMpiWorkerCallbackCookie.
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_MpiWorkerBreak(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_MpiWorkerBreak(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_MpiWorkerBreak
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_MpiWorkerBreak(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2714,32 +1540,12 @@ based on the prefix defined by @ref RM_SetFilePrefix.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetFilePrefix, @ref RM_GetFilePrefix, @ref RM_CloseFiles,
 @ref RM_ErrorMessage, @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_WarningMessage.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetFilePrefix(id, "Advect_c");
 status = RM_OpenFiles(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_OpenFiles(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_OpenFiles
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetFilePrefix(id, "Advect_f90")
-status = RM_OpenFiles(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2753,7 +1559,7 @@ Print a message to the output file.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_ErrorMessage, @ref RM_LogMessage, @ref RM_ScreenMessage, @ref RM_WarningMessage.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2775,40 +1581,6 @@ status = RM_OutputMessage(id, str1);
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_OutputMessage(id, str)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(in) :: str
-END FUNCTION RM_OutputMessage
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-write(string1, "(A,I)") "Number of threads:                                ", RM_GetThreadCount(id)
-status = RM_OutputMessage(id, string1)
-write(string1, "(A,I)") "Number of MPI processes:                          ", RM_GetMpiTasks(id)
-status = RM_OutputMessage(id, string1)
-write(string1, "(A,I)") "MPI task number:                                  ", RM_GetMpiMyself(id)
-status = RM_OutputMessage(id, string1)
-status = RM_GetFilePrefix(id, string)
-write(string1, "(A,A)") "File prefix:                                      ", string
-status = RM_OutputMessage(id, trim(string1))
-write(string1, "(A,I)") "Number of grid cells in the user's model:         ", RM_GetGridCellCount(id)
-status = RM_OutputMessage(id, trim(string1))
-write(string1, "(A,I)") "Number of chemistry cells in the reaction module: ", RM_GetChemistryCellCount(id)
-status = RM_OutputMessage(id, trim(string1))
-write(string1, "(A,I)") "Number of components for transport:               ", RM_GetComponentCount(id)
-status = RM_OutputMessage(id, trim(string1))
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root.
  */
@@ -2824,7 +1596,7 @@ temperature (@ref RM_SetTemperature), and pressure (@ref RM_SetPressure).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetConcentrations,  @ref RM_SetPorosity,
 @ref RM_SetPressure, @ref RM_SetSaturation, @ref RM_SetTemperature, @ref RM_SetTimeStep.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2838,34 +1610,6 @@ status = RM_RunCells(id);
 status = RM_GetConcentrations(id, c);          // Concentrations after reaction
 status = RM_GetDensity(id, density);           // Density after reaction
 status = RM_GetSolutionVolume(id, volume);     // Solution volume after reaction
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_RunCells(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_RunCells
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetPorosity(id, por)                ! If pore volume changes
-status = RM_SetSaturation(id, sat)              ! If saturation changes
-status = RM_SetTemperature(id, temperature)     ! If temperature changes
-status = RM_SetPressure(id, pressure)           ! If pressure changes
-status = RM_SetConcentrations(id, c)          ! Transported concentrations
-status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
-status = RM_RunCells(id)
-status = RM_GetConcentrations(id, c)          ! Concentrations after reaction
-status = RM_GetDensity(id, density)             ! Density after reaction
-status = RM_GetSolutionVolume(id, volume)       ! Solution volume after reaction
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2887,32 +1631,11 @@ be run by the InitialPhreeqc instance.
 @param chem_name        Name of the file to run.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_RunString.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_RunFile(id, 1, 1, 1, "advect.pqi");
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_RunFile(id, workers, initial_phreeqc, utility, chem_name)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: workers, initial_phreeqc, utility
-  CHARACTER, INTENT(in) :: chem_name
-END FUNCTION RM_RunFile
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_RunFile(id, 1, 1, 1, "advect.pqi")
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2935,34 +1658,12 @@ be run by the InitialPhreeqc instance.
 @param input_string     String containing PHREEQC input.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_RunFile.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 strcpy(str, "DELETE; -all");
 status = RM_RunString(id, 1, 0, 1, str);	// workers, initial_phreeqc, utility
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_RunString(id, initial_phreeqc, workers, utility, input_string)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: initial_phreeqc, workers, utility
-  CHARACTER, INTENT(in) :: input_string
-END FUNCTION RM_RunString
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-string = "DELETE; -all"
-status = RM_RunString(id, 1, 0, 1, string)  ! workers, initial_phreeqc, utility
 </PRE>
 </CODE>
 @endhtmlonly
@@ -2976,7 +1677,7 @@ Print message to the screen.
 @param str              String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_ErrorMessage,  @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_WarningMessage.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -2986,79 +1687,10 @@ status = RM_ScreenMessage(id, str);
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_ScreenMessage(id, str)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(in) :: str
-END FUNCTION RM_ScreenMessage
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-write(string, "(A32,F15.1,A)") "Beginning reaction calculation  ", &
-      time * RM_GetTimeConversion(id), " days"
-status = RM_ScreenMessage(id, string);
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root and (or) workers.
  */
 IRM_RESULT RM_ScreenMessage(int id, const char *str);
-#ifdef SKIP_RV
-/**
-Set the volume of each cell. Porosity is determined by the ratio of the pore volume (@ref RM_SetPoreVolume)
-to the cell volume. The volume of water in a cell is the porosity times the saturation (@ref RM_SetSaturation).
-@param id               The instance @a id returned from @ref RM_Create.
-@param vol              Array of volumes, user units, but same as @ref RM_SetPoreVolume.
-Size of array is @a nxyz, where @a nxyz is the number
-of grid cells in the user's model (@ref RM_GetGridCellCount).
-@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetPoreVolume, @ref RM_SetSaturation.
-@par C Example:
-@htmlonly
-<CODE>
-<PRE>
-cell_vol = (double *) malloc((size_t) (nxyz * sizeof(double)));
-for (i = 0; i < nxyz; i++) cell_vol[i] = 1.0;
-status = RM_SetCellVolume(id, cell_vol);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetCellVolume(id, t)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: t
-END FUNCTION RM_SetCellVolume
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(cell_vol(nxyz))
-cell_vol = 1.0
-status = RM_SetCellVolume(id, cell_vol)
-</PRE>
-</CODE>
-@endhtmlonly
-@par MPI:
-Called by root, workers must be in the loop of @ref RM_MpiWorker.
- */
-IRM_RESULT RM_SetCellVolume(int id, double *vol);
-#endif
 /**
 Select whether to include H2O in the component list.
 The concentrations of H and O must be known
@@ -3077,31 +1709,11 @@ are included in the component list.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_FindComponents.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetComponentH2O(id, 0);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetComponentH2O(id, tf)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: tf
-END FUNCTION RM_SetComponentH2O
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetComponentH2O(id, 0)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3118,14 +1730,15 @@ If concentration units (@ref RM_SetUnitsSolution) are mass fraction, the
 density (as specified by @ref RM_SetDensity) is used to convert from mass fraction to per mass per liter.
 
 @param id               The instance @a id returned from @ref RM_Create.
-@param c                Array of component concentrations. Size of array is Fortran (@a nxyz, @a ncomps), where @a nxyz is the number
+@param c                Array of component concentrations. Size of array is equivalent to 
+Fortran (@a nxyz, @a ncomps), where @a nxyz is the number
 of grid cells in the user's model (@ref RM_GetGridCellCount), and @a ncomps is the number of components as determined
 by @ref RM_FindComponents or @ref RM_GetComponentCount.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetDensity, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume,
 @ref RM_SetSaturation, @ref RM_SetUnitsSolution.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3146,39 +1759,6 @@ status = RM_GetSolutionVolume(id, volume);     // Solution volume after reaction
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetConcentrations(id, c)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: t
-END FUNCTION RM_SetConcentrations
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(c(nxyz, ncomps))
-...
-call advect_f90(c, bc_conc, ncomps, nxyz)
-status = RM_SetPorosity(id, por)                 ! If porosity changes
-status = RM_SetSaturation(id, sat)              ! If saturation changes
-status = RM_SetTemperature(id, temperature))     ! If temperature changes
-status = RM_SetPressure(id, pressure)           ! If pressure changes
-status = RM_SetConcentrations(id, c)          ! Transported concentrations
-status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
-status = RM_SetTime(id, time)                      ! Current time
-status = RM_RunCells(id)
-status = RM_GetConcentrations(id, c)          ! Concentrations after reaction
-status = RM_GetDensity(id, density)             ! Density after reaction
-status = RM_GetSolutionVolume(id, volume)       ! Solution volume after reaction
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
@@ -3194,7 +1774,7 @@ for selected-output operations.
 @see                    @ref RM_GetNthSelectedOutputUserNumber, @ref RM_GetSelectedOutput, @ref RM_GetSelectedOutputColumnCount,
 @ref RM_GetSelectedOutputCount, @ref RM_GetSelectedOutputRowCount, @ref RM_GetSelectedOutputHeading,
 @ref RM_SetSelectedOutputOn.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3208,34 +1788,6 @@ for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
   // Process results here
   free(selected_out);
 }
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetCurrentSelectedOutputUserNumber(id, n_user)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: n_user
-END FUNCTION RM_SetCurrentSelectedOutputUserNumber
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-do isel = 1, RM_GetSelectedOutputCount(id)
-  n_user = RM_GetNthSelectedOutputUserNumber(id, isel)
-  status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
-  col = RM_GetSelectedOutputColumnCount(id)
-  allocate(selected_out(nxyz,col))
-  status = RM_GetSelectedOutput(id, selected_out)
-  ! Process results here
-  deallocate(selected_out)
-enddo
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3257,7 +1809,7 @@ of grid cells in the user's model (@ref RM_GetGridCellCount).
 @see                    @ref RM_GetConcentrations, @ref RM_SetConcentrations, 
 @ref RM_SetUnitsSolution, @ref RM_UseSolutionDensityVolume.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3267,28 +1819,6 @@ for (i = 0; i < nxyz; i++)
 	density[i] = 1.0;
 }
 status = RM_SetDensity(id, density);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetDensity(id, density)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: density
-END FUNCTION RM_SetDensity
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(density(nxyz))
-density = 1.0
-status = RM_SetDensity(id, density(1))
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3302,7 +1832,7 @@ Set the name of the dump file. It is the name used by @ref RM_DumpModule.
 @param dump_name        Name of dump file.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_DumpModule.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3310,29 +1840,6 @@ status = RM_SetDumpFileName(id, "advection_c.dmp");
 dump_on = 1;
 append = 0;
 status = RM_DumpModule(id, dump_on, append);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetDumpFileName(id, name)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(in) :: name
-END FUNCTION RM_SetDumpFileName
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetDumpFileName(id, "advection_f90.dmp")
-dump_on = 1
-append = 0
-status = RM_DumpModule(id, dump_on, append)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3348,33 +1855,12 @@ Options are 0, return to calling program with an error return code (default);
 @param id               The instance id returned from @ref RM_Create.
 @param mode             Error handling mode: 0, 1, or 2.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 id = RM_Create(nxyz, nthreads);
 status = RM_SetErrorHandlerMode(id, 2);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetErrorHandlerMode(id, i)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: i
-END FUNCTION RM_SetErrorHandlerMode
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-id = RM_create(nxyz, nthreads)
-status = RM_SetErrorHandlerMode(id, 2)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3389,33 +1875,12 @@ These files are opened by @ref RM_OpenFiles.
 @param prefix           Prefix used when opening the output and log files.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_OpenFiles, @ref RM_CloseFiles.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetFilePrefix(id, "Advect_c");
 status = RM_OpenFiles(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetFilePrefix(id, prefix)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(in) :: prefix
-END FUNCTION RM_SetFilePrefix
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetFilePrefix(id, "Advect_f90")
-status = RM_OpenFiles(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3441,9 +1906,6 @@ The callback function calls a developer-defined function specified
 by the message number and then returns to @ref RM_MpiWorker to wait for
 another message.
 @n@n
-For Fortran90, the functions that are called from the callback function
-can use USE statements to find the data necessary to perform the tasks, and
-the only argument to the callback function is an integer message argument.
 In C, an additional pointer can be supplied to find the data necessary to do the task.
 A void pointer may be set with @ref RM_SetMpiWorkerCallbackCookie. This pointer
 is passed to the callback function through a void pointer argument in addition
@@ -3465,8 +1927,8 @@ call to @ref RM_MpiWorker.
 C has an additional void * argument.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_MpiWorker, @ref RM_MpiWorkerBreak,
-@ref RM_SetMpiWorkerCallbackCookie (C only).
-@par C Example:
+@ref RM_SetMpiWorkerCallbackCookie.
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3512,60 +1974,6 @@ int mpi_methods(int method, void *cookie)
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
-  INTEGER, INTENT(IN) :: id
-  INTERFACE
-    INTEGER FUNCTION fcn(method_number)
-      INTEGER, INTENT(in) :: method_number
-    END FUNCTION
-  END INTERFACE
-END FUNCTION RM_SetMpiWorkerCallback
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-Pseudo code for root:
-
-status = init()
-
-INTEGER FUNCTION init()
-! make phreeqcrm_comm, other data available with USE
-integer ierrmpi
-if (mpi_myself == 0) then
-    ! message number 1000 is sent to the workers
-    CALL MPI_BCAST(1000, 1, MPI_INTEGER, 0, phreeqcrm_comm, ierrmpi)
-endif
-! Do some work here by root and (or) workers
-init = 0
-END FUNCTION init
-
-Psuedo code for worker:
-
-status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
-...
-status = RM_MpiWorker(id)
-
-INTEGER FUNCTION mpi_methods(method)
-  ! This callback method is called by RM_MpiWorker
-  ! because of the call to RM_SetMpiWorkerCallback
-  integer method, return_value
-  return_value = 0
-  if (method == 1000) then
-     return_value = init()
-  endif
-  mpi_methods = return_value
-END FUNCTION mpi_methods
-
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by workers, before call to @ref RM_MpiWorker.
  */
@@ -3584,7 +1992,7 @@ to locate data needed to perform a task.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_MpiWorker, @ref RM_MpiWorkerBreak,
 @ref RM_SetMpiWorkerCallback.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3659,7 +2067,7 @@ reaction is equal to the saturation;
 @a False (default), all solids and gases are reactive regardless of saturation.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3667,77 +2075,10 @@ status = RM_SetPartitionUZSolids(id, 0);
 </PRE>
 </CODE>
 @endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetPartitionUZSolids(id, tf)   
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in)  :: tf
-END FUNCTION RM_SetPartitionUZSolids 
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetPartitionUZSolids(id, 0)
-</PRE>
-</CODE>
-@endhtmlonly
 @par MPI:
 Called by root, workers must be in the loop of @ref RM_MpiWorker.
  */
 IRM_RESULT RM_SetPartitionUZSolids(int id, int tf);
-#ifdef SKIP_RV
-/**
-Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume
-to the cell volume (@ref RM_SetCellVolume). The volume of water in a cell is the porosity times the saturation
-(@ref RM_SetSaturation).
-@param id               The instance @a id returned from @ref RM_Create.
-@param vol              Array of pore volumes, user units, but same as @ref RM_SetCellVolume. Size of array is @a nxyz, where @a nxyz is the number
-of grid cells in the user's model (@ref RM_GetGridCellCount).
-@retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
-@see                    @ref RM_SetCellVolume, @ref RM_SetSaturation.
-@par C Example:
-@htmlonly
-<CODE>
-<PRE>
-pv = (double *) malloc((size_t) (nxyz * sizeof(double)));
-for (i = 0; i < nxyz; i++) pv[i] = 0.2;
-status = RM_SetPoreVolume(id, pv);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetPoreVolume(id, pv)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: pv
-END FUNCTION RM_SetPoreVolume
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(pv(nxyz))
-pv = 0.2
-status = RM_SetPoreVolume(id, pv(1))
-</PRE>
-</CODE>
-@endhtmlonly
-@par MPI:
-Called by root, workers must be in the loop of @ref RM_MpiWorker.
- */
-IRM_RESULT RM_SetPoreVolume(int id, double *vol);
-#endif
 /**
 Set the porosity for each reaction cell. 
 The volume of water in a reaction cell is the product of the porosity, the saturation
@@ -3747,35 +2088,13 @@ The volume of water in a reaction cell is the product of the porosity, the satur
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetSaturation, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 por = (double *) malloc((size_t) (nxyz * sizeof(double)));
 for (i = 0; i < nxyz; i++) por[i] = 0.2;
 status = RM_SetPorosity(id, por);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetPorosity(id, por)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: por
-END FUNCTION RM_SetPorosity
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(por(nxyz))
-por = 0.2
-status = RM_SetPorosity(id, por(1))
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3791,35 +2110,13 @@ databases distributed with PhreeqcRM: phreeqc.dat, Amm.dat, and pitzer.dat.
 of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetTemperature.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 pressure = (double *) malloc((size_t) (nxyz * sizeof(double)));
 for (i = 0; i < nxyz; i++) pressure[i] = 2.0;
 status = RM_SetPressure(id, pressure);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetPressure(id, p)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: p
-END FUNCTION RM_SetPressure
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(pressure(nxyz))
-pressure = 2.0
-status = RM_SetPressure(id, pressure(1))
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3839,7 +2136,7 @@ disable printing detailed output for the cell; a value of 1 will enable printing
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetPrintChemistryOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -3850,31 +2147,6 @@ for (i = 0; i < nxyz/2; i++)
   print_chemistry_mask[i + nxyz/2] = 0;
 }
 status = RM_SetPrintChemistryMask(id, print_chemistry_mask);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetPrintChemistryMask(id, cell_mask)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: cell_mask
-END FUNCTION RM_SetPrintChemistryMask
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(print_chemistry_mask(nxyz))
-  do i = 1, nxyz/2
-  print_chemistry_mask(i) = 1
-  print_chemistry_mask(i+nxyz/2) = 0
-enddo
-status = RM_SetPrintChemistryMask(id, print_chemistry_mask(1))
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3903,31 +2175,11 @@ in the InitialPhreeqc instances.
 in the Utility instance.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetPrintChemistryMask.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: worker, initial_phreeqc, utility
-END FUNCTION RM_SetPrintChemistryOn
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
 </PRE>
 </CODE>
 @endhtmlonly
@@ -3952,31 +2204,11 @@ cell times are used in rebalancing (default).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetRebalanceFraction.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetRebalanceByCell(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetRebalanceByCell(id, method)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in)  :: method
-END FUNCTION RM_SetRebalanceByCell
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetRebalanceByCell(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4002,31 +2234,11 @@ Default is 0.5.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetRebalanceByCell.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetRebalanceFraction(id, 0.5);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetRebalanceFraction(id, f)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in)  :: f
-END FUNCTION RM_SetRebalanceFraction
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetRebalanceFraction(id, 0.5d0)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4055,7 +2267,7 @@ of grid cells in the user's model (@ref RM_GetGridCellCount).
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetPorosity, @ref RM_SetSaturation.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -4063,29 +2275,6 @@ double * rv;
 rv = (double *) malloc((size_t) (nxyz * sizeof(double)));
 for (i = 0; i < nxyz; i++) rv[i] = 1.0;
 status = RM_SetRepresentativeVolume(id, rv);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetRebalanceFraction(id, f)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in)  :: f
-END FUNCTION RM_SetRebalanceFraction
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-double precision, dimension(:), allocatable   :: rv
-allocate(rv(nxyz))
-rv = 1.0
-status = RM_SetRepresentativeVolume(id, rv(1))
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4110,35 +2299,13 @@ of grid cells in the user's model (@ref RM_GetGridCellCount).
 @see                    @ref RM_GetDensity, @ref RM_GetSaturation, @ref RM_GetSolutionVolume,
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 sat = (double *) malloc((size_t) (nxyz * sizeof(double)));
 for (i = 0; i < nxyz; i++) sat[i] = 1.0;
 status = RM_SetSaturation(id, sat);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetSaturation(id, sat)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: sat
-END FUNCTION RM_SetSaturation
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(sat(nxyz))
-sat = 1.0
-status = RM_SetSaturation(id, sat(1))
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4158,31 +2325,11 @@ be accumulated during @ref RM_RunCells.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_GetSelectedOutput, @ref RM_SetPrintChemistryOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetSelectedOutputOn(id, 1);       // enable selected output
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetSelectedOutputOn(id, tf)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: tf
-END FUNCTION RM_SetSelectedOutputOn
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetSelectedOutputOn(id, 1);        ! enable selected output
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4207,30 +2354,11 @@ saved.
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesSaveOn, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_SpeciesConcentrations2Module.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetSpeciesSaveOn(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_GetSpeciesSaveOn(id)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-END FUNCTION RM_GetSpeciesSaveOn
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-save_on = RM_SetSpeciesSaveOn(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4250,7 +2378,7 @@ of grid cells in the user's model (@ref RM_GetGridCellCount).
 @see                    @ref RM_InitialPhreeqc2Module, 
 @ref RM_InitialPhreeqcCell2Module, @ref RM_SetPressure.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -4260,28 +2388,6 @@ for (i = 0; i < nxyz; i++)
   temperature[i] = 20.0;
 }
 status = RM_SetTemperature(id, temperature);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetTemperature(id, t)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: t
-END FUNCTION RM_SetTemperature
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-allocate(temperature(nxyz))
-temperature = 20.0
-status = RM_SetTemperature(id, temperature(1))
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4295,31 +2401,11 @@ Set current simulation time for the reaction module.
 @param time             Current simulation time, in seconds.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetTimeStep, @ref RM_SetTimeConversion.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetTime(id, time);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetTime(id, time)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: time
-END FUNCTION RM_SetTime
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetTime(id, time)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4333,31 +2419,11 @@ Set a factor to convert to user time units. Factor times seconds produces user t
 @param conv_factor      Factor to convert seconds to user time units.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetTime, @ref RM_SetTimeStep.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetTimeConversion(id, 1.0 / 86400.0); // days
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetTimeConversion(id, conv_factor)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: conv_factor
-END FUNCTION RM_SetTimeConversion
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetTimeConversion(id, dble(1.0 / 86400.0)) ! days
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4372,32 +2438,12 @@ of time over which kinetic reactions are integrated.
 @param time_step        Current time step, in seconds.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_SetTime, @ref RM_SetTimeConversion.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 time_step = 86400.0;
 status = RM_SetTimeStep(id, time_step);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetTimeStep(id, time_step)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: time_step
-END FUNCTION RM_SetTimeStep
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetTimeStep(id, time_step)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4422,31 +2468,11 @@ Options are
 @see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetUnitsExchange(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetUnitsExchange(id, option)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: option
-END FUNCTION RM_SetUnitsExchange
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetUnitsExchange(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4471,31 +2497,11 @@ Options are
 @see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetUnitsGasPhase(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetUnitsGasPhase(id, option)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: option
-END FUNCTION RM_SetUnitsGasPhase
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetUnitsGasPhase(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4530,31 +2536,11 @@ volume of water (Basic function SOLN_VOL).
 @see                     @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetUnitsKinetics(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetUnitsKinetics(id, option)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: option
-END FUNCTION RM_SetUnitsKinetics
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetUnitsKinetics(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4579,31 +2565,11 @@ Options are
 @see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetUnitsPPassemblage(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetUnitsPPassemblage(id, option)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: option
-END FUNCTION RM_SetUnitsPPassemblage
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetUnitsPPassemblage(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4652,31 +2618,11 @@ Which option is used is determined by @ref RM_UseSolutionDensityVolume.
 @see                    @ref RM_SetDensity, @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation,
 @ref RM_UseSolutionDensityVolume.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetUnitsSolution(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetUnitsSolution(id, option)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: option
-END FUNCTION RM_SetUnitsSolution
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetUnitsSolution(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4701,31 +2647,11 @@ Options are
 @see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetUnitsSSassemblage(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetUnitsSSassemblage(id, option)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: option
-END FUNCTION RM_SetUnitsSSassemblage
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetUnitsSSassemblage(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4750,31 +2676,11 @@ Options are
 @see                    @ref RM_InitialPhreeqc2Module, @ref RM_InitialPhreeqcCell2Module,
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_SetUnitsSurface(id, 1);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SetUnitsSurface(id, option)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: option
-END FUNCTION RM_SetUnitsSurface
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetUnitsSurface(id, 1)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4803,7 +2709,7 @@ Concentrations are moles per liter.
 @ref RM_GetSpeciesD25, @ref RM_GetSpeciesZ,
 @ref RM_GetSpeciesName, @ref RM_GetSpeciesSaveOn, @ref RM_SetSpeciesSaveOn.
 
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
@@ -4815,33 +2721,6 @@ species_c = (double *) malloc((size_t) (nxyz * nspecies * sizeof(double)));
 ...
 status = RM_SpeciesConcentrations2Module(id, species_c);
 status = RM_RunCells(id);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_SpeciesConcentrations2Module(id, species_conc)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  DOUBLE PRECISION, INTENT(in) :: species_conc
-END FUNCTION RM_SpeciesConcentrations2Module
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_SetSpeciesSaveOn(id, 1)
-ncomps = RM_FindComponents(id)
-nspecies = RM_GetSpeciesCount(id)
-nxyz = RM_GetGridCellCount(id)
-allocate(species_c(nxyz, nspecies))
-...
-status = RM_SpeciesConcentrations2Module(id, species_c(1,1))
-status = RM_RunCells(id)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4874,31 +2753,11 @@ product of  @ref RM_SetSaturation, @ref RM_SetPorosity, and @ref RM_SetRepresent
 will be used to calculate concentrations retrieved by @ref RM_GetConcentrations.
 @see                    @ref RM_GetConcentrations, @ref RM_SetDensity, 
 @ref RM_SetPorosity, @ref RM_SetRepresentativeVolume, @ref RM_SetSaturation.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_UseSolutionDensityVolume(id, 0);
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_UseSolutionDensityVolume(id, tf)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  INTEGER, INTENT(in) :: tf
-END FUNCTION RM_UseSolutionDensityVolume 
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_UseSolutionDensityVolume(id, 0)
 </PRE>
 </CODE>
 @endhtmlonly
@@ -4912,31 +2771,11 @@ Print a warning message to the screen and the log file.
 @param warn_str         String to be printed.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 @see                    @ref RM_OpenFiles, @ref RM_LogMessage, @ref RM_OutputMessage, @ref RM_ScreenMessage, @ref RM_ErrorMessage.
-@par C Example:
+@par Example:
 @htmlonly
 <CODE>
 <PRE>
 status = RM_WarningMessage(id, "Parameter is out of range, using default");
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Interface:
-@htmlonly
-<CODE>
-<PRE>
-INTEGER FUNCTION RM_WarningMessage(id, warnstr)
-  IMPLICIT NONE
-  INTEGER, INTENT(in) :: id
-  CHARACTER, INTENT(in) :: warnstr
-END FUNCTION RM_WarningMessage
-</PRE>
-</CODE>
-@endhtmlonly
-@par Fortran90 Example:
-@htmlonly
-<CODE>
-<PRE>
-status = RM_WarningMessage(id, "Parameter is out of range, using default")
 </PRE>
 </CODE>
 @endhtmlonly
