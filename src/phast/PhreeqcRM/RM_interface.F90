@@ -1138,7 +1138,7 @@ INTEGER FUNCTION RM_GetNthSelectedOutputUserNumber(id, n)
     RM_GetNthSelectedOutputUserNumber = RMF_GetNthSelectedOutputUserNumber(id, n)
 END FUNCTION RM_GetNthSelectedOutputUserNumber 
 
-!> Returns a vector of saturations (@a sat) as calculated by the reaction module.
+!> Returns a vector of saturations (@a sat_calc) as calculated by the reaction module.
 !> Reactions will change the volume of solution in a cell.
 !> The transport code must decide whether to ignore or account for this change in solution volume due to reactions.
 !> Following reactions, the cell saturation is calculated as solution volume (@ref RM_GetSolutionVolume)
@@ -1960,28 +1960,28 @@ DOUBLE PRECISION FUNCTION RM_GetTimeStep(id)
     RM_GetTimeStep = RMF_GetTimeStep(id)
 END FUNCTION RM_GetTimeStep 
 
-!> Fills an array (@a c) with concentrations from solutions in the InitialPhreeqc instance.
+!> Fills an array (@a bc_conc) with concentrations from solutions in the InitialPhreeqc instance.
 !> The method is used to obtain concentrations for boundary conditions. If a negative value
-!> is used for a cell in @a boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
+!> is used for a cell in @a bc1, then the highest numbered solution in the InitialPhreeqc instance
 !> will be used for that cell. Concentrations may be a mixture of two
-!> solutions, @a boundary_solution1 and @a boundary_solution2, with a mixing fraction for @a boundary_solution1 1 of
-!> @a fraction1 and mixing fraction for @a boundary_solution2 of (1 - @a fraction1).
-!> A negative value for @a boundary_solution2 implies no mixing, and the associated value for @a fraction1 is ignored.
-!> If @a boundary_solution2 and fraction1 are omitted (Fortran) or NULL (C),
-!> no mixing is used; concentrations are derived from @a boundary_solution1 only.
+!> solutions, @a bc1 and @a bc2, with a mixing fraction for @a bc1 1 of
+!> @a f1 and mixing fraction for @a bc2 of (1 - @a f1).
+!> A negative value for @a bc2 implies no mixing, and the associated value for @a f1 is ignored.
+!> If @a bc2 and @a f1 are omitted,
+!> no mixing is used; concentrations are derived from @a bc1 only.
 !> 
 !> @param id                  The instance @a id returned from @ref RM_Create.
 !> @param bc_conc                   Array of concentrations extracted from the InitialPhreeqc instance.
-!> The dimension of @a c is equivalent to Fortran allocation (@a n_boundary, @a ncomp),
+!> The dimension of @a bc_conc is (@a n_boundary, @a ncomp),
 !> where @a ncomp is the number of components returned from @ref RM_FindComponents or @ref RM_GetComponentCount.
 !> @param n_boundary          The number of boundary condition solutions that need to be filled.
-!> @param bc_sol1  Array of solution index numbers that refer to solutions in the InitialPhreeqc instance.
+!> @param bc1  Array of solution index numbers that refer to solutions in the InitialPhreeqc instance.
 !> Size is @a n_boundary.
-!> @param bc_sol2  Array of solution index numbers that that refer to solutions in the InitialPhreeqc instance
-!> and are defined to mix with @a boundary_solution1.
-!> Size is @a n_boundary. Optional in Fortran, may be NULL in C.
-!> @param f1           Fraction of @a boundary_solution1 that mixes with (1-@a fraction1) of @a boundary_solution2.
-!> Size is (n_boundary). Optional in Fortran, may be NULL in C.
+!> @param bc2  Array of solution index numbers that that refer to solutions in the InitialPhreeqc instance
+!> and are defined to mix with @a bc1.
+!> Size is @a n_boundary. Optional in Fortran.
+!> @param f1           Fraction of @a bc1 that mixes with (1-@a f1) of @a bc2.
+!> Size is (n_boundary). Optional in Fortran.
 !> @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
 !> @see                       @ref RM_FindComponents, @ref RM_GetComponentCount.
 !> 
@@ -1990,57 +1990,57 @@ END FUNCTION RM_GetTimeStep
 !> <CODE>
 !> <PRE>
 !> nbound = 1
-!> allocate(bc_sol1(nbound), bc_sol2(nbound), f1(nbound))
+!> allocate(bc1(nbound), bc2(nbound), f1(nbound))
 !> allocate(bc_conc(nbound, ncomps))
-!> bc_sol1 = 0           ! solution 0 from InitialPhreeqc instance
-!> bc_sol2 = -1          ! no bc2 solution for mixing
-!> f1 = 1.0              ! mixing fraction for bc1
-!> status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc_sol1, bc_sol2, f1)
+!> bc1 = 0           ! solution 0 from InitialPhreeqc instance
+!> bc2 = -1          ! no bc2 solution for mixing
+!> f1 = 1.0          ! mixing fraction for bc1
+!> status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, f1)
 !> </PRE>
 !> </CODE>
 !> @endhtmlonly
 !> @par MPI:
 !> Called by root.
 
-INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc_sol1, bc_sol2, f1) 
+INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1) 
 	USE ISO_C_BINDING  
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc_sol1, bc_sol2, f1) &
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1) &
 			BIND(C, NAME='RMF_InitialPhreeqc2Concentrations')
 			USE ISO_C_BINDING   
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
             REAL(KIND=C_DOUBLE), INTENT(OUT) :: bc_conc(*)
-            INTEGER(KIND=C_INT), INTENT(IN) :: n_boundary, bc_sol1(*)
-            INTEGER(KIND=C_INT), INTENT(IN), OPTIONAL :: bc_sol2(*)
+            INTEGER(KIND=C_INT), INTENT(IN) :: n_boundary, bc1(*)
+            INTEGER(KIND=C_INT), INTENT(IN), OPTIONAL :: bc2(*)
             REAL(KIND=C_DOUBLE), INTENT(IN), OPTIONAL :: f1(*)
         END FUNCTION RMF_InitialPhreeqc2Concentrations
 	END INTERFACE
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, INTENT(OUT), DIMENSION(:,:) :: bc_conc
     INTEGER, INTENT(IN) :: n_boundary 
-    INTEGER, INTENT(IN), DIMENSION(:) :: bc_sol1
-    INTEGER, INTENT(IN), DIMENSION(:) , OPTIONAL :: bc_sol2
+    INTEGER, INTENT(IN), DIMENSION(:) :: bc1
+    INTEGER, INTENT(IN), DIMENSION(:) , OPTIONAL :: bc2
     DOUBLE PRECISION, INTENT(IN), DIMENSION(:) , OPTIONAL :: f1
-	if (rmf_debug) call Chk_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc_sol1, bc_sol2, f1) 
-    RM_InitialPhreeqc2Concentrations = RMF_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc_sol1, bc_sol2, f1)
+	if (rmf_debug) call Chk_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1) 
+    RM_InitialPhreeqc2Concentrations = RMF_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1)
 END FUNCTION RM_InitialPhreeqc2Concentrations    
 
-SUBROUTINE Chk_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2, f1) 
+SUBROUTINE Chk_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1) 
     IMPLICIT NONE
     INTEGER, INTENT(in) :: id
-    DOUBLE PRECISION, INTENT(IN), DIMENSION(:,:) :: c
+    DOUBLE PRECISION, INTENT(IN), DIMENSION(:,:) :: bc_conc
     INTEGER, INTENT(IN) :: n_boundary 
-    INTEGER, INTENT(IN), DIMENSION(:) :: bc_sol1
-    INTEGER, INTENT(IN), DIMENSION(:) , OPTIONAL :: bc_sol2
+    INTEGER, INTENT(IN), DIMENSION(:) :: bc1
+    INTEGER, INTENT(IN), DIMENSION(:) , OPTIONAL :: bc2
     DOUBLE PRECISION, INTENT(IN), DIMENSION(:) , OPTIONAL :: f1
     INTEGER :: errors
     errors = 0
-    errors = errors + Chk_Double2D(id, c, n_boundary, rmf_ncomps, "concentration", "RM_InitialPhreeqc2Concentrations")
-    errors = errors + Chk_Integer1D(id, bc_sol1, n_boundary, "bc_sol1", "RM_InitialPhreeqc2Concentrations")
-    if (present(bc_sol2)) then
-        errors = errors + Chk_Integer1D(id, bc_sol2, n_boundary, "bc_sol2", "RM_InitialPhreeqc2Concentrations")
+    errors = errors + Chk_Double2D(id, bc_conc, n_boundary, rmf_ncomps, "concentration", "RM_InitialPhreeqc2Concentrations")
+    errors = errors + Chk_Integer1D(id, bc1, n_boundary, "bc1", "RM_InitialPhreeqc2Concentrations")
+    if (present(bc2)) then
+        errors = errors + Chk_Integer1D(id, bc2, n_boundary, "bc2", "RM_InitialPhreeqc2Concentrations")
     endif
     if (present(f1)) then
         errors = errors + Chk_Double1D(id, f1, n_boundary, "f1", "RM_InitialPhreeqc2Concentrations")
@@ -2051,36 +2051,36 @@ SUBROUTINE Chk_InitialPhreeqc2Concentrations(id, c, n_boundary, bc_sol1, bc_sol2
 END SUBROUTINE Chk_InitialPhreeqc2Concentrations
 
 !> Transfer solutions and reactants from the InitialPhreeqc instance to the reaction-module workers, possibly with mixing.
-!> In its simplest form, @a initial_conditions1 is used to select initial conditions, including solutions and reactants,
+!> In its simplest form, @a ic1 is used to select initial conditions, including solutions and reactants,
 !> for each cell of the model, without mixing.
-!> @a Initial_conditions1 is dimensioned (@a nxyz, 7), where @a nxyz is the number of grid cells in the user's model
+!> @a ic1 is dimensioned (@a nxyz, 7), where @a nxyz is the number of grid cells in the user's model
 !> (@ref RM_GetGridCellCount). The dimension of 7 refers to solutions and reactants in the following order:
 !> (1) SOLUTIONS, (2) EQUILIBRIUM_PHASES, (3) EXCHANGE, (4) SURFACE, (5) GAS_PHASE,
-!> (6) SOLID_SOLUTIONS, and (7) KINETICS. In Fortran, initial_conditions1(100, 4) = 2, indicates that
+!> (6) SOLID_SOLUTIONS, and (7) KINETICS. In Fortran, ic1(100, 4) = 2, indicates that
 !> cell 99 (0 based) contains the SURFACE definition with user number 2 that has been defined in the
 !> InitialPhreeqc instance (either by @ref RM_RunFile or @ref RM_RunString).
 !> @n@n
 !> It is also possible to mix solutions and reactants to obtain the initial conditions for cells. For mixing,
-!> @a initials_conditions2 contains numbers for a second entity that mixes with the entity defined in @a initial_conditions1.
-!> @a Fraction1 contains the mixing fraction for @a initial_conditions1, whereas (1 - @a fraction1) is the mixing fraction for
-!> @a initial_conditions2.
-!> In Fortran, initial_conditions1(100, 4) = 2, initial_conditions2(100, 4) = 3, fraction1(100, 4) = 0.25 indicates that
-!> cell 99 (0 based) contains a mixture of 0.25 SURFACE 2 and 0.75 SURFACE 3, where the surface compositions have been defined in the
-!> InitialPhreeqc instance. 
-!> If the user number in @a initial_conditions2 is negative, no mixing occurs.
-!> If @a initials_conditions2 and @a fraction1 are omitted (Fortran),
-!> no mixing is used, and initial conditions are derived solely from @a initials_conditions1.
+!> @a ic2 contains numbers for a second entity that mixes with the entity defined in @a ic1.
+!> @a F1 contains the mixing fraction for @a ic1, whereas (1 - @a f1) is the mixing fraction for
+!> @a ic2.
+!> In Fortran, ic1(100, 4) = 2, initial_conditions2(100, 4) = 3, f1(100, 4) = 0.25 indicates that
+!> cell 99 (0 based) contains a mixture of 0.25 SURFACE 2 and 0.75 SURFACE 3, where the surface 
+!> compositions have been defined in the InitialPhreeqc instance. 
+!> If the user number in @a ic2 is negative, no mixing occurs.
+!> If @a ic2 and @a f1 are omitted (Fortran),
+!> no mixing is used, and initial conditions are derived solely from @a ic1.
 !> 
 !> @param id                  The instance @a id returned from @ref RM_Create.
 !> @param ic1 Array of solution and reactant index numbers that refer to definitions in the InitialPhreeqc instance.
 !> Size is (@a nxyz,7). The order of definitions is given above.
 !> Negative values are ignored, resulting in no definition of that entity for that cell.
 !> @param ic2  Array of solution and reactant index numbers that refer to definitions in the InitialPhreeqc instance.
-!> Nonnegative values of @a initial_conditions2 result in mixing with the entities defined in @a initial_conditions1.
+!> Nonnegative values of @a ic2 result in mixing with the entities defined in @a ic1.
 !> Negative values result in no mixing.
 !> Size is (@a nxyz,7). The order of definitions is given above.
 !> Optional in Fortran; omitting results in no mixing.
-!> @param f1           Fraction of initial_conditions1 that mixes with (1-@a fraction1) of initial_conditions2.
+!> @param f1           Fraction of ic1 that mixes with (1-@a f1) of ic2.
 !> Size is (nxyz,7). The order of definitions is given above.
 !> Optional in Fortran; omitting results in no mixing.
 !> @retval IRM_RESULT          0 is success, negative is failure (See @ref RM_DecodeError).
@@ -2153,18 +2153,18 @@ SUBROUTINE Chk_InitialPhreeqc2Module(id, ic1, ic2, f1)
     endif
 END SUBROUTINE Chk_InitialPhreeqc2Module
 
-!> Fills an array (@a species_c) with aqueous species concentrations from solutions in the InitialPhreeqc instance.
+!> Fills an array (@a bc_conc) with aqueous species concentrations from solutions in the InitialPhreeqc instance.
 !> This method is intended for use with multicomponent-diffusion transport calculations,
 !> and @ref RM_SetSpeciesSaveOn must be set to @a true.
 !> The method is used to obtain aqueous species concentrations for boundary conditions. If a negative value
-!> is used for a cell in @a boundary_solution1, then the highest numbered solution in the InitialPhreeqc instance
+!> is used for a cell in @a bc1, then the highest numbered solution in the InitialPhreeqc instance
 !> will be used for that cell.
 !> Concentrations may be a mixture of two
-!> solutions, @a boundary_solution1 and @a boundary_solution2, with a mixing fraction for @a boundary_solution1 1 of
-!> @a fraction1 and mixing fraction for @a boundary_solution2 of (1 - @a fraction1).
-!> A negative value for @a boundary_solution2 implies no mixing, and the associated value for @a fraction1 is ignored.
-!> If @a boundary_solution2 and @a fraction1 are omitted (Fortran) or NULL (C),
-!> no mixing is used; concentrations are derived from @a boundary_solution1 only.
+!> solutions, @a bc1 and @a bc2, with a mixing fraction for @a bc1 of
+!> @a f1 and mixing fraction for @a bc2 of (1 - @a f1).
+!> A negative value for @a bc2 implies no mixing, and the associated value for @a f1 is ignored.
+!> If @a bc2 and @a f1 are omitted,
+!> no mixing is used; concentrations are derived from @a bc1 only.
 !> 
 !> @param id                  The instance @a id returned from @ref RM_Create.
 !> @param bc_conc           Array of aqueous concentrations extracted from the InitialPhreeqc instance.
@@ -2174,13 +2174,12 @@ END SUBROUTINE Chk_InitialPhreeqc2Module
 !> @param bc1  Array of solution index numbers that refer to solutions in the InitialPhreeqc instance.
 !> Size is @a n_boundary.
 !> @param bc2  Array of solution index numbers that that refer to solutions in the InitialPhreeqc instance
-!> and are defined to mix with @a boundary_solution1.
-!> Size is @a n_boundary. Optional in Fortran, may be NULL in C.
-!> @param f1           Fraction of @a boundary_solution1 that mixes with (1-@a fraction1) of @a boundary_solution2.
-!> Size is @a n_boundary. Optional in Fortran, may be NULL in C.
+!> and are defined to mix with @a bc1.
+!> Size is @a n_boundary. Optional in Fortran.
+!> @param f1           Fraction of @a bc1 that mixes with (1-@a f1) of @a bc2.
+!> Size is @a n_boundary. Optional in Fortran.
 !> @retval IRM_RESULT         0 is success, negative is failure (See @ref RM_DecodeError).
 !> @see                  @ref RM_FindComponents, @ref RM_GetSpeciesCount, @ref RM_SetSpeciesSaveOn.
-!> @endhtmlonly
 !> @par Example:
 !> @htmlonly
 !> <CODE>
@@ -2224,21 +2223,21 @@ INTEGER FUNCTION RM_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary
          RMF_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary, bc1, bc2, f1)
 END FUNCTION RM_InitialPhreeqc2SpeciesConcentrations          
 
-SUBROUTINE Chk_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, bc_sol1, bc_sol2, f1) 
+SUBROUTINE Chk_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary, bc1, bc2, f1) 
     IMPLICIT NONE
     INTEGER, INTENT(in) :: id
-    DOUBLE PRECISION, INTENT(IN), DIMENSION(:,:) :: species_c
+    DOUBLE PRECISION, INTENT(IN), DIMENSION(:,:) :: bc_conc
     INTEGER, INTENT(IN) :: n_boundary 
-    INTEGER, INTENT(IN), DIMENSION(:) :: bc_sol1
-    INTEGER, INTENT(IN), DIMENSION(:) , OPTIONAL :: bc_sol2
+    INTEGER, INTENT(IN), DIMENSION(:) :: bc1
+    INTEGER, INTENT(IN), DIMENSION(:) , OPTIONAL :: bc2
     DOUBLE PRECISION, INTENT(IN), DIMENSION(:) , OPTIONAL :: f1
     INTEGER :: errors, nspecies
     nspecies = RM_GetSpeciesCount(id)
     errors = 0
-    errors = errors + Chk_Double2D(id, species_c, n_boundary, nspecies, "concentration", "RM_InitialPhreeqc2SpeciesConcentrations")
-    errors = errors + Chk_Integer1D(id, bc_sol1, n_boundary, "bc_sol1", "RM_InitialPhreeqc2SpeciesConcentrations")
-    if (present(bc_sol2)) then
-        errors = errors + Chk_Integer1D(id, bc_sol2, n_boundary, "bc_sol2", "RM_InitialPhreeqc2SpeciesConcentrations")
+    errors = errors + Chk_Double2D(id, bc_conc, n_boundary, nspecies, "concentration", "RM_InitialPhreeqc2SpeciesConcentrations")
+    errors = errors + Chk_Integer1D(id, bc1, n_boundary, "bc1", "RM_InitialPhreeqc2SpeciesConcentrations")
+    if (present(bc2)) then
+        errors = errors + Chk_Integer1D(id, bc2, n_boundary, "bc2", "RM_InitialPhreeqc2SpeciesConcentrations")
     endif
     if (present(f1)) then
         errors = errors + Chk_Double1D(id, f1, n_boundary, "f1", "RM_InitialPhreeqc2SpeciesConcentrations")
@@ -2248,18 +2247,18 @@ SUBROUTINE Chk_InitialPhreeqc2SpeciesConcentrations(id, species_c, n_boundary, b
     endif
 END SUBROUTINE Chk_InitialPhreeqc2SpeciesConcentrations
 
-!> A cell numbered @a n in the InitialPhreeqc instance is selected to populate a series of cells.
-!> All reactants with the number @a n are transferred along with the solution.
-!> If MIX @a n exists, it is used for the definition of the solution.
-!> If @a n is negative, @a n is redefined to be the largest solution or MIX number in the InitialPhreeqc instance.
+!> A cell numbered @a n_user in the InitialPhreeqc instance is selected to populate a series of cells.
+!> All reactants with the number @a n_user are transferred along with the solution.
+!> If MIX @a n_user exists, it is used for the definition of the solution.
+!> If @a n_user is negative, @a n_user is redefined to be the largest solution or MIX number in the InitialPhreeqc instance.
 !> All reactants for each cell in the list @a cell_numbers are removed before the cell
 !> definition is copied from the InitialPhreeqc instance to the workers.
 !> @param id                 The instance @a id returned from @ref RM_Create.
-!> @param n                  Cell number refers to a solution or MIX and associated reactants in the InitialPhreeqc instance.
+!> @param n_user                  Cell number refers to a solution or MIX and associated reactants in the InitialPhreeqc instance.
 !> A negative number indicates the largest solution or MIX number in the InitialPhreeqc instance will be used.
 !> @param cell_numbers     A list of cell numbers in the user's grid-cell numbering system that will be populated with
-!> cell @a n from the InitialPhreeqc instance.
-!> @param n_cell The number of cell numbers in the @a module_numbers list.
+!> cell @a n_user from the InitialPhreeqc instance.
+!> @param n_cell The number of cell numbers in the @a cell_numbers list.
 !> @retval IRM_RESULT        0 is success, negative is failure (See @ref RM_DecodeError).
 !> @see                      @ref RM_InitialPhreeqc2Module.
 !> @par Example:
@@ -2300,13 +2299,13 @@ INTEGER FUNCTION RM_InitialPhreeqcCell2Module(id, n_user, cell_numbers, n_cell)
     RM_InitialPhreeqcCell2Module = RMF_InitialPhreeqcCell2Module(id, n_user, cell_numbers, n_cell)
 END FUNCTION RM_InitialPhreeqcCell2Module   
 
-SUBROUTINE Chk_InitialPhreeqcCell2Module(id, n_user, module_cell, n_cell)
+SUBROUTINE Chk_InitialPhreeqcCell2Module(id, n_user, cell_numbers, n_cell)
     IMPLICIT NONE
     INTEGER, INTENT(in) :: id, n_user, n_cell
-    INTEGER, INTENT(in), DIMENSION(:) :: module_cell
+    INTEGER, INTENT(in), DIMENSION(:) :: cell_numbers
     INTEGER :: errors
     errors = 0
-    errors = errors + Chk_Integer1D(id, module_cell, n_cell, "module cells", "RM_InitialPhreeqcCell2Module")
+    errors = errors + Chk_Integer1D(id, cell_numbers, n_cell, "cell numbers", "RM_InitialPhreeqcCell2Module")
     if (errors .gt. 0) then
         errors = RM_Abort(id, -3, "Invalid argument in RM_InitialPhreeqcCell2Module")
     endif
@@ -2329,21 +2328,21 @@ END SUBROUTINE Chk_InitialPhreeqcCell2Module
 !> @par MPI:
 !> Called by root, workers must be in the loop of @ref RM_MpiWorker.
 
-INTEGER FUNCTION RM_LoadDatabase(id, db) 
+INTEGER FUNCTION RM_LoadDatabase(id, db_name) 
 	USE ISO_C_BINDING
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_LoadDatabase(id, db) &
+        INTEGER(KIND=C_INT) FUNCTION RMF_LoadDatabase(id, db_name) &
 			BIND(C, NAME='RMF_LoadDatabase') 
 			USE ISO_C_BINDING
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
-            CHARACTER(KIND=C_CHAR), INTENT(in) :: db(*)
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: db_name(*)
         END FUNCTION RMF_LoadDatabase 
 	END INTERFACE
     INTEGER, INTENT(in) :: id
-    CHARACTER(len=*), INTENT(in) :: db
-    RM_LoadDatabase = RMF_LoadDatabase(id, trim(db)//C_NULL_CHAR)
+    CHARACTER(len=*), INTENT(in) :: db_name
+    RM_LoadDatabase = RMF_LoadDatabase(id, trim(db_name)//C_NULL_CHAR)
 END FUNCTION RM_LoadDatabase 
     
 !> Print a message to the log file.
@@ -2950,21 +2949,21 @@ END SUBROUTINE Chk_SetDensity
 !> @par MPI:
 !> Called by root.
 
-INTEGER FUNCTION RM_SetDumpFileName(id, name) 
+INTEGER FUNCTION RM_SetDumpFileName(id, dump_name) 
 	USE ISO_C_BINDING
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_SetDumpFileName(id, name) &
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetDumpFileName(id, dump_name) &
 			BIND(C, NAME='RMF_SetDumpFileName') 
 			USE ISO_C_BINDING
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
-            CHARACTER(KIND=C_CHAR), INTENT(in) :: name(*)
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: dump_name(*)
         END FUNCTION RMF_SetDumpFileName  
 	END INTERFACE
     INTEGER, INTENT(in) :: id
-    CHARACTER(len=*), INTENT(in) :: name
-    RM_SetDumpFileName = RMF_SetDumpFileName(id, trim(name)//C_NULL_CHAR)
+    CHARACTER(len=*), INTENT(in) :: dump_name
+    RM_SetDumpFileName = RMF_SetDumpFileName(id, trim(dump_name)//C_NULL_CHAR)
 END FUNCTION RM_SetDumpFileName   
 
 !> Set the action to be taken when the reaction module encounters an error.
@@ -2986,21 +2985,21 @@ END FUNCTION RM_SetDumpFileName
 !> @par MPI:
 !> Called by root, workers must be in the loop of @ref RM_MpiWorker.
 
-INTEGER FUNCTION RM_SetErrorHandlerMode(id, i)
+INTEGER FUNCTION RM_SetErrorHandlerMode(id, mode)
 	USE ISO_C_BINDING
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_SetErrorHandlerMode(id, i) &
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetErrorHandlerMode(id, mode) &
 			BIND(C, NAME='RMF_SetErrorHandlerMode')
 			USE ISO_C_BINDING
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
-            INTEGER(KIND=C_INT), INTENT(in) :: i
+            INTEGER(KIND=C_INT), INTENT(in) :: mode
         END FUNCTION RMF_SetErrorHandlerMode    
 	END INTERFACE
     INTEGER, INTENT(in) :: id
-    INTEGER, INTENT(in) :: i
-    RM_SetErrorHandlerMode = RMF_SetErrorHandlerMode(id, i)
+    INTEGER, INTENT(in) :: mode
+    RM_SetErrorHandlerMode = RMF_SetErrorHandlerMode(id, mode)
 END FUNCTION RM_SetErrorHandlerMode        
 
 !> Set the prefix for the output (prefix.chem.txt) and log (prefix.log.txt) files.
@@ -3388,21 +3387,21 @@ END SUBROUTINE Chk_SetPrintChemistryMask
 !> @par MPI:
 !> Called by root, workers must be in the loop of @ref RM_MpiWorker.
 
-INTEGER FUNCTION RM_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)   
+INTEGER FUNCTION RM_SetPrintChemistryOn(id, workers, initial_phreeqc, utility)   
 	USE ISO_C_BINDING
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_SetPrintChemistryOn(id, worker, initial_phreeqc, utility) &
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetPrintChemistryOn(id, workers, initial_phreeqc, utility) &
 			BIND(C, NAME='RMF_SetPrintChemistryOn')   
 			USE ISO_C_BINDING
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
-            INTEGER(KIND=C_INT), INTENT(in) :: worker, initial_phreeqc, utility
+            INTEGER(KIND=C_INT), INTENT(in) :: workers, initial_phreeqc, utility
         END FUNCTION RMF_SetPrintChemistryOn 
 	END INTERFACE
     INTEGER, INTENT(in) :: id
-    INTEGER, INTENT(in) :: worker, initial_phreeqc, utility
-    RM_SetPrintChemistryOn = RMF_SetPrintChemistryOn(id, worker, initial_phreeqc, utility)
+    INTEGER, INTENT(in) :: workers, initial_phreeqc, utility
+    RM_SetPrintChemistryOn = RMF_SetPrintChemistryOn(id, workers, initial_phreeqc, utility)
 END FUNCTION RM_SetPrintChemistryOn 
 
 !> Set the load-balancing algorithm.
@@ -3610,7 +3609,7 @@ END SUBROUTINE Chk_SetSaturation
 !> be accumulated during @ref RM_RunCells.
 !> 
 !> @param id               The instance @a id returned from @ref RM_Create.
-!> @param selected_output  0, disable selected output; 1, enable selected output.
+!> @param tf               0, disable selected output; 1, enable selected output.
 !> @retval IRM_RESULT      0 is success, negative is failure (See @ref RM_DecodeError).
 !> @see                    @ref RM_GetSelectedOutput, @ref RM_SetPrintChemistryOn.
 !> 
@@ -4319,21 +4318,21 @@ END FUNCTION RM_UseSolutionDensityVolume
 !> @par MPI:
 !> Called by root and (or) workers; only root writes to the log file.
 
-INTEGER FUNCTION RM_WarningMessage(id, str) 
+INTEGER FUNCTION RM_WarningMessage(id, warn_str) 
 	USE ISO_C_BINDING
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_WarningMessage(id, str) &
+        INTEGER(KIND=C_INT) FUNCTION RMF_WarningMessage(id, warn_str) &
 			BIND(C, NAME='RMF_WarningMessage') 
 			USE ISO_C_BINDING
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
-            CHARACTER(KIND=C_CHAR), INTENT(in) :: str(*)
+            CHARACTER(KIND=C_CHAR), INTENT(in) :: warn_str(*)
         END FUNCTION RMF_WarningMessage
 	END INTERFACE
     INTEGER, INTENT(in) :: id
-    CHARACTER(len=*), INTENT(in) :: str
-    RM_WarningMessage = RMF_WarningMessage(id, trim(str)//C_NULL_CHAR)
+    CHARACTER(len=*), INTENT(in) :: warn_str
+    RM_WarningMessage = RMF_WarningMessage(id, trim(warn_str)//C_NULL_CHAR)
 END FUNCTION RM_WarningMessage
 
 INTEGER FUNCTION Chk_Double1D(id, t, n1, var, func)
