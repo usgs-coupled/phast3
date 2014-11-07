@@ -61,7 +61,11 @@ subroutine advection_f90()
   integer                                       :: iphreeqc_id, iphreeqc_id1
   integer                                       :: dump_on, append
   !character(LEN=1), dimension(:), allocatable   :: errstr
+#ifdef FORTRAN_2003
   character(LEN=:), allocatable                 :: errstr
+#else
+  character(LEN=10000)                          :: errstr
+#endif
   integer                                       :: l
 
   nxyz = 40
@@ -148,13 +152,17 @@ subroutine advection_f90()
   status = RM_LoadDatabase(id, "phreeqc.dat") 
   if (status .ne. 0) then
      l = RM_GetErrorStringLength(id)
+#ifdef FORTRAN_2003
      allocate (character(len=l) :: errstr)
+#endif
      !!allocate (errstr(l))
      write(*,*) "Start of error string: "
      status = RM_GetErrorString(id, errstr)
-     write(*,"(A)") (errstr(i:i), i=1,l)
+     write(*,"(A)") errstr
      write(*,*) "End of error string."
+#ifdef FORTRAN_2003
      deallocate(errstr)
+#endif
      status = RM_Destroy(id);
      stop
   endif
