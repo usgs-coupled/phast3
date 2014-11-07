@@ -44,3 +44,13 @@ test_LDADD+=$(FCLIBS)
 
 endif
 
+# We must override the default PPFCCOMPILE since ifort can't
+# handle the FC_FUNC define correctly so $(DEFS) is replaced
+# by $(FCDEFS)
+#
+PPFCCOMPILE = $(FC) $(FCDEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+        $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
+LTPPFCCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=FC $(AM_LIBTOOLFLAGS) \
+        $(LIBTOOLFLAGS) --mode=compile $(FC) $(FCDEFS) \
+        $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+        $(AM_FCFLAGS) $(FCFLAGS)
