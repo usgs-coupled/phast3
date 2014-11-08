@@ -51,9 +51,6 @@ AM_CONDITIONAL([BUILD_FORTRAN], [test "X$IRM_FORTRAN" = "Xyes"])
 AC_LANG_PUSH(C++)
 AC_OPENMP
 AC_SUBST(AM_CXXFLAGS, $OPENMP_CXXFLAGS) 
-if test "$enable_openmp" != no; then
-  AC_DEFINE(USE_OPENMP)
-fi
 AC_LANG_POP(C++)
 
 
@@ -108,6 +105,34 @@ AC_LANG_POP(C++)
 # isnan
 AC_CHECK_FUNCS([isnan],    , AC_CHECK_LIB(m, isnan))
 
+
+# Build mpi version
+# Check if building mpi version
+AC_MSG_CHECKING([if building MPI version])
+AC_ARG_ENABLE([mpi],
+     [AC_HELP_STRING([--enable-mpi],
+                     [build the MPI version @<:@default=no@:>@])],
+     [IRM_MPI=yes],[IRM_MPI=no])
+
+if test "X$IRM_MPI" = "Xyes"; then
+  AC_MSG_RESULT(yes)
+  AC_LANG_PUSH(C++)
+  AX_MPI(, AC_ERROR([MPI not found]))
+  AC_LANG_POP(C++)
+  AC_LANG_PUSH(C)
+  AX_MPI(, AC_ERROR([MPI not found]))
+  AC_LANG_POP(C)
+  # extra MPI defines
+  AC_DEFINE([USE_MPI], , [Set to use MPI])
+  # set compilers
+  CXX="$MPICXX"
+  CC="$MPICC"
+else
+  AC_MSG_RESULT(no)
+  if test "$enable_openmp" != no; then
+     AC_DEFINE(USE_OPENMP)
+  fi   
+fi
 
 AC_CONFIG_FILES([
   Makefile
