@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS=-I m4
 AM_CPPFLAGS=-I$(top_srcdir)/IPhreeqcPhast -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp
 
 # libtool libraries to build
