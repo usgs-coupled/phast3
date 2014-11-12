@@ -52,8 +52,8 @@ class PHAST_polygon
 	void Clear(void);
 	PHAST_polygon & operator=(const PHAST_polygon & poly);
 	gpc_polygon *Get_whole(void) {return this->whole;}
-	void Set_whole(gpc_polygon *poly) {this->whole = poly;}
-	void Free_whole(void) {gpc_free_polygon(this->whole); delete this->whole; this->whole = NULL;}
+	void Set_whole(gpc_polygon *poly);
+	void Free_whole(void); 
 
 	void Tidy(void);
   protected:

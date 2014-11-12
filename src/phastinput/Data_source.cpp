@@ -27,7 +27,7 @@
 #endif
 
 // static
-std::map < const Data_source *, NNInterpolator * > Data_source::NNInterpolatorMap;
+std::list < NNInterpolator * > Data_source::NNInterpolatorList;
 
 Data_source::Data_source(void)
 {
@@ -80,6 +80,7 @@ pts(r.pts),
 pts_user(r.pts_user),
 phast_polygons(r.phast_polygons),
 tree(NULL),
+nni(r.nni),
 tree3d(NULL),
 columns(r.columns),
 attribute(r.attribute),
@@ -87,13 +88,6 @@ box(r.box),
 coordinate_system(r.coordinate_system),
 coordinate_system_user(r.coordinate_system_user)
 {
-	std::map < const Data_source *, NNInterpolator * >::const_iterator cit = Data_source::NNInterpolatorMap.find(&r);
-	if (cit != Data_source::NNInterpolatorMap.end())
-	{
-		Data_source::NNInterpolatorMap.insert(
-			std::map < const Data_source *, NNInterpolator * >::value_type(this, cit->second)
-			);
-	}
 }
 Data_source & Data_source::operator=(const Data_source & rhs)
 {
@@ -108,13 +102,7 @@ Data_source & Data_source::operator=(const Data_source & rhs)
 		this->pts_user = rhs.pts_user;
 		this->phast_polygons = rhs.phast_polygons;
 		this->tree = NULL;		// lazy initialization
-		std::map < const Data_source *, NNInterpolator * >::const_iterator cit = Data_source::NNInterpolatorMap.find(&rhs);
-		if (cit != Data_source::NNInterpolatorMap.end())
-		{
-			Data_source::NNInterpolatorMap.insert(
-				std::map < const Data_source *, NNInterpolator * >::value_type(this, cit->second)
-				);
-		}
+		this->nni = rhs.nni;
 		this->tree3d = NULL;	// lazy initialization
 		this->columns = rhs.columns;
 		this->attribute = rhs.attribute;
@@ -138,6 +126,7 @@ Data_source::Init()
 	zone_init(&this->box);
 	this->columns = 0;
 	this->tree = NULL;
+	this->nni = NULL;
 	this->tree3d = NULL;
 	this->coordinate_system = PHAST_Transform::NONE;
 	this->coordinate_system_user = PHAST_Transform::NONE;
@@ -1054,7 +1043,7 @@ Data_source::Get_nni(void)
 #endif
 
 NNInterpolator *
-Data_source::Get_nni(void)const
+Data_source::Get_nni(void)
 {
 	/*	switch (this->source_type)
 	{
@@ -1096,17 +1085,15 @@ Data_source::Get_nni(void)const
 	case Data_source::XYZ:
 	case Data_source::POINTS:
 		{
-			const Data_source * ds = this->Get_data_source_with_points();
+			Data_source * ds = this->Get_data_source_with_points();
 			if (ds == NULL) return (NULL);
-			if (Data_source::NNInterpolatorMap.find(ds) == Data_source::NNInterpolatorMap.end())
+			if (ds->nni == NULL)
 			{
-				NNInterpolator * nni = new NNInterpolator();
-				nni->preprocess(ds->Get_points(), ds->coordinate_system);
-				Data_source::NNInterpolatorMap.insert(
-					std::map < const Data_source *, NNInterpolator * >::value_type(ds, nni)
-					);
+				ds->nni = new NNInterpolator();
+				ds->nni->preprocess(ds->Get_points(), ds->coordinate_system);
+				Data_source::NNInterpolatorList.push_back(ds->nni);
 			}
-			return (Data_source::NNInterpolatorMap.find(ds)->second);
+			return ds->nni;
 		}
 		break;
 	default:
@@ -1138,15 +1125,7 @@ Data_source::Replace_nni(NNInterpolator * nni_ptr)
 	assert(ds != NULL);
 	if (ds)
 	{
-		std::map < const Data_source *, NNInterpolator * >::iterator it = Data_source::NNInterpolatorMap.find(ds);
-		if (it != Data_source::NNInterpolatorMap.end())
-		{
-			delete it->second;
-			Data_source::NNInterpolatorMap.erase(it);
-		}
-		Data_source::NNInterpolatorMap.insert(
-			std::map < const Data_source *, NNInterpolator * >::value_type(ds, nni_ptr)
-			);
+		ds->nni = nni_ptr;
 	}
 	return;
 }
@@ -1247,13 +1226,8 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 			ds->Set_coordinate_system(PHAST_Transform::GRID);
 			ds->phast_polygons.Clear();
 
-			// nni (remove from map)
-			std::map < const Data_source *, NNInterpolator * >::iterator it = Data_source::NNInterpolatorMap.find(ds);
-			if (it != Data_source::NNInterpolatorMap.end())
-			{
-				delete (it->second);
-				Data_source::NNInterpolatorMap.erase(it);				
-			}
+			// nni
+			ds->nni = NULL;
 
 			// nni
 			//if (ds->Get_nni() != NULL)
@@ -1276,13 +1250,9 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 			ds->Set_coordinate_system(PHAST_Transform::MAP);
 			ds->phast_polygons.Clear();
 
-			// nni (remove from map)
-			std::map < const Data_source *, NNInterpolator * >::iterator it = Data_source::NNInterpolatorMap.find(ds);
-			if (it != Data_source::NNInterpolatorMap.end())
-			{
-				delete (it->second);
-				Data_source::NNInterpolatorMap.erase(it);				
-			}
+			// nni
+			ds->nni = NULL;
+
 			// nni
 			/*if (ds->Get_nni() != NULL)
 			{
@@ -1352,18 +1322,16 @@ Data_source::Get_data_source_with_points(void)const
 
 bool Data_source::Make_nni(void)
 {
-	const Data_source *
+	Data_source *
 		ds = this->Get_data_source_with_points();
 	if (ds == NULL)
 		return false;
 
-	if (Data_source::NNInterpolatorMap.find(ds) == Data_source::NNInterpolatorMap.end())
+	if (ds->nni == NULL)
 	{
-		NNInterpolator * nni = new NNInterpolator();
-		nni->preprocess(ds->Get_points(), ds->coordinate_system);
-		Data_source::NNInterpolatorMap.insert(
-			std::map < const Data_source *, NNInterpolator * >::value_type(ds, nni)
-			);
+		ds->nni = new NNInterpolator();
+		ds->nni->preprocess(ds->Get_points(), ds->coordinate_system);
+		Data_source::NNInterpolatorList.push_back(ds->nni);
 	}
 	return true;
 }
