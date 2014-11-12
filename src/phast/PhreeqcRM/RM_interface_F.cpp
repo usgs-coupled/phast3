@@ -746,6 +746,50 @@ RMF_InitialPhreeqc2Concentrations(
 			int *id,
 			double *boundary_c,
 			int *n_boundary,
+			int *boundary_solution1)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   concentrations
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          Optionally, boundary_solution2 - list of second solution numbers to be mixed
+ *          Optionally, fraction1 - list of mixing fractions of solution 1
+ *
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          boundary_solution2 and fraction1 may be omitted if no mixing
+ *
+ *   Output: boundary_c - concentrations for boundary conditions
+ *                      - dimension must be of size n_boundary x n_comp
+ *
+ */
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
+		std::vector < double > destination_c, fraction1_vector;
+		boundary_solution1_vector.resize(*n_boundary);
+		memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
+		IRM_RESULT return_value = Reaction_module_ptr->InitialPhreeqc2Concentrations(
+			destination_c,
+			boundary_solution1_vector,
+			boundary_solution2_vector,
+			fraction1_vector);
+		if (return_value == 0)
+		{
+			memcpy(boundary_c, destination_c.data(), destination_c.size() * sizeof(double));
+		}       
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_InitialPhreeqc2Concentrations2(
+			int *id,
+			double *boundary_c,
+			int *n_boundary,
 			int *boundary_solution1,  
 			int *boundary_solution2, 
 			double *fraction1)
@@ -799,6 +843,38 @@ RMF_InitialPhreeqc2Concentrations(
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RMF_InitialPhreeqc2Module(int *id,
+						  int *initial_conditions1)		// 7 x nxyz end-member 1	
+/* ---------------------------------------------------------------------- */
+{
+	// 7 sets of indices for initial conditions
+	// 0 solution
+	// 1 ppassemblage
+	// 2 exchange
+	// 3 surface
+	// 4 gas phase
+	// 5 ss_assemblage
+	// 6 kinetics
+	// array is equivalent to Fortran ic(nxyz, 7), where nxyz is number of grid nodes
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<int> i1_vector, i2_vector;
+		std::vector<double> f1_vector;
+		int nxyz = Reaction_module_ptr->GetGridCellCount();
+		i1_vector.resize(nxyz * 7);
+		i2_vector.resize(nxyz * 7, -1);
+		f1_vector.resize(nxyz * 7, 1.0);
+		memcpy(i1_vector.data(), initial_conditions1, (size_t) (nxyz * 7 * sizeof(int)));
+		return Reaction_module_ptr->InitialPhreeqc2Module(
+			i1_vector,
+			i2_vector,
+			f1_vector);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_InitialPhreeqc2Module2(int *id,
 							  int *initial_conditions1,		// 7 x nxyz end-member 1
 							  int *initial_conditions2,		// 7 x nxyz end-member 2
 							  double *fraction1)			// 7 x nxyz fraction of end-member 1
@@ -867,6 +943,48 @@ RMF_InitialPhreeqcCell2Module(int *id,
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RMF_InitialPhreeqc2SpeciesConcentrations(
+			int *id,
+			double *species_c,
+			int *n_boundary,
+			int *boundary_solution1)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   aqueous species concentrations
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - list of mixing fractions of solution 1
+ *
+ *   Output: species_c - aqueous species concentrations for boundary conditions
+ *                     - dimensions must be n_boundary x n_species
+ *
+ */
+	
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
+		std::vector < double > destination_c, fraction1_vector;
+		boundary_solution1_vector.resize(*n_boundary);
+		memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
+		IRM_RESULT return_value = Reaction_module_ptr->InitialPhreeqc2SpeciesConcentrations(
+			destination_c,
+			boundary_solution1_vector,
+			boundary_solution2_vector,
+			fraction1_vector);		
+		if (return_value == 0)
+		{
+			memcpy(species_c, destination_c.data(), destination_c.size() * sizeof(double));
+		}       
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_InitialPhreeqc2SpeciesConcentrations2(
 			int *id,
 			double *species_c,
 			int *n_boundary,

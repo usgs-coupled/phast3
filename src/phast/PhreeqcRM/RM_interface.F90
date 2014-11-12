@@ -2006,16 +2006,24 @@ INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, 
 	USE ISO_C_BINDING  
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1) &
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1) &
 			BIND(C, NAME='RMF_InitialPhreeqc2Concentrations')
 			USE ISO_C_BINDING   
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
             REAL(KIND=C_DOUBLE), INTENT(OUT) :: bc_conc(*)
             INTEGER(KIND=C_INT), INTENT(IN) :: n_boundary, bc1(*)
-            INTEGER(KIND=C_INT), INTENT(IN), OPTIONAL :: bc2(*)
-            REAL(KIND=C_DOUBLE), INTENT(IN), OPTIONAL :: f1(*)
-        END FUNCTION RMF_InitialPhreeqc2Concentrations
+        END FUNCTION RMF_InitialPhreeqc2Concentrations    
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Concentrations2(id, bc_conc, n_boundary, bc1, bc2, f1) &
+			BIND(C, NAME='RMF_InitialPhreeqc2Concentrations2')
+			USE ISO_C_BINDING   
+            IMPLICIT NONE
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(OUT) :: bc_conc(*)
+            INTEGER(KIND=C_INT), INTENT(IN) :: n_boundary, bc1(*)
+            INTEGER(KIND=C_INT), INTENT(IN) :: bc2(*)
+            REAL(KIND=C_DOUBLE), INTENT(IN) :: f1(*)
+        END FUNCTION RMF_InitialPhreeqc2Concentrations2
 	END INTERFACE
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, INTENT(OUT), DIMENSION(:,:) :: bc_conc
@@ -2024,7 +2032,11 @@ INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, 
     INTEGER, INTENT(IN), DIMENSION(:) , OPTIONAL :: bc2
     DOUBLE PRECISION, INTENT(IN), DIMENSION(:) , OPTIONAL :: f1
 	if (rmf_debug) call Chk_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1) 
-    RM_InitialPhreeqc2Concentrations = RMF_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1)
+    if (present(bc2) .and. present(f1)) then
+        RM_InitialPhreeqc2Concentrations = RMF_InitialPhreeqc2Concentrations2(id, bc_conc, n_boundary, bc1, bc2, f1)
+    else
+        RM_InitialPhreeqc2Concentrations = RMF_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1)
+    endif
 END FUNCTION RM_InitialPhreeqc2Concentrations    
 
 SUBROUTINE Chk_InitialPhreeqc2Concentrations(id, bc_conc, n_boundary, bc1, bc2, f1) 
@@ -2115,22 +2127,35 @@ INTEGER FUNCTION RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
 	USE ISO_C_BINDING
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Module(id, ic1, ic2, f1) &
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Module(id, ic1) &
 			BIND(C, NAME='RMF_InitialPhreeqc2Module')
 			USE ISO_C_BINDING
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
             INTEGER(KIND=C_INT), INTENT(in) :: ic1(*)
-            INTEGER(KIND=C_INT), INTENT(in), OPTIONAL :: ic2(*)
-            REAL(KIND=C_DOUBLE), INTENT(in), OPTIONAL :: f1(*)
         END FUNCTION RMF_InitialPhreeqc2Module  
+	END INTERFACE
+    INTERFACE
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2Module2(id, ic1, ic2, f1) &
+			BIND(C, NAME='RMF_InitialPhreeqc2Module2')
+			USE ISO_C_BINDING
+            IMPLICIT NONE
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            INTEGER(KIND=C_INT), INTENT(in) :: ic1(*)
+            INTEGER(KIND=C_INT), INTENT(in) :: ic2(*)
+            REAL(KIND=C_DOUBLE), INTENT(in) :: f1(*)
+        END FUNCTION RMF_InitialPhreeqc2Module2  
 	END INTERFACE
     INTEGER, INTENT(in) :: id
     INTEGER, INTENT(in), DIMENSION(:,:) :: ic1
     INTEGER, INTENT(in), DIMENSION(:,:), OPTIONAL :: ic2
     DOUBLE PRECISION, INTENT(in), DIMENSION(:,:), OPTIONAL :: f1
 	if (rmf_debug) call Chk_InitialPhreeqc2Module(id, ic1, ic2, f1)
-    RM_InitialPhreeqc2Module = RMF_InitialPhreeqc2Module(id, ic1, ic2, f1)
+    if (present(ic2) .and. present(f1)) then
+        RM_InitialPhreeqc2Module = RMF_InitialPhreeqc2Module2(id, ic1, ic2, f1)
+    else
+        RM_InitialPhreeqc2Module = RMF_InitialPhreeqc2Module(id, ic1)  
+    endif    
 END FUNCTION RM_InitialPhreeqc2Module    
 
 SUBROUTINE Chk_InitialPhreeqc2Module(id, ic1, ic2, f1) 
@@ -2201,16 +2226,24 @@ INTEGER FUNCTION RM_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary
 	USE ISO_C_BINDING  
     IMPLICIT NONE
     INTERFACE
-        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary, bc1, bc2, f1) &
+           INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary, bc1) &
 			BIND(C, NAME='RMF_InitialPhreeqc2SpeciesConcentrations')   
 			USE ISO_C_BINDING
                 IMPLICIT NONE
                 INTEGER(KIND=C_INT), INTENT(in) :: id
                 REAL(KIND=C_DOUBLE), INTENT(OUT) :: bc_conc(*)
                 INTEGER(KIND=C_INT), INTENT(IN) :: n_boundary, bc1(*)
-                INTEGER(KIND=C_INT), INTENT(IN), OPTIONAL :: bc2(*)
-                REAL(KIND=C_DOUBLE), INTENT(IN), OPTIONAL :: f1(*)
-        END FUNCTION RMF_InitialPhreeqc2SpeciesConcentrations   
+        END FUNCTION RMF_InitialPhreeqc2SpeciesConcentrations    
+        INTEGER(KIND=C_INT) FUNCTION RMF_InitialPhreeqc2SpeciesConcentrations2(id, bc_conc, n_boundary, bc1, bc2, f1) &
+			BIND(C, NAME='RMF_InitialPhreeqc2SpeciesConcentrations2')   
+			USE ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER(KIND=C_INT), INTENT(in) :: id
+                REAL(KIND=C_DOUBLE), INTENT(OUT) :: bc_conc(*)
+                INTEGER(KIND=C_INT), INTENT(IN) :: n_boundary, bc1(*)
+                INTEGER(KIND=C_INT), INTENT(IN) :: bc2(*)
+                REAL(KIND=C_DOUBLE), INTENT(IN) :: f1(*)
+        END FUNCTION RMF_InitialPhreeqc2SpeciesConcentrations2  
 	END INTERFACE
     INTEGER, INTENT(in) :: id
     DOUBLE PRECISION, DIMENSION(:,:), INTENT(OUT) :: bc_conc
@@ -2219,8 +2252,13 @@ INTEGER FUNCTION RM_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary
     INTEGER, INTENT(IN), DIMENSION(:), OPTIONAL :: bc2
     DOUBLE PRECISION, INTENT(IN), DIMENSION(:), OPTIONAL :: f1
 	if (rmf_debug) call Chk_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary, bc1, bc2, f1) 
-    RM_InitialPhreeqc2SpeciesConcentrations = &
-         RMF_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary, bc1, bc2, f1)
+    if (present(bc2) .and. present(f1)) then
+        RM_InitialPhreeqc2SpeciesConcentrations = &
+            RMF_InitialPhreeqc2SpeciesConcentrations2(id, bc_conc, n_boundary, bc1, bc2, f1)
+    else
+        RM_InitialPhreeqc2SpeciesConcentrations = &
+            RMF_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary, bc1)
+    endif
 END FUNCTION RM_InitialPhreeqc2SpeciesConcentrations          
 
 SUBROUTINE Chk_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, n_boundary, bc1, bc2, f1) 

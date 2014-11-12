@@ -53,10 +53,17 @@ IRM_RESULT RMF_InitialPhreeqc2Concentrations(
                 int *id,
                 double *c,
                 int *n_boundary,
+                int *boundary_solution1);
+IRM_RESULT RMF_InitialPhreeqc2Concentrations2(
+                int *id,
+                double *c,
+                int *n_boundary,
                 int *boundary_solution1,  
                 int *boundary_solution2 = NULL, 
                 double *fraction1 = NULL);
 IRM_RESULT RMF_InitialPhreeqc2Module(int *id,
+                int *initial_conditions1);		        // 7 x nxyz end-member 1
+IRM_RESULT RMF_InitialPhreeqc2Module2(int *id,
                 int *initial_conditions1,		        // 7 x nxyz end-member 1
                 int *initial_conditions2 = NULL,		// 7 x nxyz end-member 2
                 double *fraction1 = NULL);			    // 7 x nxyz fraction of end-member 1
@@ -65,6 +72,11 @@ IRM_RESULT RMF_InitialPhreeqcCell2Module(int *id,
                 int *module_numbers,		            // Module cell numbers
                 int *dim_module_numbers);			    // Number of module cell numbers
 IRM_RESULT RMF_InitialPhreeqc2SpeciesConcentrations(
+                int *id,
+                double *species_c,
+                int *n_boundary,
+                int *boundary_solution1);
+IRM_RESULT RMF_InitialPhreeqc2SpeciesConcentrations2(
                 int *id,
                 double *species_c,
                 int *n_boundary,
