@@ -150,10 +150,9 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	}
 
 	// second argument is threads for OPENMP or COMM for MPI
-    int thread_count = 1;
-
-	int n = 1;	
 #ifdef USE_OPENMP
+	int thread_count = 1;
+	int n = 1;	
 	thread_count = data_for_parallel_processing;
 #if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
@@ -1901,7 +1900,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 	IRM_RESULT return_value = IRM_OK;
 
 	// Open file on root
-	gzFile dump_file;
+	gzFile dump_file = NULL;
 	try
 	{
 		if (this->mpi_myself == 0)
@@ -2504,7 +2503,6 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 			// load fractions into d
 			cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
 			assert (cxxsoln_ptr);
-			int i_grid = this->backward_mapping[j][0];
 			double v, dens;
 			if (this->use_solution_density_volume)
 			{
@@ -4968,8 +4966,6 @@ PhreeqcRM::RebalanceLoad(void)
 			std::map< std::string, std::vector<int> > transfer_pair;
 			for (int k = 0; k < this->count_chemistry; k++)
 			{
-				int i = k;
-				int ihst = this->backward_mapping[i][0];	/* ihst is 1 to nxyz */
 				while (k > end_cell[old])
 				{
 					old++;
@@ -4998,7 +4994,6 @@ PhreeqcRM::RebalanceLoad(void)
 
 			// Transfer cells
 			int transfers = 0;
-			int count=0;
 			for ( ; tp_it != transfer_pair.end(); tp_it++)
 			{
 				cxxStorageBin t_bin;
@@ -5356,7 +5351,6 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	// Assume homogeneous cluster for now
 	if (mpi_myself == 0)
 	{
-		double s0 = this->standard_task_vector[0];
 		double tasks_total = 0;
 		for (size_t i = 0; i < (size_t) mpi_tasks; i++)
 		{
@@ -5516,8 +5510,6 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 			std::map< std::string, std::vector<int> > transfer_pair;
 	for (int k = 0; k < this->count_chemistry; k++)
 	{
-		int i = k;
-		int ihst = this->backward_mapping[i][0];	/* ihst is 1 to nxyz */
 		while (k > end_cell[old])
 		{
 			old++;
@@ -5547,7 +5539,6 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 
 	// Transfer cells
 	int transfers = 0;
-	int count=0;
 	try
 	{
 		std::map< std::string, std::vector<int> >::iterator tp_it = transfer_pair.begin();

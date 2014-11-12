@@ -490,6 +490,7 @@ endif
 #
 
 COMMON_FOBJS =	\
+	RM_interface.o \
 	IPhreeqcF.o \
 	aplbce_flow.o \
 	aplbci_flow.o \
@@ -617,14 +618,6 @@ hdf.o \
 TM_interface.o \
 FileHandler.o \
 \
-fwrap2Phast.o \
-fwrap3Phast.o \
-fwrap4Phast.o \
-fwrap5Phast.o \
-fwrap6Phast.o \
-fwrap7Phast.o \
-fwrap8Phast.o \
-fwrapPhast.o \
 IPhreeqcPhast.o \
 IPhreeqcPhastLib.o \
 \
