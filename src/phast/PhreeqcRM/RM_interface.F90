@@ -3164,8 +3164,9 @@ INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
        USE ISO_C_BINDING
        INTEGER(KIND=C_INT), INTENT(in) :: id
        INTERFACE
-          INTEGER FUNCTION fcn(method_number) BIND(C)
-            INTEGER, INTENT(in) :: method_number
+          INTEGER(KIND=C_INT) FUNCTION fcn(method_number) BIND(C)
+            USE ISO_C_BINDING
+            INTEGER(KIND=C_INT), INTENT(in) :: method_number
           END FUNCTION fcn
        END INTERFACE
      END FUNCTION RMF_SetMpiWorkerCallback
@@ -3174,8 +3175,10 @@ INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
   INTEGER, INTENT(IN) :: id
 #ifndef DOXYGEN_SHOULD_SKIP 
   INTERFACE
-     INTEGER FUNCTION fcn(method_number) BIND(C)
-       INTEGER, INTENT(in) :: method_number
+     INTEGER(kind=c_int) FUNCTION fcn(method_number) BIND(C)
+       USE ISO_C_BINDING
+       !INTEGER, INTENT(in) :: method_number
+       INTEGER(kind=c_int), INTENT(in) :: method_number
      END FUNCTION fcn
   END INTERFACE
 #endif  
