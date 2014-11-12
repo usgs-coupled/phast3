@@ -20,31 +20,35 @@ PHAST_polygon::PHAST_polygon(gpc_polygon * poly,
 {
 	if (poly)
 	{
-	int i, j;
-	this->coordinate_system = cs;
-	for (i = 0; i < poly->num_contours; i++)
-	{
-		for (j = 0; j < poly->contour[i].num_vertices; j++)
+		int i, j;
+		this->coordinate_system = cs;
+		for (i = 0; i < poly->num_contours; i++)
 		{
-			Point p(poly->contour[i].vertex[j].x,
-					poly->contour[i].vertex[j].y, 0.0);
-			this->pts.push_back(p);
+			for (j = 0; j < poly->contour[i].num_vertices; j++)
+			{
+				Point p(poly->contour[i].vertex[j].x,
+						poly->contour[i].vertex[j].y, 0.0);
+				this->pts.push_back(p);
+			}
 		}
-	}
 
-	std::vector < Point >::iterator it = this->pts.begin();
-	for (i = 0; i < poly->num_contours; i++)
-	{
-		this->begin.push_back(it);
-		for (j = 0; j < poly->contour[i].num_vertices; j++)
+		std::vector < Point >::iterator it = this->pts.begin();
+		for (i = 0; i < poly->num_contours; i++)
 		{
-			it++;
+			this->begin.push_back(it);
+			for (j = 0; j < poly->contour[i].num_vertices; j++)
+			{
+				it++;
+			}
+			this->end.push_back(it);
 		}
-		this->end.push_back(it);
+		zone z(Point(this->pts.begin(), this->pts.end(), Point::MIN), Point(this->pts.begin(), this->pts.end(), Point::MAX));
+		this->box = z;
+		this->whole = gpc_polygon_duplicate(poly);
 	}
-	zone z(Point(this->pts.begin(), this->pts.end(), Point::MIN), Point(this->pts.begin(), this->pts.end(), Point::MAX));
-	this->box = z;
-	this->whole = gpc_polygon_duplicate(poly);
+	else
+	{
+		this->whole = NULL;
 	}
 }
 PHAST_polygon::PHAST_polygon(const std::vector < Point > &points,
@@ -75,9 +79,9 @@ coordinate_system(poly.coordinate_system)
 		std::vector < Point >::difference_type diff = *ei - poly.pts.begin();
 		this->end.push_back(this->pts.begin() + diff);
 	}
-	assert(this->pts.size() == poly.pts.size());
+	assert(this->pts.size()   == poly.pts.size());
 	assert(this->begin.size() == poly.begin.size());
-	assert(this->end.size() == poly.end.size());
+	assert(this->end.size()   == poly.end.size());
 	this->whole = PHAST_polygon2gpc_polygon(this);
 }
 PHAST_polygon & PHAST_polygon::operator=(const PHAST_polygon & rhs)
@@ -105,13 +109,16 @@ PHAST_polygon & PHAST_polygon::operator=(const PHAST_polygon & rhs)
 				*ei - rhs.pts.begin();
 			this->end.push_back(this->pts.begin() + diff);
 		}
-		assert(this->pts.size() == rhs.pts.size());
+		assert(this->pts.size()   == rhs.pts.size());
 		assert(this->begin.size() == rhs.begin.size());
-		assert(this->end.size() == rhs.end.size());
-		this->whole = NULL;
+		assert(this->end.size()   == rhs.end.size());
 		if (rhs.whole)
 		{
-			this->whole = gpc_polygon_duplicate(rhs.whole);
+			this->Set_whole(gpc_polygon_duplicate(rhs.whole));
+		}
+		else
+		{
+			this->Set_whole(NULL);
 		}
 	}
 	return *this;
@@ -465,4 +472,20 @@ void PHAST_polygon::Tidy(void)
 	}
 	
 	return;
+}
+
+void PHAST_polygon::Set_whole(gpc_polygon *poly)
+{
+	if (this->whole)
+	{
+		Free_whole();
+	}
+	this->whole = poly;
+}
+
+void PHAST_polygon::Free_whole(void) 
+{
+	gpc_free_polygon(this->whole);
+	free(this->whole);
+	this->whole = NULL;
 }

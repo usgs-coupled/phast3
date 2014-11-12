@@ -2,6 +2,7 @@
 #include <float.h>
 
 #include <map>
+#include <set>
 #include "../KDtree/Point.h"
 #include "config.h"
 #include "nan.h"
@@ -287,10 +288,10 @@ NNInterpolator::get_tree(void)const
 void
 Clear_NNInterpolatorList(void)
 {
-	std::map < const Data_source *, NNInterpolator * >::iterator it = Data_source::NNInterpolatorMap.begin();
-	for (; it != Data_source::NNInterpolatorMap.end(); ++it)
+	std::list < NNInterpolator * >::iterator it = Data_source::NNInterpolatorList.begin();
+	for (; it != Data_source::NNInterpolatorList.end(); ++it)
 	{
-		delete(it->second);
+		delete(*it);
 	}
-	Data_source::NNInterpolatorMap.clear();
+	Data_source::NNInterpolatorList.clear();
 }

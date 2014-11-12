@@ -116,7 +116,7 @@ class Data_source
 	bool            Test_tree(void);
 	Polygon_tree *  Get_tree(void);
 
-	NNInterpolator *Get_nni(void)const;
+	NNInterpolator *Get_nni(void);
 	void Replace_nni(NNInterpolator *);
 
 	KDtree *Get_tree3d(void);
@@ -164,7 +164,7 @@ class Data_source
 
 	// Data
   public:
-	static std::map < const Data_source *, NNInterpolator * > NNInterpolatorMap;
+	static std::list < NNInterpolator * > NNInterpolatorList;
 
   protected:
 	bool defined;
@@ -176,7 +176,7 @@ class Data_source
 	std::vector < Point > pts_user;
 	PHAST_polygon phast_polygons;
 	Polygon_tree *tree;
-	//NNInterpolator *   nni;
+	NNInterpolator *   nni;
 	KDtree *tree3d;				/* used for 3D interpolation */
 	int columns;
 	int attribute;
