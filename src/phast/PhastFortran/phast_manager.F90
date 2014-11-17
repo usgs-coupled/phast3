@@ -221,7 +221,7 @@ SUBROUTINE phast_manager
             ENDIF
             ! write files
             ihdf = 0
-            if (prhdfc) ihdf = 1
+            if (prhdfc .or. (prhdfhi .ne. 0) .or. (prhdfvi .ne. 0)) ihdf = 1
             imedia = 0
             if (pr_hdf_media) imedia = 1 
             ixyz = 0

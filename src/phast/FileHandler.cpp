@@ -496,7 +496,118 @@ FileHandler::WriteFiles(int id, int *print_hdf_in, int *print_media_in, int *pri
 	}
 	return IRM_BADINSTANCE;
 }
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	if (Reaction_module_ptr)
+	{	
+		int local_mpi_myself = RM_GetMpiMyself(id);
+		int nso = RM_GetSelectedOutputCount(id);
+		int nxyz = RM_GetSelectedOutputRowCount(id); 
+		//
+		// Initialize HDF
+		//
+		if (!this->GetHDFInitialized() && *print_hdf != 0)
+		{
+			if (nso > 0) 
+			{
+				for (int iso = 0; iso < nso; iso++)
+				{
+					int status;
+					int n_user = RM_GetNthSelectedOutputUserNumber(id, iso);
+					if (n_user >= 0)
+					{
+						status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+						if (status >= 0)
+						{
+							// open file
+							char prefix[256];
+							RM_GetFilePrefix(id, prefix, 256);
+							std::ostringstream filename;
+							filename << prefix << "_" << n_user;
+							HDFInitialize(iso, filename.str().c_str(), (int) strlen(filename.str().c_str()));
 
+							// Set HDF scalars
+							std::vector < std::string > headings;
+							int ncol = RM_GetSelectedOutputColumnCount(id);
+							for (int icol = 0; icol < ncol; icol++)
+							{
+								char head[100];
+								status = RM_GetSelectedOutputHeading(id, icol, head, 100);
+								headings.push_back(head);
+							}
+							HDFSetScalarNames(iso, headings);
+						}
+					}
+				}
+			}
+			else 
+			{
+				// open file
+				char prefix[256];
+				RM_GetFilePrefix(id, prefix, 256);
+				std::ostringstream filename;
+				filename << prefix;
+				HDFInitialize(0, filename.str().c_str(), (int) strlen(filename.str().c_str()));
+			}
+			this->SetHDFInitialized(true);
+		}
+		//	
+		// Write H5 file
+		//
+		if (*print_hdf != 0)
+		{
+			if (nso > 0) 
+			{
+				std::vector<double> local_selected_out;
+				int status;
+				for (int iso = 0; iso < nso; iso++)
+				{
+					int n_user = RM_GetNthSelectedOutputUserNumber(id, iso);
+					if (n_user >= 0)
+					{
+						status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+						int ncol = RM_GetSelectedOutputColumnCount(id);
+						if (status >= 0)
+						{
+							local_selected_out.resize((size_t) (nxyz*ncol));
+							RM_GetSelectedOutput(id, local_selected_out.data());
+							if ( !this->GetHDFInvariant())
+							{
+								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
+							}
+							// Now write HDF file
+							HDF_BEGIN_TIME_STEP(&iso);
+							HDFBeginCTimeStep(iso);
+							HDFFillHyperSlab(iso, local_selected_out, ncol);
+							HDFEndCTimeStep(iso);
+							HDF_END_TIME_STEP(&iso);
+						}
+					}
+				}
+			}
+			else
+			{
+				int iso = 0;
+				if ( !this->GetHDFInvariant())
+				{
+					HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
+				}
+				// Now write HDF file
+				HDF_BEGIN_TIME_STEP(&iso);
+				HDF_END_TIME_STEP(&iso);
+			}
+			*print_media = 0;
+			this->SetHDFInvariant(true);
+		}
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
@@ -582,6 +693,7 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 	}
 	return IRM_BADINSTANCE;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::WriteRestart(int id, int *print_restart)

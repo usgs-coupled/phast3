@@ -10,9 +10,9 @@
     IMPLICIT NONE
     SAVE
 #if defined(NDEBUG)
-    LOGICAL, PRIVATE  :: rmf_debug=.false.
+    LOGICAL :: rmf_debug=.false.
 #else
-    LOGICAL, PRIVATE :: rmf_debug=.true.
+    LOGICAL :: rmf_debug=.true.
 #endif     
     INTEGER, PRIVATE  :: rmf_nxyz=-1
     INTEGER, PRIVATE  :: rmf_ncomps=-1
@@ -693,7 +693,25 @@ SUBROUTINE Chk_GetConcentrations(id, c)
         errors = RM_Abort(id, -3, "Invalid argument(s) in RM_GetConcentrations")
     endif
 END SUBROUTINE Chk_GetConcentrations
-
+#ifdef SKIP
+INTEGER FUNCTION RM_GetConcentrations1D(id, c) 
+	USE ISO_C_BINDING  
+    IMPLICIT NONE
+    INTERFACE
+        INTEGER(KIND=C_INT) FUNCTION RMF_GetConcentrations(id, c) &
+			BIND(C, NAME='RMF_GetConcentrations')   
+			USE ISO_C_BINDING
+            IMPLICIT NONE
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(out)  :: c(*)
+        END FUNCTION RMF_GetConcentrations 
+	END INTERFACE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, INTENT(out), DIMENSION(:,:) :: c
+    RM_GetConcentrations1D = RMF_GetConcentrations(id, c)   
+    return
+END FUNCTION RM_GetConcentrations1D    
+#endif
 !> Transfer solution densities from the reaction cells to the array given in the argument list (@a density). 
 !> Densities are those calculated by the reaction module.
 !> Only the following databases distributed with PhreeqcRM have molar volume information needed to accurately calculate density:
@@ -2863,6 +2881,25 @@ SUBROUTINE Chk_SetConcentrations(id, c)
         errors = RM_Abort(id, -3, "Invalid argument in RM_SetConcentrations")
     endif
 END SUBROUTINE Chk_SetConcentrations
+
+#ifdef SKIP
+INTEGER FUNCTION RM_SetConcentrations1D(id, c)   
+	USE ISO_C_BINDING
+    IMPLICIT NONE
+    INTERFACE
+        INTEGER(KIND=C_INT) FUNCTION RMF_SetConcentrations(id, c) &
+			BIND(C, NAME='RMF_SetConcentrations')   
+			USE ISO_C_BINDING
+            IMPLICIT NONE
+            INTEGER(KIND=C_INT), INTENT(in) :: id
+            REAL(KIND=C_DOUBLE), INTENT(in) :: c(*)
+        END FUNCTION RMF_SetConcentrations
+	END INTERFACE
+    INTEGER, INTENT(in) :: id
+    DOUBLE PRECISION, DIMENSION(:), INTENT(in) :: c
+    RM_SetConcentrations1D = RMF_SetConcentrations(id, c)
+END FUNCTION RM_SetConcentrations1D
+#endif
 
 !> Select the current selected output by user number. The user may define multiple SELECTED_OUTPUT
 !> data blocks for the workers. A user number is specified for each data block. The value of
