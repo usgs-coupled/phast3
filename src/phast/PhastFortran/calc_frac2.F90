@@ -55,46 +55,59 @@ subroutine calc_frac2()
               k = (m-imod)/nxy + MIN(1,imod)
               IF(k == 1) THEN           ! ... Bottom plane; hydrostatic
                   IF(p_t(m) > 0._kdp) THEN
+                      up0=p_t(m)
+                      z0=z(1)
+                      zp1=z(2)
+                      zfs_t(mt) = up0/(den0*gz) + z0     ! Hydrostatic
+                      frac_t(m) = 2.*(zfs(mt)-z0)/(zp1-z0)
                       vmask_t(m) = 1
                   ELSE
                       frac_t(m) = 0._kdp     ! Falling water table giving empty column of cells
                       vmask_t(m) = 0
                   END IF
               ELSE IF(k == nz) THEN           ! ... Top plane
+                  up0=p_t(m)
+                  zm1=z(k-1)
+                  z0=z(k)
+                  zfs_t(mt) = up0/(den0*gz) + z0     ! Hydrostatic
+                  frac_t(m) = (2.*zfs_t(mt)-(z0+zm1))/(z0-zm1)                  
                   IF(p_t(m) > 0._kdp) THEN
-                      vmask_t(m) = 1
-                  ELSE
+                      vmask(m) = 1
+                  ELSE ! ... Falling water table
+                      frac_t(m) = 0.0
                       vmask_t(m) = 0
-                      IF(frac_t(m) < 0.) THEN                 ! ... Falling water table
-                          frac_t(m) = 0._kdp
-                          ! ... Set saturation fraction of cell below
-                          IF(nz > 2) THEN
-                              z1 = z(k)
-                              z0 = z(k-1)
-                              zm1=z(k-2)
-                              frac_t(m-nxy)=(2.*zfs_t(mt)-(z0+zm1))/(z1-zm1)
-                              frac_t(m-nxy)=MAX(0._kdp,frac_t(m-nxy))     
+                      ! ... Set saturation fraction of cell below
+                      IF(nz > 2) THEN
+                          z1 = z(k)
+                          z0 = z(k-1)
+                          zm1=z(k-2)
+                          frac_t(m-nxy)=(2.*zfs_t(mt)-(z0+zm1))/(z1-zm1)
+                          frac_t(m-nxy)=MAX(0._kdp,frac_t(m-nxy))     
+                          vmask_t(m-nxy) = 1
+                          IF(frac_t(m-nxy) < 0.5_kdp) vmask_t(m-nxy) = 0
+                      ELSE                    ! ... Bottom plane case for nz = 2
+                          IF(p_t(m-nxy) >= 0._kdp) THEN
+                              up0=p_t(m-nxy)
+                              z0=z(1)
+                              z1=z(2)
+                              zfs_t(mt) = up0/(den0*gz) + z0
+                              frac_t(m-nxy) = 2.*(zfs_t(mt)-z0)/(z1-z0)
+                              frac_t(m-nxy)=MAX(0._kdp,frac_t(m-nxy))
                               vmask_t(m-nxy) = 1
-                              IF(frac_t(m-nxy) < 0.5_kdp) vmask_t(m-nxy) = 0
-                          ELSE                    ! ... Bottom plane case for nz = 2
-                              IF(p_t(m-nxy) >= 0._kdp) THEN
-                                  up0=p_t(m-nxy)
-                                  z0=z(1)
-                                  z1=z(2)
-                                  zfs_t(mt) = up0/(den0*gz) + z0
-                                  frac_t(m-nxy) = 2.*(zfs_t(mt)-z0)/(z1-z0)
-                                  frac_t(m-nxy)=MAX(0._kdp,frac_t(m-nxy))
-                                  vmask_t(m-nxy) = 1
-                              ELSE
-                                  frac_t(m-nxy) = 0._kdp      ! ... Empty column of cells
-                                  vmask_t(m-nxy) = 0
-                              END IF
-                          ENDIF
-                      END IF
+                          ELSE
+                              frac_t(m-nxy) = 0._kdp      ! ... Empty column of cells
+                              vmask_t(m-nxy) = 0
+                          END IF
+                      ENDIF
                   END IF
               ELSE                  ! ... Intermediate plane
                   IF(ibc(m-nxy) == -1) THEN       ! ... Treat as bottom plane
                       IF(p_t(m) > 0._kdp) THEN
+                          up0=p_t(m)
+                          z0=z(k)
+                          zp1=z(k+1)
+                          zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
+                          frac(m) = 2.*(zfs(mt)-z0)/(zp1-z0)
                           vmask_t(m) = 1
                       ELSE
                           frac_t(m) = 0._kdp     ! ... Empty column of cells
@@ -102,15 +115,37 @@ subroutine calc_frac2()
                       END IF
                   ELSEIF(ibc(m+nxy) == -1) THEN    ! ... Treat as top plane
                       IF(p_t(m) > 0._kdp) THEN
+                          up0=p_t(m)
+                          zm1=z(k-1)
+                          z0=z(k)
+                          zfs_t(mt) = up0/(den0*gz) + z0     ! Hydrostatic
+                          frac_t(m) = (2.*zfs_t(mt)-(z0+zm1))/(z0-zm1)
                           vmask_t(m) = 1
                       ELSE
+                          up0=p_t(m)
+                          zm1=z(k-1)
+                          z0=z(k)
+                          zfs_t(mt) = up0/(den0*gz) + z0     ! Hydrostatic
+                          frac_t(m) = (2.*zfs_t(mt)-(z0+zm1))/(z0-zm1)
                           frac_t(m) = MAX(0._kdp,frac_t(m))
                           vmask_t(m) = 0
                       END IF
                   ELSE                            ! ... True intermediate plane
                       IF(p_t(m) > 0._kdp) THEN
+                          up0=p_t(m)
+                          zm1=z(k-1)
+                          z0=z(k)
+                          zp1=z(k+1)
+                          zfs_t(mt) = up0/(den0*gz) + z0     ! Hydrostatic
+                          frac_t(m) = (2.*zfs_t(mt)-(z0+zm1))/(zp1-zm1)                       
                           vmask_t(m) = 1
                       ELSE
+                          up0=p_t(m)
+                          zm1=z(k-1)
+                          z0=z(k)
+                          zp1=z(k+1)
+                          zfs_t(mt) = up0/(den0*gz) + z0     ! Hydrostatic
+                          frac_t(m) = (2.*zfs_t(mt)-(z0+zm1))/(zp1-zm1)
                           vmask_t(m) = 0
                           IF(frac_t(m) < 0.) THEN                    ! ... Falling water table
                               frac_t(m) = 0._kdp
@@ -125,10 +160,6 @@ subroutine calc_frac2()
                           END IF
                       END IF
                   END IF
-              END IF
-              IF(frac_t(m) <= 1.e-6_kdp) THEN
-                  frac_t(m) = 0._kdp
-                  vmask_t(m) = 0
               END IF
           END DO
           ! ... Calculate fraction of specified pressure cell that is
@@ -229,10 +260,6 @@ subroutine calc_frac2()
                               vmask_t(m) = 0
                           END IF
                       END IF
-                  END IF
-                  IF(frac_t(m) <= 1.e-6_kdp) THEN
-                      frac_t(m) = 0._kdp
-                      vmask_t(m) = 0
                   END IF
               END DO
           END IF
@@ -352,4 +379,11 @@ subroutine calc_frac2()
           END DO
       END IF
   END IF
+  dzfsdt = dzfsdt_t
+  frac = frac_t
+  p = p_t
+  vmask = vmask_t
+  zfs = zfs_t
+  zfsn = zfsn_t
+  mfsbc = mfsbc_t
 end subroutine calc_frac2
