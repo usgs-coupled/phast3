@@ -100,6 +100,7 @@
 		<File RelativePath="..\PhastFortran\aplbci_flow.F90"/>
 		<File RelativePath="..\PhastFortran\asembl_flow.f90"/>
 		<File RelativePath="..\PhastFortran\asmslp_flow.F90"/>
+		<File RelativePath="..\PhastFortran\calc_frac2.F90"/>
 		<File RelativePath="..\PhastFortran\calc_velocity.f90"/>
 		<File RelativePath="..\PhastFortran\calcc.f90"/>
 		<File RelativePath="..\PhastFortran\clog.f90"/>
