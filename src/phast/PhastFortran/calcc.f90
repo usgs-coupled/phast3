@@ -45,7 +45,7 @@ SUBROUTINE calcc_thread(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
   xp%csp = 0._kdp
   xp%esp = 0._kdp
   IF(fresur .AND. (k == nz .OR. fracn < 1._kdp .OR.  &
-       (fracn == 1._kdp .AND. fracnzkp == 0._kdp))) THEN
+       (fracn .ge. 1._kdp .AND. fracnzkp == 0._kdp))) THEN
      ! ... Case of free-surface cell
      ! ... Calculate partial derivatives of saturated fraction with rxp%espect
      ! ...      to pk, pk-1
@@ -203,8 +203,9 @@ SUBROUTINE calcc(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
   efp = 0._kdp
   csp = 0._kdp
   esp = 0._kdp
+  
   IF(fresur .AND. (k == nz .OR. fracn < 1._kdp .OR.  &
-       (fracn == 1._kdp .AND. fracnzkp == 0._kdp))) THEN
+       (fracn .ge. 1._kdp .AND. fracnzkp == 0._kdp))) THEN
      ! ... Case of free-surface cell
      ! ... Calculate partial derivatives of saturated fraction with respect
      ! ...      to pk, pk-1

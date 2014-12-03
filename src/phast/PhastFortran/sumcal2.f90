@@ -15,7 +15,7 @@ SUBROUTINE sumcal2
   USE mcv_m
   USE mcw
   USE mcw_m
-  USE mg2_m, ONLY: hdprnt
+  USE mg2_m, ONLY: hdprnt, wt_elev
   USE PhreeqcRM
   IMPLICIT NONE
   INTEGER :: status
@@ -31,6 +31,7 @@ SUBROUTINE sumcal2
   INTEGER :: da_err, i, icol, imod, iwel, j, jcol, k, kcol, kfs, l, lc, l1, ls,  &
        m, m0, m1, m1kp, mfs, mt
   LOGICAL :: ierrw
+  REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp - fdtmth
@@ -41,7 +42,9 @@ SUBROUTINE sumcal2
   DO  m=1,nxyz
      IF(ibc(m) == -1) CYCLE
      IF(frac(m) <= 0._kdp) CYCLE
+     !IF(frac_np1(m) <= 0._kdp) CYCLE
      u0=pv(m)*frac(m)
+     !u0=pv(m)*frac_np1(m)
      u1=0._kdp
      DO  is=1,ns
         sir(is) = sir(is)+den0*(u0+u1)*c(m,is)
@@ -87,6 +90,7 @@ SUBROUTINE sumcal2
      tsresf(is) = 1.e99_kdp
      IF(u1 > 0.) tsresf(is)=tsres(is)/u1
   END DO
+#ifdef  SKIP  
   IF(.NOT.steady_flow) THEN          ! ... skip this if steady state flow
      ! ... Now update for next time step, by drying up cells, rewetting cells, reseting pointer
      IF(fresur) THEN
@@ -114,13 +118,17 @@ SUBROUTINE sumcal2
                  vmask(m) = 1
               ELSE
                  vmask(m) = 0
-                 IF(frac(m) < 0.) THEN                 ! ... Falling water table
+                 IF(frac(m) <= epssat) THEN                 ! ... Falling water table
                     frac(m) = 0._kdp
                     ! ... Set saturation fraction of cell below
                     IF(nz > 2) THEN
                        z1 = z(k)
                        z0 = z(k-1)
                        zm1=z(k-2)
+                       ! Set new water table based on the pressure in the cell with the old water table
+                       zfs(mt) = z_node(m) + p(m)/(den0*gz)
+                       ! Set pressure to correspond to new water table
+                       p(m-nxy)=(zfs(mt) - z_node(m-nxy))*(den0*gz)
                        frac(m-nxy)=(2.*zfs(mt)-(z0+zm1))/(z1-zm1)
                        frac(m-nxy)=MAX(0._kdp,frac(m-nxy))     
                        vmask(m-nxy) = 1
@@ -130,8 +138,14 @@ SUBROUTINE sumcal2
                           up0=p(m-nxy)
                           z0=z(1)
                           z1=z(2)
-                          zfs(mt) = up0/(den0*gz) + z0
+                          ! Set new water table based on the pressure in the cell with the old water table
+                          zfs(mt) = z_node(m) + p(m)/(den0*gz)
+                          ! Set pressure to correspond to new water table
+                          p(m-nxy)=(zfs(mt) - z_node(m-nxy))*(den0*gz)
                           frac(m-nxy) = 2.*(zfs(mt)-z0)/(z1-z0)
+                          !if (frac(m-nxy) > 1.0_kdp .and. frac(m-nxy) <= 1.0_kdp + epssat) then
+                          !    frac(m-nxy) = 1.0_kdp
+                          !endif
                           frac(m-nxy)=MAX(0._kdp,frac(m-nxy))
                           vmask(m-nxy) = 1
                        ELSE
@@ -161,16 +175,35 @@ SUBROUTINE sumcal2
                     vmask(m) = 1
                  ELSE
                     vmask(m) = 0
-                    IF(frac(m) < 0.) THEN                    ! ... Falling water table
+                    IF(frac(m) <= epssat) THEN                    ! ... Falling water table
                        frac(m) = 0._kdp
                        ! ... Set saturation fraction of cell below
-                       zm1=z(k-2)
-                       z0=z(k-1)
-                       z1=z(k)
-                       frac(m-nxy)=(2.*zfs(mt)-(z0+zm1))/(z1-zm1)
-                       frac(m-nxy)=MAX(0._kdp,frac(m-nxy))
-                       vmask(m-nxy) = 1
-                       IF(frac(m-nxy) < 0.5_kdp) vmask(m-nxy) = 0
+                       if (k > 2) then
+                           zm1=z(k-2)
+                           z0=z(k-1)
+                           z1=z(k)
+                           ! Set new water table based on the pressure in the cell with the old water table
+                           zfs(mt) = z_node(m) + p(m)/(den0*gz)
+                           ! Set pressure to correspond to new water table
+                           p(m-nxy)=(zfs(mt) - z_node(m-nxy))*(den0*gz)
+                           frac(m-nxy)=(2.*zfs(mt)-(z0+zm1))/(z1-zm1)
+                           frac(m-nxy)=MAX(0._kdp,frac(m-nxy))
+                           vmask(m-nxy) = 1
+                           IF(frac(m-nxy) < 0.5_kdp) vmask(m-nxy) = 0
+                       else if (k .eq. 2) then
+                           z0=z(k-1)
+                           z1=z(k)
+                           ! Set new water table based on the pressure in the cell with the old water table
+                           zfs(mt) = z_node(m) + p(m)/(den0*gz)
+                           ! Set pressure to correspond to new water table
+                           !p(m-nxy)=(zfs(mt) - z_node(m-nxy))*(den0*gz)
+                           frac(m-nxy) = 2.*(zfs(mt)-z0)/(z1-z0)
+                           frac(m-nxy)=MAX(0._kdp,frac(m-nxy))
+                           vmask(m-nxy) = 1
+                           IF(frac(m-nxy) < 0.5_kdp) vmask(m-nxy) = 0                           
+                       else
+                           stop "check logic of dropping water table"
+                       endif
                     END IF
                  END IF
               END IF
@@ -184,6 +217,7 @@ SUBROUTINE sumcal2
         ! ...      saturated, only after time of change
         !*****This seems redundant. Done in INIT3. But at time zero, the i.c. pressure is used
         !*** ...  instead of b.c. pressure
+#ifdef SKIP_SBC        
         IF(jtime == 1) THEN
            DO  l=1,nsbc
               m=msbc(l)
@@ -285,6 +319,7 @@ SUBROUTINE sumcal2
               END IF
            END DO
         END IF
+#endif        
         ! ... Now adjust the region for rise of free surface as necessary
         ! ... Problems if f.s. rises more than one cell per time step
         DO  mt=1,nxy
@@ -330,7 +365,7 @@ SUBROUTINE sumcal2
               ! ... Now set saturated cell to frac of 1.
               frac(m) = 1._kdp
               vmask(m) = 1
-           END IF
+           END IF           
         END DO
         ! ... Reset the pointer to the cell containing the free surface
         ! ...      at each node location over the horizontal area
@@ -401,6 +436,9 @@ SUBROUTINE sumcal2
         END DO
      END IF
   END IF
+#endif 
+
+  
   DEALLOCATE (zfsn, &
        STAT = da_err)
   IF (da_err /= 0) THEN  
