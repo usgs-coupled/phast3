@@ -192,7 +192,8 @@
         ! ... Update density, viscosity
         !... *** not needed for PHAST
     END DO
-    
+
+#ifdef SKIP    
     ! ... Flow and transport have been done; Update free surface but no resaturation
     IF(fresur) THEN
         ! ... Calculate fraction of cell that is saturated
@@ -322,7 +323,7 @@
     
         ! ... Do not adjust the region for rise of free surface
     END IF
-  
+#endif  
     IF(nwel > 0) THEN
         ! ... Sum the injection rates and production rates for the wells
         tqwfp=0._kdp
@@ -708,6 +709,10 @@
                     !    stotsp(iis) = stotsp(iis)-ufdt1*qsbc3(iis)
                     !END DO
                 ELSE                            ! ... Inflow
+                    ! what to do with inflow, ignore causes mass-balance error
+                    qm_net = qm_net + den0*qnp
+                    sfvrb(lc) = sfvrb(lc) + qnp
+                    write(*,*) "Water inflow from drain: ", mt, qm_net, time
                     !qfbc = 0._kdp
                     !qfrbc(lc) = qfrbc(lc) + qfbc
                     !stotfi = stotfi+ufdt1*qfbc
@@ -873,7 +878,8 @@
     ehir = 0._kdp
     sir_prechem = 0._kdp
 
-    call calc_frac2
+    !!!call calc_frac2
+    call calc_water_table
     
     DO  m=1,nxyz
         IF(ibc(m) == -1) CYCLE
@@ -906,123 +912,147 @@
 
 END SUBROUTINE sumcal1
     
-    
-    
-#ifdef SKIP    
-    subroutine myfrac  
+     
+subroutine calc_water_table  
     USE machine_constants, ONLY: kdp
-    USE mcb, only: fresur, ibc, mfsbc, mfsbc_np1, msbc, nsbc, print_dry_col
+    USE mcb, only: fresur, ibc, mfsbc, msbc, nsbc, print_dry_col
     USE mcc, only: jtime, rm_id, solute, steady_flow
     USE mcc_m, only: vmask
     USE mcg, only: cellno, nxyz, nxy, nx, ny, nz
     USE mcn, only: z, z_node
     USE mcp, only: den0, gz, pv
-    USE mcv, only: c, deltim, dzfsdt, frac, frac_np1, ns, p, zfs, zfsn
+    USE mcv, only: c, deltim, dzfsdt, frac, ns, p, zfs, zfsn
     USE mcv_m, only: is
     USE mg2_m, ONLY: wt_elev
     implicit none
     integer :: i, j, k, m, mt, k1, m1, kcol
-    real(kind=kdp) :: zt, ztop, zbot
+    real(kind=kdp) :: zt, ztop, zbot, kk_top, kk_bot, water_vol
+    integer :: kk
+    REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp 
     IF(fresur) THEN
         ! calculate water table from previous water-table cell
         DO mt=1,nxy
             m = mfsbc(mt)
             IF (m > 0) THEN
                 wt_elev(mt) = z_node(m) + p(m)/(den0*gz)
+                zfs(mt) = wt_elev(mt)
             END IF
         END DO
-        ! now locate in cell, set pressure for that cell
+        ! distribute water up or down
         do mt = 1, nxy
             m = mfsbc(mt)
-            call mtoijk(m, i, j, kcol, nx, ny)
-            mfsbc_np1(mt) = 0
-            do k = nz, 1, -1
-                m1 = cellno(i, j, k)
-                if (ibc(m1) < 0) cycle
-                if (k .eq. nz) then
-                    ztop = z(k)
-                    zbot = (z(k) + z(k-1)) / 2.0
-                else if (k .eq. 1) then
-                    ztop = (z(k) + z(k+1)) / 2.0
-                    zbot = z(k) 
-                else
-                    ztop = (z(k) + z(k+1)) / 2.0
-                    zbot = (z(k) + z(k-1)) / 2.0
-                endif              
-                if (wt_elev(mt) > zbot) then
-                    mfsbc_np1(mt) = m1
-                    frac_np1(m1) = (wt_elev(mt) - zbot) / (ztop - zbot)
-                    exit
+            call mtoijk(m, i, j, k, nx, ny)
+            call top_bot(k, ztop, zbot)
+         
+            if (wt_elev(mt) > ztop + epssat) then
+                ! rising water table
+                water_vol = ((wt_elev(mt) - ztop) / (ztop - zbot)) * pv(m)
+                ! distribute water up by volume
+                do kk = k + 1, nz
+                    m1 = cellno(i, j, kk)
+                    call top_bot(kk, kk_top, kk_bot)
+                    if (kk .eq. nz .or. (pv(m1) * (1.0_kdp + epssat) > water_vol)) then
+                        ! water table is here
+                        frac(m1) = water_vol / pv(m1)
+                        wt_elev(mt) = kk_bot + frac(m1) * (kk_top - kk_bot)
+                        zfs(mt) = wt_elev(mt)
+                        p(m1) = (zfs(mt) - z_node(m1))*(den0*gz)
+                        mfsbc(mt) = m1
+                        vmask(m1) = 1
+                        !if (z(kk) < zfs(mt)) vmask(m1) = 0
+                        IF(solute) THEN
+                            DO  is=1,ns
+                                c(m1,is)=c(m,is)
+                            END DO
+                        END IF                        
+                        exit
+                    else 
+                        ! water table is in a higher cell
+                        IF(solute) THEN
+                            DO  is=1,ns
+                                c(m1,is)=c(m,is)
+                            END DO
+                        END IF
+                        water_vol = water_vol - pv(m1)
+                    endif
+                enddo
+            else if (wt_elev(mt) <= (zbot + epssat)) then
+                ! falling water table
+                water_vol = pv(m) * (zbot - wt_elev(mt)) / (ztop - zbot)
+                ! distribute lost water down by volume
+                do kk = k - 1, 1, -1
+                    m1 = cellno(i, j, kk)
+                    call top_bot(kk, kk_top, kk_bot)
+                    if (pv(m1) * (1.0_kdp - epssat) > water_vol) then
+                        ! water table is here
+                        frac(m1) = 1.0_kdp - water_vol / pv(m1)
+                        wt_elev(mt) = kk_bot + frac(m1) * (kk_top - kk_bot)
+                        zfs(mt) = wt_elev(mt)
+                        p(m1) = (zfs(mt) - z_node(m1))*(den0*gz)
+                        mfsbc(mt) = m1
+                        vmask(m1) = 1
+                        if (z(kk) < zfs(mt)) vmask(m1) = 0
+                        exit
+                    else 
+                        ! water table is in a lower cell
+                        water_vol = water_vol - pv(m1)
+                        if (kk .eq. 1) then
+                            mfsbc(mt) = 0
+                            exit
+                        endif
+                    endif
+                enddo     
+            else 
+                if (mfsbc(mt) .ne. m) then
+                    stop
                 endif
-            enddo
-            if (mfsbc_np1(mt) .ne. 0) then
-                m1 = mfsbc_np1(mt)
-                call mtoijk(m1, i, j, k)
-                do k1 = k + 1, nz
-                    m1 = cellno(i,j,k1)
-                    frac_np1(m1) = 0.0
-                    !IF(solute) THEN
-                    !   DO  is=1,ns
-                    !      c(m1,is)=0._kdp       ! Dry cell concentration
-                    !   END DO
-                    !END IF                    
-                enddo
-                do k1 = k - 1, 1, -1
-                    m1 = cellno(i,j,k1)
-                    frac_np1(m1) = 1.0
-                enddo
-            else
-                do k1 = 1, nz
-                    m1 = cellno(i,j,k1)
-                    frac_np1(m1) = 0.0
-                    !IF(solute) THEN
-                    !   DO  is=1,ns
-                    !      c(m1,is)=0._kdp       ! Dry cell concentration
-                    !   END DO
-                    !END IF                  
-                enddo             
+                frac(m) = (wt_elev(mt) - zbot) / (ztop - zbot)
+                p(m) = (zfs(mt) - z_node(m))*(den0*gz)
             endif
         enddo
-    endif
-    !mfsbc = mfsbc_np1
-    !frac = frac_np1
-
-
-#ifdef SKIP  
-    IF(fresur) THEN
-        ! ... Calculate water-table elevation
-        DO i = 1, nx
-            do j = 1, ny
-                do k = nz, 1, -1
-                    m = cellno(i, j, k)
-                    mt = (j-1)*nx + i
-                    if (k .eq. nz) then
-                        ztop = z(k)
-                        zbot = (z(k) + z(k-1)) / 2.0
-                    else if (k .eq. 1) then
-                        ztop = (z(k) + z(k+1)) / 2.0
-                        zbot = z(k) 
-                    else
-                        ztop = (z(k) + z(k+1)) / 2.0
-                        zbot = (z(k) + z(k-1)) / 2.0
-                    endif
-                    if (p(m) > 0 .and. ibc(m) .ne. -1) then
-                        zt = z(k) + p(m)/(den0*gz)
-                        frac(m) = (zt - zbot) / (ztop - zbot)
-                        mfsbc(mt) = m
-                        do k1 = k + 1, nz
-                            m1 = cellno(i,j,k1)
-                            frac(m1) = 0.0
-                        enddo
-                        do k1 = k - 1, 1, -1
-                            m1 = cellno(i,j,k1)
-                            frac(m1) = 1.0
-                        enddo
-                    endif
-                enddo
+        ! set fracs and vmask above and below water table cells
+        do mt = 1, nxy
+            m = mfsbc(mt)
+            call mtoijk(m, i, j, k, nx, ny)
+            do kk = k+1, nz
+                m1 = cellno(i, j, kk)
+                frac(m1) = 0.0_kdp
+                vmask(m1) = 0
             enddo
+            do kk = k-1, 1, -1
+                m1 = cellno(i, j, kk)
+                frac(m1) = 1.0_kdp
+                vmask(m1) = 1
+            enddo
+            
+            ! debugging check
+            call mtoijk(m,i,j,k, nx, ny)
+            call top_bot(k, kk_top, kk_bot)
+            if (wt_elev(mt) <= kk_bot .or. wt_elev(mt) .gt. (kk_top + epssat)) then
+                stop
+            endif
+            
         enddo
-    END IF    
-#endif  
-    end subroutine myfrac 
-#endif    
+    endif   
+    
+end subroutine calc_water_table 
+
+subroutine top_bot(k, top, bot)
+    USE machine_constants, ONLY: kdp
+    USE mcg, only: nz
+    USE mcn, only: z
+    implicit none
+    integer, intent(in) :: k
+    real(kind=kdp), intent(out) :: top, bot 
+
+    if (k .eq. nz) then
+        top = z(k)
+        bot = (z(k) + z(k-1)) / 2.0
+    else if (k .eq. 1) then
+        top = (z(k) + z(k+1)) / 2.0
+        bot = z(k) 
+    else
+        top = (z(k) + z(k+1)) / 2.0
+        bot = (z(k) + z(k-1)) / 2.0
+    endif     
+end subroutine top_bot

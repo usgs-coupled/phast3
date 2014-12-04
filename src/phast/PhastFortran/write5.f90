@@ -60,6 +60,7 @@ SUBROUTINE write5
   DOUBLE PRECISION, dimension(:), allocatable :: tc, p_atm
   DOUBLE PRECISION, dimension(:,:), allocatable :: c_well
   DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: dcmax_temp
+    REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   !     ------------------------------------------------------------------
   !...
   ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &
@@ -146,7 +147,7 @@ SUBROUTINE write5
   END IF
   IF(prp .OR. prc) THEN
      DO  m=1,nxyz
-        IF(ibc(m) == -1 .OR. frac(m) <= 0.0001_kdp) THEN
+        IF(ibc(m) == -1 .OR. frac(m) <= epssat) THEN
            lprnt1(m)=-1
         ELSE
            lprnt1(m)=1
