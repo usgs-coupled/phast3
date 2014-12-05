@@ -31,7 +31,6 @@ SUBROUTINE sumcal2
   INTEGER :: da_err, i, icol, imod, iwel, j, jcol, k, kcol, kfs, l, lc, l1, ls,  &
        m, m0, m1, m1kp, mfs, mt
   LOGICAL :: ierrw
-  REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp - fdtmth

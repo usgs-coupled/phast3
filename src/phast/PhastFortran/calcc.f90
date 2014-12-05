@@ -14,7 +14,7 @@ SUBROUTINE calcc_thread(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
   USE mcg, ONLY: nz
   USE mcm, ONLY:
 !$$  USE mcm_w
-  USE mcp, ONLY: declam, denc, denp, dent, fdtmth, gz
+  USE mcp, ONLY: declam, denc, denp, dent, fdtmth, gz, epssat
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
@@ -26,7 +26,6 @@ SUBROUTINE calcc_thread(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
   REAL(KIND=kdp) :: cnp, dennp, dfdpk, dfdpkm, ufracnp, m21, &
        m31, m32, pk, pkmnp, pknp, pmchdt, pmcvdt, pmhvdt, pnp, pvdtn, &
        pvkdtn, tnp, ufd, ufd2, upct, upv, zfsnp, zk
-  REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   !     ------------------------------------------------------------------
   !...
   pnp = p+dp
@@ -175,7 +174,7 @@ SUBROUTINE calcc(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
   USE mcg
   USE mcm
 !$$  USE mcm_w
-  USE mcp, ONLY: declam, denc, denp, dent, fdtmth, gz
+  USE mcp, ONLY: declam, denc, denp, dent, fdtmth, gz, epssat
   IMPLICIT NONE
   REAL(KIND=kdp), INTENT(IN) :: c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp
   INTEGER, INTENT(IN) :: ibckm, ibckp, jeq, k  
@@ -185,7 +184,6 @@ SUBROUTINE calcc(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
   REAL(KIND=kdp) :: cnp, dennp, dfdpk, dfdpkm, ufracnp, m21, &
        m31, m32, pk, pkmnp, pknp, pmchdt, pmcvdt, pmhvdt, pnp, pvdtn, &
        pvkdtn, tnp, ufd, ufd2, upct, upv, zfsnp, zk
-  REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   !     ------------------------------------------------------------------
   !...
   pnp = p+dp

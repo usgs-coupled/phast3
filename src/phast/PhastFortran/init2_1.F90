@@ -1315,7 +1315,7 @@ SUBROUTINE init2_1
               END IF
            END IF
         END IF
-        IF(frac(m) <= 1.e-6_kdp) THEN
+        IF(frac(m) <= epssat) THEN
            frac(m) = 0._kdp
            vmask(m) = 0
         END IF
@@ -1351,7 +1351,7 @@ SUBROUTINE init2_1
            frac(m)=MAX(0._kdp,frac(m))
            vmask(m) = 0
         END IF
-        IF(frac(m) <= 1.e-6_kdp) THEN
+        IF(frac(m) <= epssat) THEN
            frac(m) = 0._kdp
            vmask(m) = 0
         END IF

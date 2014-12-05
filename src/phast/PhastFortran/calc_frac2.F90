@@ -7,7 +7,7 @@
     USE mcg, only: cellno, nxyz, nxy, nx, ny, nz
     !USE mcg_m
     USE mcn, only: z, z_node
-    USE mcp, only: den0, gz, pv
+    USE mcp, only: den0, gz, pv, epssat
     !USE mcp_m
     USE mcv, only: c, deltim, dzfsdt, frac, ns, p, zfs, zfsn
     USE mcv_m, only: is, fir, firv
@@ -26,7 +26,6 @@
     INTEGER :: da_err, i, icol, imod, iwel, j, jcol, k, kcol, kfs, l, lc, l1, ls,  &
     m, m0, m1, m1kp, mfs, mt
     LOGICAL :: ierrw
-    REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
 
 
     IF(.NOT.steady_flow) THEN          ! ... skip this if steady state flow
@@ -143,7 +142,7 @@
                         END IF
                     END IF
                 END IF
-                IF(frac(m) <= 1.e-6_kdp) THEN
+                IF(frac(m) <= epssat) THEN
                     frac(m) = 0._kdp
                     vmask(m) = 0
                 END IF
@@ -162,7 +161,7 @@
                     k = (m-imod)/nxy + MIN(1,imod)
                     IF(k == nz) CYCLE          ! ... Overfilling allowed at top of mesh
                     IF(ibc(m+nxy) == -1) CYCLE     !  Treat as top layer, with overfilling
-                    IF (frac(m) < 1._kdp + 1.e-6_kdp) CYCLE
+                    IF (frac(m) < 1._kdp + epssat) CYCLE
                     ! ... Calculate pressure and fraction of saturation in m+nxy cell;
                     ! ...      the new free-surface cell
                     up0=p(m)

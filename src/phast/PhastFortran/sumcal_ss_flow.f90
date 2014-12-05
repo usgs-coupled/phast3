@@ -241,7 +241,7 @@ SUBROUTINE sumcal_ss_flow
               END IF
            END IF
         END IF
-        IF(frac(m) <= 1.e-6_kdp) THEN
+        IF(frac(m) <= epssat) THEN
            frac(m) = 0._kdp
            vmask(m) = 0
         END IF
@@ -350,7 +350,7 @@ SUBROUTINE sumcal_ss_flow
               END IF
            END IF
            IF(k < nz) frac(m) = MIN(1._kdp,frac(m))
-           IF(frac(m) <= 1.e-6_kdp) THEN
+           IF(frac(m) <= epssat) THEN
               frac(m) = 0._kdp
               vmask(m) = 0
            END IF
@@ -375,7 +375,7 @@ SUBROUTINE sumcal_ss_flow
            IF(ibc(m+nxy) == -1) CYCLE
            ! ... Calculate pressure and fraction of saturation in m+nxy cell;
            ! ...      the new free-surface cell
-           IF (frac(m) < 1._kdp + 1.e-6_kdp) CYCLE
+           IF (frac(m) < 1._kdp + epssat) CYCLE
            up0=p(m)
            z0=z(k)
            z1=z(k+1)

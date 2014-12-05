@@ -88,7 +88,7 @@ SUBROUTINE init2_2
      IF(.NOT.fresur) THEN
         pv(m) = pv(m) + pmcv(m)*(p(m)-p0)
         ELSEIF(m <= nxyz-nxy) THEN
-        IF(ABS(frac(m) - 1._kdp) <= 1.e-6_kdp .AND. frac(m+nxy) > 0.) &
+        IF(ABS(frac(m) - 1._kdp) <= epssat .AND. frac(m+nxy) > 0.) &
              pv(m) = pv(m) + pmcv(m)*(p(m)-p0)
      ENDIF
      ! ... Initial fluid(kg), solute(kg) and pore volume(m^3)
