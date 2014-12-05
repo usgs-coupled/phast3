@@ -176,6 +176,7 @@ MODULE mcp
        cnvvsi, cnvt1i, cnvt2i, cpf, declam, den0, denc, denp, dent, dm, eh0, fdsmth, fdtmth, &
        gx, gy, gz, kthf, p0, p0h, paatm, t0, t0h, visfac, vis0, w0, w1
   REAL(KIND=kdp) :: fdtmth_tr=0.0_kdp
+  REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
 END MODULE mcp
 
 MODULE mcs

@@ -188,7 +188,7 @@ SUBROUTINE init3
                  END IF
               END IF
            END IF
-           IF(frac(m) <= 1.e-6_kdp) THEN
+           IF(frac(m) <= epssat) THEN
               frac(m) = 0._kdp
               vmask(m) = 0
            END IF

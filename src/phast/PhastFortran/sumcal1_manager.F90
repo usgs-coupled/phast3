@@ -45,7 +45,6 @@ SUBROUTINE sumcal1_manager
        ufrac, up0, z0, zfsl, zm1, zp1
   REAL(KIND=kdp) :: u6
   REAL(KIND=kdp) :: hrbc
-  REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   INTEGER :: a_err, da_err, i, iis, imod, iwel, j, k, l, lc, l1, ls, m, mt, nsa
   INTEGER :: mpmax
   INTEGER, DIMENSION(:), ALLOCATABLE :: mcmax
