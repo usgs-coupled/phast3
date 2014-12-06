@@ -25,14 +25,19 @@
     IMPLICIT NONE
     INTERFACE
     SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
-    USE machine_constants, ONLY: kdp
-    INTEGER, INTENT(IN) :: iequ
-    REAL(KIND=kdp), DIMENSION(0:), INTENT(IN) :: ddv
-    REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: ufracnp
-    REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: qdvsbc
-    REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: rhssbc
-    REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN) :: vasbc
+        USE machine_constants, ONLY: kdp
+        INTEGER, INTENT(IN) :: iequ
+        REAL(KIND=kdp), DIMENSION(0:), INTENT(IN) :: ddv
+        REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: ufracnp
+        REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: qdvsbc
+        REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: rhssbc
+        REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN) :: vasbc
     END SUBROUTINE sbcflo
+    subroutine calc_avg_c(m, cavg)
+        USE machine_constants, ONLY: kdp
+        integer, INTENT(IN) :: m
+        REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, INTENT(INOUT) :: cavg
+    end subroutine calc_avg_c
     END INTERFACE
     !
     !!$  CHARACTER(LEN=50) :: aform = '(TR5,A45,T47,1PE12.4,TR1,A7,T66,A,3(1PG10.3,A),2A)'
@@ -44,7 +49,6 @@
     ufrac, up0, z0, zfsl, zm1, zp1
     REAL(KIND=kdp) :: u6
     REAL(KIND=kdp) :: hrbc
-    REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
     INTEGER :: a_err, da_err, i, iis, imod, iwel, j, k, l, lc, l1, ls, m, mt, nsa
     INTEGER :: mpmax
     INTEGER, DIMENSION(:), ALLOCATABLE :: mcmax
@@ -54,7 +58,8 @@
     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
     CHARACTER(LEN=130) error_line
-    !!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
+    REAL(KIND=kdp), DIMENSION(nxyz) :: fracn
+    integer, dimension(nxy) :: mfsbcn
     INTEGER :: s_blk
     INTEGER, DIMENSION(:), ALLOCATABLE :: blks, displs
     !     ------------------------------------------------------------------
@@ -192,138 +197,13 @@
         ! ... Update density, viscosity
         !... *** not needed for PHAST
     END DO
-
-#ifdef SKIP    
-    ! ... Flow and transport have been done; Update free surface but no resaturation
-    IF(fresur) THEN
-        ! ... Calculate fraction of cell that is saturated
-        ! ...      for cells that contained the free surface at start of this
-        ! ...      time step
-        ! ... Use only hydrostatic extrapolation, no interpolation to locate elevation
-        ! ...      of free surface
-        ! ... Will not handle case of water table moving down more than one cell
-        ! ...      per time step
-        ! ... Designed to handle movement of the upper regional boundary of saturation;
-        ! ...     the free-surface boundary
-        DO  mt=1,nxy
-            m=mfsbc(mt)          ! ... w.t. cell at time n
-            IF(m == 0) CYCLE     ! ... Column of dry cells; can not rewet
-            ! ... Save previous free surface elev for rate of free surface movement approximation
-            zfsn(mt) = zfs(mt)
-            WRITE(cibc,6001) ibc(m)
-            !!$        IF(cibc(1:1) == '1') CYCLE     ! Frac is already calculated in INIT3 for 
-            ! ... Do the specified pressure cells anyway so that a compatible pressure field
-            ! ...    is used for interpolation
-            !   free surface in a specified pressure cell
-            imod = MOD(m,nxy)
-            k = (m-imod)/nxy + MIN(1,imod)
-            IF(k == 1) THEN
-                ! ... Bottom plane; hydrostatic
-                IF(p(m) > 0._kdp) THEN
-                    up0=p(m)
-                    z0=z(1)
-                    zp1=z(2)
-                    zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
-                    frac(m) = 2.*(zfs(mt)-z0)/(zp1-z0)
-                    !  Do not limit frac to < = 1 yet
-                    vmask(m) = 1
-                ELSE
-                    frac(m) = epssat     ! ... don't let cell go dry yet
-                    vmask(m) = 0
-                END IF
-            ELSE IF(k == nz) THEN
-                ! ... Top plane
-                IF(p(m) > 0._kdp) THEN
-                    up0=p(m)
-                    zm1=z(k-1)
-                    z0=z(k)
-                    zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
-                    frac(m) = (2.*zfs(mt)-(z0+zm1))/(z0-zm1)
-                    !  Do not limit frac to < = 1 yet
-                    vmask(m) = 1
-                ELSE
-                    up0=p(m)
-                    zm1=z(k-1)
-                    z0=z(k)
-                    zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
-                    frac(m) = (2.*zfs(mt)-(z0+zm1))/(z0-zm1)
-                    vmask(m) = 0
-                    IF(frac(m) <= epssat) THEN                 ! ... Falling water table
-                        frac(m) = epssat     
-                        ! ... do not set saturation fraction of cell below yet
-                    END IF
-                END IF
-            ELSE
-                ! ... Intermediate plane
-                IF(ibc(m-nxy) == -1) THEN
-                    ! ... Treat as bottom plane
-                    IF(p(m) > 0._kdp) THEN
-                        up0=p(m)
-                        z0=z(k)
-                        zp1=z(k+1)
-                        zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
-                        frac(m) = 2.*(zfs(mt)-z0)/(zp1-z0)
-                        !  Do not limit frac to < = 1 yet
-                        vmask(m) = 1
-                    ELSE
-                        frac(m) = epssat     ! ... do not empty column of cells yet
-                        vmask(m) = 0
-                    END IF
-                ELSEIF(ibc(m+nxy) == -1) THEN
-                    ! ... Treat as top plane
-                    IF(p(m) > 0._kdp) THEN
-                        up0=p(m)
-                        zm1=z(k-1)
-                        z0=z(k)
-                        zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
-                        frac(m) = (2.*zfs(mt)-(z0+zm1))/(z0-zm1)
-                        !  Do not limit frac to < = 1 yet
-                        vmask(m) = 1
-                    ELSE
-                        up0=p(m)
-                        zm1=z(k-1)
-                        z0=z(k)
-                        zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
-                        frac(m) = (2.*zfs(mt)-(z0+zm1))/(z0-zm1)
-                        frac(m) = MAX(epssat,frac(m))      ! ... do not empty yet
-                        vmask(m) = 0
-                    END IF
-                ELSE
-                    ! ... True intermediate plane
-                    IF(p(m) > 0._kdp) THEN
-                        up0=p(m)
-                        zm1=z(k-1)
-                        z0=z(k)
-                        zp1=z(k+1)
-                        zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
-                        frac(m) = (2.*zfs(mt)-(z0+zm1))/(zp1-zm1)
-                        !  Do not limit frac to < = 1 yet
-                        vmask(m) = 1
-                    ELSE
-                        up0=p(m)
-                        zm1=z(k-1)
-                        z0=z(k)
-                        zp1=z(k+1)
-                        zfs(mt) = up0/(den0*gz) + z0     ! Hydrostatic
-                        frac(m) = (2.*zfs(mt)-(z0+zm1))/(zp1-zm1)
-                        vmask(m) = 0
-                        IF(frac(m) <= 0.) THEN                 ! ... Falling water table
-                            frac(m) = epssat
-                        END IF
-                    END IF
-                END IF
-            END IF
-        END DO
-        ! ... Calculate fraction of specified pressure cell that is
-        ! ...      saturated, only after time of change
-        !*****This seems redundant. Done in INIT3. But at time zero, the i.c. pressure is used
-        !*** ...  instead of b.c. pressure
-        ! ... The psbc are not applied until assembly so init3 only has p at time level n.
-        !***  could use psbc directly, but time of application to frac would not be right.
     
-        ! ... Do not adjust the region for rise of free surface
-    END IF
-#endif  
+    
+    zfsn = wt_elev
+    fracn = frac
+    mfsbcn = mfsbc
+    call calc_water_table
+    
     IF(nwel > 0) THEN
         ! ... Sum the injection rates and production rates for the wells
         tqwfp=0._kdp
@@ -411,13 +291,13 @@
         DO  iis=1,ns
             sssb(l,iis) = 0._kdp
         END DO
-        if (frac(m) <= 0._kdp) then
+        if (fracn(m) <= 0._kdp) then
             if (dabs(qfsbc(l)) > 0.0_kdp) then
                 write(*,*) "frac is zero; flux is not"
             endif
         endif
 
-        IF(frac(m) <= 0._kdp) CYCLE
+        IF(fracn(m) <= 0._kdp) CYCLE
         WRITE(cibc,6001) ibc(m)
 6001        FORMAT(i9.9)
         ! ... Sum fluid and diffusive or associated heat and solute fluxes
@@ -497,12 +377,12 @@
         IF(m == 0) CYCLE     ! ... dry column
         DO ls=flux_seg_first(lc),flux_seg_last(lc)
             ufrac = 1._kdp
-            IF(ABS(ifacefbc(ls)) < 3) ufrac = frac(m)  
-            IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
+            IF(ABS(ifacefbc(ls)) < 3) ufrac = fracn(m)  
+            IF(fresur .AND. ifacefbc(ls) == 3 .AND. fracn(m) <= 0._kdp) THEN
                 ! ... Redirect the flux from above to the free-surface cell
                 l1 = MOD(m,nxy)
                 IF(l1 == 0) l1 = nxy
-                m = mfsbc(l1)
+                m = mfsbcn(l1)
             ENDIF
             IF (m == 0) EXIT          ! ... dry column, skip to next flux b.c. cell
             qn = qfflx(ls)*areafbc(ls)
@@ -684,7 +564,7 @@
             if (arbc(ls) .gt. 1.0e50_kdp) cycle
             qnp = arbc(ls) - brbc(ls)*dp(m)
             hrbc = phirbc(ls)/gz
-            if(hrbc > zerbc(ls)) then      ! ... treat as river
+            if(hrbc >= zerbc(ls)) then      ! ... treat as river
                 IF(qnp <= 0._kdp) THEN          ! ... Outflow
                     qm_net = qm_net + den0*qnp
                     sfvrb(lc) = sfvrb(lc) + qnp
@@ -712,7 +592,7 @@
                     ! what to do with inflow, ignore causes mass-balance error
                     qm_net = qm_net + den0*qnp
                     sfvrb(lc) = sfvrb(lc) + qnp
-                    write(*,*) "Water inflow from drain: ", mt, qm_net, time
+                    write(*,*) "-------------------Water inflow from drain: ", mt, qm_net, time
                     !qfbc = 0._kdp
                     !qfrbc(lc) = qfrbc(lc) + qfbc
                     !stotfi = stotfi+ufdt1*qfbc
@@ -728,9 +608,14 @@
         sfrb(lc) = sfrb(lc) + qfrbc(lc)
         stfrbc = stfrbc + ufdt1*qfrbc(lc)
         IF(qm_net <= 0._kdp) THEN           ! ... net outflow
+            call calc_avg_c(m, cavg)
             stotfp = stotfp - ufdt1*qfrbc(lc)
+            !DO  iis=1,ns
+            !    qsrbc(lc,iis) = qfrbc(lc)*c(m,iis)
+            !    stotsp(iis) = stotsp(iis) - ufdt1*qsrbc(lc,iis)
+            !END DO
             DO  iis=1,ns
-                qsrbc(lc,iis) = qfrbc(lc)*c(m,iis)
+                qsrbc(lc,iis) = qfrbc(lc)*cavg(iis)
                 stotsp(iis) = stotsp(iis) - ufdt1*qsrbc(lc,iis)
             END DO
         ELSEIF(qm_net > 0._kdp) THEN        ! ... net inflow
@@ -879,7 +764,7 @@
     sir_prechem = 0._kdp
 
     !!!call calc_frac2
-    call calc_water_table
+    !!!call calc_water_table
     
     DO  m=1,nxyz
         IF(ibc(m) == -1) CYCLE
@@ -898,15 +783,6 @@
             hdprnt(m) = z(k)+p(m)/(den0*gz)
         END IF
     END DO
-    IF(fresur .AND. (ABS(prip) > 0. .OR. ABS(primaphead) > 0.)) THEN
-        ! ... Calculate water-table elevation
-        DO mt=1,nxy
-            m = mfsbc(mt)
-            IF (m > 0) THEN
-                wt_elev(mt) = z_node(m) + p(m)/(den0*gz)
-            END IF
-        END DO
-    END IF
     ! ... Calculate the internal zone flow rates if requested
     IF(ABS(pri_zf) > 0. .OR. ABS(pri_zf_tsv) > 0.) CALL zone_flow
 
@@ -920,7 +796,7 @@ subroutine calc_water_table
     USE mcc_m, only: vmask
     USE mcg, only: cellno, nxyz, nxy, nx, ny, nz
     USE mcn, only: z, z_node
-    USE mcp, only: den0, gz, pv
+    USE mcp, only: den0, gz, pv, epssat
     USE mcv, only: c, deltim, dzfsdt, frac, ns, p, zfs, zfsn
     USE mcv_m, only: is
     USE mg2_m, ONLY: wt_elev
@@ -928,7 +804,6 @@ subroutine calc_water_table
     integer :: i, j, k, m, mt, k1, m1, kcol
     real(kind=kdp) :: zt, ztop, zbot, kk_top, kk_bot, water_vol
     integer :: kk
-    REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp 
     IF(fresur) THEN
         ! calculate water table from previous water-table cell
         DO mt=1,nxy
@@ -1055,4 +930,100 @@ subroutine top_bot(k, top, bot)
         top = (z(k) + z(k+1)) / 2.0
         bot = (z(k) + z(k-1)) / 2.0
     endif     
-end subroutine top_bot
+    end subroutine top_bot
+
+subroutine calc_avg_c(m, cavg)
+    USE machine_constants, ONLY: kdp
+    USE mcb, only: fresur, ibc, mfsbc, msbc, nsbc, print_dry_col
+    USE mcc, only: jtime, rm_id, solute, steady_flow
+    USE mcc_m, only: vmask
+    USE mcg, only: cellno, nxyz, nxy, nx, ny, nz
+    USE mcn, only: z, z_node
+    USE mcp, only: den0, gz, pv, epssat
+    USE mcv, only: c, deltim, dzfsdt, frac, ns, p, zfs, zfsn
+    USE mcv_m, only: is
+    USE mg2_m, ONLY: wt_elev
+    implicit none
+    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, intent(inout) :: cavg
+    integer, intent(in) :: m
+    integer :: i, j, k, mt
+    real(kind=kdp) :: ztop, zbot, tot_vol
+    integer :: ii, kk, new_k, old_k, new_m, old_m, m1, use_c
+    
+    call mtoijk(m, i, j, old_k, nx, ny)
+    mt = nx * (j - 1) + i
+    new_m = mfsbc(mt)
+    
+    ! old water table cell
+    do kk = nz,1,-1
+        call top_bot(kk, ztop, zbot)
+        if (zfsn(mt) > zbot) then
+            old_m = cellno(i,j,kk)
+            exit
+        endif
+    enddo  
+    ! water table in same cell
+    if (old_m .eq. mfsbc(mt)) then
+        do ii = 1, ns
+            cavg(ii) = c(old_m,ii)
+        enddo
+        return   
+    endif
+    
+    ! assert
+    if (old_m .lt. mfsbc(mt)) then
+        !stop "Not falling water table"
+        do ii = 1, ns
+            cavg(ii) = c(old_m,ii)
+        enddo
+        return
+    endif
+
+    use_c = 0  ! 0 avg, 1 old, 2 new
+    if (use_c .eq. 0) then       
+        ! new water table in lower cell
+
+        ! sum volume of old
+        call mtoijk(old_m, i, j, old_k, nx, ny)
+        call top_bot(old_k, ztop, zbot)
+        tot_vol = pv(old_m) * (zfsn(mt) - zbot) / (ztop - zbot)
+        ! sum volume missing in new
+        call mtoijk(new_m, i, j, new_k, nx, ny)
+        call top_bot(new_k, ztop, zbot)
+        tot_vol = tot_vol + pv(new_m) * (ztop - zfs(mt)) / (ztop - zbot)
+        ! sum in between
+        do kk = old_k - 1, new_k + 1,-1
+            tot_vol = tot_vol + pv(kk)
+        enddo    
+
+        ! Now calculate average concentrations
+        do ii = 1, ns
+            cavg(ii) = 0.0
+        enddo
+        ! old water table
+        call top_bot(old_k, ztop, zbot)
+        do ii = 1, ns
+            cavg(ii) = cavg(ii) + c(old_m,ii) * pv(old_m) * ((zfsn(mt) - zbot) / (ztop - zbot)) / tot_vol
+        enddo    
+        ! new water table
+        call top_bot(new_k, ztop, zbot)
+        do ii = 1, ns
+            cavg(ii) = cavg(ii) + c(new_m,ii) * pv(new_m) * ((ztop - zfs(mt)) / (ztop - zbot)) / tot_vol
+        enddo     
+        ! in between
+        do kk = old_k - 1, new_k + 1,-1
+            m1 = cellno(i,j,kk)
+            do ii = 1, ns
+                cavg(ii) = cavg(ii) + c(m1,ii) * pv(m1) / tot_vol
+            enddo          
+        enddo   
+    else if (use_c .eq. 1) then
+        do ii = 1, ns
+            cavg(ii) = c(old_m,ii) 
+        enddo 
+    else
+        do ii = 1, ns
+            cavg(ii) = c(new_m,ii) 
+        enddo 
+    endif
+end subroutine calc_avg_c     
