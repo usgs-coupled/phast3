@@ -59,18 +59,12 @@ typedef enum {
 	METHOD_RUNCELLS,
 	METHOD_RUNFILE,
 	METHOD_RUNSTRING,
-#ifdef SKIP_RV
-	METHOD_SETCELLVOLUME,
-#endif
 	METHOD_SETCOMPONENTH2O,
 	METHOD_SETCONCENTRATIONS,
 	METHOD_SETDENSITY,
 	METHOD_SETERRORHANDLERMODE,
 	METHOD_SETFILEPREFIX,
 	METHOD_SETPARTITIONUZSOLIDS,
-#ifdef SKIP_RV
-	METHOD_SETPOREVOLUME,
-#endif
 	METHOD_SETPOROSITY,
 	METHOD_SETPRESSURE,
 	METHOD_SETPRINTCHEMISTRYON,
@@ -404,29 +398,6 @@ for (int j = 0; j < count_chemistry; j++)
 Called by root and (or) workers.
  */
 	const std::vector < std::vector <int> > & GetBackwardMapping(void) {return this->backward_mapping;}
-#ifdef SKIP_RV
-/**
-Returns the current set of cell volumes as
-defined by the last use of @ref SetCellVolume or the default (1.0 L).
-Cell volume is used with pore volume (@ref SetPoreVolume) in calculating porosity.
-In most cases, cell volumes are expected to be constant.
-@retval const std::vector<double>&       A vector reference to the cell volumes
-defined to the reaction module.
-Size of vector is @a nxyz, the number of grid cells in the user's model (@ref GetGridCellCount).
-@see                 @ref GetPoreVolume, @ref SetCellVolume, @ref SetPoreVolume.
-@par C++ Example:
-@htmlonly
-<CODE>
-<PRE>
-const std::vector<double> & vol = phreeqc_rm.GetCellVolume();
-</PRE>
-</CODE>
-@endhtmlonly
-@par MPI:
-Called by root and (or) workers.
- */
-	const std::vector<double> &               GetCellVolume(void) {return this->cell_volume;}
-#endif
 /**
 Returns the number of reaction cells in the reaction module. The number of reaction cells is defined by
 the set of non-negative integers in the mapping from grid cells (@ref CreateMapping), or, by default,
@@ -1039,29 +1010,6 @@ double f_rebalance = phreeqc_rm.GetRebalanceFraction();
 Called by root.
  */
 	double                                    GetRebalanceFraction(void) const {return this->rebalance_fraction;}
-#ifdef SKIP_RV
-/**
-Vector reference to the current values of saturation for each cell.
-Saturation is a fraction ranging from 0 to 1, default values are 1.0.
-Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
-to the cell volume (@ref SetCellVolume).
-The volume of water in a cell is the porosity times the saturation.
-@retval std::vector<double> &      Vector of saturations, unitless. Size of vector is @a nxyz, where @a nxyz is the number
-of grid cells in the user's model (@ref GetGridCellCount).
-@see                    @ref SetSaturation, GetPoreVolume, GetCellVolume, SetCellVolume, SetPoreVolume.
-@par C++ Example:
-@htmlonly
-<CODE>
-<PRE>
-const std::vector<double> &  current_sat =  phreeqc_rm.GetSaturation();
-</PRE>
-</CODE>
-@endhtmlonly
-@par MPI:
-Called by root and (or) workers.
- */
-	const std::vector<double> &               GetSaturation(void) {return this->saturation;}
-#endif
 /**
 Returns a vector of saturations (@a sat) as calculated by the reaction module.
 Reactions will change the volume of solution in a cell.
@@ -2447,30 +2395,6 @@ phreeqc_rm.ScreenMessage(strm.str());
 Called by root and (or) workers.
  */
 	void                                      ScreenMessage(const std::string &str);
-#ifdef SKIP_RV
-/**
-Set the volume of each cell. Porosity is determined by the ratio of the pore volume (@ref SetPoreVolume)
-to the cell volume. The volume of water in a cell is the porosity times the saturation (@ref SetSaturation).
-@param vol              Vector of volumes, user units, but same as @ref SetPoreVolume.
-Size of array is @a nxyz, where @a nxyz is the number
-of grid cells in the user's model (@ref GetGridCellCount).
-@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetPoreVolume, @ref SetSaturation.
-@par C++ Example:
-@htmlonly
-<CODE>
-<PRE>
-std::vector<double> cell_vol;
-cell_vol.resize(nxyz, 1);
-status = phreeqc_rm.SetCellVolume(cell_vol);
-</PRE>
-</CODE>
-@endhtmlonly
-@par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
- */
-	IRM_RESULT                                SetCellVolume(const std::vector<double> &vol);
-#endif
 /**
 Select whether to include H2O in the component list.
 The concentrations of H and O must be known
@@ -2847,31 +2771,6 @@ phreeqc_rm.SetPartitionUZSolids(false);
 Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                SetPartitionUZSolids(bool tf);
-#ifdef SKIP_RV
-/**
-Set the pore volume of each cell. Porosity is determined by the ratio of the pore volume
-to the cell volume (@ref SetCellVolume). The volume of water in a cell is the porosity times the saturation
-(@ref SetSaturation).
-@param vol              Vector of pore volumes, user units, but same as @ref SetCellVolume.
-Size of vector is @a nxyz, where @a nxyz is the number
-of grid cells in the user's model (@ref GetGridCellCount).
-@retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
-@see                    @ref SetCellVolume, @ref SetSaturation.
-@par C++ Example:
-@htmlonly
-<CODE>
-<PRE>
-std::vector<double> pv;
-pv.resize(nxyz, 0.2);
-status = phreeqc_rm.SetPoreVolume(pv);
-</PRE>
-</CODE>
-@endhtmlonly
-@par MPI:
-Called by root, workers must be in the loop of @ref MpiWorker.
- */
-	IRM_RESULT                                SetPoreVolume(const std::vector<double> &vol);
-#endif
 /**
 Set the porosity for each reaction cell.
 The volume of water in a reaction cell is the product of porosity, saturation
@@ -3618,10 +3517,6 @@ protected:
 	std::vector<double> pressure;			// nxyz current pressure
 	std::vector<double> rv;		            // nxyz representative volume
 	std::vector<double> porosity;		    // nxyz porosity
-#ifdef SKIP_RV
-	std::vector<double> pore_volume;		// nxyz current pore volumes
-	std::vector<double> cell_volume;		// nxyz geometric cell volumes
-#endif
 	std::vector<double> tempc;				// nxyz temperature Celsius
 	std::vector<double> density;			// nxyz density
 	std::vector<double> solution_volume;	// nxyz density

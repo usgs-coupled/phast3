@@ -1048,27 +1048,6 @@ RM_ScreenMessage(int id, const char *err_str)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP_RV
-/* ---------------------------------------------------------------------- */
-IRM_RESULT 
-RM_SetCellVolume(int id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		if (t != NULL)
-		{
-			std::vector<double> v_vector;
-			v_vector.resize(Reaction_module_ptr->GetGridCellCount());
-			memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
-			return Reaction_module_ptr->SetCellVolume(v_vector);
-		}
-		return IRM_INVALIDARG;
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_SetComponentH2O(int id, int tf)
@@ -1216,27 +1195,6 @@ RM_SetPartitionUZSolids(int id, int t)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP_RV
-/* ---------------------------------------------------------------------- */
-IRM_RESULT 
-RM_SetPoreVolume(int id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		if (t != NULL)
-		{
-			std::vector<double> v_vector;
-			v_vector.resize(Reaction_module_ptr->GetGridCellCount());
-			memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
-			return Reaction_module_ptr->SetPoreVolume(v_vector);
-		}
-		return IRM_INVALIDARG;
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_SetPorosity(int id, double *t)

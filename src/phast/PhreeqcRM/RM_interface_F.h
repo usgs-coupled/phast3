@@ -93,9 +93,6 @@ IRM_RESULT RMF_RunCells(int *id);
 IRM_RESULT RMF_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility, const char *chem_name);
 IRM_RESULT RMF_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string);
 IRM_RESULT RMF_ScreenMessage(int *id, const char *str, size_t l = 0);
-#ifdef SKIP_RV
-IRM_RESULT RMF_SetCellVolume(int *id, double *t);
-#endif
 IRM_RESULT RMF_SetComponentH2O(int *id, int *tf);
 IRM_RESULT RMF_SetConcentrations(int *id, double *t);
 IRM_RESULT RMF_SetCurrentSelectedOutputUserNumber(int *id, int *i);
@@ -105,9 +102,6 @@ IRM_RESULT RMF_SetErrorHandlerMode(int *id, int *mode);
 IRM_RESULT RMF_SetFilePrefix(int *id, const char *prefix);
 IRM_RESULT RMF_SetMpiWorkerCallback(int *id, int (*fcn)(int *x1));
 IRM_RESULT RMF_SetPartitionUZSolids(int *id, int *t);
-#ifdef SKIP_RV
-IRM_RESULT RMF_SetPoreVolume(int *id, double *t);
-#endif
 IRM_RESULT RMF_SetPorosity(int *id, double *t);
 IRM_RESULT RMF_SetPressure(int *id, double *t);
 IRM_RESULT RMF_SetPrintChemistryMask(int *id, int *t);

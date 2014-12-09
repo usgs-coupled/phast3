@@ -593,7 +593,7 @@
                     ! what to do with inflow, ignore causes mass-balance error
                     qm_net = qm_net + den0*qnp
                     sfvrb(lc) = sfvrb(lc) + qnp
-                    write(*,*) "-------------------Water inflow from drain: ", mt, qm_net, time
+                    !write(*,*) "-------------------Water inflow from drain: ", mt, qm_net, time
                     !qfbc = 0._kdp
                     !qfrbc(lc) = qfrbc(lc) + qfbc
                     !stotfi = stotfi+ufdt1*qfbc
@@ -831,7 +831,7 @@ subroutine calc_water_table
                 do kk = k + 1, nz
                     m1 = cellno(i, j, kk)
                     call top_bot(kk, kk_top, kk_bot)
-                    if (kk .eq. nz .or. (pv(m1) * (1.0_kdp + epssat) > water_vol)) then
+                    if ( (ibc(m1) >= 0) .and. ( kk .eq. nz .or. (pv(m1) * (1.0_kdp + epssat) > water_vol) ) ) then
                         ! water table is here
                         frac(m1) = water_vol / pv(m1)
                         wt_elev(mt) = kk_bot + frac(m1) * (kk_top - kk_bot)
@@ -839,7 +839,6 @@ subroutine calc_water_table
                         p(m1) = (zfs(mt) - z_node(m1))*(den0*gz)
                         mfsbc(mt) = m1
                         vmask(m1) = 1            
-                        !if (z(kk) < zfs(mt)) vmask(m1) = 0
                         IF(solute) THEN
                             DO  is=1,ns
                                 c(m1,is)=c(m,is)
@@ -848,12 +847,14 @@ subroutine calc_water_table
                         exit
                     else 
                         ! water table is in a higher cell
-                        IF(solute) THEN
-                            DO  is=1,ns
-                                c(m1,is)=c(m,is)
-                            END DO
-                        END IF
-                        water_vol = water_vol - pv(m1)
+                        if (ibc(m1) >= 0) then
+                            IF(solute) THEN
+                                DO  is=1,ns
+                                    c(m1,is)=c(m,is)
+                                END DO
+                            END IF
+                            water_vol = water_vol - pv(m1)
+                        endif   
                     endif
                 enddo
             else if (wt_elev(mt) <= (zbot + epssat)) then
@@ -863,7 +864,7 @@ subroutine calc_water_table
                 do kk = k - 1, 1, -1
                     m1 = cellno(i, j, kk)
                     call top_bot(kk, kk_top, kk_bot)
-                    if (pv(m1) * (1.0_kdp - epssat) > water_vol) then
+                    if (ibc(m1) >= 0 .and. pv(m1) * (1.0_kdp - epssat) > water_vol) then
                         ! water table is here
                         frac(m1) = 1.0_kdp - water_vol / pv(m1)
                         wt_elev(mt) = kk_bot + frac(m1) * (kk_top - kk_bot)     
@@ -875,7 +876,9 @@ subroutine calc_water_table
                         exit                      
                     else 
                         ! water table is in a lower cell
-                        water_vol = water_vol - pv(m1)
+                        if (ibc(m1) >= 0) then
+                            water_vol = water_vol - pv(m1)
+                        endif
                         if (kk .eq. 1) then
                             mfsbc(mt) = 0
                             exit
@@ -884,7 +887,7 @@ subroutine calc_water_table
                 enddo     
             else 
                 if (mfsbc(mt) .ne. m) then
-                    stop
+                    stop "Logic error in calc_water_table."
                 endif
                 frac(m) = (wt_elev(mt) - zbot) / (ztop - zbot)
                 p(m) = (zfs(mt) - z_node(m))*(den0*gz)
@@ -904,14 +907,6 @@ subroutine calc_water_table
                 frac(m1) = 1.0_kdp
                 vmask(m1) = 1
             enddo
-            
-            ! debugging check
-            call mtoijk(m,i,j,k, nx, ny)
-            call top_bot(k, kk_top, kk_bot)
-            !if (wt_elev(mt) <= kk_bot .or. wt_elev(mt) .gt. (kk_top + epssat)) then
-            !    stop
-            !endif
-            
         enddo
     endif   
     
