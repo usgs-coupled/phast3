@@ -34,7 +34,7 @@ SUBROUTINE phast_manager
         END FUNCTION set_components
     END INTERFACE
     CHARACTER(LEN=130) :: logline1
-    INTEGER :: i, a_err
+    INTEGER :: i, a_err, j
     INTEGER :: ihdf, imedia, ixyz
     INTEGER status
     !     ------------------------------------------------------------------
@@ -186,8 +186,8 @@ SUBROUTINE phast_manager
                     status = RM_LogMessage(rm_id, logline1)
                     status = RM_ScreenMessage(rm_id, logline1)
                 ENDDO
-            ENDIF
-            CALL run_transport
+            ENDIF           
+            CALL run_transport         
             IF(errexe .OR. errexi) GO TO 50
             !
             ! Gather results from workers to root, process results
@@ -207,7 +207,7 @@ SUBROUTINE phast_manager
             !
             CALL time_parallel(8)                          ! 8 - 7, sumcal
             CALL TimeStepRM                                ! Run cells in Reaction Module, return concentrations
-            
+
             CALL time_parallel(14)                         ! new time
             CALL sumcal2                                   ! Calculate summary fluxes
             CALL time_parallel(15)                         ! 15 - 14, sumcal
@@ -236,7 +236,7 @@ SUBROUTINE phast_manager
 
             IF(errexe) EXIT
             IF(prcpd) CALL dump_hst                        ! not functional   
-            CALL time_parallel(16)                         ! 16 - 15, write files     
+            CALL time_parallel(16)                         ! 16 - 15, write files 
         ENDDO                                              ! End transient time step
     ENDIF                                                  ! End transient loop
 50  CONTINUE   ! ... Exit, could be error
@@ -558,6 +558,7 @@ SUBROUTINE InitializeRM
     INTEGER ipartition_uz_solids
     INTEGER, DIMENSION(:,:), ALLOCATABLE :: ic1_reordered, ic2_reordered
     DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: f1_reordered
+    DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: rv
  
     IF(solute) THEN
 
@@ -573,6 +574,10 @@ SUBROUTINE InitializeRM
 #ifdef SKIP_RV   
         status = RM_SetPoreVolume(rm_id, pv0(1))
 #endif        
+        allocate (rv(nxyz))
+        rv = 1.0
+        status = RM_SetRepresentativeVolume(rm_id, rv)
+        deallocate(rv)
         status = RM_SetPrintChemistryMask(rm_id, iprint_chem)
 	    status = 0
         if (prhdfci .ne. 0 .or. prcphrqi .ne. 0) status = 1
@@ -583,6 +588,7 @@ SUBROUTINE InitializeRM
         else
             ipartition_uz_solids = 0
         endif
+        !ipartition_uz_solids = 0
         status = RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
 #ifdef SKIP_RV        
         status = RM_SetCellVolume(rm_id, volume(1))
@@ -643,13 +649,13 @@ SUBROUTINE TimeStepRM
     USE mcg, ONLY:               grid2chem, nxyz
     USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density, volume, por
     USE mcp, ONLY:               pv
-    USE mcv,  ONLY:              c, deltim, frac, indx_sol1_ic, sat, time
+    USE mcv,  ONLY:              c, deltim, frac, indx_sol1_ic, sat, time, ns
     USE hdf_media_m, ONLY:       pr_hdf_media
     USE print_control_mod, ONLY: print_force_chemistry, print_hdf_chemistry, print_restart
     USE PhreeqcRM
     IMPLICIT NONE
     SAVE
-    INTEGER stop_msg, status, i !, ihdf, ixyz, imedia
+    INTEGER stop_msg, status, i, j !, ihdf, ixyz, imedia
     CHARACTER(LEN=130) :: logline1
     
     stop_msg = 0
