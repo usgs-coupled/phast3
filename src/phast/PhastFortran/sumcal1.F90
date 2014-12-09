@@ -33,10 +33,11 @@
         REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: rhssbc
         REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN) :: vasbc
     END SUBROUTINE sbcflo
-    subroutine calc_avg_c(m, cavg)
+    subroutine calc_avg_c(m, cavg, mfsbcn)
         USE machine_constants, ONLY: kdp
         integer, INTENT(IN) :: m
         REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, INTENT(INOUT) :: cavg
+        INTEGER, DIMENSION(:), INTENT(IN) :: mfsbcn
     end subroutine calc_avg_c
     END INTERFACE
     !
@@ -608,7 +609,7 @@
         sfrb(lc) = sfrb(lc) + qfrbc(lc)
         stfrbc = stfrbc + ufdt1*qfrbc(lc)
         IF(qm_net <= 0._kdp) THEN           ! ... net outflow
-            call calc_avg_c(m, cavg)
+            call calc_avg_c(m, cavg, mfsbcn)
             stotfp = stotfp - ufdt1*qfrbc(lc)
             !DO  iis=1,ns
             !    qsrbc(lc,iis) = qfrbc(lc)*c(m,iis)
@@ -637,11 +638,15 @@
                     END DO
                 ENDIF
             END DO
-            DO iis=1,ns
-                cavg(iis) = sum_cqm_in(iis)/qm_in
-                qsrbc(lc,iis) = qfrbc(lc)*cavg(iis)
-                stotsi(iis) = stotsi(iis) + ufdt1*qsrbc(lc,iis)
-            END DO
+            ! Now all river segments of a cell have the same bottom
+            if(hrbc >= zerbc(river_seg_first(lc))) then      
+                ! ... treat as river, drain has no solute flux?
+                DO iis=1,ns
+                    cavg(iis) = sum_cqm_in(iis)/qm_in
+                    qsrbc(lc,iis) = qfrbc(lc)*cavg(iis)
+                    stotsi(iis) = stotsi(iis) + ufdt1*qsrbc(lc,iis)
+                END DO
+            endif
         else                       ! ... no inflow or outflow; treat as drain
             qnp = 0._kdp
             qfbc = 0._kdp
@@ -833,7 +838,7 @@ subroutine calc_water_table
                         zfs(mt) = wt_elev(mt)
                         p(m1) = (zfs(mt) - z_node(m1))*(den0*gz)
                         mfsbc(mt) = m1
-                        vmask(m1) = 1
+                        vmask(m1) = 1            
                         !if (z(kk) < zfs(mt)) vmask(m1) = 0
                         IF(solute) THEN
                             DO  is=1,ns
@@ -861,13 +866,13 @@ subroutine calc_water_table
                     if (pv(m1) * (1.0_kdp - epssat) > water_vol) then
                         ! water table is here
                         frac(m1) = 1.0_kdp - water_vol / pv(m1)
-                        wt_elev(mt) = kk_bot + frac(m1) * (kk_top - kk_bot)
+                        wt_elev(mt) = kk_bot + frac(m1) * (kk_top - kk_bot)     
                         zfs(mt) = wt_elev(mt)
                         p(m1) = (zfs(mt) - z_node(m1))*(den0*gz)
                         mfsbc(mt) = m1
                         vmask(m1) = 1
                         if (z(kk) < zfs(mt)) vmask(m1) = 0
-                        exit
+                        exit                      
                     else 
                         ! water table is in a lower cell
                         water_vol = water_vol - pv(m1)
@@ -903,9 +908,9 @@ subroutine calc_water_table
             ! debugging check
             call mtoijk(m,i,j,k, nx, ny)
             call top_bot(k, kk_top, kk_bot)
-            if (wt_elev(mt) <= kk_bot .or. wt_elev(mt) .gt. (kk_top + epssat)) then
-                stop
-            endif
+            !if (wt_elev(mt) <= kk_bot .or. wt_elev(mt) .gt. (kk_top + epssat)) then
+            !    stop
+            !endif
             
         enddo
     endif   
@@ -932,7 +937,7 @@ subroutine top_bot(k, top, bot)
     endif     
     end subroutine top_bot
 
-subroutine calc_avg_c(m, cavg)
+subroutine calc_avg_c(m, cavg, mfsbcn)
     USE machine_constants, ONLY: kdp
     USE mcb, only: fresur, ibc, mfsbc, msbc, nsbc, print_dry_col
     USE mcc, only: jtime, rm_id, solute, steady_flow
@@ -945,6 +950,7 @@ subroutine calc_avg_c(m, cavg)
     USE mg2_m, ONLY: wt_elev
     implicit none
     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, intent(inout) :: cavg
+    INTEGER, DIMENSION(:), intent(in) :: mfsbcn
     integer, intent(in) :: m
     integer :: i, j, k, mt
     real(kind=kdp) :: ztop, zbot, tot_vol
@@ -955,13 +961,7 @@ subroutine calc_avg_c(m, cavg)
     new_m = mfsbc(mt)
     
     ! old water table cell
-    do kk = nz,1,-1
-        call top_bot(kk, ztop, zbot)
-        if (zfsn(mt) > zbot) then
-            old_m = cellno(i,j,kk)
-            exit
-        endif
-    enddo  
+    old_m = mfsbcn(mt)
     ! water table in same cell
     if (old_m .eq. mfsbc(mt)) then
         do ii = 1, ns

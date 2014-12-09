@@ -763,6 +763,7 @@ SUBROUTINE init2_1
            ! ... connect the river segment to the cell containing river bottom
            erflg = .FALSE.  
            ks = nintrp(zerbc(ls) - bbrbc(ls), nz, z, erflg)  
+           !!ks = nintrp(zerbc(ls), nz, z, erflg)
            IF (erflg) THEN     ! ... out of range of mesh, use top or bottom cell
               IF ((zerbc(ls) - bbrbc(ls)) > z(nz)) THEN
                  ks = nz

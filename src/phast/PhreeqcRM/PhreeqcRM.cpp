@@ -933,11 +933,11 @@ PhreeqcRM::Concentrations2SolutionsH2O(int n, std::vector<double> &c)
 #endif
 
 	for (j = start; j <= end; j++)
-	{		
+	{	
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
 		i = this->backward_mapping[j][0];
-
+		if (this->saturation[i] <= 0.0) continue;
 		switch (this->units_Solution)
 		{
 		case 1:  // mg/L to mol/L
@@ -1043,6 +1043,7 @@ PhreeqcRM::Concentrations2SolutionsNoH2O(int n, std::vector<double> &c)
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
 		i = this->backward_mapping[j][0];
+		if (this->saturation[i] <= 0.0) continue;
 
 		switch (this->units_Solution)
 		{
