@@ -495,9 +495,6 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_ScreenMessage(rm_id, logline1)
         stop_msg = 0
         deltim_dummy = 0._kdp
-#ifdef SKIP_RV       
-        status = RM_SetPoreVolume(rm_id, pv(1))
-#endif 
         ! Set porosity
         do i = 1, nxyz
             if (volume(i) .ne. 0.0d0) then
@@ -571,9 +568,7 @@ SUBROUTINE InitializeRM
         status = RM_SetUnitsSSassemblage(rm_id, ssassemblage_units)
         status = RM_SetUnitsSurface(rm_id, surface_units)            
         status = RM_SetTimeConversion(rm_id, cnvtmi)
-#ifdef SKIP_RV   
-        status = RM_SetPoreVolume(rm_id, pv0(1))
-#endif        
+
         allocate (rv(nxyz))
         rv = 1.0
         status = RM_SetRepresentativeVolume(rm_id, rv)
@@ -590,9 +585,7 @@ SUBROUTINE InitializeRM
         endif
         !ipartition_uz_solids = 0
         status = RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
-#ifdef SKIP_RV        
-        status = RM_SetCellVolume(rm_id, volume(1))
-#endif    
+ 
         ! Set porosity
         do i = 1, nxyz
             if (volume(i) .ne. 0.0d0) then
@@ -665,9 +658,7 @@ SUBROUTINE TimeStepRM
         status = RM_LogMessage(rm_id, logline1)
         status = RM_ScreenMessage(rm_id, logline1)
         if (.not.steady_flow) then
-#ifdef SKIP_RV            
-            status = RM_SetPoreVolume(rm_id, pv(1))
-#endif            
+          
             do i = 1, nxyz
                 if (volume(i) .ne. 0.0d0) then
                     por(i) = pv(i)/volume(i)

@@ -1201,26 +1201,6 @@ RMF_ScreenMessage(int *id, const char *err_str, size_t l)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP_RV
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RMF_SetCellVolume(int *id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	// Sets the pore volume of a cell, can be an absolute volume
-	// or a relative volume
-	// size of t is number of grid nodes
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		std::vector<double> v_vector;
-		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
-		return Reaction_module_ptr->SetCellVolume(v_vector);
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RMF_SetComponentH2O(int *id, int *tf)
@@ -1366,26 +1346,6 @@ RMF_SetPartitionUZSolids(int *id, int *t)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP_RV
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RMF_SetPoreVolume(int *id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	// Sets the current pore volume of the cell, which may change due to 
-	// compressibility of the water and media.
-	// size of t is the number of grid cells
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		std::vector<double> v_vector;
-		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
-		return Reaction_module_ptr->SetPoreVolume(v_vector);
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RMF_SetPorosity(int *id, double *t)
