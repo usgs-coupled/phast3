@@ -1047,6 +1047,8 @@ RMF_LoadDatabase(int * id, const char *db_name)
 	{
 		//std::string db = PhreeqcRM::Char2TrimString(db_name, l);
 		std::string db(db_name);
+		const auto strEnd = db.find_last_not_of(" \t\n");
+		db = db.substr(0, strEnd + 1);
 		return Reaction_module_ptr->LoadDatabase(db.c_str());
 	}
 	return IRM_BADINSTANCE;
@@ -1161,6 +1163,8 @@ RMF_RunFile(int *id, int *workers, int *initial_phreeqc, int *utility, const cha
 	{
 		//std::string str = PhreeqcRM::Char2TrimString(chem_name, l);
 		std::string str(chem_name);
+		const auto strEnd = str.find_last_not_of(" \t\n");
+		str = str.substr(0, strEnd + 1);
 		return Reaction_module_ptr->RunFile((*workers != 0), (*initial_phreeqc != 0), (*utility != 0), str.c_str());
 	}
 	return IRM_BADINSTANCE;
@@ -1276,7 +1280,9 @@ RMF_SetDumpFileName(int *id, const char *name)
 	if (Reaction_module_ptr)
 	{
 		//std::string str = PhreeqcRM::Char2TrimString(name, nchar);
-		std::string str(name);
+		std::string str(name);		
+		const auto strEnd = str.find_last_not_of(" \t\n");
+		str = str.substr(0, strEnd + 1);
 		return Reaction_module_ptr->SetDumpFileName(str.c_str());
 	}
 	return IRM_BADINSTANCE;
@@ -1309,6 +1315,8 @@ RMF_SetFilePrefix(int *id, const char *name)
 	{
 		//std::string str = PhreeqcRM::Char2TrimString(name, nchar);
 		std::string str(name);
+		const auto strEnd = str.find_last_not_of(" \t\n");
+		str = str.substr(0, strEnd + 1);
 		return Reaction_module_ptr->SetFilePrefix(str.c_str());
 	}
 	return IRM_BADINSTANCE;
