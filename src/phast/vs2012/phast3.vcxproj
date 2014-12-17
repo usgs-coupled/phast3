@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>phast</ProjectName>
+    <ProjectName>phast3</ProjectName>
     <ProjectGuid>{9B65F71A-2D27-4121-9724-6CD0ED7D975A}</ProjectGuid>
     <RootNamespace>phreeqcpp</RootNamespace>
     <Keyword>Win32Proj</Keyword>
