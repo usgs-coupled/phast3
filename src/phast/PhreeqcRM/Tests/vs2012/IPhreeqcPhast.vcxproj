@@ -37,6 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}</ProjectGuid>
     <RootNamespace>IPhreeqc</RootNamespace>
+    <ProjectName>PhreeqcRM</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='openmp_debug|Win32'" Label="Configuration">
