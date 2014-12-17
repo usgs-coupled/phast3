@@ -290,6 +290,15 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\PhreeqcRM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RM_interface_C.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RM_interface_F.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhast.h">
@@ -482,6 +491,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\Var.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PhreeqcRM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RM_interface_C.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RM_interface_F.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
