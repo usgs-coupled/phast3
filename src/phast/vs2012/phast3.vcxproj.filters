@@ -51,15 +51,6 @@
     <ClCompile Include="..\TM_interface.cpp">
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\PhreeqcRM.cpp">
-      <Filter>Source Files\COMMON_COBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\RM_interface_F.cpp">
-      <Filter>Source Files\COMMON_COBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PhreeqcRM\RM_interface_C.cpp">
-      <Filter>Source Files\COMMON_COBJS</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="phast.rc">
@@ -86,15 +77,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\FileHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PhreeqcRM\PhreeqcRM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PhreeqcRM\RM_interface_F.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PhreeqcRM\RM_interface_C.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
