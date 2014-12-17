@@ -8,7 +8,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "phast", "phreeqcpp.vcxproj"
 EndProject
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "phastpp", "phastpp.vfproj", "{12E87AB4-B82A-4104-A74C-379229396B15}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IPhreeqcPhast", "IPhreeqcPhast.vcxproj", "{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhreeqcRM", "..\PhreeqcRM\vs2012\PhreeqcRM.vcxproj", "{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,22 +54,22 @@ Global
 		{12E87AB4-B82A-4104-A74C-379229396B15}.openmp|Win32.Build.0 = openmp|Win32
 		{12E87AB4-B82A-4104-A74C-379229396B15}.openmp|x64.ActiveCfg = openmp|x64
 		{12E87AB4-B82A-4104-A74C-379229396B15}.openmp|x64.Build.0 = openmp|x64
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi_debug|Win32.ActiveCfg = Debug|Win32
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi_debug|Win32.Build.0 = Debug|Win32
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi_debug|x64.ActiveCfg = Debug|x64
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi_debug|x64.Build.0 = Debug|x64
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi|Win32.ActiveCfg = Release|Win32
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi|Win32.Build.0 = Release|Win32
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi|x64.ActiveCfg = Release|x64
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi|x64.Build.0 = Release|x64
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp_debug|Win32.ActiveCfg = Debug|Win32
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp_debug|Win32.Build.0 = Debug|Win32
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp_debug|x64.ActiveCfg = Debug|x64
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp_debug|x64.Build.0 = Debug|x64
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp|Win32.ActiveCfg = Release|Win32
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp|Win32.Build.0 = Release|Win32
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp|x64.ActiveCfg = Release|x64
-		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp|x64.Build.0 = Release|x64
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi_debug|Win32.ActiveCfg = mpi_debug|Win32
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi_debug|Win32.Build.0 = mpi_debug|Win32
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi_debug|x64.ActiveCfg = mpi_debug|x64
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi_debug|x64.Build.0 = mpi_debug|x64
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi|Win32.ActiveCfg = mpi|Win32
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi|Win32.Build.0 = mpi|Win32
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi|x64.ActiveCfg = mpi|x64
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.mpi|x64.Build.0 = mpi|x64
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp_debug|Win32.ActiveCfg = openmp_debug|Win32
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp_debug|Win32.Build.0 = openmp_debug|Win32
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp_debug|x64.ActiveCfg = openmp_debug|x64
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp_debug|x64.Build.0 = openmp_debug|x64
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp|Win32.ActiveCfg = openmp|Win32
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp|Win32.Build.0 = openmp|Win32
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp|x64.ActiveCfg = openmp|x64
+		{F9C18E06-F73A-4EB0-92E0-AE1713EA7FD7}.openmp|x64.Build.0 = openmp|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

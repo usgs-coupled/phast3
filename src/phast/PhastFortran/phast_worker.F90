@@ -22,8 +22,9 @@
     USE PhreeqcRM
     IMPLICIT NONE
     INTERFACE
-        integer function mpi_methods(method)
-            integer, intent(in) :: method
+        INTEGER(kind=c_int) function mpi_methods(method) BIND(C)
+            USE ISO_C_BINDING
+            INTEGER(kind=c_int), INTENT(in) :: method
         end function
     END INTERFACE
     INTEGER :: stop_msg=0
@@ -287,7 +288,9 @@ SUBROUTINE worker_closef
 #endif  
 ! end USE_MPI  
     END SUBROUTINE worker_closef
-INTEGER FUNCTION mpi_methods(method)
+    
+INTEGER(KIND=C_INT) FUNCTION mpi_methods(method) BIND(C)
+    USE ISO_C_BINDING
     USE mpi_mod
     IMPLICIT none
     INTERFACE
@@ -300,7 +303,8 @@ INTEGER FUNCTION mpi_methods(method)
         INTEGER FUNCTION set_fdtmth()
         END FUNCTION set_fdtmth
     END INTERFACE
-    integer method, return_value
+    INTEGER(kind=c_int), INTENT(in) :: method
+    integer return_value
     logical debug 
     debug = .false.
     return_value = 0
