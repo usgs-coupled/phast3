@@ -3183,7 +3183,7 @@ END FUNCTION RM_SetFilePrefix
 !> end function do_something
 !> 
 !> Code called by workers from method MpiWorker:
-!> integer function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
+!> integer(kind=C_INT) function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
 !>   USE ISO_C_BINDING
 !>   implicit none
 !>   interface
@@ -3206,7 +3206,6 @@ END FUNCTION RM_SetFilePrefix
 INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
   USE ISO_C_BINDING
   IMPLICIT NONE
-!#ifndef DOXYGEN_SHOULD_SKIP  
   INTERFACE
      INTEGER(KIND=C_INT) FUNCTION RMF_SetMpiWorkerCallback(id, fcn) &
           BIND(C, NAME='RMF_SetMpiWorkerCallback')
@@ -3220,9 +3219,8 @@ INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
        END INTERFACE
      END FUNCTION RMF_SetMpiWorkerCallback
   END INTERFACE
-!#endif  
   INTEGER, INTENT(IN) :: id
-!#ifndef DOXYGEN_SHOULD_SKIP 
+
   INTERFACE
      INTEGER(kind=c_int) FUNCTION fcn(method_number) BIND(C)
        USE ISO_C_BINDING
@@ -3230,7 +3228,7 @@ INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
        INTEGER(kind=c_int), INTENT(in) :: method_number
      END FUNCTION fcn
   END INTERFACE
-!#endif  
+
   RM_SetMpiWorkerCallback = RMF_SetMpiWorkerCallback(id, fcn)
 END FUNCTION RM_SetMpiWorkerCallback
 

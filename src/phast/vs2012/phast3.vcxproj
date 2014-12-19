@@ -152,8 +152,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zdll.lib;PhreeqcRM.lib;phastpp.lib;gmp.lib;hdf5dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_BOOST_THREAD32_LIB);$(DEV_GMP_LIB_MT);$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(OUTDIR);$(OUTDIR)phastpp;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zdll.lib;PhreeqcRM.lib;phastf.lib;gmp.lib;hdf5dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_BOOST_THREAD32_LIB);$(DEV_GMP_LIB_MT);$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(OUTDIR);$(OUTDIR)phastf;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -183,8 +183,8 @@ copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"</Command>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>phastpp.lib;hdf5dll.lib;zlib1.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastpp;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>phastf.lib;hdf5dll.lib;zlib1.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -212,8 +212,8 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zdll.lib;phastpp.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastpp;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zdll.lib;phastf.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(DEV_ZLIB122_LIB)\..\zlib1.dll" "$(OutDir)"
@@ -241,8 +241,8 @@ copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;phastpp.lib;hdf5dll.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR);$(OUTDIR)phastpp;%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(DEV_ZLIB123_X64_LIB)\zlib1.dll  $(OutDir)
@@ -267,9 +267,9 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zdll.lib;phastpp.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zdll.lib;phastf.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastpp;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(DEV_ZLIB122_LIB)\..\zlib1.dll" "$(OutDir)"</Command>
@@ -295,8 +295,8 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;phastpp.lib;hdf5dll.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastpp;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(DEV_ZLIB123_X64_LIB)\zlib1.dll  $(OutDir)
@@ -325,8 +325,8 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zdll.lib;phastpp.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastpp;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zdll.lib;phastf.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -358,8 +358,8 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;phastpp.lib;hdf5dll.lib;msmpi.lib;msmpifec.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastpp;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;msmpi.lib;msmpifec.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>

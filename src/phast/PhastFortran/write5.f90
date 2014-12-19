@@ -60,8 +60,16 @@ SUBROUTINE write5
   DOUBLE PRECISION, dimension(:), allocatable :: tc, p_atm
   DOUBLE PRECISION, dimension(:,:), allocatable :: c_well
   DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: dcmax_temp
+  integer :: min_is
   !     ------------------------------------------------------------------
   !...
+  if (solute) then
+      do is = 1, ns
+          if (comp_name(is) .eq. "Charge") exit
+      enddo
+      min_is = is + 1
+  endif
+  
   ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &
        STAT = a_err)
   IF (a_err /= 0) THEN  
@@ -372,7 +380,7 @@ SUBROUTINE write5
              '('//unitm//'/'//TRIM(unittm)//')'
 2311    FORMAT(/2(tr1,a60,1PE14.6,tr2,a/))
         IF (solute) THEN
-           DO  is=1,ns-1                             ! ... No printout of charge flows
+           DO  is=min_is,ns                             ! ... No printout of charge flows
               WRITE(fuzf,2036) 'Component: ', comp_name(is)
               WRITE(fuzf,2312) 'Solute inflow '//dots,cnvmfi*qszoni(is,izn),  &
                    '('//unitm//'/'//TRIM(unittm)//')',  &
@@ -386,7 +394,7 @@ SUBROUTINE write5
              dots,cnvmfi*qfzoni_int(izn),'('//unitm//'/'//TRIM(unittm)//')',  &
              'Internal face fluid outflow '//dots,cnvmfi*qfzonp_int(izn),  &
              '('//unitm//'/'//TRIM(unittm)//')'
-        DO  is=1,ns-1
+        DO  is=min_is,ns
            WRITE(fuzf,2036) 'Component: ', comp_name(is)
            WRITE(fuzf,2323) 'Internal face solute inflow '//  &
                 dots,cnvmfi*qszoni_int(is,izn),  &
@@ -420,7 +428,7 @@ SUBROUTINE write5
              'Well fluid outflow '//dots,cnvmfi*qfzonp_wel(izn),  &
              '('//unitm//'/'//TRIM(unittm)//')'
 2323    FORMAT(/12(tr1,a60,1PE14.6,tr2,A/))
-        DO  is=1,ns-1
+        DO  is=min_is,ns
            WRITE(fuzf,2036) 'Component: ', comp_name(is)
            WRITE(fuzf,2323) 'Specified head b.c. solute inflow '//  &
                 dots,cnvmfi*qszoni_sbc(is,izn),  &
@@ -465,7 +473,7 @@ SUBROUTINE write5
              cnvmfi*qfzoni_wel(izn),ACHAR(9),cnvmfi*qfzonp_wel(izn),ACHAR(9)
 2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
         IF (solute) THEN
-           DO  is=1,ns-1                             ! ... No printout of charge flows
+           DO  is=min_is,ns                           ! ... No printout of charge flows
               WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),zone_number(izn),ACHAR(9),comp_name(is),ACHAR(9),  &
                    cnvmfi*qszoni(is,izn),ACHAR(9),cnvmfi*qszonp(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_int(is,izn),ACHAR(9),cnvmfi*qszonp_int(is,izn),ACHAR(9),  &
@@ -475,6 +483,7 @@ SUBROUTINE write5
                    cnvmfi*qszoni_rbc(is,izn),ACHAR(9),cnvmfi*qszonp_rbc(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_dbc(is,izn),ACHAR(9),cnvmfi*qszonp_dbc(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_wel(is,izn),ACHAR(9),cnvmfi*qszonp_wel(is,izn),ACHAR(9)
+              write(*,*) is
            END DO
         END IF
      ENDDO
