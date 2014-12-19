@@ -1,5 +1,5 @@
 #include <stdlib.h>
-
+#include <iostream>
 // Fortran functions
 #if defined(_MSC_VER)
 #define FC_FUNC_(name,NAME) NAME
@@ -63,16 +63,18 @@ int main(int argc, char* argv[])
 	advection_f90();
 #endif
 	advection_c();
-
 	species_cpp();
 #if defined(TEST_FORTRAN)
 	species_f90();
 #endif
 	species_c();
 
-
 #if defined(USE_MPI)
 	MPI_Finalize();
 #endif
+	if (mpi_myself == 0)
+	{
+		std::cerr << "Done with tests." << std::endl;
+	}
 	return EXIT_SUCCESS;
 }

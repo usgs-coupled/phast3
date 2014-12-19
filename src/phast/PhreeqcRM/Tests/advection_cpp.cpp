@@ -5,6 +5,8 @@
 #include "PhreeqcRM.h"
 #include "IPhreeqc.hpp"
 #include "IPhreeqcPhast.h"
+int worker_tasks_cc(int *task_number, void * cookie);
+int do_something(void *cookie);
 
 #if defined(USE_MPI)
 #include <mpi.h>
@@ -21,6 +23,7 @@ int advection_cpp()
 		int nxyz = 40;
 #ifdef USE_MPI
 		PhreeqcRM phreeqc_rm(nxyz, MPI_COMM_WORLD);
+		MP_TYPE comm = MPI_COMM_WORLD;
 		int mpi_myself;
 		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
 		{
@@ -28,6 +31,8 @@ int advection_cpp()
 		}
 		if (mpi_myself > 0)
 		{
+			phreeqc_rm.SetMpiWorkerCallbackC(worker_tasks_cc);
+			phreeqc_rm.SetMpiWorkerCallbackCookie(&comm);
 			phreeqc_rm.MpiWorker();
 			return EXIT_SUCCESS;
 		}
@@ -36,7 +41,6 @@ int advection_cpp()
 		PhreeqcRM phreeqc_rm(nxyz, nthreads);
 #endif
 		IRM_RESULT status;
-
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // 1 = throw exception on error
 		//status = phreeqc_rm.SetErrorHandlerMode(0);
 		status = phreeqc_rm.SetComponentH2O(false);
@@ -46,7 +50,9 @@ int advection_cpp()
 		phreeqc_rm.SetPartitionUZSolids(false);
 		status = phreeqc_rm.SetFilePrefix("Advect_cpp");
 		phreeqc_rm.OpenFiles();
-
+#ifdef USE_MPI
+		int istatus = do_something(&comm);  // only root is calling do_something here
+#endif
 		// Set concentration units
 		status = phreeqc_rm.SetUnitsSolution(2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
 		status = phreeqc_rm.SetUnitsPPassemblage(1);  // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
@@ -565,3 +571,38 @@ int units_tester()
 	}
 	return EXIT_SUCCESS;
 }
+#ifdef USE_MPI
+int worker_tasks_cc(int *task_number, void * cookie)
+{
+	if (*task_number == 1000)
+	{
+		do_something(cookie);
+	}
+	return 0;
+}
+int do_something(void *cookie)
+{
+	int method_number = 1000;
+	MP_TYPE *comm = (MP_TYPE *) cookie;
+	int mpi_tasks, mpi_myself, worker_number;
+	MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks);
+	MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself);
+	std::stringstream msg;
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(&method_number, 1, MPI_INTEGER, 0, *comm);
+		fprintf(stderr, "I am root.\n");
+		for (int i = 1; i < mpi_tasks; i++)
+		{
+			MPI_Status status;
+			MPI_Recv(&worker_number, 1, MPI_INTEGER, i, 0, MPI_COMM_WORLD, &status);
+			fprintf(stderr, "Recieved data from worker number %d.\n", worker_number);
+		}
+	}
+	else
+	{
+		MPI_Send(&mpi_myself, 1, MPI_INTEGER, 0, 0, *comm);
+	}
+	return 0;
+}
+#endif

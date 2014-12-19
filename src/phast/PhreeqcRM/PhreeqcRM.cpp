@@ -148,6 +148,7 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 		this->phreeqcrm_io = new PHRQ_io();
 		this->delete_phreeqcrm_io = true;
 	}
+	this->phreeqcrm_io->Set_error_ostream(&std::cerr);
 
 	// second argument is threads for OPENMP or COMM for MPI
 #ifdef USE_OPENMP
@@ -4496,7 +4497,7 @@ PhreeqcRM::OpenFiles(void)
 	{
 		if (this->mpi_myself == 0)
 		{
-			this->phreeqcrm_io->Set_error_ostream(&std::cerr);
+			//this->phreeqcrm_io->Set_error_ostream(&std::cerr);
 
 			// open echo and log file, prefix.log.txt
 			std::string ln = this->file_prefix;

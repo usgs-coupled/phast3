@@ -3153,38 +3153,50 @@ END FUNCTION RM_SetFilePrefix
 !> @htmlonly
 !> <CODE>
 !> <PRE>
-!> Pseudo code for root:
+!> Code executed by root:
+!> status = do_something()
 !> 
-!> status = init()
-!> 
-!> INTEGER FUNCTION init()
-!> ! make phreeqcrm_comm, other data available with USE
-!> integer ierrmpi
-!> if (mpi_myself == 0) then
-!>     ! message number 1000 is sent to the workers
-!>     CALL MPI_BCAST(1000, 1, MPI_INTEGER, 0, phreeqcrm_comm, ierrmpi)
-!> endif
-!> ! Do some work here by root and (or) workers
-!> init = 0
-!> END FUNCTION init
-!> 
-!> Psuedo code for worker:
-!> 
-!> status = RM_SetMpiWorkerCallback(rm_id, mpi_methods)
-!> ...
+!> Code executed by workers:
+!> status = RM_SetMpiWorkerCallback(id, worker_tasks_f)
 !> status = RM_MpiWorker(id)
 !> 
-!> INTEGER FUNCTION mpi_methods(method)
-!>   ! This callback method is called by RM_MpiWorker
-!>   ! because of the call to RM_SetMpiWorkerCallback
-!>   integer method, return_value
-!>   return_value = 0
-!>   if (method == 1000) then
-!>      return_value = init()
+!> Code executed by root and workers:    
+!> integer function do_something
+!>   implicit none
+!>   INCLUDE 'mpif.h'
+!>   integer status
+!>   integer i, method_number, mpi_myself, mpi_task, mpi_tasks, worker_number;
+!>   method_number = 1000
+!>   call MPI_Comm_size(MPI_COMM_WORLD, mpi_tasks, status)
+!>   call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
+!>   if (mpi_myself .eq. 0) then     
+!>     CALL MPI_Bcast(method_number, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, status)
+!>     write(*,*) "I am root."
+!>     do i = 1, mpi_tasks-1
+!>       CALL MPI_Recv(worker_number, 1, MPI_INTEGER, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE, status)
+!>       write(*,*) "Recieved data from worker number ", worker_number, "."
+!>     enddo
+!>   else
+!> 		CALL MPI_Send(mpi_myself, 1, MPI_INTEGER, 0, 0, MPI_COMM_WORLD, status)
 !>   endif
-!>   mpi_methods = return_value
-!> END FUNCTION mpi_methods
+!>   do_something = 0
+!> end function do_something
 !> 
+!> Code called by workers from method MpiWorker:
+!> integer function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
+!>   USE ISO_C_BINDING
+!>   implicit none
+!>   interface
+!>     integer function do_something
+!>     end function do_something
+!>   end interface
+!>   integer(kind=c_int), intent(in) :: method_number
+!>   integer :: status
+!>   if (method_number .eq. 1000) then
+!>     status = do_something()
+!>   endif
+!>   worker_tasks_f = 0
+!> end function worker_tasks_f
 !> </PRE>
 !> </CODE>
 !> @endhtmlonly
