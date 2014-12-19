@@ -14,9 +14,9 @@ subroutine advection_f90()
        double precision, dimension(:,:), allocatable, intent(in) :: bc_conc
        integer, intent(in)                                       :: ncomps, nxyz
      end subroutine advect_f90
-     integer function do_something
+     integer function do_something()
      end function do_something
-     integer function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
+     integer(kind=C_INT) function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
         USE ISO_C_BINDING
         implicit none
         integer(kind=c_int), intent(in) :: method_number
@@ -424,11 +424,11 @@ subroutine advect_f90(c, bc_conc, ncomps, nxyz)
 end subroutine advect_f90
 
 #ifdef USE_MPI
-integer function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
+integer(kind=C_INT) function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
     USE ISO_C_BINDING
     implicit none
     interface
-        integer function do_something
+        integer function do_something()
         end function do_something
     end interface
     integer(kind=c_int), intent(in) :: method_number
@@ -439,7 +439,7 @@ integer function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
     worker_tasks_f = 0
 end function worker_tasks_f
     
-integer function do_something
+integer function do_something()
     implicit none
     INCLUDE 'mpif.h'
 	integer status
