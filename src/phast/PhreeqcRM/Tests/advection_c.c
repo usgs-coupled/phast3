@@ -7,6 +7,8 @@
 #if defined(USE_MPI)
 #include <mpi.h>
 #endif
+int worker_tasks_c(int *task_number, void * cookie);
+int do_something(void *cookie);
 void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 
     void advection_c()
@@ -17,6 +19,8 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int nxyz; 
 #ifndef USE_MPI
 		int nthreads;
+#else
+		MPI_Comm comm;
 #endif
 		int id;
 		int status;
@@ -61,16 +65,18 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		int dump_on, append;
 		char * errstr = NULL;
 		int l;
-
 		nxyz = 40;
 #ifdef USE_MPI
-		id = RM_Create(nxyz, MPI_COMM_WORLD);
-		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+		comm = MPI_COMM_WORLD;
+		id = RM_Create(nxyz, comm);
+		if (MPI_Comm_rank(comm, &mpi_myself) != MPI_SUCCESS)
 		{
 			exit(4);
 		}
 		if (mpi_myself > 0)
 		{
+			status = RM_SetMpiWorkerCallback(id, worker_tasks_c);
+			status = RM_SetMpiWorkerCallbackCookie(id, &comm);
 			status = RM_MpiWorker(id);
 			status = RM_Destroy(id);
 			return;
@@ -89,7 +95,9 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 		status = RM_SetFilePrefix(id, "Advect_c");
 		// Open error, log, and output files
 		status = RM_OpenFiles(id);
-
+#ifdef USE_MPI
+		status = do_something(&comm);  // only root is calling do_something here
+#endif
 		// Set concentration units
 		status = RM_SetUnitsSolution(id, 2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
 		status = RM_SetUnitsPPassemblage(id, 1);  // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
@@ -442,3 +450,37 @@ void advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim);
 			c[j * nxyz] = bc_conc[j * dim];
 		}
 	}
+#ifdef USE_MPI
+int worker_tasks_c(int *method_number, void * cookie)
+{
+	if (*method_number == 1000)
+	{
+		do_something(cookie);
+	}
+	return 0;
+}
+int do_something(void *cookie)
+{
+	MPI_Status status;
+	MPI_Comm *comm = (MPI_Comm *) cookie;
+	int i, method_number, mpi_myself, mpi_tasks, worker_number;
+	method_number = 1000;
+	MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks);
+	MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself);
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(&method_number, 1, MPI_INTEGER, 0, *comm);
+		fprintf(stderr, "I am root.\n");
+		for (i = 1; i < mpi_tasks; i++)
+		{
+			MPI_Recv(&worker_number, 1, MPI_INTEGER, i, 0, *comm, &status);
+			fprintf(stderr, "Recieved data from worker number %d.\n", worker_number);
+		}
+	}
+	else
+	{
+		MPI_Send(&mpi_myself, 1, MPI_INTEGER, 0, 0, *comm);
+	}
+	return 0;
+}
+#endif

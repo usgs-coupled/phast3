@@ -247,7 +247,7 @@ copy ..\units.pqi.in units.pqi
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(ProjectDir)../../;$(ProjectDir)../../PhreeqcRM;$(ProjectDir)../../IPhreeqcPhast;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;TEST_FORTRAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -310,7 +310,7 @@ copy ..\units.pqi.in units.pqi
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(MSMPI_INC);$(ProjectDir)../../;$(ProjectDir)../../PhreeqcRM;$(ProjectDir)../../IPhreeqcPhast;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>USE_MPI;NDEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_MPI;NDEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;TEST_FORTRAN;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -376,7 +376,7 @@ copy ..\units.pqi.in units.pqi
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
       <AdditionalIncludeDirectories>$(MSMPI_INC);$(ProjectDir)../../;$(ProjectDir)../../PhreeqcRM;$(ProjectDir)../../IPhreeqcPhast;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;USE_MPI;_DEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;USE_MPI;_DEBUG;WIN32;_CONSOLE;TEST_FORTRAN;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

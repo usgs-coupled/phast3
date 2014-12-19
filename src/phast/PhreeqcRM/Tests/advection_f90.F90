@@ -10,10 +10,17 @@ subroutine advection_f90()
   interface
      subroutine advect_f90(c, bc_conc, ncomps, nxyz)
        implicit none
-       double precision, dimension(:,:), allocatable :: bc_conc
-       double precision, dimension(:,:), allocatable :: c 
-       integer                                       :: ncomps, nxyz
+       double precision, dimension(:,:), allocatable, intent(inout) :: c 
+       double precision, dimension(:,:), allocatable, intent(in) :: bc_conc
+       integer, intent(in)                                       :: ncomps, nxyz
      end subroutine advect_f90
+     integer function do_something
+     end function do_something
+     integer function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
+        USE ISO_C_BINDING
+        implicit none
+        integer(kind=c_int), intent(in) :: method_number
+     end function worker_tasks_f
   end interface
 
   ! Based on PHREEQC Example 11
@@ -76,13 +83,14 @@ subroutine advection_f90()
      stop "Failed to get mpi_myself"
   endif
   if (mpi_myself > 0) then
-     status = RM_MpiWorker(id);
-     status = RM_Destroy(id);
-     return
+      status = RM_SetMpiWorkerCallback(id, worker_tasks_f)
+      status = RM_MpiWorker(id)
+      status = RM_Destroy(id)
+      return
   endif
 #else
-  nthreads = 3;
-  id = RM_Create(nxyz, nthreads);
+  nthreads = 3
+  id = RM_Create(nxyz, nthreads)
 #endif
   status = RM_SetErrorHandlerMode(id, 2)  ! exit on error
   !status = RM_SetErrorHandlerMode(id, 0)  ! return on error
@@ -95,7 +103,9 @@ subroutine advection_f90()
   status = RM_SetFilePrefix(id, "Advect_f90")
   ! Open error, log, and output files
   status = RM_OpenFiles(id)
-
+#ifdef USE_MPI
+  status = do_something()   ! only root is calling do_something here
+#endif
   ! Set concentration units
   status = RM_SetUnitsSolution(id, 2)      ! 1, mg/L; 2, mol/L; 3, kg/kgs
   status = RM_SetUnitsPPassemblage(id, 1)  ! 0, mol/L cell; 1, mol/L water; 2 mol/L rock
@@ -163,7 +173,7 @@ subroutine advection_f90()
 #ifdef FORTRAN_2003
      deallocate(errstr)
 #endif
-     status = RM_Destroy(id);
+     status = RM_Destroy(id)
      stop
   endif
 
@@ -396,10 +406,10 @@ end subroutine advection_f90
 
 subroutine advect_f90(c, bc_conc, ncomps, nxyz)
   implicit none
-  double precision, dimension(:,:), allocatable :: bc_conc
-  double precision, dimension(:,:), allocatable :: c 
-  integer                                       :: ncomps, nxyz
-  integer                                       :: i, j
+  double precision, dimension(:,:), allocatable, intent(inout) :: c 
+  double precision, dimension(:,:), allocatable, intent(in)    :: bc_conc
+  integer, intent(in)                                          :: ncomps, nxyz
+  integer                                                      :: i, j
   ! Advect
   do i = nxyz/2, 2, -1
      do j = 1, ncomps
@@ -413,3 +423,40 @@ subroutine advect_f90(c, bc_conc, ncomps, nxyz)
 
 end subroutine advect_f90
 
+#ifdef USE_MPI
+integer function worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
+    USE ISO_C_BINDING
+    implicit none
+    interface
+        integer function do_something
+        end function do_something
+    end interface
+    integer(kind=c_int), intent(in) :: method_number
+    integer :: status
+	if (method_number .eq. 1000) then
+		status = do_something()
+    endif
+    worker_tasks_f = 0
+end function worker_tasks_f
+    
+integer function do_something
+    implicit none
+    INCLUDE 'mpif.h'
+	integer status
+	integer i, method_number, mpi_myself, mpi_task, mpi_tasks, worker_number;
+    method_number = 1000
+	call MPI_Comm_size(MPI_COMM_WORLD, mpi_tasks, status)
+    call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
+	if (mpi_myself .eq. 0) then     
+		CALL MPI_Bcast(method_number, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, status)
+		write(*,*) "I am root."
+		do i = 1, mpi_tasks-1
+			CALL MPI_Recv(worker_number, 1, MPI_INTEGER, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE, status)
+			write(*,*) "Recieved data from worker number ", worker_number, "."
+		enddo
+	else
+		CALL MPI_Send(mpi_myself, 1, MPI_INTEGER, 0, 0, MPI_COMM_WORLD, status)
+    endif
+	do_something = 0
+end function do_something
+#endif

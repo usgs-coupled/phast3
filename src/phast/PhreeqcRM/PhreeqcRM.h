@@ -2585,7 +2585,7 @@ by the workers. The method @ref MpiWorker contains a loop,
 where the workers receive a message (an integer),
 run a function corresponding to that integer,
 and then wait for another message.
-SetMpiWorkerCallbackC allows the C or C++ developers to add another function
+SetMpiWorkerCallbackC allows C or C++ developers to add another function
 that responds to additional integer messages by calling developer-defined functions
 corresponding to those integers.
 @ref MpiWorker calls the callback function when the message number
@@ -2600,7 +2600,8 @@ another message.
 In C and C++, an additional pointer can be supplied to find the data necessary to do the task.
 A void pointer may be set with @ref SetMpiWorkerCallbackCookie. This pointer
 is passed to the callback function through a void pointer argument in addition
-to the integer message argument. @ref SetMpiWorkerCallbackCookie
+to the integer message argument. The pointer may be to a struct or class instance 
+that provides a number of additional pointers to data. @ref SetMpiWorkerCallbackCookie
 must be called by each worker before @ref MpiWorker is called.
 @n@n
 The motivation for this method is to allow the workers to perform other
@@ -2622,44 +2623,50 @@ and a void * argument.
 @htmlonly
 <CODE>
 <PRE>
-Pseudo code for root:
+Code executed by root:
 // root calls a function that will involve the workers
-status = init((void *) mydata);
+int istatus = do_something(&comm);
 
-int init(void *cookie)
+Code executed by workers:
+phreeqc_rm.SetMpiWorkerCallbackC(worker_tasks_cc);
+phreeqc_rm.SetMpiWorkerCallbackCookie(&comm);
+phreeqc_rm.MpiWorker();
+
+Code executed by root and workers:
+int do_something(void *cookie)
 {
-  // use cookie to find data, phreeqcrm_comm
-  int ierrmpi, message
-  message = 1000;
-  if (mpi_myself == 0)
-  {
-    // message number 1000 is sent to the workers
-    MPI_Bcast(&message, 1, MPI_INT, 0, phreeqcrm_comm);
-  }
-  // Do some work here by root and (or) workers
-  return 0;
+	int method_number = 1000;
+	MP_TYPE *comm = (MP_TYPE *) cookie;
+	int mpi_tasks, mpi_myself, worker_number;
+	MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks);
+	MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself);
+	std::stringstream msg;
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(&method_number, 1, MPI_INTEGER, 0, *comm);
+		fprintf(stderr, "I am root.\n");
+		for (int i = 1; i < mpi_tasks; i++)
+		{
+			MPI_Status status;
+			MPI_Recv(&worker_number, 1, MPI_INTEGER, i, 0, MPI_COMM_WORLD, &status);
+			fprintf(stderr, "Recieved data from worker number %d.\n", worker_number);
+		}
+	}
+	else
+	{
+		MPI_Send(&mpi_myself, 1, MPI_INTEGER, 0, 0, *comm);
+	}
+	return 0;
 }
 
-Pseudo code for worker:
-
-status = phreeqc_rm.SetMpiWorkerCallbackC(mpi_methods);
-status = phreeqc_rm.SetMpiWorkerCallbackCookie((void *) mydata);
-...
-status = phreeqc_rm.MpiWorker();
-
-int mpi_methods(int method, void *cookie)
+Code called by workers from method MpiWorker:
+int worker_tasks_cc(int *task_number, void * cookie)
 {
-  // this method is called by MpiWorker
-  // because it was registered by SetMpiWorkerCallbackC
-  // The cookie is the pointer that was set with SetMpiWorkerCallbackCookie
-  int return_value;
-  return_value = 0;
-  if (method == 1000)
-  {
-    // Here the workers call init
-    return_value = init(cookie);
-  }
-  return return_value;
+	if (*task_number == 1000)
+	{
+		do_something(cookie);
+	}
+	return 0;
 }
 </PRE>
 </CODE>
@@ -2676,6 +2683,8 @@ that is registered with @ref SetMpiWorkerCallbackC has
 two arguments, an integer message to identify a task, and a void
 pointer. SetMpiWorkerCallbackCookie sets the value of the
 void pointer that is passed to the callback function.
+The void pointer may be a pointer to a struct of class instance that
+contains additonal pointers to data.
 @param cookie           Void pointer that can be used by subroutines called from the callback function
 to locate data needed to perform a task.
 @retval IRM_RESULT      0 is success, negative is failure (See @ref DecodeError).
@@ -2685,43 +2694,50 @@ to locate data needed to perform a task.
 @htmlonly
 <CODE>
 <PRE>
-Pseudo code for root:
+Code executed by root:
 // root calls a function that will involve the workers
-status = init((void *) mydata);
+int istatus = do_something(&comm);
 
-int init(void *cookie)
+Code executed by workers:
+phreeqc_rm.SetMpiWorkerCallbackC(worker_tasks_cc);
+phreeqc_rm.SetMpiWorkerCallbackCookie(&comm);
+phreeqc_rm.MpiWorker();
+
+Code executed by root and workers:
+int do_something(void *cookie)
 {
-  // use cookie to find data, phreeqcrm_comm
-  int ierrmpi, message
-  message = 1000;
-  if (mpi_myself == 0)
-  {
-    // message number 1000 is sent to the workers
-    MPI_Bcast(&message, 1, MPI_INT, 0, phreeqcrm_comm);
-  }
-  // Do some work here by root and (or) workers
-  return 0;
+	int method_number = 1000;
+	MP_TYPE *comm = (MP_TYPE *) cookie;
+	int mpi_tasks, mpi_myself, worker_number;
+	MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks);
+	MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself);
+	std::stringstream msg;
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(&method_number, 1, MPI_INTEGER, 0, *comm);
+		fprintf(stderr, "I am root.\n");
+		for (int i = 1; i < mpi_tasks; i++)
+		{
+			MPI_Status status;
+			MPI_Recv(&worker_number, 1, MPI_INTEGER, i, 0, MPI_COMM_WORLD, &status);
+			fprintf(stderr, "Recieved data from worker number %d.\n", worker_number);
+		}
+	}
+	else
+	{
+		MPI_Send(&mpi_myself, 1, MPI_INTEGER, 0, 0, *comm);
+	}
+	return 0;
 }
 
-Pseudo code for worker:
-
-status = phreeqc_rm.SetMpiWorkerCallbackC(mpi_methods);
-status = SetMpiWorkerCallbackCookie(id, (void *) mydata);
-...
-status = MpiWorker();
-
-int mpi_methods(int method, void *cookie)
+Code called by workers from method MpiWorker:
+int worker_tasks_cc(int *task_number, void * cookie)
 {
-  // this method is called by MpiWorker
-  // because it was registered by SetMpiWorkerCallbackC
-  int return_value;
-  return_value = 0;
-  if (method == 1000)
-  {
-    // Here the workers call init
-    return_value = init(cookie);
-  }
-  return return_value;
+	if (*task_number == 1000)
+	{
+		do_something(cookie);
+	}
+	return 0;
 }
 </PRE>
 </CODE>
@@ -2732,7 +2748,7 @@ Called by workers, before call to @ref MpiWorker.
 	IRM_RESULT								  SetMpiWorkerCallbackCookie(void * cookie);
 /**
 MPI and Fortran only. Defines a callback function that allows additional tasks to be done
-by the workers. See documentation of PhreeqcRM for C and Fortran, method SetMpiWorkerCallback.
+by the workers. See documentation of PhreeqcRM for Fortran, method SetMpiWorkerCallback.
  */
 	IRM_RESULT								  SetMpiWorkerCallbackFortran(int (*fcn)(int *method));
 /**

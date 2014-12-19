@@ -1909,7 +1909,8 @@ another message.
 In C, an additional pointer can be supplied to find the data necessary to do the task.
 A void pointer may be set with @ref RM_SetMpiWorkerCallbackCookie. This pointer
 is passed to the callback function through a void pointer argument in addition
-to the integer message argument. @ref RM_SetMpiWorkerCallbackCookie
+to the integer message argument. The void pointer may be a pointer to a struct that
+contains pointers to additional data. @ref RM_SetMpiWorkerCallbackCookie
 must be called by each worker before @ref RM_MpiWorker is called.
 @n@n
 The motivation for this method is to allow the workers to perform other
@@ -1932,44 +1933,49 @@ C has an additional void * argument.
 @htmlonly
 <CODE>
 <PRE>
-Pseudo code for root:
+Code executed by root:
+// root calls a function that will involve the workers 
+status = do_something(&comm);
 
-// Root calls a function that will involve the workers
-status = init((void *) mydata);
+Code executed by workers:
+status = RM_SetMpiWorkerCallback(id, worker_tasks_c);
+status = RM_SetMpiWorkerCallbackCookie(id, &comm);
+status = RM_MpiWorker(id);
 
-int init(void *cookie)
+Code executed by root and workers:
+int do_something(void *cookie)
 {
-  // use cookie to find data, phreeqcrm_comm
-  int ierrmpi, message
-  message = 1000;
-  if (mpi_myself == 0)
-  {
-    // message number 1000 is sent to the workers
-    MPI_Bcast(&message, 1, MPI_INT, 0, phreeqcrm_comm);
-  }
-  // Do some work here by root and (or) workers
-  return 0;
+	MPI_Status status;
+	MPI_Comm *comm = (MPI_Comm *) cookie;
+	int i, method_number, mpi_myself, mpi_tasks, worker_number;
+	method_number = 1000;
+	MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks);
+	MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself);
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(&method_number, 1, MPI_INTEGER, 0, *comm);
+		fprintf(stderr, "I am root.\n");
+		for (i = 1; i < mpi_tasks; i++)
+		{
+			MPI_Recv(&worker_number, 1, MPI_INTEGER, i, 0, *comm, &status);
+			fprintf(stderr, "Recieved data from worker number %d.\n", worker_number);
+		}
+	}
+	else
+	{
+		MPI_Send(&mpi_myself, 1, MPI_INTEGER, 0, 0, *comm);
+	}
+	return 0;
 }
 
-Pseudo code for worker:
-
-status = RM_SetMpiWorkerCallback(id, mpi_methods);
-status = RM_SetMpiWorkerCallbackCookie(id, (void *) mydata);
-...
-status = RM_MpiWorker();
-
-int mpi_methods(int method, void *cookie)
+Code called by workers from method MpiWorker:
+int worker_tasks_c(int *method_number, void * cookie)
 {
-  // this method is called by RM_MpiWorker
-  // because of RM_SetMpiWorkerCallback
-  int return_value;
-  return_value = 0;
-  if (method == 1000)
-  {
-	// Workers call init here
-    return_value = init(cookie);
-  }
-  return return_value;
+	if (*method_number == 1000)
+	{
+		do_something(cookie);
+	}
+	return 0;
 }
 </PRE>
 </CODE>
@@ -1996,43 +2002,49 @@ to locate data needed to perform a task.
 @htmlonly
 <CODE>
 <PRE>
-Pseudo code for root:
-// Root calls a function that will involve the workers
-status = init((void *) mydata);
+Code executed by root:
+// root calls a function that will involve the workers 
+status = do_something(&comm);
 
-int init(void *cookie)
+Code executed by workers:
+status = RM_SetMpiWorkerCallback(id, worker_tasks_c);
+status = RM_SetMpiWorkerCallbackCookie(id, &comm);
+status = RM_MpiWorker(id);
+
+Code executed by root and workers:
+int do_something(void *cookie)
 {
-  // use cookie to find data, phreeqcrm_comm
-  int ierrmpi, message
-  message = 1000;
-  if (mpi_myself == 0)
-  {
-    // message number 1000 is sent to the workers
-    MPI_Bcast(&message, 1, MPI_INT, 0, phreeqcrm_comm);
-  }
-  // Do some work here by root and (or) workers
-  return 0;
+	MPI_Status status;
+	MPI_Comm *comm = (MPI_Comm *) cookie;
+	int i, method_number, mpi_myself, mpi_tasks, worker_number;
+	method_number = 1000;
+	MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks);
+	MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself);
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(&method_number, 1, MPI_INTEGER, 0, *comm);
+		fprintf(stderr, "I am root.\n");
+		for (i = 1; i < mpi_tasks; i++)
+		{
+			MPI_Recv(&worker_number, 1, MPI_INTEGER, i, 0, *comm, &status);
+			fprintf(stderr, "Recieved data from worker number %d.\n", worker_number);
+		}
+	}
+	else
+	{
+		MPI_Send(&mpi_myself, 1, MPI_INTEGER, 0, 0, *comm);
+	}
+	return 0;
 }
 
-Pseudo code for worker:
-
-status = RM_SetMpiWorkerCallback(id, mpi_methods);
-status = RM_SetMpiWorkerCallbackCookie(id, (void *) mydata);
-...
-status = RM_MpiWorker();
-
-int mpi_methods(int method, void *cookie)
+Code called by workers from method MpiWorker:
+int worker_tasks_c(int *method_number, void * cookie)
 {
-  // this method is called by RM_MpiWorker
-  // because of RM_SetMpiWorkerCallback
-  int return_value;
-  return_value = 0;
-  if (method == 1000)
-  {
-	// Workers call init here
-    return_value = init(cookie);
-  }
-  return return_value;
+	if (*method_number == 1000)
+	{
+		do_something(cookie);
+	}
+	return 0;
 }
 </PRE>
 </CODE>
