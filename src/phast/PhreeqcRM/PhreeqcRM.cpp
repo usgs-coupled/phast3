@@ -3649,8 +3649,8 @@ PhreeqcRM::InitialPhreeqc2Module(
 				return_value = IRM_FAIL;
 				continue;
 			}
-			if (this->CellInitialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
-				fraction1.data(), error_set) != IRM_OK)
+			if (this->CellInitialize(i, j, &initial_conditions1.front(), &initial_conditions2.front(),
+				&fraction1.front(), error_set) != IRM_OK)
 			{
 				std::set<std::string>::iterator it = error_set.begin();
 				for (; it != error_set.end(); it++)
@@ -7361,7 +7361,7 @@ PhreeqcRM::SetPrintChemistryMask(std::vector<int> & m)
 			{
 				this->ErrorHandler(IRM_INVALIDARG, "Wrong size for mask in SetPrintChemistryMask");
 			}
-			memcpy(this->print_chem_mask.data(), m.data(), (size_t) (this->nxyz * sizeof(int)));
+			memcpy(&this->print_chem_mask.front(), &m.front(), (size_t) (this->nxyz * sizeof(int)));
 		}
 	}
 	catch (...)

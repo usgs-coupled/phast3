@@ -126,7 +126,7 @@ RMF_CreateMapping(int *id, int *grid2chem)
 	{
 		std::vector<int> grid2chem_vector;
 		grid2chem_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(grid2chem_vector.data(), grid2chem, (size_t) (Reaction_module_ptr->GetGridCellCount() * sizeof(int)));
+		memcpy(&grid2chem_vector.front(), grid2chem, (size_t) (Reaction_module_ptr->GetGridCellCount() * sizeof(int)));
 		return Reaction_module_ptr->CreateMapping(grid2chem_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -266,7 +266,7 @@ RMF_GetConcentrations(int *id, double * c)
 		IRM_RESULT return_value = Reaction_module_ptr->GetConcentrations(c_vector);
 		if (return_value == IRM_OK)
 		{
-			memcpy(c, c_vector.data(), c_vector.size() * sizeof(double));
+			memcpy(c, &c_vector.front(), c_vector.size() * sizeof(double));
 		}
 		return return_value;
 	}
@@ -287,7 +287,7 @@ RMF_GetDensity(int *id, double * d)
 		Reaction_module_ptr->GetDensity(density_vector);
 		if ((int) density_vector.size() == Reaction_module_ptr->GetGridCellCount())
 		{
-			memcpy(d, density_vector.data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+			memcpy(d, &density_vector.front(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
 		}
 		else
 		{
@@ -359,7 +359,7 @@ RMF_GetGfw(int *id, double * gfw)
 		size_t ncomps = Reaction_module_ptr->GetComponents().size();
 		if (ncomps > 0)
 		{
-			memcpy(gfw, Reaction_module_ptr->GetGfw().data(), ncomps * sizeof(double));
+			memcpy(gfw, &Reaction_module_ptr->GetGfw().front(), ncomps * sizeof(double));
 			return IRM_OK;
 		}
 		return IRM_FAIL;
@@ -464,7 +464,7 @@ RMF_GetSaturation(int *id, double * sat)
 		Reaction_module_ptr->GetSaturation(sat_vector);
 		if ((int) sat_vector.size() == Reaction_module_ptr->GetGridCellCount())
 		{
-			memcpy(sat, sat_vector.data(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
+			memcpy(sat, &sat_vector.front(), (size_t) (Reaction_module_ptr->GetGridCellCount()*sizeof(double)));
 		}
 		else
 		{
@@ -495,7 +495,7 @@ RMF_GetSelectedOutput(int * id, double * so)
 		IRM_RESULT return_value = Reaction_module_ptr->GetSelectedOutput(so_vector);
 		if (return_value == IRM_OK)
 		{
-			memcpy(so, so_vector.data(), so_vector.size() * sizeof(double));
+			memcpy(so, &so_vector.front(), so_vector.size() * sizeof(double));
 		}
 		return return_value;
 	}
@@ -579,7 +579,7 @@ RMF_GetSolutionVolume(int *id, double * v)
 		const std::vector<double> &v_vector = Reaction_module_ptr->GetSolutionVolume();
 		if ((int) v_vector.size() == Reaction_module_ptr->GetGridCellCount())
 		{
-			memcpy(v, v_vector.data(), v_vector.size() * sizeof(double));
+			memcpy(v, &v_vector.front(), v_vector.size() * sizeof(double));
 		}
 		else
 		{
@@ -606,7 +606,7 @@ RMF_GetSpeciesConcentrations(int *id, double * species_conc)
 		return_value = Reaction_module_ptr->GetSpeciesConcentrations(species_conc_vector);
 		if (return_value == IRM_OK)
 		{
-			memcpy(species_conc, species_conc_vector.data(), species_conc_vector.size()*sizeof(double));
+			memcpy(species_conc, &species_conc_vector.front(), species_conc_vector.size()*sizeof(double));
 		}
 		return return_value;
 	}
@@ -633,7 +633,7 @@ RMF_GetSpeciesD25(int *id, double * diffc)
 	if (Reaction_module_ptr)
 	{
 		const std::vector<double> & diffc_vector = Reaction_module_ptr->GetSpeciesD25();
-		memcpy(diffc, diffc_vector.data(), diffc_vector.size()*sizeof(double));
+		memcpy(diffc, &diffc_vector.front(), diffc_vector.size()*sizeof(double));
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -680,7 +680,7 @@ RMF_GetSpeciesZ(int *id, double * z)
 	if (Reaction_module_ptr)
 	{
 		const std::vector<double> & z_vector = Reaction_module_ptr->GetSpeciesZ();
-		memcpy(z, z_vector.data(), z_vector.size()*sizeof(double));
+		memcpy(z, &z_vector.front(), z_vector.size()*sizeof(double));
 		return IRM_OK;
 	}
 	return IRM_BADINSTANCE;
@@ -770,7 +770,7 @@ RMF_InitialPhreeqc2Concentrations(
 		std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
 		std::vector < double > destination_c, fraction1_vector;
 		boundary_solution1_vector.resize(*n_boundary);
-		memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
+		memcpy(&boundary_solution1_vector.front(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
 		IRM_RESULT return_value = Reaction_module_ptr->InitialPhreeqc2Concentrations(
 			destination_c,
 			boundary_solution1_vector,
@@ -778,7 +778,7 @@ RMF_InitialPhreeqc2Concentrations(
 			fraction1_vector);
 		if (return_value == 0)
 		{
-			memcpy(boundary_c, destination_c.data(), destination_c.size() * sizeof(double));
+			memcpy(boundary_c, &destination_c.front(), destination_c.size() * sizeof(double));
 		}       
 		return return_value;
 	}
@@ -816,16 +816,16 @@ RMF_InitialPhreeqc2Concentrations2(
 		std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
 		std::vector < double > destination_c, fraction1_vector;
 		boundary_solution1_vector.resize(*n_boundary);
-		memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
+		memcpy(&boundary_solution1_vector.front(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
 		if (boundary_solution2 != NULL)
 		{
 			boundary_solution2_vector.resize(*n_boundary);
-			memcpy(boundary_solution2_vector.data(), boundary_solution2, (size_t) (*n_boundary * sizeof(int)));
+			memcpy(&boundary_solution2_vector.front(), boundary_solution2, (size_t) (*n_boundary * sizeof(int)));
 		}
 		if (fraction1 != NULL)
 		{
 			fraction1_vector.resize(*n_boundary);
-			memcpy(fraction1_vector.data(), fraction1, (size_t) (*n_boundary * sizeof(double)));
+			memcpy(&fraction1_vector.front(), fraction1, (size_t) (*n_boundary * sizeof(double)));
 		}
 		IRM_RESULT return_value = Reaction_module_ptr->InitialPhreeqc2Concentrations(
 			destination_c,
@@ -834,7 +834,7 @@ RMF_InitialPhreeqc2Concentrations2(
 			fraction1_vector);
 		if (return_value == 0)
 		{
-			memcpy(boundary_c, destination_c.data(), destination_c.size() * sizeof(double));
+			memcpy(boundary_c, &destination_c.front(), destination_c.size() * sizeof(double));
 		}       
 		return return_value;
 	}
@@ -864,7 +864,7 @@ RMF_InitialPhreeqc2Module(int *id,
 		i1_vector.resize(nxyz * 7);
 		i2_vector.resize(nxyz * 7, -1);
 		f1_vector.resize(nxyz * 7, 1.0);
-		memcpy(i1_vector.data(), initial_conditions1, (size_t) (nxyz * 7 * sizeof(int)));
+		memcpy(&i1_vector.front(), initial_conditions1, (size_t) (nxyz * 7 * sizeof(int)));
 		return Reaction_module_ptr->InitialPhreeqc2Module(
 			i1_vector,
 			i2_vector,
@@ -898,14 +898,14 @@ RMF_InitialPhreeqc2Module2(int *id,
 		i1_vector.resize(nxyz * 7);
 		i2_vector.resize(nxyz * 7, -1);
 		f1_vector.resize(nxyz * 7, 1.0);
-		memcpy(i1_vector.data(), initial_conditions1, (size_t) (nxyz * 7 * sizeof(int)));
+		memcpy(&i1_vector.front(), initial_conditions1, (size_t) (nxyz * 7 * sizeof(int)));
 		if (initial_conditions2 != NULL)
 		{
-			memcpy(i2_vector.data(), initial_conditions2, (size_t) (nxyz * 7 * sizeof(int)));
+			memcpy(&i2_vector.front(), initial_conditions2, (size_t) (nxyz * 7 * sizeof(int)));
 		}
 		if (fraction1 != NULL)
 		{
-			memcpy(f1_vector.data(), fraction1, (size_t) (nxyz * 7 * sizeof(double)));
+			memcpy(&f1_vector.front(), fraction1, (size_t) (nxyz * 7 * sizeof(double)));
 		}
 		return Reaction_module_ptr->InitialPhreeqc2Module(
 			i1_vector,
@@ -933,7 +933,7 @@ RMF_InitialPhreeqcCell2Module(int *id,
 	{
 		std::vector <int> module_numbers_vector;
 		module_numbers_vector.resize(*dim_module_numbers);
-		memcpy(module_numbers_vector.data(), module_numbers, (size_t) (*dim_module_numbers) * sizeof(int));
+		memcpy(&module_numbers_vector.front(), module_numbers, (size_t) (*dim_module_numbers) * sizeof(int));
 		return Reaction_module_ptr->InitialPhreeqcCell2Module(
 			*n,
 			module_numbers_vector);
@@ -968,7 +968,7 @@ RMF_InitialPhreeqc2SpeciesConcentrations(
 		std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
 		std::vector < double > destination_c, fraction1_vector;
 		boundary_solution1_vector.resize(*n_boundary);
-		memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
+		memcpy(&boundary_solution1_vector.front(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
 		IRM_RESULT return_value = Reaction_module_ptr->InitialPhreeqc2SpeciesConcentrations(
 			destination_c,
 			boundary_solution1_vector,
@@ -976,7 +976,7 @@ RMF_InitialPhreeqc2SpeciesConcentrations(
 			fraction1_vector);		
 		if (return_value == 0)
 		{
-			memcpy(species_c, destination_c.data(), destination_c.size() * sizeof(double));
+			memcpy(species_c, &destination_c.front(), destination_c.size() * sizeof(double));
 		}       
 		return return_value;
 	}
@@ -1012,16 +1012,16 @@ RMF_InitialPhreeqc2SpeciesConcentrations2(
 		std::vector < int > boundary_solution1_vector, boundary_solution2_vector;
 		std::vector < double > destination_c, fraction1_vector;
 		boundary_solution1_vector.resize(*n_boundary);
-		memcpy(boundary_solution1_vector.data(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
+		memcpy(&boundary_solution1_vector.front(), boundary_solution1, (size_t) (*n_boundary * sizeof(int)));
 		if (boundary_solution2 != NULL)
 		{
 			boundary_solution2_vector.resize(*n_boundary);
-			memcpy(boundary_solution2_vector.data(), boundary_solution2, (size_t) (*n_boundary * sizeof(int)));
+			memcpy(&boundary_solution2_vector.front(), boundary_solution2, (size_t) (*n_boundary * sizeof(int)));
 		}
 		if (fraction1 != NULL)
 		{
 			fraction1_vector.resize(*n_boundary);
-			memcpy(fraction1_vector.data(), fraction1, (size_t) (*n_boundary * sizeof(double)));
+			memcpy(&fraction1_vector.front(), fraction1, (size_t) (*n_boundary * sizeof(double)));
 		}
 		IRM_RESULT return_value = Reaction_module_ptr->InitialPhreeqc2SpeciesConcentrations(
 			destination_c,
@@ -1030,7 +1030,7 @@ RMF_InitialPhreeqc2SpeciesConcentrations2(
 			fraction1_vector);		
 		if (return_value == 0)
 		{
-			memcpy(species_c, destination_c.data(), destination_c.size() * sizeof(double));
+			memcpy(species_c, &destination_c.front(), destination_c.size() * sizeof(double));
 		}       
 		return return_value;
 	}
@@ -1231,7 +1231,7 @@ RMF_SetConcentrations(int *id, double *t)
 	{
 		std::vector<double> c_vector;
 		c_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
-		memcpy(c_vector.data(), t, c_vector.size() * sizeof(double));
+		memcpy(&c_vector.front(), t, c_vector.size() * sizeof(double));
 		return Reaction_module_ptr->SetConcentrations(c_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -1265,7 +1265,7 @@ RMF_SetDensity(int *id, double *t)
 	{
 			std::vector<double> d_vector;
 			d_vector.resize(Reaction_module_ptr->GetGridCellCount());
-			memcpy(d_vector.data(), t, d_vector.size() * sizeof(double));
+			memcpy(&d_vector.front(), t, d_vector.size() * sizeof(double));
 			return Reaction_module_ptr->SetDensity(d_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -1367,7 +1367,7 @@ RMF_SetPorosity(int *id, double *t)
 	{
 		std::vector<double> v_vector;
 		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
+		memcpy(&v_vector.front(), t, v_vector.size() * sizeof(double));
 		return Reaction_module_ptr->SetPorosity(v_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -1384,7 +1384,7 @@ RMF_SetPressure(int *id, double *t)
 	{
 		std::vector<double> p_vector;
 		p_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(p_vector.data(), t, p_vector.size() * sizeof(double));
+		memcpy(&p_vector.front(), t, p_vector.size() * sizeof(double));
 		return Reaction_module_ptr->SetPressure(p_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -1422,7 +1422,7 @@ RMF_SetPrintChemistryMask(int *id, int *t)
 	{		
 		std::vector<int> m_vector;
 		m_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(m_vector.data(), t, m_vector.size() * sizeof(int));
+		memcpy(&m_vector.front(), t, m_vector.size() * sizeof(int));
 		return Reaction_module_ptr->SetPrintChemistryMask(m_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -1470,7 +1470,7 @@ RMF_SetRepresentativeVolume(int *id, double *t)
 	{
 		std::vector<double> v_vector;
 		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(v_vector.data(), t, v_vector.size() * sizeof(double));
+		memcpy(&v_vector.front(), t, v_vector.size() * sizeof(double));
 		return Reaction_module_ptr->SetRepresentativeVolume(v_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -1488,7 +1488,7 @@ RMF_SetSaturation(int *id, double *t)
 	{
 		std::vector<double> s_vector;
 		s_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(s_vector.data(), t, s_vector.size() * sizeof(double));
+		memcpy(&s_vector.front(), t, s_vector.size() * sizeof(double));
 		return Reaction_module_ptr->SetSaturation(s_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -1533,7 +1533,7 @@ RMF_SetTemperature(int *id, double *t)
 	{
 		std::vector<double> t_vector;
 		t_vector.resize(Reaction_module_ptr->GetGridCellCount());
-		memcpy(t_vector.data(), t, t_vector.size() * sizeof(double));
+		memcpy(&t_vector.front(), t, t_vector.size() * sizeof(double));
 		return Reaction_module_ptr->SetTemperature(t_vector);
 	}
 	return IRM_BADINSTANCE;
@@ -1686,7 +1686,7 @@ RMF_SpeciesConcentrations2Module(int *id, double * species_conc)
 			IRM_RESULT return_value = IRM_OK;
 			std::vector<double> species_conc_vector;
 			species_conc_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetSpeciesCount());
-			memcpy(species_conc_vector.data(), species_conc, species_conc_vector.size()*sizeof(double));
+			memcpy(&species_conc_vector.front(), species_conc, species_conc_vector.size()*sizeof(double));
 			return_value = Reaction_module_ptr->SpeciesConcentrations2Module(species_conc_vector);
 		}
 		return IRM_INVALIDARG;
