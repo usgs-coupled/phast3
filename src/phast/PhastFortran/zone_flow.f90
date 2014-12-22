@@ -4,7 +4,8 @@ SUBROUTINE zone_flow
   USE mcb
   USE mcb_m
   USE mcb2_m
-  USE mcc, ONLY: cylind
+  USE mcc, ONLY: cylind, solute
+  USE mcch, only: comp_name
   USE mcg
   USE mcg_m
   USE mcn, ONLY: x, y, z
@@ -24,7 +25,16 @@ SUBROUTINE zone_flow
        ftyzdm, ftyzdp, ftzxdm, ftzxdp, ftzydm, ftzydp,  &
        sxxs, syys, szzs
   REAL(KIND=kdp) :: dxm, dxp, dym, dyp, dzm, dzp, wtx, wty, wtz
+  integer :: min_is
   !     ------------------------------------------------------------------
+  !...
+  if (solute) then
+      do is = 1, ns
+          if (comp_name(is) .eq. "Charge") exit
+      enddo
+      min_is = is + 1
+  endif
+  
   ufdt1 = fdtmth
   ! ... Update conductance coefficients, mass flow rates, velocities
   CALL coeff_flow
@@ -93,7 +103,7 @@ SUBROUTINE zone_flow
            ftxzdp = 0._kdp
            wt=fdsmth
            IF(sxx(m) < 0.) wt=1._kdp-wt
-           DO  iis=1,ns-1                    ! ... No charge flows calculated
+           DO  iis=min_is,ns                    ! ... No charge flows calculated
               ucwt=((1._kdp-wt)*c(m,iis)+wt*c(m+1,iis))
               sxxs(iis) = sxx(m)*ucwt - tsx(m)*(c(m+1,iis)-c(m,iis))
               ! ... If any of the 6 nodes needed for a gradient are excluded, 
@@ -122,7 +132,7 @@ SUBROUTINE zone_flow
               qfzoni_int(izn) = qfzoni_int(izn) - sxx(m)
               qfzoni(izn) = qfzoni(izn) - sxx(m)
            END IF
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               IF (sxxs(iis) > 0.) THEN
                  qszonp_int(iis,izn) = qszonp_int(iis,izn) + sxxs(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + sxxs(iis)
@@ -153,7 +163,7 @@ SUBROUTINE zone_flow
            ftxzdm = 0._kdp
            wt=fdsmth
            IF(sxx(m-1) < 0.) wt=1._kdp-wt
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               ucwt=((1._kdp-wt)*c(m-1,iis)+wt*c(m,iis))
               sxxs(iis) = sxx(m-1)*ucwt - tsx(m-1)*(c(m,iis)-c(m-1,iis))
               IF(mijmk > 0 .AND. mijpk > 0) THEN
@@ -180,7 +190,7 @@ SUBROUTINE zone_flow
               qfzoni_int(izn) = qfzoni_int(izn) + sxx(m-1)
               qfzoni(izn) = qfzoni(izn) + sxx(m-1)
            END IF
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               IF (sxxs(iis) < 0.) THEN
                  qszonp_int(iis,izn) = qszonp_int(iis,izn) - sxxs(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - sxxs(iis)
@@ -211,7 +221,7 @@ SUBROUTINE zone_flow
            ftyzdp = 0._kdp
            wt=fdsmth
            IF(syy(m) < 0.) wt=1._kdp-wt
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               ucwt=((1._kdp-wt)*c(m,iis)+wt*c(mijpk,iis))
               syys(iis) = syy(m)*ucwt - tsy(m)*(c(mijpk,iis)-c(m,iis))
               IF(mimjk > 0 .AND. mipjk > 0) THEN
@@ -238,7 +248,7 @@ SUBROUTINE zone_flow
               qfzoni_int(izn) = qfzoni_int(izn) - syy(m)
               qfzoni(izn) = qfzoni(izn) - syy(m)
            END IF
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               IF (syys(iis) > 0.) THEN
                  qszonp_int(iis,izn) = qszonp_int(iis,izn) + syys(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + syys(iis)
@@ -269,7 +279,7 @@ SUBROUTINE zone_flow
            ftyzdm = 0._kdp
            wt=fdsmth
            IF(syy(mijmk) < 0.) wt=1._kdp-wt
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               ucwt=((1._kdp-wt)*c(mijmk,iis)+wt*c(m,iis))
               syys(iis) = syy(mijmk)*ucwt - tsy(mijmk)*(c(m,iis)-c(mijmk,iis))
               IF(mimjk > 0 .AND. mipjk > 0) THEN
@@ -296,7 +306,7 @@ SUBROUTINE zone_flow
               qfzoni_int(izn) = qfzoni_int(izn) + syy(mijmk)
               qfzoni(izn) = qfzoni(izn) + syy(mijmk)
            END IF
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               IF (syys(iis) < 0.) THEN
                  qszonp_int(iis,izn) = qszonp_int(iis,izn) - syys(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - syys(iis)
@@ -327,7 +337,7 @@ SUBROUTINE zone_flow
            ftzydp = 0._kdp
            wt=fdsmth
            IF(szz(m) < 0.) wt=1._kdp-wt
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               ucwt=((1._kdp-wt)*c(m,iis)+wt*c(mijkp,iis))
               szzs(iis) = szz(m)*ucwt - tsz(m)*(c(mijkp,iis)-c(m,iis))
               IF(mimjk > 0 .AND. mipjk > 0) THEN
@@ -358,7 +368,7 @@ SUBROUTINE zone_flow
               qfzoni_int(izn) = qfzoni_int(izn) - szz(m)
               qfzoni(izn) = qfzoni(izn) - szz(m)
            END IF
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               IF (szzs(iis) > 0.) THEN
                  qszonp_int(iis,izn) = qszonp_int(iis,izn) + szzs(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + szzs(iis)
@@ -389,7 +399,7 @@ SUBROUTINE zone_flow
            ftzydm = 0._kdp
            wt=fdsmth
            IF(szz(mijkm) < 0.) wt=1._kdp-wt
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               ucwt=((1._kdp-wt)*c(mijkm,iis)+wt*c(m,iis))
               szzs(iis) = szz(mijkm)*ucwt - tsz(mijkm)*(c(m,iis)-c(mijkm,iis))
               IF(mimjk > 0 .AND. mipjk > 0) THEN
@@ -420,7 +430,7 @@ SUBROUTINE zone_flow
               qfzoni_int(izn) = qfzoni_int(izn) + szz(mijkm)
               qfzoni(izn) = qfzoni(izn) + szz(mijkm)
            END IF
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               IF (szzs(iis) < 0.) THEN
                  qszonp_int(iis,izn) = qszonp_int(iis,izn) - szzs(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - szzs(iis)
@@ -461,7 +471,7 @@ SUBROUTINE zone_flow
            END IF
            ! ... Calculate advective heat and solute flows at specified
            ! ...      pressure b.c. cells
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               IF(qfsbc(lc) < 0._kdp) THEN
                  qszonp_sbc(iis,izn) = qszonp_sbc(iis,izn) - qssbc(lc,iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - qssbc(lc,iis)
@@ -479,14 +489,14 @@ SUBROUTINE zone_flow
            IF(qffbc(lc) < 0._kdp) THEN             ! ... Outflow
               qfzonp_fbc(izn) = qfzonp_fbc(izn) - ufdt1*qffbc(lc)
               qfzonp(izn) = qfzonp(izn) - ufdt1*qffbc(lc)
-              DO  iis=1,ns-1
+             DO  iis=min_is,ns
                  qszonp_fbc(iis,izn) = qszonp_fbc(iis,izn) - ufdt1*qsfbc(lc,iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ufdt1*qsfbc(lc,iis)
               END DO
            ELSE                                    ! ... Inflow
               qfzoni_fbc(izn) = qfzoni_fbc(izn) + ufdt1*qffbc(lc)
               qfzoni(izn) = qfzoni(izn) + ufdt1*qffbc(lc)
-              DO  iis=1,ns-1
+              DO  iis=min_is,ns
                  qszoni_fbc(iis,izn) = qszoni_fbc(iis,izn) + ufdt1*qsfbc(lc,iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ufdt1*qsfbc(lc,iis)
               END DO
@@ -502,14 +512,14 @@ SUBROUTINE zone_flow
                  IF(qffbc(lc) < 0._kdp) THEN             ! ... Outflow
                     qfzonp_fbc(izn) = qfzonp_fbc(izn) - ufdt1*qffbc(lc)
                     qfzonp(izn) = qfzonp(izn) - ufdt1*qffbc(lc)
-                    DO  iis=1,ns-1
+                    DO  iis=min_is,ns
                        qszonp_fbc(iis,izn) = qszonp_fbc(iis,izn) - ufdt1*qsfbc(lc,iis)
                        qszonp(iis,izn) = qszonp(iis,izn) - ufdt1*qsfbc(lc,iis)
                     END DO
                  ELSE                                    ! ... Inflow
                     qfzoni_fbc(izn) = qfzoni_fbc(izn) + ufdt1*qffbc(lc)
                     qfzoni(izn) = qfzoni(izn) + ufdt1*qffbc(lc)
-                    DO  iis=1,ns-1
+                    DO  iis=min_is,ns
                        qszoni_fbc(iis,izn) = qszoni_fbc(iis,izn) + ufdt1*qsfbc(lc,iis)
                        qszoni(iis,izn) = qszoni(iis,izn) + ufdt1*qsfbc(lc,iis)
                     END DO
@@ -526,14 +536,14 @@ SUBROUTINE zone_flow
            IF(qflbc(lc) < 0._kdp) THEN           ! ... outflow
               qfzonp_lbc(izn) = qfzonp_lbc(izn) - ufdt1*qflbc(lc)
               qfzonp(izn) = qfzonp(izn) - ufdt1*qflbc(lc)
-              DO  iis=1,ns-1
+              DO  iis=min_is,ns
                  qszonp_lbc(iis,izn) = qszonp_lbc(iis,izn) - ufdt1*qslbc(lc,iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ufdt1*qslbc(lc,iis)
               END DO
            ELSEIF(qflbc(lc) > 0._kdp) THEN        ! ...  inflow
               qfzoni_lbc(izn) = qfzoni_lbc(izn) + ufdt1*qflbc(lc)
               qfzoni(izn) = qfzoni(izn) + ufdt1*qflbc(lc)
-              DO iis=1,ns-1
+              DO  iis=min_is,ns
                  qszoni_lbc(iis,izn) = qszoni_lbc(iis,izn) + ufdt1*qslbc(lc,iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ufdt1*qslbc(lc,iis)
               END DO
@@ -551,14 +561,14 @@ SUBROUTINE zone_flow
               IF(qfrbc(lc) < 0._kdp) THEN           ! ... net outflow
                  qfzonp_rbc(izn) = qfzonp_rbc(izn) - ufdt1*qfrbc(lc)
                  qfzonp(izn) = qfzonp(izn) - ufdt1*qfrbc(lc)
-                 DO  iis=1,ns-1
+                 DO  iis=min_is,ns
                     qszonp_rbc(iis,izn) = qszonp_rbc(iis,izn) - ufdt1*qsrbc(lc,iis)
                     qszonp(iis,izn) = qszonp(iis,izn) - ufdt1*qsrbc(lc,iis)
                  END DO
               ELSEIF(qfrbc(lc) > 0._kdp) THEN        ! ... net inflow
                  qfzoni_rbc(izn) = qfzoni_rbc(izn) + ufdt1*qfrbc(lc)
                  qfzoni(izn) = qfzoni(izn) + ufdt1*qfrbc(lc)
-                 DO iis=1,ns-1
+                 DO  iis=min_is,ns
                     qszoni_rbc(iis,izn) = qszoni_rbc(iis,izn) + ufdt1*qsrbc(lc,iis)
                     qszoni(iis,izn) = qszoni(iis,izn) + ufdt1*qsrbc(lc,iis)
                  END DO
@@ -572,7 +582,7 @@ SUBROUTINE zone_flow
            lc = lnk_bc2zon(izn,4)%lcell_no(ilc)
            qfzonp_dbc(izn) = qfzonp_dbc(izn) - ufdt1*qfdbc(lc)
            qfzonp(izn) = qfzonp(izn) - ufdt1*qfdbc(lc)
-           DO  iis=1,ns-1
+           DO  iis=min_is,ns
               qszonp_dbc(iis,izn) = qszonp_dbc(iis,izn) - ufdt1*qsdbc(lc,iis)
               qszonp(iis,izn) = qszonp(iis,izn) - ufdt1*qsdbc(lc,iis)
            END DO
@@ -586,14 +596,14 @@ SUBROUTINE zone_flow
            IF(qflyr(iwel,ks) < 0._kdp) THEN           ! ... Production segment
               qfzonp_wel(izn) = qfzonp_wel(izn) - ufdt1*qflyr(iwel,ks)
               qfzonp(izn) = qfzonp(izn) - ufdt1*qflyr(iwel,ks)
-              DO  iis=1,ns-1
+              DO  iis=min_is,ns
                  qszonp_wel(iis,izn) = qszonp_wel(iis,izn) - ufdt1*qslyr(iwel,ks,iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ufdt1*qslyr(iwel,ks,iis)
               END DO
            ELSE                                       ! ... Injection segment
               qfzoni_wel(izn) = qfzoni_wel(izn) + ufdt1*qflyr(iwel,ks)
               qfzoni(izn) = qfzoni(izn) + ufdt1*qflyr(iwel,ks)
-              DO  iis=1,ns-1
+              DO  iis=min_is,ns
                  qszoni_wel(iis,izn) = qszoni_wel(iis,izn) + ufdt1*qslyr(iwel,ks,iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ufdt1*qslyr(iwel,ks,iis)
               END DO
