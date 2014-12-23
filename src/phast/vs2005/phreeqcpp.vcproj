@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="phast"
+	Name="phast3"
 	ProjectGUID="{9B65F71A-2D27-4121-9724-6CD0ED7D975A}"
 	RootNamespace="phreeqcpp"
 	Keyword="Win32Proj"
