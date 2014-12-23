@@ -320,7 +320,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE} 
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -lmpi_usempi -ldl ${HASH_STYLE} # -lmpi_f90
   LINKER       = $(CXX)
 endif
 
