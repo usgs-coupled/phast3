@@ -1190,15 +1190,14 @@ RMF_RunString(int *id, int *workers, int *initial_phreeqc, int *utility, const c
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-RMF_ScreenMessage(int *id, const char *err_str, size_t l)
+RMF_ScreenMessage(int *id, const char *err_str)
 /* ---------------------------------------------------------------------- */
 {
 	// writes a message to the screen
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		std::string e_string(err_str, (int) l);
-		trim_right(e_string);
+		std::string e_string(err_str);
 		Reaction_module_ptr->ScreenMessage(e_string);
 		Reaction_module_ptr->ScreenMessage("\n");
 		return IRM_OK;
