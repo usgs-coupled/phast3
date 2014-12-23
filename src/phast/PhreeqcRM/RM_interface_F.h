@@ -92,7 +92,7 @@ IRM_RESULT RMF_OutputMessage(int *id, const char * err_str);
 IRM_RESULT RMF_RunCells(int *id);
 IRM_RESULT RMF_RunFile(int *id, int * workers, int *initial_phreeqc, int *utility, const char *chem_name);
 IRM_RESULT RMF_RunString(int *id, int * workers, int *initial_phreeqc, int *utility, const char * input_string);
-IRM_RESULT RMF_ScreenMessage(int *id, const char *str, size_t l = 0);
+IRM_RESULT RMF_ScreenMessage(int *id, const char *str);
 IRM_RESULT RMF_SetComponentH2O(int *id, int *tf);
 IRM_RESULT RMF_SetConcentrations(int *id, double *t);
 IRM_RESULT RMF_SetCurrentSelectedOutputUserNumber(int *id, int *i);
