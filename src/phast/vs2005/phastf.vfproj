@@ -5,7 +5,7 @@
 		<Platform Name="x64"/></Platforms>
 	<Configurations>
 		<Configuration Name="openmp|Win32" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="HDF5_CREATE" Interfaces="true" CallingConvention="callConventionCRef"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" Interfaces="true" CallingConvention="callConventionCRef"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -15,7 +15,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="openmp_debug|Win32" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="HDF5_CREATE" Interfaces="true" WarnDeclarations="true" WarnUnusedVariables="true" WarnTruncateSource="true" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" FloatingPointSpeculation="fpSpeculationStrict" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" Interfaces="true" WarnDeclarations="true" WarnUnusedVariables="true" WarnTruncateSource="true" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" FloatingPointSpeculation="fpSpeculationStrict" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -25,7 +25,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="mpi|Win32" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME" Interfaces="true" CallingConvention="callConventionCRef"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Interfaces="true" CallingConvention="callConventionCRef"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -35,7 +35,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="mpi_debug|Win32" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Interfaces="true" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Interfaces="true" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -45,7 +45,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="openmp|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="HDF5_CREATE" Interfaces="true" CallingConvention="callConventionCRef"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" Interfaces="true" CallingConvention="callConventionCRef"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -55,7 +55,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="openmp_debug|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="HDF5_CREATE" Interfaces="true" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" Interfaces="true" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -65,7 +65,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="mpi|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Interfaces="true" VectorizerDiagLevel="vectorizerDiagLevel5" CallingConvention="callConventionCRef"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Interfaces="true" VectorizerDiagLevel="vectorizerDiagLevel5" CallingConvention="callConventionCRef"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -75,7 +75,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="mpi_debug|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Interfaces="true" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Interfaces="true" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
