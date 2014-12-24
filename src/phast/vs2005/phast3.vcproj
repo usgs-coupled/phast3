@@ -19,7 +19,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="ser_debug|Win32"
+			Name="openmp_debug|Win32"
 			OutputDirectory="ser_debug"
 			IntermediateDirectory="ser_debug\c"
 			ConfigurationType="1"
@@ -100,7 +100,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="ser_debug|x64"
+			Name="openmp_debug|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -182,7 +182,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="ser|Win32"
+			Name="openmp|Win32"
 			OutputDirectory="ser"
 			IntermediateDirectory="ser\c"
 			ConfigurationType="1"
@@ -260,7 +260,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="ser|x64"
+			Name="openmp|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -339,7 +339,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="merge|Win32"
+			Name="mpi|Win32"
 			OutputDirectory="merge"
 			IntermediateDirectory="merge\c"
 			ConfigurationType="1"
@@ -418,7 +418,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="merge|x64"
+			Name="mpi|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -497,7 +497,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="merge_debug|Win32"
+			Name="mpi_debug|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)\c"
 			ConfigurationType="1"
@@ -580,7 +580,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="merge_debug|x64"
+			Name="mpi_debug|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -689,7 +689,7 @@
 					RelativePath="..\hstsubs.c"
 					>
 					<FileConfiguration
-						Name="ser_debug|Win32"
+						Name="openmp_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -697,7 +697,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
+						Name="openmp|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -705,7 +705,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
+						Name="mpi|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -713,7 +713,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge_debug|Win32"
+						Name="mpi_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -725,7 +725,7 @@
 					RelativePath="..\phast_files.c"
 					>
 					<FileConfiguration
-						Name="ser_debug|Win32"
+						Name="openmp_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -733,7 +733,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
+						Name="openmp|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -741,7 +741,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
+						Name="mpi|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -749,7 +749,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge_debug|Win32"
+						Name="mpi_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -777,7 +777,7 @@
 					RelativePath="..\slavesubs.c"
 					>
 					<FileConfiguration
-						Name="ser_debug|Win32"
+						Name="openmp_debug|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -786,7 +786,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser_debug|x64"
+						Name="openmp_debug|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -795,7 +795,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
+						Name="openmp|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -804,7 +804,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|x64"
+						Name="openmp|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -812,7 +812,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
+						Name="mpi|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -820,7 +820,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|x64"
+						Name="mpi|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -828,7 +828,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge_debug|Win32"
+						Name="mpi_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -836,7 +836,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge_debug|x64"
+						Name="mpi_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -852,7 +852,7 @@
 					RelativePath="..\merge.c"
 					>
 					<FileConfiguration
-						Name="ser_debug|Win32"
+						Name="openmp_debug|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -861,7 +861,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser_debug|x64"
+						Name="openmp_debug|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -870,7 +870,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
+						Name="openmp|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -879,7 +879,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|x64"
+						Name="openmp|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -887,7 +887,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
+						Name="mpi|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -895,7 +895,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|x64"
+						Name="mpi|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -903,7 +903,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge_debug|Win32"
+						Name="mpi_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -911,7 +911,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge_debug|x64"
+						Name="mpi_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -927,7 +927,7 @@
 					RelativePath="..\hdf.c"
 					>
 					<FileConfiguration
-						Name="ser_debug|Win32"
+						Name="openmp_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -935,7 +935,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser_debug|x64"
+						Name="openmp_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -943,7 +943,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
+						Name="openmp|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -951,7 +951,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|x64"
+						Name="openmp|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -959,7 +959,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
+						Name="mpi|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -967,7 +967,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|x64"
+						Name="mpi|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -975,7 +975,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge_debug|Win32"
+						Name="mpi_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -983,7 +983,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge_debug|x64"
+						Name="mpi_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
