@@ -212,6 +212,7 @@ MODULE mcv_m
        qszoni_sbc, qszonp_sbc,  &
        qszoni_fbc, qszonp_fbc, qszoni_lbc, qszonp_lbc, qszoni_rbc, qszonp_rbc,   &
        qszoni_dbc, qszonp_dbc, qszoni_wel, qszonp_wel
+  REAL(KIND=kdp), DIMENSION(:,:,:), ALLOCATABLE :: qface_in, qface_out ! 0:ns,izn,6
 END MODULE mcv_m
 
 MODULE mcw_m

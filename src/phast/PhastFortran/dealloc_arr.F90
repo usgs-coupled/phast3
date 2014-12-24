@@ -465,6 +465,7 @@ SUBROUTINE dealloc_arr
           qszoni_sbc, qszonp_sbc,  &
           qszoni_fbc, qszonp_fbc, qszoni_lbc, qszonp_lbc, qszoni_rbc, qszonp_rbc,  &
           qszoni_dbc, qszonp_dbc, qszoni_wel, qszonp_wel,  &
+          qface_in, qface_out, &
           STAT = da_err)
      IF (da_err /= 0) THEN
         PRINT *, "array deallocation failed: dealloc_arr, init2.1, number 21"

@@ -993,6 +993,7 @@ SUBROUTINE init2_1
           qszoni_dbc(nsa,num_flo_zones), qszonp_dbc(nsa,num_flo_zones),  &
           qfzoni_wel(num_flo_zones), qfzonp_wel(num_flo_zones),  &
           qszoni_wel(nsa,num_flo_zones), qszonp_wel(nsa,num_flo_zones),  &
+          qface_in(0:ns,num_flo_zones,6), qface_out(0:ns,num_flo_zones,6), &
           STAT = a_err)
      IF (a_err /= 0) THEN
         PRINT *, "array allocation failed: init2.1, number 21"
