@@ -151,9 +151,12 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	this->phreeqcrm_io->Set_error_ostream(&std::cerr);
 
 	// second argument is threads for OPENMP or COMM for MPI
-#ifdef USE_OPENMP
 	int thread_count = 1;
 	int n = 1;	
+	thread_count = 1;
+#ifdef USE_OPENMP
+//	int thread_count = 1;
+//	int n = 1;	
 	thread_count = data_for_parallel_processing;
 #if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
