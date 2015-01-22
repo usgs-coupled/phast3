@@ -3,6 +3,10 @@
 #endif
 #ifdef WIN32
 #include <windows.h>
+#else
+#ifdef USE_OPENMP
+#include <unistd.h>
+#endif
 #endif
 #include <string>
 #include <map>
