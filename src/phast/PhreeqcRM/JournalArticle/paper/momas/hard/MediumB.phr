@@ -1,0 +1,32 @@
+SOLUTION 1002 Initial condition medium B
+UNITS mol/kgw
+pH 0.55026
+[X4]   30
+O(0)   1e-6
+
+#initial condition B
+SURFACE 1002 Medium B
+-no_edl
+BOH   10.0 1 1
+
+KINETICS 1002
+-cvode true
+Cc
+        # 3C3 = Cc + 2X4
+        # 3[X4]H3+2 = [X4]H + 2[X4]H4+3
+        # if [X4]H is uncharged, then [X4]H4+3 and [X4]H3+2
+	# -tol 1e-6
+        -formula [X4]H 1
+        -m0  5
+        -m   5
+X5_decomposition
+	#X5=[X5]-, X2=H+, X3=[X3]-3
+	# -tol 1e-6
+	-formula  [X5] -1 H +2 [X3] +1
+	-m0  100
+	-m   100
+
+EQUILIBRIUM_PHASES 1002
+	CP1 0 0
+	CP2 0 0
+	
