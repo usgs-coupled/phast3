@@ -1,12 +1,12 @@
 bin_PROGRAMS = phastinput
 
 phastinput_SOURCES=\
-	accumulate.c\
+	accumulate.cpp\
 	ArcRaster.cpp\
 	ArcRaster.h\
 	BC_info.cpp\
 	BC_info.h\
-	check.c\
+	check.cpp\
 	Cube.cpp\
 	Cube.h\
 	Data_source.cpp\
@@ -19,9 +19,9 @@ phastinput_SOURCES=\
 	Exterior_cell.h\
 	Filedata.cpp\
 	Filedata.h\
-	gpc.c\
+	gpc.cpp\
 	gpc.h\
-	gpc_helper.c\
+	gpc_helper.cpp\
 	gpc_helper.h\
 	hstinpt.h\
 	index_range.h\
@@ -33,8 +33,8 @@ phastinput_SOURCES=\
 	KDtree/kdtree2.hpp\
 	KDtree/Point.cpp\
 	KDtree/Point.h\
-	main.c\
-	message.c\
+	main.cpp\
+	message.cpp\
 	message.h\
 	Mix.h\
 	NNInterpolator/config.h\
@@ -72,30 +72,30 @@ phastinput_SOURCES=\
 	Prism.cpp\
 	Prism.h\
 	property.h\
-	read.c\
+	read.cpp\
 	River.h\
-	rivers.c\
+	rivers.cpp\
 	Shapefiles/dbfopen.c\
 	Shapefiles/shapefil.h\
 	Shapefiles/Shapefile.cpp\
 	Shapefiles/Shapefile.h\
 	Shapefiles/shpopen.c\
 	Shapefiles/shptree.c\
-	structures.c\
+	structures.cpp\
 	tailor.h\
-	time.c\
+	time.cpp\
 	timepi.h\
 	UniqueMap.h\
 	units_impl.cxx\
 	unit_impl.cxx\
 	unit_impl.h\
-	utilities.c\
+	utilities.cpp\
 	Utilities.h\
 	Wedge.cpp\
 	Wedge.h\
-	wells.c\
+	wells.cpp\
 	wphast.h\
-	write.c\
+	write.cpp\
 	XYZfile.cpp\
 	XYZfile.h\
 	XYZTfile.cpp\
