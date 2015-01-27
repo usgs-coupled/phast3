@@ -7,7 +7,7 @@ AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign no-define subdir-objects])
-AC_CONFIG_SRCDIR([src/phastinput/accumulate.c])
+AC_CONFIG_SRCDIR([src/phastinput/accumulate.cpp])
 
 AC_CANONICAL_HOST
 
@@ -27,6 +27,7 @@ AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_F77
 AC_PROG_FC
 AC_FC_LIBRARY_LDFLAGS
 AC_FC_WRAPPERS
