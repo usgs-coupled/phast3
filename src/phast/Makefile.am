@@ -359,8 +359,3 @@ CLEANFILES=\
 	rewi_mod.$(F90_MODEXT)
 
 include .depend
-
-##FORTRAN_SRC=$(filter %.F90 %.f90 %.f,$(PHAST_SRC))
-##
-##depend .depend:
-##	@makedepf90 $(FORTRAN_SRC) | sed 's/\.o/\.\$$\(OBJEXT\)/g' > depend.mk
