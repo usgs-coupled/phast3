@@ -164,7 +164,8 @@ PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM:../PhreeqcRM/IPhreeqcPhast:..
 # The following apply to GFortran versions
 FGFORTRAN=     gfortran
 LIBGFORTRAN=   -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
-LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
+#LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
+LIBGFORTRAN_64=-L/usr/lib/gcc/x86_64-linux-gnu/4.8 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
 
 # The following apply to INTEL versions
 FINTEL=ifort
@@ -197,7 +198,7 @@ OPENMPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
-HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
+HDF5_LIBS_64=${HDF5_ROOT}/lib/x86_64-linux-gnu/libhdf5.a -ldl -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
 
 
 # -----------------------------------------------------------------------------
