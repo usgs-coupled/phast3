@@ -1,4 +1,6 @@
-AM_CPPFLAGS=-I$(srcdir)/phreeqcpp -I$(srcdir)/phreeqcpp/phreeqc $(BOOST_CPPFLAGS)
+AM_CPPFLAGS=-I$(srcdir)/PhreeqcRM -I$(srcdir)/PhreeqcRM/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp $(BOOST_CPPFLAGS)
+
+AM_FCFLAGS=-I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc
 
 FCDEFS=-DHDF5_CREATE
 
@@ -8,276 +10,312 @@ if BUILD_MPI
   bin_PROGRAMS = phast-mpi
   FCDEFS+=-DUSE_MPI -DMERGE_FILES
 else
-  bin_PROGRAMS = phast-ser
+  bin_PROGRAMS = phast-openmp
 endif
 
 PHAST_SRC=\
-	abmult.f90\
-	aplbce.f90\
-	aplbce_ss_flow.f90\
-	aplbci.f90\
-	armult.f90\
-	asembl.f90\
-	asmslc.f90\
-	asmslp.f90\
-	asmslp_ss_flow.f90\
-	bsode.f90\
-	calc_velocity.f90\
-	calcc.f90\
-	clog.f90\
-	closef.F90\
-	coeff.f90\
-	coeff_ss_flow.f90\
-	crsdsp.f90\
-	cxxHstSubs.cxx\
-	d4ord.f90\
-	d4zord.f90\
-	dbmult.f90\
-	dump.f90\
-	efact.f90\
-	ehoftp.f90\
-	el1slv.f90\
-	elslv.f90\
-	error1.f90\
-	error2.f90\
-	error3.f90\
-	error4.f90\
-	errprt.f90\
-	etom1.f90\
-	etom2.f90\
-	euslv.f90\
-	formr.f90\
-	gcgris.f90\
+	FileHandler.cpp\
+	FileHandler.h\
 	gzstream.cxx\
 	gzstream.h\
-	hdf.c\
-	hdf_f.f90\
-	hst.cxx\
-	hst.h\
-	hstsubs.c\
-	hunt.f90\
-	ifrd.inc\
-	ifwr.inc\
-	incidx.f90\
-	indx_rewi.f90\
-	indx_rewi_bc.f90\
-	init1.f90\
-	init2_1.f90\
-	init2_2.f90\
-	init2_3.f90\
-	init2_post_ss.f90\
-	init3.f90\
-	interpolate_mod.f90\
-	ld_seg_mod.f90\
-	ldchar.f90\
-	ldchar_bc.f90\
-	ldci.f90\
-	ldcir.f90\
-	ldind.f90\
-	ldipen.f90\
-	ldmar1.f90\
-	lsolv.f90\
-	media_hdf.f90\
-	modules.f90\
-	mtoijk.f90\
-	nintrp.f90\
-	openf.F90\
-	phast.F90\
-	phast_files.c\
-	phast_files.h\
+	hdf.cpp\
+	hdf.h\
 	phast_main.cpp\
-	phast_root.F90\
-	phastproto.h\
-	Pointers_to_fortran.h\
-	prchar.f90\
-	print_control_mod.f90\
-	prntar.f90\
-	rbord.f90\
-	read1.f90\
-	read2.f90\
-	read3.f90\
-	reordr.f90\
-	rewi_mod.f90\
-	rfact.f90\
-	rfactm.f90\
-	rhsn.f90\
-	rhsn_ss_flow.f90\
-	sbcflo.f90\
-	scale_jds.f90\
-	simulate_ss_flow.f90\
-	stonb.f90\
-	sumcal1.f90\
-	sumcal2.f90\
-	sumcal_ss_flow.f90\
-	terminate_phast.F90\
-	tfrds.f90\
-	timstp.f90\
-	timstp_ss_flow.f90\
-	update_print_flags.f90\
-	uppercase.f90\
-	usolv.f90\
-	viscos.f90\
-	vpsv.f90\
-	wbbal.f90\
-	wbcflo.f90\
-	wellsc.f90\
-	wellsc_ss_flow.f90\
-	wellsr.f90\
-	wellsr_ss_flow.f90\
-	welris.f90\
-	wfdydz.f90\
-	write1.f90\
-	write2_1.f90\
-	write2_2.f90\
-	write3.f90\
-	write3_ss_flow.f90\
-	write4.f90\
-	write5.f90\
-	write5_ss_flow.f90\
-	write6.f90\
-	zone_flow.f90\
-	zone_flow_ss.f90\
-	phreeqcpp/cxxKinetics.cxx\
-	phreeqcpp/cxxKinetics.h\
-	phreeqcpp/cxxMix.cxx\
-	phreeqcpp/cxxMix.h\
-	phreeqcpp/Dictionary.cxx\
-	phreeqcpp/Dictionary.h\
-	phreeqcpp/dumper.cpp\
-	phreeqcpp/dumper.h\
-	phreeqcpp/Exchange.cxx\
-	phreeqcpp/Exchange.h\
-	phreeqcpp/ExchComp.cxx\
-	phreeqcpp/ExchComp.h\
-	phreeqcpp/GasPhase.cxx\
-	phreeqcpp/GasPhase.h\
-	phreeqcpp/ISolutionComp.cxx\
-	phreeqcpp/ISolutionComp.h\
-	phreeqcpp/ISolution.cxx\
-	phreeqcpp/ISolution.h\
-	phreeqcpp/KineticsComp.cxx\
-	phreeqcpp/KineticsComp.h\
-	phreeqcpp/NameDouble.cxx\
-	phreeqcpp/NameDouble.h\
-	phreeqcpp/NumKeyword.cxx\
-	phreeqcpp/NumKeyword.h\
-	phreeqcpp/Parser.cxx\
-	phreeqcpp/Parser.h\
-	phreeqcpp/Phreeqc_class.h\
-	phreeqcpp/Phreeqc.h\
-	phreeqcpp/PPassemblageComp.cxx\
-	phreeqcpp/PPassemblageComp.h\
-	phreeqcpp/PPassemblage.cxx\
-	phreeqcpp/PPassemblage.h\
-	phreeqcpp/Reaction.cxx\
-	phreeqcpp/Reaction.h\
-	phreeqcpp/ReadClass.cxx\
-	phreeqcpp/runner.cpp\
-	phreeqcpp/runner.h\
-	phreeqcpp/Solution.cxx\
-	phreeqcpp/Solution.h\
-	phreeqcpp/SolutionIsotope.cxx\
-	phreeqcpp/SolutionIsotope.h\
-	phreeqcpp/SolutionIsotopeList.cxx\
-	phreeqcpp/SolutionIsotopeList.h\
-	phreeqcpp/SSassemblage.cxx\
-	phreeqcpp/SSassemblage.h\
-	phreeqcpp/SSassemblageSS.cxx\
-	phreeqcpp/SSassemblageSS.h\
-	phreeqcpp/StorageBin.cxx\
-	phreeqcpp/StorageBin.h\
-	phreeqcpp/StorageBinList.cpp\
-	phreeqcpp/StorageBinList.h\
-	phreeqcpp/SurfaceCharge.cxx\
-	phreeqcpp/SurfaceCharge.h\
-	phreeqcpp/SurfaceComp.cxx\
-	phreeqcpp/SurfaceComp.h\
-	phreeqcpp/Surface.cxx\
-	phreeqcpp/Surface.h\
-	phreeqcpp/System.cxx\
-	phreeqcpp/System.h\
-	phreeqcpp/Temperature.cxx\
-	phreeqcpp/Temperature.h\
-	phreeqcpp/test.xml\
-	phreeqcpp/Utils.cxx\
-	phreeqcpp/Utils.h\
-	phreeqcpp/phreeqc/advection.c\
-	phreeqcpp/phreeqc/basic.c\
-	phreeqcpp/phreeqc/basic.h\
-	phreeqcpp/phreeqc/basicsubs.c\
-	phreeqcpp/phreeqc/cl1.c\
-	phreeqcpp/phreeqc/cvdense.c\
-	phreeqcpp/phreeqc/cvdense.h\
-	phreeqcpp/phreeqc/cvode.c\
-	phreeqcpp/phreeqc/cvode.h\
-	phreeqcpp/phreeqc/dense.c\
-	phreeqcpp/phreeqc/dense.h\
-	phreeqcpp/phreeqc/dw.c\
-	phreeqcpp/phreeqc/global.h\
-	phreeqcpp/phreeqc/global_structures.h\
-	phreeqcpp/phreeqc/input.c\
-	phreeqcpp/phreeqc/input.h\
-	phreeqcpp/phreeqc/integrate.c\
-	phreeqcpp/phreeqc/inverse.c\
-	phreeqcpp/phreeqc/isotopes.c\
-	phreeqcpp/phreeqc/kinetics.c\
-	phreeqcpp/phreeqc/kinetics.h\
-	phreeqcpp/phreeqc/mainsubs.c\
-	phreeqcpp/phreeqc/model.c\
-	phreeqcpp/phreeqc/NA.h\
-	phreeqcpp/phreeqc/nvector.c\
-	phreeqcpp/phreeqc/nvector.h\
-	phreeqcpp/phreeqc/nvector_serial.c\
-	phreeqcpp/phreeqc/nvector_serial.h\
-	phreeqcpp/phreeqc/output.c\
-	phreeqcpp/phreeqc/output.h\
-	phreeqcpp/phreeqc/p2c.h\
-	phreeqcpp/phreeqc/p2clib.c\
-	phreeqcpp/phreeqc/parse.c\
-	phreeqcpp/phreeqc/phqalloc.c\
-	phreeqcpp/phreeqc/phqalloc.h\
-	phreeqcpp/phreeqc/phrqproto.h\
-	phreeqcpp/phreeqc/phrqtype.h\
-	phreeqcpp/phreeqc/pitzer.c\
-	phreeqcpp/phreeqc/pitzer.h\
-	phreeqcpp/phreeqc/pitzer_structures.c\
-	phreeqcpp/phreeqc/pitzer_structures.h\
-	phreeqcpp/phreeqc/prep.c\
-	phreeqcpp/phreeqc/print.c\
-	phreeqcpp/phreeqc/read.c\
-	phreeqcpp/phreeqc/readtr.c\
-	phreeqcpp/phreeqc/sit.c\
-	phreeqcpp/phreeqc/smalldense.c\
-	phreeqcpp/phreeqc/smalldense.h\
-	phreeqcpp/phreeqc/spread.c\
-	phreeqcpp/phreeqc/step.c\
-	phreeqcpp/phreeqc/structures.c\
-	phreeqcpp/phreeqc/sundialsmath.c\
-	phreeqcpp/phreeqc/sundialsmath.h\
-	phreeqcpp/phreeqc/sundialstypes.h\
-	phreeqcpp/phreeqc/tally.c\
-	phreeqcpp/phreeqc/tidy.c\
-	phreeqcpp/phreeqc/transport.c\
-	phreeqcpp/phreeqc/utilities.c\
+	TM_interface.cpp\
+	TM_interface.h\
 	KDtree/Cell_Face.h\
+	KDtree/kdtree2.cpp\
 	KDtree/KDtree.cpp\
 	KDtree/KDtree.h\
-	KDtree/kdtree2.cpp\
-	KDtree/kdtree2.hpp\
 	KDtree/Point.cpp\
-	KDtree/Point.h
+	KDtree/Point.h\
+	PhastFortran/aplbce_flow.f90\
+	PhastFortran/aplbci_flow.F90\
+	PhastFortran/asembl_flow.f90\
+	PhastFortran/asmslp_flow.F90\
+	PhastFortran/calcc.f90\
+	PhastFortran/calc_frac2.F90\
+	PhastFortran/calc_velocity.f90\
+	PhastFortran/clog.f90\
+	PhastFortran/closef.F90\
+	PhastFortran/coeff_flow.F90\
+	PhastFortran/coeff_trans.F90\
+	PhastFortran/create_mapping.f90\
+	PhastFortran/dealloc_arr.F90\
+	PhastFortran/dealloc_arr_worker.F90\
+	PhastFortran/dump.f90\
+	PhastFortran/error1.f90\
+	PhastFortran/error2.f90\
+	PhastFortran/error3.f90\
+	PhastFortran/error4.f90\
+	PhastFortran/errprt.f90\
+	PhastFortran/etom1.f90\
+	PhastFortran/etom2.f90\
+	PhastFortran/hdf_f.F90\
+	PhastFortran/ifrd.inc\
+	PhastFortran/ifwr.inc\
+	PhastFortran/incidx.f90\
+	PhastFortran/indx_rewi_bc.f90\
+	PhastFortran/indx_rewi.f90\
+	PhastFortran/init1.F90\
+	PhastFortran/init2_1.F90\
+	PhastFortran/init2_1_xfer.F90\
+	PhastFortran/init2_2.f90\
+	PhastFortran/init2_3.f90\
+	PhastFortran/init2_post_ss.F90\
+	PhastFortran/init3.F90\
+	PhastFortran/init3_xfer.F90\
+	PhastFortran/interpolate_mod.f90\
+	PhastFortran/ldchar_bc.f90\
+	PhastFortran/ldchar.f90\
+	PhastFortran/ld_seg_mod.f90\
+	PhastFortran/mach_mod.f90\
+	PhastFortran/Makefile\
+	PhastFortran/modules_g.f90\
+	PhastFortran/modules_manager.f90\
+	PhastFortran/mpi_mod.F90\
+	PhastFortran/mpi_windows.inc\
+	PhastFortran/mtoijk.f90\
+	PhastFortran/nintrp.f90\
+	PhastFortran/openf.F90\
+	PhastFortran/phast_manager.F90\
+	PhastFortran/phast_spmd.F90\
+	PhastFortran/phast_worker.F90\
+	PhastFortran/Pointers_to_fortran.h\
+	PhastFortran/prchar.f90\
+	PhastFortran/printar.f90\
+	PhastFortran/print_control_mod.f90\
+	PhastFortran/read1.F90\
+	PhastFortran/read1_xfer.F90\
+	PhastFortran/read2.F90\
+	PhastFortran/read2_xfer.F90\
+	PhastFortran/read3.F90\
+	PhastFortran/read3_xfer.F90\
+	PhastFortran/reorder_mod.f90\
+	PhastFortran/revisions\
+	PhastFortran/rewi_mod.f90\
+	PhastFortran/rhsn.f90\
+	PhastFortran/rhsn_flow.f90\
+	PhastFortran/rhsn_manager.F90\
+	PhastFortran/rhsn_ss_flow.f90\
+	PhastFortran/sbcflo.f90\
+	PhastFortran/scale_jds_mod.f90\
+	PhastFortran/set_component_map.F90\
+	PhastFortran/simulate_ss_flow.f90\
+	PhastFortran/solver_direct_mod.f90\
+	PhastFortran/solver_iter_mod.f90\
+	PhastFortran/stonb.f90\
+	PhastFortran/sumcal0_manager.F90\
+	PhastFortran/sumcal1.F90\
+	PhastFortran/sumcal1_manager.F90\
+	PhastFortran/sumcal2.f90\
+	PhastFortran/sumcal_ss_flow.f90\
+	PhastFortran/terminate_phast.F90\
+	PhastFortran/terminate_phast_worker.F90\
+	PhastFortran/timestep.F90\
+	PhastFortran/time_step_save.F90\
+	PhastFortran/timestep_ss_flow.f90\
+	PhastFortran/timestep_worker.F90\
+	PhastFortran/update_print_flags.f90\
+	PhastFortran/uppercase.f90\
+	PhastFortran/wbbal.f90\
+	PhastFortran/wbcflo.f90\
+	PhastFortran/wellsc.f90\
+	PhastFortran/wellsc_ss_flow.f90\
+	PhastFortran/wellsr.f90\
+	PhastFortran/wellsr_ss_flow.f90\
+	PhastFortran/welris.f90\
+	PhastFortran/wfdydz.f90\
+	PhastFortran/write1.f90\
+	PhastFortran/write2_1.f90\
+	PhastFortran/write2_2.f90\
+	PhastFortran/write3.f90\
+	PhastFortran/write3_ss_flow.f90\
+	PhastFortran/write4.f90\
+	PhastFortran/write5.f90\
+	PhastFortran/write5_ss_flow.f90\
+	PhastFortran/write6.f90\
+	PhastFortran/xfer_to_manager.F90\
+	PhastFortran/xfer_to_workers.F90\
+	PhastFortran/XP_aplbce.f90\
+	PhastFortran/XP_aplbci.F90\
+	PhastFortran/XP_asembl.f90\
+	PhastFortran/XP_asmslc.F90\
+	PhastFortran/XP_crsdsp.f90\
+	PhastFortran/XP_etom2.f90\
+	PhastFortran/XP_module.F90\
+	PhastFortran/XP_rhsn.f90\
+	PhastFortran/XP_sumcal1.f90\
+	PhastFortran/XP_wbcflo.f90\
+	PhastFortran/XP_wellsc.f90\
+	PhastFortran/XP_wellsr.f90\
+	PhastFortran/zone_flow.f90\
+	PhastFortran/zone_flow_ss.f90\
+	PhreeqcRM/PhreeqcRM.cpp\
+	PhreeqcRM/RM_interface.F90\
+	PhreeqcRM/RM_interface_C.cpp\
+	PhreeqcRM/RM_interface_F.F90\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhast.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhast.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhastLib.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhastLib.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/thread.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/CVar.hxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/Debug.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/ErrorReporter.hxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.c\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/Version.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqcF.f\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/advection.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/basicsubs.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cl1.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/dw.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/gases.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/input.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/integrate.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/inverse.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/isotopes.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/kinetics.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/mainsubs.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/model.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/parse.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer_structures.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/prep.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/print.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/read.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/readtr.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/sit.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/spread.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/step.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/structures.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialsmath.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialsmath.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/tally.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/tidy.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/transport.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/utilities.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io_output.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ReadClass.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h
 
-PHAST_MPI_SRC=\
-	mpimod.F90\
-	merge.c\
-	phast_slave.F90\
-	slavesubs.c
 
-phast_ser_SOURCES=$(PHAST_SRC)
+phast_openmp_SOURCES=$(PHAST_SRC)
 
-phast_mpi_SOURCES=$(PHAST_SRC) $(PHAST_MPI_SRC)
+phast_mpi_SOURCES=$(PHAST_SRC)
 
-phast_ser_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
+phast_openmp_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
 
 phast_mpi_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
 
@@ -292,112 +330,6 @@ PPFCCOMPILE = $(FC) $(FCDEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 # compile all C files as C++
 #
 COMPILE = $(CXXCOMPILE)
-
-abmult.$(OBJEXT):            modules.$(OBJEXT)
-aplbce.$(OBJEXT):            modules.$(OBJEXT)
-aplbce_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
-aplbci.$(OBJEXT):            modules.$(OBJEXT)
-armult.$(OBJEXT):            modules.$(OBJEXT)
-asembl.$(OBJEXT):            modules.$(OBJEXT)
-asmslc.$(OBJEXT):            modules.$(OBJEXT)
-asmslp.$(OBJEXT):            modules.$(OBJEXT)
-asmslp_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
-bsode.$(OBJEXT):             modules.$(OBJEXT)
-calc_velocity.$(OBJEXT):     modules.$(OBJEXT)
-calcc.$(OBJEXT):             modules.$(OBJEXT)
-clog.$(OBJEXT):              modules.$(OBJEXT)
-closef.$(OBJEXT):            modules.$(OBJEXT) mpimod.$(OBJEXT)
-coeff.$(OBJEXT):             modules.$(OBJEXT)
-coeff_ss_flow.$(OBJEXT):     modules.$(OBJEXT)
-crsdsp.$(OBJEXT):            modules.$(OBJEXT)
-d4ord.$(OBJEXT):             modules.$(OBJEXT)
-d4zord.$(OBJEXT):            modules.$(OBJEXT)
-dbmult.$(OBJEXT):            modules.$(OBJEXT)
-dump.$(OBJEXT):              modules.$(OBJEXT)
-efact.$(OBJEXT):             modules.$(OBJEXT)
-ehoftp.$(OBJEXT):            modules.$(OBJEXT)
-el1slv.$(OBJEXT):            modules.$(OBJEXT)
-elslv.$(OBJEXT):             modules.$(OBJEXT)
-error1.$(OBJEXT):            modules.$(OBJEXT)
-error2.$(OBJEXT):            modules.$(OBJEXT)
-error3.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT)
-error4.$(OBJEXT):            modules.$(OBJEXT) ifwr.inc
-errprt.$(OBJEXT):            modules.$(OBJEXT)
-etom1.$(OBJEXT):             modules.$(OBJEXT)
-etom2.$(OBJEXT):             modules.$(OBJEXT)
-euslv.$(OBJEXT):             modules.$(OBJEXT)
-formr.$(OBJEXT):             modules.$(OBJEXT)
-gcgris.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT)
-hdf_f.$(OBJEXT):             modules.$(OBJEXT)	
-hunt.$(OBJEXT):              modules.$(OBJEXT)
-incidx.$(OBJEXT):            modules.$(OBJEXT)
-indx_rewi.$(OBJEXT):         modules.$(OBJEXT)
-indx_rewi_bc.$(OBJEXT):      modules.$(OBJEXT)
-init1.$(OBJEXT):             modules.$(OBJEXT)
-init2_1.$(OBJEXT):           modules.$(OBJEXT)
-init2_2.$(OBJEXT):           modules.$(OBJEXT)
-init2_3.$(OBJEXT):           modules.$(OBJEXT)
-init2_post_ss.$(OBJEXT):     modules.$(OBJEXT) print_control_mod.$(OBJEXT)
-init3.$(OBJEXT):             modules.$(OBJEXT) print_control_mod.$(OBJEXT)
-interpolate_mod.$(OBJEXT):   modules.$(OBJEXT)
-ldchar.$(OBJEXT):            modules.$(OBJEXT)
-ldchar_bc.$(OBJEXT):         modules.$(OBJEXT)
-ldci.$(OBJEXT):              modules.$(OBJEXT)
-ldcir.$(OBJEXT):             modules.$(OBJEXT)
-ldind.$(OBJEXT):             modules.$(OBJEXT)
-ldipen.$(OBJEXT):            modules.$(OBJEXT)
-ldmar1.$(OBJEXT):            modules.$(OBJEXT)
-lsolv.$(OBJEXT):             modules.$(OBJEXT)
-mtoijk.$(OBJEXT):            modules.$(OBJEXT)
-nintrp.$(OBJEXT):            modules.$(OBJEXT)
-openf.$(OBJEXT):             modules.$(OBJEXT) mpimod.$(OBJEXT)
-phast.$(OBJEXT):             modules.$(OBJEXT) mpimod.$(OBJEXT)
-phast_root.$(OBJEXT):        modules.$(OBJEXT) print_control_mod.$(OBJEXT)
-phast_slave.$(OBJEXT):       modules.$(OBJEXT) mpimod.$(OBJEXT) print_control_mod.$(OBJEXT)
-prchar.$(OBJEXT):            modules.$(OBJEXT)
-prntar.$(OBJEXT):            modules.$(OBJEXT)
-rbord.$(OBJEXT):             modules.$(OBJEXT)
-read1.$(OBJEXT):             modules.$(OBJEXT)
-read2.$(OBJEXT):             modules.$(OBJEXT) rewi_mod.$(OBJEXT) ifrd.inc
-read3.$(OBJEXT):             modules.$(OBJEXT) print_control_mod.$(OBJEXT) rewi_mod.$(OBJEXT) ifrd.inc
-reordr.$(OBJEXT):            modules.$(OBJEXT)
-rewi_mod.$(OBJEXT):          modules.$(OBJEXT) interpolate_mod.$(OBJEXT)
-rfact.$(OBJEXT):             modules.$(OBJEXT)
-rfactm.$(OBJEXT):            modules.$(OBJEXT)
-rhsn.$(OBJEXT):              modules.$(OBJEXT)
-rhsn_ss_flow.$(OBJEXT):      modules.$(OBJEXT)
-sbcflo.$(OBJEXT):            modules.$(OBJEXT)
-scale_jds.$(OBJEXT):         modules.$(OBJEXT)
-simulate_ss_flow.$(OBJEXT):  modules.$(OBJEXT)
-sumcal1.$(OBJEXT):           modules.$(OBJEXT)
-sumcal2.$(OBJEXT):           modules.$(OBJEXT)
-sumcal_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
-terminate_phast.$(OBJEXT):   modules.$(OBJEXT) mpimod.$(OBJEXT)
-tfrds.$(OBJEXT):             modules.$(OBJEXT)
-timstp.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT)
-timstp_ss_flow.$(OBJEXT):    modules.$(OBJEXT) print_control_mod.$(OBJEXT)
-update_print_flags.$(OBJEXT):modules.$(OBJEXT) print_control_mod.$(OBJEXT)
-usolv.$(OBJEXT):             modules.$(OBJEXT)
-viscos.$(OBJEXT):            modules.$(OBJEXT)
-wbbal.$(OBJEXT):             modules.$(OBJEXT)
-wbcflo.$(OBJEXT):            modules.$(OBJEXT)
-wellsc.$(OBJEXT):            modules.$(OBJEXT)
-wellsc_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
-wellsr.$(OBJEXT):            modules.$(OBJEXT)
-wellsr_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
-welris.$(OBJEXT):            modules.$(OBJEXT)
-wfdydz.$(OBJEXT):            modules.$(OBJEXT)
-write1.$(OBJEXT):            modules.$(OBJEXT)
-write2_1.$(OBJEXT):          modules.$(OBJEXT) ld_seg_mod.$(OBJEXT) ifwr.inc
-write2_2.$(OBJEXT):          modules.$(OBJEXT) ifwr.inc
-write3.$(OBJEXT):            modules.$(OBJEXT) ifwr.inc
-write3_ss_flow.$(OBJEXT):    modules.$(OBJEXT) ifwr.inc
-write4.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT) ifwr.inc
-write5.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT) ifwr.inc
-write5_ss_flow.$(OBJEXT):    modules.$(OBJEXT) print_control_mod.$(OBJEXT) ifwr.inc
-write6.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT) ifwr.inc
-zone_flow.$(OBJEXT):         modules.$(OBJEXT)
-zone_flow_ss.$(OBJEXT):      modules.$(OBJEXT)
 
 CLEANFILES=\
 	$(SCRIPTS)\
@@ -425,3 +357,10 @@ CLEANFILES=\
 	phys_const.$(F90_MODEXT)\
 	print_control_mod.$(F90_MODEXT)\
 	rewi_mod.$(F90_MODEXT)
+
+include .depend
+
+##FORTRAN_SRC=$(filter %.F90 %.f90 %.f,$(PHAST_SRC))
+##
+##depend .depend:
+##	@makedepf90 $(FORTRAN_SRC) | sed 's/\.o/\.\$$\(OBJEXT\)/g' > depend.mk
