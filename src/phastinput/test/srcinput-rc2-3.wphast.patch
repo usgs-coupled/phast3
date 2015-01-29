@@ -1,0 +1,15 @@
+diff -urN -x win32 -x .cvsignore srcinput-orig/read.c srcinput/read.c
+--- srcinput-orig/read.c	2004-03-23 18:12:13.000000000 -0700
++++ srcinput/read.c	2004-04-15 21:10:41.490250000 -0600
+@@ -1,7 +1,11 @@
+ #define EXTERNAL extern
+ #include "hstinpt.h"
+ #include "stddef.h"
++#if defined(__WPHAST__)
++#define STATIC
++#else
+ #define STATIC static
++#endif
+ int read_input(void);
+ STATIC int next_keyword_or_option(const char **opt_list, int count_opt_list);
+ STATIC int read_chemistry_ic(void);

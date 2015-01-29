@@ -1,0 +1,40 @@
+echo File phast.dat ==============================================
+diff phast.dat ../print_check_ss
+echo File Phast.tmp ==============================================
+diff Phast.tmp ../print_check_ss
+echo File print_check_transient.chem.dat ==============================================
+diff print_check_transient.chem.dat ../print_check_ss/print_check_ss.chem.dat
+echo File print_check_transient.head.dat ==============================================
+diff print_check_transient.head.dat ../print_check_ss/print_check_ss.head.dat
+echo File print_check_transient.log ==============================================
+diff print_check_transient.log ../print_check_ss/print_check_ss.log
+echo File print_check_transient.O.bal ==============================================
+diff print_check_transient.O.bal ../print_check_ss/print_check_ss.O.bal
+echo File print_check_transient.O.bcf ==============================================
+diff print_check_transient.O.bcf ../print_check_ss/print_check_ss.O.bcf
+echo File print_check_transient.O.chem ==============================================
+diff print_check_transient.O.chem ../print_check_ss/print_check_ss.O.chem
+echo File print_check_transient.O.comps ==============================================
+diff print_check_transient.O.comps ../print_check_ss/print_check_ss.O.comps
+echo File print_check_transient.O.head ==============================================
+diff print_check_transient.O.head ../print_check_ss/print_check_ss.O.head
+echo File print_check_transient.O.kd ==============================================
+diff print_check_transient.O.kd ../print_check_ss/print_check_ss.O.kd
+echo File print_check_transient.O.probdef ==============================================
+diff print_check_transient.O.probdef ../print_check_ss/print_check_ss.O.probdef
+echo File print_check_transient.O.vel ==============================================
+diff print_check_transient.O.vel ../print_check_ss/print_check_ss.O.vel
+echo File print_check_transient.O.wel ==============================================
+diff print_check_transient.O.wel ../print_check_ss/print_check_ss.O.wel
+echo File print_check_transient.restart ==============================================
+diff print_check_transient.restart ../print_check_ss/print_check_ss.restart
+echo File print_check_transient.trans.dat ==============================================
+diff print_check_transient.trans.dat ../print_check_ss/print_check_ss.trans.dat
+echo File print_check_transient.xyz.chem ==============================================
+diff print_check_transient.xyz.chem ../print_check_ss/print_check_ss.xyz.chem
+echo File print_check_transient.xyz.comps ==============================================
+diff print_check_transient.xyz.comps ../print_check_ss/print_check_ss.xyz.comps
+echo File print_check_transient.xyz.vel ==============================================
+diff print_check_transient.xyz.vel ../print_check_ss/print_check_ss.xyz.vel
+echo File print_check_transient.xyz.wel ==============================================
+diff print_check_transient.xyz.wel ../print_check_ss/print_check_ss.xyz.wel

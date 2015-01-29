@@ -1,0 +1,341 @@
+bz3
+
+  Tony's original
+  51x51
+  no cross
+  space 0
+  time  .5
+  time step  1 sec
+  duration   170 sec
+
+1. Testing dispersion, fixed solution in corner
+   Looking at grid and time resolution
+
+   diff	      1e-9
+   GRID
+	      -uniform   X   0 10	51
+	      -uniform   Y   0 10	51
+   -iterative_solver false
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 1 sec
+   -time_change 100 sec
+
+2. Testing dispersion, fixed solution in corner
+   Refined grid by factor of 2
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 5	51
+      -overlay_uniform   Y   0 5	51
+
+   -iterative_solver false
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 1 sec
+   -time_change 100 sec
+
+3. Testing dispersion, fixed solution in corner
+   Refined grid by factor of 2
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2	101
+      -overlay_uniform   Y   0 2	101
+
+   -iterative_solver false
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 .4 sec
+   -time_change 30 sec
+
+4. Testing dispersion, fixed solution in corner
+   Refined grid by factor of 2
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2.5	51
+      -overlay_uniform   Y   0 2.5	51
+
+   -iterative_solver false
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 2 sec
+   -time_change 30 sec
+
+5. Testing dispersion, fixed solution in corner
+   Refined grid by factor of 2
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2.5	51
+      -overlay_uniform   Y   0 2.5	51
+
+   -iterative_solver false
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 1 sec
+   -time_change 30 sec
+
+6. Testing kinetics
+   Reaction center at (.5, .5) and (1,1)
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2.5	51
+      -overlay_uniform   Y   0 2.5	51
+
+   -iterative_solver false
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 1 sec
+   -time_change 30 sec
+
+
+   
+7. Testing kinetics
+   Reaction center at (.5, .5) and (1,1)
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2	101
+      -overlay_uniform   Y   0 2	101
+
+   -iterative_solver false
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 .4 sec
+   -time_change 30 sec
+
+
+8. Testing kinetics (same as 6, different time step)
+   Reaction center at (.5, .5) and (1,1)
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2.5	51
+      -overlay_uniform   Y   0 2.5	51
+
+   -iterative_solver false
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 .4 sec
+   -time_change 30 sec
+
+9. Testing kinetics (same as 6, different time step)
+   Iterative solver
+   Reaction center at (.5, .5) and (1,1)
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2.5	51
+      -overlay_uniform   Y   0 2.5	51
+
+   -iterative_solver true
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 .4 sec
+   -time_change 30 sec
+
+10. Testing kinetics (same as 6, different time step)
+   Iterative solver
+   Reaction center at (.5, .5) and (1,1)
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2.5	51
+      -overlay_uniform   Y   0 2.5	51
+
+   -iterative_solver true
+   -tolerance 1E-20
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 .4 sec
+   -time_change 30 sec
+
+11. Working on solution to Tony's problem
+   Direct solve
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2.5	51
+      -overlay_uniform   Y   0 2.5	51
+
+   -iterative_solver true
+   -tolerance 1E-20
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 .4 sec
+   -time_change 30 sec
+
+12. Working on solution to Tony's problem
+   Iterative solve (same as 11, different solver)
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	2
+      -uniform   Y   0 10	2
+      -overlay_uniform   X   0 2.5	51
+      -overlay_uniform   Y   0 2.5	51
+
+   -iterative_solver true
+   -tolerance 1E-20
+   -time_differencing  0.5
+   -cross_dispersion	  true
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 1 sec
+      -time_change 170 sec
+
+13. Working on solution to Tony's problem
+   Iterative solve	
+   Refined grid and time step
+
+   diff	      1e-9
+   GRID
+      -uniform   X   0 10	251   # 0.04 mm
+      -uniform   Y   0 10	251   # 0.04 mm
+
+   -iterative_solver true
+   -tolerance 1E-20
+   -time_differencing  0.5
+   -cross_dispersion	  false
+   -zone 0 0 0 0 0 1
+	 -head 
+	       0 1
+	 -fixed_solution 
+	       0     2
+   no kinetics
+   -time_step 
+		 0 .5 sec
+      -time_change 170 sec
+
+
+1D solution
+Checked with analytical solution in 1D
+Good answer with 1e-6 m and .001 s time step
+     Result at 1e-4 m at 1 s
+     Analytical  0.0253473
+     PHAST	 0.025360    (diff.xyz.chem.0.5.501.001)
+Also good with 1e-6 m and .01 s time step
+     PHAST	 2.5358e-05  (diff.xyz.chem.0.5.501.01)
+1e-5 m and .001 s
+     PHAST	 2.6555e-05  (diff.xyz.chem.1.101.001)
+
+Trying to check against 2D analytical solution 
+
+node at .02
+.04 grid spacing
+.1 s time step
+      Analytical         PHAST
+peak  .0795775       8.0788e-02  (diff2d.xyz.chem.1.26.0.1)
+2e-4  .00653212      6.6320e-03	
+
+node at .02
+.02 grid spacing
+.1 s time step
+      Analytical         PHAST
+peak  .0795775       8.0579e-02 (diff2d.xyz.chem.1.51.0.1)
+2e-4  .00653212      6.5506e-03	

@@ -1,0 +1,214 @@
+TITLE
+ Central Oklahoma aquifer,
+ demonstration of PHAST
+UNITS
+        -time                                 years
+        -horizontal_grid                      meters
+        -vertical_grid                        meters
+        -head                                 meters
+        -hydraulic_conductivity               m/s
+        -specific_storage                     1/m
+        -dispersivity                         m
+        -leaky_k                              m/sec
+        -leaky_thickness                      m
+        -flux                                 m/yr
+        -river_bed_thickness                  m
+        -river_bed_hydraulic_conductivity     m/s     
+        -well_diameter                        in
+        -well_flow_rate                       L/day
+GRID
+        -uniform x    0    90000    16
+        -uniform y    0    48000    9
+#        -uniform z    0    400      5
+        -uniform z    0    400      3
+        -print_orientation                    XY 
+SOLUTE_TRANSPORT true
+STEADY_FLOW false
+MEDIA
+        -zone   0. 0. 0. 90000.  48000. 400.
+                -porosity                     0.22
+                -long_dispersivity            2000.
+                -horizontal_dispersivity      50.
+                -vertical_dispersivity        50.
+                -Kx                           1.5e-5
+                -Ky                           1.5e-5
+                -Kz                           1.5e-7
+                -storage                      0
+        # Make bottom, east zone inactive
+        -zone   48000. 0. 0. 90000. 48000. 100.
+                -active                       0
+
+RIVER 1 Little River
+        -point  44000. 15000.
+                -width                        200.
+                -depth                        1.
+                -bed_thickness                1.
+                -bed_hydraulic_conductivity   1.
+                -head                         0         335.
+                -solution                     0         1
+        -point  44000. 0.
+        -point  90000. 0.
+                -width                        200.
+                -depth                        1.
+                -bed_thickness                1.
+                -bed_hydraulic_conductivity   1.
+                -head                         0         275.
+                -solution                     0         1
+RIVER 2 North Fork River
+        -point  30000. 36000.
+                -width                        200.
+                -depth                        1.
+                -bed_thickness                1.
+                -bed_hydraulic_conductivity   1
+                -head                         0         335.
+                -solution                     0         1
+        -point  30000. 48000.
+        -point  90000. 48000.
+                -width                        200.
+                -depth                        1.
+                -bed_thickness                1.
+                -bed_hydraulic_conductivity   1
+                -head                         0         280.
+                -solution                     0         1
+RIVER 3 North Canadian River
+        -point  60000. 30000.
+                -width                        200.
+                -depth                        1.
+                -bed_thickness                1.
+                -bed_hydraulic_conductivity   1
+                -head                         0         350.
+                -solution                     0         1
+        -point  90000. 20000.
+                -width                        200.
+                -depth                        1.
+                -bed_thickness                1.
+                -bed_hydraulic_conductivity   1
+                -head                         0         305.
+                -solution                     0         1
+FLUX_BC
+        -zone   27000. 3000. 400.  90000. 45000. 400.
+                -flux                         0         -0.055
+                -associated_solution          0         1
+SPECIFIED_HEAD_BC
+        # Lake Stanley Draper
+        -zone   30000. 14000 300. 32000.  20000.  400.
+                -head                         0         348.
+                -associated_solution          0         1
+LEAKY_BC
+        -zone   0. 48000. 0. 27000. 48000. 400.
+                -hydraulic                    1.5e-5
+                -thickness                   30000.
+                -head                         0         305.0
+                -associated                   0         1
+       -zone 0 0 0 39000 0 400
+                -hydraulic_conductivity       1.5E-5
+                -thickness                    20000
+                -head                         0         320
+                -associated_solution          0         2
+FREE_SURFACE_BC true
+WELL 1 Observation well 1 in arsenic zone
+        12000 36000
+                -diameter       2                               # inches
+                -pumping                      0         1       # L/day
+                -elevation      90 110                          # m
+HEAD_IC
+        -zone   0. 0. 0. 90000. 48000. 400.
+#                -head   380.
+		 -head   XYZ  grid  print_check_ss.head.dat
+CHEMISTRY_IC
+        -zone   0. 0. 0. 90000. 48000. 400.
+                -solution               2
+                -equilibrium_phases     2
+                -exchange               2
+                -surface                2       
+SOLUTION_METHOD
+        -iterative_solver       true
+        -tolerance              1e-10
+        -space_differencing     0.
+        -time_differencing      1.
+TIME_CONTROL
+        -delta_time     0               2000    yr
+        -end_time                       31000   yr
+PRINT_INITIAL
+#	-boundary_conditions    true
+#	-components		true
+#	-conductances           true
+	-echo_input             false
+	-fluid_properties       false
+#	-force_chemistry_print  true
+	-HDF_chemistry          false
+	-HDF_heads              false
+	-HDF_steady_flow_velocities   false
+	-heads                  false
+#	-media_properties       true
+	-solution_method        false
+#	-steady_flow_velocities true
+	-wells                  false
+#	-xyz_chemistry          true
+#       -xyz_components         true
+#       -xyz_heads              true
+#       -xyz_ss_velocities      true
+#	-xyz_wells              true
+PRINT_FREQUENCY
+0
+#	-end_of_period          false
+	-end_of_period          true
+	-bc_flow_rates          1000 yr
+	-boundary_conditions    true
+	-components             2000 yr
+	-conductances           3000 yr
+	-flow_balance           4000 yr
+	-force_chemistry_print  end
+	-HDF_chemistry          5000 yr
+	-HDF_heads              6000 yr
+	-HDF_velocities         7000 yr
+        -heads                  8000 yr
+        -progress_statistics    9000  yr
+        -save_final_heads       true
+	-velocities             10000 yr
+	-wells                  11000 yr
+        -xyz_chemistry          12000 yr
+        -xyz_components         13000 yr
+        -xyz_velocities         14000 yr
+        -xyz_wells              15000 yr
+	-xyz_head               16000 yr
+16000
+#	-end_of_period          false
+	-end_of_period          true
+	-bc_flow_rates          15000 yr
+	-boundary_conditions    false
+	-components             14000 yr
+	-conductances           13000 yr
+	-flow_balance           12000 yr
+	-force_chemistry_print  0
+	-HDF_chemistry          11000 yr
+	-HDF_heads              10000 yr
+	-HDF_velocities         8000 yr
+        -heads                  9000 yr
+        -progress_statistics    7000  yr
+        -save_final_heads       true
+	-velocities             6000 yr
+	-wells                  5000 yr
+        -xyz_chemistry          4000 yr
+        -xyz_components         3000 yr
+        -xyz_velocities         2000 yr
+        -xyz_wells              1000 yr
+	-xyz_head               1000 yr
+	-restart		1000000 yr
+31000
+	-end_of_period          true
+	-force_chemistry_print  100000
+
+
+PRINT_LOCATIONS
+# Don't print bottom layer to ex4.xyz.chem file
+        -chemistry
+#               -zone   0 0 0  90000 48000 400
+#                       -print 0
+#               -zone   0 0 0  90000 48000 400
+#                       -print 1
+	       -sample X 2
+        -xyz_chemistry
+               -zone   0 0 0  90000 48000 0
+               -print 0
+END

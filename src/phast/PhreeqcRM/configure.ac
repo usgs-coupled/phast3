@@ -1,0 +1,144 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.69])
+AC_INIT([PhreeqcRM],[0.1.0-9067],[charlton@usgs.gov])
+AC_CONFIG_AUX_DIR([config])
+AC_CONFIG_MACRO_DIR([m4])
+
+AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
+AC_CONFIG_SRCDIR([.])
+
+AC_DEFINE(SWIG_SHARED_OBJ)
+AC_DEFINE(USE_PHRQ_ALLOC)
+AC_DEFINE(NDEBUG)
+
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AM_PROG_AR
+LT_INIT
+
+# Check if the fortran interface should be included
+AC_MSG_CHECKING([if Fortran interface included])
+AC_ARG_ENABLE([fortran],
+     [AS_HELP_STRING([--enable-fortran],[include the Fortran interface @<:@default=yes@:>@])],
+     [IRM_FORTRAN=$enableval],
+     [IRM_FORTRAN=yes])
+
+if test "X$IRM_FORTRAN" = "Xyes"; then
+  AC_MSG_RESULT(yes)
+  AC_PROG_FC
+  AC_FC_LIBRARY_LDFLAGS
+  AC_FC_WRAPPERS 
+  AC_FC_MAIN
+  AC_FC_MODULE_EXTENSION
+  AC_FC_MODULE_FLAG
+  AC_FC_MODULE_OUTPUT_FLAG
+  AC_SUBST(F77, $FC)
+  AC_SUBST(FFLAGS, $FCFLAGS) 
+else
+  AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL([BUILD_FORTRAN], [test "X$IRM_FORTRAN" = "Xyes"])
+
+# Checks for libraries.
+AC_LANG_PUSH(C++)
+AC_OPENMP
+AC_SUBST(AM_CXXFLAGS, $OPENMP_CXXFLAGS) 
+AC_LANG_POP(C++)
+
+
+# Checks for header files.
+AC_CHECK_HEADERS([float.h limits.h memory.h stddef.h stdlib.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_SIZE_T
+
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_STRTOD
+
+# libc functions
+AC_CHECK_FUNCS([memmove], , AC_MSG_ERROR(memmove not found in libc))
+AC_CHECK_FUNCS([memset],  , AC_MSG_ERROR(memset not found in libc))
+AC_CHECK_FUNCS([strchr],  , AC_MSG_ERROR(strchr not found in libc))
+AC_CHECK_FUNCS([strcspn], , AC_MSG_ERROR(strcspn not found in libc))
+AC_CHECK_FUNCS([strtol],  , AC_MSG_ERROR(strtol not found in libc))
+
+# libm functions
+AC_CHECK_FUNCS([floor],   , AC_CHECK_LIB(m, floor, , AC_MSG_ERROR(cannot find floor)) )
+AC_CHECK_FUNCS([pow],     , AC_CHECK_LIB(m, pow,   , AC_MSG_ERROR(cannot find pow)) )
+AC_CHECK_FUNCS([sqrt],    , AC_CHECK_LIB(m, sqrt,  , AC_MSG_ERROR(cannot find sqrt)) )
+
+# isfinite
+AC_LANG_PUSH(C++)
+AC_CACHE_CHECK([for isfinite], ac_cv_isfinite,
+ [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]],
+ [[double x; int y; y = isfinite(x);]])],
+ [ac_cv_isfinite=yes],
+ [ac_cv_isfinite=no
+])])
+if test x"$ac_cv_isfinite" = x"yes"; then
+  AC_DEFINE(HAVE_ISFINITE, [], [Has isfinite])
+fi
+AC_LANG_POP(C++)
+
+# finite
+AC_LANG_PUSH(C++)
+AC_CACHE_CHECK([for finite], ac_cv_finite,
+ [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]],
+ [[double x; int y; y = finite(x);]])],
+ [ac_cv_finite=yes],[ac_cv_finite=no
+])])
+if test x"$ac_cv_finite" = x"yes"; then
+  AC_DEFINE(HAVE_FINITE, [], [Has finite])
+fi
+AC_LANG_POP(C++)
+
+# isnan
+AC_CHECK_FUNCS([isnan],    , AC_CHECK_LIB(m, isnan))
+
+
+# Build mpi version
+# Check if building mpi version
+AC_MSG_CHECKING([if building MPI version])
+AC_ARG_ENABLE([mpi],
+     [AC_HELP_STRING([--enable-mpi],
+                     [build the MPI version @<:@default=no@:>@])],
+     [IRM_MPI=yes],[IRM_MPI=no])
+
+if test "X$IRM_MPI" = "Xyes"; then
+  AC_MSG_RESULT(yes)
+  AC_LANG_PUSH(C++)
+  AX_MPI(, AC_ERROR([MPI not found]))
+  AC_LANG_POP(C++)
+  AC_LANG_PUSH(C)
+  AX_MPI(, AC_ERROR([MPI not found]))
+  AC_LANG_POP(C)
+  # extra MPI defines
+  AC_DEFINE([USE_MPI], , [Set to use MPI])
+  # set compilers
+  CXX="$MPICXX"
+  CC="$MPICC"
+else
+  AC_MSG_RESULT(no)
+  if test "$enable_openmp" != no; then
+     AC_DEFINE(USE_OPENMP)
+  fi   
+fi
+
+AC_CONFIG_FILES([
+  Makefile
+  Tests/Makefile
+  Tests/advect.pqi
+  Tests/phreeqc.dat
+  Tests/units.pqi
+])
+AC_OUTPUT
