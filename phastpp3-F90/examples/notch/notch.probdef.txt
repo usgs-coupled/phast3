@@ -1,0 +1,129 @@
+                                    ****************************************************
+                                    *                                                  *
+                                    *    PHAST: A Three Dimensional Flow and Solute    *
+                                    *         Reactive Transport Simulator             *
+                                    *             Version: @VERSIO           *
+                                    *                                                  *
+                                    ****************************************************
+
+
+
+
+
+
+                          .                                                                               
+                          .                                                                               
+
+                         *** Fundamental Information ***
+                    Isothermal simulation
+                    No solute transport simulaton
+                    Cartesian coordinates
+                    Data is in metric units
+                    Time unit selected is seconds 
+
+          Iterative generalized conjugate gradient solver with d4 zig-zag reduction is selected
+
+                         *** Problem Dimension Information ***
+          Number of nodes in x-direction .................................. NX ...     11
+          Number of nodes in y-direction .................................. NY ...      2
+          Number of nodes in z-direction .................................. NZ ...      5
+          Total number of nodes ........................................... NXYZ .    110
+
+          Number of porous media zones .................................... NPMZ .     36
+          Number of specified pressure or mass fraction b.c. .............. NSBC .     10
+          Number of specified flux b.c. cells ............................. NFBC .     10
+          Number of leakage cells ......................................... NLBC .      0
+          Number of river leakage cells ................................... NRBC .      0
+          Number of drain leakage cells ................................... NDBC .      0
+          Number of wells ................................................. NWEL .      0
+
+          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV     8649 elements
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                              ***  Static Data ***
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2           3           4           5           6           7           8           9          10
+           0.00        0.20        0.40        0.60        0.80        1.00        1.20        1.40        1.60        1.80
+
+
+
+          11
+           2.00
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2
+           0.00        1.00
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2           3           4           5
+           0.00        0.25        0.50        0.75        1.00
+
+
+
+
+                              Z-Axis is Positive Vertically Upward
+
+
+                                   *** Fluid Properties ***
+                                        Physical
+                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
+
+                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                    Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
+                    Fluid density .............................................. DENF0  1000.0      (kg/m^3)
+
+                    Viscosity factor ........................................... VISFAC -1.000e-03
+
+                                        *** Calculation Information ***
+          Backwards-in-time (implicit) differencing for temporal derivative
+
+                           Row scaling only, using L-inf norm, will be done
+
+          Direction index for d4 zig-zag renumbering ...................... IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    t
+          Number of search directions before restart ...................... NSDR..   20
+          Tolerance on iterative solution ................................. EPSSLV 1.0e-10
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+                    Automatic Time Step Control Parameters for Steady Flow
+          Maximum pressure change allowed per time step.................... DPTAS    2.94e+03  (Pa )
+          Minimum time step required ...................................... DTIMMN    1.0      (s  )
+          Maximum time step allowed ....................................... DTIMMX   1.00e+06  (s  )
+
+
+               Initial fluid in region ...............................  6.300000e+02  (kg) ;  6.300000e-01  (m^3)
+
+ ------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                        *** Transient Data ***
+
+     Time ..............................   0.000e+00  (s)
+
+
+                                        *** Calculation Information ***
+
+          Fixed time step length .......................................... DELTIM  1.000e+03  (s)
+          Time at which next set of transient
+               parameters will be read .................................... TIMCHG  6.000e+03  (s)
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                       ***** Simulation Completed *****
+               Last time value calculated ...................................... 0.0000e+00 (s)
+               Last time step index ............................................       0

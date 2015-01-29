@@ -1,0 +1,154 @@
+
+
+                          .                                                                               
+                          .                                                                               
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2
+           0.00        1.00
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2
+           0.00        1.00
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2           3           4           5
+           0.00        1.00        2.00        3.00        4.00
+
+
+
+
+                                        *** Initial Conditions ***
+
+                              Initial Fluid Head  (m) 
+
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2       0.500       0.500
+  1       0.500       0.500
+
+
+
+                              Fraction of Cell That Is Saturated (-)
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2       1.000       1.000
+  1       1.000       1.000
+
+
+
+                              *** Output at End of Time Step No.     2 ***
+
+     Time .......................................................   2.000E-04  (s)
+     Maximum change in potentiometric head ...  1.0000E-05      (m )   at location (  1.00    ,  0.00    ,  0.00    )(m )
+
+                              Fluid Potentiometric Head (m)
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2       0.500       0.500
+  1       0.500       0.500
+
+
+
+                              Fraction of cell that is saturated  (-)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2      0.0000      0.0000
+  1      0.0000      0.0000
+
+
+
+                              *** Output at End of Time Step No.     7 ***
+
+     Time .......................................................    5.00      (s)
+     Maximum change in potentiometric head ...  9.9980E-02      (m )   at location (  0.00    ,  1.00    ,  1.00    )(m )
+
+                              Fluid Potentiometric Head (m)
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2       1.000       1.000
+  1       1.000       1.000
+
+                                                            K =  2
+
+           1           2
+  2       1.000       1.000
+  1       1.000       1.000
+
+
+
+                              Fraction of cell that is saturated  (-)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2      0.5000      0.5000
+  1      0.5000      0.5000
+
+
+
+                              *** Output at End of Time Step No.    12 ***
+
+     Time .......................................................    10.0      (s)
+     Maximum change in potentiometric head ... -1.0000E-01      (m )   at location (  1.00    ,  1.00    ,  0.00    )(m )
+
+                              Fluid Potentiometric Head (m)
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2       0.500       0.500
+  1       0.500       0.500
+
+
+
+                              Fraction of cell that is saturated  (-)
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2      1.0000      1.0000
+  1      1.0000      1.0000
+
+
+
+
+                      ***** Flow and Transport Simulation Completed *****
+               Last time value calculated ......................................  10.00     (s)
+               Last time step index ............................................      12

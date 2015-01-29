@@ -1,0 +1,65 @@
+
+
+                ********************************************************************
+                *                                                                  *
+                *            Sun et al test problem 6.3  first component           *
+                *                                                                  *
+                *                Solute transport in a semi-infinite               *
+                *                                                                  *
+                *    aquifer of infinite width and height with a 'patch' source    *
+                *                                                                  *
+                *   Model Data:  V=0.2 m/d, DX=1.5*0.2, DY=0.3*1.5*0.2, DZ=0.1*1   *
+                *                                                                  *
+                *         WS=11 m, HS=5 m, decay rate=0.05 d^-1, C0=1.0 mg/L       *
+                *                                                                  *
+                *                 y1=15 m, y2=26 m, z1=10 m, z2=15 m               *
+                *                                                                  *
+                *            PROGRAM RUN ON                  AT                    *
+                *                                                                  *
+                ********************************************************************
+
+
+
+
+
+
+ Analytical solution to the three-dimensional
+ advective-dispersive solute transport equation
+ for a semi-infinite aquifer of infinite widthextent
+ and height with a continuous patch source at X=0.
+
+
+0INPUT DATA
+ ----------
+0                         NUMBER OF X-COORDINATES (NX) =    6
+                          NUMBER OF Y-COORDINATES (NY) =    8
+                          NUMBER OF Z-COORDINATES (NZ) =    1
+                          NUMBER OF TIME VALUES (NT) =    1
+                          NUMBER OF POINTS FOR NUMERICAL INTEGRATION (NMAX) =  104
+0Solute Concentration on Region Boundary (C0) = 1.000000E+00 mg/L      
+ Ground-water Velocity in X-direction (VX) = 2.000000E-01  m/d      
+ Dispersion in the X-direction (DX) = 3.000000E-01  m^2/d    
+ Dispersion in the Y-direction (DY) = 9.000000E-02  m^2/d    
+ Dispersion in the Z-direction (DZ) = 3.000000E-02  m^2/d    
+ First-order Solute Decay Rate (DK) = 5.000000E-02 d^-1      
+0AQUIFER WIDTH (W) AND HEIGHT (H) ARE INFINITE
+ SOLUTE SOURCE IS LOCATED BETWEEN Y1 = 1.500000E+01 m         
+                               and Y2 = 2.600000E+01 m         
+                               Z1 = 1.000000E+01 m         
+                          and Z2 = 1.500000E+01 m         
+0X-COORDINATES AT WHICH SOLUTE CONCENTRATIONS WILL BE CALCULATED, IN m         
+ ------------------------------------------------------------------------------
+
+            0.0000      5.0000     10.0000     15.0000     20.0000     25.0000
+0Y-COORDINATES AT WHICH SOLUTE CONCENTRATIONS WILL BE CALCULATED, IN m         
+ ------------------------------------------------------------------------------
+
+            5.0000     10.0000     15.0000     20.0000     21.0000     25.0000     30.0000     35.0000
+0Z-COORDINATES AT WHICH SOLUTE CONCENTRATIONS WILL BE CALCULATED, IN m         
+ ------------------------------------------------------------------------------
+
+           13.0000
+0TIMES AT WHICH SOLUTE CONCENTRATIONS WILL BE CALCULATED, IN d         
+ ----------------------------------------------------------------------
+
+          400.0000

@@ -1,0 +1,55 @@
+
+
+                          .        One dimensional confined flow with leakage boundary condition          
+                          .        Hand calculation and HST                                               
+
+                              *** Output at End of Time Step No.     2 ***
+
+     Time .......................................................   8.640e+04  (s)
+
+                                        *** Global Flow Balance Summary ***
+                         Current Time Step                         Rates                  Amounts
+
+ Fluid inflow ...............................................  3.703040e+03  (kg/s)     1.599713e+08  (kg)
+ Fluid outflow ..............................................  3.703040e+03  (kg/s)     1.599713e+08  (kg)
+ Change in fluid in region ..................................  2.110887e-07  (kg/s)     9.119034e-03  (kg)
+ Residual imbalance .........................................  7.657541e-11  (kg/s)     3.308058e-06  (kg)
+ Fractional imbalance .......................................                              0.0000
+
+               Current Time Step by Boundary Condition Type
+                                                                 Amounts
+
+ Step total specified head b.c. fluid net inflow ............ -1.599713e+08  (kg)
+ Step total flux b.c. fluid net inflow ......................  0.000000e+00  (kg)
+ Step total leakage b.c. fluid net inflow ...................  1.599713e+08  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
+ Step total well fluid net inflow ...........................  0.000000e+00  (kg)
+
+
+               Cumulative Summary
+                                                                 Amounts
+
+ Cumulative Fluid inflow ....................................  3.199439e+08  (kg)
+ Cumulative Fluid outflow ...................................  3.199417e+08  (kg)
+ Cumulative Change in fluid in region .......................  2.228070e+03  (kg)
+ Current Fluid in region ....................................  9.599997e+09  (kg)
+ Current Fluid volume in region .............................  9.599997e+06  (m ^3)
+ Residual imbalance .........................................  5.006790e-06  (kg)
+ Fractional imbalance .......................................      0.0000
+
+               Cumulative Summary by Boundary Condition Type
+                                                                 Amounts
+
+ Cumulative specified head b.c. fluid net inflow ............ -3.199417e+08  (kg)
+ Cumulative flux b.c. fluid net inflow ......................  0.000000e+00  (kg)
+ Cumulative leakage b.c. fluid net inflow ...................  3.199439e+08  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
+ Cumulative well fluid net inflow ...........................  0.000000e+00  (kg)
+
+
+
+                                       ***** Simulation Completed *****
+               Last time value calculated ...................................... 8.6400e+04 (s)
+               Last time step index ............................................       2

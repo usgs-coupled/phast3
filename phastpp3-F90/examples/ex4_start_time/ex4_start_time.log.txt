@@ -1,0 +1,1134 @@
+Running PHASTINPUT.
+
+Processing flow and transport data file.
+
+	TITLE
+	 Central Oklahoma aquifer,
+	 demonstration of PHAST
+	UNITS
+	        time                                 years
+	        horizontal_grid                      meters
+	        vertical_grid                        meters
+	        head                                 meters
+	        hydraulic_conductivity               m/s
+	        specific_storage                     1/m
+	        dispersivity                         m
+	        leaky_k                              m/sec
+	        leaky_thickness                      m
+	        flux                                 m/yr
+	        river_bed_thickness                  m
+	        river_bed_hydraulic_conductivity     m/s     
+	        well_diameter                        in
+	        well_flow_rate                       L/day
+	GRID
+	        uniform x    0    90000    16
+	        uniform y    0    48000    9
+	        uniform z    0    400      5
+	        print_orientation                    XY 
+	SOLUTE_TRANSPORT true
+	STEADY_FLOW true
+	        head_tolerance                       1e-6
+	        flow_balance_tolerance               1e-3
+	MEDIA
+	        zone   0. 0. 0. 90000.  48000. 400.
+	                porosity                     0.22
+	                long_dispersivity            2000.
+	                horizontal_dispersivity      50.
+	                vertical_dispersivity        50.
+	                kx                           1.5e-5
+	                ky                           1.5e-5
+	                kz                           1.5e-7
+	                storage                      0
+	        zone   48000. 0. 0. 90000. 48000. 100.
+	                active                       0
+	RIVER 1 Little River
+	        point  44000. 15000.
+	                width                        200.
+	                depth                        1.
+	                bed_thickness                1.
+	                bed_hydraulic_conductivity   1.
+	                head                         0         335.
+	                solution                     0         1
+	        point  44000. 0.
+	        point  90000. 0.
+	                width                        200.
+	                depth                        1.
+	                bed_thickness                1.
+	                bed_hydraulic_conductivity   1.
+	                head                         0         275.
+	                solution                     0         1
+	RIVER 2 North Fork River
+	        point  30000. 36000.
+	                width                        200.
+	                depth                        1.
+	                bed_thickness                1.
+	                bed_hydraulic_conductivity   1
+	                head                         0         335.
+	                solution                     0         1
+	        point  30000. 48000.
+	        point  90000. 48000.
+	                width                        200.
+	                depth                        1.
+	                bed_thickness                1.
+	                bed_hydraulic_conductivity   1
+	                head                         0         280.
+	                solution                     0         1
+	RIVER 3 North Canadian River
+	        point  60000. 30000.
+	                width                        200.
+	                depth                        1.
+	                bed_thickness                1.
+	                bed_hydraulic_conductivity   1
+	                head                         0         350.
+	                solution                     0         1
+	        point  90000. 20000.
+	                width                        200.
+	                depth                        1.
+	                bed_thickness                1.
+	                bed_hydraulic_conductivity   1
+	                head                         0         305.
+	                solution                     0         1
+	FLUX_BC
+	        zone   27000. 3000. 400.  90000. 45000. 400.
+	                flux                         0         -0.055
+	                associated_solution          0         1
+	SPECIFIED_HEAD_BC
+	        zone   30000. 14000 300. 32000.  20000.  400.
+	                head                         0         348.
+	                associated_solution_composition          0         1
+	LEAKY_BC
+	        zone   0. 48000. 0. 27000. 48000. 400.
+	                hydraulic_conductivity                    1.5e-5
+	                thickness                   30000.
+	                head                         0         305.0
+	                associated_solution                   0         1
+	       zone 0 0 0 39000 0 400
+	                hydraulic_conductivity       1.5E-5
+	                thickness                    20000
+	                head                         0         320
+	                associated_solution          0         2
+	FREE_SURFACE_BC true
+	WELL 1 Observation well 1 in arsenic zone
+	        12000 36000
+	                diameter       2                               # inches
+	                pumping                      0         1       # L/day
+	                elevation      90 110                          # m
+	HEAD_IC
+	        zone   0. 0. 0. 90000. 48000. 400.
+	                head   380.
+	CHEMISTRY_IC
+	        zone   0. 0. 0. 90000. 48000. 400.
+	                solution               2
+	                equilibrium_phases     2
+	                exchange               2
+	                surface                2       
+	SOLUTION_METHOD
+	        iterative_solver       true
+	        tolerance              1e-10
+	        space_differencing     0.
+	        time_differencing      1.
+		rebalance_by_cell      true
+	TIME_CONTROL
+	        delta_time     0               2000    yr
+		start_time                     50000   yr
+	        end_time                       150000  yr
+	PRINT_INITIAL
+	        velocities             true
+	        xyz_head               true
+	        xyz_ss_velocities      true
+	PRINT_FREQUENCY
+	        0
+	        xyz_chemistry          50000   yr
+	        hdf_chemistry          2000    yr
+	        xyz_well               2000    yr
+	        save_final_heads       true
+		restart		1000000 yr
+	PRINT_LOCATIONS
+	        xyz_chemistry
+	               zone   0 0 0  90000 48000 0
+	               print 0
+	END
+WARNING: River width units not defined in UNITS data block, meters assumed.
+WARNING: River depth units not defined in UNITS data block, meters assumed.
+WARNING: Guessing boundary condition face to be Z
+Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
+WARNING: Guessing boundary condition face to be Y
+Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
+WARNING: Guessing boundary condition face to be Y
+Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
+WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
+	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
+
+PHASTINPUT done.
+
+Running PHAST.
+
+Output file:    ex4_start_time.chem.txt
+Chemistry file: ex4_start_time.chem.dat
+Database file:  phast.dat
+
+Running PHREEQC for initial conditions.
+
+Processing database file.
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+
+Processing chemical data file.
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	SOLUTION_MASTER_SPECIES
+	        As       H3AsO4        -1.0     74.9216         74.9216
+	SOLUTION_SPECIES
+	SOLUTION 1 20 x precipitation
+	END
+	USE solution 1
+	EQUILIBRIUM_PHASES 1
+	SAVE solution 1
+	END
+	SOLUTION 2 Brine
+	END
+	USE solution 2
+	EQUILIBRIUM_PHASES 2
+	SAVE solution 2
+	END
+	EXCHANGE 2
+	SURFACE 2
+	END
+	SELECTED_OUTPUT
+	USER_PUNCH
+	END
+PHREEQC done.
+. Central Oklahoma aquifer,
+. demonstration of PHAST
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    52264 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST     6840 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .   45424 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+          Direction index for d4 zig-zag renumbering ............ IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    t
+          Number of search directions before restart ............ NSDR..   20
+          Tolerance on iterative solution ....................... EPSSLV 1.0e-10
+
+Beginning flow calculation for steady-state i.c.
+Reading transient data for simulation: Set  1
+WARNING:  2 print control intervals are less than defined time step length.
+Automatic Time Step Control Parameters for Steady Flow
+Maximum pressure change allowed per time step.................... DPTAS    1.18e+06  (Pa )
+Minimum time step required ...................................... DTIMMN    2.0      (yr )
+Maximum time step allowed ....................................... DTIMMX   2.00e+06(yr )
+
+Beginning steady state time step no.      1
+     Maximum change in potentiometric head ..   -1.0352e+02     (m) at location ( 9.000e+04, 0.000e+00,  400.    )(m)
+     Fractional flow residual ...............   -1.9055e+00
+
+Beginning steady state time step no.      2
+     Maximum change in potentiometric head ..   -1.1374e+01     (m) at location ( 9.000e+04, 0.000e+00,  300.    )(m)
+     Fractional flow residual ...............   -1.4562e+00
+
+Beginning steady state time step no.      3
+     Maximum change in potentiometric head ..   -3.8408e+00     (m) at location ( 3.600e+04, 0.000e+00,  400.    )(m)
+     Fractional flow residual ...............   -7.5937e-01
+
+Beginning steady state time step no.      4
+     Maximum change in potentiometric head ..   -5.8177e+00     (m) at location ( 3.600e+04, 0.000e+00,  400.    )(m)
+     Fractional flow residual ...............   -7.1431e-01
+
+Beginning steady state time step no.      5
+     Maximum change in potentiometric head ..   -8.7264e+00     (m) at location ( 9.000e+04, 6.000e+03,  400.    )(m)
+     Fractional flow residual ...............   -6.4041e-01
+
+Beginning steady state time step no.      6
+     Maximum change in potentiometric head ..   -1.2059e+01     (m) at location ( 9.000e+04, 6.000e+03,  400.    )(m)
+     Fractional flow residual ...............   -5.3088e-01
+
+Beginning steady state time step no.      7
+     Maximum change in potentiometric head ..   -1.2601e+01     (m) at location ( 9.000e+04, 6.000e+03,  300.    )(m)
+     Fractional flow residual ...............   -3.8826e-01
+
+Beginning steady state time step no.      8
+     Maximum change in potentiometric head ..   -1.0075e+01     (m) at location ( 9.000e+04, 3.600e+04,  400.    )(m)
+     Fractional flow residual ...............   -2.3298e-01
+
+Beginning steady state time step no.      9
+     Maximum change in potentiometric head ..   -1.1976e+01     (m) at location ( 0.000e+00, 3.000e+04,  400.    )(m)
+     Fractional flow residual ...............   -1.0871e-01
+
+Beginning steady state time step no.     10
+     Maximum change in potentiometric head ..   -1.0996e+01     (m) at location ( 0.000e+00, 2.400e+04,  400.    )(m)
+     Fractional flow residual ...............   -3.8084e-02
+
+Beginning steady state time step no.     11
+     Maximum change in potentiometric head ..   -6.1673e+00     (m) at location ( 0.000e+00, 2.400e+04,  300.    )(m)
+     Fractional flow residual ...............   -9.2793e-03
+
+Beginning steady state time step no.     12
+     Maximum change in potentiometric head ..   -1.9826e+00     (m) at location ( 0.000e+00, 2.400e+04,  300.    )(m)
+     Fractional flow residual ...............   -1.4007e-03
+
+Beginning steady state time step no.     13
+     Maximum change in potentiometric head ..   -3.3812e-01     (m) at location ( 0.000e+00, 2.400e+04,  300.    )(m)
+     Fractional flow residual ...............   -1.1539e-04
+
+Beginning steady state time step no.     14
+     Maximum change in potentiometric head ..   -2.8700e-02     (m) at location ( 0.000e+00, 3.000e+04,  300.    )(m)
+     Fractional flow residual ...............   -4.6880e-06
+
+Beginning steady state time step no.     15
+     Maximum change in potentiometric head ..   -1.1224e-03     (m) at location ( 0.000e+00, 3.000e+04,  300.    )(m)
+     Fractional flow residual ...............   -8.3174e-08
+
+Beginning steady state time step no.     16
+     Maximum change in potentiometric head ..   -1.6560e-05     (m) at location ( 0.000e+00, 4.200e+04,  300.    )(m)
+     Fractional flow residual ...............   -4.4359e-10
+
+Beginning steady state time step no.     17
+     Maximum change in potentiometric head ..    1.1627e-07     (m) at location ( 1.800e+04, 2.400e+04,  300.    )(m)
+     Fractional flow residual ...............    1.7687e-12
+
+Done with steady-state flow.
+Equilibration of cells for initial conditions.
+     Time at which next set of transient parameters will be read .......... TIMCHG  1.500e+05  (yr)
+
+Beginning transient simulation.
+
+Beginning time step no.      1
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     1
+     Time ..................................................    52000.0     (yr)
+
+Beginning time step no.      2
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     2
+     Time ..................................................    54000.0     (yr)
+
+Beginning time step no.      3
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     3
+     Time ..................................................    56000.0     (yr)
+
+Beginning time step no.      4
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     4
+     Time ..................................................    58000.0     (yr)
+
+Beginning time step no.      5
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     5
+     Time ..................................................    60000.0     (yr)
+
+Beginning time step no.      6
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     6
+     Time ..................................................    62000.0     (yr)
+
+Beginning time step no.      7
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     7
+     Time ..................................................    64000.0     (yr)
+
+Beginning time step no.      8
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     8
+     Time ..................................................    66000.0     (yr)
+
+Beginning time step no.      9
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     9
+     Time ..................................................    68000.0     (yr)
+
+Beginning time step no.     10
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    10
+     Time ..................................................    70000.0     (yr)
+
+Beginning time step no.     11
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    11
+     Time ..................................................    72000.0     (yr)
+
+Beginning time step no.     12
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    12
+     Time ..................................................    74000.0     (yr)
+
+Beginning time step no.     13
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    13
+     Time ..................................................    76000.0     (yr)
+
+Beginning time step no.     14
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    14
+     Time ..................................................    78000.0     (yr)
+
+Beginning time step no.     15
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    15
+     Time ..................................................    80000.0     (yr)
+
+Beginning time step no.     16
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    16
+     Time ..................................................    82000.0     (yr)
+
+Beginning time step no.     17
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    17
+     Time ..................................................    84000.0     (yr)
+
+Beginning time step no.     18
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    18
+     Time ..................................................    86000.0     (yr)
+
+Beginning time step no.     19
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    19
+     Time ..................................................    88000.0     (yr)
+
+Beginning time step no.     20
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    20
+     Time ..................................................    90000.0     (yr)
+
+Beginning time step no.     21
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    21
+     Time ..................................................    92000.0     (yr)
+
+Beginning time step no.     22
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    22
+     Time ..................................................    94000.0     (yr)
+
+Beginning time step no.     23
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    23
+     Time ..................................................    96000.0     (yr)
+
+Beginning time step no.     24
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    24
+     Time ..................................................    98000.0     (yr)
+
+Beginning time step no.     25
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    25
+     Time ..................................................    100000.     (yr)
+
+Beginning time step no.     26
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    26
+     Time ..................................................    102000.     (yr)
+
+Beginning time step no.     27
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    27
+     Time ..................................................    104000.     (yr)
+
+Beginning time step no.     28
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    28
+     Time ..................................................    106000.     (yr)
+
+Beginning time step no.     29
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    29
+     Time ..................................................    108000.     (yr)
+
+Beginning time step no.     30
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    30
+     Time ..................................................    110000.     (yr)
+
+Beginning time step no.     31
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    31
+     Time ..................................................    112000.     (yr)
+
+Beginning time step no.     32
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    32
+     Time ..................................................    114000.     (yr)
+
+Beginning time step no.     33
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    33
+     Time ..................................................    116000.     (yr)
+
+Beginning time step no.     34
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    34
+     Time ..................................................    118000.     (yr)
+
+Beginning time step no.     35
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    35
+     Time ..................................................    120000.     (yr)
+
+Beginning time step no.     36
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    36
+     Time ..................................................    122000.     (yr)
+
+Beginning time step no.     37
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    37
+     Time ..................................................    124000.     (yr)
+
+Beginning time step no.     38
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    38
+     Time ..................................................    126000.     (yr)
+
+Beginning time step no.     39
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    39
+     Time ..................................................    128000.     (yr)
+
+Beginning time step no.     40
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    40
+     Time ..................................................    130000.     (yr)
+
+Beginning time step no.     41
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    41
+     Time ..................................................    132000.     (yr)
+
+Beginning time step no.     42
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    42
+     Time ..................................................    134000.     (yr)
+
+Beginning time step no.     43
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    43
+     Time ..................................................    136000.     (yr)
+
+Beginning time step no.     44
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    44
+     Time ..................................................    138000.     (yr)
+
+Beginning time step no.     45
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    45
+     Time ..................................................    140000.     (yr)
+
+Beginning time step no.     46
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    46
+     Time ..................................................    142000.     (yr)
+
+Beginning time step no.     47
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    47
+     Time ..................................................    144000.     (yr)
+
+Beginning time step no.     48
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    48
+     Time ..................................................    146000.     (yr)
+
+Beginning time step no.     49
+     Beginning solute-transport calculation.
+          H
+          O
+          As
+          C
+          Ca
+          Cl
+          Mg
+          Na
+          S
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    49
+     Time ..................................................    148000.     (yr)
+
+Beginning time step no.     50
+     Current time step length ...................................   2.000e+03 (yr)
+     Beginning solute-transport calculation.
+          H
+          No. of solver iterations, Relative residual:    7      1.0215574e-11
+          O
+          No. of solver iterations, Relative residual:    7      3.1880990e-11
+          As
+          No. of solver iterations, Relative residual:    8      5.5494727e-12
+          C
+          No. of solver iterations, Relative residual:    7      3.1890868e-11
+          Ca
+          No. of solver iterations, Relative residual:    7      3.1473616e-11
+          Cl
+          No. of solver iterations, Relative residual:    6      1.2023333e-11
+          Mg
+          No. of solver iterations, Relative residual:    7      3.1524618e-11
+          Na
+          No. of solver iterations, Relative residual:    7      2.7011035e-11
+          S
+          No. of solver iterations, Relative residual:    6      1.2023108e-11
+          Charge
+          No. of solver iterations, Relative residual:    7      1.0046010e-11
+     Beginning chemistry calculation.
+          Total cells: 657
+          Number of cells with same aqueous model: 540
+          Total iterations all cells: 4248
+          Number of cells with zero iterations: 0
+          Maximum iterations for one cell: 17
+
+     End of Time Step No.    50
+     Time ..................................................    150000.     (yr)
+     Maximum change in potentiometric head   0.0000e+00      (m ) at location ( 6.000e+04, 3.600e+04,  400.    )(m)
+     Maximum change in H .................. -2.8701e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
+     Maximum change in O .................. -5.6719e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
+     Maximum change in As ................. -5.9234e-07 (mol/kgw) at location ( 2.400e+04, 4.800e+04,  300.    )(m)
+     Maximum change in C .................. -1.8882e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
+     Maximum change in Ca .................  8.9772e-04 (mol/kgw) at location ( 4.800e+04, 0.000e+00, 0.000e+00)(m)
+     Maximum change in Cl ................. -1.5803e-02 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
+     Maximum change in Mg .................  6.6039e-04 (mol/kgw) at location ( 4.800e+04, 0.000e+00, 0.000e+00)(m)
+     Maximum change in Na ................. -1.7991e-02 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
+     Maximum change in S .................. -1.0683e-05 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
+     Maximum change in Charge ............. -2.9489e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
+Done with transient simulation.
+
+                             ***** Simulation Completed *****
+     Last time value calculated ...................................... 1.5000e+05 (yr)
+     Last time step index ............................................      50
