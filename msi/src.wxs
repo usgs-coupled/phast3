@@ -1,0 +1,1877 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <ComponentGroup Id="Src">
+            <ComponentRef Id="abmult.f90" />
+            <ComponentRef Id="aplbce.f90" />
+            <ComponentRef Id="aplbce_ss_flow.f90" />
+            <ComponentRef Id="aplbci.f90" />
+            <ComponentRef Id="armult.f90" />
+            <ComponentRef Id="asembl.f90" />
+            <ComponentRef Id="asmslc.f90" />
+            <ComponentRef Id="asmslp.f90" />
+            <ComponentRef Id="asmslp_ss_flow.f90" />
+            <ComponentRef Id="bsode.f90" />
+            <ComponentRef Id="calcc.f90" />
+            <ComponentRef Id="calc_velocity.f90" />
+            <ComponentRef Id="clog.f90" />
+            <ComponentRef Id="closef.F90" />
+            <ComponentRef Id="coeff.f90" />
+            <ComponentRef Id="coeff_ss_flow.f90" />
+            <ComponentRef Id="crsdsp.f90" />
+            <ComponentRef Id="cxxHstSubs.cxx" />
+            <ComponentRef Id="d4ord.f90" />
+            <ComponentRef Id="d4zord.f90" />
+            <ComponentRef Id="dbmult.f90" />
+            <ComponentRef Id="dependencies" />
+            <ComponentRef Id="dump.f90" />
+            <ComponentRef Id="efact.f90" />
+            <ComponentRef Id="ehoftp.f90" />
+            <ComponentRef Id="el1slv.f90" />
+            <ComponentRef Id="elslv.f90" />
+            <ComponentRef Id="error1.f90" />
+            <ComponentRef Id="error2.f90" />
+            <ComponentRef Id="error3.f90" />
+            <ComponentRef Id="error4.f90" />
+            <ComponentRef Id="errprt.f90" />
+            <ComponentRef Id="etom1.f90" />
+            <ComponentRef Id="etom2.f90" />
+            <ComponentRef Id="euslv.f90" />
+            <ComponentRef Id="formr.f90" />
+            <ComponentRef Id="gcgris.f90" />
+            <ComponentRef Id="gzstream.cxx" />
+            <ComponentRef Id="gzstream.h" />
+            <ComponentRef Id="hdf.c" />
+            <ComponentRef Id="hdf_f.f90" />
+            <ComponentRef Id="hst.cxx" />
+            <ComponentRef Id="hst.h" />
+            <ComponentRef Id="hstsubs.c" />
+            <ComponentRef Id="hunt.f90" />
+            <ComponentRef Id="ifrd.inc" />
+            <ComponentRef Id="ifwr.inc" />
+            <ComponentRef Id="incidx.f90" />
+            <ComponentRef Id="indx_rewi.f90" />
+            <ComponentRef Id="indx_rewi_bc.f90" />
+            <ComponentRef Id="init1.f90" />
+            <ComponentRef Id="init2_1.f90" />
+            <ComponentRef Id="init2_2.f90" />
+            <ComponentRef Id="init2_3.f90" />
+            <ComponentRef Id="init2_post_ss.f90" />
+            <ComponentRef Id="init3.f90" />
+            <ComponentRef Id="interpolate_mod.f90" />
+            <ComponentRef Id="ldchar.f90" />
+            <ComponentRef Id="ldchar_bc.f90" />
+            <ComponentRef Id="ldci.f90" />
+            <ComponentRef Id="ldcir.f90" />
+            <ComponentRef Id="ldind.f90" />
+            <ComponentRef Id="ldipen.f90" />
+            <ComponentRef Id="ldmar1.f90" />
+            <ComponentRef Id="ld_seg_mod.f90" />
+            <ComponentRef Id="lsolv.f90" />
+            <ComponentRef Id="Makefile" />
+            <ComponentRef Id="media_hdf.f90" />
+            <ComponentRef Id="merge.c" />
+            <ComponentRef Id="modules.f90" />
+            <ComponentRef Id="mpimod.F90" />
+            <ComponentRef Id="mtoijk.f90" />
+            <ComponentRef Id="nintrp.f90" />
+            <ComponentRef Id="openf.F90" />
+            <ComponentRef Id="phast.F90" />
+            <ComponentRef Id="phast.rev" />
+            <ComponentRef Id="phastproto.h" />
+            <ComponentRef Id="phast_files.c" />
+            <ComponentRef Id="phast_files.h" />
+            <ComponentRef Id="phast_root.F90" />
+            <ComponentRef Id="phast_slave.F90" />
+            <ComponentRef Id="Pointers_to_fortran.h" />
+            <ComponentRef Id="prchar.f90" />
+            <ComponentRef Id="print_control_mod.f90" />
+            <ComponentRef Id="prntar.f90" />
+            <ComponentRef Id="rbord.f90" />
+            <ComponentRef Id="read1.f90" />
+            <ComponentRef Id="read2.f90" />
+            <ComponentRef Id="read3.f90" />
+            <ComponentRef Id="reordr.f90" />
+            <ComponentRef Id="rewi_mod.f90" />
+            <ComponentRef Id="rfact.f90" />
+            <ComponentRef Id="rfactm.f90" />
+            <ComponentRef Id="rhsn.f90" />
+            <ComponentRef Id="rhsn_ss_flow.f90" />
+            <ComponentRef Id="sbcflo.f90" />
+            <ComponentRef Id="scale_jds.f90" />
+            <ComponentRef Id="simulate_ss_flow.f90" />
+            <ComponentRef Id="slavesubs.c" />
+            <ComponentRef Id="stonb.f90" />
+            <ComponentRef Id="sumcal1.f90" />
+            <ComponentRef Id="sumcal2.f90" />
+            <ComponentRef Id="sumcal_ss_flow.f90" />
+            <ComponentRef Id="terminate_phast.F90" />
+            <ComponentRef Id="tfrds.f90" />
+            <ComponentRef Id="timstp.f90" />
+            <ComponentRef Id="timstp_ss_flow.f90" />
+            <ComponentRef Id="update_print_flags.f90" />
+            <ComponentRef Id="uppercase.f90" />
+            <ComponentRef Id="usolv.f90" />
+            <ComponentRef Id="viscos.f90" />
+            <ComponentRef Id="vpsv.f90" />
+            <ComponentRef Id="wbbal.f90" />
+            <ComponentRef Id="wbcflo.f90" />
+            <ComponentRef Id="wellsc.f90" />
+            <ComponentRef Id="wellsc_ss_flow.f90" />
+            <ComponentRef Id="wellsr.f90" />
+            <ComponentRef Id="wellsr_ss_flow.f90" />
+            <ComponentRef Id="welris.f90" />
+            <ComponentRef Id="wfdydz.f90" />
+            <ComponentRef Id="write1.f90" />
+            <ComponentRef Id="write2_1.f90" />
+            <ComponentRef Id="write2_2.f90" />
+            <ComponentRef Id="write3.f90" />
+            <ComponentRef Id="write3_ss_flow.f90" />
+            <ComponentRef Id="write4.f90" />
+            <ComponentRef Id="write5.f90" />
+            <ComponentRef Id="write5_ss_flow.f90" />
+            <ComponentRef Id="write6.f90" />
+            <ComponentRef Id="zone_flow.f90" />
+            <ComponentRef Id="zone_flow_ss.f90" />
+            <ComponentRef Id="char_star.h" />
+            <ComponentRef Id="class_main.cpp" />
+            <ComponentRef Id="cxxKinetics.cxx" />
+            <ComponentRef Id="cxxKinetics.h" />
+            <ComponentRef Id="cxxMix.cxx" />
+            <ComponentRef Id="cxxMix.h" />
+            <ComponentRef Id="Dictionary.cxx" />
+            <ComponentRef Id="Dictionary.h" />
+            <ComponentRef Id="dumper.cpp" />
+            <ComponentRef Id="dumper.h" />
+            <ComponentRef Id="Exchange.cxx" />
+            <ComponentRef Id="Exchange.h" />
+            <ComponentRef Id="ExchComp.cxx" />
+            <ComponentRef Id="ExchComp.h" />
+            <ComponentRef Id="GasPhase.cxx" />
+            <ComponentRef Id="GasPhase.h" />
+            <ComponentRef Id="ISolution.cxx" />
+            <ComponentRef Id="ISolution.h" />
+            <ComponentRef Id="ISolutionComp.cxx" />
+            <ComponentRef Id="ISolutionComp.h" />
+            <ComponentRef Id="KineticsComp.cxx" />
+            <ComponentRef Id="KineticsComp.h" />
+            <ComponentRef Id="NameDouble.cxx" />
+            <ComponentRef Id="NameDouble.h" />
+            <ComponentRef Id="NumKeyword.cxx" />
+            <ComponentRef Id="NumKeyword.h" />
+            <ComponentRef Id="Parser.cxx" />
+            <ComponentRef Id="Parser.h" />
+            <ComponentRef Id="Phreeqc.cpp" />
+            <ComponentRef Id="Phreeqc.h" />
+            <ComponentRef Id="Phreeqc_class.h" />
+            <ComponentRef Id="PPassemblage.cxx" />
+            <ComponentRef Id="PPassemblage.h" />
+            <ComponentRef Id="PPassemblageComp.cxx" />
+            <ComponentRef Id="PPassemblageComp.h" />
+            <ComponentRef Id="Reaction.cxx" />
+            <ComponentRef Id="Reaction.h" />
+            <ComponentRef Id="ReadClass.cxx" />
+            <ComponentRef Id="runner.cpp" />
+            <ComponentRef Id="runner.h" />
+            <ComponentRef Id="SAXPhreeqc.cxx" />
+            <ComponentRef Id="SAXPhreeqc.h" />
+            <ComponentRef Id="SaxPhreeqcHandlers.h" />
+            <ComponentRef Id="Solution.cxx" />
+            <ComponentRef Id="Solution.h" />
+            <ComponentRef Id="SolutionIsotope.cxx" />
+            <ComponentRef Id="SolutionIsotope.h" />
+            <ComponentRef Id="SolutionIsotopeList.cxx" />
+            <ComponentRef Id="SolutionIsotopeList.h" />
+            <ComponentRef Id="SSassemblage.cxx" />
+            <ComponentRef Id="SSassemblage.h" />
+            <ComponentRef Id="SSassemblageSS.cxx" />
+            <ComponentRef Id="SSassemblageSS.h" />
+            <ComponentRef Id="StorageBin.cxx" />
+            <ComponentRef Id="StorageBin.h" />
+            <ComponentRef Id="StorageBinList.cpp" />
+            <ComponentRef Id="StorageBinList.h" />
+            <ComponentRef Id="Surface.cxx" />
+            <ComponentRef Id="Surface.h" />
+            <ComponentRef Id="SurfaceCharge.cxx" />
+            <ComponentRef Id="SurfaceCharge.h" />
+            <ComponentRef Id="SurfaceComp.cxx" />
+            <ComponentRef Id="SurfaceComp.h" />
+            <ComponentRef Id="System.cxx" />
+            <ComponentRef Id="System.h" />
+            <ComponentRef Id="Temperature.cxx" />
+            <ComponentRef Id="Temperature.h" />
+            <ComponentRef Id="Utils.cxx" />
+            <ComponentRef Id="Utils.h" />
+            <ComponentRef Id="advection.c" />
+            <ComponentRef Id="basic.c" />
+            <ComponentRef Id="basic.h" />
+            <ComponentRef Id="basicsubs.c" />
+            <ComponentRef Id="cl1.c" />
+            <ComponentRef Id="cl1mp.c" />
+            <ComponentRef Id="cvdense.c" />
+            <ComponentRef Id="cvdense.h" />
+            <ComponentRef Id="cvode.c" />
+            <ComponentRef Id="cvode.h" />
+            <ComponentRef Id="dense.c" />
+            <ComponentRef Id="dense.h" />
+            <ComponentRef Id="dw.c" />
+            <ComponentRef Id="global.h" />
+            <ComponentRef Id="global_structures.h" />
+            <ComponentRef Id="input.c" />
+            <ComponentRef Id="input.h" />
+            <ComponentRef Id="integrate.c" />
+            <ComponentRef Id="inverse.c" />
+            <ComponentRef Id="isotopes.c" />
+            <ComponentRef Id="kinetics.c" />
+            <ComponentRef Id="kinetics.h" />
+            <ComponentRef Id="main.c" />
+            <ComponentRef Id="mainsubs.c" />
+            <ComponentRef Id="model.c" />
+            <ComponentRef Id="nvector.c" />
+            <ComponentRef Id="nvector.h" />
+            <ComponentRef Id="nvector_serial.c" />
+            <ComponentRef Id="nvector_serial.h" />
+            <ComponentRef Id="output.c" />
+            <ComponentRef Id="output.h" />
+            <ComponentRef Id="p2c.h" />
+            <ComponentRef Id="p2clib.c" />
+            <ComponentRef Id="parse.c" />
+            <ComponentRef Id="phqalloc.c" />
+            <ComponentRef Id="phqalloc.h" />
+            <ComponentRef Id="phreeqc_files.c" />
+            <ComponentRef Id="phrqproto.h" />
+            <ComponentRef Id="phrqtype.h" />
+            <ComponentRef Id="pitzer.c" />
+            <ComponentRef Id="pitzer.h" />
+            <ComponentRef Id="pitzer_structures.c" />
+            <ComponentRef Id="pitzer_structures.h" />
+            <ComponentRef Id="prep.c" />
+            <ComponentRef Id="print.c" />
+            <ComponentRef Id="read.c" />
+            <ComponentRef Id="readtr.c" />
+            <ComponentRef Id="sit.c" />
+            <ComponentRef Id="smalldense.c" />
+            <ComponentRef Id="smalldense.h" />
+            <ComponentRef Id="spread.c" />
+            <ComponentRef Id="step.c" />
+            <ComponentRef Id="structures.c" />
+            <ComponentRef Id="sundialsmath.c" />
+            <ComponentRef Id="sundialsmath.h" />
+            <ComponentRef Id="sundialstypes.h" />
+            <ComponentRef Id="tally.c" />
+            <ComponentRef Id="tidy.c" />
+            <ComponentRef Id="transport.c" />
+            <ComponentRef Id="utilities.c" />
+            <ComponentRef Id="phast.dsp" />
+            <ComponentRef Id="phast.dsw" />
+            <ComponentRef Id="phast.rc" />
+            <ComponentRef Id="phastpp.sln" />
+            <ComponentRef Id="phastpp.vfproj" />
+            <ComponentRef Id="phast_version.h" />
+            <ComponentRef Id="phreeqcpp.vcproj" />
+            <ComponentRef Id="resource.fd" />
+            <ComponentRef Id="resource.h" />
+            <ComponentRef Id="phast.rc_1" />
+            <ComponentRef Id="phastpp.sln_1" />
+            <ComponentRef Id="phastpp.vfproj_1" />
+            <ComponentRef Id="phast_version.h_1" />
+            <ComponentRef Id="phreeqcpp.vcproj_1" />
+            <ComponentRef Id="resource.fd_1" />
+            <ComponentRef Id="resource.h_1" />
+            <ComponentRef Id="build.xml" />
+            <ComponentRef Id="hdf_java_2.3.jar" />
+            <ComponentRef Id="Format.java" />
+            <ComponentRef Id="Splash.java" />
+            <ComponentRef Id="IProgressMonitor.java" />
+            <ComponentRef Id="JCheckList.java" />
+            <ComponentRef Id="JMalformedHDFException.java" />
+            <ComponentRef Id="JPage1.form" />
+            <ComponentRef Id="JPage1.java" />
+            <ComponentRef Id="JPage2.form" />
+            <ComponentRef Id="JPage2.java" />
+            <ComponentRef Id="JPage2Tab.form" />
+            <ComponentRef Id="JPage2Tab.java" />
+            <ComponentRef Id="JPage3.form" />
+            <ComponentRef Id="JPage3.java" />
+            <ComponentRef Id="JWizardFrame.java" />
+            <ComponentRef Id="JWizardPanel.form" />
+            <ComponentRef Id="JWizardPanel.java" />
+            <ComponentRef Id="ModalProgressMonitor.java" />
+            <ComponentRef Id="PhastH5File.java" />
+            <ComponentRef Id="splash.jpeg" />
+            <ComponentRef Id="SwingWorker.java" />
+            <ComponentRef Id="CorejavaSuite.java" />
+            <ComponentRef Id="FormatTest.java" />
+            <ComponentRef Id="GovSuite.java" />
+            <ComponentRef Id="UsgsSuite.java" />
+            <ComponentRef Id="JCheckListTest.java" />
+            <ComponentRef Id="JPage1Test.java" />
+            <ComponentRef Id="JPage2TabTest.java" />
+            <ComponentRef Id="JPage2Test.java" />
+            <ComponentRef Id="JPage3Test.java" />
+            <ComponentRef Id="JPhastHDFTest.java" />
+            <ComponentRef Id="JWizardFrameTest.java" />
+            <ComponentRef Id="JWizardPanelTest.java" />
+            <ComponentRef Id="ModalProgressMonitorTest.java" />
+            <ComponentRef Id="PhastH5FileTest.java" />
+            <ComponentRef Id="PhastSuite.java" />
+            <ComponentRef Id="phastexport.cpp" />
+            <ComponentRef Id="phastexport.dsp" />
+            <ComponentRef Id="phastexport.dsw" />
+            <ComponentRef Id="phastexport.h" />
+            <ComponentRef Id="phastexport.ico" />
+            <ComponentRef Id="phastexport.rc" />
+            <ComponentRef Id="phastexport.sln" />
+            <ComponentRef Id="phastexport.vcproj" />
+            <ComponentRef Id="phasthdf_version.h" />
+            <ComponentRef Id="resource.fd_2" />
+            <ComponentRef Id="resource.h_2" />
+            <ComponentRef Id="small.ico" />
+            <ComponentRef Id="StdAfx.cpp" />
+            <ComponentRef Id="StdAfx.h" />
+            <ComponentRef Id="accumulate.c" />
+            <ComponentRef Id="ArcRaster.cpp" />
+            <ComponentRef Id="ArcRaster.h" />
+            <ComponentRef Id="BC_info.cpp" />
+            <ComponentRef Id="BC_info.h" />
+            <ComponentRef Id="Cell_Face.h" />
+            <ComponentRef Id="check.c" />
+            <ComponentRef Id="Cube.cpp" />
+            <ComponentRef Id="Cube.h" />
+            <ComponentRef Id="Data_source.cpp" />
+            <ComponentRef Id="Data_source.h" />
+            <ComponentRef Id="Domain.cpp" />
+            <ComponentRef Id="Domain.h" />
+            <ComponentRef Id="Drain.cpp" />
+            <ComponentRef Id="Drain.h" />
+            <ComponentRef Id="Exterior_cell.cpp" />
+            <ComponentRef Id="Exterior_cell.h" />
+            <ComponentRef Id="Filedata.cpp" />
+            <ComponentRef Id="Filedata.h" />
+            <ComponentRef Id="getopt.c" />
+            <ComponentRef Id="getopt.h" />
+            <ComponentRef Id="gpc.c" />
+            <ComponentRef Id="gpc.h" />
+            <ComponentRef Id="gpc_helper.c" />
+            <ComponentRef Id="gpc_helper.h" />
+            <ComponentRef Id="hstinpt.h" />
+            <ComponentRef Id="index_range.h" />
+            <ComponentRef Id="inputproto.h" />
+            <ComponentRef Id="main.c_1" />
+            <ComponentRef Id="Makefile_1" />
+            <ComponentRef Id="message.c" />
+            <ComponentRef Id="message.h" />
+            <ComponentRef Id="Mix.h" />
+            <ComponentRef Id="PHAST_polygon.cpp" />
+            <ComponentRef Id="PHAST_polygon.h" />
+            <ComponentRef Id="PHAST_Transform.cpp" />
+            <ComponentRef Id="PHAST_Transform.h" />
+            <ComponentRef Id="Point.cpp" />
+            <ComponentRef Id="Point.h" />
+            <ComponentRef Id="Polygon_tree.cpp" />
+            <ComponentRef Id="Polygon_tree.h" />
+            <ComponentRef Id="Polyhedron.cpp" />
+            <ComponentRef Id="Polyhedron.h" />
+            <ComponentRef Id="Prism.cpp" />
+            <ComponentRef Id="Prism.h" />
+            <ComponentRef Id="property.h" />
+            <ComponentRef Id="read.c_1" />
+            <ComponentRef Id="River.h" />
+            <ComponentRef Id="rivers.c" />
+            <ComponentRef Id="structures.c_1" />
+            <ComponentRef Id="tailor.h" />
+            <ComponentRef Id="time.c" />
+            <ComponentRef Id="timepi.h" />
+            <ComponentRef Id="UniqueMap.h" />
+            <ComponentRef Id="units_impl.cxx" />
+            <ComponentRef Id="unit_impl.cxx" />
+            <ComponentRef Id="unit_impl.h" />
+            <ComponentRef Id="utilities.c_1" />
+            <ComponentRef Id="Utilities.h" />
+            <ComponentRef Id="Wedge.cpp" />
+            <ComponentRef Id="Wedge.h" />
+            <ComponentRef Id="wells.c" />
+            <ComponentRef Id="wphast.h" />
+            <ComponentRef Id="write.c" />
+            <ComponentRef Id="XYZfile.cpp" />
+            <ComponentRef Id="XYZfile.h" />
+            <ComponentRef Id="XYZTfile.cpp" />
+            <ComponentRef Id="XYZTfile.h" />
+            <ComponentRef Id="zone.cpp" />
+            <ComponentRef Id="zone.h" />
+            <ComponentRef Id="Zone_budget.cpp" />
+            <ComponentRef Id="Zone_budget.h" />
+            <ComponentRef Id="KDtree.cpp" />
+            <ComponentRef Id="KDtree.h" />
+            <ComponentRef Id="kdtree2.cpp" />
+            <ComponentRef Id="kdtree2.hpp" />
+            <ComponentRef Id="config.h" />
+            <ComponentRef Id="delaunay.c" />
+            <ComponentRef Id="delaunay.h" />
+            <ComponentRef Id="hash.c" />
+            <ComponentRef Id="hash.h" />
+            <ComponentRef Id="istack.c" />
+            <ComponentRef Id="istack.h" />
+            <ComponentRef Id="lpi.c" />
+            <ComponentRef Id="minell.c" />
+            <ComponentRef Id="minell.h" />
+            <ComponentRef Id="nan.h" />
+            <ComponentRef Id="nn.h" />
+            <ComponentRef Id="nnai.c" />
+            <ComponentRef Id="nncommon_vulnerable.c" />
+            <ComponentRef Id="nncommon.c" />
+            <ComponentRef Id="NNInterpolator.cpp" />
+            <ComponentRef Id="NNInterpolator.h" />
+            <ComponentRef Id="nnpi.c" />
+            <ComponentRef Id="nn_internal.h" />
+            <ComponentRef Id="preader.c" />
+            <ComponentRef Id="preader.h" />
+            <ComponentRef Id="triangle.c" />
+            <ComponentRef Id="triangle.h" />
+            <ComponentRef Id="version.h" />
+            <ComponentRef Id="dbfopen.c" />
+            <ComponentRef Id="shapefil.h" />
+            <ComponentRef Id="Shapefile.cpp" />
+            <ComponentRef Id="Shapefile.h" />
+            <ComponentRef Id="shpopen.c" />
+            <ComponentRef Id="shptree.c" />
+            <ComponentRef Id="phastinput.rc" />
+            <ComponentRef Id="phastinput.sln" />
+            <ComponentRef Id="phastinput.vcproj" />
+            <ComponentRef Id="resource.h_3" />
+            <ComponentRef Id="phastinput.dsp" />
+            <ComponentRef Id="phastinput.dsw" />
+            <ComponentRef Id="phastinput.rc_1" />
+            <ComponentRef Id="phastinput.sln_1" />
+            <ComponentRef Id="phastinput.vcproj_1" />
+            <ComponentRef Id="phastinput_version.h" />
+            <ComponentRef Id="resource.fd_3" />
+            <ComponentRef Id="resource.h_4" />
+            <ComponentRef Id="PHAST_KDtree.cpp" />
+            <ComponentRef Id="PHAST_KDtree.h" />
+            <ComponentRef Id="PHAST_kdtree2.cpp" />
+            <ComponentRef Id="PHAST_kdtree2.hpp" />
+            <ComponentRef Id="PHAST_Point.cpp" />
+            <ComponentRef Id="PHAST_Point.h" />
+            <ComponentRef Id="PHAST_Cell_Face.h" />
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="APPLICATIONFOLDER">
+            <Directory Id="src" Name="src">
+                <Directory Id="phast" Name="phast">
+                    <Component Id="abmult.f90" Guid="*">
+                        <File Id="abmult.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\abmult.f90" />
+                    </Component>
+                    <Component Id="aplbce.f90" Guid="*">
+                        <File Id="aplbce.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\aplbce.f90" />
+                    </Component>
+                    <Component Id="aplbce_ss_flow.f90" Guid="*">
+                        <File Id="aplbce_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\aplbce_ss_flow.f90" />
+                    </Component>
+                    <Component Id="aplbci.f90" Guid="*">
+                        <File Id="aplbci.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\aplbci.f90" />
+                    </Component>
+                    <Component Id="armult.f90" Guid="*">
+                        <File Id="armult.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\armult.f90" />
+                    </Component>
+                    <Component Id="asembl.f90" Guid="*">
+                        <File Id="asembl.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\asembl.f90" />
+                    </Component>
+                    <Component Id="asmslc.f90" Guid="*">
+                        <File Id="asmslc.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\asmslc.f90" />
+                    </Component>
+                    <Component Id="asmslp.f90" Guid="*">
+                        <File Id="asmslp.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\asmslp.f90" />
+                    </Component>
+                    <Component Id="asmslp_ss_flow.f90" Guid="*">
+                        <File Id="asmslp_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\asmslp_ss_flow.f90" />
+                    </Component>
+                    <Component Id="bsode.f90" Guid="*">
+                        <File Id="bsode.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\bsode.f90" />
+                    </Component>
+                    <Component Id="calcc.f90" Guid="*">
+                        <File Id="calcc.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\calcc.f90" />
+                    </Component>
+                    <Component Id="calc_velocity.f90" Guid="*">
+                        <File Id="calc_velocity.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\calc_velocity.f90" />
+                    </Component>
+                    <Component Id="clog.f90" Guid="*">
+                        <File Id="clog.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\clog.f90" />
+                    </Component>
+                    <Component Id="closef.F90" Guid="*">
+                        <File Id="closef.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\closef.F90" />
+                    </Component>
+                    <Component Id="coeff.f90" Guid="*">
+                        <File Id="coeff.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\coeff.f90" />
+                    </Component>
+                    <Component Id="coeff_ss_flow.f90" Guid="*">
+                        <File Id="coeff_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\coeff_ss_flow.f90" />
+                    </Component>
+                    <Component Id="crsdsp.f90" Guid="*">
+                        <File Id="crsdsp.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\crsdsp.f90" />
+                    </Component>
+                    <Component Id="cxxHstSubs.cxx" Guid="*">
+                        <File Id="cxxHstSubs.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\cxxHstSubs.cxx" />
+                    </Component>
+                    <Component Id="d4ord.f90" Guid="*">
+                        <File Id="d4ord.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\d4ord.f90" />
+                    </Component>
+                    <Component Id="d4zord.f90" Guid="*">
+                        <File Id="d4zord.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\d4zord.f90" />
+                    </Component>
+                    <Component Id="dbmult.f90" Guid="*">
+                        <File Id="dbmult.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\dbmult.f90" />
+                    </Component>
+                    <Component Id="dependencies" Guid="*">
+                        <File Id="dependencies" KeyPath="yes" Source="$(var.SrcDir)\phast\dependencies" />
+                    </Component>
+                    <Component Id="dump.f90" Guid="*">
+                        <File Id="dump.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\dump.f90" />
+                    </Component>
+                    <Component Id="efact.f90" Guid="*">
+                        <File Id="efact.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\efact.f90" />
+                    </Component>
+                    <Component Id="ehoftp.f90" Guid="*">
+                        <File Id="ehoftp.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ehoftp.f90" />
+                    </Component>
+                    <Component Id="el1slv.f90" Guid="*">
+                        <File Id="el1slv.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\el1slv.f90" />
+                    </Component>
+                    <Component Id="elslv.f90" Guid="*">
+                        <File Id="elslv.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\elslv.f90" />
+                    </Component>
+                    <Component Id="error1.f90" Guid="*">
+                        <File Id="error1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\error1.f90" />
+                    </Component>
+                    <Component Id="error2.f90" Guid="*">
+                        <File Id="error2.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\error2.f90" />
+                    </Component>
+                    <Component Id="error3.f90" Guid="*">
+                        <File Id="error3.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\error3.f90" />
+                    </Component>
+                    <Component Id="error4.f90" Guid="*">
+                        <File Id="error4.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\error4.f90" />
+                    </Component>
+                    <Component Id="errprt.f90" Guid="*">
+                        <File Id="errprt.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\errprt.f90" />
+                    </Component>
+                    <Component Id="etom1.f90" Guid="*">
+                        <File Id="etom1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\etom1.f90" />
+                    </Component>
+                    <Component Id="etom2.f90" Guid="*">
+                        <File Id="etom2.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\etom2.f90" />
+                    </Component>
+                    <Component Id="euslv.f90" Guid="*">
+                        <File Id="euslv.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\euslv.f90" />
+                    </Component>
+                    <Component Id="formr.f90" Guid="*">
+                        <File Id="formr.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\formr.f90" />
+                    </Component>
+                    <Component Id="gcgris.f90" Guid="*">
+                        <File Id="gcgris.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\gcgris.f90" />
+                    </Component>
+                    <Component Id="gzstream.cxx" Guid="*">
+                        <File Id="gzstream.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\gzstream.cxx" />
+                    </Component>
+                    <Component Id="gzstream.h" Guid="*">
+                        <File Id="gzstream.h" KeyPath="yes" Source="$(var.SrcDir)\phast\gzstream.h" />
+                    </Component>
+                    <Component Id="hdf.c" Guid="*">
+                        <File Id="hdf.c" KeyPath="yes" Source="$(var.SrcDir)\phast\hdf.c" />
+                    </Component>
+                    <Component Id="hdf_f.f90" Guid="*">
+                        <File Id="hdf_f.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\hdf_f.f90" />
+                    </Component>
+                    <Component Id="hst.cxx" Guid="*">
+                        <File Id="hst.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\hst.cxx" />
+                    </Component>
+                    <Component Id="hst.h" Guid="*">
+                        <File Id="hst.h" KeyPath="yes" Source="$(var.SrcDir)\phast\hst.h" />
+                    </Component>
+                    <Component Id="hstsubs.c" Guid="*">
+                        <File Id="hstsubs.c" KeyPath="yes" Source="$(var.SrcDir)\phast\hstsubs.c" />
+                    </Component>
+                    <Component Id="hunt.f90" Guid="*">
+                        <File Id="hunt.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\hunt.f90" />
+                    </Component>
+                    <Component Id="ifrd.inc" Guid="*">
+                        <File Id="ifrd.inc" KeyPath="yes" Source="$(var.SrcDir)\phast\ifrd.inc" />
+                    </Component>
+                    <Component Id="ifwr.inc" Guid="*">
+                        <File Id="ifwr.inc" KeyPath="yes" Source="$(var.SrcDir)\phast\ifwr.inc" />
+                    </Component>
+                    <Component Id="incidx.f90" Guid="*">
+                        <File Id="incidx.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\incidx.f90" />
+                    </Component>
+                    <Component Id="indx_rewi.f90" Guid="*">
+                        <File Id="indx_rewi.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\indx_rewi.f90" />
+                    </Component>
+                    <Component Id="indx_rewi_bc.f90" Guid="*">
+                        <File Id="indx_rewi_bc.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\indx_rewi_bc.f90" />
+                    </Component>
+                    <Component Id="init1.f90" Guid="*">
+                        <File Id="init1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\init1.f90" />
+                    </Component>
+                    <Component Id="init2_1.f90" Guid="*">
+                        <File Id="init2_1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\init2_1.f90" />
+                    </Component>
+                    <Component Id="init2_2.f90" Guid="*">
+                        <File Id="init2_2.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\init2_2.f90" />
+                    </Component>
+                    <Component Id="init2_3.f90" Guid="*">
+                        <File Id="init2_3.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\init2_3.f90" />
+                    </Component>
+                    <Component Id="init2_post_ss.f90" Guid="*">
+                        <File Id="init2_post_ss.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\init2_post_ss.f90" />
+                    </Component>
+                    <Component Id="init3.f90" Guid="*">
+                        <File Id="init3.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\init3.f90" />
+                    </Component>
+                    <Component Id="interpolate_mod.f90" Guid="*">
+                        <File Id="interpolate_mod.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\interpolate_mod.f90" />
+                    </Component>
+                    <Component Id="ldchar.f90" Guid="*">
+                        <File Id="ldchar.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ldchar.f90" />
+                    </Component>
+                    <Component Id="ldchar_bc.f90" Guid="*">
+                        <File Id="ldchar_bc.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ldchar_bc.f90" />
+                    </Component>
+                    <Component Id="ldci.f90" Guid="*">
+                        <File Id="ldci.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ldci.f90" />
+                    </Component>
+                    <Component Id="ldcir.f90" Guid="*">
+                        <File Id="ldcir.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ldcir.f90" />
+                    </Component>
+                    <Component Id="ldind.f90" Guid="*">
+                        <File Id="ldind.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ldind.f90" />
+                    </Component>
+                    <Component Id="ldipen.f90" Guid="*">
+                        <File Id="ldipen.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ldipen.f90" />
+                    </Component>
+                    <Component Id="ldmar1.f90" Guid="*">
+                        <File Id="ldmar1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ldmar1.f90" />
+                    </Component>
+                    <Component Id="ld_seg_mod.f90" Guid="*">
+                        <File Id="ld_seg_mod.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\ld_seg_mod.f90" />
+                    </Component>
+                    <Component Id="lsolv.f90" Guid="*">
+                        <File Id="lsolv.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\lsolv.f90" />
+                    </Component>
+                    <Component Id="Makefile" Guid="*">
+                        <File Id="Makefile" KeyPath="yes" Source="$(var.SrcDir)\phast\Makefile" />
+                    </Component>
+                    <Component Id="media_hdf.f90" Guid="*">
+                        <File Id="media_hdf.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\media_hdf.f90" />
+                    </Component>
+                    <Component Id="merge.c" Guid="*">
+                        <File Id="merge.c" KeyPath="yes" Source="$(var.SrcDir)\phast\merge.c" />
+                    </Component>
+                    <Component Id="modules.f90" Guid="*">
+                        <File Id="modules.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\modules.f90" />
+                    </Component>
+                    <Component Id="mpimod.F90" Guid="*">
+                        <File Id="mpimod.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\mpimod.F90" />
+                    </Component>
+                    <Component Id="mtoijk.f90" Guid="*">
+                        <File Id="mtoijk.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\mtoijk.f90" />
+                    </Component>
+                    <Component Id="nintrp.f90" Guid="*">
+                        <File Id="nintrp.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\nintrp.f90" />
+                    </Component>
+                    <Component Id="openf.F90" Guid="*">
+                        <File Id="openf.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\openf.F90" />
+                    </Component>
+                    <Component Id="phast.F90" Guid="*">
+                        <File Id="phast.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\phast.F90" />
+                    </Component>
+                    <Component Id="phast.rev" Guid="*">
+                        <File Id="phast.rev" KeyPath="yes" Source="$(var.SrcDir)\phast\phast.rev" />
+                    </Component>
+                    <Component Id="phastproto.h" Guid="*">
+                        <File Id="phastproto.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phastproto.h" />
+                    </Component>
+                    <Component Id="phast_files.c" Guid="*">
+                        <File Id="phast_files.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phast_files.c" />
+                    </Component>
+                    <Component Id="phast_files.h" Guid="*">
+                        <File Id="phast_files.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phast_files.h" />
+                    </Component>
+                    <Component Id="phast_root.F90" Guid="*">
+                        <File Id="phast_root.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\phast_root.F90" />
+                    </Component>
+                    <Component Id="phast_slave.F90" Guid="*">
+                        <File Id="phast_slave.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\phast_slave.F90" />
+                    </Component>
+                    <Component Id="Pointers_to_fortran.h" Guid="*">
+                        <File Id="Pointers_to_fortran.h" KeyPath="yes" Source="$(var.SrcDir)\phast\Pointers_to_fortran.h" />
+                    </Component>
+                    <Component Id="prchar.f90" Guid="*">
+                        <File Id="prchar.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\prchar.f90" />
+                    </Component>
+                    <Component Id="print_control_mod.f90" Guid="*">
+                        <File Id="print_control_mod.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\print_control_mod.f90" />
+                    </Component>
+                    <Component Id="prntar.f90" Guid="*">
+                        <File Id="prntar.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\prntar.f90" />
+                    </Component>
+                    <Component Id="rbord.f90" Guid="*">
+                        <File Id="rbord.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\rbord.f90" />
+                    </Component>
+                    <Component Id="read1.f90" Guid="*">
+                        <File Id="read1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\read1.f90" />
+                    </Component>
+                    <Component Id="read2.f90" Guid="*">
+                        <File Id="read2.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\read2.f90" />
+                    </Component>
+                    <Component Id="read3.f90" Guid="*">
+                        <File Id="read3.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\read3.f90" />
+                    </Component>
+                    <Component Id="reordr.f90" Guid="*">
+                        <File Id="reordr.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\reordr.f90" />
+                    </Component>
+                    <Component Id="rewi_mod.f90" Guid="*">
+                        <File Id="rewi_mod.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\rewi_mod.f90" />
+                    </Component>
+                    <Component Id="rfact.f90" Guid="*">
+                        <File Id="rfact.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\rfact.f90" />
+                    </Component>
+                    <Component Id="rfactm.f90" Guid="*">
+                        <File Id="rfactm.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\rfactm.f90" />
+                    </Component>
+                    <Component Id="rhsn.f90" Guid="*">
+                        <File Id="rhsn.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\rhsn.f90" />
+                    </Component>
+                    <Component Id="rhsn_ss_flow.f90" Guid="*">
+                        <File Id="rhsn_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\rhsn_ss_flow.f90" />
+                    </Component>
+                    <Component Id="sbcflo.f90" Guid="*">
+                        <File Id="sbcflo.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\sbcflo.f90" />
+                    </Component>
+                    <Component Id="scale_jds.f90" Guid="*">
+                        <File Id="scale_jds.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\scale_jds.f90" />
+                    </Component>
+                    <Component Id="simulate_ss_flow.f90" Guid="*">
+                        <File Id="simulate_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\simulate_ss_flow.f90" />
+                    </Component>
+                    <Component Id="slavesubs.c" Guid="*">
+                        <File Id="slavesubs.c" KeyPath="yes" Source="$(var.SrcDir)\phast\slavesubs.c" />
+                    </Component>
+                    <Component Id="stonb.f90" Guid="*">
+                        <File Id="stonb.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\stonb.f90" />
+                    </Component>
+                    <Component Id="sumcal1.f90" Guid="*">
+                        <File Id="sumcal1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\sumcal1.f90" />
+                    </Component>
+                    <Component Id="sumcal2.f90" Guid="*">
+                        <File Id="sumcal2.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\sumcal2.f90" />
+                    </Component>
+                    <Component Id="sumcal_ss_flow.f90" Guid="*">
+                        <File Id="sumcal_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\sumcal_ss_flow.f90" />
+                    </Component>
+                    <Component Id="terminate_phast.F90" Guid="*">
+                        <File Id="terminate_phast.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\terminate_phast.F90" />
+                    </Component>
+                    <Component Id="tfrds.f90" Guid="*">
+                        <File Id="tfrds.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\tfrds.f90" />
+                    </Component>
+                    <Component Id="timstp.f90" Guid="*">
+                        <File Id="timstp.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\timstp.f90" />
+                    </Component>
+                    <Component Id="timstp_ss_flow.f90" Guid="*">
+                        <File Id="timstp_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\timstp_ss_flow.f90" />
+                    </Component>
+                    <Component Id="update_print_flags.f90" Guid="*">
+                        <File Id="update_print_flags.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\update_print_flags.f90" />
+                    </Component>
+                    <Component Id="uppercase.f90" Guid="*">
+                        <File Id="uppercase.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\uppercase.f90" />
+                    </Component>
+                    <Component Id="usolv.f90" Guid="*">
+                        <File Id="usolv.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\usolv.f90" />
+                    </Component>
+                    <Component Id="viscos.f90" Guid="*">
+                        <File Id="viscos.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\viscos.f90" />
+                    </Component>
+                    <Component Id="vpsv.f90" Guid="*">
+                        <File Id="vpsv.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\vpsv.f90" />
+                    </Component>
+                    <Component Id="wbbal.f90" Guid="*">
+                        <File Id="wbbal.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\wbbal.f90" />
+                    </Component>
+                    <Component Id="wbcflo.f90" Guid="*">
+                        <File Id="wbcflo.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\wbcflo.f90" />
+                    </Component>
+                    <Component Id="wellsc.f90" Guid="*">
+                        <File Id="wellsc.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\wellsc.f90" />
+                    </Component>
+                    <Component Id="wellsc_ss_flow.f90" Guid="*">
+                        <File Id="wellsc_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\wellsc_ss_flow.f90" />
+                    </Component>
+                    <Component Id="wellsr.f90" Guid="*">
+                        <File Id="wellsr.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\wellsr.f90" />
+                    </Component>
+                    <Component Id="wellsr_ss_flow.f90" Guid="*">
+                        <File Id="wellsr_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\wellsr_ss_flow.f90" />
+                    </Component>
+                    <Component Id="welris.f90" Guid="*">
+                        <File Id="welris.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\welris.f90" />
+                    </Component>
+                    <Component Id="wfdydz.f90" Guid="*">
+                        <File Id="wfdydz.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\wfdydz.f90" />
+                    </Component>
+                    <Component Id="write1.f90" Guid="*">
+                        <File Id="write1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write1.f90" />
+                    </Component>
+                    <Component Id="write2_1.f90" Guid="*">
+                        <File Id="write2_1.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write2_1.f90" />
+                    </Component>
+                    <Component Id="write2_2.f90" Guid="*">
+                        <File Id="write2_2.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write2_2.f90" />
+                    </Component>
+                    <Component Id="write3.f90" Guid="*">
+                        <File Id="write3.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write3.f90" />
+                    </Component>
+                    <Component Id="write3_ss_flow.f90" Guid="*">
+                        <File Id="write3_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write3_ss_flow.f90" />
+                    </Component>
+                    <Component Id="write4.f90" Guid="*">
+                        <File Id="write4.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write4.f90" />
+                    </Component>
+                    <Component Id="write5.f90" Guid="*">
+                        <File Id="write5.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write5.f90" />
+                    </Component>
+                    <Component Id="write5_ss_flow.f90" Guid="*">
+                        <File Id="write5_ss_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write5_ss_flow.f90" />
+                    </Component>
+                    <Component Id="write6.f90" Guid="*">
+                        <File Id="write6.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\write6.f90" />
+                    </Component>
+                    <Component Id="zone_flow.f90" Guid="*">
+                        <File Id="zone_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\zone_flow.f90" />
+                    </Component>
+                    <Component Id="zone_flow_ss.f90" Guid="*">
+                        <File Id="zone_flow_ss.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\zone_flow_ss.f90" />
+                    </Component>
+                    <Directory Id="PHAST_KDtree" Name="KDtree">
+                        <Component Id="PHAST_KDtree.cpp" Guid="*">
+                            <File Id="PHAST_KDtree.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\KDtree\KDtree.cpp" />
+                        </Component>
+                        <Component Id="PHAST_KDtree.h" Guid="*">
+                            <File Id="PHAST_KDtree.h" KeyPath="yes" Source="$(var.SrcDir)\phast\KDtree\KDtree.h" />
+                        </Component>
+                        <Component Id="PHAST_kdtree2.cpp" Guid="*">
+                            <File Id="PHAST_kdtree2.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\KDtree\kdtree2.cpp" />
+                        </Component>
+                        <Component Id="PHAST_kdtree2.hpp" Guid="*">
+                            <File Id="PHAST_kdtree2.hpp" KeyPath="yes" Source="$(var.SrcDir)\phast\KDtree\kdtree2.hpp" />
+                        </Component>
+                        <Component Id="PHAST_Point.cpp" Guid="*">
+                            <File Id="PHAST_Point.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Point.cpp" />
+                        </Component>
+                        <Component Id="PHAST_Point.h" Guid="*">
+                            <File Id="PHAST_Point.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Point.h" />
+                        </Component>
+                        <Component Id="PHAST_Cell_Face.h" Guid="*">
+                            <File Id="PHAST_Cell_Face.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Cell_Face.h" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="phreeqcpp" Name="phreeqcpp">
+                        <Component Id="char_star.h" Guid="*">
+                            <File Id="char_star.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\char_star.h" />
+                        </Component>
+                        <Component Id="class_main.cpp" Guid="*">
+                            <File Id="class_main.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\class_main.cpp" />
+                        </Component>
+                        <Component Id="cxxKinetics.cxx" Guid="*">
+                            <File Id="cxxKinetics.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\cxxKinetics.cxx" />
+                        </Component>
+                        <Component Id="cxxKinetics.h" Guid="*">
+                            <File Id="cxxKinetics.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\cxxKinetics.h" />
+                        </Component>
+                        <Component Id="cxxMix.cxx" Guid="*">
+                            <File Id="cxxMix.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\cxxMix.cxx" />
+                        </Component>
+                        <Component Id="cxxMix.h" Guid="*">
+                            <File Id="cxxMix.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\cxxMix.h" />
+                        </Component>
+                        <Component Id="Dictionary.cxx" Guid="*">
+                            <File Id="Dictionary.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Dictionary.cxx" />
+                        </Component>
+                        <Component Id="Dictionary.h" Guid="*">
+                            <File Id="Dictionary.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Dictionary.h" />
+                        </Component>
+                        <Component Id="dumper.cpp" Guid="*">
+                            <File Id="dumper.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\dumper.cpp" />
+                        </Component>
+                        <Component Id="dumper.h" Guid="*">
+                            <File Id="dumper.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\dumper.h" />
+                        </Component>
+                        <Component Id="Exchange.cxx" Guid="*">
+                            <File Id="Exchange.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Exchange.cxx" />
+                        </Component>
+                        <Component Id="Exchange.h" Guid="*">
+                            <File Id="Exchange.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Exchange.h" />
+                        </Component>
+                        <Component Id="ExchComp.cxx" Guid="*">
+                            <File Id="ExchComp.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\ExchComp.cxx" />
+                        </Component>
+                        <Component Id="ExchComp.h" Guid="*">
+                            <File Id="ExchComp.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\ExchComp.h" />
+                        </Component>
+                        <Component Id="GasPhase.cxx" Guid="*">
+                            <File Id="GasPhase.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\GasPhase.cxx" />
+                        </Component>
+                        <Component Id="GasPhase.h" Guid="*">
+                            <File Id="GasPhase.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\GasPhase.h" />
+                        </Component>
+                        <Component Id="ISolution.cxx" Guid="*">
+                            <File Id="ISolution.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\ISolution.cxx" />
+                        </Component>
+                        <Component Id="ISolution.h" Guid="*">
+                            <File Id="ISolution.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\ISolution.h" />
+                        </Component>
+                        <Component Id="ISolutionComp.cxx" Guid="*">
+                            <File Id="ISolutionComp.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\ISolutionComp.cxx" />
+                        </Component>
+                        <Component Id="ISolutionComp.h" Guid="*">
+                            <File Id="ISolutionComp.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\ISolutionComp.h" />
+                        </Component>
+                        <Component Id="KineticsComp.cxx" Guid="*">
+                            <File Id="KineticsComp.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\KineticsComp.cxx" />
+                        </Component>
+                        <Component Id="KineticsComp.h" Guid="*">
+                            <File Id="KineticsComp.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\KineticsComp.h" />
+                        </Component>
+                        <Component Id="NameDouble.cxx" Guid="*">
+                            <File Id="NameDouble.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\NameDouble.cxx" />
+                        </Component>
+                        <Component Id="NameDouble.h" Guid="*">
+                            <File Id="NameDouble.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\NameDouble.h" />
+                        </Component>
+                        <Component Id="NumKeyword.cxx" Guid="*">
+                            <File Id="NumKeyword.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\NumKeyword.cxx" />
+                        </Component>
+                        <Component Id="NumKeyword.h" Guid="*">
+                            <File Id="NumKeyword.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\NumKeyword.h" />
+                        </Component>
+                        <Component Id="Parser.cxx" Guid="*">
+                            <File Id="Parser.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Parser.cxx" />
+                        </Component>
+                        <Component Id="Parser.h" Guid="*">
+                            <File Id="Parser.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Parser.h" />
+                        </Component>
+                        <Component Id="Phreeqc.cpp" Guid="*">
+                            <File Id="Phreeqc.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Phreeqc.cpp" />
+                        </Component>
+                        <Component Id="Phreeqc.h" Guid="*">
+                            <File Id="Phreeqc.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Phreeqc.h" />
+                        </Component>
+                        <Component Id="Phreeqc_class.h" Guid="*">
+                            <File Id="Phreeqc_class.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Phreeqc_class.h" />
+                        </Component>
+                        <Component Id="PPassemblage.cxx" Guid="*">
+                            <File Id="PPassemblage.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\PPassemblage.cxx" />
+                        </Component>
+                        <Component Id="PPassemblage.h" Guid="*">
+                            <File Id="PPassemblage.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\PPassemblage.h" />
+                        </Component>
+                        <Component Id="PPassemblageComp.cxx" Guid="*">
+                            <File Id="PPassemblageComp.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\PPassemblageComp.cxx" />
+                        </Component>
+                        <Component Id="PPassemblageComp.h" Guid="*">
+                            <File Id="PPassemblageComp.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\PPassemblageComp.h" />
+                        </Component>
+                        <Component Id="Reaction.cxx" Guid="*">
+                            <File Id="Reaction.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Reaction.cxx" />
+                        </Component>
+                        <Component Id="Reaction.h" Guid="*">
+                            <File Id="Reaction.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Reaction.h" />
+                        </Component>
+                        <Component Id="ReadClass.cxx" Guid="*">
+                            <File Id="ReadClass.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\ReadClass.cxx" />
+                        </Component>
+                        <Component Id="runner.cpp" Guid="*">
+                            <File Id="runner.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\runner.cpp" />
+                        </Component>
+                        <Component Id="runner.h" Guid="*">
+                            <File Id="runner.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\runner.h" />
+                        </Component>
+                        <Component Id="SAXPhreeqc.cxx" Guid="*">
+                            <File Id="SAXPhreeqc.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SAXPhreeqc.cxx" />
+                        </Component>
+                        <Component Id="SAXPhreeqc.h" Guid="*">
+                            <File Id="SAXPhreeqc.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SAXPhreeqc.h" />
+                        </Component>
+                        <Component Id="SaxPhreeqcHandlers.h" Guid="*">
+                            <File Id="SaxPhreeqcHandlers.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SaxPhreeqcHandlers.h" />
+                        </Component>
+                        <Component Id="Solution.cxx" Guid="*">
+                            <File Id="Solution.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Solution.cxx" />
+                        </Component>
+                        <Component Id="Solution.h" Guid="*">
+                            <File Id="Solution.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Solution.h" />
+                        </Component>
+                        <Component Id="SolutionIsotope.cxx" Guid="*">
+                            <File Id="SolutionIsotope.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SolutionIsotope.cxx" />
+                        </Component>
+                        <Component Id="SolutionIsotope.h" Guid="*">
+                            <File Id="SolutionIsotope.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SolutionIsotope.h" />
+                        </Component>
+                        <Component Id="SolutionIsotopeList.cxx" Guid="*">
+                            <File Id="SolutionIsotopeList.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SolutionIsotopeList.cxx" />
+                        </Component>
+                        <Component Id="SolutionIsotopeList.h" Guid="*">
+                            <File Id="SolutionIsotopeList.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SolutionIsotopeList.h" />
+                        </Component>
+                        <Component Id="SSassemblage.cxx" Guid="*">
+                            <File Id="SSassemblage.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SSassemblage.cxx" />
+                        </Component>
+                        <Component Id="SSassemblage.h" Guid="*">
+                            <File Id="SSassemblage.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SSassemblage.h" />
+                        </Component>
+                        <Component Id="SSassemblageSS.cxx" Guid="*">
+                            <File Id="SSassemblageSS.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SSassemblageSS.cxx" />
+                        </Component>
+                        <Component Id="SSassemblageSS.h" Guid="*">
+                            <File Id="SSassemblageSS.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SSassemblageSS.h" />
+                        </Component>
+                        <Component Id="StorageBin.cxx" Guid="*">
+                            <File Id="StorageBin.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\StorageBin.cxx" />
+                        </Component>
+                        <Component Id="StorageBin.h" Guid="*">
+                            <File Id="StorageBin.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\StorageBin.h" />
+                        </Component>
+                        <Component Id="StorageBinList.cpp" Guid="*">
+                            <File Id="StorageBinList.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\StorageBinList.cpp" />
+                        </Component>
+                        <Component Id="StorageBinList.h" Guid="*">
+                            <File Id="StorageBinList.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\StorageBinList.h" />
+                        </Component>
+                        <Component Id="Surface.cxx" Guid="*">
+                            <File Id="Surface.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Surface.cxx" />
+                        </Component>
+                        <Component Id="Surface.h" Guid="*">
+                            <File Id="Surface.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Surface.h" />
+                        </Component>
+                        <Component Id="SurfaceCharge.cxx" Guid="*">
+                            <File Id="SurfaceCharge.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SurfaceCharge.cxx" />
+                        </Component>
+                        <Component Id="SurfaceCharge.h" Guid="*">
+                            <File Id="SurfaceCharge.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SurfaceCharge.h" />
+                        </Component>
+                        <Component Id="SurfaceComp.cxx" Guid="*">
+                            <File Id="SurfaceComp.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SurfaceComp.cxx" />
+                        </Component>
+                        <Component Id="SurfaceComp.h" Guid="*">
+                            <File Id="SurfaceComp.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\SurfaceComp.h" />
+                        </Component>
+                        <Component Id="System.cxx" Guid="*">
+                            <File Id="System.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\System.cxx" />
+                        </Component>
+                        <Component Id="System.h" Guid="*">
+                            <File Id="System.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\System.h" />
+                        </Component>
+                        <Component Id="Temperature.cxx" Guid="*">
+                            <File Id="Temperature.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Temperature.cxx" />
+                        </Component>
+                        <Component Id="Temperature.h" Guid="*">
+                            <File Id="Temperature.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Temperature.h" />
+                        </Component>
+                        <Component Id="Utils.cxx" Guid="*">
+                            <File Id="Utils.cxx" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Utils.cxx" />
+                        </Component>
+                        <Component Id="Utils.h" Guid="*">
+                            <File Id="Utils.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\Utils.h" />
+                        </Component>
+                        <Directory Id="phreeqc" Name="phreeqc">
+                            <Component Id="advection.c" Guid="*">
+                                <File Id="advection.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\advection.c" />
+                            </Component>
+                            <Component Id="basic.c" Guid="*">
+                                <File Id="basic.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\basic.c" />
+                            </Component>
+                            <Component Id="basic.h" Guid="*">
+                                <File Id="basic.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\basic.h" />
+                            </Component>
+                            <Component Id="basicsubs.c" Guid="*">
+                                <File Id="basicsubs.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\basicsubs.c" />
+                            </Component>
+                            <Component Id="cl1.c" Guid="*">
+                                <File Id="cl1.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\cl1.c" />
+                            </Component>
+                            <Component Id="cl1mp.c" Guid="*">
+                                <File Id="cl1mp.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\cl1mp.c" />
+                            </Component>
+                            <Component Id="cvdense.c" Guid="*">
+                                <File Id="cvdense.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\cvdense.c" />
+                            </Component>
+                            <Component Id="cvdense.h" Guid="*">
+                                <File Id="cvdense.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\cvdense.h" />
+                            </Component>
+                            <Component Id="cvode.c" Guid="*">
+                                <File Id="cvode.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\cvode.c" />
+                            </Component>
+                            <Component Id="cvode.h" Guid="*">
+                                <File Id="cvode.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\cvode.h" />
+                            </Component>
+                            <Component Id="dense.c" Guid="*">
+                                <File Id="dense.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\dense.c" />
+                            </Component>
+                            <Component Id="dense.h" Guid="*">
+                                <File Id="dense.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\dense.h" />
+                            </Component>
+                            <Component Id="dw.c" Guid="*">
+                                <File Id="dw.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\dw.c" />
+                            </Component>
+                            <Component Id="global.h" Guid="*">
+                                <File Id="global.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\global.h" />
+                            </Component>
+                            <Component Id="global_structures.h" Guid="*">
+                                <File Id="global_structures.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\global_structures.h" />
+                            </Component>
+                            <Component Id="input.c" Guid="*">
+                                <File Id="input.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\input.c" />
+                            </Component>
+                            <Component Id="input.h" Guid="*">
+                                <File Id="input.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\input.h" />
+                            </Component>
+                            <Component Id="integrate.c" Guid="*">
+                                <File Id="integrate.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\integrate.c" />
+                            </Component>
+                            <Component Id="inverse.c" Guid="*">
+                                <File Id="inverse.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\inverse.c" />
+                            </Component>
+                            <Component Id="isotopes.c" Guid="*">
+                                <File Id="isotopes.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\isotopes.c" />
+                            </Component>
+                            <Component Id="kinetics.c" Guid="*">
+                                <File Id="kinetics.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\kinetics.c" />
+                            </Component>
+                            <Component Id="kinetics.h" Guid="*">
+                                <File Id="kinetics.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\kinetics.h" />
+                            </Component>
+                            <Component Id="main.c" Guid="*">
+                                <File Id="main.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\main.c" />
+                            </Component>
+                            <Component Id="mainsubs.c" Guid="*">
+                                <File Id="mainsubs.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\mainsubs.c" />
+                            </Component>
+                            <Component Id="model.c" Guid="*">
+                                <File Id="model.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\model.c" />
+                            </Component>
+                            <Component Id="nvector.c" Guid="*">
+                                <File Id="nvector.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\nvector.c" />
+                            </Component>
+                            <Component Id="nvector.h" Guid="*">
+                                <File Id="nvector.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\nvector.h" />
+                            </Component>
+                            <Component Id="nvector_serial.c" Guid="*">
+                                <File Id="nvector_serial.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\nvector_serial.c" />
+                            </Component>
+                            <Component Id="nvector_serial.h" Guid="*">
+                                <File Id="nvector_serial.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\nvector_serial.h" />
+                            </Component>
+                            <Component Id="output.c" Guid="*">
+                                <File Id="output.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\output.c" />
+                            </Component>
+                            <Component Id="output.h" Guid="*">
+                                <File Id="output.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\output.h" />
+                            </Component>
+                            <Component Id="p2c.h" Guid="*">
+                                <File Id="p2c.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\p2c.h" />
+                            </Component>
+                            <Component Id="p2clib.c" Guid="*">
+                                <File Id="p2clib.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\p2clib.c" />
+                            </Component>
+                            <Component Id="parse.c" Guid="*">
+                                <File Id="parse.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\parse.c" />
+                            </Component>
+                            <Component Id="phqalloc.c" Guid="*">
+                                <File Id="phqalloc.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\phqalloc.c" />
+                            </Component>
+                            <Component Id="phqalloc.h" Guid="*">
+                                <File Id="phqalloc.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\phqalloc.h" />
+                            </Component>
+                            <Component Id="phreeqc_files.c" Guid="*">
+                                <File Id="phreeqc_files.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\phreeqc_files.c" />
+                            </Component>
+                            <Component Id="phrqproto.h" Guid="*">
+                                <File Id="phrqproto.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\phrqproto.h" />
+                            </Component>
+                            <Component Id="phrqtype.h" Guid="*">
+                                <File Id="phrqtype.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\phrqtype.h" />
+                            </Component>
+                            <Component Id="pitzer.c" Guid="*">
+                                <File Id="pitzer.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\pitzer.c" />
+                            </Component>
+                            <Component Id="pitzer.h" Guid="*">
+                                <File Id="pitzer.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\pitzer.h" />
+                            </Component>
+                            <Component Id="pitzer_structures.c" Guid="*">
+                                <File Id="pitzer_structures.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\pitzer_structures.c" />
+                            </Component>
+                            <Component Id="pitzer_structures.h" Guid="*">
+                                <File Id="pitzer_structures.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\pitzer_structures.h" />
+                            </Component>
+                            <Component Id="prep.c" Guid="*">
+                                <File Id="prep.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\prep.c" />
+                            </Component>
+                            <Component Id="print.c" Guid="*">
+                                <File Id="print.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\print.c" />
+                            </Component>
+                            <Component Id="read.c" Guid="*">
+                                <File Id="read.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\read.c" />
+                            </Component>
+                            <Component Id="readtr.c" Guid="*">
+                                <File Id="readtr.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\readtr.c" />
+                            </Component>
+                            <Component Id="sit.c" Guid="*">
+                                <File Id="sit.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\sit.c" />
+                            </Component>
+                            <Component Id="smalldense.c" Guid="*">
+                                <File Id="smalldense.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\smalldense.c" />
+                            </Component>
+                            <Component Id="smalldense.h" Guid="*">
+                                <File Id="smalldense.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\smalldense.h" />
+                            </Component>
+                            <Component Id="spread.c" Guid="*">
+                                <File Id="spread.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\spread.c" />
+                            </Component>
+                            <Component Id="step.c" Guid="*">
+                                <File Id="step.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\step.c" />
+                            </Component>
+                            <Component Id="structures.c" Guid="*">
+                                <File Id="structures.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\structures.c" />
+                            </Component>
+                            <Component Id="sundialsmath.c" Guid="*">
+                                <File Id="sundialsmath.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\sundialsmath.c" />
+                            </Component>
+                            <Component Id="sundialsmath.h" Guid="*">
+                                <File Id="sundialsmath.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\sundialsmath.h" />
+                            </Component>
+                            <Component Id="sundialstypes.h" Guid="*">
+                                <File Id="sundialstypes.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\sundialstypes.h" />
+                            </Component>
+                            <Component Id="tally.c" Guid="*">
+                                <File Id="tally.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\tally.c" />
+                            </Component>
+                            <Component Id="tidy.c" Guid="*">
+                                <File Id="tidy.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\tidy.c" />
+                            </Component>
+                            <Component Id="transport.c" Guid="*">
+                                <File Id="transport.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\transport.c" />
+                            </Component>
+                            <Component Id="utilities.c" Guid="*">
+                                <File Id="utilities.c" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\phreeqc\utilities.c" />
+                            </Component>
+                        </Directory>
+                    </Directory>
+                    <Directory Id="win32" Name="win32">
+                        <Component Id="phast.dsp" Guid="*">
+                            <File Id="phast.dsp" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\phast.dsp" />
+                        </Component>
+                        <Component Id="phast.dsw" Guid="*">
+                            <File Id="phast.dsw" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\phast.dsw" />
+                        </Component>
+                        <Component Id="phast.rc" Guid="*">
+                            <File Id="phast.rc" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\phast.rc" />
+                        </Component>
+                        <Component Id="phastpp.sln" Guid="*">
+                            <File Id="phastpp.sln" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\phastpp.sln" />
+                        </Component>
+                        <Component Id="phastpp.vfproj" Guid="*">
+                            <File Id="phastpp.vfproj" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\phastpp.vfproj" />
+                        </Component>
+                        <Component Id="phast_version.h" Guid="*">
+                            <File Id="phast_version.h" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\phast_version.h" />
+                        </Component>
+                        <Component Id="phreeqcpp.vcproj" Guid="*">
+                            <File Id="phreeqcpp.vcproj" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\phreeqcpp.vcproj" />
+                        </Component>
+                        <Component Id="resource.fd" Guid="*">
+                            <File Id="resource.fd" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\resource.fd" />
+                        </Component>
+                        <Component Id="resource.h" Guid="*">
+                            <File Id="resource.h" KeyPath="yes" Source="$(var.SrcDir)\phast\win32\resource.h" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="win32_2005" Name="win32_2005">
+                        <Component Id="phast.rc_1" Guid="*">
+                            <File Id="phast.rc_1" KeyPath="yes" Source="$(var.SrcDir)\phast\win32_2005\phast.rc" />
+                        </Component>
+                        <Component Id="phastpp.sln_1" Guid="*">
+                            <File Id="phastpp.sln_1" KeyPath="yes" Source="$(var.SrcDir)\phast\win32_2005\phastpp.sln" />
+                        </Component>
+                        <Component Id="phastpp.vfproj_1" Guid="*">
+                            <File Id="phastpp.vfproj_1" KeyPath="yes" Source="$(var.SrcDir)\phast\win32_2005\phastpp.vfproj" />
+                        </Component>
+                        <Component Id="phast_version.h_1" Guid="*">
+                            <File Id="phast_version.h_1" KeyPath="yes" Source="$(var.SrcDir)\phast\win32_2005\phast_version.h" />
+                        </Component>
+                        <Component Id="phreeqcpp.vcproj_1" Guid="*">
+                            <File Id="phreeqcpp.vcproj_1" KeyPath="yes" Source="$(var.SrcDir)\phast\win32_2005\phreeqcpp.vcproj" />
+                        </Component>
+                        <Component Id="resource.fd_1" Guid="*">
+                            <File Id="resource.fd_1" KeyPath="yes" Source="$(var.SrcDir)\phast\win32_2005\resource.fd" />
+                        </Component>
+                        <Component Id="resource.h_1" Guid="*">
+                            <File Id="resource.h_1" KeyPath="yes" Source="$(var.SrcDir)\phast\win32_2005\resource.h" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="phasthdf" Name="phasthdf">
+                    <Component Id="build.xml" Guid="*">
+                        <File Id="build.xml" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\build.xml" />
+                    </Component>
+                    <Directory Id="hdf_java" Name="hdf-java">
+                        <Directory Id="win" Name="win">
+                            <Component Id="hdf_java_2.3.jar" Guid="*">
+                                <File Id="hdf_java_2.3.jar" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\hdf-java\win\hdf-java-2.3.jar" />
+                            </Component>
+                        </Directory>
+                    </Directory>
+                    <Directory Id="src_1" Name="src">
+                        <Directory Id="corejava" Name="corejava">
+                            <Component Id="Format.java" Guid="*">
+                                <File Id="Format.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\corejava\Format.java" />
+                            </Component>
+                        </Directory>
+                        <Directory Id="gov" Name="gov">
+                            <Directory Id="usgs" Name="usgs">
+                                <Component Id="Splash.java" Guid="*">
+                                    <File Id="Splash.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\Splash.java" />
+                                </Component>
+                                <Directory Id="phast_1" Name="phast">
+                                    <Component Id="IProgressMonitor.java" Guid="*">
+                                        <File Id="IProgressMonitor.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\IProgressMonitor.java" />
+                                    </Component>
+                                    <Component Id="JCheckList.java" Guid="*">
+                                        <File Id="JCheckList.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JCheckList.java" />
+                                    </Component>
+                                    <Component Id="JMalformedHDFException.java" Guid="*">
+                                        <File Id="JMalformedHDFException.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JMalformedHDFException.java" />
+                                    </Component>
+                                    <Component Id="JPage1.form" Guid="*">
+                                        <File Id="JPage1.form" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JPage1.form" />
+                                    </Component>
+                                    <Component Id="JPage1.java" Guid="*">
+                                        <File Id="JPage1.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JPage1.java" />
+                                    </Component>
+                                    <Component Id="JPage2.form" Guid="*">
+                                        <File Id="JPage2.form" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JPage2.form" />
+                                    </Component>
+                                    <Component Id="JPage2.java" Guid="*">
+                                        <File Id="JPage2.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JPage2.java" />
+                                    </Component>
+                                    <Component Id="JPage2Tab.form" Guid="*">
+                                        <File Id="JPage2Tab.form" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JPage2Tab.form" />
+                                    </Component>
+                                    <Component Id="JPage2Tab.java" Guid="*">
+                                        <File Id="JPage2Tab.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JPage2Tab.java" />
+                                    </Component>
+                                    <Component Id="JPage3.form" Guid="*">
+                                        <File Id="JPage3.form" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JPage3.form" />
+                                    </Component>
+                                    <Component Id="JPage3.java" Guid="*">
+                                        <File Id="JPage3.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JPage3.java" />
+                                    </Component>
+                                    <Component Id="JWizardFrame.java" Guid="*">
+                                        <File Id="JWizardFrame.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JWizardFrame.java" />
+                                    </Component>
+                                    <Component Id="JWizardPanel.form" Guid="*">
+                                        <File Id="JWizardPanel.form" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JWizardPanel.form" />
+                                    </Component>
+                                    <Component Id="JWizardPanel.java" Guid="*">
+                                        <File Id="JWizardPanel.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\JWizardPanel.java" />
+                                    </Component>
+                                    <Component Id="ModalProgressMonitor.java" Guid="*">
+                                        <File Id="ModalProgressMonitor.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\ModalProgressMonitor.java" />
+                                    </Component>
+                                    <Component Id="PhastH5File.java" Guid="*">
+                                        <File Id="PhastH5File.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\gov\usgs\phast\PhastH5File.java" />
+                                    </Component>
+                                </Directory>
+                            </Directory>
+                        </Directory>
+                        <Directory Id="images" Name="images">
+                            <Component Id="splash.jpeg" Guid="*">
+                                <File Id="splash.jpeg" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\images\splash.jpeg" />
+                            </Component>
+                        </Directory>
+                        <Directory Id="sample" Name="sample">
+                            <Component Id="SwingWorker.java" Guid="*">
+                                <File Id="SwingWorker.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\src\sample\SwingWorker.java" />
+                            </Component>
+                        </Directory>
+                    </Directory>
+                    <Directory Id="test" Name="test">
+                        <Directory Id="corejava_1" Name="corejava">
+                            <Component Id="CorejavaSuite.java" Guid="*">
+                                <File Id="CorejavaSuite.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\corejava\CorejavaSuite.java" />
+                            </Component>
+                            <Component Id="FormatTest.java" Guid="*">
+                                <File Id="FormatTest.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\corejava\FormatTest.java" />
+                            </Component>
+                        </Directory>
+                        <Directory Id="gov_1" Name="gov">
+                            <Component Id="GovSuite.java" Guid="*">
+                                <File Id="GovSuite.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\GovSuite.java" />
+                            </Component>
+                            <Directory Id="usgs_1" Name="usgs">
+                                <Component Id="UsgsSuite.java" Guid="*">
+                                    <File Id="UsgsSuite.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\UsgsSuite.java" />
+                                </Component>
+                                <Directory Id="phast_2" Name="phast">
+                                    <Component Id="JCheckListTest.java" Guid="*">
+                                        <File Id="JCheckListTest.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\JCheckListTest.java" />
+                                    </Component>
+                                    <Component Id="JPage1Test.java" Guid="*">
+                                        <File Id="JPage1Test.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\JPage1Test.java" />
+                                    </Component>
+                                    <Component Id="JPage2TabTest.java" Guid="*">
+                                        <File Id="JPage2TabTest.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\JPage2TabTest.java" />
+                                    </Component>
+                                    <Component Id="JPage2Test.java" Guid="*">
+                                        <File Id="JPage2Test.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\JPage2Test.java" />
+                                    </Component>
+                                    <Component Id="JPage3Test.java" Guid="*">
+                                        <File Id="JPage3Test.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\JPage3Test.java" />
+                                    </Component>
+                                    <Component Id="JPhastHDFTest.java" Guid="*">
+                                        <File Id="JPhastHDFTest.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\JPhastHDFTest.java" />
+                                    </Component>
+                                    <Component Id="JWizardFrameTest.java" Guid="*">
+                                        <File Id="JWizardFrameTest.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\JWizardFrameTest.java" />
+                                    </Component>
+                                    <Component Id="JWizardPanelTest.java" Guid="*">
+                                        <File Id="JWizardPanelTest.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\JWizardPanelTest.java" />
+                                    </Component>
+                                    <Component Id="ModalProgressMonitorTest.java" Guid="*">
+                                        <File Id="ModalProgressMonitorTest.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\ModalProgressMonitorTest.java" />
+                                    </Component>
+                                    <Component Id="PhastH5FileTest.java" Guid="*">
+                                        <File Id="PhastH5FileTest.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\PhastH5FileTest.java" />
+                                    </Component>
+                                    <Component Id="PhastSuite.java" Guid="*">
+                                        <File Id="PhastSuite.java" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\test\gov\usgs\phast\PhastSuite.java" />
+                                    </Component>
+                                </Directory>
+                            </Directory>
+                        </Directory>
+                    </Directory>
+                    <Directory Id="win32_1" Name="win32">
+                        <Component Id="phastexport.cpp" Guid="*">
+                            <File Id="phastexport.cpp" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.cpp" />
+                        </Component>
+                        <Component Id="phastexport.dsp" Guid="*">
+                            <File Id="phastexport.dsp" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.dsp" />
+                        </Component>
+                        <Component Id="phastexport.dsw" Guid="*">
+                            <File Id="phastexport.dsw" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.dsw" />
+                        </Component>
+                        <Component Id="phastexport.h" Guid="*">
+                            <File Id="phastexport.h" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.h" />
+                        </Component>
+                        <Component Id="phastexport.ico" Guid="*">
+                            <File Id="phastexport.ico" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.ico" />
+                        </Component>
+                        <Component Id="phastexport.rc" Guid="*">
+                            <File Id="phastexport.rc" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.rc" />
+                        </Component>
+                        <Component Id="phastexport.sln" Guid="*">
+                            <File Id="phastexport.sln" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.sln" />
+                        </Component>
+                        <Component Id="phastexport.vcproj" Guid="*">
+                            <File Id="phastexport.vcproj" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.vcproj" />
+                        </Component>
+                        <Component Id="phasthdf_version.h" Guid="*">
+                            <File Id="phasthdf_version.h" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phasthdf_version.h" />
+                        </Component>
+                        <Component Id="resource.fd_2" Guid="*">
+                            <File Id="resource.fd_2" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\resource.fd" />
+                        </Component>
+                        <Component Id="resource.h_2" Guid="*">
+                            <File Id="resource.h_2" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\resource.h" />
+                        </Component>
+                        <Component Id="small.ico" Guid="*">
+                            <File Id="small.ico" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\small.ico" />
+                        </Component>
+                        <Component Id="StdAfx.cpp" Guid="*">
+                            <File Id="StdAfx.cpp" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\StdAfx.cpp" />
+                        </Component>
+                        <Component Id="StdAfx.h" Guid="*">
+                            <File Id="StdAfx.h" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\StdAfx.h" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="phastinput" Name="phastinput">
+                    <Component Id="accumulate.c" Guid="*">
+                        <File Id="accumulate.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\accumulate.c" />
+                    </Component>
+                    <Component Id="ArcRaster.cpp" Guid="*">
+                        <File Id="ArcRaster.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\ArcRaster.cpp" />
+                    </Component>
+                    <Component Id="ArcRaster.h" Guid="*">
+                        <File Id="ArcRaster.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\ArcRaster.h" />
+                    </Component>
+                    <Component Id="BC_info.cpp" Guid="*">
+                        <File Id="BC_info.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\BC_info.cpp" />
+                    </Component>
+                    <Component Id="BC_info.h" Guid="*">
+                        <File Id="BC_info.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\BC_info.h" />
+                    </Component>
+                    <Component Id="check.c" Guid="*">
+                        <File Id="check.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\check.c" />
+                    </Component>
+                    <Component Id="Cube.cpp" Guid="*">
+                        <File Id="Cube.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Cube.cpp" />
+                    </Component>
+                    <Component Id="Cube.h" Guid="*">
+                        <File Id="Cube.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Cube.h" />
+                    </Component>
+                    <Component Id="Data_source.cpp" Guid="*">
+                        <File Id="Data_source.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Data_source.cpp" />
+                    </Component>
+                    <Component Id="Data_source.h" Guid="*">
+                        <File Id="Data_source.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Data_source.h" />
+                    </Component>
+                    <Component Id="Domain.cpp" Guid="*">
+                        <File Id="Domain.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Domain.cpp" />
+                    </Component>
+                    <Component Id="Domain.h" Guid="*">
+                        <File Id="Domain.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Domain.h" />
+                    </Component>
+                    <Component Id="Drain.cpp" Guid="*">
+                        <File Id="Drain.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Drain.cpp" />
+                    </Component>
+                    <Component Id="Drain.h" Guid="*">
+                        <File Id="Drain.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Drain.h" />
+                    </Component>
+                    <Component Id="Exterior_cell.cpp" Guid="*">
+                        <File Id="Exterior_cell.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Exterior_cell.cpp" />
+                    </Component>
+                    <Component Id="Exterior_cell.h" Guid="*">
+                        <File Id="Exterior_cell.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Exterior_cell.h" />
+                    </Component>
+                    <Component Id="Filedata.cpp" Guid="*">
+                        <File Id="Filedata.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Filedata.cpp" />
+                    </Component>
+                    <Component Id="Filedata.h" Guid="*">
+                        <File Id="Filedata.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Filedata.h" />
+                    </Component>
+                    <Component Id="getopt.c" Guid="*">
+                        <File Id="getopt.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\getopt.c" />
+                    </Component>
+                    <Component Id="getopt.h" Guid="*">
+                        <File Id="getopt.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\getopt.h" />
+                    </Component>
+                    <Component Id="gpc.c" Guid="*">
+                        <File Id="gpc.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\gpc.c" />
+                    </Component>
+                    <Component Id="gpc.h" Guid="*">
+                        <File Id="gpc.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\gpc.h" />
+                    </Component>
+                    <Component Id="gpc_helper.c" Guid="*">
+                        <File Id="gpc_helper.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\gpc_helper.c" />
+                    </Component>
+                    <Component Id="gpc_helper.h" Guid="*">
+                        <File Id="gpc_helper.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\gpc_helper.h" />
+                    </Component>
+                    <Component Id="hstinpt.h" Guid="*">
+                        <File Id="hstinpt.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\hstinpt.h" />
+                    </Component>
+                    <Component Id="index_range.h" Guid="*">
+                        <File Id="index_range.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\index_range.h" />
+                    </Component>
+                    <Component Id="inputproto.h" Guid="*">
+                        <File Id="inputproto.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\inputproto.h" />
+                    </Component>
+                    <Component Id="main.c_1" Guid="*">
+                        <File Id="main.c_1" KeyPath="yes" Source="$(var.SrcDir)\phastinput\main.c" />
+                    </Component>
+                    <Component Id="Makefile_1" Guid="*">
+                        <File Id="Makefile_1" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Makefile" />
+                    </Component>
+                    <Component Id="message.c" Guid="*">
+                        <File Id="message.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\message.c" />
+                    </Component>
+                    <Component Id="message.h" Guid="*">
+                        <File Id="message.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\message.h" />
+                    </Component>
+                    <Component Id="Mix.h" Guid="*">
+                        <File Id="Mix.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Mix.h" />
+                    </Component>
+                    <Component Id="PHAST_polygon.cpp" Guid="*">
+                        <File Id="PHAST_polygon.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\PHAST_polygon.cpp" />
+                    </Component>
+                    <Component Id="PHAST_polygon.h" Guid="*">
+                        <File Id="PHAST_polygon.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\PHAST_polygon.h" />
+                    </Component>
+                    <Component Id="PHAST_Transform.cpp" Guid="*">
+                        <File Id="PHAST_Transform.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\PHAST_Transform.cpp" />
+                    </Component>
+                    <Component Id="PHAST_Transform.h" Guid="*">
+                        <File Id="PHAST_Transform.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\PHAST_Transform.h" />
+                    </Component>
+                    <Component Id="Polygon_tree.cpp" Guid="*">
+                        <File Id="Polygon_tree.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Polygon_tree.cpp" />
+                    </Component>
+                    <Component Id="Polygon_tree.h" Guid="*">
+                        <File Id="Polygon_tree.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Polygon_tree.h" />
+                    </Component>
+                    <Component Id="Polyhedron.cpp" Guid="*">
+                        <File Id="Polyhedron.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Polyhedron.cpp" />
+                    </Component>
+                    <Component Id="Polyhedron.h" Guid="*">
+                        <File Id="Polyhedron.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Polyhedron.h" />
+                    </Component>
+                    <Component Id="Prism.cpp" Guid="*">
+                        <File Id="Prism.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Prism.cpp" />
+                    </Component>
+                    <Component Id="Prism.h" Guid="*">
+                        <File Id="Prism.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Prism.h" />
+                    </Component>
+                    <Component Id="property.h" Guid="*">
+                        <File Id="property.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\property.h" />
+                    </Component>
+                    <Component Id="read.c_1" Guid="*">
+                        <File Id="read.c_1" KeyPath="yes" Source="$(var.SrcDir)\phastinput\read.c" />
+                    </Component>
+                    <Component Id="River.h" Guid="*">
+                        <File Id="River.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\River.h" />
+                    </Component>
+                    <Component Id="rivers.c" Guid="*">
+                        <File Id="rivers.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\rivers.c" />
+                    </Component>
+                    <Component Id="structures.c_1" Guid="*">
+                        <File Id="structures.c_1" KeyPath="yes" Source="$(var.SrcDir)\phastinput\structures.c" />
+                    </Component>
+                    <Component Id="tailor.h" Guid="*">
+                        <File Id="tailor.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\tailor.h" />
+                    </Component>
+                    <Component Id="time.c" Guid="*">
+                        <File Id="time.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\time.c" />
+                    </Component>
+                    <Component Id="timepi.h" Guid="*">
+                        <File Id="timepi.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\timepi.h" />
+                    </Component>
+                    <Component Id="UniqueMap.h" Guid="*">
+                        <File Id="UniqueMap.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\UniqueMap.h" />
+                    </Component>
+                    <Component Id="units_impl.cxx" Guid="*">
+                        <File Id="units_impl.cxx" KeyPath="yes" Source="$(var.SrcDir)\phastinput\units_impl.cxx" />
+                    </Component>
+                    <Component Id="unit_impl.cxx" Guid="*">
+                        <File Id="unit_impl.cxx" KeyPath="yes" Source="$(var.SrcDir)\phastinput\unit_impl.cxx" />
+                    </Component>
+                    <Component Id="unit_impl.h" Guid="*">
+                        <File Id="unit_impl.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\unit_impl.h" />
+                    </Component>
+                    <Component Id="utilities.c_1" Guid="*">
+                        <File Id="utilities.c_1" KeyPath="yes" Source="$(var.SrcDir)\phastinput\utilities.c" />
+                    </Component>
+                    <Component Id="Utilities.h" Guid="*">
+                        <File Id="Utilities.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Utilities.h" />
+                    </Component>
+                    <Component Id="Wedge.cpp" Guid="*">
+                        <File Id="Wedge.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Wedge.cpp" />
+                    </Component>
+                    <Component Id="Wedge.h" Guid="*">
+                        <File Id="Wedge.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Wedge.h" />
+                    </Component>
+                    <Component Id="wells.c" Guid="*">
+                        <File Id="wells.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\wells.c" />
+                    </Component>
+                    <Component Id="wphast.h" Guid="*">
+                        <File Id="wphast.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\wphast.h" />
+                    </Component>
+                    <Component Id="write.c" Guid="*">
+                        <File Id="write.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\write.c" />
+                    </Component>
+                    <Component Id="XYZfile.cpp" Guid="*">
+                        <File Id="XYZfile.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\XYZfile.cpp" />
+                    </Component>
+                    <Component Id="XYZfile.h" Guid="*">
+                        <File Id="XYZfile.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\XYZfile.h" />
+                    </Component>
+                    <Component Id="XYZTfile.cpp" Guid="*">
+                        <File Id="XYZTfile.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\XYZTfile.cpp" />
+                    </Component>
+                    <Component Id="XYZTfile.h" Guid="*">
+                        <File Id="XYZTfile.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\XYZTfile.h" />
+                    </Component>
+                    <Component Id="zone.cpp" Guid="*">
+                        <File Id="zone.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\zone.cpp" />
+                    </Component>
+                    <Component Id="zone.h" Guid="*">
+                        <File Id="zone.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\zone.h" />
+                    </Component>
+                    <Component Id="Zone_budget.cpp" Guid="*">
+                        <File Id="Zone_budget.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Zone_budget.cpp" />
+                    </Component>
+                    <Component Id="Zone_budget.h" Guid="*">
+                        <File Id="Zone_budget.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Zone_budget.h" />
+                    </Component>
+                    <Directory Id="KDtree" Name="KDtree">
+                        <Component Id="KDtree.cpp" Guid="*">
+                            <File Id="KDtree.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\KDtree.cpp" />
+                        </Component>
+                        <Component Id="KDtree.h" Guid="*">
+                            <File Id="KDtree.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\KDtree.h" />
+                        </Component>
+                        <Component Id="kdtree2.cpp" Guid="*">
+                            <File Id="kdtree2.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\kdtree2.cpp" />
+                        </Component>
+                        <Component Id="kdtree2.hpp" Guid="*">
+                            <File Id="kdtree2.hpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\kdtree2.hpp" />
+                        </Component>
+                        <Component Id="Point.cpp" Guid="*">
+                            <File Id="Point.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Point.cpp" />
+                        </Component>
+                        <Component Id="Point.h" Guid="*">
+                            <File Id="Point.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Point.h" />
+                        </Component>
+                        <Component Id="Cell_Face.h" Guid="*">
+                            <File Id="Cell_Face.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Cell_Face.h" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="NNInterpolator" Name="NNInterpolator">
+                        <Component Id="config.h" Guid="*">
+                            <File Id="config.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\config.h" />
+                        </Component>
+                        <Component Id="delaunay.c" Guid="*">
+                            <File Id="delaunay.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\delaunay.c" />
+                        </Component>
+                        <Component Id="delaunay.h" Guid="*">
+                            <File Id="delaunay.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\delaunay.h" />
+                        </Component>
+                        <Component Id="hash.c" Guid="*">
+                            <File Id="hash.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\hash.c" />
+                        </Component>
+                        <Component Id="hash.h" Guid="*">
+                            <File Id="hash.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\hash.h" />
+                        </Component>
+                        <Component Id="istack.c" Guid="*">
+                            <File Id="istack.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\istack.c" />
+                        </Component>
+                        <Component Id="istack.h" Guid="*">
+                            <File Id="istack.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\istack.h" />
+                        </Component>
+                        <Component Id="lpi.c" Guid="*">
+                            <File Id="lpi.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\lpi.c" />
+                        </Component>
+                        <Component Id="minell.c" Guid="*">
+                            <File Id="minell.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\minell.c" />
+                        </Component>
+                        <Component Id="minell.h" Guid="*">
+                            <File Id="minell.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\minell.h" />
+                        </Component>
+                        <Component Id="nan.h" Guid="*">
+                            <File Id="nan.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\nan.h" />
+                        </Component>
+                        <Component Id="nn.h" Guid="*">
+                            <File Id="nn.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\nn.h" />
+                        </Component>
+                        <Component Id="nnai.c" Guid="*">
+                            <File Id="nnai.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\nnai.c" />
+                        </Component>
+                        <Component Id="nncommon_vulnerable.c" Guid="*">
+                            <File Id="nncommon_vulnerable.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\nncommon-vulnerable.c" />
+                        </Component>
+                        <Component Id="nncommon.c" Guid="*">
+                            <File Id="nncommon.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\nncommon.c" />
+                        </Component>
+                        <Component Id="NNInterpolator.cpp" Guid="*">
+                            <File Id="NNInterpolator.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\NNInterpolator.cpp" />
+                        </Component>
+                        <Component Id="NNInterpolator.h" Guid="*">
+                            <File Id="NNInterpolator.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\NNInterpolator.h" />
+                        </Component>
+                        <Component Id="nnpi.c" Guid="*">
+                            <File Id="nnpi.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\nnpi.c" />
+                        </Component>
+                        <Component Id="nn_internal.h" Guid="*">
+                            <File Id="nn_internal.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\nn_internal.h" />
+                        </Component>
+                        <Component Id="preader.c" Guid="*">
+                            <File Id="preader.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\preader.c" />
+                        </Component>
+                        <Component Id="preader.h" Guid="*">
+                            <File Id="preader.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\preader.h" />
+                        </Component>
+                        <Component Id="triangle.c" Guid="*">
+                            <File Id="triangle.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\triangle.c" />
+                        </Component>
+                        <Component Id="triangle.h" Guid="*">
+                            <File Id="triangle.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\triangle.h" />
+                        </Component>
+                        <Component Id="version.h" Guid="*">
+                            <File Id="version.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\NNInterpolator\version.h" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="Shapefiles" Name="Shapefiles">
+                        <Component Id="dbfopen.c" Guid="*">
+                            <File Id="dbfopen.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Shapefiles\dbfopen.c" />
+                        </Component>
+                        <Component Id="shapefil.h" Guid="*">
+                            <File Id="shapefil.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Shapefiles\shapefil.h" />
+                        </Component>
+                        <Component Id="Shapefile.cpp" Guid="*">
+                            <File Id="Shapefile.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Shapefiles\Shapefile.cpp" />
+                        </Component>
+                        <Component Id="Shapefile.h" Guid="*">
+                            <File Id="Shapefile.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Shapefiles\Shapefile.h" />
+                        </Component>
+                        <Component Id="shpopen.c" Guid="*">
+                            <File Id="shpopen.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Shapefiles\shpopen.c" />
+                        </Component>
+                        <Component Id="shptree.c" Guid="*">
+                            <File Id="shptree.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Shapefiles\shptree.c" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="vc80" Name="vc80">
+                        <Component Id="phastinput.rc" Guid="*">
+                            <File Id="phastinput.rc" KeyPath="yes" Source="$(var.SrcDir)\phastinput\vc80\phastinput.rc" />
+                        </Component>
+                        <Component Id="phastinput.sln" Guid="*">
+                            <File Id="phastinput.sln" KeyPath="yes" Source="$(var.SrcDir)\phastinput\vc80\phastinput.sln" />
+                        </Component>
+                        <Component Id="phastinput.vcproj" Guid="*">
+                            <File Id="phastinput.vcproj" KeyPath="yes" Source="$(var.SrcDir)\phastinput\vc80\phastinput.vcproj" />
+                        </Component>
+                        <Component Id="resource.h_3" Guid="*">
+                            <File Id="resource.h_3" KeyPath="yes" Source="$(var.SrcDir)\phastinput\vc80\resource.h" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="win32_2" Name="win32">
+                        <Component Id="phastinput.dsp" Guid="*">
+                            <File Id="phastinput.dsp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\phastinput.dsp" />
+                        </Component>
+                        <Component Id="phastinput.dsw" Guid="*">
+                            <File Id="phastinput.dsw" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\phastinput.dsw" />
+                        </Component>
+                        <Component Id="phastinput.rc_1" Guid="*">
+                            <File Id="phastinput.rc_1" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\phastinput.rc" />
+                        </Component>
+                        <Component Id="phastinput.sln_1" Guid="*">
+                            <File Id="phastinput.sln_1" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\phastinput.sln" />
+                        </Component>
+                        <Component Id="phastinput.vcproj_1" Guid="*">
+                            <File Id="phastinput.vcproj_1" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\phastinput.vcproj" />
+                        </Component>
+                        <Component Id="phastinput_version.h" Guid="*">
+                            <File Id="phastinput_version.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\phastinput_version.h" />
+                        </Component>
+                        <Component Id="resource.fd_3" Guid="*">
+                            <File Id="resource.fd_3" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\resource.fd" />
+                        </Component>
+                        <Component Id="resource.h_4" Guid="*">
+                            <File Id="resource.h_4" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\resource.h" />
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

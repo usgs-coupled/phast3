@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <ComponentGroup Id="Lib">
+            <ComponentRef Id="jhdf.jar" />
+            <ComponentRef Id="jhdf5.jar" />
+            <ComponentRef Id="jhdf5obj.jar" />
+            <ComponentRef Id="jhdfobj.jar" />
+            <ComponentRef Id="phast.jar" />
+          <?if $(sys.BUILDARCH)!=x64 ?>
+            <ComponentRef Id="jh5srb.dll" />
+          <?endif?>
+            <ComponentRef Id="jhdf.dll" />
+            <ComponentRef Id="jhdf5.dll" />
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="APPLICATIONFOLDER">
+            <Directory Id="lib" Name="lib">
+                <Component Id="jhdf.jar" Guid="*">
+                  <?if $(sys.BUILDARCH)=x64 ?>
+                    <File Id="jhdf.jar" KeyPath="yes" Source="..\src\phasthdf\dist64\jhdf.jar" />
+                  <?else?>
+                    <File Id="jhdf.jar" KeyPath="yes" Source="..\src\phasthdf\dist\jhdf.jar" />
+                  <?endif?>
+                </Component>
+                <Component Id="jhdf5.jar" Guid="*">
+                  <?if $(sys.BUILDARCH)=x64 ?>
+                    <File Id="jhdf5.jar" KeyPath="yes" Source="..\src\phasthdf\dist64\jhdf5.jar" />
+                  <?else?>
+                    <File Id="jhdf5.jar" KeyPath="yes" Source="..\src\phasthdf\dist\jhdf5.jar" />
+                  <?endif?>
+                </Component>
+                <Component Id="jhdf5obj.jar" Guid="*">
+                  <?if $(sys.BUILDARCH)=x64 ?>
+                    <File Id="jhdf5obj.jar" KeyPath="yes" Source="..\src\phasthdf\dist64\jhdf5obj.jar" />
+                  <?else?>
+                    <File Id="jhdf5obj.jar" KeyPath="yes" Source="..\src\phasthdf\dist\jhdf5obj.jar" />
+                  <?endif?>
+                </Component>
+                <Component Id="jhdfobj.jar" Guid="*">
+                  <?if $(sys.BUILDARCH)=x64 ?>
+                    <File Id="jhdfobj.jar" KeyPath="yes" Source="..\src\phasthdf\dist64\jhdfobj.jar" />
+                  <?else?>
+                    <File Id="jhdfobj.jar" KeyPath="yes" Source="..\src\phasthdf\dist\jhdfobj.jar" />
+                  <?endif?>
+                </Component>
+                <Component Id="phast.jar" Guid="*">
+                  <?if $(sys.BUILDARCH)=x64 ?>
+                    <File Id="phast.jar" KeyPath="yes" Source="..\src\phasthdf\dist64\phast.jar" />
+                  <?else?>
+                    <File Id="phast.jar" KeyPath="yes" Source="..\src\phasthdf\dist\phast.jar" />
+                  <?endif?>
+                </Component>
+                <Directory Id="Win32" Name="Win32">
+                  <?if $(sys.BUILDARCH)!=x64 ?>
+                    <Component Id="jh5srb.dll" Guid="*">
+                        <File Id="jh5srb.dll" KeyPath="yes" Source="..\src\phasthdf\dist\Win32\jh5srb.dll" />
+                    </Component>
+                  <?endif?>
+                    <Component Id="jhdf.dll" Guid="*">
+                      <?if $(sys.BUILDARCH)=x64 ?>
+                        <File Id="jhdf.dll" KeyPath="yes" Source="..\src\phasthdf\dist64\Win32\jhdf.dll" />
+                      <?else?>
+                        <File Id="jhdf.dll" KeyPath="yes" Source="..\src\phasthdf\dist\Win32\jhdf.dll" />
+                      <?endif?>
+                    </Component>
+                    <Component Id="jhdf5.dll" Guid="*">
+                      <?if $(sys.BUILDARCH)=x64 ?>
+                        <File Id="jhdf5.dll" KeyPath="yes" Source="..\src\phasthdf\dist64\Win32\jhdf5.dll" />
+                      <?else?>
+                        <File Id="jhdf5.dll" KeyPath="yes" Source="..\src\phasthdf\dist\Win32\jhdf5.dll" />
+                      <?endif?>
+                    </Component>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

@@ -1,0 +1,218 @@
+Output file:    decay.chem.txt
+Chemistry file: decay.chem.dat
+Database file:  phast.dat
+
+------------------
+Reading data base.
+------------------
+
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	SOLUTION 1
+	        units mmol/kgw
+	        pH      7.0     charge
+	        temp    25
+	        Na      1
+	        Cl      1       
+	END
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Cl                1.000e-03   1.000e-03
+	Na                1.000e-03   1.000e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   6.999      Charge balance
+                                       pe  =   4.000    
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.000e-03
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =  -7.167e-21
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -2.132e-17
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   3
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+                                                   Log       Log         Log 
+   Species                 Molality    Activity  Molality  Activity     Gamma
+
+   H+                     1.036e-07   1.002e-07    -6.985    -6.999    -0.015
+   OH-                    1.036e-07   9.993e-08    -6.985    -7.000    -0.016
+   H2O                    5.551e+01   1.000e+00     1.744    -0.000     0.000
+Cl               1.000e-03
+   Cl-                    1.000e-03   9.649e-04    -3.000    -3.016    -0.016
+H(0)             1.421e-25
+   H2                     7.103e-26   7.104e-26   -25.149   -25.148     0.000
+Na               1.000e-03
+   Na+                    1.000e-03   9.652e-04    -3.000    -3.015    -0.015
+   NaOH                   6.364e-11   6.365e-11   -10.196   -10.196     0.000
+O(0)             0.000e+00
+   O2                     0.000e+00   0.000e+00   -42.083   -42.083     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -22.00  -25.15   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	Halite           -7.61   -6.03    1.58  NaCl
+	O2(g)           -39.12  -42.08   -2.96  O2
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+	SOLUTION 2
+	        units mmol/kgw
+	        pH      7.0     charge
+	        temp    25
+	        Na      2
+	        Cl      2
+	        Sr      1e-6
+	END
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 2.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Cl                2.000e-03   2.000e-03
+	Na                2.000e-03   2.000e-03
+	Sr                1.000e-09   1.000e-09
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.003      Charge balance
+                                       pe  =   4.000    
+                        Activity of water  =   1.000
+                           Ionic strength  =   2.000e-03
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   2.000e-09
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -5.586e-19
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+                                                   Log       Log         Log 
+   Species                 Molality    Activity  Molality  Activity     Gamma
+
+   OH-                    1.059e-07   1.008e-07    -6.975    -6.997    -0.022
+   H+                     1.040e-07   9.934e-08    -6.983    -7.003    -0.020
+   H2O                    5.551e+01   9.999e-01     1.744    -0.000     0.000
+Cl               2.000e-03
+   Cl-                    2.000e-03   1.903e-03    -2.699    -2.721    -0.022
+H(0)             1.397e-25
+   H2                     6.983e-26   6.986e-26   -25.156   -25.156     0.000
+Na               2.000e-03
+   Na+                    2.000e-03   1.904e-03    -2.699    -2.720    -0.021
+   NaOH                   1.266e-10   1.266e-10    -9.898    -9.897     0.000
+O(0)             0.000e+00
+   O2                     0.000e+00   0.000e+00   -42.069   -42.069     0.000
+Sr               1.000e-09
+   Sr+2                   1.000e-09   8.235e-10    -9.000    -9.084    -0.084
+   SrOH+                  4.464e-16   4.251e-16   -15.350   -15.371    -0.021
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -22.01  -25.16   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	Halite           -7.02   -5.44    1.58  NaCl
+	O2(g)           -39.11  -42.07   -2.96  O2
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 3.
+------------------------------------
+
+	KINETICS 1
+	        Sr_decay
+	        formula Sr 1.0
+	        m 0
+	        m0 0
+	RATES
+	        Sr_decay
+	        start
+	10 rate = -TOT("Sr") * .01
+	20 moles = rate * TIME
+	30 SAVE moles
+	        end
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 4.
+------------------------------------
+
+	SELECTED_OUTPUT
+	        file decay.sel
+	        reset false
+	USER_PUNCH
+	heading   Cl_mol/kgw      Sr_nmol/kgw
+	10 PUNCH TOT("Cl")
+	20 PUNCH TOT("Sr")*1e9
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 5.
+------------------------------------
+
+List of Components:
+	1	H
+	2	O
+	3	Cl
+	4	Na
+	5	Sr
+	6	Charge
+List of master species:
+	1	Cl
+	2	Na
+	3	Sr

@@ -1,0 +1,73 @@
+TITLE
+ 1D transport and ion exchange
+ PHREEQC example 11 (Parkhurst and Appelo, 1999)
+UNITS
+        -time                   day
+        -horizontal_grid        meters
+        -vertical_grid          meters
+        -head                   meters
+        -hydraulic_conductivity m/day
+        -specific_storage       1/m
+        -dispersivity           m
+SOLUTION_METHOD
+        -direct_solver          true
+        -space_differencing     0
+        -time_differencing      1
+SOLUTE_TRANSPORT		true
+        -diffusivity            0.0             #m^2/s
+GRID
+        -uniform x
+                0.00000      1.0    2
+        -uniform y
+                0.00000      1.0    2
+        -uniform z
+                0.00000      .08    41
+        -print_orientation XZ 
+        -chemistry_dimensions XYZ
+MEDIA
+        -zone   0. 0. 0. 1.  1. 1.
+                -porosity                       0.1
+                -longitudinal_dispersivity      0.002
+                -horizontal_dispersivity        0.002
+                -vertical_dispersivity          0.002
+                -Kx                             1
+                -Ky                             1
+                -Kz                             .024    # m/d
+                -storage                        .001
+SPECIFIED_HEAD_BC
+        -zone           0. 0. 0. 1.  1.  0.
+                -head			 0	.08
+					 0.5    .8
+                -associated_solution	 0	0
+        -zone   0. 0. .08 1.  1.  .08
+                -head			 0	0
+                -associated_solution	 0	1
+FREE_SURFACE_BC false
+HEAD_IC
+        -zone   0. 0. 0. 1. 1. 1.
+                -head   Z .08 0. 0. .08
+CHEMISTRY_IC
+        -zone   0. 0. 0. 1. 1. 1.
+                -solution               1
+                -exchange               1
+#		-equilibrium_phases     1
+#		-kinetics               1
+TIME_CONTROL
+        -delta_time     0	.005    day
+        -end_time		1       day
+PRINT_LOCATIONS
+# Turn off xyz print for entire domain
+#        -xyz_chemistry
+#                -zone  0 0 0 1 1 .08
+#                        -print 0
+# Turn on xyz print last node of column
+#                -zone  0 0 .08 1 1 .08
+#                        -print 1
+PRINT_FREQUENCY
+	0
+        -hdf_chemistry          .01     day
+        -xyz_chemistry          end
+        -xyz_head               1       day
+        -xyz_velocity           1       day
+	-force			end
+END

@@ -1,0 +1,550 @@
+Running PHASTINPUT.
+
+Processing flow and transport data file.
+
+	SOLUTE_TRANSPORT true
+	    diffusivity  1e-009
+	STEADY_FLOW false
+	FREE_SURFACE_BC true
+	SOLUTION_METHOD
+		iterative_solver   true
+		tolerance          1e-010
+		save_directions    20
+		maximum_iterations 500
+		space_differencing 0
+		time_differencing  1
+		cross_dispersion   false
+		rebalance_fraction 0.5
+		rebalance_by_cell   false
+	UNITS
+		time                             s
+		horizontal_grid                  m
+		vertical_grid                    m
+		head                             m
+		hydraulic_conductivity           m/s
+		specific_storage                 1/m
+		dispersivity                     m
+		flux                             m/s
+		leaky_hydraulic_conductivity     m/s
+		leaky_thickness                  m
+		well_diameter                    m
+		well_flow_rate                   m^3/s
+		river_bed_hydraulic_conductivity m/s
+		river_bed_thickness              m
+	GRID
+		uniform X 0 1 3
+		uniform Y 0 1 3
+		uniform Z 0 1 3
+		snap X 0.001
+		snap Y 0.001
+		snap Z 0.001
+		chemistry_dimensions XYZ
+		print_orientation XY
+	MEDIA
+		zone 0 0 0 1 1 1
+			active                   1
+			kx                       0.0001
+			ky                       0.0001
+			kz                       1e-005
+			porosity                 0.2
+			specific_storage         0.0001
+			long_dispersivity        1
+			horizontal_dispersivity  1
+			vertical_dispersivity    1
+	FLUX_BC
+		zone 0 0 1 0.5 0.5 1
+			face Z
+			associated_solution
+				0	X 1 0 2 1
+			flux
+				0	1
+				1	1.5
+	FLUX_BC
+		zone 0 0 0.5 0.5 0 1
+			face Y
+			associated_solution
+				0	X 1 0 2 1
+			flux
+				0	3
+				1	3.5
+	FLUX_BC
+		zone 0 0 0.5 0 0.5 1
+			face X
+			associated_solution
+				0	X 1 0 2 1
+			flux
+				0	4
+				1	4.5
+	FLUX_BC
+		zone 0.5 0.5 1 1 1 1
+			face Z
+			associated_solution
+				0	X 5 0 15 1
+				3	5
+			flux
+				0	5
+				1	5.5
+	FLUX_BC
+		zone 0.5 0.5 0 1 1 0
+			face Z
+			associated_solution
+				0	10
+			flux
+				0	10
+				1	10.5
+	FLUX_BC
+		zone 0.5 1 0 1 1 0.5
+			face Y
+			associated_solution
+				0	12
+			flux
+				0	12
+				1	12.5
+	FLUX_BC
+		zone 1 0.5 0 1 1 0.5
+			face X
+			associated_solution
+				0	14
+			flux
+				0	14
+				1	14.5
+	LEAKY_BC
+		zone 0 0 0 0.5 0.5 0
+			face Z
+			associated_solution
+				0	6
+			head
+				0	6
+				1	6.5
+			hydraulic_conductivity  6
+			thickness               6
+	LEAKY_BC
+		zone 0 0 0.5 0.5 0 1
+			face Y
+			associated_solution
+				0	7
+			head
+				0	7
+				1	7.5
+			hydraulic_conductivity  7
+			thickness               7
+	LEAKY_BC
+		zone 0 0 0.5 0 0.5 1
+			face X
+			associated_solution
+				0	8
+				2	Z 8 0 18 1
+			head
+				0	8
+				1	8.5
+			hydraulic_conductivity  8
+			thickness               8
+	LEAKY_BC
+		zone 0.5 0.5 0 1 1 0
+			face Z
+			associated_solution
+				0	11
+			head
+				0	11
+				1	11.5
+			hydraulic_conductivity  11
+			thickness               11
+	LEAKY_BC
+		zone 0.5 1 0 1 1 0.5
+			face Y
+			associated_solution
+				0	13
+			head
+				0	13
+				1	13.5
+			hydraulic_conductivity  13
+			thickness               13
+	LEAKY_BC
+		zone 1 0.5 0 1 1 0.5
+			face X
+			associated_solution
+				0	15
+			head
+				0	15
+				1	15.5
+			hydraulic_conductivity  15
+			thickness               15
+	SPECIFIED_HEAD_BC
+		zone 0.963156 0 -0.0691886 1.02562 1 0.0843159
+			head
+				0	1
+				4	1.4
+			associated_solution_composition
+				0	1
+	HEAD_IC
+		zone 0 0 0 1 1 1
+			head                     1
+	CHEMISTRY_IC
+		zone 0 0 0 1 1 1
+			solution            1
+	RIVER 1
+		point 0 0.5
+			head
+				0 seconds     1
+			solution
+				0 seconds     1
+				8 seconds     5
+			width                       0.1
+			bed_hydraulic_conductivity  1
+			bed_thickness               0.1
+			depth                       0.1
+		point 1 0.5
+			head
+				0 seconds     1
+			solution
+				0 seconds     2
+			width                       0.1
+			bed_hydraulic_conductivity  1
+			bed_thickness               0.1
+			depth                       0.1
+	PRINT_INITIAL
+		boundary_conditions        false
+		components                 false
+		conductances               false
+		echo_input                 true
+		fluid_properties           true
+		force_chemistry_print      false
+		hdf_chemistry              true
+		hdf_heads                  true
+		hdf_steady_flow_velocities true
+		heads                      true
+		media_properties           false
+		solution_method            true
+		steady_flow_velocities     false
+		wells                      true
+		xyz_chemistry              false
+		xyz_components             false
+		xyz_heads                  false
+		xyz_steady_flow_velocities false
+		xyz_wells                  false
+	PRINT_FREQUENCY
+		save_final_heads false
+		0
+			bc_flow_rates          0
+			components             0
+			conductances           0
+			flow_balance                end 
+			force_chemistry_print  0
+			hdf_chemistry               end 
+			hdf_heads                   end 
+			hdf_velocities              end 
+			heads                       end 
+			progress_statistics         end 
+			velocities             0
+			wells                       end 
+			xyz_chemistry          0
+			xyz_components         0
+			xyz_heads              0
+			xyz_velocities         0
+			xyz_wells              0
+			boundary_conditions    false
+	TIME_CONTROL
+		time_step
+			0 1
+		time_change
+			10
+		start_time 0
+WARNING: River width units not defined in UNITS data block, meters assumed.
+WARNING: River depth units not defined in UNITS data block, meters assumed.
+WARNING: Identifiers Steady_flow_velocities, HDF_steady_flow_velocities,
+         and XYZ_steady_flow_velocities only apply for steady-flow calculations.
+
+PHASTINPUT done.
+
+Running PHAST.
+
+Output file:    flux_patches.chem.txt
+Chemistry file: flux_patches.chem.dat
+Database file:  phast.dat
+
+Running PHREEQC for initial conditions.
+
+Processing database file.
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+
+Processing chemical data file.
+	SOLUTION 1-100
+	END
+PHREEQC done.
+.
+.
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV     2653 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST      247 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .    2406 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+          Direction index for d4 zig-zag renumbering ............ IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    t
+          Number of search directions before restart ............ NSDR..   20
+          Tolerance on iterative solution ....................... EPSSLV 1.0e-10
+Equilibration of cells for initial conditions.
+
+Beginning transient simulation.
+Reading transient data for simulation: Set  1
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.00      (s)
+
+Beginning time step no.      1
+     Current time step length ...................................    1.00     (s)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:    2      5.5801144e-18
+     Beginning solute-transport calculation.
+          H
+          No. of solver iterations, Relative residual:    1      4.0242311e-18
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+          O
+          No. of solver iterations, Relative residual:    1      4.2012994e-18
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+          Cl
+          No. of solver iterations, Relative residual:    1      2.8078123e-30
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+          Na
+          No. of solver iterations, Relative residual:    1      3.3504847e-17
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+          Charge
+          No. of solver iterations, Relative residual:    1      1.7084550e-17
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+     Beginning chemistry calculation.
+          Total cells: 27
+          Number of cells with same aqueous model: 27
+          Total iterations all cells: 7
+          Number of cells with zero iterations: 26
+          Maximum iterations for one cell: 7
+
+     End of Time Step No.     1
+     Time ..................................................    1.00000     (s)
+     Maximum change in potentiometric head  -2.4961e+01      (m ) at location (  1.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -6.1860e-09 (mol/kgw) at location (  1.00    , 0.500    ,  1.00    )(m)
+     Maximum change in O .................. -3.0985e-09 (mol/kgw) at location (  1.00    , 0.500    ,  1.00    )(m)
+     Maximum change in Cl ................. -2.9846e-05 (mol/kgw) at location (  1.00    , 0.500    ,  1.00    )(m)
+     Maximum change in Na ................. -2.9846e-05 (mol/kgw) at location (  1.00    , 0.500    ,  1.00    )(m)
+     Maximum change in Charge .............  1.0917e-11 (mol/kgw) at location (  1.00    , 0.500    ,  1.00    )(m)
+Reading transient data for simulation: Set  2
+     Time at which next set of transient parameters will be read .......... TIMCHG   2.00      (s)
+
+Beginning time step no.      2
+     Current time step length ...................................    1.00     (s)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:    1      4.1950808e-11
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+     Beginning solute-transport calculation.
+          H
+          O
+          Cl
+          No. of solver iterations, Relative residual:    2      2.3215739e-15
+          Na
+          No. of solver iterations, Relative residual:    2      2.3214811e-15
+          Charge
+     Beginning chemistry calculation.
+          Total cells: 27
+          Number of cells with same aqueous model: 23
+          Total iterations all cells: 0
+          Number of cells with zero iterations: 23
+          Maximum iterations for one cell: 0
+
+     End of Time Step No.     2
+     Time ..................................................    2.00000     (s)
+     Maximum change in potentiometric head   5.9668e+00      (m ) at location ( 0.000e+00, 0.500    ,  1.00    )(m)
+     Maximum change in H .................. -4.2819e-17 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
+     Maximum change in O .................. -2.1447e-17 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
+     Maximum change in Cl ................. -2.0660e-13 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
+     Maximum change in Na ................. -2.0660e-13 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
+     Maximum change in Charge .............  1.9337e-18 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+Reading transient data for simulation: Set  3
+     Time at which next set of transient parameters will be read .......... TIMCHG   3.00      (s)
+
+Beginning time step no.      3
+     Current time step length ...................................    1.00     (s)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:    2      8.7015581e-18
+     Beginning solute-transport calculation.
+          H
+          O
+          Cl
+          No. of solver iterations, Relative residual:    2      1.3596763e-16
+          Na
+          No. of solver iterations, Relative residual:    2      1.3698383e-16
+          Charge
+     Beginning chemistry calculation.
+          Total cells: 27
+          Number of cells with same aqueous model: 20
+          Total iterations all cells: 0
+          Number of cells with zero iterations: 20
+          Maximum iterations for one cell: 0
+
+     End of Time Step No.     3
+     Time ..................................................    3.00000     (s)
+     Maximum change in potentiometric head   7.2031e+00      (m ) at location ( 0.000e+00,  1.00    , 0.500    )(m)
+     Maximum change in H ..................  3.9117e-23 (mol/kgw) at location ( 0.500    , 0.500    , 0.000e+00)(m)
+     Maximum change in O .................. -1.9715e-23 (mol/kgw) at location ( 0.500    , 0.500    , 0.000e+00)(m)
+     Maximum change in Cl .................  1.9513e-13 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
+     Maximum change in Na .................  1.9513e-13 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
+     Maximum change in Charge ............. -4.5289e-17 (mol/kgw) at location (  1.00    , 0.000e+00,  1.00    )(m)
+Reading transient data for simulation: Set  4
+     Time at which next set of transient parameters will be read .......... TIMCHG   4.00      (s)
+
+Beginning time step no.      4
+     Current time step length ...................................    1.00     (s)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:    1      6.1633216e-12
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+     Beginning solute-transport calculation.
+          H
+          O
+          Cl
+          No. of solver iterations, Relative residual:    2      1.2490755e-15
+          Na
+          No. of solver iterations, Relative residual:    2      1.2494868e-15
+          Charge
+     Beginning chemistry calculation.
+          Total cells: 27
+          Number of cells with same aqueous model: 20
+          Total iterations all cells: 11
+          Number of cells with zero iterations: 19
+          Maximum iterations for one cell: 11
+
+     End of Time Step No.     4
+     Time ..................................................    4.00000     (s)
+     Maximum change in potentiometric head  -1.0456e+01      (m ) at location ( 0.500    , 0.500    , 0.000e+00)(m)
+     Maximum change in H ..................  3.8575e-18 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in O ..................  1.9322e-18 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in Cl ................. -2.2683e-14 (mol/kgw) at location ( 0.500    , 0.000e+00, 0.000e+00)(m)
+     Maximum change in Na ................. -2.2676e-14 (mol/kgw) at location ( 0.500    , 0.000e+00, 0.000e+00)(m)
+     Maximum change in Charge .............  1.8251e-17 (mol/kgw) at location ( 0.000e+00, 0.500    ,  1.00    )(m)
+Reading transient data for simulation: Set  5
+     Time at which next set of transient parameters will be read .......... TIMCHG   8.00      (s)
+
+Beginning time step no.      5
+     Beginning flow calculation.
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+     Beginning solute-transport calculation.
+          H
+          O
+          Cl
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     5
+     Time ..................................................    5.00000     (s)
+
+Beginning time step no.      6
+     Beginning flow calculation.
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+     Beginning solute-transport calculation.
+          H
+          O
+          Cl
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     6
+     Time ..................................................    6.00000     (s)
+
+Beginning time step no.      7
+     Beginning flow calculation.
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+     Beginning solute-transport calculation.
+          H
+          O
+          Cl
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     7
+     Time ..................................................    7.00000     (s)
+
+Beginning time step no.      8
+     Current time step length ...................................    1.00     (s)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:    1      1.6677149e-11
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+     Beginning solute-transport calculation.
+          H
+          No. of solver iterations, Relative residual:    2      2.1488426e-15
+          O
+          No. of solver iterations, Relative residual:    2      2.1479565e-15
+          Cl
+          No. of solver iterations, Relative residual:    2      2.1440655e-15
+          Na
+          No. of solver iterations, Relative residual:    2      2.1440481e-15
+          Charge
+          No. of solver iterations, Relative residual:    2      2.1353023e-15
+     Beginning chemistry calculation.
+          Total cells: 27
+          Number of cells with same aqueous model: 20
+          Total iterations all cells: 51
+          Number of cells with zero iterations: 9
+          Maximum iterations for one cell: 11
+
+     End of Time Step No.     8
+     Time ..................................................    8.00000     (s)
+     Maximum change in potentiometric head  -1.0456e+01      (m ) at location ( 0.500    , 0.500    , 0.000e+00)(m)
+     Maximum change in H .................. -5.3969e-09 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+     Maximum change in O .................. -2.7035e-09 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+     Maximum change in Cl ................. -2.6038e-05 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+     Maximum change in Na ................. -2.6038e-05 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+     Maximum change in Charge .............  9.5247e-12 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+Reading transient data for simulation: Set  6
+     Time at which next set of transient parameters will be read .......... TIMCHG   10.0      (s)
+
+Beginning time step no.      9
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Cl
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     9
+     Time ..................................................    9.00000     (s)
+
+Beginning time step no.     10
+     Current time step length ...................................    1.00     (s)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:    1      3.7478231e-12
+WARNING:   Number of iterations is too few (<2); check convergence tolerance
+     Beginning solute-transport calculation.
+          H
+          No. of solver iterations, Relative residual:    2      7.5563481e-16
+          O
+          No. of solver iterations, Relative residual:    2      7.5693284e-16
+          Cl
+          No. of solver iterations, Relative residual:    2      7.5594625e-16
+          Na
+          No. of solver iterations, Relative residual:    2      7.5559347e-16
+          Charge
+          No. of solver iterations, Relative residual:    2      7.5725791e-16
+     Beginning chemistry calculation.
+          Total cells: 27
+          Number of cells with same aqueous model: 20
+          Total iterations all cells: 46
+          Number of cells with zero iterations: 8
+          Maximum iterations for one cell: 11
+
+     End of Time Step No.    10
+     Time ..................................................    10.0000     (s)
+     Maximum change in potentiometric head  -1.0456e+01      (m ) at location ( 0.500    , 0.500    , 0.000e+00)(m)
+     Maximum change in H .................. -5.7572e-09 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+     Maximum change in O .................. -2.8838e-09 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+     Maximum change in Cl ................. -2.7777e-05 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+     Maximum change in Na ................. -2.7777e-05 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+     Maximum change in Charge .............  1.0165e-11 (mol/kgw) at location (  1.00    , 0.500    , 0.000e+00)(m)
+Done with transient simulation.
+
+                             ***** Simulation Completed *****
+     Last time value calculated ......................................  10.00     (s)
+     Last time step index ............................................      10

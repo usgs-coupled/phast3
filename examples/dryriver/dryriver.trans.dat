@@ -1,0 +1,236 @@
+# <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+# <WPhast>
+#   <!--Exported from C:\Programs\phastpp-trunk\examples\dryriver\dryriver.p4w-->
+#   <!--Exported to   C:\Programs\phastpp-trunk\examples\dryriver\dryriver.trans.dat-->
+# </WPhast>
+# 
+SOLUTE_TRANSPORT true
+STEADY_FLOW false
+FREE_SURFACE_BC true
+SOLUTION_METHOD
+	-iterative_solver   true
+	-tolerance          1e-015
+	-save_directions    20
+	-maximum_iterations 500
+	-space_differencing 0
+	-time_differencing  1
+	#-space_differencing 0.5
+	#-time_differencing  0.5
+	-cross_dispersion   false
+	-rebalance_fraction 0.5
+	-rebalance_by_cell  false
+	-thread             3
+UNITS
+	-time                             hr
+	-horizontal_grid                  m
+	-vertical_grid                    m
+	-map_horizontal                   m
+	-map_vertical                     m
+	-head                             m
+	-hydraulic_conductivity           m/d
+	-specific_storage                 1/m
+	-dispersivity                     m
+	-flux                             m/d
+	-leaky_hydraulic_conductivity     m/d
+	-leaky_thickness                  m
+	-well_diameter                    m
+	-well_flow_rate                   m^3/s
+	-well_depth                       m
+	-river_bed_hydraulic_conductivity m/d
+	-river_bed_thickness              m
+	-river_width                      m
+	-river_depth                      m
+	-drain_hydraulic_conductivity     m/d
+	-drain_thickness                  m
+	-drain_width                      m
+	-equilibrium_phases               WATER
+	-exchange                         WATER
+	-surface                          WATER
+	-solid_solutions                  WATER
+	-kinetics                         WATER
+	-gas_phase                        WATER
+GRID
+	-uniform X 0 2000 81
+	-uniform Y 0 1 2
+	-nonuniform Z
+		#-30    -28    -26    -24    -22
+		-20    -18    -16    -14    -12
+		-10    -8    -6    -4    -2
+		-1    -0.5    0   0.5    1  2 3 4 5
+	-snap X 0.001
+	-snap Y 0.001
+	-snap Z 0.001
+	-chemistry_dimensions XZ
+	-print_orientation XZ
+	-grid_origin   0  0  0
+	-grid_angle    0
+MEDIA
+	-domain
+		-active                   1
+		-Kx                       10
+		-Ky                       10
+		-Kz                       1
+		-porosity                 0.2
+		-specific_storage         0.2
+		-long_dispersivity        10
+		-horizontal_dispersivity  10
+		-vertical_dispersivity    1
+		-tortuosity               1
+ 	-wedge 800 0 -7.5 4000 1 0.5 y3 grid
+ 		-kx                       100
+ 		-ky                       100
+ 		-kz                       100
+ 		-porosity                 1
+ 		-specific_storage         1
+ 		-long_dispersivity        10
+ 		-horizontal_dispersivity  10
+ 		-vertical_dispersivity    1
+ 	-box 800 0 0.5 4000 1 20 grid
+ 		-kx                       100
+ 		-ky                       100
+ 		-kz                       100
+ 		-porosity                 1
+ 		-specific_storage         1
+ 		-long_dispersivity        10
+ 		-horizontal_dispersivity  10
+		-vertical_dispersivity    1
+		
+	-box 1500 0  -20    2000  1   	-16
+		-active 0
+		
+#LEAKY_BC
+#	-box 0 0 -30 0 1 20 GRID
+#		-face X
+#		-thickness               1000
+#		-hydraulic_conductivity  10
+#		#-elevation               1.5
+#		-head
+#			0 hours	5.5
+#		-associated_solution
+#			0 hours	2
+FLUX_BC
+ 	-box 0 0 0 800 1 20 GRID
+ 		-face Z
+ 		-flux
+ 			0 hours	-0.0018
+ 		-associated_solution
+ 			0 hours	1
+FLUX_BC
+ 	-box 0 0 -35 800 1 -15 GRID
+ 		-face Z
+ 		-flux
+ 			0 X    0  0  0.00018 800
+ 		-associated_solution
+ 			0 hours	4			
+#HEAD_IC
+#	-domain		
+#		-head  xyz grid dryriver.head.test.dat
+#CHEMISTRY_IC
+#	-domain
+#	        -solution restart dryriver.restart.test.gz
+
+HEAD_IC
+	-domain
+		-head                     0.0
+CHEMISTRY_IC
+	-domain
+	        -solution            5
+ 	-wedge 800 0 -7.5 4000 1 0.5 Y3 GRID
+ 		-solution            3
+	-box 800 0 0 4000 1 20
+		-solution            3
+		
+WELL 1
+	-xy_coordinate_system GRID
+	-z_coordinate_system GRID
+	-location 1000 0.5
+	-diameter 0.1
+	-elevation -18 -16
+	-allocate_by_head_and_mobility False
+	-pumping_rate
+		0 hours     1e-009
+	-solution
+		0 hours     1
+		
+RIVER 1 High tide
+	-xy_coordinate_system GRID
+	-z_coordinate_system  GRID
+	-point 800 0.5
+		-head 
+#		 0.0 0
+#		0.0 xyzt grid xyzt_test
+INCLUDE$ time_head
+		-solution
+			0     3
+		-width                       1
+		-bed_hydraulic_conductivity  1000
+		-bed_thickness               0.01
+		-bottom                      0.5
+	-point 4000 0.5
+		-head
+#		0.0 0
+#		0.0 xyzt grid xyzt_test
+INCLUDE$ time_head
+		-solution
+			0     3
+		-width                       1
+		-bed_hydraulic_conductivity  1000
+		-bed_thickness               0.01
+		-bottom                      -7.5
+PRINT_INITIAL
+	-boundary_conditions        false
+	-components                 false
+	-conductances               false
+	-echo_input                 true
+	-fluid_properties           true
+	-force_chemistry_print      false
+	-HDF_chemistry              true
+	-HDF_heads                  false
+	-HDF_media                  true
+	-HDF_steady_flow_velocities false
+	-heads                      false
+	-media_properties           false
+	-solution_method            false
+	-steady_flow_velocities     false
+	-wells                      true
+	-xyz_chemistry              false
+	-xyz_components             false
+	-xyz_heads                  false
+	-xyz_steady_flow_velocities false
+	-xyz_wells                  true
+PRINT_FREQUENCY
+	-save_final_heads true
+	0
+		-bc_flow_rates          0
+		-boundary_conditions    false 
+		-components             0
+		-conductances           0
+		-end_of_period_default  false 
+		-flow_balance           0  
+		-force_chemistry_print  0
+		-HDF_chemistry          25 step 
+		-HDF_heads              25 step 
+		-HDF_velocities         25 step 
+		-heads                  0 step 
+		-progress_statistics    0  
+		-restart_file           25 step
+		-velocities             0 step
+		-wells                  0  
+		-xyz_chemistry          25 step
+		-xyz_components         0 step
+		-xyz_heads              0
+		-xyz_velocities         0
+		-xyz_wells              1
+		-zone_flow              0 
+		-zone_flow_xyzt         0  
+		-zone_flow_tsv          0  
+		-hdf_intermediate       10 d
+		-save_final_heads       true
+TIME_CONTROL
+	-time_step
+		0 1 hours
+	-time_change
+	        25 hr 
+		#4 days
+		#400 days
+	-start_time 0

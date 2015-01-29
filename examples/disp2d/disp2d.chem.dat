@@ -1,0 +1,21 @@
+SOLUTION 1
+        units mmol/kgw
+        pH      7.0     charge
+        temp    25
+        Na      0
+        Cl      0       
+END
+SOLUTION 2
+        units mmol/kgw
+        pH      7.0     charge
+        temp    25
+        Na      1
+        Cl      1
+END
+SELECTED_OUTPUT
+        -file disp2d.sel
+        -reset false
+USER_PUNCH
+-head   Cl_mol/kgw
+10 PUNCH TOT("Cl")*1000
+END

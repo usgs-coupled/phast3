@@ -1,0 +1,19 @@
+SOLUTION 0
+END
+SOLUTION 1
+        -units mmol/kgw
+        pH      7
+        Na      1
+        Cl      1
+END
+SELECTED_OUTPUT
+        -reset false
+        -file radial.sel
+END
+USER_PUNCH
+-heading  Cl
+10 punch TOT("Cl") * 1000
+END
+PRINT
+        -reset false
+END

@@ -1,0 +1,1 @@
+rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *.xyz* Phast.tmp

@@ -1,0 +1,59 @@
+TITLE
+        One dimensional confined flow with leakage boundary condition
+        Hand calculation and HST
+SOLUTE_TRANSPORT   false
+UNITS
+        -time           s
+        -horizontal     m
+        -vertical       m
+        -head           m
+        -hydraulic      m/s
+        -specific       1/m
+        -flux           m/s
+        -leaky_thick    m
+        -leaky_k        m/s
+GRID
+        -uniform X 
+                0 400 5
+        -uniform Y 
+                0 400 5
+        -uniform Z 
+                0 100 2
+        -print_orientation XY
+MEDIA
+        -zone   0 0 0 400 400 100
+# rho*g*k/mu = 1.18e-11*1000*9.80665/1e-3 =  1.15718E-04 
+                -Kx     .00011572
+                -Ky     .00011572
+                -Kz     .00011572
+                -porosity       .15
+                -storage        8.70340E-10 
+SPECIFIED_HEAD_BC
+        -zone   0 400 0 400 400 100
+                -head   0   100
+LEAKY_BC
+        -zone   0 0 0 400 0 100
+                -face                           Y
+                -thickness                      100
+                -hydraulic_conductivity         0.00011572
+                -head                           0               200
+FREE_SURFACE_BC false
+HEAD_IC
+        -zone   0 0 0 400 400 100
+                -head   100
+SOLUTION_METHOD
+        -direct
+        -space  0
+        -time   1
+TIME_CONTROL
+        -time_step      0       43200
+        -time_change            86400
+PRINT_FREQUENCY
+        0
+        -bc_flow_rates  1       step
+        -head           1       step
+        -solver         1       step
+        -velocity       2       step
+        -xyz_head       2       step
+        -xyz_velocity   2       step
+END             

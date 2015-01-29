@@ -1,0 +1,16 @@
+2/12/09
+
+Figures for shell (MEDIA) and file list (running) were generated in
+power point. View->grid allows snap to be turned off. Slide was
+printed to file (.prn). .prn was copied to .ps and read into gimp
+(grundvand) at resolution 300. Figures were rotated and cropped if
+necessary and written to .eps. On writing, width was set to 6.5 and
+preview was clicked. Preview image of 512 is preferred.  Files were
+then imported into FrameMaker anchored frame.
+
+Fig ex5 captured from model viewer, (thru paint), pasted into Word,
+adjusted to 45% size, saved as word document. Imported into Frame
+Maker as word document, reformated into a frame, added panel letters,
+and caption.
+
+Ran xmgrace on grundvand for example 6 flux figure.
