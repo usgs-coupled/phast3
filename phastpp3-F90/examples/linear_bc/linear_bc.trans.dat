@@ -1,0 +1,64 @@
+TITLE
+.       Linear boundary conditions: specified head, 
+.       initial head, and solution composition
+SOLUTE_TRANSPORT   true
+UNITS
+        -time           sec
+        -horizontal     m
+        -vertical       m
+        -head           m
+        -hydraulic_cond m/s             
+        -specific_stor  1/m
+        -dispersivity   m
+        -flux           m/s
+GRID
+        -uniform X 
+                0 10    11
+        -uniform Y
+                0 10    11
+        -uniform Z 
+                0 10    2
+        -print_orientation XY
+        -chemistry_dimensions   XY
+MEDIA
+        -zone   0 0 0 10 10 10
+                -Kx                             .1
+                -Ky                             .1
+                -Kz                             .1
+                -porosity                       .1
+                -storage                        0
+                -long_dispersivity              .1
+                -horizontal_dispersivity        .1
+                -vertical_dispersivity          .1
+FREE_SURFACE_BC false
+SPECIFIED_HEAD_BC
+        -zone   0 0 0 0 10 10
+                -head           0       1
+                -associated     0       Y 1 4.0 2 6.0
+        -zone   10 0 0 10 10 10
+                -head           0       0
+                -associated     0       2
+HEAD_IC
+        -zone   0 0 0 10 10 10
+                -head                   X 1.0 0.0 0.0 10.0
+CHEMISTRY_IC
+        -zone   0 0 0 10 10 10
+                -solution               X  1 0.0 2 10.0
+SOLUTION_METHOD
+        -direct
+        -space  0.5
+        -time   0.5
+PRINT_INITIAL
+        -components             true
+        -force_chemistry        true
+        -xyz_chemistry          true
+        -hdf_chemistry          true
+PRINT_FREQUENCY
+        0
+        -components             1 step
+        -force_chemistry        1 step
+        -xyz_chemistry          1 step
+TIME_CONTROL
+        -time_step      0       .5      sec
+        -time_change            .5      sec
+END

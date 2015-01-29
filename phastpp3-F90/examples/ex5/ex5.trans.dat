@@ -1,0 +1,241 @@
+TITLE Flow model for Cape Cod Massachusetts
+SOLUTE_TRANSPORT                      false
+SOLUTION_METHOD
+        -iterative_solver             true
+        -tolerance                    1e-012
+        -time_differencing            1
+UNITS
+        -time                         yr
+        -horizontal_grid              m
+        -vertical_grid                m
+        -map_horizontal               m
+        -map_vertical                 m
+        -head                         m
+        -hydraulic_conductivity       m/d
+        -specific_storage             1/m
+        -flux                         m/d
+        -leaky_hydraulic_conductivity m/d
+        -leaky_thickness              m
+        -drain_hydraulic_conductivity m/d
+        -drain_thickness              m
+        -drain_width                  m
+#----- Use the following line for EXAMPLE 5A, steady state simulation        
+#STEADY_FLOW true
+#----- Use the following line for EXAMPLE 5B, transient simulation
+STEADY_FLOW false
+FREE_SURFACE_BC true        
+GRID
+        -uniform X 275000 285000  51         # 200 m grid
+        -uniform Y 810000 830000 101         # 200 m grid
+        -uniform Z -120   20      15         # 10  m grid        
+        -snap    X                    0.001
+        -snap    Y                    0.001
+        -snap    Z                    0.001
+        -print_orientation XY
+        -grid_origin      0  0  0
+        -grid_angle       0
+MEDIA
+        # Default values
+        -domain
+                -active               0
+                -Kx        XYZ        MAP    ./Parameters/kh_meters 
+                -Ky        XYZ        MAP    ./Parameters/kh_meters 
+                -Kz        XYZ        MAP    ./Parameters/kz_meters 
+                -porosity             0.39
+                -specific_storage     0.39                
+        # Activate inside model outline, above bedrock to sea level
+        -prism
+                -perimeter SHAPE      GRID   ./ArcData/ModelExtent.shp
+                -bottom    ARCRASTER  GRID   ./ArcData/bedrock.txt
+                -top       CONSTANT   GRID   0
+                -active               1
+        # Activate inside coast, sea level to top of grid        
+        -prism
+                -bottom    CONSTANT   GRID   0
+                -perimeter SHAPE      GRID   ./ArcData/OnShore.shp
+                -active               1
+        # Add ponds as high K zones        
+        -prism
+                -top       CONSTANT   GRID   20
+                -bottom    SHAPE      GRID   ./ArcData/SimpleBath.shp 10
+                -perimeter SHAPE      GRID   ./ArcData/SimplePonds.shp
+                -Kx                   30000
+                -Ky                   30000
+                -Kz                   30000
+                -porosity             1
+                -specific_storage     1
+FLUX_BC
+        -prism
+                -description Rainfall
+                -bottom    CONSTANT   GRID   0
+                -perimeter SHAPE      GRID   ./ArcData/OnShore.shp
+                -face Z
+                -flux
+                        0             -0.00188
+        -box 279725 821500 0 279825 821600 50
+                -description Beds 1-4
+                -face Z
+                -flux
+                        0             0
+                        1936          -0.037
+                        1941          -0.114
+                        1946          -0.023
+                        1956          -0.126
+                        1971          -0.05
+                        1978          -0.114
+                        1984          0
+        -box 279625 821425 0 279725 821525 50
+                -description Beds 5-8
+                -face Z
+                -flux
+                        0             0
+                        1941          -0.114
+                        1946          -0.023
+                        1956          -0.126
+                        1971          -0.05
+                        1978          0
+                        1984          -0.038
+                        1996          0
+        -box 279525 821475 0 279625 821575 50
+                -description Beds 9-12
+                -face Z
+                -flux
+                        0             0
+                        1941          -0.114
+                        1946          -0.023
+                        1956          -0.126
+                        1971          -0.05
+                        1978          0
+                        1984          -0.038
+                        1996          0
+        -box 279400 821575 0 279500 821675 50
+                -description Beds 13-16
+                -face Z
+                -flux
+                        0             0
+                        1941          -0.114
+                        1946          -0.023
+                        1956          0
+        -box 279500 821700 0 279600 821800 50
+                -description Beds 19-25
+                -face Z
+                -flux
+                        0             0
+                        1941          -0.114
+                        1946          -0.023
+                        1956          0
+SPECIFIED_HEAD_BC
+        -prism
+                -description Constant head ocean
+                -top       CONSTANT   GRID   0
+                -bottom    CONSTANT   GRID   -10
+                -perimeter SHAPE      GRID   ./ArcData/OffShore.shp
+                -exterior_cells_only  Z
+                -head
+                        0             0.0
+DRAIN 1 East Boundary Quashnet R
+        -point  282107.6   820940.0
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    11.83
+        -point  282487.8    821288.7
+        -point  282757.6    821288.7
+        -point  282919.5    820702.8
+        -point  283205.1    819653.4
+        -point  283300.6    818796.2
+        -point  283204.1    818082.7
+        -point  283164.3    817427.9
+        -point  282915.4    816494.7
+        -point  282209.6    814714.3
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    0
+DRAIN 2 Childs River, Johns Pond drain
+        -point 281619.9    818867.5
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    10.56
+        -point  281589.3    818251.7
+        -point  281488.0    817897.2
+        -point  281342.9    817343.9
+        -point  281272.3    816543.5
+        -point  281319.4    816213.9
+        -point  281211.6    815490.0
+        -point  280897.2    814875.9
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    0
+DRAIN 3 Bourne River
+        -point  279187.9    815453.3
+                -width                20
+                -bed_hydraulic        1
+                -bed_thickness        1
+                -z                    2.97
+        -point  279141.9    814825.4
+        -point  279108.7    814446.3
+                -width                20
+                -bed_hydraulic        1
+                -bed_thickness        1
+                -z                    0                
+DRAIN 4 Backus River (Cranberry bogs)
+        -point  278572.0    817160.5
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    7.16
+        -point  278404.6    816798.4
+        -point  278260.8    816171.1
+        -point  278104.0    815347.7
+        -point  278146.1    814774.8
+        -point  278077.8    814393.5
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    0
+DRAIN 5 West Boundary Coonamessett River
+        -point 277365.6    819130.2
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    9.92
+        -point  277224.7    818453.8
+        -point  277381.6    817842.1
+        -point  277365.6    817312.8
+        -point  277461.8    816574.9
+        -point  277349.5    815885.2
+        -point  277301.4    814730.3
+        -point  277260.0    814502.1
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    0
+ZONE_FLOW 1
+        -box 276400 811000 -200 281300 822300 20
+                -description Plume submodel
+                -write_heads_xyzt     plume.heads.xyzt
+HEAD_IC
+        -domain 
+                #----- Use the following line for EXAMPLE 5A, steady state simulation
+                #-head                 10        
+                #----- Use the following line for EXAMPLE 5B, transient simulation 
+                -head     XYZ        GRID   ex5.head.200.dat                 
+TIME_CONTROL
+        -time_step
+                0                     0.5
+        -time_change                  1998
+        -start_time                   1935
+PRINT_INITIAL
+        -HDF_media                    true
+        -heads                        false
+PRINT_FREQUENCY
+        -save_final_heads true
+        0 years
+                -HDF_heads            5      years 
+                -progress_statistics  1      step 
+                -velocities           0 
+                -zone_flow_heads      1      step
+END

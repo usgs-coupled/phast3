@@ -1,0 +1,82 @@
+TITLE
+.       3D analytic, continuous injection, 4 species chain decay
+.       Sun, Peterson, Clement (1999) J. Cont. Hyd., Example 6.3
+.       Documentation compares PHAST with chain decay from 
+.       Sun and others combined with Wexler (TWRI, 1992) solution 
+.       to patch source 
+SOLUTE_TRANSPORT                            true
+UNITS
+        -time                               day
+        -horizontal                         m
+        -vertical                           m
+        -head                               m
+        -hydraulic_conductivity             m/d     
+        -specific_storage                   1/m
+        -dispersivity                       m
+        -kinetics                           WATER
+GRID
+# Symmetry is used, so that grid is only defined on 1/4 of YZ face
+        -uniform X  0.0    150   2        # 4.0  m spacing
+        -overlay_uniform X 
+                    4.0 148.0 37
+                    
+        -uniform Y  -5.0    20.5   2
+        -overlay_uniform Y                  
+# nodes are set so that cell face is at 15 m to allow source patch definition
+                    -4.5    19.5   25        # 1.0  m spacing
+                    
+        -uniform Z  -5.0    12.5   2
+        -overlay_uniform Z
+# nodes are set so that cell face is at 10 m to allow source patch definition
+                    -4.5    11.5   17        # 1.0  m spacing
+                    
+        -print_orientation XY
+MEDIA
+        -zone   0 -5 -5 150 41 25
+# V = (1/e)*K*dh/dx, .2 = 1/.1*K*1/150, K = 3
+                -Kx                         3
+                -Ky                         3
+                -Kz                         3
+                -porosity                   0.1
+                -storage                    0
+                -longitudinal_dispersivity  1.5
+                -horizontal_dispersivity    0.45
+                -vertical_dispersivity      0.15
+FREE_SURFACE_BC false
+SPECIFIED_HEAD_BC
+# first define x=0 head, inflow to be pure water
+        -zone   0 -5 -5 0 41 25
+                -head                       0   1
+                -fixed_solution             0   1
+# now define patch source of contaminant A
+        -zone   0 15 10 0 26 15
+                -fixed_solution             0   2
+# define x=100 head 
+        -zone   150 -5 -5 150 41 25
+                -head                       0   0
+                -associated_solution        0   1
+HEAD_IC
+        -zone   0 -5 -5 150 41 25
+                -head   X 1.0 0.0 0.0 150.0
+CHEMISTRY_IC
+        -zone   0 -5 -5 150 41 25
+                -solution                   1
+                -kinetics                   1
+SOLUTION_METHOD
+        -iterative                          true
+        -tolerance                          1e-14
+        -space                              0.5
+        -time                               0.5
+        -cross_dispersion                   false
+PRINT_FREQUENCY
+        0
+        -hdf_chemistry                      400 day
+        -vel                                400 day
+        -xyz_chemistry                      400 day
+        -xyz_head                           400 day
+        -xyz_velocity                       400 day
+TIME_CONTROL
+#        -time_step                          0   10  day 
+        -time_step                          0   1  day
+        -time_end                           400 day
+END             

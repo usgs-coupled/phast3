@@ -1,0 +1,161 @@
+                                    ****************************************************
+                                    *                                                  *
+                                    *    PHAST: A Three Dimensional Flow and Solute    *
+                                    *         Reactive Transport Simulator             *
+                                    *             Version: @VERSIO           *
+                                    *                                                  *
+                                    ****************************************************
+
+
+
+
+
+
+                          .        Simple river                                                           
+                          .                                                                               
+
+                         *** Fundamental Information ***
+                    Isothermal simulation
+                    No solute transport simulaton
+                    Cartesian coordinates
+                    Data is in metric units
+                    Time unit selected is days    
+
+          Iterative generalized conjugate gradient solver with d4 zig-zag reduction is selected
+
+                         *** Problem Dimension Information ***
+          Number of nodes in x-direction .................................. NX ...     33
+          Number of nodes in y-direction .................................. NY ...     33
+          Number of nodes in z-direction .................................. NZ ...     19
+          Total number of nodes ........................................... NXYZ .  20691
+
+          Number of porous media zones .................................... NPMZ .  18432
+          Number of specified pressure or mass fraction b.c. .............. NSBC .   1254
+          Number of specified flux b.c. cells ............................. NFBC .      0
+          Number of leakage cells ......................................... NLBC .      0
+          Number of river leakage cells ................................... NRBC .    132
+          Number of drain leakage cells ................................... NDBC .      0
+          Number of wells ................................................. NWEL .      0
+
+          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV  1480129 elements
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                              ***  Static Data ***
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2           3           4           5           6           7           8           9          10
+           0.00       12.50       25.00       37.50       50.00       62.50       75.00       87.50      100.00      112.50
+
+
+
+          11          12          13          14          15          16          17          18          19          20
+         125.00      137.50      150.00      162.50      175.00      187.50      200.00      212.50      225.00      237.50
+
+
+
+          21          22          23          24          25          26          27          28          29          30
+         250.00      262.50      275.00      287.50      300.00      312.50      325.00      337.50      350.00      362.50
+
+
+
+          31          32          33
+         375.00      387.50      400.00
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2           3           4           5           6           7           8           9          10
+           0.00       12.50       25.00       37.50       50.00       62.50       75.00       87.50      100.00      112.50
+
+
+
+          11          12          13          14          15          16          17          18          19          20
+         125.00      137.50      150.00      162.50      175.00      187.50      200.00      212.50      225.00      237.50
+
+
+
+          21          22          23          24          25          26          27          28          29          30
+         250.00      262.50      275.00      287.50      300.00      312.50      325.00      337.50      350.00      362.50
+
+
+
+          31          32          33
+         375.00      387.50      400.00
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2           3           4           5           6           7           8           9          10
+           0.00       25.00       50.00       75.00      100.00      125.00      150.00      175.00      200.00      205.00
+
+
+
+          11          12          13          14          15          16          17          18          19
+         210.00      215.00      220.00      225.00      230.00      235.00      240.00      250.00      275.00
+
+
+
+
+                              Z-Axis is Positive Vertically Upward
+
+
+                                   *** Fluid Properties ***
+                                        Physical
+                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
+
+                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                    Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
+                    Fluid density .............................................. DENF0  1000.0      (kg/m^3)
+
+                    Viscosity factor ........................................... VISFAC -1.000e-03
+
+                                   A free-surface water table is specified for this simulation
+
+                                        *** Calculation Information ***
+          Backwards-in-time (implicit) differencing for temporal derivative
+
+                           Row scaling only, using L-inf norm, will be done
+
+          Direction index for d4 zig-zag renumbering ...................... IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    t
+          Number of search directions before restart ...................... NSDR..   20
+          Tolerance on iterative solution ................................. EPSSLV 1.0e-12
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+                    Automatic Time Step Control Parameters for Steady Flow
+          Maximum pressure change allowed per time step.................... DPTAS    8.09e+05  (Pa )
+          Minimum time step required ...................................... DTIMMN    1.0      (d  )
+          Maximum time step allowed ....................................... DTIMMX   1.00e+06  (d  )
+
+
+               Initial fluid in region ...............................  4.977992e+09  (kg) ;  4.977992e+06  (m^3)
+
+ ------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                        *** Transient Data ***
+
+     Time ..............................   0.000e+00  (d)
+
+
+                                        *** Calculation Information ***
+
+          Fixed time step length .......................................... DELTIM  1.000e+03  (d)
+          Time at which next set of transient
+               parameters will be read .................................... TIMCHG  5.000e+03  (d)
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                       ***** Simulation Completed *****
+               Last time value calculated ...................................... 0.0000e+00 (d)
+               Last time step index ............................................       0

@@ -1,0 +1,36 @@
+SOLUTION 1
+        units mmol/kgw
+        pH      7.0     charge
+        temp    25
+        Na      1
+        Cl      1       
+END
+SOLUTION 2
+        units mmol/kgw
+        pH      7.0     charge
+        temp    25
+        Na      2
+        Cl      2
+        Sr      1e-6
+END
+KINETICS 1
+        Sr_decay
+        -formula Sr 1.0
+        -m 0
+        -m0 0
+RATES
+        Sr_decay
+        -start
+10 rate = -TOT("Sr") * .01
+20 moles = rate * TIME
+30 SAVE moles
+        -end
+END
+SELECTED_OUTPUT
+        -file decay.sel
+        -reset false
+USER_PUNCH
+-head   Cl_mol/kgw      Sr_nmol/kgw
+10 PUNCH TOT("Cl")
+20 PUNCH TOT("Sr")*1e9
+END
