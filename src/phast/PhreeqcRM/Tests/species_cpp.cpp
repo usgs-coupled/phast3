@@ -15,12 +15,17 @@ void SpeciesAdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int n
 
 int species_cpp()
 {
-	// Based on PHREEQC Example 11
+	// Based on PHREEQC Example 11, transporting species rather than components
 
 	try
 	{
+		// --------------------------------------------------------------------------
+		// Create PhreeqcRM
+		// --------------------------------------------------------------------------
+
 		int nxyz = 40;
 #ifdef USE_MPI
+		// MPI
 		PhreeqcRM phreeqc_rm(nxyz, MPI_COMM_WORLD);
 		int mpi_myself;
 		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
@@ -33,15 +38,17 @@ int species_cpp()
 			return EXIT_SUCCESS;
 		}
 #else
+		// OpenMP
 		int nthreads = 3;
 		PhreeqcRM phreeqc_rm(nxyz, nthreads);
 #endif
 		IRM_RESULT status;
-
+		// Set properties
 		status = phreeqc_rm.SetErrorHandlerMode(1);        // 1 = throw exception on error
+		status = phreeqc_rm.SetSpeciesSaveOn(true);
+		// Open files
 		status = phreeqc_rm.SetFilePrefix("Species_cpp");
 		phreeqc_rm.OpenFiles();
-		status = phreeqc_rm.SetSpeciesSaveOn(true);
 		// Set concentration units
 		status = phreeqc_rm.SetUnitsSolution(2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
 		status = phreeqc_rm.SetUnitsPPassemblage(1);  // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
@@ -50,25 +57,21 @@ int species_cpp()
 		status = phreeqc_rm.SetUnitsGasPhase(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
 		status = phreeqc_rm.SetUnitsSSassemblage(1);  // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
 		status = phreeqc_rm.SetUnitsKinetics(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
-
-		// Set conversion from seconds to user units
+		// Set conversion from seconds to user units (days)
 		double time_conversion = 1.0 / 86400;
-		status = phreeqc_rm.SetTimeConversion(time_conversion);     // days
-		// Set cell volume
+		status = phreeqc_rm.SetTimeConversion(time_conversion);
+		// Set representative volume
 		std::vector<double> rv;
 		rv.resize(nxyz, 1.0);
 		status = phreeqc_rm.SetRepresentativeVolume(rv);
-
-		// Set current pore volume
+		// Set initial porosity
 		std::vector<double> por;
 		por.resize(nxyz, 0.2);
 		status = phreeqc_rm.SetPorosity(por);
-
-		// Set saturation
+		// Set initial saturation
 		std::vector<double> sat;
 		sat.resize(nxyz, 1.0);
 		status = phreeqc_rm.SetSaturation(sat);
-
 		// Set cells to print chemistry when print chemistry is turned on
 		std::vector<int> print_chemistry_mask;
 		print_chemistry_mask.resize(nxyz, 0);
@@ -77,8 +80,7 @@ int species_cpp()
 			print_chemistry_mask[i] = 1;
 		}
 		status = phreeqc_rm.SetPrintChemistryMask(print_chemistry_mask);
-
-		// For demonstation, two equivalent rows by symmetry
+		// Demonstation of mapping, two equivalent rows by symmetry
 		std::vector<int> grid2chem;
 		grid2chem.resize(nxyz, -1);
 		for (int i = 0; i < nxyz/2; i++)
@@ -87,23 +89,24 @@ int species_cpp()
 			grid2chem[i + nxyz/2] = i;
 		}
 		status = phreeqc_rm.CreateMapping(grid2chem);
-		if (status < 0) phreeqc_rm.DecodeError(status); 
+		if (status < 0) phreeqc_rm.DecodeError(status);
 		int nchem = phreeqc_rm.GetChemistryCellCount();
+
+		// --------------------------------------------------------------------------
+		// Set initial conditions
+		// --------------------------------------------------------------------------
 
 		// Set printing of chemistry file
 		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
-
 		// Load database
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
-
 		// Run file to define solutions and reactants for initial conditions, selected output
 		status = phreeqc_rm.RunFile(true, true, true, "advect.pqi");
+		// Clear contents of workers and utility
 		std::string input = "DELETE; -all";
 		status = phreeqc_rm.RunString(true, false, true, input.c_str());
-
-		// Make list of components
+		// Determine number of components to transport
 		int ncomps = phreeqc_rm.FindComponents();
-
 		// Print some of the reaction module information
 		{
 			char str1[100];
@@ -132,7 +135,7 @@ int species_cpp()
 			phreeqc_rm.OutputMessage(strm.str());
 		}
 		phreeqc_rm.OutputMessage("\n");
-		
+		// Determine species information
 		const std::vector<std::string> &species = phreeqc_rm.GetSpeciesNames();
 		const std::vector < double > & species_z = phreeqc_rm.GetSpeciesZ();
 		const std::vector < double > & species_d = phreeqc_rm.GetSpeciesD25();
@@ -149,11 +152,9 @@ int species_cpp()
 			{
 				strm << "        " << it->first << "   " << it->second << "\n";
 			}
-			//phreeqc_rm.GetSpeciesStoichiometry()[i].dump_raw(strm, 2);
 			phreeqc_rm.OutputMessage(strm.str());
 		}
 		phreeqc_rm.OutputMessage("\n");
-
 		// Set array of initial conditions
 		std::vector<int> ic1, ic2;
 		ic1.resize(nxyz*7, -1);
@@ -162,24 +163,7 @@ int species_cpp()
 			ic1[i] = 1;              // Solution 1
 			ic1[2*nxyz + i] = 1;     // Exchange 1
 		}
-		status = phreeqc_rm.InitialPhreeqc2Module(ic1); 
-
-		// Get a boundary condition
-		std::vector<double> bc_conc, bc_f1;
-		std::vector<int> bc1, bc2;
-		int nbound = 1;
-		bc1.resize(nbound, 0);                      // solution 0 from Initial IPhreeqc instance
-		bc2.resize(nbound, -1);                     // no bc2 solution for mixing
-		bc_f1.resize(nbound, 1.0);                  // mixing fraction for bc1
-		status = phreeqc_rm.InitialPhreeqc2SpeciesConcentrations(bc_conc, bc1);
-		//for (int i = 0; i < nspecies; i++)
-		//{
-		//	std::ostringstream strm;
-		//	strm.width(10);
-		//	strm << species[i] << "   " << bc_conc[i] << std::endl;
-		//	phreeqc_rm.OutputMessage(strm.str());
-		//}
-
+		status = phreeqc_rm.InitialPhreeqc2Module(ic1);
 		// Initial equilibration of cells
 		double time = 0.0;
 		double time_step = 0.0;
@@ -188,18 +172,24 @@ int species_cpp()
 		status = phreeqc_rm.SetTimeStep(time_step);
 		status = phreeqc_rm.RunCells();
 		status = phreeqc_rm.GetSpeciesConcentrations(c);
-		//for (int j = 0; j < species.size(); j++)
-		//{
-		//	std::cerr << species[j] << std::endl;
-		//	for (int i = 0; i < nxyz; i++)
-		//	{
-		//		std::cerr << i << "   " << c[j * nxyz + i] << std::endl;
-		//	}
-		//}
+
+		// --------------------------------------------------------------------------
+		// Set boundary condition
+		// --------------------------------------------------------------------------
+
+		std::vector<double> bc_conc, bc_f1;
+		std::vector<int> bc1, bc2;
+		int nbound = 1;
+		bc1.resize(nbound, 0);                      // solution 0 from Initial IPhreeqc instance
+		bc2.resize(nbound, -1);                     // no bc2 solution for mixing
+		bc_f1.resize(nbound, 1.0);                  // mixing fraction for bc1
+		status = phreeqc_rm.InitialPhreeqc2SpeciesConcentrations(bc_conc, bc1);
+
+		// --------------------------------------------------------------------------
+		// Transient loop
+		// --------------------------------------------------------------------------
 
 		int nsteps = 10;
-
-		// Transient loop
 		std::vector<double> initial_density, temperature, pressure;
 		initial_density.resize(nxyz, 1.0);
 		temperature.resize(nxyz, 20.0);
@@ -207,13 +197,10 @@ int species_cpp()
 		phreeqc_rm.SetDensity(initial_density);
 		phreeqc_rm.SetTemperature(temperature);
 		phreeqc_rm.SetPressure(pressure);
-
 		time_step = 86400.;
 		status = phreeqc_rm.SetTimeStep(time_step);
-		
 		std::vector < double > component_c;
 		component_c.resize(nxyz * ncomps);
-
 		for (int steps = 0; steps < nsteps; steps++)
 		{
 			// Transport calculation here
@@ -225,11 +212,10 @@ int species_cpp()
 				phreeqc_rm.ScreenMessage(strm.str());
 			}
 			SpeciesAdvectCpp(c, bc_conc, nspecies, nxyz, nbound);
-
-			// Send new conditions to module
+			// Transfer data to PhreeqcRM for reactions
 			bool print_selected_output_on = (steps == nsteps - 1) ? true : false;
 			bool print_chemistry_on = (steps == nsteps - 1) ? true : false;
-			status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on); 
+			status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on);
 			status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); // workers, initial_phreeqc, utility
 			status = phreeqc_rm.SetPorosity(por);                    // If porosity changes due to compressibility
 			status = phreeqc_rm.SetSaturation(sat);                  // If saturation changes
@@ -238,33 +224,29 @@ int species_cpp()
 			status = phreeqc_rm.SpeciesConcentrations2Module(c);     // Transported concentrations
 			time = time + time_step;
 			status = phreeqc_rm.SetTime(time);
-
-			// Run cells with new conditions
+			// Run cells with transported conditions
 			{
 				std::ostringstream strm;
 				strm << "Beginning reaction calculation              " << time * phreeqc_rm.GetTimeConversion() << " days\n";
 				phreeqc_rm.LogMessage(strm.str());
 				phreeqc_rm.ScreenMessage(strm.str());
 			}
-			//std::string knobs =  "KNOBS; -debug_model true;end";
-			//status = phreeqc_rm.RunString(true, true, true, knobs.c_str());
 			std::vector < int > print_mask;
 			print_mask.resize(nxyz, 1);
 			phreeqc_rm.SetPrintChemistryMask(print_mask);
 			status = phreeqc_rm.RunCells();
-
-			// Retrieve reacted concentrations, density, volume
-			status = phreeqc_rm.GetSpeciesConcentrations(c);              // Concentrations after reaction 
+			// Transfer data from PhreeqcRM for transport
+			status = phreeqc_rm.GetSpeciesConcentrations(c);
 			phreeqc_rm.GetConcentrations(component_c);
 			std::vector<double> density;
-			status = phreeqc_rm.GetDensity(density);                      // Density after reaction 
-			const std::vector<double> &volume = phreeqc_rm.GetSolutionVolume(); // Solution volume after reaction 
-
+			status = phreeqc_rm.GetDensity(density);
+			const std::vector<double> &volume = phreeqc_rm.GetSolutionVolume();
 			// Print results at last time step
 			if (print_chemistry_on != 0)
 			{
 				for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
 				{
+					// Loop through possible multiple selected output definitions
 					int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
 					status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
 					std::cerr << "Selected output sequence number: " << isel << "\n";
@@ -274,7 +256,6 @@ int species_cpp()
 					int col = phreeqc_rm.GetSelectedOutputColumnCount();
 					so.resize(nxyz*col, 0);
 					status = phreeqc_rm.GetSelectedOutput(so);
-
 					// Print results
 					for (int i = 0; i < phreeqc_rm.GetSelectedOutputRowCount()/2; i++)
 					{
@@ -298,7 +279,11 @@ int species_cpp()
 				}
 			}
 		}
-		
+
+		// --------------------------------------------------------------------------
+		// Additional features and finalize
+		// --------------------------------------------------------------------------
+
  		// Use utility instance of PhreeqcRM to calculate pH of a mixture
 		std::vector <double> c_well;
 		c_well.resize(1*ncomps, 0.0);
@@ -327,14 +312,12 @@ int species_cpp()
 			util_ptr->SetCurrentSelectedOutputUserNumber(5);
 			iphreeqc_result = util_ptr->GetSelectedOutputValue2(1, 0, &vtype, &pH, svalue, 100);
 		}
-
 		// Dump results
 		bool dump_on = true;
 		bool append = false;
 		status = phreeqc_rm.SetDumpFileName("species_cpp.dmp");
-		status = phreeqc_rm.DumpModule(dump_on, append);    // gz disabled unless compiled with #define USE_GZ
-
-		// Clean up
+		status = phreeqc_rm.DumpModule(dump_on, append);
+		// Finalize
 		status = phreeqc_rm.CloseFiles();
 		status = phreeqc_rm.MpiWorkerBreak();
 	}
@@ -365,6 +348,6 @@ SpeciesAdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int ncomps
 	// Cell zero gets boundary condition
 	for (int j = 0; j < ncomps; j++)
 	{
-		c[j * nxyz] = bc_conc[j * dim];                                // component j
+		c[j * nxyz] = bc_conc[j * dim];                           // component j
 	}
 }

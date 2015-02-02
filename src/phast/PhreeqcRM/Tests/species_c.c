@@ -12,7 +12,7 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 
     void species_c()
 	{
-		// Based on PHREEQC Example 11
+		// Based on PHREEQC Example 11, transporting species rather than components
 		int mpi_myself = 0;
 		int i, j;
 		int nxyz; 
@@ -62,9 +62,14 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		char svalue[100];
 		int iphreeqc_id;
 		int dump_on, append;
+		
+		// --------------------------------------------------------------------------
+		// Create PhreeqcRM
+		// --------------------------------------------------------------------------
 
 		nxyz = 40;
 #ifdef USE_MPI
+		// MPI
 		id = RM_Create(nxyz, MPI_COMM_WORLD);
 		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
 		{
@@ -77,17 +82,18 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			return;
 		}
 #else
+		// OpenMP
 		nthreads = 3;
 		id = RM_Create(nxyz, nthreads);
 #endif
+		// Set properties
 		status = RM_SetErrorHandlerMode(id, 2);
 		status = RM_SetSpeciesSaveOn(id, 1);
 		status = RM_SetRebalanceFraction(id, 0.5);
 		status = RM_SetRebalanceByCell(id, 1);
-		status = RM_SetFilePrefix(id, "Species_c");
 		// Open error, log, and output files
+		status = RM_SetFilePrefix(id, "Species_c");
 		status = RM_OpenFiles(id);
-
 		// Set concentration units
 		status = RM_SetUnitsSolution(id, 2);      // 1, mg/L; 2, mol/L; 3, kg/kgs
 		status = RM_SetUnitsPPassemblage(id, 1);  // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
@@ -96,25 +102,20 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		status = RM_SetUnitsGasPhase(id, 1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
 		status = RM_SetUnitsSSassemblage(id, 1);  // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
 		status = RM_SetUnitsKinetics(id, 1);      // 0, mol/L cell; 1, mol/L water; 2 mol/kg rock
-
-		// Set conversion from seconds to user units
-		status = RM_SetTimeConversion(id, 1.0 / 86400.0); // days
-
-		// Set cell volume
+		// Set conversion from seconds to user units (days)
+		status = RM_SetTimeConversion(id, 1.0 / 86400.0);
+		// Set representative volume
 		rv = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		for (i = 0; i < nxyz; i++) rv[i] = 1.0;
 		status = RM_SetRepresentativeVolume(id, rv);
-    
-		// Set current pore volume
+		// Set initial porosity
 		por = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		for (i = 0; i < nxyz; i++) por[i] = 0.2;
 		status = RM_SetPorosity(id, por);
-    
-		// Set saturation
+		// Set initial saturation
 		sat = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		for (i = 0; i < nxyz; i++) sat[i] = 1.0;
 		status = RM_SetSaturation(id, sat);
-    
 		// Set cells to print chemistry when print chemistry is turned on
 		print_chemistry_mask = (int *) malloc((size_t) (nxyz * sizeof(int)));
 		for (i = 0; i < nxyz/2; i++) 
@@ -123,11 +124,9 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			print_chemistry_mask[i + nxyz/2] = 0;
 		}
 		status = RM_SetPrintChemistryMask(id, print_chemistry_mask);
-				
 		// Partitioning of uz solids
-		//status = RM_SetPartitionUZSolids(id, 0);
-
-		// For demonstation, two equivalent rows by symmetry
+		status = RM_SetPartitionUZSolids(id, 0);
+		// Demonstation of mapping, two equivalent rows by symmetry
 		grid2chem = (int *) malloc((size_t) (nxyz * sizeof(int)));
 		for (i = 0; i < nxyz/2; i++) 
 		{
@@ -137,26 +136,26 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		status = RM_CreateMapping(id, grid2chem);
 		if (status < 0) status = RM_DecodeError(id, status); 
 		nchem = RM_GetChemistryCellCount(id);
-		
-		// Load database
-		status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
-		status = RM_LoadDatabase(id, "phreeqc.dat"); 
 
+		// --------------------------------------------------------------------------
+		// Set initial conditions
+		// --------------------------------------------------------------------------
+		
+		// Set printing of chemistry file
+		status = RM_SetPrintChemistryOn(id, 0, 1, 0); // workers, initial_phreeqc, utility
+		// Load database
+		status = RM_LoadDatabase(id, "phreeqc.dat"); 
 		// Run file to define solutions and reactants for initial conditions, selected output
 		// There are three types of IPhreeqc instances in PhreeqcRM
 		// Argument 1 refers to the workers for doing reaction calculations for transport
 		// Argument 2 refers to the InitialPhreeqc instance for accumulating initial and boundary conditions
 		// Argument 3 refers to the Utility instance
 		status = RM_RunFile(id, 1, 1, 1, "advect.pqi");
-
-		// For demonstration, clear contents of workers and utility
-		// Worker initial conditions are defined below
+		// Clear contents of workers and utility
 		strcpy(str, "DELETE; -all");
 		status = RM_RunString(id, 1, 0, 1, str);	// workers, initial_phreeqc, utility 
- 
 		// Make list of components
 		ncomps = RM_FindComponents(id);
-
 		// Print some of the reaction module information
 		sprintf(str1, "Number of threads:                                %d\n", RM_GetThreadCount(id));
 		status = RM_OutputMessage(id, str1);
@@ -184,7 +183,7 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			status = RM_OutputMessage(id, str);
 		}
 		status = RM_OutputMessage(id, "\n");
-		
+		// Determine species information
 		nspecies = RM_GetSpeciesCount(id); 
 		species_z = (double *) malloc((size_t) (nspecies * sizeof(double)));
 		species_d = (double *) malloc((size_t) (nspecies * sizeof(double)));
@@ -201,7 +200,6 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			status = RM_OutputMessage(id, str1);
 		}
 		status = RM_OutputMessage(id, "\n");
-
 		// Set array of initial conditions
 		ic1 = (int *) malloc((size_t) (7 * nxyz * sizeof(int)));
 		ic2 = (int *) malloc((size_t) (7 * nxyz * sizeof(int)));
@@ -215,7 +213,6 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			ic1[4*nxyz + i] = -1;      // Gas phase none
 			ic1[5*nxyz + i] = -1;      // Solid solutions none
 			ic1[6*nxyz + i] = -1;      // Kinetics none
-
 			ic2[i]          = -1;      // Solution none
 			ic2[nxyz + i]   = -1;      // Equilibrium phases none
 			ic2[2*nxyz + i] = -1;      // Exchange none
@@ -223,7 +220,6 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			ic2[4*nxyz + i] = -1;      // Gas phase none
 			ic2[5*nxyz + i] = -1;      // Solid solutions none
 			ic2[6*nxyz + i] = -1;      // Kinetics none
-
 			f1[i]          = 1.0;      // Mixing fraction ic1 Solution
 			f1[nxyz + i]   = 1.0;      // Mixing fraction ic1 Equilibrium phases 
 			f1[2*nxyz + i] = 1.0;      // Mixing fraction ic1 Exchange 1
@@ -245,8 +241,21 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		module_cells[0] = 18;
 		module_cells[1] = 19;
 		status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2);
+		// Initial equilibration of cells
+		time = 0.0;
+		time_step = 0.0;
+		c = (double *) malloc((size_t) (ncomps * nxyz * sizeof(double)));
+		species_c = (double *) malloc((size_t) (nspecies * nxyz * sizeof(double)));
+		status = RM_SetTime(id, time);
+		status = RM_SetTimeStep(id, time_step);
+		status = RM_RunCells(id); 
+		status = RM_GetConcentrations(id, c);
+		status = RM_GetSpeciesConcentrations(id, species_c);
 
-		// Get a boundary condition from initial phreeqc
+		// --------------------------------------------------------------------------
+		// Set boundary condition
+		// --------------------------------------------------------------------------
+
 		nbound = 1;
 		bc1 = (int *) malloc((size_t) (nbound * sizeof(int)));
 		bc2 = (int *) malloc((size_t) (nbound * sizeof(int)));
@@ -260,18 +269,10 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		} 
 		status = RM_InitialPhreeqc2SpeciesConcentrations(id, bc_conc, nbound, bc1, bc2, bc_f1);
 
-		// Initial equilibration of cells
-		time = 0.0;
-		time_step = 0.0;
-		c = (double *) malloc((size_t) (ncomps * nxyz * sizeof(double)));
-		species_c = (double *) malloc((size_t) (nspecies * nxyz * sizeof(double)));
-		status = RM_SetTime(id, time);
-		status = RM_SetTimeStep(id, time_step);
-		status = RM_RunCells(id); 
-		status = RM_GetConcentrations(id, c);
-		status = RM_GetSpeciesConcentrations(id, species_c);
-
+		// --------------------------------------------------------------------------
 		// Transient loop
+		// --------------------------------------------------------------------------
+
 		nsteps = 10;
 		density = (double *) malloc((size_t) (nxyz * sizeof(double)));
 		volume = (double *) malloc((size_t) (nxyz * sizeof(double)));
@@ -290,7 +291,7 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		status = RM_SetTimeStep(id, time_step);
 		for (isteps = 0; isteps < nsteps; isteps++)
 		{
-			// Advection calculation
+			// Transport calculation here
 			sprintf(str, "%s%10.1f%s", "Beginning transport calculation      ", 
 				RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
 			status = RM_LogMessage(id, str);
@@ -300,17 +301,6 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			status = RM_LogMessage(id, str);
 			status = RM_ScreenMessage(id, str);
 			species_advect_c(species_c, bc_conc, nspecies, nxyz, nbound);
-        
-			// Send any new conditions to module
-			status = RM_SetPorosity(id, por);              // If porosity changes 
-			status = RM_SetSaturation(id, sat);            // If saturation changes
-			status = RM_SetTemperature(id, temperature);   // If temperature changes
-			status = RM_SetPressure(id, pressure);         // If pressure changes
-			//status = RM_SetConcentrations(id, c);          // Transported concentrations
-			status = RM_SpeciesConcentrations2Module(id, species_c);          // Transported concentrations
-		    status = RM_SetTimeStep(id, time_step);        // Time step for kinetic reactions
-			time = time + time_step;
-			status = RM_SetTime(id, time);                 // Current time
 			// Set print flag
  			if (isteps == nsteps - 1) 
 			{
@@ -322,23 +312,28 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 				status = RM_SetSelectedOutputOn(id, 0);       // disable selected output
 				status = RM_SetPrintChemistryOn(id, 0, 0, 0); // workers, initial_phreeqc, utility
 			}
-
-			// Run cells with new conditions
+			// Transfer data to PhreeqcRM for reactions
+			status = RM_SetPorosity(id, por);              // If porosity changes 
+			status = RM_SetSaturation(id, sat);            // If saturation changes
+			status = RM_SetTemperature(id, temperature);   // If temperature changes
+			status = RM_SetPressure(id, pressure);         // If pressure changes
+			status = RM_SpeciesConcentrations2Module(id, species_c);          // Transported concentrations
+		    status = RM_SetTimeStep(id, time_step);        // Time step for kinetic reactions
+			time = time + time_step;
+			status = RM_SetTime(id, time);                 // Current time
+			// Run cells with transported conditions
 			sprintf(str, "%s%10.1f%s", "Beginning reaction calculation       ", RM_GetTime(id) * RM_GetTimeConversion(id), " days\n");
 			status = RM_LogMessage(id, str);
 			status = RM_ScreenMessage(id, str);
 			status = RM_RunCells(id);  
-
-			// Retrieve reacted concentrations, density, volume
-			status = RM_GetConcentrations(id, c);          // Concentrations after reaction 
-			status = RM_GetSpeciesConcentrations(id, species_c);          // Concentrations after reaction 
-			status = RM_GetDensity(id, density);           // Density after reaction
-			status = RM_GetSolutionVolume(id, volume);     // Solution volume after reaction
- 
+			// Transfer data from PhreeqcRM for transport
+			status = RM_GetConcentrations(id, c);
+			status = RM_GetSpeciesConcentrations(id, species_c); 
+			status = RM_GetDensity(id, density);
+			status = RM_GetSolutionVolume(id, volume); 
 			// Print results at last time step
 			if (isteps == nsteps - 1) 
 			{
-
 				// Loop through possible multiple selected output definitions
 				for (isel = 0; isel < RM_GetSelectedOutputCount(id); isel++)
 				{
@@ -348,12 +343,10 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 					fprintf(stderr, "Selected output user number:     %d\n", n_user);
 					// Get double array of selected output values
 					col = RM_GetSelectedOutputColumnCount(id);
-					//allocate(selected_out(nxyz,col))
+					// Allocate(selected_out(nxyz,col))
 					selected_out = (double *) malloc((size_t) (col * nxyz * sizeof(double)));
 					status = RM_GetSelectedOutput(id, selected_out);
-
 					// Print results
-					
 					for (i = 0; i < RM_GetSelectedOutputRowCount(id)/2; i++)
 					{
 						fprintf(stderr, "Cell number %d\n", i);
@@ -376,6 +369,10 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 			}
 		}
 
+		// --------------------------------------------------------------------------
+		// Additional features and finalize
+		// --------------------------------------------------------------------------
+		
 		// Use utility instance of PhreeqcRM to calculate pH of a mixture
 		c_well = (double *) malloc((size_t) ((size_t) (1 * ncomps * sizeof(double))));
 		for (i = 0; i < ncomps; i++)
@@ -394,13 +391,12 @@ void species_advect_c(double *c, double *bc_conc, int ncomps, int nxyz, int dim)
 		if (status != 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
 		status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
 		status = GetSelectedOutputValue2(iphreeqc_id, 1, 0, &vtype, &pH, svalue, 100);
-
 		// Dump results
 		dump_on = 1;
 		append = 0;
 		status = RM_SetDumpFileName(id, "species_c.dmp");
 		status = RM_DumpModule(id, dump_on, append);   
-
+		// Finalize
 		status = RM_CloseFiles(id);
 		status = RM_MpiWorkerBreak(id);
 		status = RM_Destroy(id);
