@@ -24,13 +24,13 @@ subroutine advection_f90()
   end interface
 
   ! Based on PHREEQC Example 11
+  
   integer :: mpi_myself
   integer :: i, j
   integer :: nxyz
   integer :: nthreads
   integer :: id
   integer :: status
-  !integer :: partition_uz_solids
   double precision, dimension(:), allocatable   :: rv
   double precision, dimension(:), allocatable   :: por
   double precision, dimension(:), allocatable   :: sat
@@ -75,8 +75,13 @@ subroutine advection_f90()
 #endif
   integer                                       :: l
 
+  ! --------------------------------------------------------------------------
+  ! Create PhreeqcRM
+  ! --------------------------------------------------------------------------
+
   nxyz = 40
 #ifdef USE_MPI
+  ! MPI
   id = RM_Create(nxyz, MPI_COMM_WORLD)
   call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
   if (status .ne. MPI_SUCCESS) then
@@ -89,21 +94,22 @@ subroutine advection_f90()
       return
   endif
 #else
+  ! OpenMP
   nthreads = 3
   id = RM_Create(nxyz, nthreads)
 #endif
+  ! Set properties
   status = RM_SetErrorHandlerMode(id, 2)  ! exit on error
-  !status = RM_SetErrorHandlerMode(id, 0)  ! return on error
   status = RM_SetComponentH2O(id, 0)
   status = RM_SetRebalanceFraction(id, 0.5d0)
   status = RM_SetRebalanceByCell(id, 1)
   status = RM_UseSolutionDensityVolume(id, 0)
   status = RM_SetPartitionUZSolids(id, 0)
-
+  ! Open files
   status = RM_SetFilePrefix(id, "Advect_f90")
-  ! Open error, log, and output files
   status = RM_OpenFiles(id)
 #ifdef USE_MPI
+  ! Optional callback for MPI
   status = do_something()   ! only root is calling do_something here
 #endif
   ! Set concentration units
@@ -114,25 +120,20 @@ subroutine advection_f90()
   status = RM_SetUnitsGasPhase(id, 1)      ! 0, mol/L cell; 1, mol/L water; 2 mol/L rock
   status = RM_SetUnitsSSassemblage(id, 1)  ! 0, mol/L cell; 1, mol/L water; 2 mol/L rock
   status = RM_SetUnitsKinetics(id, 1)      ! 0, mol/L cell; 1, mol/L water; 2 mol/L rock
-
-  ! Set conversion from seconds to user units
-  status = RM_SetTimeConversion(id, dble(1.0 / 86400.0)) ! days
-
-  ! Set cell volume
+  ! Set conversion from seconds to user units (days)
+  status = RM_SetTimeConversion(id, dble(1.0 / 86400.0))
+  ! Set representative volume
   allocate(rv(nxyz))
   rv = 1.0
   status = RM_SetRepresentativeVolume(id, rv)
-
-  ! Set current pore volume
+  ! Set initial porosity
   allocate(por(nxyz))
   por = 0.2
   status = RM_SetPorosity(id, por)
-
-  ! Set saturation
+  ! Set initial saturation
   allocate(sat(nxyz))
   sat = 1.0
   status = RM_SetSaturation(id, sat)
-
   ! Set cells to print chemistry when print chemistry is turned on
   allocate(print_chemistry_mask(nxyz))
   do i = 1, nxyz/2
@@ -140,15 +141,7 @@ subroutine advection_f90()
      print_chemistry_mask(i+nxyz/2) = 0
   enddo
   status = RM_SetPrintChemistryMask(id, print_chemistry_mask)
-
-  ! Set printing of chemistry file to false
-  status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
-
-  ! Partitioning of uz solids
-  !partition_uz_solids = 0
-  !status = RM_SetPartitionUZSolids(id, partition_uz_solids)
-
-  ! For demonstation, two equivalent rows by symmetry
+  ! Demonstation of mapping, two equivalent rows by symmetry
   allocate(grid2chem(nxyz))
   do i = 1, nxyz/2
      grid2chem(i) = i - 1
@@ -158,14 +151,20 @@ subroutine advection_f90()
   if (status < 0) status = RM_DecodeError(id, status) 
   nchem = RM_GetChemistryCellCount(id)
 
+  ! --------------------------------------------------------------------------
+  ! Set initial conditions
+  ! --------------------------------------------------------------------------
+
+  ! Set printing of chemistry file to false
+  status = RM_SetPrintChemistryOn(id, 0, 1, 0)  ! workers, initial_phreeqc, utility
   ! Load database
   status = RM_LoadDatabase(id, "phreeqc.dat") 
+  ! Demonstration of error handling if ErrorHandlerMode is 0
   if (status .ne. 0) then
      l = RM_GetErrorStringLength(id)
 #ifdef FORTRAN_2003
      allocate (character(len=l) :: errstr)
 #endif
-     !!allocate (errstr(l))
      write(*,*) "Start of error string: "
      status = RM_GetErrorString(id, errstr)
      write(*,"(A)") errstr
@@ -176,22 +175,17 @@ subroutine advection_f90()
      status = RM_Destroy(id)
      stop
   endif
-
   ! Run file to define solutions and reactants for initial conditions, selected output
   ! There are three types of IPhreeqc instances in PhreeqcRM
   ! Argument 1 refers to the worker IPhreeqcs for doing reaction calculations for transport
   ! Argument 2 refers to the InitialPhreeqc instance for accumulating initial and boundary conditions
   ! Argument 3 refers to the Utility instance available for processing
   status = RM_RunFile(id, 1, 1, 1, "advect.pqi")
-
-  ! For demonstration, clear contents of workers and utility
-  ! Worker initial conditions are defined below
+  ! Clear contents of workers and utility
   string = "DELETE; -all"
   status = RM_RunString(id, 1, 0, 1, string)  ! workers, initial_phreeqc, utility
-
-  ! Get list of components, write to output file
+  ! Determine number of components to transport
   ncomps = RM_FindComponents(id)
-
   ! Print some of the reaction module information		
   write(string1, "(A,I10)") "Number of threads:                                ", RM_GetThreadCount(id)
   status = RM_OutputMessage(id, string1)
@@ -208,6 +202,7 @@ subroutine advection_f90()
   status = RM_OutputMessage(id, trim(string1))
   write(string1, "(A,I10)") "Number of components for transport:               ", RM_GetComponentCount(id)
   status = RM_OutputMessage(id, trim(string1))
+  ! Get component information
   allocate(components(ncomps))
   allocate(gfw(ncomps))
   status = RM_GetGfw(id, gfw)
@@ -217,7 +212,6 @@ subroutine advection_f90()
      status = RM_OutputMessage(id, string)
   enddo
   status = RM_OutputMessage(id, " ")
-
   ! Set array of initial conditions
   allocate(ic1(nxyz,7), ic2(nxyz,7), f1(nxyz,7))
   ic1 = -1
@@ -233,7 +227,6 @@ subroutine advection_f90()
      ic1(i,7) = -1      ! Kinetics none
   enddo
   status = RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
-  !status = RM_InitialPhreeqc2Module(id, ic1)
   ! No mixing is defined, so the following is equivalent
   ! status = RM_InitialPhreeqc2Module(id, ic1)
 
@@ -246,16 +239,6 @@ subroutine advection_f90()
   module_cells(1) = 18
   module_cells(2) = 19
   status = RM_InitialPhreeqcCell2Module(id, -1, module_cells, 2)
-
-  ! Get a boundary condition from initial phreeqc
-  nbound = 1
-  allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
-  allocate(bc_conc(nbound, ncomps))  
-  bc1 = 0           ! solution 0 from Initial IPhreeqc instance
-  bc2 = -1          ! no bc2 solution for mixing
-  bc_f1 = 1.0       ! mixing fraction for bc1 
-  status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1)
-
   ! Initial equilibration of cells
   time = 0.0
   time_step = 0.0
@@ -264,8 +247,23 @@ subroutine advection_f90()
   status = RM_SetTimeStep(id, time_step)
   status = RM_RunCells(id) 
   status = RM_GetConcentrations(id, c)
+  
+  ! --------------------------------------------------------------------------
+  ! Set boundary condition
+  ! --------------------------------------------------------------------------
 
+  nbound = 1
+  allocate(bc1(nbound), bc2(nbound), bc_f1(nbound))
+  allocate(bc_conc(nbound, ncomps))  
+  bc1 = 0           ! solution 0 from Initial IPhreeqc instance
+  bc2 = -1          ! no bc2 solution for mixing
+  bc_f1 = 1.0       ! mixing fraction for bc1 
+  status = RM_InitialPhreeqc2Concentrations(id, bc_conc, nbound, bc1, bc2, bc_f1)
+
+  ! --------------------------------------------------------------------------
   ! Transient loop
+  ! --------------------------------------------------------------------------
+
   nsteps = 10
   allocate(density(nxyz), pressure(nxyz), temperature(nxyz), volume(nxyz), sat_calc(nxyz))
   volume = 1.0
@@ -273,13 +271,12 @@ subroutine advection_f90()
   pressure = 2.0
   temperature = 20.0
   status = RM_SetDensity(id, density)
-
   status = RM_SetTemperature(id, temperature)
   status = RM_SetPressure(id, pressure)
   time_step = 86400.0
   status = RM_SetTimeStep(id, time_step)
   do isteps = 1, nsteps
-     ! Advection calculation
+     ! Transport calculation here
      write(string, "(A32,F15.1,A)") "Beginning transport calculation ", &
           RM_GetTime(id) * RM_GetTimeConversion(id), " days"
      status = RM_LogMessage(id, string);
@@ -289,17 +286,6 @@ subroutine advection_f90()
      status = RM_LogMessage(id, string)
      status = RM_ScreenMessage(id, string)        
      call advect_f90(c, bc_conc, ncomps, nxyz)
-
-     ! Send any new conditions to module
-     status = RM_SetPorosity(id, por)               ! If pore volume changes 
-     status = RM_SetSaturation(id, sat)              ! If saturation changes
-     status = RM_SetTemperature(id, temperature)     ! If temperature changes
-     status = RM_SetPressure(id, pressure)           ! If pressure changes
-     status = RM_SetConcentrations(id, c)          ! Transported concentrations
-     status = RM_SetTimeStep(id, time_step)             ! Time step for kinetic reactions
-     time = time + time_step
-     status = RM_SetTime(id, time)                      ! Current time
-
      ! print at last time step
      if (isteps == nsteps) then
         status = RM_SetSelectedOutputOn(id, 1);        ! enable selected output
@@ -308,27 +294,35 @@ subroutine advection_f90()
         status = RM_SetSelectedOutputOn(id, 0);        ! disable selected output
         status = RM_SetPrintChemistryOn(id, 0, 0, 0)   ! workers, initial_phreeqc, utility
      endif
-
-     ! Run cells with new conditions
+     ! Transfer data to PhreeqcRM for reactions
+     status = RM_SetPorosity(id, por)                ! If pore volume changes 
+     status = RM_SetSaturation(id, sat)              ! If saturation changes
+     status = RM_SetTemperature(id, temperature)     ! If temperature changes
+     status = RM_SetPressure(id, pressure)           ! If pressure changes
+     status = RM_SetConcentrations(id, c)            ! Transported concentrations
+     status = RM_SetTimeStep(id, time_step)          ! Time step for kinetic reactions
+     time = time + time_step
+     status = RM_SetTime(id, time)                   ! Current time
+     ! Run cells with transported conditions
      write(string, "(A32,F15.1,A)") "Beginning reaction calculation  ", &
           time * RM_GetTimeConversion(id), " days"
      status = RM_LogMessage(id, string);
      status = RM_ScreenMessage(id, string);
      status = RM_RunCells(id)  
-
-     ! Retrieve reacted concentrations, density, volume
-     status = RM_GetConcentrations(id, c)          ! Concentrations after reaction
+     ! Transfer data from PhreeqcRM for transport
+     status = RM_GetConcentrations(id, c)            ! Concentrations after reaction
      status = RM_GetDensity(id, density)             ! Density after reaction
      status = RM_GetSolutionVolume(id, volume)       ! Solution volume after reaction
      status = RM_GetSaturation(id, sat_calc)         ! Saturation after reaction
-
      ! Print results at last time step
      if (isteps == nsteps) then
+        ! Loop through possible multiple selected output definitions
         do isel = 1, RM_GetSelectedOutputCount(id)
            n_user = RM_GetNthSelectedOutputUserNumber(id, isel)
            status = RM_SetCurrentSelectedOutputUserNumber(id, n_user)
            write(*,*) "Selected output sequence number: ", isel
            write(*,*) "Selected output user number:     ", n_user
+           ! Get double array of selected output values
            col = RM_GetSelectedOutputColumnCount(id)
            allocate(selected_out(nxyz,col))
            status = RM_GetSelectedOutput(id, selected_out)
@@ -352,6 +346,10 @@ subroutine advection_f90()
      endif
   enddo
 
+  ! --------------------------------------------------------------------------
+  ! Additional features and finalize
+  ! --------------------------------------------------------------------------
+
   ! Use utility instance of PhreeqcRM to calculate pH of a mixture
   allocate (c_well(1,ncomps))
   do i = 1, ncomps
@@ -370,17 +368,16 @@ subroutine advection_f90()
   if (status .ne. 0) status = RM_Abort(id, status, "IPhreeqc RunString failed");
   status = SetCurrentSelectedOutputUserNumber(iphreeqc_id, 5);
   status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
-
   ! Dump results   
   status = RM_SetDumpFileName(id, "advection_f90.dmp")  
   dump_on = 1
   append = 0  
   status = RM_DumpModule(id, dump_on, append)    
-
   ! Clean up
   status = RM_CloseFiles(id)
   status = RM_MpiWorkerBreak(id)
   status = RM_Destroy(id)
+  ! Deallocate
   deallocate(rv);
   deallocate(por);
   deallocate(sat);

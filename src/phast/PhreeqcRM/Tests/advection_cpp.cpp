@@ -47,7 +47,7 @@ int advection_cpp()
 #endif
 		IRM_RESULT status;
 		// Set properties
-		status = phreeqc_rm.SetErrorHandlerMode(1); 
+		status = phreeqc_rm.SetErrorHandlerMode(1);
 		status = phreeqc_rm.SetComponentH2O(false);
 		status = phreeqc_rm.SetRebalanceFraction(0.5);
 		status = phreeqc_rm.SetRebalanceByCell(true);
@@ -70,7 +70,7 @@ int advection_cpp()
 		status = phreeqc_rm.SetUnitsKinetics(1);           // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 		// Set conversion from seconds to user units (days)
 		double time_conversion = 1.0 / 86400;
-		status = phreeqc_rm.SetTimeConversion(time_conversion);    
+		status = phreeqc_rm.SetTimeConversion(time_conversion);
 		// Set representative volume
 		std::vector<double> rv;
 		rv.resize(nxyz, 1.0);
@@ -114,7 +114,7 @@ int advection_cpp()
 			grid2chem[i + nxyz/2] = i;
 		}
 		status = phreeqc_rm.CreateMapping(grid2chem);
-		if (status < 0) phreeqc_rm.DecodeError(status); 
+		if (status < 0) phreeqc_rm.DecodeError(status);
 		int nchem = phreeqc_rm.GetChemistryCellCount();
 
 		// --------------------------------------------------------------------------
@@ -122,7 +122,7 @@ int advection_cpp()
 		// --------------------------------------------------------------------------
 
 		// Set printing of chemistry file
-		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
+		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
 		// Load database
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
 		// Demonstration of error handling if ErrorHandlerMode is 0
@@ -185,10 +185,10 @@ int advection_cpp()
 			ic1[5*nxyz + i] = -1;    // Solid solutions none
 			ic1[6*nxyz + i] = -1;    // Kinetics none
 		}
-		status = phreeqc_rm.InitialPhreeqc2Module(ic1, ic2, f1); 
+		status = phreeqc_rm.InitialPhreeqc2Module(ic1, ic2, f1);
 		// No mixing is defined, so the following is equivalent
-		// status = phreeqc_rm.InitialPhreeqc2Module(ic1.data()); 
-		
+		// status = phreeqc_rm.InitialPhreeqc2Module(ic1.data());
+
 		// alternative for setting initial conditions
 		// cell number in first argument (-1 indicates last solution, 40 in this case)
 		// in advect.pqi and any reactants with the same number--
@@ -251,7 +251,7 @@ int advection_cpp()
 			// Transfer data to PhreeqcRM for reactions
 			bool print_selected_output_on = (steps == nsteps - 1) ? true : false;
 			bool print_chemistry_on = (steps == nsteps - 1) ? true : false;
-			status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on); 
+			status = phreeqc_rm.SetSelectedOutputOn(print_selected_output_on);
 			status = phreeqc_rm.SetPrintChemistryOn(print_chemistry_on, false, false); // workers, initial_phreeqc, utility
 			status = phreeqc_rm.SetPorosity(por);             // If pororosity changes due to compressibility
 			status = phreeqc_rm.SetSaturation(sat);           // If saturation changes
@@ -270,7 +270,7 @@ int advection_cpp()
 			}
 			status = phreeqc_rm.RunCells();
 			// Transfer data from PhreeqcRM for transport
-			status = phreeqc_rm.GetConcentrations(c);                     
+			status = phreeqc_rm.GetConcentrations(c);
 			std::vector<double> density;
 			status = phreeqc_rm.GetDensity(density);
 			const std::vector<double> &volume = phreeqc_rm.GetSolutionVolume();
@@ -289,13 +289,14 @@ int advection_cpp()
 #endif
 					for (int i = 0; i < n; i++)
 					{
-						oss << i << "           " << phreeqc_rm.GetStartCell()[i] << "                 " 
+						oss << i << "           " << phreeqc_rm.GetStartCell()[i] << "                 "
 							<< phreeqc_rm.GetEndCell()[i] << "\n";
 					}
 					phreeqc_rm.OutputMessage(oss.str());
 				}
 				for (int isel = 0; isel < phreeqc_rm.GetSelectedOutputCount(); isel++)
 				{
+					// Loop through possible multiple selected output definitions
 					int n_user = phreeqc_rm.GetNthSelectedOutputUserNumber(isel);
 					status = phreeqc_rm.SetCurrentSelectedOutputUserNumber(n_user);
 					std::cerr << "Selected output sequence number: " << isel << "\n";
@@ -330,7 +331,7 @@ int advection_cpp()
 
 		// --------------------------------------------------------------------------
 		// Additional features and finalize
-		// --------------------------------------------------------------------------	
+		// --------------------------------------------------------------------------
 
  		// Use utility instance of PhreeqcRM to calculate pH of a mixture
 		std::vector <double> c_well;
@@ -348,7 +349,7 @@ int advection_cpp()
 		util_ptr->SetOutputFileName("utility_cpp.txt");
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
-		// Alternatively, utility pointer is worker nthreads + 1 
+		// Alternatively, utility pointer is worker nthreads + 1
 		IPhreeqc * util_ptr1 = phreeqc_rm.GetIPhreeqcPointer(phreeqc_rm.GetThreadCount() + 1);
 		if (iphreeqc_result != 0)
 		{
@@ -410,13 +411,15 @@ AdvectCpp(std::vector<double> &c, std::vector<double> bc_conc, int ncomps, int n
 }
 int units_tester()
 {
-	// Based on PHREEQC Example 11
-
 	try
 	{
+		// --------------------------------------------------------------------------
+		// Create PhreeqcRM
+		// --------------------------------------------------------------------------
+
 		int nxyz = 3;
-		IRM_RESULT status;
 #ifdef USE_MPI
+		// MPI
 		PhreeqcRM phreeqc_rm(nxyz, MPI_COMM_WORLD);
 		int mpi_myself;
 		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
@@ -429,10 +432,13 @@ int units_tester()
 			return EXIT_SUCCESS;
 		}
 #else
+		// OpenMP
 		int nthreads = 3;
 		PhreeqcRM phreeqc_rm(nxyz, nthreads);
 #endif
-		status = phreeqc_rm.SetErrorHandlerMode(1);        // throw exception on error
+		IRM_RESULT status;
+		// Set properties
+		status = phreeqc_rm.SetErrorHandlerMode(1);
 		status = phreeqc_rm.SetFilePrefix("Units_InitialPhreeqc_1");
 		if (phreeqc_rm.GetMpiMyself() == 0)
 		{
@@ -446,51 +452,45 @@ int units_tester()
 		status = phreeqc_rm.SetUnitsGasPhase(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 		status = phreeqc_rm.SetUnitsSSassemblage(1);  // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
 		status = phreeqc_rm.SetUnitsKinetics(1);      // 0, mol/L cell; 1, mol/L water; 2 mol/L rock
-
 		// Set representative volume
 		std::vector<double> rv;
 		rv.resize(nxyz, 1.0);
 		status = phreeqc_rm.SetRepresentativeVolume(rv);
-
 		// Set current porosity
 		std::vector<double> por;
 		por.resize(nxyz, 0.2);
 		status = phreeqc_rm.SetPorosity(por);
-
 		// Set saturation
 		std::vector<double> sat;
 		sat.resize(nxyz, 1.0);
 		status = phreeqc_rm.SetSaturation(sat);
-
 		// Set printing of chemistry file
 		status = phreeqc_rm.SetPrintChemistryOn(false, true, false); // workers, initial_phreeqc, utility
 
+		// --------------------------------------------------------------------------
+		// Set initial conditions
+		// --------------------------------------------------------------------------
+
 		// Load database
 		status = phreeqc_rm.LoadDatabase("phreeqc.dat");
-		//status = phreeqc_rm.LoadDatabase("wateq4f.dat");
-
 		// Run file to define solutions and reactants for initial conditions, selected output
-		bool workers = true;             // This is one or more IPhreeqcs for doing the reaction calculations for transport
-		bool initial_phreeqc = true;      // This is an IPhreeqc for accumulating initial and boundary conditions
-		bool utility = false;             // This is an extra IPhreeqc, I will use it, for example, to calculate pH in a
-		// mixture for a well
-		//status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "dk");
+		bool workers = true;
+		bool initial_phreeqc = true;
+		bool utility = false;
 		status = phreeqc_rm.RunFile(workers, initial_phreeqc, utility, "units.pqi");
 		{
 			std::string input = "DELETE; -all";
 			status = phreeqc_rm.RunString(true, false, true, input.c_str());
 		}
-
 		status = phreeqc_rm.SetFilePrefix("Units_InitialPhreeqc_2");
 		if (phreeqc_rm.GetMpiMyself() == 0)
 		{
 			phreeqc_rm.OpenFiles();
 		}
-
 		// Set reference to components
 		int ncomps = phreeqc_rm.FindComponents();
 		const std::vector<std::string> &components = phreeqc_rm.GetComponents();
-		
+		// Set initial conditions
 		std::vector < int > cell_numbers;
 		cell_numbers.push_back(0);
 		status = phreeqc_rm.InitialPhreeqcCell2Module(1, cell_numbers);
@@ -498,10 +498,8 @@ int units_tester()
 		status = phreeqc_rm.InitialPhreeqcCell2Module(2, cell_numbers);
 		cell_numbers[0] = 2;
 		status = phreeqc_rm.InitialPhreeqcCell2Module(3, cell_numbers);
-		
 		// Retrieve concentrations
 		std::vector<double> c;
-		//c.resize(nxyz * components.size());
 		status = phreeqc_rm.SetFilePrefix("Units_Worker");
 		if (phreeqc_rm.GetMpiMyself() == 0)
 		{
@@ -525,7 +523,6 @@ int units_tester()
 				std::cerr << i << "   " << so[i] << std::endl;
 			}
 		}
-
 		// Use utility instance of PhreeqcRM
 		std::vector<double> tc, p_atm;
 		tc.resize(nxyz, 25.0);
@@ -533,13 +530,12 @@ int units_tester()
 		IPhreeqc * util_ptr = phreeqc_rm.Concentrations2Utility(c, tc, p_atm);
 		std::string input;
 		input = "RUN_CELLS; -cells 0-2";
-		// Option 1, output goes to new file
+		// Output goes to new file
 		int iphreeqc_result;
 		util_ptr->SetOutputFileName("Units_utility.out");
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
 		status = phreeqc_rm.MpiWorkerBreak();
-		
 	}
 	catch (PhreeqcRMStop)
 	{
