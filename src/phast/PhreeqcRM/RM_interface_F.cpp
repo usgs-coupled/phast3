@@ -5,7 +5,6 @@
 #include "PHRQ_io.h"
 #include <string>
 #include <map>
-//#include "fwrap.h"
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
@@ -229,7 +228,6 @@ RMF_GetComponent(int * id, int * num, char *chem_name, int * l1)
 			if (l1 > 0 && *num > 0 && *num <= Reaction_module_ptr->GetComponentCount())
 			{
 				rmpadfstring(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), (unsigned int) *l1);
-				//strncpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), *l1);
 				return IRM_OK;
 			}
 		}
@@ -310,7 +308,6 @@ RMF_GetErrorString(int * id, char *errstr, int * l)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		//strncpy(errstr, Reaction_module_ptr->GetErrorString().c_str(), *l);
 		rmpadfstring(errstr, Reaction_module_ptr->GetErrorString().c_str(), (unsigned int) *l);
 		return IRM_OK;
 	}
@@ -339,7 +336,6 @@ RMF_GetFilePrefix(int * id, char *prefix, int *l)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		//strncpy(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), *l);
 		rmpadfstring(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), (unsigned int) *l);
 		return IRM_OK;
 	}
@@ -543,7 +539,6 @@ RMF_GetSelectedOutputHeading(int * id, int *icol, char *heading, int *length)
 		IRM_RESULT return_value = Reaction_module_ptr->GetSelectedOutputHeading(*icol - 1, head);
 		if (return_value == IRM_OK)
 		{
-			//strncpy(heading, head.c_str(), *length);
 			rmpadfstring(heading, head.c_str(), (unsigned int) *length);
 		}
 		return return_value;
@@ -650,7 +645,6 @@ RMF_GetSpeciesName(int *id, int *i_in, char *name, int *length)
 		const std::vector<std::string> & names = Reaction_module_ptr->GetSpeciesNames();
 		if (i >= 0 && i < (int) names.size())
 		{
-			//strncpy(name, names[i].c_str(), *length);
 			rmpadfstring(name, names[i].c_str(), (unsigned int) *length);  
 			return IRM_OK;
 		}
@@ -1045,7 +1039,6 @@ RMF_LoadDatabase(int * id, const char *db_name)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		//std::string db = PhreeqcRM::Char2TrimString(db_name, l);
 		std::string db(db_name);
 		size_t strEnd = db.find_last_not_of(" \t\n");
 		db = db.substr(0, strEnd + 1);
@@ -1063,7 +1056,6 @@ RMF_LogMessage(int *id, const char *err_str)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		//std::string e_string(err_str, (int) l);
 		std::string e_string(err_str);
 		trim_right(e_string);
 		e_string.append("\n");
@@ -1125,7 +1117,6 @@ RMF_OutputMessage(int *id, const char *str)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		//std::string e_string = Reaction_module_ptr->Char2TrimString(str, l);
 		std::string e_string(str);
 		e_string.append("\n");
 		Reaction_module_ptr->OutputMessage(e_string);
@@ -1161,7 +1152,6 @@ RMF_RunFile(int *id, int *workers, int *initial_phreeqc, int *utility, const cha
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		//std::string str = PhreeqcRM::Char2TrimString(chem_name, l);
 		std::string str(chem_name);
 		size_t strEnd = str.find_last_not_of(" \t\n");
 		str = str.substr(0, strEnd + 1);
@@ -1182,7 +1172,6 @@ RMF_RunString(int *id, int *workers, int *initial_phreeqc, int *utility, const c
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
-		//std::string str = PhreeqcRM::Char2TrimString(input_string, l);
 		std::string str(input_string);
 		return Reaction_module_ptr->RunString((*workers != 0), (*initial_phreeqc != 0), (*utility != 0), input_string);
 	}
@@ -1278,7 +1267,6 @@ RMF_SetDumpFileName(int *id, const char *name)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		//std::string str = PhreeqcRM::Char2TrimString(name, nchar);
 		std::string str(name);		
 		size_t strEnd = str.find_last_not_of(" \t\n");
 		str = str.substr(0, strEnd + 1);
@@ -1312,7 +1300,6 @@ RMF_SetFilePrefix(int *id, const char *name)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		//std::string str = PhreeqcRM::Char2TrimString(name, nchar);
 		std::string str(name);
 		size_t strEnd = str.find_last_not_of(" \t\n");
 		str = str.substr(0, strEnd + 1);
