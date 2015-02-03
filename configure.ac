@@ -29,9 +29,9 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_F77
 AC_PROG_FC
-AC_FC_LIBRARY_LDFLAGS
-AC_FC_WRAPPERS
-AC_FC_MAIN
+##AC_FC_LIBRARY_LDFLAGS
+##AC_FC_WRAPPERS
+##AC_FC_MAIN
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -248,14 +248,30 @@ AC_ARG_ENABLE([mpi],
 
 if test "X$PHAST_MPI" = "Xyes"; then
   AC_MSG_RESULT(yes)
-  AC_LANG(C++)
+  AC_LANG_PUSH(C++)
   AX_MPI(, AC_ERROR([MPI not found]))
+  AC_LANG_POP(C++)
+
   # extra MPI defines
   AC_DEFINE([USE_MPI], , [Set to use MPI])
   AC_DEFINE([MERGE_FILES], , [Set to use MPI])
+
+  AC_LANG_PUSH(Fortran)
+  AX_MPI(, AC_ERROR([MPI not found]))
+  AC_LANG_POP(Fortran)
+
   # set compilers
   CXX="$MPICXX"
   PHAST_SUFFIX=mpi
+  #{{
+  AC_LANG_PUSH(Fortran)
+  AC_MSG_RESULT("$MPIFC")
+  FC="$MPIFC"
+  AC_FC_LIBRARY_LDFLAGS
+  AC_FC_WRAPPERS
+  AC_FC_MAIN
+  AC_LANG_POP(Fortran)
+  #}}
 else
   AC_MSG_RESULT(no)
   PHAST_SUFFIX=ser
