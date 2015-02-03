@@ -8,9 +8,6 @@
     <Filter Include="Source Files\COMMON_COBJS">
       <UniqueIdentifier>{27e6a46a-e411-496b-8df0-b050e44a8ed4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\HDF_OBJS">
-      <UniqueIdentifier>{fbd19430-b833-49f3-aa00-aad281f23178}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\PHASTINPUT_OBJS">
       <UniqueIdentifier>{42755120-3bc6-41cb-9d9e-16436a12cae6}</UniqueIdentifier>
     </Filter>
@@ -39,9 +36,6 @@
     <ClCompile Include="..\KDtree\Point.cpp">
       <Filter>Source Files\PHASTINPUT_OBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\hdf.cpp">
-      <Filter>Source Files\HDF_OBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\FileHandler.cpp">
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
@@ -49,6 +43,9 @@
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
     <ClCompile Include="..\TM_interface.cpp">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hdf.cpp">
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
   </ItemGroup>
