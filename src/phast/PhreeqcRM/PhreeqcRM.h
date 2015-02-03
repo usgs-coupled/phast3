@@ -742,7 +742,6 @@ IPhreeqc * util_ptr = phreeqc_rm.GetIPhreeqcPointer(phreeqc_rm.GetThreadCount() 
 @par MPI:
 Called by root and (or) workers.
  */
-//	IPhreeqc *                                GetIPhreeqcPointer(int i) {return (i >= 0 && i < this->nthreads + 2) ? (IPhreeqc *) this->workers[i] : NULL;}
 	IPhreeqc *                                GetIPhreeqcPointer(int i);
 /**
 Returns the MPI process (task) number. For the MPI version,

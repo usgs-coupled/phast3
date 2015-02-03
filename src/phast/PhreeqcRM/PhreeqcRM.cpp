@@ -155,8 +155,6 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	int n = 1;	
 	thread_count = 1;
 #ifdef USE_OPENMP
-//	int thread_count = 1;
-//	int n = 1;	
 	thread_count = data_for_parallel_processing;
 #if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
@@ -234,7 +232,7 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	this->partition_uz_solids = false;
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
-	this->time_conversion = 1.;				// scalar conversion factor for time
+	this->time_conversion = 1.;				    // scalar conversion factor for time
 	this->rebalance_by_cell = true;
 	this->rebalance_fraction = 0.5;				// parameter for rebalancing process load for parallel	
 
@@ -1908,7 +1906,6 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 		in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
 
 		std::vector<int> r_values;
-		//r_values.push_back(this->workers[0]->RunString(in.str().c_str()));
 		{
 			int status;
 			status = this->workers[0]->RunString(in.str().c_str());
@@ -1976,7 +1973,6 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 			// Clear dump string to save space
 			std::ostringstream clr;
 			clr << "END\n";
-			//r_values.push_back(this->GetWorkers()[0]->RunString(clr.str().c_str()));
 			{
 				int status;
 				status = this->GetWorkers()[0]->RunString(clr.str().c_str());
@@ -3933,9 +3929,9 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 
 					// for solids
 					std::vector < double > porosity_factor;
-					porosity_factor.push_back(this->rv[i]);                         // per liter of rv
+					porosity_factor.push_back(this->rv[i]);                              // per liter of rv
 					porosity_factor.push_back(this->rv[i]*cell_porosity_local);          // per liter of water
-					porosity_factor.push_back(this->rv[i]*(1.0 - cell_porosity_local));    // per liter of rock
+					porosity_factor.push_back(this->rv[i]*(1.0 - cell_porosity_local));  // per liter of rock
 
 					// pp_assemblage
 					if (cell_bin.Get_PPassemblages().find(cell) != cell_bin.Get_PPassemblages().end())
@@ -4500,8 +4496,6 @@ PhreeqcRM::OpenFiles(void)
 	{
 		if (this->mpi_myself == 0)
 		{
-			//this->phreeqcrm_io->Set_error_ostream(&std::cerr);
-
 			// open echo and log file, prefix.log.txt
 			std::string ln = this->file_prefix;
 			ln.append(".log.txt");
@@ -6098,7 +6092,11 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 		{
 			range_start = i;
 			range_end = i;
-			count_active++;
+			count_active++;				
+			if (this->partition_uz_solids)
+			{
+				this->PartitionUZ(n, i, j, this->saturation[j]);
+			}
 			break;
 		}
 	}
@@ -6129,10 +6127,10 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 					range_end = i;
 				}	
 				// partition solids between UZ and SZ
-				//if (this->partition_uz_solids)
-				//{
-				//	this->PartitionUZ(n, i, j, this->saturation[j]);
-				//}
+				if (this->partition_uz_solids)
+				{
+					this->PartitionUZ(n, i, j, this->saturation[j]);
+				}
 			}
 		}
 		if (range_start == range_end)
@@ -6144,9 +6142,6 @@ PhreeqcRM::RunCellsThreadNoPrint(int n)
 			soln_list << range_start << "-" << range_end << "\n";
 		}
 	}
-
-	// set cell number, pore volume got Basic functions
-	//phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
 
 	clock_t t0 = clock();
 	if (count_active > 0)
@@ -6340,12 +6335,6 @@ PhreeqcRM::RunCellsThread(int n)
 #endif			
 				// Set local print flags
 				bool pr_chem = pr_chemistry_on && (this->print_chem_mask[j] != 0);
-
-				// partition solids between UZ and SZ
-				//if (this->partition_uz_solids)
-				//{
-				//	this->PartitionUZ(n, i, j, this->saturation[j]);
-				//}
 
 				// ignore small saturations
 				bool active = true;
