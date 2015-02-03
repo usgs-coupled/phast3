@@ -7,11 +7,16 @@ FCDEFS=-DHDF5_CREATE
 dist_bin_SCRIPTS = phast
 
 if BUILD_MPI
-  bin_PROGRAMS = phast-mpi
-  FCDEFS+=-DUSE_MPI -DMERGE_FILES
+bin_PROGRAMS = phast-mpi
+FCDEFS+=-DUSE_MPI
 else
-  bin_PROGRAMS = phast-openmp
-endif
+if BUILD_OPENMP
+bin_PROGRAMS = phast-openmp
+FCDEFS+=-DUSE_OPENMP
+else
+bin_PROGRAMS = phast-ser
+endif #BUILD_OPENMP
+endif #BUILD_MPI 
 
 PHAST_SRC=\
 	FileHandler.cpp\
@@ -315,10 +320,13 @@ phast_openmp_SOURCES=$(PHAST_SRC)
 
 phast_mpi_SOURCES=$(PHAST_SRC)
 
+phast_ser_SOURCES=$(PHAST_SRC)
+
 phast_openmp_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
 
 phast_mpi_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
 
+phast_ser_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
 
 # We must override the default PPFCCOMPILE since ifort can't
 # handle the FC_FUNC define correctly so $(DEFS) is replaced

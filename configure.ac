@@ -45,6 +45,10 @@ fi
 AC_SUBST(F90_MODEXT)
 
 # Checks for libraries.
+AC_LANG_PUSH(C++)
+AC_OPENMP
+##AC_SUBST(AM_CXXFLAGS, $OPENMP_CXXFLAGS)
+AC_LANG_POP(C++)
 
 # Checks for header files.
 AC_CHECK_HEADERS([float.h limits.h memory.h stddef.h stdlib.h])
@@ -272,11 +276,18 @@ if test "X$PHAST_MPI" = "Xyes"; then
   AC_FC_MAIN
   AC_LANG_POP(Fortran)
   #}}
+  # disable openmp
+  enable_openmp=no
 else
   AC_MSG_RESULT(no)
-  PHAST_SUFFIX=ser
+  if test "$enable_openmp" != no; then
+     AC_SUBST(AM_CXXFLAGS, $OPENMP_CXXFLAGS)
+     AC_DEFINE(USE_OPENMP)
+  fi
+  PHAST_SUFFIX=openmp
 fi
 
+AM_CONDITIONAL([BUILD_OPENMP], [test "X$enable_openmp" != "Xno"])
 AM_CONDITIONAL([BUILD_MPI], [test "X$PHAST_MPI" = "Xyes"])
 AM_CONDITIONAL([BUILD_PHASTHDF], [test -n "$ANT"])
 AC_SUBST(PHAST_SUFFIX)
@@ -296,9 +307,15 @@ echo "*************************************"
 echo "Summary:"
 echo "C++ Compiler                 = $CXX"
 echo "CPPFLAGS                     = $CPPFLAGS"
+echo "CXXFLAGS                     = $CXXFLAGS"
 echo "Fortran Compiler             = $FC"
 echo "Fortran Libs                 = $FCLIBS"
 echo "LDFLAGS                      = $LDFLAGS"
+if test "X$enable_openmp" != "Xno"; then
+echo "Enable OpenMP                = yes"
+else
+echo "Enable OpenMP                = no"
+fi
 echo "Enable MPI                   = $PHAST_MPI"
 if test "X$PHAST_MPI" = "Xyes"; then
 echo "MPI C++ compiler command     = $MPICXX"
