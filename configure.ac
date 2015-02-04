@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.61])
-AC_INIT([phast], [2.0.0-4665], [dlpark@usgs.gov])
+AC_INIT([phast], [3.0.0-9238], [dlpark@usgs.gov])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -14,10 +14,11 @@ AC_CANONICAL_HOST
 # phastinput defines
 AC_DEFINE([ANSI_DECLARATORS], , [Must be set for phastinput])
 AC_DEFINE([TRILIBRARY], , [Must be set for phastinput])
+AC_DEFINE([PHRQ_IO_INPUT], , [Must be set for phastinput])
 
 # phast defines
-AC_DEFINE([PHREEQC_CPP], , [Must be set for phast])
-AC_DEFINE([HDF5_CREATE], , [Must be set for phast])
+AC_DEFINE([SWIG_SHARED_OBJ], , [Must be set for phast])
+AC_DEFINE([USE_PHRQ_ALLOC], , [Must be set for phast])
 AC_DEFINE([H5Dcreate_vers], [1] , [Must be set to 1 for phast])
 AC_DEFINE([H5Gcreate_vers], [1] , [Must be set to 1 for phast])
 AC_DEFINE([H5Eset_auto_vers], [1] , [Must be set to 1 for phast])
