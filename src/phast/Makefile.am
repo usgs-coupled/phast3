@@ -79,7 +79,6 @@ PHAST_SRC=\
 	PhastFortran/modules_g.f90\
 	PhastFortran/modules_manager.f90\
 	PhastFortran/mpi_mod.F90\
-	PhastFortran/mpi_windows.inc\
 	PhastFortran/mtoijk.f90\
 	PhastFortran/nintrp.f90\
 	PhastFortran/openf.F90\
