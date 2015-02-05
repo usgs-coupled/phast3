@@ -153,7 +153,6 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	// second argument is threads for OPENMP or COMM for MPI
 	int thread_count = 1;
 	int n = 1;	
-	thread_count = 1;
 #ifdef USE_OPENMP
 	thread_count = data_for_parallel_processing;
 #if defined(_WIN32)
@@ -205,8 +204,19 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	MPI_Bcast(&this->nxyz, 1, MPI_INT, 0, phreeqcrm_comm);
 	MPI_Bcast(&this->component_h2o, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 	this->nthreads = 1;
+	if (this->mpi_myself == 0)
+	{
+		if (this->mpi_tasks > this->nxyz)
+		{
+			std::ostringstream err;
+			err << "Number of threads must be less than or equal to number of model cells, ";
+			err << this->nxyz << "." << std::endl;
+			this->ErrorHandler(IRM_FAIL, err.str());
+		}
+	}
 #else
 	this->nthreads = (thread_count > 0) ? thread_count : n;
+	this->nthreads = min(this->nthreads, this->nxyz);
 #endif
 
 	// last one is to calculate well pH
@@ -1270,6 +1280,28 @@ PhreeqcRM::CreateMapping(std::vector<int> &grid2chem)
 			}
 		}
 		count_chemistry ++; 
+
+#ifdef USE_MPI
+		if (this->mpi_myself == 0)
+		{
+			if (this->mpi_tasks > this->count_chemistry)
+			{
+				std::ostringstream err;
+				err << "Number of threads must be less than or equal to number of reaction cells, ";
+				err << this->count_chemistry << "." << std::endl;
+				this->ErrorHandler(IRM_FAIL, err.str());
+			}
+		}
+#else
+		if (this->nthreads > this->count_chemistry)
+		{
+			std::ostringstream err;
+			err << "Number of threads must be less than or equal to number of reaction cells, ";
+			err << this->count_chemistry << "." << std::endl;
+			this->ErrorHandler(IRM_FAIL, err.str());
+		}
+#endif
+
 
 		for (int i = 0; i < count_chemistry; i++)
 		{
