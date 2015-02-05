@@ -5,6 +5,7 @@
 #error "Cannot define both USE_OPENMP and USE_MPI at the same time."
 #endif
 
+#include <algorithm>
 #include "PhreeqcRM.h"
 #include "PHRQ_base.h"
 #include "PHRQ_io.h"
@@ -216,7 +217,7 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	}
 #else
 	this->nthreads = (thread_count > 0) ? thread_count : n;
-	this->nthreads = min(this->nthreads, this->nxyz);
+	this->nthreads = std::min(this->nthreads, this->nxyz);
 #endif
 
 	// last one is to calculate well pH
