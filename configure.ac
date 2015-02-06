@@ -1,4 +1,4 @@
-#                                               -*- Autoconf -*-
+<#                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.61])
@@ -23,7 +23,7 @@ AC_DEFINE([H5Dcreate_vers], [1] , [Must be set to 1 for phast])
 AC_DEFINE([H5Gcreate_vers], [1] , [Must be set to 1 for phast])
 AC_DEFINE([H5Eset_auto_vers], [1] , [Must be set to 1 for phast])
 
-## NEW START 
+# check for --with-mpi
 # If --with-mpi=auto is used, try to find MPI, but use standard C compiler if it is not found.
 # If --with-mpi=yes is used, try to find MPI and fail if it isn't found.
 # If --with-mpi=no is used, use a standard C compiler instead.
@@ -32,29 +32,26 @@ AC_ARG_WITH(mpi, [AS_HELP_STRING([--with-mpi],
     MPI is not used. Default: no])
 ],,[with_mpi=no])
 
+
+# Checks for programs.
+##AC_PROG_CXX
 AX_PROG_CXX_MPI([test x"$with_mpi" != xno],[use_mpi=yes],[
   use_mpi=no
   if test x"$with_mpi" = xyes; then
     AC_MSG_ERROR([MPI compiler requested, but couldn't use MPI.])
   fi
 ])
-
+AC_PROG_AWK
+##AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_F77
+##AC_PROG_FC
 AX_PROG_FC_MPI([test x"$with_mpi" != xno],[use_mpi=yes],[
   use_mpi=no
   if test x"$with_mpi" = xyes; then
     AC_MSG_ERROR([MPI compiler requested, but couldn't use MPI.])
   fi
 ])
-
-## NEW END
-
-# Checks for programs.
-##AC_PROG_CXX
-AC_PROG_AWK
-##AC_PROG_CC
-AC_PROG_CPP
-AC_PROG_F77
-##AC_PROG_FC
 AC_FC_LIBRARY_LDFLAGS
 AC_FC_WRAPPERS
 AC_FC_MAIN
@@ -71,10 +68,16 @@ fi
 AC_SUBST(F90_MODEXT)
 
 # Checks for libraries.
-AC_LANG_PUSH(C++)
-AC_OPENMP
-##AC_SUBST(AM_CXXFLAGS, $OPENMP_CXXFLAGS)
-AC_LANG_POP(C++)
+if test x"$with_mpi" = xyes; then
+  enable_openmp=no
+fi
+
+if test x"$enable_openmp" != xno; then
+  AC_LANG_PUSH(C++)
+  AC_OPENMP
+  AC_LANG_POP(C++)
+  AC_SUBST(AM_CXXFLAGS, $OPENMP_CXXFLAGS)
+fi
 
 # Checks for header files.
 AC_CHECK_HEADERS([float.h limits.h memory.h stddef.h stdlib.h])
@@ -214,27 +217,6 @@ case $withval in
     ;;
 esac
 
-#{{
-echo "*************************************"
-echo "Summary:"
-echo "C++ Compiler                 = $CXX"
-echo "CPPFLAGS                     = $CPPFLAGS"
-echo "CXXFLAGS                     = $CXXFLAGS"
-echo "Fortran Compiler             = $FC"
-echo "Fortran Libs                 = $FCLIBS"
-echo "LDFLAGS                      = $LDFLAGS"
-if test "X$enable_openmp" != "Xno"; then
-echo "Enable OpenMP                = yes"
-else
-echo "Enable OpenMP                = no"
-fi
-echo "Enable MPI                   = $PHAST_MPI"
-if test "X$PHAST_MPI" = "Xyes"; then
-echo "MPI C++ compiler command     = $MPICXX"
-fi
-echo "*************************************"
-#}}
-
 # HDF5
 #  ----------------------------------------------------------------------
 #  Is the hdf5 present? It has a header file `hdf5.h' and a library
@@ -338,8 +320,22 @@ dnl   PHAST_SUFFIX=openmp
 dnl fi
 
 AM_CONDITIONAL([BUILD_OPENMP], [test "X$enable_openmp" != "Xno"])
-AM_CONDITIONAL([BUILD_MPI], [test "X$PHAST_MPI" = "Xyes"])
+###AM_CONDITIONAL([BUILD_MPI], [test "X$PHAST_MPI" = "Xyes"])
+AM_CONDITIONAL([BUILD_MPI], [test "X$with_mpi" = "Xyes"])
 AM_CONDITIONAL([BUILD_PHASTHDF], [test -n "$ANT"])
+
+# set phast suffix
+if test "X$with_mpi" != "Xno"; then
+  AC_DEFINE([USE_MPI], [] , [Set to use MPI])
+  PHAST_SUFFIX=mpi
+else
+  if test "X$enable_openmp" != "Xno"; then
+    AC_DEFINE([USE_OPENMP], [], [Set to to use OpenMP])
+    PHAST_SUFFIX=openmp
+  else
+    PHAST_SUFFIX=ser
+  fi
+fi
 AC_SUBST(PHAST_SUFFIX)
 
 AC_CONFIG_FILES([
@@ -362,12 +358,9 @@ echo "Fortran Compiler             = $FC"
 echo "Fortran Libs                 = $FCLIBS"
 echo "LDFLAGS                      = $LDFLAGS"
 if test "X$enable_openmp" != "Xno"; then
-echo "Enable OpenMP                = yes"
+  echo "Enable OpenMP                = yes"
 else
-echo "Enable OpenMP                = no"
+  echo "Enable OpenMP                = no"
 fi
-echo "Enable MPI                   = $PHAST_MPI"
-if test "X$PHAST_MPI" = "Xyes"; then
-echo "MPI C++ compiler command     = $MPICXX"
-fi
+echo "Enable MPI                   = $with_mpi"
 echo "*************************************"
