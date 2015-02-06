@@ -158,6 +158,7 @@ PHAST_SRC=\
 	PhreeqcRM/PhreeqcRM.cpp\
 	PhreeqcRM/RM_interface.F90\
 	PhreeqcRM/RM_interface_C.cpp\
+	PhreeqcRM/RM_interface_F.cpp\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhast.cxx\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhast.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhastLib.cpp\
