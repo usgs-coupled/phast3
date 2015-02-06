@@ -19,6 +19,17 @@ phastinput_SOURCES=\
 	Exterior_cell.h\
 	Filedata.cpp\
 	Filedata.h\
+	FromPhreeqc/Keywords.cpp\
+	FromPhreeqc/Keywords.h\
+	FromPhreeqc/Parser.cxx\
+	FromPhreeqc/Parser.h\
+	FromPhreeqc/PHRQ_base.cxx\
+	FromPhreeqc/PHRQ_base.h\
+	FromPhreeqc/PHRQ_io.cpp\
+	FromPhreeqc/PHRQ_io.h\
+	FromPhreeqc/phrqtype.h\
+	FromPhreeqc/Utils.cxx\
+	FromPhreeqc/Utils.h\
 	gpc.cpp\
 	gpc.h\
 	gpc_helper.cpp\
