@@ -23,16 +23,41 @@ AC_DEFINE([H5Dcreate_vers], [1] , [Must be set to 1 for phast])
 AC_DEFINE([H5Gcreate_vers], [1] , [Must be set to 1 for phast])
 AC_DEFINE([H5Eset_auto_vers], [1] , [Must be set to 1 for phast])
 
+## NEW START 
+# If --with-mpi=auto is used, try to find MPI, but use standard C compiler if it is not found.
+# If --with-mpi=yes is used, try to find MPI and fail if it isn't found.
+# If --with-mpi=no is used, use a standard C compiler instead.
+AC_ARG_WITH(mpi, [AS_HELP_STRING([--with-mpi],
+    [compile with MPI (parallelization) support. If none is found,
+    MPI is not used. Default: no])
+],,[with_mpi=no])
+
+AX_PROG_CXX_MPI([test x"$with_mpi" != xno],[use_mpi=yes],[
+  use_mpi=no
+  if test x"$with_mpi" = xyes; then
+    AC_MSG_ERROR([MPI compiler requested, but couldn't use MPI.])
+  fi
+])
+
+AX_PROG_FC_MPI([test x"$with_mpi" != xno],[use_mpi=yes],[
+  use_mpi=no
+  if test x"$with_mpi" = xyes; then
+    AC_MSG_ERROR([MPI compiler requested, but couldn't use MPI.])
+  fi
+])
+
+## NEW END
+
 # Checks for programs.
-AC_PROG_CXX
+##AC_PROG_CXX
 AC_PROG_AWK
-AC_PROG_CC
+##AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_F77
-AC_PROG_FC
-##AC_FC_LIBRARY_LDFLAGS
-##AC_FC_WRAPPERS
-##AC_FC_MAIN
+##AC_PROG_FC
+AC_FC_LIBRARY_LDFLAGS
+AC_FC_WRAPPERS
+AC_FC_MAIN
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -189,6 +214,27 @@ case $withval in
     ;;
 esac
 
+#{{
+echo "*************************************"
+echo "Summary:"
+echo "C++ Compiler                 = $CXX"
+echo "CPPFLAGS                     = $CPPFLAGS"
+echo "CXXFLAGS                     = $CXXFLAGS"
+echo "Fortran Compiler             = $FC"
+echo "Fortran Libs                 = $FCLIBS"
+echo "LDFLAGS                      = $LDFLAGS"
+if test "X$enable_openmp" != "Xno"; then
+echo "Enable OpenMP                = yes"
+else
+echo "Enable OpenMP                = no"
+fi
+echo "Enable MPI                   = $PHAST_MPI"
+if test "X$PHAST_MPI" = "Xyes"; then
+echo "MPI C++ compiler command     = $MPICXX"
+fi
+echo "*************************************"
+#}}
+
 # HDF5
 #  ----------------------------------------------------------------------
 #  Is the hdf5 present? It has a header file `hdf5.h' and a library
@@ -197,6 +243,7 @@ esac
 #  If the library path is specified then it must be preceded by a comma.
 #
 ##set -x -v
+AC_LANG_PUSH(C++)
 AC_ARG_WITH([hdf5],
             [AC_HELP_STRING([--with-hdf5=DIR],
                             [Use the HDF5 library [default=auto]])],,withval=yes)
@@ -242,51 +289,53 @@ case $withval in
     fi
     ;;
 esac
+AC_LANG_POP(C++)
 
-# Build mpi version
-# Check if building mpi version
-AC_MSG_CHECKING([if building MPI version])
-AC_ARG_ENABLE([mpi],
-     [AC_HELP_STRING([--enable-mpi],
-                     [build the MPI version @<:@default=no@:>@])],
-     [PHAST_MPI=yes],[PHAST_MPI=no])
 
-if test "X$PHAST_MPI" = "Xyes"; then
-  AC_MSG_RESULT(yes)
-  AC_LANG_PUSH(C++)
-  AX_MPI(, AC_ERROR([MPI not found]))
-  AC_LANG_POP(C++)
+dnl # Build mpi version
+dnl # Check if building mpi version
+dnl AC_MSG_CHECKING([if building MPI version])
+dnl AC_ARG_ENABLE([mpi],
+dnl      [AC_HELP_STRING([--enable-mpi],
+dnl                      [build the MPI version @<:@default=no@:>@])],
+dnl      [PHAST_MPI=yes],[PHAST_MPI=no])
 
-  # extra MPI defines
-  AC_DEFINE([USE_MPI], , [Set to use MPI])
-  AC_DEFINE([MERGE_FILES], , [Set to use MPI])
+dnl if test "X$PHAST_MPI" = "Xyes"; then
+dnl   AC_MSG_RESULT(yes)
+dnl   AC_LANG_PUSH(C++)
+dnl   AX_MPI(, AC_ERROR([MPI not found]))
+dnl   AC_LANG_POP(C++)
 
-  AC_LANG_PUSH(Fortran)
-  AX_MPI(, AC_ERROR([MPI not found]))
-  AC_LANG_POP(Fortran)
+dnl   # extra MPI defines
+dnl   AC_DEFINE([USE_MPI], , [Set to use MPI])
+dnl   AC_DEFINE([MERGE_FILES], , [Set to use MPI])
 
-  # set compilers
-  CXX="$MPICXX"
-  PHAST_SUFFIX=mpi
-  #{{
-  AC_LANG_PUSH(Fortran)
-  AC_MSG_RESULT("$MPIFC")
-  FC="$MPIFC"
-  AC_FC_LIBRARY_LDFLAGS
-  AC_FC_WRAPPERS
-  AC_FC_MAIN
-  AC_LANG_POP(Fortran)
-  #}}
-  # disable openmp
-  enable_openmp=no
-else
-  AC_MSG_RESULT(no)
-  if test "$enable_openmp" != no; then
-     AC_SUBST(AM_CXXFLAGS, $OPENMP_CXXFLAGS)
-     AC_DEFINE(USE_OPENMP)
-  fi
-  PHAST_SUFFIX=openmp
-fi
+dnl   AC_LANG_PUSH(Fortran)
+dnl   AX_MPI(, AC_ERROR([MPI not found]))
+dnl   AC_LANG_POP(Fortran)
+
+dnl   # set compilers
+dnl   CXX="$MPICXX"
+dnl   PHAST_SUFFIX=mpi
+dnl   #{{
+dnl   AC_LANG_PUSH(Fortran)
+dnl   AC_MSG_RESULT("$MPIFC")
+dnl   FC="$MPIFC"
+dnl   AC_FC_LIBRARY_LDFLAGS
+dnl   AC_FC_WRAPPERS
+dnl   AC_FC_MAIN
+dnl   AC_LANG_POP(Fortran)
+dnl   #}}
+dnl   # disable openmp
+dnl   enable_openmp=no
+dnl else
+dnl   AC_MSG_RESULT(no)
+dnl   if test "$enable_openmp" != no; then
+dnl      AC_SUBST(AM_CXXFLAGS, $OPENMP_CXXFLAGS)
+dnl      AC_DEFINE(USE_OPENMP)
+dnl   fi
+dnl   PHAST_SUFFIX=openmp
+dnl fi
 
 AM_CONDITIONAL([BUILD_OPENMP], [test "X$enable_openmp" != "Xno"])
 AM_CONDITIONAL([BUILD_MPI], [test "X$PHAST_MPI" = "Xyes"])
