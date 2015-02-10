@@ -1,4 +1,4 @@
-AM_CPPFLAGS=-I$(srcdir)/PhreeqcRM -I$(srcdir)/PhreeqcRM/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp $(BOOST_CPPFLAGS)
+AM_CPPFLAGS=-I$(srcdir)/PhreeqcRM -I$(srcdir)/PhreeqcRM/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords $(BOOST_CPPFLAGS)
 
 AM_FCFLAGS=-I$(srcdir)/PhreeqcRM/IPhreeqcPhast/IPhreeqc
 
@@ -252,8 +252,8 @@ PHAST_SRC=\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.cxx\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h\
-	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.cpp\
-	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.cxx\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h\

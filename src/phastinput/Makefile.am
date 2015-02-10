@@ -1,6 +1,17 @@
+AM_CPPFLAGS=-I$(srcdir)/PhastKeywords -I$(srcdir)/../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp
+
 bin_PROGRAMS = phastinput
 
 phastinput_SOURCES=\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx\
+	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h\
 	accumulate.cpp\
 	ArcRaster.cpp\
 	ArcRaster.h\
@@ -19,17 +30,6 @@ phastinput_SOURCES=\
 	Exterior_cell.h\
 	Filedata.cpp\
 	Filedata.h\
-	FromPhreeqc/Keywords.cpp\
-	FromPhreeqc/Keywords.h\
-	FromPhreeqc/Parser.cxx\
-	FromPhreeqc/Parser.h\
-	FromPhreeqc/PHRQ_base.cxx\
-	FromPhreeqc/PHRQ_base.h\
-	FromPhreeqc/PHRQ_io.cpp\
-	FromPhreeqc/PHRQ_io.h\
-	FromPhreeqc/phrqtype.h\
-	FromPhreeqc/Utils.cxx\
-	FromPhreeqc/Utils.h\
 	gpc.cpp\
 	gpc.h\
 	gpc_helper.cpp\
@@ -76,6 +76,8 @@ phastinput_SOURCES=\
 	PHAST_polygon.h\
 	PHAST_Transform.cpp\
 	PHAST_Transform.h\
+	PhastKeywords/Keywords.cpp\
+	PhastKeywords/Keywords.h\
 	Polygon_tree.cpp\
 	Polygon_tree.h\
 	Polyhedron.cpp\
