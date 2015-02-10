@@ -82,7 +82,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../PhastKeywords;../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ANSI_DECLARATORS;_SCL_SECURE_NO_WARNINGS;_ITERATOR_DEBUG_LEVEL=0;PHRQ_IO_INPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -105,7 +105,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../PhastKeywords;../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ANSI_DECLARATORS;_SCL_SECURE_NO_WARNINGS;PHRQ_IO_INPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -123,7 +123,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../PhastKeywords;../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ANSI_DECLARATORS;_SCL_SECURE_NO_WARNINGS;PHRQ_IO_INPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -145,7 +145,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../PhastKeywords;../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ANSI_DECLARATORS;_SCL_SECURE_NO_WARNINGS;PHRQ_IO_INPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -195,9 +195,9 @@
     <ClCompile Include="..\getopt.cpp" />
     <ClCompile Include="..\gpc.cpp" />
     <ClCompile Include="..\gpc_helper.cpp" />
-    <ClCompile Include="..\Keywords.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\message.cpp" />
+    <ClCompile Include="..\PhastKeywords\Keywords.cpp" />
     <ClCompile Include="..\read.cpp" />
     <ClCompile Include="..\rivers.cpp" />
     <ClCompile Include="..\Shapefiles\dbfopen.c">
@@ -414,7 +414,6 @@
     <ClInclude Include="..\ArcRaster.h" />
     <ClInclude Include="..\BC_info.h" />
     <ClInclude Include="..\Cell_Face.h" />
-    <ClInclude Include="..\Keywords.h" />
     <ClInclude Include="..\NNInterpolator\config.h" />
     <ClInclude Include="..\Cube.h" />
     <ClInclude Include="..\Data_source.h" />
@@ -440,6 +439,7 @@
     <ClInclude Include="..\NNInterpolator\nn.h" />
     <ClInclude Include="..\NNInterpolator\nn_internal.h" />
     <ClInclude Include="..\NNInterpolator\NNInterpolator.h" />
+    <ClInclude Include="..\PhastKeywords\Keywords.h" />
     <ClInclude Include="..\PHAST_polygon.h" />
     <ClInclude Include="..\PHAST_Transform.h" />
     <ClInclude Include="..\KDtree\Point.h" />

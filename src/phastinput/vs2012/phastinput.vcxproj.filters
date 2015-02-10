@@ -186,7 +186,7 @@
     <ClCompile Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Keywords.cpp">
+    <ClCompile Include="..\PhastKeywords\Keywords.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -365,7 +365,7 @@
     <ClInclude Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Keywords.h">
+    <ClInclude Include="..\PhastKeywords\Keywords.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

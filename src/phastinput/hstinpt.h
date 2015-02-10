@@ -50,7 +50,7 @@ static char const svnid[] =
 #include "Utilities.h"
 #include "unit_impl.h"
 #ifdef PHRQ_IO_INPUT
-#include "FromPhreeqc/PHRQ_io.h"
+#include "PHRQ_io.h"
 #endif
 
 /* ----------------------------------------------------------------------
