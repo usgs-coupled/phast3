@@ -19,17 +19,18 @@ endif #BUILD_OPENMP
 endif #BUILD_MPI 
 
 PHAST_SRC=\
+	.depend\
 	FileHandler.cpp\
 	FileHandler.h\
 	gzstream.cxx\
 	gzstream.h\
 	hdf.cpp\
 	hdf.h\
-	phast_main.cpp\
 	TM_interface.cpp\
 	TM_interface.h\
 	KDtree/Cell_Face.h\
 	KDtree/kdtree2.cpp\
+	KDtree/kdtree2.hpp\
 	KDtree/KDtree.cpp\
 	KDtree/KDtree.h\
 	KDtree/Point.cpp\
@@ -75,7 +76,6 @@ PHAST_SRC=\
 	PhastFortran/ldchar.f90\
 	PhastFortran/ld_seg_mod.f90\
 	PhastFortran/mach_mod.f90\
-	PhastFortran/Makefile\
 	PhastFortran/modules_g.f90\
 	PhastFortran/modules_manager.f90\
 	PhastFortran/mpi_mod.F90\
@@ -96,7 +96,6 @@ PHAST_SRC=\
 	PhastFortran/read3.F90\
 	PhastFortran/read3_xfer.F90\
 	PhastFortran/reorder_mod.f90\
-	PhastFortran/revisions\
 	PhastFortran/rewi_mod.f90\
 	PhastFortran/rhsn.f90\
 	PhastFortran/rhsn_flow.f90\
@@ -155,11 +154,16 @@ PHAST_SRC=\
 	PhastFortran/XP_wellsr.f90\
 	PhastFortran/zone_flow.f90\
 	PhastFortran/zone_flow_ss.f90\
+	PhreeqcRM/IrmResult.h\
 	PhreeqcRM/PhreeqcRM.cpp\
+	PhreeqcRM/PhreeqcRM.h\
 	PhreeqcRM/RM_interface.F90\
 	PhreeqcRM/RM_interface_C.cpp\
+	PhreeqcRM/RM_interface_C.h\
 	PhreeqcRM/RM_interface_F.cpp\
+	PhreeqcRM/RM_interface_F.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhast.cxx\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhast.f90.inc\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhast.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhastLib.cpp\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqcPhastLib.h\
@@ -172,6 +176,8 @@ PHAST_SRC=\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/Debug.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/ErrorReporter.hxx\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.f.inc\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
@@ -252,8 +258,6 @@ PHAST_SRC=\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.cxx\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h\
-	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp\
-	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.cxx\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h\
@@ -312,8 +316,9 @@ PHAST_SRC=\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.cpp\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h\
 	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx\
-	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h
-
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp\
+	PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h
 
 phast_openmp_SOURCES=$(PHAST_SRC)
 
