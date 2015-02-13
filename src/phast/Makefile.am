@@ -26,6 +26,7 @@ PHAST_SRC=\
 	gzstream.h\
 	hdf.cpp\
 	hdf.h\
+	phast_main.cpp\
 	KDtree/Cell_Face.h\
 	KDtree/KDtree.cpp\
 	KDtree/KDtree.h\
