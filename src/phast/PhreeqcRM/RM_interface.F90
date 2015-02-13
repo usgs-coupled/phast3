@@ -3211,12 +3211,14 @@ INTEGER FUNCTION RM_SetMpiWorkerCallback(id, fcn)
           BIND(C, NAME='RMF_SetMpiWorkerCallback')
        USE ISO_C_BINDING
        INTEGER(KIND=C_INT), INTENT(in) :: id
+!> \cond
        INTERFACE
           INTEGER(KIND=C_INT) FUNCTION fcn(method_number) BIND(C)
             USE ISO_C_BINDING
             INTEGER(KIND=C_INT), INTENT(in) :: method_number
           END FUNCTION fcn
        END INTERFACE
+!> \endcond       
      END FUNCTION RMF_SetMpiWorkerCallback
   END INTERFACE
   INTEGER, INTENT(IN) :: id
