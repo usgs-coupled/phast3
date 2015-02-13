@@ -369,6 +369,25 @@ CLEANFILES=\
 	mpi_mod.$(F90_MODEXT)\
 	phys_const.$(F90_MODEXT)\
 	print_control_mod.$(F90_MODEXT)\
-	rewi_mod.$(F90_MODEXT)
+	rewi_mod.$(F90_MODEXT)\
+	mcb2_m.$(F90_MODEXT)\
+	scale_jds_mod.$(F90_MODEXT)\
+	mcw_m.$(F90_MODEXT)\
+	mcv_m.$(F90_MODEXT)\
+	mcc_m.$(F90_MODEXT)\
+	solver_iter_mod.$(F90_MODEXT)\
+	mcch_m.$(F90_MODEXT)\
+	mcg_m.$(F90_MODEXT)\
+	mcb_m.$(F90_MODEXT)\
+	mct_m.$(F90_MODEXT)\
+	hdf_media_m.$(F90_MODEXT)\
+	solver_direct_mod.$(F90_MODEXT)\
+	reorder_mod.$(F90_MODEXT)\
+	mcm_m.$(F90_MODEXT)\
+	mg3_m.$(F90_MODEXT)\
+	xp_module.$(F90_MODEXT)\
+	mcp_m.$(F90_MODEXT)\
+	phreeqcrm.$(F90_MODEXT)\
+	mg2_m.$(F90_MODEXT)
 
 include .depend

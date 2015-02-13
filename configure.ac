@@ -42,6 +42,7 @@ AX_PROG_CXX_MPI([test x"$with_mpi" != xno],[use_mpi=yes],[
   fi
 ])
 AC_PROG_AWK
+AC_PROG_LN_S
 ##AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_F77

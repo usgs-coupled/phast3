@@ -1,17 +1,8 @@
-AM_CPPFLAGS=-I$(srcdir)/PhastKeywords -I$(srcdir)/../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp
+AM_CPPFLAGS=-I$(srcdir)/PhastKeywords
 
 bin_PROGRAMS = phastinput
 
 phastinput_SOURCES=\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx\
-	../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h\
 	accumulate.cpp\
 	ArcRaster.cpp\
 	ArcRaster.h\
@@ -78,6 +69,15 @@ phastinput_SOURCES=\
 	PHAST_Transform.h\
 	PhastKeywords/Keywords.cpp\
 	PhastKeywords/Keywords.h\
+	PhastKeywords/Parser.cxx\
+	PhastKeywords/Parser.h\
+	PhastKeywords/PHRQ_base.cxx\
+	PhastKeywords/PHRQ_base.h\
+	PhastKeywords/PHRQ_io.cpp\
+	PhastKeywords/PHRQ_io.h\
+	PhastKeywords/phrqtype.h\
+	PhastKeywords/Utils.cxx\
+	PhastKeywords/Utils.h\
 	Polygon_tree.cpp\
 	Polygon_tree.h\
 	Polyhedron.cpp\
@@ -120,3 +120,31 @@ phastinput_SOURCES=\
 
 COMPILE = $(CXXCOMPILE)
 LTCOMPILE = $(LTCXXCOMPILE)
+
+
+$(srcdir)/PhastKeywords/Parser.cxx:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx .
+
+$(srcdir)/PhastKeywords/Parser.h:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h .
+
+$(srcdir)/PhastKeywords/PHRQ_base.cxx:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx .
+
+$(srcdir)/PhastKeywords/PHRQ_base.h:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h .
+
+$(srcdir)/PhastKeywords/PHRQ_io.cpp:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp .
+
+$(srcdir)/PhastKeywords/PHRQ_io.h:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h .
+
+$(srcdir)/PhastKeywords/phrqtype.h:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h .
+
+$(srcdir)/PhastKeywords/Utils.cxx:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx .
+
+$(srcdir)/PhastKeywords/Utils.h:
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h .
