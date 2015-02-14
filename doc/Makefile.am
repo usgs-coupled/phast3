@@ -9,3 +9,6 @@ DOCS= \
     phreeqc.pdf \
     wrir02-4172.pdf \
     phreeqc.revisions
+
+$(srcdir)/phreeqc.revisions:
+	cd $(srcdir) && $(LN_S) phreeqc3-doc/RELEASE.TXT phreeqc.revisions
