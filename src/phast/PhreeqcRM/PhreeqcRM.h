@@ -1,5 +1,5 @@
 /*! @file PhreeqcRM.h
-	@brief C/Fortran Documentation
+	@brief C++ Documentation
 */
 #if !defined(PHREEQCRM_H_INCLUDED)
 #define PHREEQCRM_H_INCLUDED
@@ -89,6 +89,26 @@ typedef enum {
 	METHOD_SPECIESCONCENTRATIONS2MODULE,
 	METHOD_USESOLUTIONDENSITYVOLUME
 } MPI_METHOD;
+
+/**
+ * @mainpage PhreeqcRM Library Documentation (@PHREEQC_VER@-@REVISION_SVN@)
+ *
+ *  @htmlonly
+ *  <table>
+ *   <tr><td class="indexkey"><a class="el" href="class_phreeqc_r_m.html">PhreeqRM.h</a> </td><td class="indexvalue">C++ Documentation</td></tr>
+ *   <tr><td class="indexkey"><a class="el" href="_r_m__interface___c_8h.html">RM_interface_C.h</a> </td><td class="indexvalue">C Documentation </td></tr>
+ *   <tr><td class="indexkey"><a class="el" href="classphreeqcrm.html">RM_interface.F90</a></td><td class="indexvalue">Fortran Documentation </td></tr>
+ *   <tr><td class="indexkey"><a class="el" href="_irm_result_8h.html">IrmResult.h</a></td><td class="indexvalue">Return codes </td></tr>
+ *  </table>
+ *  @endhtmlonly
+ */
+
+/**
+ * @class PhreeqcRM
+ *
+ * @brief Geochemical reaction module
+ */
+
 
 class PhreeqcRM
 {
@@ -2320,6 +2340,27 @@ Called by root, workers must be in the loop of @ref MpiWorker.
  */
 	IRM_RESULT                                RunCells(void);
 /**
+Process an IRM_RESULT return code. If the return code is nonnegative, no action is taken. If the return code is negative,
+the return code is decoded and printed as an error message along with the second argument (std::string). On an error,
+the method will return the same return code, throw an exception, or exit the program depending on the setting for
+@ref SetErrorHandlerMode.
+@param result          Return code to be processed.
+@param e_string        Error message to be printed in case of an error.
+@retval IRM_RESULT     The first argument to the method is returned.
+@see                    @ref SetErrorHandlerMode.
+@par C++ Example:
+@htmlonly
+<CODE>
+<PRE>
+status = phreeqc_rm.ReturnHandler(irm_result, "Previous method failed.");
+</PRE>
+</CODE>
+@endhtmlonly
+@par MPI:
+Called by root or workers.
+ */	
+	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
+/**
 Run a PHREEQC input file. The first three arguments determine which IPhreeqc instances will run
 the file--the workers, the InitialPhreeqc instance, and (or) the Utility instance. Input
 files that modify the thermodynamic database should be run by all three sets of instances.
@@ -2599,7 +2640,7 @@ another message.
 In C and C++, an additional pointer can be supplied to find the data necessary to do the task.
 A void pointer may be set with @ref SetMpiWorkerCallbackCookie. This pointer
 is passed to the callback function through a void pointer argument in addition
-to the integer message argument. The pointer may be to a struct or class instance 
+to the integer message argument. The pointer may be to a struct or class instance
 that provides a number of additional pointers to data. @ref SetMpiWorkerCallbackCookie
 must be called by each worker before @ref MpiWorker is called.
 @n@n
@@ -3413,8 +3454,8 @@ to transport concentrations (@ref GetConcentrations).
 Two options are available to convert concentration units:
 (1) the density and solution volume calculated by PHREEQC are used, or
 (2) the specified density (@ref SetDensity)
-and solution volume are determined by the product of 
-saturation (@ref SetSaturation), porosity (@ref SetPorosity), 
+and solution volume are determined by the product of
+saturation (@ref SetSaturation), porosity (@ref SetPorosity),
 and representative volume (@ref SetRepresentativeVolume).
 Transport models that consider density-dependent flow will probably use the
 PHREEQC-calculated density and solution volume (default),
@@ -3467,7 +3508,6 @@ Called by root and (or) workers; only root writes to the log file.
 	static void                               FileRename(const std::string &temp_name, const std::string &name,
 		                                           const std::string &backup_name);
 	static IRM_RESULT                         Int2IrmResult(int r, bool positive_ok);
-	IRM_RESULT                                ReturnHandler(IRM_RESULT result, const std::string &e_string);
 protected:
 	IRM_RESULT                                CellInitialize(
 		                                          int i,
