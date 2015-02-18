@@ -158,3 +158,14 @@ $(srcdir)/PhastKeywords/Utils.cxx:
 
 $(srcdir)/PhastKeywords/Utils.h:
 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h .
+
+DISTCLEANFILES=\
+	$(srcdir)/PhastKeywords/Parser.cxx\
+	$(srcdir)/PhastKeywords/Parser.h\
+	$(srcdir)/PhastKeywords/PHRQ_base.cxx\
+	$(srcdir)/PhastKeywords/PHRQ_base.h\
+	$(srcdir)/PhastKeywords/PHRQ_io.cpp\
+	$(srcdir)/PhastKeywords/PHRQ_io.h\
+	$(srcdir)/PhastKeywords/phrqtype.h\
+	$(srcdir)/PhastKeywords/Utils.cxx\
+	$(srcdir)/PhastKeywords/Utils.h
