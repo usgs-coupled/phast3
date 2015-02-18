@@ -1,7 +1,10 @@
-/*! @brief Enumeration used to return error codes.
+/*! @file IrmResult.h
+ *  @brief Enumeration used to return error codes.
 */
 #if !defined(IRMRESULT_H_INCLUDED)
 #define IRMRESULT_H_INCLUDED
+/*! \brief Enumeration for PhreeqcRM function return codes.
+*/
 typedef enum {
 	IRM_OK            =  0,  /*!< Success */
 	IRM_OUTOFMEMORY   = -1,  /*!< Failure, Out of memory */

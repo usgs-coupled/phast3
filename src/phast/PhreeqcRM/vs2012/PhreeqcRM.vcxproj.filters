@@ -203,9 +203,6 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolutionComp.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Keywords.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\KineticsComp.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -299,6 +296,9 @@
     <ClCompile Include="..\RM_interface_F.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PhreeqcKeywords\Keywords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhast.h">
@@ -368,9 +368,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolutionComp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Keywords.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\kinetics.h">
@@ -500,6 +497,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\RM_interface_F.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PhreeqcKeywords\Keywords.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
