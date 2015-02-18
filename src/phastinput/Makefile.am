@@ -2,6 +2,17 @@ AM_CPPFLAGS=-I$(srcdir)/PhastKeywords
 
 bin_PROGRAMS = phastinput
 
+BUILT_SOURCES=\
+	PhastKeywords/Parser.cxx\
+	PhastKeywords/Parser.h\
+	PhastKeywords/PHRQ_base.cxx\
+	PhastKeywords/PHRQ_base.h\
+	PhastKeywords/PHRQ_io.h\
+	PhastKeywords/PHRQ_io.cpp\
+	PhastKeywords/phrqtype.h\
+	PhastKeywords/Utils.cxx\
+	PhastKeywords/Utils.h
+
 phastinput_SOURCES=\
 	accumulate.cpp\
 	ArcRaster.cpp\
@@ -120,7 +131,6 @@ phastinput_SOURCES=\
 
 COMPILE = $(CXXCOMPILE)
 LTCOMPILE = $(LTCXXCOMPILE)
-
 
 $(srcdir)/PhastKeywords/Parser.cxx:
 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx .
