@@ -5,10 +5,6 @@
 static char const svnid[] =
 	"$Id$";
 #endif
-#ifndef PHRQ_IO_INPUT
-extern FILE *input_file;
-extern FILE *input;
-#endif
 extern FILE *hst_file;
 extern FILE *output;
 extern FILE *database_file;

@@ -49,9 +49,7 @@ static char const svnid[] =
 #include "Drain.h"
 #include "Utilities.h"
 #include "unit_impl.h"
-#ifdef PHRQ_IO_INPUT
 #include "PHRQ_io.h"
-#endif
 
 /* ----------------------------------------------------------------------
  *   DEFINITIONS
@@ -758,12 +756,9 @@ EXTERNAL FILE *
 	error_log;
 EXTERNAL FILE *
 	hst_file;
-#ifdef PHRQ_IO_INPUT
-  EXTERNAL PHRQ_io input_phrq_io;
-  EXTERNAL std::vector<int> keycount;  // used to mark keywords that have been read 
-#else
-  EXTERNAL FILE *	transport_file;
-#endif
+EXTERNAL PHRQ_io input_phrq_io;
+EXTERNAL std::vector<int> keycount;  // used to mark keywords that have been read 
+
 EXTERNAL FILE *
 	chemistry_file;
 EXTERNAL int

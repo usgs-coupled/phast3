@@ -64,10 +64,6 @@ main(int argc, char *argv[])
  */
 	output_msg(OUTPUT_STDERR, "Process file names...\n");
 	process_file_names(argc, argv);
-#ifndef PHRQ_IO_INPUT
-	input_file = transport_file;
-	input = input_file;
-#endif
 /*	fprintf(std_error, "Done process file names...\n"); */
 	output_msg(OUTPUT_ECHO,
 			   "Running PHASTINPUT.\n\nProcessing flow and transport data file.\n\n");
@@ -203,7 +199,6 @@ process_file_names(int argc, char *argv[])
 /*
  *   open transport file
  */
-#ifdef PHRQ_IO_INPUT
 	if (transport_name == NULL)
 	{
 		strcpy(name, prefix);
@@ -223,26 +218,7 @@ process_file_names(int argc, char *argv[])
 			input_phrq_io.push_istream(new_stream);
 		}
 	}
-#else
-	if (transport_name == NULL)
-	{
-		strcpy(name, prefix);
-		strcat(name, ".trans.dat");
-		transport_name = string_duplicate(name);
-		if ((new_file = fopen(transport_name, "r")) == NULL)
-		{
-			sprintf(error_string, "Can't open transport data file, %s.\n",
-					name);
-			error_msg(error_string, STOP);
-		}
-		else
-		{
-			output_msg(OUTPUT_STDERR, "\tFlow and transport data file: %s\n",
-					   transport_name);
-			transport_file = new_file;
-		}
-	}
-#endif
+
 /*
  *  chemistry file name
  */
@@ -523,12 +499,7 @@ clean_up(void)
 	Zone_budget::zone_budget_map.clear();
 
 /* files */
-#ifdef PHRQ_IO_INPUT
 	input_phrq_io.clear_istream();
-#else
-	if (input != NULL)
-		fclose(input);
-#endif
 	if (echo_file != NULL)
 		fclose(echo_file);
 	if (std_error != NULL && std_error != stderr)
@@ -915,11 +886,9 @@ initialize(void)
 	gasphase_units = WATER;
 	kinetics_units = WATER; 
 
-#ifdef PHRQ_IO_INPUT
 	for (int i = 0; i < Keywords::KEY_COUNT_KEYWORDS; i++)
 	{
 		keycount.push_back(0);
 	}
-#endif
 	return;
 }

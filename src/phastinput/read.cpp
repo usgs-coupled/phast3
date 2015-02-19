@@ -108,9 +108,7 @@ STATIC int find_option(char *item, int *n, const char **list, int count_list,
 extern int get_line(FILE * fp);
 #else
 STATIC int get_line(FILE * fp);
-#ifdef PHRQ_IO_INPUT
 STATIC int get_line();
-#endif
 STATIC int get_logical_line(FILE * fp, int *l);
 STATIC int add_char_to_line(int *i, char c);
 #endif
@@ -122,7 +120,6 @@ STATIC int get_true_false(char *string, int default_value);
 #define OPTION_ERROR -3
 #define OPTION_DEFAULT -4
 #define OPTION_DEFAULT2 -5
-#ifdef PHRQ_IO_INPUT
 /* ---------------------------------------------------------------------- */
 int
 read_input(void)
@@ -235,188 +232,7 @@ read_input(void)
   END_OF_SIMULATION_INPUT:
 	return (OK);
 }
-#else
-/* ---------------------------------------------------------------------- */
-int
-read_input(void)
-/* ---------------------------------------------------------------------- */
-{
-	int i, j;
 
-	input_error = 0;
-	next_keyword = 0;
-/*
- *  Initialize keyword flags
- */
-	for (i = 0; i < NKEYS; i++)
-	{
-		keyword[i].keycount = 0;
-	}
-
-	free_check_null(title_x);
-	title_x = NULL;
-
-	while ((i =
-			check_line("Subroutine Read", FALSE, TRUE, TRUE,
-					   FALSE)) != KEYWORD)
-	{
-		/* empty, eof, keyword, print */
-		if (i == EOF)
-			return (EOF);
-		sprintf(error_string, "Unknown input: %s", line);
-		warning_msg(error_string);
-	}
-/*
-	  0	  "eof"
-	  1	  "end"
-	  2       "title"
-	  3       "comment"
-	  4       "grid"
-	  5       "media"
-	  6       "head_ic"
-	  7       "chemistry_ic"
-	  8       "free_surface_bc"
-	  9       "specified_value_bc"
-	  10      "specified_bc"
-	  11      "flux_bc"
-	  12      "leaky_bc"
-	  13      "units"
-	  14      "fluid_properties"
-	  15      "solution_method"
-	  16      "time_control"
-	  17      "print_frequency"
-	  18      "print_input"
-	  19      "flow_only"
-	  20      "free_surface" 
-	  21      "rivers"
-	  22      "river"
-	  23      "wells"
-	  24      "well"
-	  25      "flow"
-	  26      "print_locations"
-	  27      "print_location"
-	  28      "steady_flow"
-	  29      "steady_state_flow"
-	  30      "print_initial"
-	  31      "solute_transport"
-	  32      "specified_head_bc"
-	  33      "drain"
-	  34      "zone_budget"
-	  35	  "zone_flow_rate"
-	  36	"zone_flow_rates"
-	  37	"zone_flowrate"
-	  38	"zone_flowrates"
-	  39    "zone_flow"
-	  40    "zone_flows"
- */
-	for (;;)
-	{
-		keyword[next_keyword].keycount++;
-		switch (next_keyword)
-		{
-		case -1:				/* Have not read line with keyword */
-			do
-				j = check_line("No keyword", FALSE, TRUE, TRUE, FALSE);
-			while (j != KEYWORD && j != EOF);
-			break;
-		case 0:				/* End encountered */
-		case 1:				/* EOF encountered */
-			goto END_OF_SIMULATION_INPUT;
-		case 2:				/* title */
-		case 3:				/* comment */
-			read_title();
-			break;
-		case 4:				/* grid */
-			read_grid();
-			break;
-		case 5:				/* media */
-			read_media();
-			break;
-		case 6:				/* head init cond */
-			read_head_ic();
-			break;
-		case 7:				/* chem init cond */
-			read_chemistry_ic();
-			break;
-		case 8:				/* free surface bc */
-		case 20:				/* free surface */
-			read_free_surface_bc();
-			break;
-		case 9:				/* specified_value_bc */
-			warning_msg
-				("SPECIFIED_VALUE_BC is obsolete, use SPECIFIED_HEAD_BC.");
-		case 10:				/* specified_bc */
-		case 32:				/* specified_bc */
-			read_specified_value_bc();
-			break;
-		case 11:				/* flux_bc */
-			read_flux_bc();
-			break;
-		case 12:				/* leaky_bc */
-			read_leaky_bc();
-			break;
-		case 13:				/* units */
-			read_units();
-			break;
-		case 14:				/* fluid_properties */
-			read_fluid_properties();
-			break;
-		case 15:				/* solution_method */
-			read_solution_method();
-			break;
-		case 16:				/* time_control */
-			read_time_control();
-			break;
-		case 17:				/* print_frequency */
-			read_print_frequency();
-			break;
-		case 18:				/* print_input */
-		case 30:				/* print_initial */
-			read_print_input();
-			break;
-		case 19:				/* flow_only */
-			read_flow_only();
-			break;
-		case 21:				/* rivers */
-		case 22:				/* river */
-			read_river();
-			break;
-		case 23:				/* wells */
-		case 24:				/* well */
-			read_well();
-			break;
-		case 25:				/* flow */
-			read_flow();
-			break;
-		case 26:				/* print_locations */
-		case 27:				/* print_location */
-			read_print_locations();
-			break;
-		case 28:				/* steady_flow */
-		case 29:				/* steady_state_flow */
-			read_steady_flow();
-			break;
-		case 31:				/* steady_state_flow */
-			read_solute_transport();
-			break;
-		case 33:				/* drain */
-			read_drain();
-			break;
-		case 34:				/* zone_budget */
-		case 35:				/* zone_flow_rate */
-		case 36:				/* zone_flow_rates */
-		case 37:				/* zone_flowrate */
-		case 38:				/* zone_flowrates */
-		case 39:				/* zone_flow */
-		case 40:				/* zone_flows */
-			read_zone_budget();
-			break;
-		}
-	}
-  END_OF_SIMULATION_INPUT:
-	return (OK);
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int
 read_title(void)
@@ -564,11 +380,7 @@ check_line(const char *string, int allow_empty, int allow_eof,
 /* Get line */
 	do
 	{
-#ifdef PHRQ_IO_INPUT
 		i = get_line();
-#else
-		i = get_line(input);
-#endif
 		if (pr.echo_input == TRUE)
 		{
 			if ((print == TRUE && i != EOF) || i == KEYWORD)
@@ -1046,7 +858,6 @@ get_line(FILE * fp)
 	}
 	return (return_value);
 }
-#ifdef PHRQ_IO_INPUT
 /* ---------------------------------------------------------------------- */
 int
 get_line()
@@ -1086,7 +897,6 @@ get_line()
 	//int return_value = input_phrq_io.check_key(input_phrq_io.Get_m_line().begin(), input_phrq_io.Get_m_line().end());
 	return (return_value);
 }
-#endif /* PHRQ_IO_INPUT */
 #endif /* __WPHAST__ */
 /* ---------------------------------------------------------------------- */
 int
