@@ -156,20 +156,20 @@ openmpi_intel_64_debug:
 # =============================================================================
 
 SRC              = ../IPHreeqcPhast/IPhreeqc/phreeqcpp/phreeqc
-PHREEQC_INCLUDES = -I.. -I../PhreeqcRM -I../PhreeqcRM/IPhreeqcPhast -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp 
-PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM:../PhreeqcRM/IPhreeqcPhast:../PhreeqcRM/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp:../KDtree
+PHREEQC_INCLUDES = -I.. -I../PhreeqcRM -I../PhreeqcRM/IPhreeqcPhast -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords
+PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM:../PhreeqcRM/IPhreeqcPhast:../PhreeqcRM/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp:../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords:../KDtree
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
 # The following apply to GFortran versions
 FGFORTRAN=     gfortran
 LIBGFORTRAN=   -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
-#LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
-LIBGFORTRAN_64=-L/usr/lib/gcc/x86_64-linux-gnu/4.8 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
+LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
 
 # The following apply to INTEL versions
-FINTEL=ifort
-IF_HOME=/opt/intel/Compiler/11.0/083/lib
+FINTEL=/lobo02home/intel/Compiler/11.0/083/bin/intel64/ifort
+#IF_HOME=/opt/intel/Compiler/11.0/083/lib
+IF_HOME=/lobo02home/intel/Compiler/11.0/083/lib
 IFORT_LIB=-Xlinker -Bstatic -L$(IF_HOME)/ia32/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -Xlinker -Bdynamic -lpthread -ldl
 IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -Xlinker -Bdynamic -lpthread -ldl 
 
@@ -198,7 +198,7 @@ OPENMPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
-HDF5_LIBS_64=${HDF5_ROOT}/lib/x86_64-linux-gnu/libhdf5.a -ldl -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
+HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
 
 
 # -----------------------------------------------------------------------------
@@ -901,6 +901,7 @@ depends:
 	-I../PhreeqcRM -I../PhreeqcRM/IPhreeqcPhast \
 	-I../PhreeqcRM/IPhreeqcPhast/IPhreeqc \
 	-I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp \
+	-I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords \
 	-I../KDtree \
 	../*.cxx ../*.cpp \
 	../PhreeqcRM/*.cpp \
@@ -908,6 +909,7 @@ depends:
 	../PhreeqcRM/IPhreeqcPhast/IPhreeqc/*.cpp ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/*.c \
 	../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cxx \
 	../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cpp \
+	../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/*.cpp \
 	../KDtree/*.cpp $(PHASTINPUT_FILES) > ../dependencies
 #	cd temp_dependency_dir; gfortran -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast \
 #	../PhastFortran/*.f90 ../PhastFortran/*.F90 \
