@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS=-I m4
-AM_CPPFLAGS=-I$(top_srcdir)/IPhreeqcPhast -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp
+AM_CPPFLAGS=-I$(top_srcdir)/IPhreeqcPhast -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(top_srcdir)/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords
 
 # libtool libraries to build
 lib_LTLIBRARIES=libphreeqcrm.la
@@ -98,8 +98,6 @@ libphreeqcrm_la_SOURCES=\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.cxx\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h\
-	IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.cpp\
-	IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.cxx\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h\
@@ -122,6 +120,8 @@ libphreeqcrm_la_SOURCES=\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.cpp\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h\
+	IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp\
+	IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.cxx\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h\
 	IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.cxx\
@@ -186,7 +186,6 @@ libphreeqcrm_la_SOURCES+=\
 
 include_HEADERS+=\
 	$(top_srcdir)/RM_interface_F.h\
-	$(top_srcdir)/RM_interface_F.f90.inc\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f.inc
 
