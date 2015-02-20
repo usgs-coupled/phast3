@@ -821,6 +821,7 @@ subroutine calc_water_table
         ! distribute water up or down
         do mt = 1, nxy
             m = mfsbc(mt)
+            if (m <= 0) cycle
             call mtoijk(m, i, j, k, nx, ny)
             call top_bot(k, ztop, zbot)
          

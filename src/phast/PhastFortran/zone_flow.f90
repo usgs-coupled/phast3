@@ -33,6 +33,8 @@ SUBROUTINE zone_flow
           if (comp_name(is) .eq. "Charge") exit
       enddo
       min_is = is + 1
+  else
+      min_is = 1
   endif
   
   ufdt1 = fdtmth
