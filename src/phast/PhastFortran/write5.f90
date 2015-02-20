@@ -68,6 +68,8 @@ SUBROUTINE write5
           if (comp_name(is) .eq. "Charge") exit
       enddo
       min_is = is + 1
+  else
+      min_is = 1
   endif
   
   ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &
@@ -483,7 +485,6 @@ SUBROUTINE write5
                    cnvmfi*qszoni_rbc(is,izn),ACHAR(9),cnvmfi*qszonp_rbc(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_dbc(is,izn),ACHAR(9),cnvmfi*qszonp_dbc(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_wel(is,izn),ACHAR(9),cnvmfi*qszonp_wel(is,izn),ACHAR(9)
-              write(*,*) is
            END DO
         END IF
      ENDDO
