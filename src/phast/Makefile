@@ -2,7 +2,7 @@
 #
 # Generates object files and executables for 8 versions of PHAST
 #	    Gfortran/Intel
-#           Serial/MPI version
+#           Openmp/MPI version
 #           Optimize/Debug
 #
 # Makefile sets CFG variable, cd's to appropriate directory, runs Makefile recursively
@@ -11,89 +11,51 @@
 
 PROGRAM = phast
 PROFILE=
-all: gfortran 
+all: gfortran_64 intel_64
 
-SERIAL_GFORTRAN_DIR           = serial_gfortran
-SERIAL_GFORTRAN_DEBUG_DIR     = serial_gfortran_debug
-OPENMPI_GFORTRAN_DIR          = openmpi_gfortran
-OPENMPI_GFORTRAN_DEBUG_DIR    = openmpi_gfortran_debug
+OPENMP_GFORTRAN_64_DIR        = openmp_gfortran_64
+OPENMP_GFORTRAN_64_DEBUG_DIR  = openmp_gfortran_64_debug
+MPI_GFORTRAN_64_DIR           = mpi_gfortran_64
+MPI_GFORTRAN_64_DEBUG_DIR     = mpi_gfortran_64_debug
 
-SERIAL_GFORTRAN_64_DIR        = serial_gfortran_64
-SERIAL_GFORTRAN_64_DEBUG_DIR  = serial_gfortran_64_debug
-OPENMPI_GFORTRAN_64_DIR       = openmpi_gfortran_64
-OPENMPI_GFORTRAN_64_DEBUG_DIR = openmpi_gfortran_64_debug
-
-SERIAL_INTEL_DIR              = serial_intel
-SERIAL_INTEL_DEBUG_DIR        = serial_intel_debug
-OPENMPI_INTEL_DIR             = openmpi_intel
-OPENMPI_INTEL_DEBUG_DIR       = openmpi_intel_debug
-
-SERIAL_INTEL_64_DIR           = serial_intel_64
-SERIAL_INTEL_64_DEBUG_DIR     = serial_intel_64_debug
-OPENMPI_INTEL_64_DIR          = openmpi_intel_64
-OPENMPI_INTEL_64_DEBUG_DIR    = openmpi_intel_64_debug
+OPENMP_INTEL_64_DIR           = openmp_intel_64
+OPENMP_INTEL_64_DEBUG_DIR     = openmp_intel_64_debug
+MPI_INTEL_64_DIR              = mpi_intel_64
+MPI_INTEL_64_DEBUG_DIR        = mpi_intel_64_debug
 
 MPICH_GFORTRAN_DIR            = mpich_gfortran
 
 mpich: mpich_gfortran
 
-gfortran:    serial_gfortran    serial_gfortran_debug    openmpi_gfortran    openmpi_gfotran_debug
-gfortran_64: serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfotran_64_debug
-intel:       serial_intel       serial_intel_debug       openmpi_intel       openmpi_intel_debug
-intel_64:    serial_intel_64    serial_intel_64_debug    openmpi_intel_64    openmpi_intel_64_debug
+gfortran_64: openmp_gfortran_64 openmp_gfortran_64_debug mpi_gfortran_64 mpi_gfortran_64_debug
+intel_64:    openmp_intel_64    openmp_intel_64_debug    mpi_intel_64    mpi_intel_64_debug
 
 
 MAKEFILE                = Makefile
 
 #########################
-####    gfortran     ####
-#########################
-
-.PHONY : serial_gfortran
-serial_gfortran:
-	mkdir -p $(SERIAL_GFORTRAN_DIR)
-	cd $(SERIAL_GFORTRAN_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN $(PROGRAM)
-
-.PHONY : serial_gfortran_debug
-serial_gfortran_debug:
-	mkdir -p $(SERIAL_GFORTRAN_DEBUG_DIR);
-	cd $(SERIAL_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_DEBUG $(PROGRAM)
-
-.PHONY : openmpi_gfortran
-openmpi_gfortran:
-	mkdir -p $(OPENMPI_GFORTRAN_DIR);
-	cd $(OPENMPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN $(PROGRAM)
-#	ssh $(OPENMPI_COMPUTER) "cd programs/phastpp/srcphast; cd $(OPENMPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN $(PROGRAM)"
-
-.PHONY : openmpi_gfortran_debug
-openmpi_gfortran_debug:
-	mkdir -p $(OPENMPI_GFORTRAN_DEBUG_DIR);
-	cd $(OPENMPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_DEBUG $(PROGRAM)
-#	ssh $(OPENMPI_COMPUTER) "cd programs/phastpp/srcphast; cd $(OPENMPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_DEBUG $(PROGRAM)"
-
-#########################
 ####    gfortran_64  ####
 #########################
 
-.PHONY : serial_gfortran_64
-serial_gfortran_64:
-	mkdir -p $(SERIAL_GFORTRAN_64_DIR)
-	cd $(SERIAL_GFORTRAN_64_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_64 $(PROGRAM)
+.PHONY : openmp_gfortran_64
+openmp_gfortran_64:
+	mkdir -p $(OPENMP_GFORTRAN_64_DIR)
+	cd $(OPENMP_GFORTRAN_64_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMP_GFORTRAN_64 $(PROGRAM)
 
-.PHONY : serial_gfortran_64_debug
-serial_gfortran_64_debug:
-	mkdir -p $(SERIAL_GFORTRAN_64_DEBUG_DIR);
-	cd $(SERIAL_GFORTRAN_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_64_DEBUG $(PROGRAM)
+.PHONY : openmp_gfortran_64_debug
+openmp_gfortran_64_debug:
+	mkdir -p $(OPENMP_GFORTRAN_64_DEBUG_DIR);
+	cd $(OPENMP_GFORTRAN_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMP_GFORTRAN_64_DEBUG $(PROGRAM)
 
-.PHONY : openmpi_gfortran_64
-openmpi_gfortran_64:
-	mkdir -p $(OPENMPI_GFORTRAN_64_DIR);
-	cd $(OPENMPI_GFORTRAN_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_64 $(PROGRAM)
+.PHONY : mpi_gfortran_64
+mpi_gfortran_64:
+	mkdir -p $(MPI_GFORTRAN_64_DIR);
+	cd $(MPI_GFORTRAN_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_GFORTRAN_64 $(PROGRAM)
 
-.PHONY : openmpi_gfortran_64_debug
-openmpi_gfortran_64_debug:
-	mkdir -p $(OPENMPI_GFORTRAN_64_DEBUG_DIR);
-	cd $(OPENMPI_GFORTRAN_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_64_DEBUG $(PROGRAM)
+.PHONY : mpi_gfortran_64_debug
+mpi_gfortran_64_debug:
+	mkdir -p $(MPI_GFORTRAN_64_DEBUG_DIR);
+	cd $(MPI_GFORTRAN_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_GFORTRAN_64_DEBUG $(PROGRAM)
 
 .PHONY : mpich_gfortran
 mpich_gfortran:
@@ -101,52 +63,28 @@ mpich_gfortran:
 	cd $(MPICH_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPICH_GFORTRAN $(PROGRAM)
 
 #########################
-####    Intel        ####
-#########################
-
-.PHONY : serial_intel
-serial_intel:
-	mkdir -p $(SERIAL_INTEL_DIR)
-	cd $(SERIAL_INTEL_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_INTEL $(PROGRAM)
-
-.PHONY : serial_intel_debug
-serial_intel_debug:
-	mkdir -p $(SERIAL_INTEL_DEBUG_DIR);
-	cd $(SERIAL_INTEL_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_INTEL_DEBUG $(PROGRAM)
-
-.PHONY : openmpi_intel
-openmpi_intel:
-	mkdir -p $(OPENMPI_INTEL_DIR) 
-	cd $(OPENMPI_INTEL_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_INTEL $(PROGRAM)
-
-.PHONY : openmpi_intel_debug
-openmpi_intel_debug:
-	mkdir -p $(OPENMPI_INTEL_DEBUG_DIR) 
-	cd $(OPENMPI_INTEL_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_INTEL_DEBUG $(PROGRAM)
-
-#########################
 ####    intel_64     ####
 #########################
 
-.PHONY : serial_intel_64
-serial_intel_64:
-	mkdir -p $(SERIAL_INTEL_64_DIR)
-	cd $(SERIAL_INTEL_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_INTEL_64 $(PROGRAM)
+.PHONY : openmp_intel_64
+openmp_intel_64:
+	mkdir -p $(OPENMP_INTEL_64_DIR)
+	cd $(OPENMP_INTEL_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMP_INTEL_64 $(PROGRAM)
 
-.PHONY : serial_intel_64_debug
-serial_intel_64_debug:
-	mkdir -p $(SERIAL_INTEL_64_DEBUG_DIR);
-	cd $(SERIAL_INTEL_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_INTEL_64_DEBUG $(PROGRAM)
+.PHONY : openmp_intel_64_debug
+openmp_intel_64_debug:
+	mkdir -p $(OPENMP_INTEL_64_DEBUG_DIR);
+	cd $(OPENMP_INTEL_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMP_INTEL_64_DEBUG $(PROGRAM)
 
-.PHONY : openmpi_intel_64
-openmpi_intel_64:
-	mkdir -p $(OPENMPI_INTEL_64_DIR) 
-	cd $(OPENMPI_INTEL_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_INTEL_64 $(PROGRAM)
+.PHONY : mpi_intel_64
+mpi_intel_64:
+	mkdir -p $(MPI_INTEL_64_DIR) 
+	cd $(MPI_INTEL_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_INTEL_64 $(PROGRAM)
 
-.PHONY : openmpi_intel_64_debug
-openmpi_intel_64_debug:
-	mkdir -p $(OPENMPI_INTEL_64_DEBUG_DIR) 
-	cd $(OPENMPI_INTEL_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_INTEL_64_DEBUG $(PROGRAM)
+.PHONY : mpi_intel_64_debug
+mpi_intel_64_debug:
+	mkdir -p $(MPI_INTEL_64_DEBUG_DIR) 
+	cd $(MPI_INTEL_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_INTEL_64_DEBUG $(PROGRAM)
 
 # Recursive make begins here
 #
@@ -155,29 +93,30 @@ openmpi_intel_64_debug:
 # Significant suffixes [assuming Fortran 90 (.F90)  source code, needs to be preprocessed ]:
 # =============================================================================
 
-SRC              = ../IPHreeqcPhast/IPhreeqc/phreeqcpp/phreeqc
-PHREEQC_INCLUDES = -I.. -I../PhreeqcRM -I../PhreeqcRM/IPhreeqcPhast -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords
+SRC              = 
+
+PHREEQC_INCLUDES = -I.. -I../PhreeqcRM \
+		   -I../PhreeqcRM/IPhreeqcPhast \
+		   -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc \
+                   -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp \
+                   -I../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords
+
 PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM:../PhreeqcRM/IPhreeqcPhast:../PhreeqcRM/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp:../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords:../KDtree
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
 # The following apply to GFortran versions
 FGFORTRAN=     gfortran
-LIBGFORTRAN=   -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
 LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
 
 # The following apply to INTEL versions
 FINTEL=/lobo02home/intel/Compiler/11.0/083/bin/intel64/ifort
-#IF_HOME=/opt/intel/Compiler/11.0/083/lib
 IF_HOME=/lobo02home/intel/Compiler/11.0/083/lib
-IFORT_LIB=-Xlinker -Bstatic -L$(IF_HOME)/ia32/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -Xlinker -Bdynamic -lpthread -ldl
 IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -Xlinker -Bdynamic -lpthread -ldl 
 
-# The following apply to OpenMPI versions
-OPENMPI_GFORTRAN_32=/usr/lib/openmpi
-OPENMPI_IFORT_32=/raid/home/charlton/openmpi-1.5.4/lobo07-ifort-static
-OPENMPI_GFORTRAN_64=/usr/lib64/openmpi
-OPENMPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
+# The following apply to Mpi versions
+MPI_GFORTRAN_64=/usr/lib64/openmpi
+MPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 
 # -----------------------------------------------------------------------------
 .f.o :
@@ -197,14 +136,12 @@ OPENMPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 #hdf options
 HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
 HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
-
 
 # -----------------------------------------------------------------------------
 #hdf options
 ifeq ($(HOSTNAME), arc1.cr.usgs.gov)
-  HDF5_LIBS_64=${HDF5_ROOT}/lib64/openmpi/lib/libhdf5.a -Xlinker -lz -lpthread 
+  HDF5_LIBS_64=${HDF5_ROOT}/lib64/mpi/lib/libhdf5.a -Xlinker -lz -lpthread 
 endif
 
 # -----------------------------------------------------------------------------
@@ -224,35 +161,7 @@ HASH_STYLE=$(call ld-option, -Wl$(comma)--hash-style=sysv)
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), SERIAL_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = $(PHREEQC_VPATH)
-  FC           = $(FGFORTRAN)
-  FFLAGS       = -p -O3 -frecursive -fopenmp -fno-underscoring -fopenmp $(DEFINES) 
-  CC           = g++
-  CFLAGS       = -Wall -fopenmp -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lgomp -lm ${HDF5_LIBS} ${HASH_STYLE}
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = $(PHREEQC_VPATH)
-  FC           = $(FGFORTRAN)
-  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring $(DEFINES) 
-  CC           = g++
-  CFLAGS       = -Wall -g -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) 
-  LD_FLAGS     = $(LIBGFORTRAN) -lgomp -lm ${HDF5_LIBS} ${HASH_STYLE}
-  LINKER       = $(CXX) 
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), SERIAL_GFORTRAN_64)
+ifeq ($(CFG), OPENMP_GFORTRAN_64)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
@@ -266,7 +175,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
+ifeq ($(CFG), OPENMP_GFORTRAN_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
@@ -280,98 +189,39 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), OPENMPI_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES)
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = $(PHREEQC_VPATH)
-  FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
-  FFLAGS       = -O3 -fno-underscoring $(DEFINES)
-  CXX          = $(OPENMPI_GFORTRAN_32)/bin/mpiCC
-  CC           = $(OPENMPI_GFORTRAN_32)/bin/mpiCC
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) 
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS} -lmpi_f77 -ldl ${HASH_STYLE} 
-  LINKER       = $(CXX)
-endif
 
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES)
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = $(PHREEQC_VPATH)
-  FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
-  FFLAGS       = -g  -fno-underscoring $(DEFINES)
-  CXX          = $(OPENMPI_GFORTRAN_32)/bin/mpiCC
-  CC           = $(OPENMPI_GFORTRAN_32)/bin/mpiCC
-  CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS} -lmpi_f77 -ldl ${HASH_STYLE}
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-
-ifeq ($(CFG), OPENMPI_GFORTRAN_64)
+ifeq ($(CFG), MPI_GFORTRAN_64)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
-  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
+  FC           = $(MPI_GFORTRAN_64)/bin/mpif90
   FFLAGS       = -O3 -fno-underscoring -cpp $(DEFINES) 
-  CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
-  CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
+  CXX          = $(MPI_GFORTRAN_64)/bin/mpiCC
+  CC           = $(MPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -lmpi_usempi -ldl ${HASH_STYLE} # -lmpi_f90
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -lmpi_usempi -ldl ${HASH_STYLE} 
   LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
 
-ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
+ifeq ($(CFG), MPI_GFORTRAN_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
-  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
+  FC           = $(MPI_GFORTRAN_64)/bin/mpif90
   FFLAGS       = -g -fno-underscoring $(DEFINES) 
-  CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
-  CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
+  CXX          = $(MPI_GFORTRAN_64)/bin/mpiCC
+  CC           = $(MPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) 
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE} 
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_usempi -ldl ${HASH_STYLE} 
   LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
-
-ifeq ($(CFG), SERIAL_INTEL)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = $(PHREEQC_VPATH)
-  FC           = $(FINTEL)
-  FFLAGS       = -O3 -nus -openmp -recursive -reentrancy threaded $(DEFINES)
-  CXX          = g++
-  CFLAGS       = -Wall  -O3 -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS)
-  LD_FLAGS     = ${IFORT_LIB}  -lgomp ${HDF5_LIBS} ${HASH_STYLE} 
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), SERIAL_INTEL_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = $(PHREEQC_VPATH)
-  FC           = $(FINTEL)
-  FFLAGS       = -g -nus -openmp -recursive -reentrancy threaded $(DEFINES)
-  CXX          = g++
-  CFLAGS       = -Wall -g  -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS)
-  LD_FLAGS     = ${IFORT_LIB} -lgomp ${HDF5_LIBS} ${HASH_STYLE} 
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), SERIAL_INTEL_64)
+ifeq ($(CFG), OPENMP_INTEL_64)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
@@ -385,7 +235,7 @@ ifeq ($(CFG), SERIAL_INTEL_64)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
+ifeq ($(CFG), OPENMP_INTEL_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
@@ -399,44 +249,14 @@ ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), OPENMPI_INTEL)
+ifeq ($(CFG), MPI_INTEL_64)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
-  FC           = $(OPENMPI_IFORT_32)/bin/mpif90
-  FFLAGS       = -g -nus $(DEFINES) -I$(OPENMPI_IFORT_32)/lib 
-  CXX          = $(OPENMPI_IFORT_32)/bin/mpiCC
-  CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
-  LD_FLAGS     = ${IFORT_LIB} ${HDF5_LIBS} -lmpi_f77 ${HASH_STYLE}
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), OPENMPI_INTEL_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES)
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = $(PHREEQC_VPATH)
-  FC           = $(OPENMPI_IFORT_32)/bin/mpif90
-  FFLAGS       = -g -nus $(DEFINES) 
-  CXX          = $(OPENMPI_IFORT_32)/bin/mpiCC
-  CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
-  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
-  LD_FLAGS     = ${IFORT_LIB} ${HDF5_LIBS} -lmpi_f77 ${HASH_STYLE}
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), OPENMPI_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES)
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = $(PHREEQC_VPATH)
-  FC           = $(OPENMPI_IFORT_64)/bin/mpif90
+  FC           = $(MPI_IFORT_64)/bin/mpif90
   FFLAGS       = -mcmodel=large -O3 -nus $(DEFINES)
-  CXX          = $(OPENMPI_IFORT_64)/bin/mpiCC
-  CC           = $(OPENMPI_IFORT_64)/bin/mpiCC
+  CXX          = $(MPI_IFORT_64)/bin/mpiCC
+  CC           = $(MPI_IFORT_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
   LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} -lmpi_f77 ${HASH_STYLE} 
@@ -444,14 +264,14 @@ ifeq ($(CFG), OPENMPI_INTEL_64)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), OPENMPI_INTEL_64_DEBUG)
+ifeq ($(CFG), MPI_INTEL_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
-  FC           = $(OPENMPI_IFORT_64)/bin/mpif90
+  FC           = $(MPI_IFORT_64)/bin/mpif90
   FFLAGS       = -mcmodel=large -g -nus $(DEFINES)
-  CXX          = $(OPENMPI_IFORT_64)/bin/mpiCC
-  CC           = $(OPENMPI_IFORT_64)/bin/mpiCC
+  CXX          = $(MPI_IFORT_64)/bin/mpiCC
+  CC           = $(MPI_IFORT_64)/bin/mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
   LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} -lmpi_f77 ${HASH_STYLE} 
@@ -721,11 +541,6 @@ kdtree2.o \
 KDtree.o \
 Point.o
 
-HDF_OBJS     =  #hdf.o hdf_f.o
-
-#MPI_OBJS     =	xfer_indices.o
-
-
 PHASTINPUT_FILES = ../KDtree/KDtree.cpp \
 	../KDtree/kdtree2.cpp \
 	../KDtree/Point.cpp
@@ -893,7 +708,10 @@ zone_flow_ss.o: ../PhastFortran/zone_flow_ss.f90 module_dummy.o
 -include ../dependencies
 
 clean:
-	rm -rf serial_gfortran serial_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug serial_intel_64 serial_intel_64_debug openmpi_intel openmpi_intel_debug openmpi_intel_64 openmpi_intel_64_debug 
+	rm -rf openmp_gfortran_64 openmp_gfortran_64_debug \
+		mpi_gfortran_64 mpi_gfortran_64_debug \
+		openmp_intel_64 openmp_intel_64_debug \
+		mpi_intel_64 mpi_intel_64_debug 
 
 depends:
 	mkdir -p temp_dependency_dir
