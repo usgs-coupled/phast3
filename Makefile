@@ -109,7 +109,7 @@ free: free_clean
 	echo ============= free
 	echo ; 
 	cd $(TEST)/free
-	cd $(TEST)/free; $(PHAST_INPUT) free; time $(PHAST)
+	cd $(TEST)/free; $(PHAST_INPUT) free; time $(PHAST) 10
 	echo ============= Done free
 
 free_parallel: free_clean_parallel
@@ -514,7 +514,7 @@ linear_ic: linear_ic_clean
 	echo ============= linear_ic
 	echo ; 
 	cd $(TEST)/linear_ic;
-	cd $(TEST)/linear_ic; $(PHAST_INPUT) linear_ic; time $(PHAST)
+	cd $(TEST)/linear_ic; $(PHAST_INPUT) linear_ic; time $(PHAST) 10
 	echo ============= Done linear_ic
 
 linear_ic_parallel: linear_ic_clean_parallel
