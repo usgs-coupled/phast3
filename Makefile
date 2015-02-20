@@ -2,25 +2,20 @@ CFG1 :=`uname`
 CFG :=$(shell echo $(CFG1) | sed "s/CYGWIN.*/CYGWIN/")
 
 ifeq ($(CFG), Linux)
-  #TOPDIR=/lobo02home/dlpark/programs/phastpp3-worker
-  #TOPDIR=/home/charlton/reactive-transport/phastpp3-worker
-  TOPDIR=..
+  TOPDIR=/raid/home/dlpark/programs/phast3-trunk
+
 ifeq ($(USER), charlton)
   ##TOPDIR=$(HOME)/programs/phreeqc/phastpp-trunk
   ##TOPDIR=/home/charlton/reactive-transport/phastpp3-worker
 endif
+
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
-  PHAST=$(TOPDIR)/src/phast/serial_lahey/phast
-#  PHAST=$(TOPDIR)/src/phast/serial_gfortran/phast
-#  PHAST=$(TOPDIR)/src/phast/serial_intel/phast
-#  PHAST=$(TOPDIR)/src/phast/serial_intel_debug/phast
-#  PHAST=$(TOPDIR)/src/phast/serial_gfortran_64/phast
-#  PHAST=$(TOPDIR)/src/phast/serial_intel_64/phast
-#  PHAST=$(TOPDIR)/src/phast/serial_intel_64_debug/phast
-#  PHAST=$(TOPDIR)/para_trans_chem/src/phast/serial_lahey/phast
-#  PHAST=$(TOPDIR)/para_trans_chem/src/phast/serial_lahey_debug/phast
-#  PHAST=$(TOPDIR)/para_trans_chem/src/phast/serial_intel_debug/phast
+  PHAST=$(TOPDIR)/src/phast/openmp_gfortran_64/phast
+#  PHAST=$(TOPDIR)/src/phast/openmp_gfortran_64_debug/phast
+#  PHAST=$(TOPDIR)/src/phast/openmp_intel_64/phast
+#  PHAST=$(TOPDIR)/src/phast/openmp_intel_64_debug/phast
+
   RUN=$(TEST)/run
 endif
 
