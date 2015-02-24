@@ -154,9 +154,26 @@ SUBROUTINE init2_1
      PRINT *, "Array allocation failed: init2.1, number 3"
      STOP
   ENDIF
+  tx = 0._kdp
+  ty = 0._kdp
+  tz = 0._kdp
   tfx = 0._kdp
   tfy = 0._kdp
   tfz = 0._kdp
+  tsx = 0._kdp
+  tsy = 0._kdp
+  tsz = 0._kdp
+  tsxy = 0._kdp
+  tsxz = 0._kdp
+  tsyx = 0._kdp
+  tsyz = 0._kdp
+  tszx = 0._kdp
+  tszy = 0._kdp
+  pv = 0._kdp
+  pmcv = 0._kdp
+  pmhv = 0._kdp
+  pmchv = 0._kdp
+  pvk = 0._kdp
   ! ... Allocate geometry information: mg2_m and local
   ALLOCATE (arxbc(nxyz), arybc(nxyz), arzbc(nxyz),  &
        delz(nz),  &
