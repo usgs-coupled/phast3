@@ -976,6 +976,9 @@ subroutine calc_avg_c(m, cavg, mfsbcn)
     endif
 
     use_c = 0  ! 0 avg, 1 old, 2 new
+    if (new_m .eq. 0) then
+        use_c = 1
+    endif
     if (use_c .eq. 0) then       
         ! new water table in lower cell
 
