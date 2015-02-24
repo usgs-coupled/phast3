@@ -4095,11 +4095,15 @@ PhreeqcRM::LoadDatabase(const std::string &database)
 
 		// Load database for all IPhreeqc instances
 #ifdef USE_OPENMP
-		omp_set_num_threads(this->nthreads+1);
+		omp_set_num_threads(this->nthreads);
 #pragma omp parallel 
 #pragma omp for
 #endif
-		for (int n = 0; n < this->nthreads + 2; n++)
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			r_vector[n] = this->workers[n]->LoadDatabase(this->database_file_name.c_str());
+		} 	
+		for (int n = this->nthreads; n < this->nthreads + 2; n++)
 		{
 			r_vector[n] = this->workers[n]->LoadDatabase(this->database_file_name.c_str());
 		} 	
