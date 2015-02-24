@@ -1151,7 +1151,10 @@ HDF_WRITE_FEATURE(int *iso_in, char *feature_name, int *nodes1, int *node_count,
 	/* Convert from 1-based to 0-based */
 	nodes0 = (int *) PHRQ_malloc(sizeof(int) * (*node_count));
 	if (nodes0 == NULL)
+	{
 		malloc_error();
+		exit(4);
+	}
 	for (i = 0; i < *node_count; ++i)
 	{
 		nodes0[i] = nodes1[i] - 1;
