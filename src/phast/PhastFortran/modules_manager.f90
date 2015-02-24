@@ -43,23 +43,23 @@ MODULE mcb2_m
   IMPLICIT NONE
   SAVE
   TYPE :: internal_bndry_zone
-     INTEGER :: num_int_faces
+     INTEGER :: num_int_faces=0
      INTEGER, DIMENSION(:), ALLOCATABLE :: mcell_no, face_indx
   END TYPE internal_bndry_zone
   TYPE :: zone_volume
-     INTEGER :: num_xycol
+     INTEGER :: num_xycol=0
      INTEGER, DIMENSION(:), ALLOCATABLE :: i_no, j_no, kmin_no, kmax_no
   END TYPE zone_volume
   TYPE :: zone_cbc_cells
-     INTEGER :: num_bc
+     INTEGER :: num_bc=0
      INTEGER, DIMENSION(:), ALLOCATABLE :: lcell_no, mxy_no, icz_no
   END TYPE zone_cbc_cells
   TYPE :: zone_bc_cells
-     INTEGER :: num_bc
+     INTEGER :: num_bc=0
      INTEGER, DIMENSION(:), ALLOCATABLE :: lcell_no
   END TYPE zone_bc_cells
   TYPE :: well_segments
-     INTEGER :: num_wellseg
+     INTEGER :: num_wellseg=0
      INTEGER, DIMENSION(:), ALLOCATABLE :: iwel_no, ks_no
   END TYPE well_segments
 
