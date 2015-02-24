@@ -228,70 +228,82 @@ SUBROUTINE dealloc_arr
       ! ... Deallocate zone arrays for local flow rates: mcb2_m
       do i = 1, num_flo_zones
           ! zone_ib is type internal_bndry_zone
-          if (zone_ib(i)%num_int_faces > 0) then
-              DEALLOCATE(zone_ib(i)%mcell_no,  &  
-                zone_ib(i)%face_indx,  &        
-                STAT = da_err)
-              IF (da_err /= 0) THEN  
-                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
-                  STOP
-              ENDIF
-          endif          
-          ! zone_col is type zone_volume
-          if (zone_col(i)%num_xycol > 0) then
-              DEALLOCATE(zone_col(i)%i_no,  &  
-                zone_col(i)%j_no,  &  
-                zone_col(i)%kmin_no,  &  
-                zone_col(i)%kmax_no,  &        
-                STAT = da_err)
-              IF (da_err /= 0) THEN  
-                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
-                  STOP
-              ENDIF
-          endif 
-          ! lnk_cfbc2zon is type zone_cbc_cells
-          if (lnk_cfbc2zon(i)%num_bc > 0) then
-              DEALLOCATE(lnk_cfbc2zon(i)%lcell_no,  &  
-                lnk_cfbc2zon(i)%mxy_no,  &  
-                lnk_cfbc2zon(i)%icz_no,  &        
-                STAT = da_err)
-              IF (da_err /= 0) THEN  
-                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
-                  STOP
-              ENDIF
-          endif  
-          ! lnk_crbc2zon is type zone_cbc_cells
-          if (lnk_crbc2zon(i)%num_bc > 0) then
-              DEALLOCATE(lnk_crbc2zon(i)%lcell_no,  &  
-                lnk_crbc2zon(i)%mxy_no,  &  
-                lnk_crbc2zon(i)%icz_no,  &        
-                STAT = da_err)
-              IF (da_err /= 0) THEN  
-                  PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
-                  STOP
-              ENDIF
-          endif        
-          ! lnk_bc2zon is type zone_bc_cells
-          do j = 1, 4
-              if (lnk_bc2zon(i,j)%num_bc > 0) then
-                  DEALLOCATE(lnk_bc2zon(i,j)%lcell_no,  &    
+          if (allocated(zone_ib)) then 
+              if (zone_ib(i)%num_int_faces > 0) then
+                  DEALLOCATE(zone_ib(i)%mcell_no,  &  
+                  zone_ib(i)%face_indx,  &        
                   STAT = da_err)
                   IF (da_err /= 0) THEN  
                       PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
                       STOP
                   ENDIF
-              endif     
-          enddo
-          ! seg_well is type well_segments
-          if (nwel > 0) then
-              if (seg_well(i)%num_wellseg > 0) then
-                  DEALLOCATE(seg_well(i)%iwel_no, seg_well(i)%ks_no, STAT = da_err)
+              endif 
+          endif
+          ! zone_col is type zone_volume
+          if (allocated(zone_col)) then
+              if (zone_col(i)%num_xycol > 0) then
+                  DEALLOCATE(zone_col(i)%i_no,  &  
+                  zone_col(i)%j_no,  &  
+                  zone_col(i)%kmin_no,  &  
+                  zone_col(i)%kmax_no,  &        
+                  STAT = da_err)
                   IF (da_err /= 0) THEN  
-                      PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.1"  
+                      PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
                       STOP
                   ENDIF
-              endif
-          endif          
+              endif 
+          endif
+          ! lnk_cfbc2zon is type zone_cbc_cells
+          if (allocated(lnk_cfbc2zon)) then
+              if (lnk_cfbc2zon(i)%num_bc > 0) then
+                  DEALLOCATE(lnk_cfbc2zon(i)%lcell_no,  &  
+                  lnk_cfbc2zon(i)%mxy_no,  &  
+                  lnk_cfbc2zon(i)%icz_no,  &        
+                  STAT = da_err)
+                  IF (da_err /= 0) THEN  
+                      PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
+                      STOP
+                  ENDIF
+              endif  
+          endif
+          ! lnk_crbc2zon is type zone_cbc_cells
+          if (allocated(lnk_crbc2zon)) then
+              if (lnk_crbc2zon(i)%num_bc > 0) then
+                  DEALLOCATE(lnk_crbc2zon(i)%lcell_no,  &  
+                  lnk_crbc2zon(i)%mxy_no,  &  
+                  lnk_crbc2zon(i)%icz_no,  &        
+                  STAT = da_err)
+                  IF (da_err /= 0) THEN  
+                      PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
+                      STOP
+                  ENDIF
+              endif    
+          endif
+          ! lnk_bc2zon is type zone_bc_cells
+          if (allocated(lnk_bc2zon)) then
+              do j = 1, 4
+                  if (lnk_bc2zon(i,j)%num_bc > 0) then
+                      DEALLOCATE(lnk_bc2zon(i,j)%lcell_no,  &    
+                      STAT = da_err)
+                      IF (da_err /= 0) THEN  
+                          PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.2"  
+                          STOP
+                      ENDIF
+                  endif     
+              enddo
+          endif
+          ! seg_well is type well_segments
+          if (nwel > 0) then
+              if (allocated(seg_well)) then 
+                  if (seg_well(i)%num_wellseg > 0) then
+                      DEALLOCATE(seg_well(i)%iwel_no, seg_well(i)%ks_no, STAT = da_err)
+                      IF (da_err /= 0) THEN  
+                          PRINT *, "array deallocation failed: dealloc_arr, read2, flow zones.1.1"  
+                          STOP
+                      ENDIF
+                  endif
+              endif 
+          endif
           
       enddo
 
