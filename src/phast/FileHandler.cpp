@@ -466,29 +466,33 @@ FileHandler::WriteFiles(int id, int *print_hdf_in, int *print_media_in, int *pri
 		{
 			Reaction_module_ptr->ErrorHandler(IRM_FAIL, "NULL pointer in FileHandler::WriteFiles");
 			//RM_Error(id, "Null pointer in WriteFiles");
+			return IRM_FAIL;
 		}
-		print_media = *print_media_in;		
-		print_hdf = *print_hdf_in;
-		print_xyz = *print_xyz_in;
-		print_restart = *print_restart_in;
-
-		if (print_hdf != 0)
+		else
 		{
-			IRM_RESULT result = WriteHDF(id, &print_hdf, &print_media);
-			if (result) rtn = result;
+			print_media = *print_media_in;		
+			print_hdf = *print_hdf_in;
+			print_xyz = *print_xyz_in;
+			print_restart = *print_restart_in;
+
+			if (print_hdf != 0)
+			{
+				IRM_RESULT result = WriteHDF(id, &print_hdf, &print_media);
+				if (result) rtn = result;
+			}
+			if (print_xyz != 0)
+			{
+				IRM_RESULT result = WriteXYZ(id, &print_xyz, xyz_mask);
+				if (result) rtn = result;
+			}		
+			if (print_restart != 0)
+			{
+				IRM_RESULT result = WriteRestart(id, &print_restart);
+				if (result) rtn = result;
+			}	
+
+			return rtn;
 		}
-		if (print_xyz != 0)
-		{
-			IRM_RESULT result = WriteXYZ(id, &print_xyz, xyz_mask);
-			if (result) rtn = result;
-		}		
-		if (print_restart != 0)
-		{
-			IRM_RESULT result = WriteRestart(id, &print_restart);
-			if (result) rtn = result;
-		}	
-
-		return rtn;
 	}
 	return IRM_BADINSTANCE;
 }

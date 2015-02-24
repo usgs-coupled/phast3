@@ -2090,14 +2090,20 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 			{
 				strncpy(buffer, ptr, 4094); 
 				buffer[4094] = '\0';
-				int err = gzprintf(dump_file, "%s", buffer);
-				if (err <= 0)
+				if (dump_file)
 				{
-					this->ErrorHandler(IRM_FAIL, "gzprintf");
+					int err = gzprintf(dump_file, "%s", buffer);
+					if (err <= 0)
+					{
+						this->ErrorHandler(IRM_FAIL, "gzprintf");
+					}
 				}
 			}
 		}
-		gzclose(dump_file);
+		if (dump_file)
+		{
+			gzclose(dump_file);
+		}
 	}
 	catch (...)
 	{
@@ -2868,16 +2874,19 @@ PhreeqcRM::GetSaturation(std::vector<double> & sat_arg)
 			for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
 			{
 				cxxSolution * soln_ptr = this->workers[n]->Get_solution(i);
-				double v;
+				double v=0.0;
 				if (!soln_ptr)
 				{
 					this->ErrorHandler(IRM_FAIL, "Solution not found for solution volume.");	
 				}
-				v = soln_ptr->Get_soln_vol();
-				for(size_t j = 0; j < backward_mapping[i].size(); j++)
+				else
 				{
-					int n = backward_mapping[i][j];
-					local_sat[n] = v / (this->rv[n] * this->porosity[n]);
+					v = soln_ptr->Get_soln_vol();
+					for(size_t j = 0; j < backward_mapping[i].size(); j++)
+					{
+						int n = backward_mapping[i][j];
+						local_sat[n] = v / (this->rv[n] * this->porosity[n]);
+					}
 				}
 			}
 		}
@@ -3001,7 +3010,7 @@ PhreeqcRM::GetSelectedOutput(std::vector<double> &so)
 		so.resize(this->nxyz * ncol);
 		for (int n = 0; n < this->nthreads; n++)
 		{
-			int nrow_x, ncol_x;
+			int nrow_x=-1, ncol_x=-1;
 			std::map< int, CSelectedOutput>::iterator cso_it = this->workers[n]->CSelectedOutputMap.find(n_user);
 			if (cso_it == this->workers[n]->CSelectedOutputMap.end())
 			{
