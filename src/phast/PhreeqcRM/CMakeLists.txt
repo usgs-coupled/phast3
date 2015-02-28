@@ -144,7 +144,9 @@ if (OPENMP_FOUND)
 endif(OPENMP_FOUND)
 
 # check for MPI
+cmake_policy(SET CMP0054 OLD)
 find_package(MPI)
+cmake_policy(SET CMP0054 NEW)
 if (MPI_CXX_FOUND)
   # mpi release
   SET(CMAKE_C_FLAGS_MPI
