@@ -403,39 +403,41 @@ install(FILES ${PhreeqcRM_Headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 # tests
 enable_testing()
 
-# Tests/advect.pqi
-configure_file (
-  "${PROJECT_SOURCE_DIR}/Tests/advect.pqi.in"
-  "${PROJECT_BINARY_DIR}/Tests/advect.pqi"
-  )
+##{{# Tests/advect.pqi
+##{{configure_file (
+##{{  "${PROJECT_SOURCE_DIR}/Tests/advect.pqi.in"
+##{{  "${PROJECT_BINARY_DIR}/Tests/advect.pqi"
+##{{  )
+##{{
+##{{# Tests/phreeqc.dat
+##{{configure_file (
+##{{  "${PROJECT_SOURCE_DIR}/Tests/phreeqc.dat.in"
+##{{  "${PROJECT_BINARY_DIR}/Tests/phreeqc.dat"
+##{{  )
+##{{
+##{{# Tests/units.pqi
+##{{configure_file (
+##{{  "${PROJECT_SOURCE_DIR}/Tests/units.pqi.in"
+##{{  "${PROJECT_BINARY_DIR}/Tests/units.pqi"
+##{{  )
+##{{
+##{{SET(testrm_SOURCES
+##{{  ${PROJECT_SOURCE_DIR}/Tests/advection_c.c
+##{{  ${PROJECT_SOURCE_DIR}/Tests/advection_cpp.cpp
+##{{  ${PROJECT_SOURCE_DIR}/Tests/main.cpp
+##{{  ${PROJECT_SOURCE_DIR}/Tests/species_c.c
+##{{  ${PROJECT_SOURCE_DIR}/Tests/species_cpp.cpp
+##{{)
+##{{
+##{{add_executable(testrm ${testrm_SOURCES})
+##{{SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM)
+##{{include_directories ("${PROJECT_SOURCE_DIR}")
+##{{target_link_libraries(testrm ${EXTRA_LIBS})
+##{{
+##{{add_test (
+##{{  NAME CompileAndRun
+##{{  COMMAND testrm
+##{{  WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/Tests
+##{{  )
 
-# Tests/phreeqc.dat
-configure_file (
-  "${PROJECT_SOURCE_DIR}/Tests/phreeqc.dat.in"
-  "${PROJECT_BINARY_DIR}/Tests/phreeqc.dat"
-  )
-
-# Tests/units.pqi
-configure_file (
-  "${PROJECT_SOURCE_DIR}/Tests/units.pqi.in"
-  "${PROJECT_BINARY_DIR}/Tests/units.pqi"
-  )
-
-SET(testrm_SOURCES
-  ${PROJECT_SOURCE_DIR}/Tests/advection_c.c
-  ${PROJECT_SOURCE_DIR}/Tests/advection_cpp.cpp
-  ${PROJECT_SOURCE_DIR}/Tests/main.cpp
-  ${PROJECT_SOURCE_DIR}/Tests/species_c.c
-  ${PROJECT_SOURCE_DIR}/Tests/species_cpp.cpp
-)
-
-add_executable(testrm ${testrm_SOURCES})
-SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM)
-include_directories ("${PROJECT_SOURCE_DIR}")
-target_link_libraries(testrm ${EXTRA_LIBS})
-
-add_test (
-  NAME CompileAndRun
-  COMMAND testrm
-  WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/Tests
-  )
+add_subdirectory(Tests)
