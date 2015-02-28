@@ -7,7 +7,7 @@ project (PhreeqcRM)
 ##  set(CMAKE_INSTALL_DOCDIR "doc")
 ##endif()
 
-##include(GNUInstallDirs)
+include(GNUInstallDirs)
 
 # Disable deprecation warnings for standard C and STL functions in VS2005
 # and later
@@ -143,55 +143,70 @@ if (OPENMP_FOUND)
       FORCE)
 endif(OPENMP_FOUND)
 
+
 # check for MPI
-cmake_policy(SET CMP0054 OLD)
-find_package(MPI)
-cmake_policy(SET CMP0054 NEW)
-if (MPI_CXX_FOUND)
-  # mpi release
-  SET(CMAKE_C_FLAGS_MPI
-      "-DUSE_MPI ${CMAKE_C_FLAGS_MPI} ${MPI_C_COMPILE_FLAGS}" CACHE STRING
-      "Flags used by the compiler during mpi builds."
-      FORCE)
-  SET(CMAKE_CXX_FLAGS_MPI
-      "-DUSE_MPI ${CMAKE_CXX_FLAGS_MPI} ${MPI_CXX_COMPILE_FLAGS}" CACHE STRING
-      "Flags used by the compiler during mpi builds."
-      FORCE)
-  if (MPI_C_INCLUDE_PATH)
+option(PHREEQCRM_BUILD_MPI "Build MPI configuration" "OFF")
+if (PHREEQCRM_BUILD_MPI)
+  cmake_policy(SET CMP0054 OLD)
+  find_package(MPI)
+  cmake_policy(SET CMP0054 NEW)
+  if (MPI_CXX_FOUND)
+    # mpi release
     SET(CMAKE_C_FLAGS_MPI
-        "-I\"${MPI_C_INCLUDE_PATH}\" ${CMAKE_C_FLAGS_MPI}" CACHE STRING
+        "-DUSE_MPI ${CMAKE_C_FLAGS_MPI} ${MPI_C_COMPILE_FLAGS}" CACHE STRING
         "Flags used by the compiler during mpi builds."
         FORCE)
-  endif(MPI_C_INCLUDE_PATH)
-  if (MPI_CXX_INCLUDE_PATH)
     SET(CMAKE_CXX_FLAGS_MPI
-        "-I\"${MPI_CXX_INCLUDE_PATH}\" ${CMAKE_CXX_FLAGS_MPI}" CACHE STRING
+        "-DUSE_MPI ${CMAKE_CXX_FLAGS_MPI} ${MPI_CXX_COMPILE_FLAGS}" CACHE STRING
         "Flags used by the compiler during mpi builds."
         FORCE)
-  endif(MPI_CXX_INCLUDE_PATH)
-  
-  # mpi debug
-  SET(CMAKE_C_FLAGS_MPI_DEBUG
-      "-DUSE_MPI ${CMAKE_C_FLAGS_MPI_DEBUG} ${MPI_C_COMPILE_FLAGS}" CACHE STRING
-      "Flags used by the compiler during debug mpi builds."
-      FORCE)
-  SET(CMAKE_CXX_FLAGS_MPI_DEBUG
-      "-DUSE_MPI ${CMAKE_CXX_FLAGS_MPI_DEBUG} ${MPI_CXX_COMPILE_FLAGS}" CACHE STRING
-      "Flags used by the compiler during debug mpi builds."
-      FORCE)
-  if (MPI_C_INCLUDE_PATH)
+    if (MPI_C_INCLUDE_PATH)
+      SET(CMAKE_C_FLAGS_MPI
+          "-I\"${MPI_C_INCLUDE_PATH}\" ${CMAKE_C_FLAGS_MPI}" CACHE STRING
+          "Flags used by the compiler during mpi builds."
+          FORCE)
+    endif(MPI_C_INCLUDE_PATH)
+    if (MPI_CXX_INCLUDE_PATH)
+      SET(CMAKE_CXX_FLAGS_MPI
+          "-I\"${MPI_CXX_INCLUDE_PATH}\" ${CMAKE_CXX_FLAGS_MPI}" CACHE STRING
+          "Flags used by the compiler during mpi builds."
+          FORCE)
+    endif(MPI_CXX_INCLUDE_PATH)
+    
+    # mpi debug
     SET(CMAKE_C_FLAGS_MPI_DEBUG
-        "-I\"${MPI_C_INCLUDE_PATH}\" ${CMAKE_C_FLAGS_MPI_DEBUG}" CACHE STRING
+        "-DUSE_MPI ${CMAKE_C_FLAGS_MPI_DEBUG} ${MPI_C_COMPILE_FLAGS}" CACHE STRING
         "Flags used by the compiler during debug mpi builds."
         FORCE)
-  endif(MPI_C_INCLUDE_PATH)
-  if (MPI_CXX_INCLUDE_PATH)
     SET(CMAKE_CXX_FLAGS_MPI_DEBUG
-        "-I\"${MPI_CXX_INCLUDE_PATH}\" ${CMAKE_CXX_FLAGS_MPI_DEBUG}" CACHE STRING
+        "-DUSE_MPI ${CMAKE_CXX_FLAGS_MPI_DEBUG} ${MPI_CXX_COMPILE_FLAGS}" CACHE STRING
         "Flags used by the compiler during debug mpi builds."
         FORCE)
-  endif(MPI_CXX_INCLUDE_PATH)  
-endif(MPI_CXX_FOUND)
+    if (MPI_C_INCLUDE_PATH)
+      SET(CMAKE_C_FLAGS_MPI_DEBUG
+          "-I\"${MPI_C_INCLUDE_PATH}\" ${CMAKE_C_FLAGS_MPI_DEBUG}" CACHE STRING
+          "Flags used by the compiler during debug mpi builds."
+          FORCE)
+    endif(MPI_C_INCLUDE_PATH)
+    if (MPI_CXX_INCLUDE_PATH)
+      SET(CMAKE_CXX_FLAGS_MPI_DEBUG
+          "-I\"${MPI_CXX_INCLUDE_PATH}\" ${CMAKE_CXX_FLAGS_MPI_DEBUG}" CACHE STRING
+          "Flags used by the compiler during debug mpi builds."
+          FORCE)
+    endif(MPI_CXX_INCLUDE_PATH)  
+  endif(MPI_CXX_FOUND)
+  if (CMAKE_CONFIGURATION_TYPES)
+    SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
+    "Semicolon separated list of supported configuration types."
+    FORCE)
+  endif (CMAKE_CONFIGURATION_TYPES)
+else (PHREEQCRM_BUILD_MPI)
+  if (CMAKE_CONFIGURATION_TYPES)
+    SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp" CACHE STRING 
+    "Semicolon separated list of supported configuration types."
+    FORCE)
+  endif (CMAKE_CONFIGURATION_TYPES)
+endif (PHREEQCRM_BUILD_MPI)
 
 SET(PhreeqcRM_SOURCES
 PhreeqcRM.cpp
@@ -367,3 +382,60 @@ include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phre
 
 
 add_library(PhreeqcRM STATIC ${PhreeqcRM_SOURCES})
+
+
+
+SET(PhreeqcRM_Headers
+${PROJECT_SOURCE_DIR}/IrmResult.h
+${PROJECT_SOURCE_DIR}/PhreeqcRM.h
+${PROJECT_SOURCE_DIR}/RM_interface_C.h
+${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqcPhast.h
+${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc/IPhreeqc.h
+${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp
+${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h
+${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc/Var.h
+)
+
+# install
+install(TARGETS PhreeqcRM DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES ${PhreeqcRM_Headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+# tests
+enable_testing()
+
+# Tests/advect.pqi
+configure_file (
+  "${PROJECT_SOURCE_DIR}/Tests/advect.pqi.in"
+  "${PROJECT_BINARY_DIR}/Tests/advect.pqi"
+  )
+
+# Tests/phreeqc.dat
+configure_file (
+  "${PROJECT_SOURCE_DIR}/Tests/phreeqc.dat.in"
+  "${PROJECT_BINARY_DIR}/Tests/phreeqc.dat"
+  )
+
+# Tests/units.pqi
+configure_file (
+  "${PROJECT_SOURCE_DIR}/Tests/units.pqi.in"
+  "${PROJECT_BINARY_DIR}/Tests/units.pqi"
+  )
+
+SET(testrm_SOURCES
+  ${PROJECT_SOURCE_DIR}/Tests/advection_c.c
+  ${PROJECT_SOURCE_DIR}/Tests/advection_cpp.cpp
+  ${PROJECT_SOURCE_DIR}/Tests/main.cpp
+  ${PROJECT_SOURCE_DIR}/Tests/species_c.c
+  ${PROJECT_SOURCE_DIR}/Tests/species_cpp.cpp
+)
+
+add_executable(testrm ${testrm_SOURCES})
+SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM)
+include_directories ("${PROJECT_SOURCE_DIR}")
+target_link_libraries(testrm ${EXTRA_LIBS})
+
+add_test (
+  NAME CompileAndRun
+  COMMAND testrm
+  WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/Tests
+  )
