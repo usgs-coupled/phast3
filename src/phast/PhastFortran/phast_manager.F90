@@ -141,7 +141,6 @@ SUBROUTINE phast_manager
             END DO  
             CALL time_parallel(3)                          ! 3 - 2, flow and transport communication
             IF (thru) then
-                status = RM_MpiWorkerBreak(rm_id)          ! stop loop in worker
                 EXIT                                       ! ... second step of exit
             endif
             !
@@ -242,6 +241,7 @@ SUBROUTINE phast_manager
 50  CONTINUE   ! ... Exit, could be error
 
     ! ...  Cleanup and shutdown
+    status = RM_MpiWorkerBreak(rm_id)          ! stop loop in worker
     status = RM_LogMessage(rm_id, 'Done with transient flow and transport simulation.')
     status = RM_ScreenMessage(rm_id, 'Done with transient flow and transport simulation.')
     IF(errexe .OR. errexi) then
