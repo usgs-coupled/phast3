@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
-project (PhreeqcRM)
+project (PhreeqcRM CXX C Fortran)
+##project (PhreeqcRM CXX)
+##project (PhreeqcRM)
 
 ### overide docdir on windows
 ##if(WIN32 AND NOT CMAKE_INSTALL_DOCDIR)
@@ -26,6 +28,10 @@ SET(CMAKE_C_FLAGS_OPENMP
     ${CMAKE_C_FLAGS_RELEASE} CACHE STRING
     "Flags used by the C compiler during openmp builds."
     FORCE)
+SET(CMAKE_Fortran_FLAGS_OPENMP
+    ${CMAKE_Fortran_FLAGS_RELEASE} CACHE STRING
+    "Flags used by the Fortran compiler during openmp builds."
+    FORCE)
 SET(CMAKE_EXE_LINKER_FLAGS_OPENMP
     ${CMAKE_EXE_LINKER_FLAGS_RELEASE} CACHE STRING
     "Flags used for linking binaries during openmp builds."
@@ -49,6 +55,10 @@ SET(CMAKE_C_FLAGS_OPENMP_DEBUG
     ${CMAKE_C_FLAGS_DEBUG} CACHE STRING
     "Flags used by the C compiler during debug openmp builds."
     FORCE)
+SET(CMAKE_Fortran_FLAGS_OPENMP_DEBUG
+    ${CMAKE_Fortran_FLAGS_DEBUG} CACHE STRING
+    "Flags used by the Fortran compiler during debug openmp builds."
+    FORCE)  
 SET(CMAKE_EXE_LINKER_FLAGS_OPENMP_DEBUG
     ${CMAKE_EXE_LINKER_FLAGS_DEBUG} CACHE STRING
     "Flags used for linking binaries during debug openmp builds."
@@ -72,6 +82,10 @@ SET(CMAKE_CXX_FLAGS_MPI
 SET(CMAKE_C_FLAGS_MPI
     ${CMAKE_C_FLAGS_RELEASE} CACHE STRING
     "Flags used by the C compiler during mpi builds."
+    FORCE)
+SET(CMAKE_Fortran_FLAGS_MPI
+    ${CMAKE_Fortran_FLAGS_RELEASE} CACHE STRING
+    "Flags used by the Fortran compiler during mpi builds."
     FORCE)
 SET(CMAKE_EXE_LINKER_FLAGS_MPI
     ${CMAKE_EXE_LINKER_FLAGS_RELEASE} CACHE STRING
@@ -97,6 +111,10 @@ SET(CMAKE_C_FLAGS_MPI_DEBUG
     ${CMAKE_C_FLAGS_DEBUG} CACHE STRING
     "Flags used by the C compiler during debug mpi builds."
     FORCE)
+SET(CMAKE_Fortran_FLAGS_MPI_DEBUG
+    ${CMAKE_Fortran_FLAGS_DEBUG} CACHE STRING
+    "Flags used by the Fortran compiler during debug mpi builds."
+    FORCE)
 SET(CMAKE_EXE_LINKER_FLAGS_MPI_DEBUG
     ${CMAKE_EXE_LINKER_FLAGS_DEBUG} CACHE STRING
     "Flags used for linking binaries during debug mpi builds."
@@ -113,11 +131,11 @@ MARK_AS_ADVANCED(
 
 
     
-if (CMAKE_CONFIGURATION_TYPES)
-  SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
-  "Semicolon separated list of supported configuration types."
-  FORCE)
-endif (CMAKE_CONFIGURATION_TYPES)
+##if (CMAKE_CONFIGURATION_TYPES)
+##  SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
+##  "Semicolon separated list of supported configuration types."
+##  FORCE)
+##endif (CMAKE_CONFIGURATION_TYPES)
 
 # check for openmp
 find_package(OpenMP)
@@ -130,6 +148,10 @@ if (OPENMP_FOUND)
   SET(CMAKE_CXX_FLAGS_OPENMP
       "-DUSE_OPENMP ${CMAKE_CXX_FLAGS_OPENMP} ${OpenMP_CXX_FLAGS}" CACHE STRING
       "Flags used by the compiler during openmp builds."
+      FORCE)      
+  SET(CMAKE_Fortran_FLAGS_OPENMP
+      "-DUSE_OPENMP ${CMAKE_Fortran_FLAGS_OPENMP} ${OpenMP_Fortran_FLAGS}" CACHE STRING
+      "Flags used by the compiler during openmp builds."
       FORCE)
 
   # openmp debug
@@ -141,7 +163,11 @@ if (OPENMP_FOUND)
       "-DUSE_OPENMP ${CMAKE_CXX_FLAGS_OPENMP_DEBUG} ${OpenMP_CXX_FLAGS}" CACHE STRING
       "Flags used by the compiler during debug openmp builds."
       FORCE)
-endif(OPENMP_FOUND)
+  SET(CMAKE_Fortran_FLAGS_OPENMP_DEBUG
+      "-DUSE_OPENMP ${CMAKE_Fortran_FLAGS_OPENMP_DEBUG} ${OpenMP_Fortran_FLAGS}" CACHE STRING
+      "Flags used by the compiler during debug openmp builds."
+      FORCE)
+endif (OPENMP_FOUND)
 
 
 # check for MPI
@@ -160,18 +186,33 @@ if (PHREEQCRM_BUILD_MPI)
         "-DUSE_MPI ${CMAKE_CXX_FLAGS_MPI} ${MPI_CXX_COMPILE_FLAGS}" CACHE STRING
         "Flags used by the compiler during mpi builds."
         FORCE)
+    SET(CMAKE_Fortran_FLAGS_MPI
+        "-DUSE_MPI ${CMAKE_Fortran_FLAGS_MPI} ${MPI_Fortran_COMPILE_FLAGS}" CACHE STRING
+        "Flags used by the Fortran compiler during mpi builds."
+        FORCE)
     if (MPI_C_INCLUDE_PATH)
       SET(CMAKE_C_FLAGS_MPI
           "-I\"${MPI_C_INCLUDE_PATH}\" ${CMAKE_C_FLAGS_MPI}" CACHE STRING
           "Flags used by the compiler during mpi builds."
           FORCE)
-    endif(MPI_C_INCLUDE_PATH)
+    endif (MPI_C_INCLUDE_PATH)
     if (MPI_CXX_INCLUDE_PATH)
       SET(CMAKE_CXX_FLAGS_MPI
           "-I\"${MPI_CXX_INCLUDE_PATH}\" ${CMAKE_CXX_FLAGS_MPI}" CACHE STRING
           "Flags used by the compiler during mpi builds."
           FORCE)
-    endif(MPI_CXX_INCLUDE_PATH)
+    endif (MPI_CXX_INCLUDE_PATH)
+    if (MPI_Fortran_INCLUDE_PATH)
+      if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+        set(MS_MPI_ARCH_DIR amd64)
+      else()
+        set(MS_MPI_ARCH_DIR i386)
+      endif()
+      SET(CMAKE_Fortran_FLAGS_MPI
+          "-I\"${MPI_Fortran_INCLUDE_PATH}\" -I\"${MPI_Fortran_INCLUDE_PATH}/${MS_MPI_ARCH_DIR}\" ${CMAKE_Fortran_FLAGS_MPI}" CACHE STRING
+          "Flags used by the Fortran compiler during mpi builds."
+          FORCE)
+    endif (MPI_Fortran_INCLUDE_PATH)    
     
     # mpi debug
     SET(CMAKE_C_FLAGS_MPI_DEBUG
@@ -182,19 +223,38 @@ if (PHREEQCRM_BUILD_MPI)
         "-DUSE_MPI ${CMAKE_CXX_FLAGS_MPI_DEBUG} ${MPI_CXX_COMPILE_FLAGS}" CACHE STRING
         "Flags used by the compiler during debug mpi builds."
         FORCE)
+    SET(CMAKE_Fortran_FLAGS_MPI_DEBUG
+        "-DUSE_MPI ${CMAKE_Fortran_FLAGS_MPI_DEBUG} ${MPI_Fortran_COMPILE_FLAGS}" CACHE STRING
+        "Flags used by the Fortran compiler during debug mpi builds."
+        FORCE)
     if (MPI_C_INCLUDE_PATH)
       SET(CMAKE_C_FLAGS_MPI_DEBUG
           "-I\"${MPI_C_INCLUDE_PATH}\" ${CMAKE_C_FLAGS_MPI_DEBUG}" CACHE STRING
           "Flags used by the compiler during debug mpi builds."
           FORCE)
-    endif(MPI_C_INCLUDE_PATH)
+    endif (MPI_C_INCLUDE_PATH)
     if (MPI_CXX_INCLUDE_PATH)
       SET(CMAKE_CXX_FLAGS_MPI_DEBUG
           "-I\"${MPI_CXX_INCLUDE_PATH}\" ${CMAKE_CXX_FLAGS_MPI_DEBUG}" CACHE STRING
           "Flags used by the compiler during debug mpi builds."
           FORCE)
-    endif(MPI_CXX_INCLUDE_PATH)  
-  endif(MPI_CXX_FOUND)
+    endif (MPI_CXX_INCLUDE_PATH)    
+    if (MPI_Fortran_INCLUDE_PATH)
+      if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+        set(MS_MPI_ARCH_DIR amd64)
+      else()
+        set(MS_MPI_ARCH_DIR i386)
+      endif()
+      SET(CMAKE_Fortran_FLAGS_MPI_DEBUG
+          "-I\"${MPI_Fortran_INCLUDE_PATH}\" -I\"${MPI_Fortran_INCLUDE_PATH}/${MS_MPI_ARCH_DIR}\" ${CMAKE_Fortran_FLAGS_MPI_DEBUG}" CACHE STRING
+          "Flags used by the Fortran compiler during debug mpi builds."
+          FORCE)
+    endif (MPI_Fortran_INCLUDE_PATH)    
+  endif (MPI_CXX_FOUND)
+endif (PHREEQCRM_BUILD_MPI)
+
+
+if (PHREEQCRM_BUILD_MPI)
   if (CMAKE_CONFIGURATION_TYPES)
     SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
     "Semicolon separated list of supported configuration types."
@@ -207,6 +267,7 @@ else (PHREEQCRM_BUILD_MPI)
     FORCE)
   endif (CMAKE_CONFIGURATION_TYPES)
 endif (PHREEQCRM_BUILD_MPI)
+
 
 SET(PhreeqcRM_SOURCES
 PhreeqcRM.cpp
@@ -365,6 +426,8 @@ IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h
 )
 
 # setup include directories
+message("PROJECT_SOURCE_DIR (Trunk) = " ${PROJECT_SOURCE_DIR})
+include_directories("${PROJECT_SOURCE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast")
 include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc")
 include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc/phreeqcpp")
