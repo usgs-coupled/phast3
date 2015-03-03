@@ -494,6 +494,7 @@ SUBROUTINE init2_1
         PRINT *, "Array allocation failed: init2.1, number 7"  
         STOP  
      ENDIF
+     wi = 0.0_kdp
      ! ... Allocate more well arrays: mcw_m
      ALLOCATE (indx1_wel(nwel), indx2_wel(nwel),  &
           wficum(nwel), wfpcum(nwel), wsicum(nwel,nsa), wspcum(nwel,nsa),  &
@@ -603,6 +604,7 @@ SUBROUTINE init2_1
         PRINT *, "array allocation failed: init2.1, number 9"  
         STOP
      ENDIF
+     qfsbc = 0.0_kdp
      ! ... Allocate specified value b.c. arrays: mcb_m
      ALLOCATE (qssbc(nsbc,nsa),  &
           sfsb(nsbc), sfvsb(nsbc), sssb(nsbc,nsa),  &
@@ -1092,6 +1094,11 @@ SUBROUTINE init2_1
         PRINT *, "array allocation failed: init2.1, number 24"
         STOP
      ENDIF
+     ip1 = 0
+     ip1r = 0
+     ipenv = 0
+     cirh = 0.0_kdp
+     cirl = 0.0_kdp
      ! ... establish d4 cell reordering for reduced matrix, ra
      CALL reordr(slmeth)  
      ! ... allocate space for the solver: mcs2
@@ -1114,6 +1121,9 @@ SUBROUTINE init2_1
         PRINT *, "array allocation failed: init2.1, number 26"
         STOP
      ENDIF
+     cir = 0.0_kdp
+     cirh = 0.0_kdp
+     cirl = 0.0_kdp
      ! ... establish red-black or d4z cell reordering for reduced matrix, ra
      CALL reordr(slmeth)
      ! ... allocate space for the solver: mcs2

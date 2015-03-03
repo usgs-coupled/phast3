@@ -34,6 +34,14 @@ SUBROUTINE XP_crsdsp_thread(xp, m, ucrosc)
   mijpkp = xdcellno(i,j+1,k+1)
   mijmkm = xdcellno(i,j-1,k-1)
   mijpkm = xdcellno(i,j+1,k-1)
+
+  mijmk = xdcellno(i,j-1,k)
+  mijpk = xdcellno(i,j+1,k)
+  mipjk = xdcellno(i+1,j,k)
+  mimjk = xdcellno(i-1,j,k)
+  mijkm = xdcellno(i,j,k-1)
+  mijkp = xdcellno(i,j,k+1)
+
   ucrosc = 0._kdp
   ftxydp = 0._kdp
   ftxydm = 0._kdp

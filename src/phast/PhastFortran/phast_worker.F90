@@ -69,6 +69,9 @@
     if (RM_Destroy(rm_id) < 0) then
         write (*,*) 'RM_Destroy failed.'
     endif
+    if (solute .and. xp_group) then
+        CALL MPI_COMM_FREE(mpi_xp_comm, ierrmpi)
+    endif
 #endif  
 END SUBROUTINE phast_worker
     

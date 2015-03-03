@@ -2475,8 +2475,7 @@ INTEGER FUNCTION RM_MpiWorker(id)
     INTERFACE
         INTEGER(KIND=C_INT) FUNCTION RMF_MpiWorker(id) &
 			BIND(C, NAME='RMF_MpiWorker') 
-			USE ISO_C_BINDING
-			USE ISO_C_BINDING
+            USE ISO_C_BINDING
             IMPLICIT NONE
             INTEGER(KIND=C_INT), INTENT(in) :: id
         END FUNCTION RMF_MpiWorker

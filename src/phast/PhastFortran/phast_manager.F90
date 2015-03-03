@@ -256,7 +256,7 @@ SUBROUTINE phast_manager
 #endif
 
     ! ... Cleanup reaction module
-	CALL FH_FinalizeFiles() 
+    CALL FH_FinalizeFiles() 
     status = RM_CloseFiles(rm_id)
     if (RM_Destroy(rm_id) < 0) then
         write (*,*) 'RM_Destroy failed.'
@@ -264,6 +264,11 @@ SUBROUTINE phast_manager
 
     ! ... Cleanup PHAST
     CALL terminate_phast
+#ifdef USE_MPI
+    if (solute .and. xp_group) then
+        CALL MPI_COMM_FREE(mpi_xp_comm, ierrmpi)
+    endif
+#endif
 END SUBROUTINE phast_manager
 
 SUBROUTINE time_parallel(i)

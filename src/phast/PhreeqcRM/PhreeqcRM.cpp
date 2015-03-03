@@ -151,8 +151,10 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	this->phreeqcrm_io->Set_error_ostream(&std::cerr);
 
 	// second argument is threads for OPENMP or COMM for MPI
+#if !defined(USE_MPI)
 	int thread_count = 1;
 	int n = 1;	
+#endif
 #ifdef USE_OPENMP
 	thread_count = data_for_parallel_processing;
 #if defined(_WIN32)
@@ -202,7 +204,10 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	this->component_h2o = true;
 #ifdef USE_MPI
 	MPI_Bcast(&this->nxyz, 1, MPI_INT, 0, phreeqcrm_comm);
-	MPI_Bcast(&this->component_h2o, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = this->component_h2o ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	this->component_h2o = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&this->component_h2o, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 	this->nthreads = 1;
 	if (this->mpi_myself == 0)
 	{
@@ -770,7 +775,7 @@ PhreeqcRM::CheckSelectedOutput()
 			MPI_Bcast(headings_bcast, length + 1, MPI_CHAR, 0, phreeqcrm_comm);
 			
 			int equal = strcmp(headings_bcast, headings.c_str()) == 0 ? 1 : 0;
-
+			delete [] headings_bcast;
 			std::vector<int> recv_buffer;
 			recv_buffer.resize(this->mpi_tasks);
 			MPI_Gather(&equal, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, phreeqcrm_comm);
@@ -1544,7 +1549,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool use_gz_in)
 		dump = dump_on;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = dump ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	dump = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
 	if (!dump) return IRM_OK;
 	
@@ -1775,7 +1783,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 	{
 		dump = dump_on;
 	}
-	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = dump ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	dump = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 	if (!dump) return IRM_OK;
 
 	IRM_RESULT return_value = IRM_OK;
@@ -1890,7 +1901,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 	{
 		dump = dump_on;
 	}
-	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = dump ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	dump = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 	if (!dump) return IRM_OK;
 
 	IRM_RESULT return_value = IRM_OK;
@@ -2129,7 +2143,10 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 	{
 		dump = dump_on;
 	}
-	MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = dump ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	dump = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&dump, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 	if (!dump) return IRM_OK;
 
 	IRM_RESULT return_value = IRM_OK;
@@ -2575,9 +2592,9 @@ PhreeqcRM::GetConcentrations(std::vector<double> &c)
 					}
 				}
 			}
-			delete recv_solns;
-			delete recv_counts;
-			delete recv_displs;
+			delete [] recv_solns;
+			delete [] recv_counts;
+			delete [] recv_displs;
 		}
 	}
 	catch (...)
@@ -4256,7 +4273,7 @@ PhreeqcRM::MpiWorker()
 			case METHOD_LOADDATABASE:
 				if (debug_worker) std::cerr << "METHOD_LOADDATABASE" << std::endl;
 				{
-					char dummy[1];
+					char dummy[2]=" ";
 					return_value = this->LoadDatabase(dummy);
 				}
 				break;
@@ -4272,7 +4289,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_RUNFILE" << std::endl;
 				{
 					bool dummy = false;
-					char c_dummy[1];
+					char c_dummy[2]=" ";
 					return_value = this->RunFile(dummy, dummy, dummy, c_dummy);
 				}
 				break;
@@ -4280,7 +4297,7 @@ PhreeqcRM::MpiWorker()
 				if (debug_worker) std::cerr << "METHOD_RUNSTRING" << std::endl;
 				{
 					bool dummy = false;
-					char c_dummy[1];
+					char c_dummy[2]=" ";
 					return_value = this->RunString(dummy, dummy, dummy, c_dummy);
 				}
 				break;
@@ -4315,7 +4332,7 @@ PhreeqcRM::MpiWorker()
 			case METHOD_SETFILEPREFIX:
 				if (debug_worker) std::cerr << "METHOD_SETFILEPREFIX" << std::endl;
 				{
-					char c_dummy[1];
+					char c_dummy[2]=" ";
 					return_value = this->SetFilePrefix(c_dummy);
 				}
 				break;
@@ -6884,7 +6901,10 @@ PhreeqcRM::SetComponentH2O(bool tf)
 		this->component_h2o  = tf;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->component_h2o,  1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = this->component_h2o ? 1 : 0;
+	MPI_Bcast(&temp_tf,  1, MPI_INT, 0, phreeqcrm_comm);
+	this->component_h2o = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&this->component_h2o,  1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetComponentH2O");
 }
@@ -6941,8 +6961,8 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 	}
 
 	MPI_Scatterv(send_buf, send_counts, send_displs, MPI_DOUBLE, recv_buf, recv_count, MPI_DOUBLE, 0, phreeqcrm_comm);
-	delete send_counts;
-	delete send_displs;
+	delete [] send_counts;
+	delete [] send_displs;
 #endif
 
 #ifdef USE_OPENMP
@@ -7277,7 +7297,10 @@ PhreeqcRM::SetPartitionUZSolids(bool tf)
 		this->partition_uz_solids = tf;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->partition_uz_solids, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = this->partition_uz_solids ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	this->partition_uz_solids = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&this->partition_uz_solids, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
 	if (this->partition_uz_solids && (this->old_saturation.size() == 0))
 	{
@@ -7431,7 +7454,10 @@ PhreeqcRM::SetRebalanceByCell(bool t)
 		this->rebalance_by_cell = t;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&(this->rebalance_by_cell), 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = this->rebalance_by_cell ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	this->rebalance_by_cell = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&(this->rebalance_by_cell), 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
 	return IRM_OK;
 }
@@ -7495,7 +7521,10 @@ PhreeqcRM::SetSelectedOutputOn(bool t)
 		this->selected_output_on = t;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->selected_output_on, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = this->selected_output_on ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	this->selected_output_on = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&this->selected_output_on, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
 	return IRM_OK;
 }
@@ -7519,7 +7548,10 @@ PhreeqcRM::SetSpeciesSaveOn(bool t)
 		this->species_save_on = t;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->species_save_on, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = this->species_save_on ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	this->species_save_on = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&this->species_save_on, 1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
 	for (int i = 0; i < this->nthreads + 1; i++)
 	{
@@ -8025,6 +8057,7 @@ PhreeqcRM::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 			{
 				this->ErrorMessage(phast_iphreeqc_worker->GetErrorString());
 			}
+			delete [] string_buffer;
 //#endif
 			this->ErrorHandler(PhreeqcRM::Int2IrmResult(status, false), "RunString in TransferCells");
 		}
@@ -8060,6 +8093,7 @@ PhreeqcRM::TransferCellsUZ(std::ostringstream &raw_stream, int old, int nnew)
 			MPI_Recv((void *) string_buffer, string_size, MPI_CHAR, old, 0, phreeqcrm_comm, &mpi_status);
 			IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
 			std::istringstream iss(string_buffer);
+			delete [] string_buffer;
 			CParser cp(iss);
 			cp.set_echo_file(CParser::EO_NONE);
 			cp.set_echo_stream(CParser::EO_NONE);
@@ -8094,7 +8128,10 @@ PhreeqcRM::UseSolutionDensityVolume(bool tf)
 		this->use_solution_density_volume = tf;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->use_solution_density_volume,  1, MPI_LOGICAL, 0, phreeqcrm_comm);
+	int temp_tf = this->use_solution_density_volume ? 1 : 0;
+	MPI_Bcast(&temp_tf, 1, MPI_INT, 0, phreeqcrm_comm);
+	this->use_solution_density_volume = (temp_tf == 0) ? false : true;
+	//MPI_Bcast(&this->use_solution_density_volume,  1, MPI_LOGICAL, 0, phreeqcrm_comm);
 #endif
 }
 /* ---------------------------------------------------------------------- */
