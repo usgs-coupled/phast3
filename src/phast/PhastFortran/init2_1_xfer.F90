@@ -39,7 +39,7 @@ SUBROUTINE init2_1_xfer_m
           xp_comm, ierrmpi)
 
   ! *** 2 broadcast xd_mask
-  CALL MPI_BCAST(xd_mask(1,1,1), SIZE(xd_mask), MPI_INTEGER, manager, &
+  CALL MPI_BCAST(xd_mask(0,0,0), SIZE(xd_mask), MPI_INTEGER, manager, &
        xp_comm, ierrmpi)
 
   ! *** 3 broadcast arx, ary, arz

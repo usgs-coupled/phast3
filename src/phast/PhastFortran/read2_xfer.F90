@@ -116,9 +116,9 @@ SUBROUTINE read2_xfer_m
 
      ! *** 6 broadcast wqmeth, nkswel
      ! ... create MPI structure for 2 integer arrays
-    CALL MPI_BCAST(wqmeth(1), SIZE(wqmeth), MPI_DOUBLE_PRECISION, manager, &
+    CALL MPI_BCAST(wqmeth(1), SIZE(wqmeth), MPI_INTEGER, manager, &
         xp_comm, ierrmpi)
-    CALL MPI_BCAST(nkswel(1), SIZE(nkswel), MPI_DOUBLE_PRECISION, manager, &
+    CALL MPI_BCAST(nkswel(1), SIZE(nkswel), MPI_INTEGER, manager, &
         xp_comm, ierrmpi)
 
      ! *** 7 broadcast wbod, wfrac
@@ -433,9 +433,9 @@ SUBROUTINE read2_xfer_w
      ! ... Well bore location and structural data
      ! ... Read well completion cells and screen lengths in lower and upper parts
      ! ... no well riser calculations allowed in phast
-    CALL MPI_BCAST(wqmeth(1), SIZE(wqmeth), MPI_DOUBLE_PRECISION, manager, &
+    CALL MPI_BCAST(wqmeth(1), SIZE(wqmeth), MPI_INTEGER, manager, &
         xp_comm, ierrmpi)
-    CALL MPI_BCAST(nkswel(1), SIZE(nkswel), MPI_DOUBLE_PRECISION, manager, &
+    CALL MPI_BCAST(nkswel(1), SIZE(nkswel), MPI_INTEGER, manager, &
         xp_comm, ierrmpi)
 
      ! *** 7 broadcast wbod, wfrac

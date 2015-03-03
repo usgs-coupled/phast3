@@ -15,6 +15,7 @@ SUBROUTINE read1_distribute
   ! ... send the read1 parameter data
   !*** broadcast nx, ny, nz, npmz, nsbc, nfbc, nlbc, nrbc, ndbc, nwel, slmeth, nral
   ! ... Load the scalar variables
+  array_bcst_i = 0
   IF (mpi_myself == 0) THEN
      array_bcst_i(1) = 0
      IF (restrt) array_bcst_i(1) = 1
