@@ -11,7 +11,9 @@
 // Called from Fortran or C++
 #define FH_FinalizeFiles                FC_FUNC_ (fh_finalizefiles,                 FH_FINALIZEFILES)
 #define FH_ProcessRestartFiles          FC_FUNC_ (fh_processrestartfiles,           FH_PROCESSRESTARTFILES)
-#define FH_SetPointers                  FC_FUNC_ (fh_setpointers,                   FH_SETPOINTERS)
+//#define FH_SetPointers                  FC_FUNC_ (fh_setpointers,                   FH_SETPOINTERS)
+#define FH_SetNodes                     FC_FUNC_ (fh_setnodes,                      FH_SETNODES)
+#define FH_SetPhreeqcRM                 FC_FUNC_ (fh_setphreeqcrm,                  FH_SETPHREEQCRM)
 #define FH_SetRestartName               FC_FUNC_ (fh_setrestartname,                FH_SETRESTARTNAME)
 #define FH_WriteFiles                   FC_FUNC_ (fh_writefiles,                    FH_WRITEFILES)
 #define FH_WriteBcRaw                   FC_FUNC_ (fh_writebcraw,                    FH_WRITEBCRAW)
@@ -20,12 +22,14 @@
 extern "C" {
 #endif
 void FH_FinalizeFiles();
-void FH_ProcessRestartFiles(int *id, int *initial_conditions1_in, int *initial_conditions2_in, 
+void FH_ProcessRestartFiles(int *initial_conditions1_in, int *initial_conditions2_in, 
 	double *fraction1_in);
-void FH_SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation = NULL, int *mapping = NULL);
+//void FH_SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation = NULL, int *mapping = NULL);
+void FH_SetNodes(double *x_node, double *y_node, double *z_node);
+void FH_SetPhreeqcRM(int *rm_id);
 void FH_SetRestartName(const char *name, long nchar);
-void FH_WriteFiles(int *id, int *print_hdf, int *print_media, int *print_xyz, int *xyz_mask, int *print_restart);
-void FH_WriteBcRaw(int *id, double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l);
+void FH_WriteFiles(int *print_hdf, int *print_media, int *print_xyz, int *xyz_mask, int *print_restart);
+void FH_WriteBcRaw(double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l);
 #if defined(__cplusplus)
 }
 #endif
