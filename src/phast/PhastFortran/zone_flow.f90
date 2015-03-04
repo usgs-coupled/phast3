@@ -822,7 +822,7 @@ SUBROUTINE zone_flow_write_chem
           
           ! write raw solutions to file
           file_name = trim(file_name_base) // ".soln.bc"         
-          CALL FH_WriteBcRaw(rm_id, c, solution_list, bc_soln_count - 1, solution_number_start, file_name)
+          CALL FH_WriteBcRaw(c, solution_list, bc_soln_count - 1, solution_number_start, file_name)
 
           ! finish xyzt file
           CLOSE(fuzf_chem_xyzt, status='KEEP')

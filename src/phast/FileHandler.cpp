@@ -51,7 +51,6 @@ public:
 	FileHandler();
 	~FileHandler(void);	
 	IRM_RESULT ProcessRestartFiles(
-		int id, 
 		int *initial_conditions1_in,
 		int *initial_conditions2_in, 
 		double *fraction1_in);
@@ -65,14 +64,16 @@ public:
 	std::vector< std::ostream * > &GetXYZOstreams(void) {return this->XYZOstreams;}
 	std::vector< std::string > &GetHeadings(void) {return this->Headings;}
 	void SetHeadings(std::vector< std::string > &h) {this->Headings = h;}
-	void SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation = NULL, int *mapping = NULL);
+	//void SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation = NULL, int *mapping = NULL);
+	void SetNodes(double *x_node, double *y_node, double *z_node);
+	void SetPhreeqcRM(int rm_id);
 	IRM_RESULT SetRestartName(const char *name, long nchar);
-	IRM_RESULT WriteRestartFile(int *id, int *print_restart = NULL, int *indices_ic = NULL);
-	IRM_RESULT WriteFiles(int id, int *print_hdf = NULL, int *print_media = NULL, int *print_xyz = NULL, int *xyz_mask = NULL, int *print_restart = NULL);
-	IRM_RESULT WriteHDF(int id, int *print_hdf, int *print_media);
-	IRM_RESULT WriteRestart(int id, int *print_restart);
-	IRM_RESULT WriteXYZ(int id, int *print_xyz, int *xyz_mask);
-    IRM_RESULT WriteBcRaw(int *id, double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l);
+	IRM_RESULT WriteRestartFile(int *print_restart = NULL, int *indices_ic = NULL);
+	IRM_RESULT WriteFiles(int *print_hdf = NULL, int *print_media = NULL, int *print_xyz = NULL, int *xyz_mask = NULL, int *print_restart = NULL);
+	IRM_RESULT WriteHDF(int *print_hdf, int *print_media);
+	IRM_RESULT WriteRestart(int *print_restart);
+	IRM_RESULT WriteXYZ(int *print_xyz, int *xyz_mask);
+    IRM_RESULT WriteBcRaw(double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l);
 
 protected:
 	bool HDFInitialized;
@@ -81,13 +82,14 @@ protected:
 	std::vector< std::string > Headings;
 	std::vector < std::ostream * > XYZOstreams;	
 	std::map < std::string, int > RestartFileMap; 
-	double * x_node;
-	double * y_node;
-	double * z_node;
-	double * saturation;  // only root
-	int    * mapping;     // only root
-	int    * ic;
+	std::vector<double> x_node;
+	std::vector<double> y_node;
+	std::vector<double> z_node;
+	std::vector<double> saturation;  // only root
+	//std::vector<int> mapping;        // only root
+	std::vector<int> ic;
 	std::map <std::string, std::ostream * > BcZoneOstreams;
+	int rm_id;
 };
 FileHandler file_handler;
 // Constructor
@@ -106,7 +108,6 @@ FileHandler::~FileHandler()
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::ProcessRestartFiles(
-	int id, 
 	int *initial_conditions1_in,
 	int *initial_conditions2_in, 
 	double *fraction1_in)
@@ -133,7 +134,7 @@ FileHandler::ProcessRestartFiles(
 	*   
 	*      saves results in restart_bin and then the reaction module
 	*/
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{
 		IRM_RESULT rtn = IRM_OK;
@@ -147,6 +148,7 @@ FileHandler::ProcessRestartFiles(
 		initial_conditions1.resize(array_size);
 		initial_conditions2.resize(array_size);
 		fraction1.resize(array_size);
+		this->ic.resize(array_size);
 
 		// Check for null pointer
 		if (mpi_myself == 0)
@@ -156,18 +158,19 @@ FileHandler::ProcessRestartFiles(
 				fraction1_in == NULL)
 			{
 				int result = IRM_FAIL;
-				RM_Abort(id, result, "NULL pointer in call to DistributeInitialConditions");
+				RM_Abort(this->rm_id, result, "NULL pointer in call to ProcessRestartFiles");
 			}
 			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
 			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
 			memcpy(fraction1.data(),           fraction1_in,           array_size * sizeof(double));
 		}
 #ifdef USE_MPI
-	// Transfer arrays
-	MPI_Bcast(initial_conditions1.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(initial_conditions2.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(fraction1.data(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		// Transfer arrays
+		MPI_Bcast(initial_conditions1.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(initial_conditions2.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(fraction1.data(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+		memcpy(this->ic.data(), &initial_conditions1[0], array_size * sizeof(int));
 		/*
 		* Read any restart files
 		*/
@@ -184,7 +187,7 @@ FileHandler::ProcessRestartFiles(
 				rtn = IRM_FAIL;
 				std::ostringstream errstr;
 				errstr << "File could not be opened: " << it->first.c_str();
-				RM_ErrorMessage(id, errstr.str().c_str());
+				RM_ErrorMessage(this->rm_id, errstr.str().c_str());
 				continue;
 			}
 			// read file
@@ -203,7 +206,7 @@ FileHandler::ProcessRestartFiles(
 				std::ostringstream errstr;
 				errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
 				int result = IRM_FAIL;
-				RM_Abort(id, result, errstr.str().c_str());
+				RM_Abort(this->rm_id, result, errstr.str().c_str());
 			}
 
 			// points are x, y, z, cell_no
@@ -412,6 +415,7 @@ FileHandler::ProcessRestartFiles(
 	}
 	return IRM_BADINSTANCE;
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 FileHandler::SetPointers(double *x_node_in, double *y_node_in, double *z_node_in, int *ic_in,
@@ -432,6 +436,46 @@ FileHandler::SetPointers(double *x_node_in, double *y_node_in, double *z_node_in
 		error_msg("NULL pointer in FileHandler.SetPointers ", 1);
 	}
 }
+#endif
+/* ---------------------------------------------------------------------- */
+void
+FileHandler::SetNodes(double *x_node_in, double *y_node_in, double *z_node_in)
+/* ---------------------------------------------------------------------- */
+{
+	if (x_node_in == NULL ||
+		y_node_in == NULL ||
+		z_node_in == NULL )
+	{
+		error_msg("NULL pointer in FileHandler.SetPointers ", 1);
+	}
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
+	int nxyz = Reaction_module_ptr->GetGridCellCount();
+	this->x_node.resize(nxyz);
+	this->y_node.resize(nxyz);
+	this->z_node.resize(nxyz);
+	if (Reaction_module_ptr->GetMpiMyself() == 0)
+	{
+		for (int i = 0; i < nxyz; i++)
+		{
+			this->x_node[i] = x_node_in[i];
+			this->y_node[i] = y_node_in[i];
+			this->z_node[i] = z_node_in[i];
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->x_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&this->y_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&this->z_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+FileHandler::SetPhreeqcRM(int rm_id_in)
+/* ---------------------------------------------------------------------- */
+{
+
+	this->rm_id = rm_id_in;
+}
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::SetRestartName(const char *name, long nchar)
@@ -449,10 +493,10 @@ FileHandler::SetRestartName(const char *name, long nchar)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-FileHandler::WriteFiles(int id, int *print_hdf_in, int *print_media_in, int *print_xyz_in, int *xyz_mask, int *print_restart_in)
+FileHandler::WriteFiles(int *print_hdf_in, int *print_media_in, int *print_xyz_in, int *xyz_mask, int *print_restart_in)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{	
 		IRM_RESULT rtn = IRM_OK;
@@ -477,17 +521,17 @@ FileHandler::WriteFiles(int id, int *print_hdf_in, int *print_media_in, int *pri
 
 			if (print_hdf != 0)
 			{
-				IRM_RESULT result = WriteHDF(id, &print_hdf, &print_media);
+				IRM_RESULT result = WriteHDF(&print_hdf, &print_media);
 				if (result) rtn = result;
 			}
 			if (print_xyz != 0)
 			{
-				IRM_RESULT result = WriteXYZ(id, &print_xyz, xyz_mask);
+				IRM_RESULT result = WriteXYZ(&print_xyz, xyz_mask);
 				if (result) rtn = result;
 			}		
 			if (print_restart != 0)
 			{
-				IRM_RESULT result = WriteRestart(id, &print_restart);
+				IRM_RESULT result = WriteRestart(&print_restart);
 				if (result) rtn = result;
 			}	
 
@@ -498,15 +542,15 @@ FileHandler::WriteFiles(int id, int *print_hdf_in, int *print_media_in, int *pri
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
+FileHandler::WriteHDF(int *print_hdf, int *print_media)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{	
-		int local_mpi_myself = RM_GetMpiMyself(id);
-		int nso = RM_GetSelectedOutputCount(id);
-		int nxyz = RM_GetSelectedOutputRowCount(id); 
+		int local_mpi_myself = RM_GetMpiMyself(this->rm_id);
+		int nso = RM_GetSelectedOutputCount(this->rm_id);
+		int nxyz = RM_GetSelectedOutputRowCount(this->rm_id); 
 		//
 		// Initialize HDF
 		//
@@ -517,26 +561,26 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 				for (int iso = 0; iso < nso; iso++)
 				{
 					int status;
-					int n_user = RM_GetNthSelectedOutputUserNumber(id, iso);
+					int n_user = RM_GetNthSelectedOutputUserNumber(this->rm_id, iso);
 					if (n_user >= 0)
 					{
-						status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+						status = RM_SetCurrentSelectedOutputUserNumber(this->rm_id, n_user);
 						if (status >= 0)
 						{
 							// open file
 							char prefix[256];
-							RM_GetFilePrefix(id, prefix, 256);
+							RM_GetFilePrefix(this->rm_id, prefix, 256);
 							std::ostringstream filename;
 							filename << prefix << "_" << n_user;
 							HDFInitialize(iso, filename.str().c_str(), (int) strlen(filename.str().c_str()));
 
 							// Set HDF scalars
 							std::vector < std::string > headings;
-							int ncol = RM_GetSelectedOutputColumnCount(id);
+							int ncol = RM_GetSelectedOutputColumnCount(this->rm_id);
 							for (int icol = 0; icol < ncol; icol++)
 							{
 								char head[100];
-								status = RM_GetSelectedOutputHeading(id, icol, head, 100);
+								status = RM_GetSelectedOutputHeading(this->rm_id, icol, head, 100);
 								headings.push_back(head);
 							}
 							HDFSetScalarNames(iso, headings);
@@ -548,7 +592,7 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 			{
 				// open file
 				char prefix[256];
-				RM_GetFilePrefix(id, prefix, 256);
+				RM_GetFilePrefix(this->rm_id, prefix, 256);
 				std::ostringstream filename;
 				filename << prefix;
 				HDFInitialize(0, filename.str().c_str(), (int) strlen(filename.str().c_str()));
@@ -566,15 +610,15 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 				int status;
 				for (int iso = 0; iso < nso; iso++)
 				{
-					int n_user = RM_GetNthSelectedOutputUserNumber(id, iso);
+					int n_user = RM_GetNthSelectedOutputUserNumber(this->rm_id, iso);
 					if (n_user >= 0)
 					{
-						status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
-						int ncol = RM_GetSelectedOutputColumnCount(id);
+						status = RM_SetCurrentSelectedOutputUserNumber(this->rm_id, n_user);
+						int ncol = RM_GetSelectedOutputColumnCount(this->rm_id);
 						if (status >= 0)
 						{
 							local_selected_out.resize((size_t) (nxyz*ncol));
-							RM_GetSelectedOutput(id, local_selected_out.data());
+							RM_GetSelectedOutput(this->rm_id, local_selected_out.data());
 							if ( !this->GetHDFInvariant())
 							{
 								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
@@ -696,12 +740,13 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 #endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-FileHandler::WriteRestart(int id, int *print_restart)
+FileHandler::WriteRestart(int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{
+		Reaction_module_ptr->GetSaturation(this->saturation);
 		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
 		if (print_restart != 0)
 		{
@@ -791,15 +836,16 @@ FileHandler::WriteRestart(int id, int *print_restart)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-FileHandler::WriteXYZ(int id, int *print_xyz, int *xyz_mask)
+FileHandler::WriteXYZ(int *print_xyz, int *xyz_mask)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{	
-		int nso = RM_GetSelectedOutputCount(id);
-		int nxyz = RM_GetSelectedOutputRowCount(id); 
-		double current_time = RM_GetTimeConversion(id) * RM_GetTime(id);
+		Reaction_module_ptr->GetSaturation(this->saturation);
+		int nso = RM_GetSelectedOutputCount(this->rm_id);
+		int nxyz = RM_GetSelectedOutputRowCount(this->rm_id); 
+		double current_time = RM_GetTimeConversion(this->rm_id) * RM_GetTime(this->rm_id);
 		//
 		// Initialize XYZ
 		//
@@ -808,15 +854,15 @@ FileHandler::WriteXYZ(int id, int *print_xyz, int *xyz_mask)
 			for (int iso = 0; iso < nso; iso++)
 			{
 				int status;
-				int n_user = RM_GetNthSelectedOutputUserNumber(id, iso);
+				int n_user = RM_GetNthSelectedOutputUserNumber(this->rm_id, iso);
 				if (n_user >= 0)
 				{
-					status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
+					status = RM_SetCurrentSelectedOutputUserNumber(this->rm_id, n_user);
 					if (status >= 0)
 					{
 						// open file							
 						char prefix[256];
-						RM_GetFilePrefix(id, prefix, 256);
+						RM_GetFilePrefix(this->rm_id, prefix, 256);
 						std::ostringstream filename;
 						filename << prefix << "_" << n_user << ".chem.xyz.tsv";
 						if (!this->Get_io()->punch_open(filename.str().c_str()))
@@ -831,12 +877,12 @@ FileHandler::WriteXYZ(int id, int *print_xyz, int *xyz_mask)
 						this->Get_io()->punch_msg(line_buff);
 
 						// create chemistry headings
-						int ncol = RM_GetSelectedOutputColumnCount(id);
+						int ncol = RM_GetSelectedOutputColumnCount(this->rm_id);
 						std::ostringstream h;
 						for (int icol = 0; icol < ncol; icol++)
 						{
 							char head[100];
-							status = RM_GetSelectedOutputHeading(id, icol, head, 100);
+							status = RM_GetSelectedOutputHeading(this->rm_id, icol, head, 100);
 							std::string s(head);
 							s.append("\t");
 							h.width(20);
@@ -858,22 +904,22 @@ FileHandler::WriteXYZ(int id, int *print_xyz, int *xyz_mask)
 			int status;
 			for (int iso = 0; iso < nso; iso++)
 			{
-				int n_user = RM_GetNthSelectedOutputUserNumber(id, iso);
+				int n_user = RM_GetNthSelectedOutputUserNumber(this->rm_id, iso);
 				if (n_user >= 0)
 				{
-					status = RM_SetCurrentSelectedOutputUserNumber(id, n_user);
-					int ncol = RM_GetSelectedOutputColumnCount(id);
+					status = RM_SetCurrentSelectedOutputUserNumber(this->rm_id, n_user);
+					int ncol = RM_GetSelectedOutputColumnCount(this->rm_id);
 					if (status >= 0)
 					{
 						this->Get_io()->Set_punch_ostream(this->GetXYZOstreams()[iso]);
 						local_selected_out.resize((size_t) (nxyz*ncol));
-						RM_GetSelectedOutput(id, local_selected_out.data());
+						RM_GetSelectedOutput(this->rm_id, local_selected_out.data());
 
 						// write xyz file
 #ifdef OLD_STYLE_XYZ
-						for (int ichem = 0; ichem < RM_GetChemistryCellCount(id); ichem++)
+						for (int ichem = 0; ichem < RM_GetChemistryCellCount(this->rm_id); ichem++)
 						{
-							PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(id);
+							PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 							int irow = Reaction_module_ptr->GetBackwardMapping()[ichem][0];
 #else
 						for (int irow = 0; irow < nxyz; irow++)
@@ -881,7 +927,7 @@ FileHandler::WriteXYZ(int id, int *print_xyz, int *xyz_mask)
 #endif
 							if (xyz_mask[irow] <= 0) continue;
 							int active = 1;
-							if (mapping[irow] < 0 || saturation[irow] <= 0)
+							if (Reaction_module_ptr->GetForwardMapping()[irow] < 0 || saturation[irow] <= 0)
 							{
 								active = 0;
 							}
@@ -944,23 +990,36 @@ FH_FinalizeFiles()
 /* ---------------------------------------------------------------------- */
 void
 FH_ProcessRestartFiles(
-	int *id_in, 
 	int *initial_conditions1_in,
 	int *initial_conditions2_in, 
 	double *fraction1_in)
 /* ---------------------------------------------------------------------- */
 {
-	int id = *id_in;
-	file_handler.ProcessRestartFiles(id, initial_conditions1_in, 
+	file_handler.ProcessRestartFiles(initial_conditions1_in, 
 		initial_conditions2_in, fraction1_in);
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 FH_SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation, int *mapping)
 /* ---------------------------------------------------------------------- */
 {
 	file_handler.SetPointers(x_node, y_node, z_node, ic, saturation, mapping);
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void
+FH_SetNodes(double *x_node, double *y_node, double *z_node)
+/* ---------------------------------------------------------------------- */
+{
+	file_handler.SetNodes(x_node, y_node, z_node);
+}
+/* ---------------------------------------------------------------------- */
+void
+FH_SetPhreeqcRM(int *rm_id)
+/* ---------------------------------------------------------------------- */
+{
+	file_handler.SetPhreeqcRM(*rm_id);
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -974,22 +1033,21 @@ FH_SetRestartName(const char *name, long nchar)
 }
 /* ---------------------------------------------------------------------- */
 void
-FH_WriteFiles(int *id_in, int *print_hdf, int *print_media, int *print_xyz, int *xyz_mask, int *print_restart)
+FH_WriteFiles(int *print_hdf, int *print_media, int *print_xyz, int *xyz_mask, int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
-	int id = *id_in;
-	file_handler.WriteFiles(id, print_hdf, print_media, print_xyz, xyz_mask, print_restart);
+	file_handler.WriteFiles(print_hdf, print_media, print_xyz, xyz_mask, print_restart);
 }
 /* ---------------------------------------------------------------------- */
 void
-FH_WriteBcRaw(int *id, double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
+FH_WriteBcRaw(double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
 /* ---------------------------------------------------------------------- */
 {
-	file_handler.WriteBcRaw(id, c, solution_list, bc_solution_count, solution_number, prefix, prefix_l);
+	file_handler.WriteBcRaw(c, solution_list, bc_solution_count, solution_number, prefix, prefix_l);
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-FileHandler::WriteBcRaw(int *id, double *c_in, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
+FileHandler::WriteBcRaw(double *c_in, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
 /* ---------------------------------------------------------------------- */
 {
 	// c                 array of concentrations
@@ -1000,7 +1058,7 @@ FileHandler::WriteBcRaw(int *id, double *c_in, int *solution_list, int * bc_solu
 
 	if (*solution_number == 0) return IRM_OK;
 	
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{
 		// Open file
