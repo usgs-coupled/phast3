@@ -182,10 +182,7 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 		this->ErrorMessage("MPI communicator not defined", 1);
 	}
 	double standard_task = this->TimeStandardTask();
-	if (mpi_myself == 0)
-	{
-		standard_task_vector.resize(this->mpi_tasks, 0.0);
-	}
+	standard_task_vector.resize(this->mpi_tasks, 0.0);
 	MPI_Gather(&standard_task, 1, MPI_DOUBLE, &standard_task_vector.front(), 1, MPI_DOUBLE, 0, phreeqcrm_comm);
 	if (mpi_myself == 0)
 	{
