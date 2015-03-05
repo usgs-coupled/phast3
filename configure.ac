@@ -63,7 +63,7 @@ AC_PROG_MAKE_SET
 # determine f90 module suffix
 AX_F90_MODULE_EXTENSION
 F90_MODEXT=mod
-if test x$ax_f90_modext = xunknown ; then
+if test x$ax_f90_modext != xunknown ; then
   F90_MODEXT=$ax_f90_modext  
 fi
 AC_SUBST(F90_MODEXT)
