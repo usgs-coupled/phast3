@@ -1,13 +1,33 @@
 cmake_minimum_required (VERSION 2.8)
-project (PhreeqcRM CXX C Fortran)
-##project (PhreeqcRM CXX)
-##project (PhreeqcRM)
+
+enable_language(Fortran OPTIONAL)
+
+cmake_policy(SET CMP0054 OLD)
+project (PhreeqcRM CXX C )
+cmake_policy(SET CMP0054 NEW)
 
 ### overide docdir on windows
 ##if(WIN32 AND NOT CMAKE_INSTALL_DOCDIR)
 ##  set(CMAKE_INSTALL_DOCDIR "" CACHE PATH "documentation root (doc)")
 ##  set(CMAKE_INSTALL_DOCDIR "doc")
 ##endif()
+
+# Maybe this should be in subdir Tests
+#
+if (NOT PHREEQCRM_BUILD_FORTRAN)
+  if (NOT CMAKE_Fortran_COMPILER OR CMAKE_Fortran_COMPILER STREQUAL "CMAKE_Fortran_COMPILER-NOTFOUND")
+    option (PHREEQCRM_BUILD_FORTRAN "Build FORTRAN support" OFF)
+  else()
+    option (PHREEQCRM_BUILD_FORTRAN "Build FORTRAN support" ON)
+  endif()
+else()
+  if (PHREEQCRM_BUILD_FORTRAN)
+    enable_language(Fortran)
+    include(FortranCInterface)
+    FortranCInterface_HEADER(FC.h MACRO_NAMESPACE "FC_")
+    FortranCInterface_VERIFY(CXX QUIET)
+  endif()  
+endif()
 
 include(GNUInstallDirs)
 
@@ -173,9 +193,44 @@ endif (OPENMP_FOUND)
 # check for MPI
 option(PHREEQCRM_BUILD_MPI "Build MPI configuration" "OFF")
 if (PHREEQCRM_BUILD_MPI)
+  message("MPI_NUMLIBS = " ${MPI_NUMLIBS})
+  message("MPI_LIBRARY = " ${MPI_LIBRARY})
+  
+  message("MPI_Fortran_FOUND = " ${MPI_Fortran_FOUND})
+  message("MPI_Fortran_COMPILER = " ${MPI_Fortran_COMPILER})
+  message("MPI_Fortran_COMPILE_FLAGS = " ${MPI_Fortran_COMPILE_FLAGS})
+  message("MPI_Fortran_INCLUDE_PATH = " ${MPI_Fortran_INCLUDE_PATH})
+  message("MPI_Fortran_LINK_FLAGS = " ${MPI_Fortran_LINK_FLAGS})
+  message("MPI_Fortran_LIBRARIES = " ${MPI_Fortran_LIBRARIES})
+
+  message("MPI_CXX_FOUND = " ${MPI_CXX_FOUND})
+  message("MPI_CXX_COMPILER = " ${MPI_CXX_COMPILER})
+  message("MPI_CXX_COMPILE_FLAGS = " ${MPI_CXX_COMPILE_FLAGS})
+  message("MPI_CXX_INCLUDE_PATH = " ${MPI_CXX_INCLUDE_PATH})
+  message("MPI_CXX_LINK_FLAGS = " ${MPI_CXX_LINK_FLAGS})
+  message("MPI_CXX_LIBRARIES = " ${MPI_CXX_LIBRARIES})
+  
   cmake_policy(SET CMP0054 OLD)
   find_package(MPI)
   cmake_policy(SET CMP0054 NEW)
+  
+  message("MPI_NUMLIBS = " ${MPI_NUMLIBS})
+  message("MPI_LIBRARY = " ${MPI_LIBRARY})
+  
+  message("MPI_Fortran_FOUND = " ${MPI_Fortran_FOUND})
+  message("MPI_Fortran_COMPILER = " ${MPI_Fortran_COMPILER})
+  message("MPI_Fortran_COMPILE_FLAGS = " ${MPI_Fortran_COMPILE_FLAGS})
+  message("MPI_Fortran_INCLUDE_PATH = " ${MPI_Fortran_INCLUDE_PATH})
+  message("MPI_Fortran_LINK_FLAGS = " ${MPI_Fortran_LINK_FLAGS})
+  message("MPI_Fortran_LIBRARIES = " ${MPI_Fortran_LIBRARIES})
+
+  message("MPI_CXX_FOUND = " ${MPI_CXX_FOUND})
+  message("MPI_CXX_COMPILER = " ${MPI_CXX_COMPILER})
+  message("MPI_CXX_COMPILE_FLAGS = " ${MPI_CXX_COMPILE_FLAGS})
+  message("MPI_CXX_INCLUDE_PATH = " ${MPI_CXX_INCLUDE_PATH})
+  message("MPI_CXX_LINK_FLAGS = " ${MPI_CXX_LINK_FLAGS})
+  message("MPI_CXX_LIBRARIES = " ${MPI_CXX_LIBRARIES})
+  
   if (MPI_CXX_FOUND)
     # mpi release
     SET(CMAKE_C_FLAGS_MPI
@@ -426,7 +481,6 @@ IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h
 )
 
 # setup include directories
-message("PROJECT_SOURCE_DIR (Trunk) = " ${PROJECT_SOURCE_DIR})
 include_directories("${PROJECT_SOURCE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast")
 include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc")

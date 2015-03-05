@@ -1,32 +1,33 @@
 ### tests
-project(FortranAdvect Fortran)
-
-# need to set for each project
-if (PHREEQCRM_BUILD_MPI)
-  if (CMAKE_CONFIGURATION_TYPES)
-    SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
-    "Semicolon separated list of supported configuration types."
-    FORCE)
-  endif (CMAKE_CONFIGURATION_TYPES)
-else (PHREEQCRM_BUILD_MPI)
-  if (CMAKE_CONFIGURATION_TYPES)
-    SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp" CACHE STRING 
-    "Semicolon separated list of supported configuration types."
-    FORCE)
-  endif (CMAKE_CONFIGURATION_TYPES)
-endif (PHREEQCRM_BUILD_MPI)
-
-# source
-SET(FortranAdvect_SOURCES
-  advection_f90.F90
-  ../RM_interface.F90
-  species_f90.F90
-)
-
-add_library(FortranAdvect STATIC ${FortranAdvect_SOURCES})
-
-# if found_fortran???
-set_target_properties(FortranAdvect PROPERTIES COMPILE_DEFINITIONS "TEST_FORTRAN")
+if (PHREEQCRM_BUILD_FORTRAN)
+  project(FortranAdvect Fortran)
+  
+  # need to set for each project
+  if (PHREEQCRM_BUILD_MPI)
+    if (CMAKE_CONFIGURATION_TYPES)
+      SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
+      "Semicolon separated list of supported configuration types."
+      FORCE)
+    endif (CMAKE_CONFIGURATION_TYPES)
+  else (PHREEQCRM_BUILD_MPI)
+    if (CMAKE_CONFIGURATION_TYPES)
+      SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp" CACHE STRING 
+      "Semicolon separated list of supported configuration types."
+      FORCE)
+    endif (CMAKE_CONFIGURATION_TYPES)
+  endif (PHREEQCRM_BUILD_MPI)
+  
+  # source
+  SET(FortranAdvect_SOURCES
+    advection_f90.F90
+    ../RM_interface.F90
+    species_f90.F90
+  )
+  
+  add_library(FortranAdvect STATIC ${FortranAdvect_SOURCES})
+  
+  set_target_properties(FortranAdvect PROPERTIES COMPILE_DEFINITIONS "TEST_FORTRAN")
+endif()
 
 
 #{{
@@ -82,25 +83,24 @@ SET(TestRM_SOURCES
 # test executable
 add_executable(TestRM ${TestRM_SOURCES})
 
-# if found_fortran???
-set_target_properties(TestRM PROPERTIES COMPILE_DEFINITIONS "TEST_FORTRAN")
-
-# library dependencies
-if (PHREEQCRM_BUILD_MPI)
-  SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM FortranAdvect ${MPI_CXX_LIBRARIES})
-else ()
-  SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM FortranAdvect)
+if (PHREEQCRM_BUILD_FORTRAN)
+  set_target_properties(TestRM PROPERTIES COMPILE_DEFINITIONS "TEST_FORTRAN")
 endif ()
 
-
-# include
-message("PROJECT_SOURCE_DIR (Tests) = " ${PROJECT_SOURCE_DIR})
-##include_directories("${PROJECT_SOURCE_DIR}")
-##include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast")
-##include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc")
-##include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc/phreeqcpp")
-##include_directories("${PROJECT_SOURCE_DIR}/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords")
-
+# library dependencies
+if (PHREEQCRM_BUILD_FORTRAN)
+  if (PHREEQCRM_BUILD_MPI)
+    SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM FortranAdvect ${MPI_CXX_LIBRARIES})
+  else ()
+    SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM FortranAdvect)
+  endif ()
+else ()
+  if (PHREEQCRM_BUILD_MPI)
+    SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM ${MPI_CXX_LIBRARIES})
+  else ()
+    SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM)
+  endif ()
+endif ()
 
 # link 
 target_link_libraries(TestRM ${EXTRA_LIBS})
