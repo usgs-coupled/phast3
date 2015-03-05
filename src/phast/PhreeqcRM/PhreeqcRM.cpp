@@ -186,7 +186,7 @@ PhreeqcRM::PhreeqcRM(int nxyz_arg, MP_TYPE data_for_parallel_processing, PHRQ_io
 	{
 		standard_task_vector.resize(this->mpi_tasks, 0.0);
 	}
-	MPI_Gather(&standard_task, 1, MPI_DOUBLE, standard_task_vector.data(), 1, MPI_DOUBLE, 0, phreeqcrm_comm);
+	MPI_Gather(&standard_task, 1, MPI_DOUBLE, &standard_task_vector.front(), 1, MPI_DOUBLE, 0, phreeqcrm_comm);
 	if (mpi_myself == 0)
 	{
 		double s0 = standard_task_vector[0];
@@ -705,7 +705,7 @@ PhreeqcRM::CheckSelectedOutput()
 		// Gather number of selected output at root
 		std::vector<int> recv_buffer;
 		recv_buffer.resize(this->mpi_tasks);
-		MPI_Gather(&nso, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, phreeqcrm_comm);
+		MPI_Gather(&nso, 1, MPI_INT, &recv_buffer.front(), 1, MPI_INT, 0, phreeqcrm_comm);
 		for (int i = 1; i < this->mpi_tasks; i++)
 		{
 			if (recv_buffer[i] != recv_buffer[0])
@@ -724,7 +724,7 @@ PhreeqcRM::CheckSelectedOutput()
 			// Gather number of columns at root
 			std::vector<int> recv_buffer;
 			recv_buffer.resize(this->mpi_tasks);
-			MPI_Gather(&col, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, phreeqcrm_comm);
+			MPI_Gather(&col, 1, MPI_INT, &recv_buffer.front(), 1, MPI_INT, 0, phreeqcrm_comm);
 			for (int i = 1; i < this->mpi_tasks; i++)
 			{
 				if (recv_buffer[i] != recv_buffer[0])
@@ -778,7 +778,7 @@ PhreeqcRM::CheckSelectedOutput()
 			delete [] headings_bcast;
 			std::vector<int> recv_buffer;
 			recv_buffer.resize(this->mpi_tasks);
-			MPI_Gather(&equal, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, phreeqcrm_comm);
+			MPI_Gather(&equal, 1, MPI_INT, &recv_buffer.front(), 1, MPI_INT, 0, phreeqcrm_comm);
 			if (mpi_myself == 0)
 			{
 				for (int i = 1; i < this->mpi_tasks; i++)
@@ -799,7 +799,7 @@ PhreeqcRM::CheckSelectedOutput()
 			int rows = (int) it->second.GetRowCount() - 1;
 			std::vector<int> recv_buffer;
 			recv_buffer.resize(this->mpi_tasks);
-			MPI_Gather(&rows, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, phreeqcrm_comm);
+			MPI_Gather(&rows, 1, MPI_INT, &recv_buffer.front(), 1, MPI_INT, 0, phreeqcrm_comm);
 			if (this->mpi_myself == 0) 
 			{
 				int count = 0;
@@ -1272,7 +1272,7 @@ PhreeqcRM::CreateMapping(std::vector<int> &grid2chem)
 		{
 			grid2chem.resize(this->nxyz);
 		}
-		MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, phreeqcrm_comm);
+		MPI_Bcast(&grid2chem.front(), this->nxyz, MPI_INT, 0, phreeqcrm_comm);
 #endif
 		backward_mapping.clear();
 		forward_mapping.clear();
@@ -2001,12 +2001,12 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 				int size;
 				MPI_Recv(&size, 1, MPI_INT, n, 0, phreeqcrm_comm, &mpi_status);
 				char_buffer.resize(size+1);
-				MPI_Recv((void *) char_buffer.data(), size, MPI_CHAR, n, 0, phreeqcrm_comm, &mpi_status);
+				MPI_Recv((void *) &char_buffer.front(), size, MPI_CHAR, n, 0, phreeqcrm_comm, &mpi_status);
 				char_buffer[size] = '\0';
 
 				char buffer[4096];
-				char * start = char_buffer.data();
-				char * end = &char_buffer.data()[size];
+				char * start = &char_buffer.front();
+				char * end = &char_buffer[size];
 				for (const char * ptr = start; ptr <  end; ptr += 4094)
 				{
 					strncpy(buffer, ptr, 4094); 
@@ -2717,7 +2717,7 @@ PhreeqcRM::GetDensity(std::vector<double> & density_arg)
 				MPI_Status mpi_status;
 				int l = this->end_cell[n] - this->start_cell[n] + 1;
 				dbuffer.resize(l);
-				MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
+				MPI_Recv(&dbuffer.front(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
 				for (int i = 0; i < l; i++)
 				{
 					local_density[this->start_cell[n] +i] = dbuffer[i];
@@ -2878,7 +2878,7 @@ PhreeqcRM::GetSaturation(std::vector<double> & sat_arg)
 				MPI_Status mpi_status;
 				int l = this->end_cell[n] - this->start_cell[n] + 1;
 				dbuffer.resize(l);
-				MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
+				MPI_Recv(&dbuffer.front(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
 				for (int i = 0; i < l; i++)
 				{
 					local_sat[this->start_cell[n] +i] = dbuffer[i];
@@ -2976,7 +2976,7 @@ PhreeqcRM::GetSelectedOutput(std::vector<double> &so)
 						length[0] = nrow;
 						length[1] = ncol;
 						MPI_Send(length, 2, MPI_INT, 0, 0, phreeqcrm_comm);
-						MPI_Send(dbuffer.data(), nrow*ncol, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
+						MPI_Send(&dbuffer.front(), nrow*ncol, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
 					}
 
 				}
@@ -2988,7 +2988,7 @@ PhreeqcRM::GetSelectedOutput(std::vector<double> &so)
 					nrow = length[0];
 					ncol = length[1];
 					dbuffer.resize(nrow*ncol);
-					MPI_Recv(dbuffer.data(), nrow*ncol, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
+					MPI_Recv(&dbuffer.front(), nrow*ncol, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
 				}
 				if (mpi_myself == 0)
 				{
@@ -3190,7 +3190,7 @@ PhreeqcRM::GetSolutionVolume(void)
 				MPI_Status mpi_status;
 				int l = this->end_cell[n] - this->start_cell[n] + 1;
 				dbuffer.resize(l);
-				MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
+				MPI_Recv(&dbuffer.front(), l, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
 				for (int i = 0; i < l; i++)
 				{
 					this->solution_volume[this->start_cell[n] +i] = dbuffer[i];
@@ -3285,7 +3285,7 @@ PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 						}
 					}
 				}
-				MPI_Send((void *) species_conc.data(), (int) nspecies * ncells, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
+				MPI_Send((void *) &species_conc.front(), (int) nspecies * ncells, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
 			}
 			else if (this->mpi_myself == 0)
 			{
@@ -3369,7 +3369,7 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 	// Check for errors
 	std::vector<int> recv_buffer;
 	recv_buffer.resize(this->mpi_tasks);
-	MPI_Gather(&r_vector[0], 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Gather(&r_vector[0], 1, MPI_INT, &recv_buffer.front(), 1, MPI_INT, 0, phreeqcrm_comm);
 
 	// Determine whether there were errors
 	this->error_count = 0;
@@ -3424,7 +3424,7 @@ PhreeqcRM::HandleErrorsInternal(std::vector <int> & r_vector)
 				MPI_Recv(&size, 1, MPI_INT, n, 0, phreeqcrm_comm, &mpi_status);
 				std::string char_buffer;
 				char_buffer.resize(size + 1);
-				MPI_Recv((void *) char_buffer.data(), size, MPI_CHAR, n, 0, phreeqcrm_comm, &mpi_status);
+				MPI_Recv((void *) &char_buffer[0], size, MPI_CHAR, n, 0, phreeqcrm_comm, &mpi_status);
 				char_buffer[size] = '\0';
 				this->ErrorMessage(char_buffer, false);
 			}
@@ -3658,9 +3658,9 @@ PhreeqcRM::InitialPhreeqc2Module(
 		//
 		// Transfer arrays
 		//
-		MPI_Bcast(initial_conditions1.data(), 7 * (this->nxyz), MPI_INT, 0, phreeqcrm_comm);
-		MPI_Bcast(initial_conditions2.data(), 7 * (this->nxyz), MPI_INT, 0, phreeqcrm_comm);
-		MPI_Bcast(fraction1.data(),           7 * (this->nxyz), MPI_DOUBLE, 0, phreeqcrm_comm);
+		MPI_Bcast(&initial_conditions1.front(), 7 * (this->nxyz), MPI_INT, 0, phreeqcrm_comm);
+		MPI_Bcast(&initial_conditions2.front(), 7 * (this->nxyz), MPI_INT, 0, phreeqcrm_comm);
+		MPI_Bcast(&fraction1.front(),           7 * (this->nxyz), MPI_DOUBLE, 0, phreeqcrm_comm);
 #endif
 		/*
 		*  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
@@ -3951,7 +3951,7 @@ PhreeqcRM::InitialPhreeqcCell2Module(int cell, const std::vector<int> &cell_numb
 	}
 	MPI_Bcast(&n_cells, 1, MPI_INT, 0, phreeqcrm_comm);
 	cell_numbers.resize(n_cells);
-	MPI_Bcast((void *) cell_numbers.data(), n_cells, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) &cell_numbers.front(), n_cells, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	try
 	{
@@ -4775,7 +4775,7 @@ PhreeqcRM::RebalanceLoad(void)
 	// Gather times at root
 	std::vector<double> recv_buffer;
 	recv_buffer.resize(this->mpi_tasks);
-	MPI_Gather(&time_per_cell, 1, MPI_DOUBLE, recv_buffer.data(), 1, MPI_DOUBLE, 0,
+	MPI_Gather(&time_per_cell, 1, MPI_DOUBLE, &recv_buffer.front(), 1, MPI_DOUBLE, 0,
 			   phreeqcrm_comm);
 
 	IRM_RESULT return_value = IRM_OK;
@@ -4930,8 +4930,8 @@ PhreeqcRM::RebalanceLoad(void)
 			std::vector<int> r_vector;
 			r_vector.push_back(0);
 
-			MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
-			MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+			MPI_Bcast((void *) &start_cell_new.front(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+			MPI_Bcast((void *) &end_cell_new.front(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
 
 			/*
 			*   Redefine columns
@@ -5356,7 +5356,7 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 		int n = end_cell[i] - start_cell[i] + 1;
 		if (mpi_myself == i)
 		{
-			MPI_Send(phast_iphreeqc_worker->Get_cell_clock_times().data(), n, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
+			MPI_Send(&phast_iphreeqc_worker->Get_cell_clock_times().front(), n, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
 		}
 		if (mpi_myself == 0)
 		{
@@ -5473,8 +5473,8 @@ PhreeqcRM::RebalanceLoadPerCell(void)
 	 *   Broadcast new subcolumns
 	 */
 	
-	MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
-	MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) &start_cell_new.front(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) &end_cell_new.front(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
 	
 	/*
 	 *   Redefine columns
@@ -5943,9 +5943,9 @@ PhreeqcRM::RunCells()
 				int size;
 				MPI_Recv(&size, 1, MPI_INT, n, 0, phreeqcrm_comm, &mpi_status);
 				char_buffer.resize(size + 1);
-				MPI_Recv((void *) char_buffer.data(), size, MPI_CHAR, n, 0, phreeqcrm_comm, &mpi_status);
+				MPI_Recv((void *) &char_buffer.front(), size, MPI_CHAR, n, 0, phreeqcrm_comm, &mpi_status);
 				char_buffer[size] = '\0';
-				this->OutputMessage(char_buffer.data());
+				this->OutputMessage(&char_buffer.front());
 			}
 		}
 	} 	
@@ -6547,7 +6547,7 @@ PhreeqcRM::RunFile(bool workers, bool initial_phreeqc, bool utility, const std::
 		flags[3] = this->error_count;
 	}
 #ifdef USE_MPI
-	MPI_Bcast((void *) flags.data(), 4, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) &flags.front(), 4, MPI_INT, 0, phreeqcrm_comm);
 #endif
 
 	// Quit on error
@@ -6684,7 +6684,7 @@ PhreeqcRM::RunString(bool workers, bool initial_phreeqc, bool utility, const std
 		flags[4] = this->error_count;
 	}
 #ifdef USE_MPI
-	MPI_Bcast((void *) flags.data(), 5, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) &flags.front(), 5, MPI_INT, 0, phreeqcrm_comm);
 	input.resize(flags[3]);
 	MPI_Bcast((void *) input.c_str(), flags[3], MPI_CHAR, 0, phreeqcrm_comm);
 #endif
@@ -7150,8 +7150,8 @@ PhreeqcRM::SetEndCellsHeterogeneous(void)
 		end_cell.resize(this->mpi_tasks);
 	}
 #ifdef USE_MPI
-	MPI_Bcast((void *) start_cell.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
-	MPI_Bcast((void *) end_cell.data(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) &start_cell.front(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast((void *) &end_cell.front(), mpi_tasks, MPI_INT, 0, phreeqcrm_comm);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -7247,7 +7247,7 @@ PhreeqcRM::SetGeneric(std::vector<double> &destination, int newSize, const std::
 		return_value = IRM_FAIL;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(destination.data(), (int) destination.size(), MPI_DOUBLE, 0, phreeqcrm_comm);
+	MPI_Bcast(&destination.front(), (int) destination.size(), MPI_DOUBLE, 0, phreeqcrm_comm);
 #endif
 	return return_value;
 }
@@ -7390,7 +7390,7 @@ PhreeqcRM::SetPrintChemistryOn(bool worker, bool ip, bool utility)
 		l[2] = utility ? 1 : 0;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(l.data(), 3, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&l.front(), 3, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	this->print_chemistry_on[0] = l[0] != 0;
 	this->print_chemistry_on[1] = l[1] != 0;
@@ -7431,7 +7431,7 @@ PhreeqcRM::SetPrintChemistryMask(std::vector<int> & m)
 		return_value = IRM_INVALIDARG;
 	}
 #ifdef USE_MPI	
-	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_INT, 0, phreeqcrm_comm);
+	MPI_Bcast(&this->print_chem_mask.front(), this->nxyz, MPI_INT, 0, phreeqcrm_comm);
 #endif
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetPrintChemistryMask");
 }
@@ -7906,7 +7906,7 @@ PhreeqcRM::SpeciesConcentrations2Module(std::vector<double> & species_conc)
 		{
 			species_conc.resize(this->species_names.size() * this->nxyz, 0.0);
 		}
-		MPI_Bcast(species_conc.data(), (int) this->species_names.size() * nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
+		MPI_Bcast(&species_conc.front(), (int) this->species_names.size() * nxyz, MPI_DOUBLE, 0, phreeqcrm_comm);
 		for (int n = this->mpi_myself; n < this->mpi_myself + 1; n++)
 #else
  		for (int n = 0; n < this->nthreads; n++)
