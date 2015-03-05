@@ -1,6 +1,11 @@
 cmake_minimum_required (VERSION 2.8)
 
-enable_language(Fortran OPTIONAL)
+
+include(CheckLanguage)
+check_language(Fortran)
+if (CMAKE_Fortran_COMPILER)
+  enable_language(Fortran)
+endif()
 
 cmake_policy(SET CMP0054 OLD)
 project (PhreeqcRM CXX C )
