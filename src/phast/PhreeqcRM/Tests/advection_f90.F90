@@ -446,10 +446,8 @@ integer function do_something()
     call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
 	if (mpi_myself .eq. 0) then     
 		CALL MPI_Bcast(method_number, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, status)
-		write(*,*) "I am root."
 		do i = 1, mpi_tasks-1
 			CALL MPI_Recv(worker_number, 1, MPI_INTEGER, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE, status)
-			write(*,*) "Recieved data from worker number ", worker_number, "."
 		enddo
 	else
 		CALL MPI_Send(mpi_myself, 1, MPI_INTEGER, 0, 0, MPI_COMM_WORLD, status)
