@@ -61,7 +61,14 @@ if test "X$IRM_FORTRAN" = "Xyes"; then
   AC_FC_LIBRARY_LDFLAGS
   AC_FC_WRAPPERS 
   AC_FC_MAIN
-  AC_FC_MODULE_EXTENSION
+  m4_ifdef([AC_FC_MODULE_EXTENSION], [AC_FC_MODULE_EXTENSION], [
+    AX_F90_MODULE_EXTENSION
+    FC_MODEXT=mod
+    if test x$ax_cv_f90_modext != xunknown ; then
+      FC_MODEXT=$ax_cv_f90_modext
+    fi
+    AC_SUBST(FC_MODEXT)
+  ])
   ##AC_FC_MODULE_FLAG
   ##AC_FC_MODULE_OUTPUT_FLAG
   AC_SUBST(F77, $FC)
