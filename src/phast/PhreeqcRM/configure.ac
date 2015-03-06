@@ -1,7 +1,7 @@
 <#                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.61])
 AC_INIT([PhreeqcRM], [0.1.0-9067], [dlpark@usgs.gov])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
@@ -62,8 +62,8 @@ if test "X$IRM_FORTRAN" = "Xyes"; then
   AC_FC_WRAPPERS 
   AC_FC_MAIN
   AC_FC_MODULE_EXTENSION
-  AC_FC_MODULE_FLAG
-  AC_FC_MODULE_OUTPUT_FLAG
+  ##AC_FC_MODULE_FLAG
+  ##AC_FC_MODULE_OUTPUT_FLAG
   AC_SUBST(F77, $FC)
   AC_SUBST(FFLAGS, $FCFLAGS) 
 else
@@ -74,7 +74,8 @@ AM_CONDITIONAL([BUILD_FORTRAN], [test "X$IRM_FORTRAN" = "Xyes"])
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AM_PROG_AR
+##AM_PROG_AR
+m4 ifdef([AM_PROG_AR], [AM_PROG_AR([yes])])
 LT_INIT
 
 
