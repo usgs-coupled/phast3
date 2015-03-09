@@ -586,7 +586,8 @@ property_alloc(void)
 	property_ptr = new struct property;
 	if (property_ptr == NULL)
 		malloc_error();
-	property_ptr->v = new double[2];
+	//	property_ptr->v = new double[2];
+	property_ptr->v = (double *) malloc(2*sizeof(double));
 	if (property_ptr->v == NULL)
 		malloc_error();
 	property_ptr->count_v = 0;
@@ -636,7 +637,8 @@ property_copy(struct property *source)
 	// copy v
 	size_t count = 2;
 	if (source->count_v > 2) count = (size_t) source->count_v;
-	target->v = new double[count];
+	//	target->v = new double[count];
+	target->v = (double *) malloc((size_t) count * sizeof(double));
 	if (target->v == NULL)
 		malloc_error();
 	size_t i;
@@ -678,7 +680,8 @@ property_free(struct property *property_ptr)
 			break;
 		}
 	}
-	delete property_ptr->v;
+	//	delete property_ptr->v;
+	free_check_null(property_ptr->v);
 	delete property_ptr->data_source;
 	delete property_ptr;
 

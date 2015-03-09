@@ -5065,6 +5065,7 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
 			}
 		}
 	}
+	free_check_null(range_ptr);
 	// copy  set_of_elements to list_of_elements  
 	for (sit = set_of_elements.begin(); sit != set_of_elements.end(); sit++)
 	{
