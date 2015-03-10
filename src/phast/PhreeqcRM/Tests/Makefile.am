@@ -5,7 +5,7 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/IPhreeqcPhast -I$(top_srcdir)/IPhr
 TESTS = test
 check_PROGRAMS = test
 
-test_SOURCES = advection_c.c advection_cpp.cpp main.cpp species_c.c species_cpp.cpp
+test_SOURCES = ../RM_interface.F90 advection_c.c advection_cpp.cpp main.cpp species_c.c species_cpp.cpp
 test_LDADD = $(top_builddir)/libphreeqcrm.la
 test_LINK = $(CXXLINK)
 
@@ -41,6 +41,16 @@ test_SOURCES+=\
 	species_f90.F90
 
 test_LDADD+=$(FCLIBS)
+
+mostlyclean-local: clean-modules
+.PHONY: clean-modules
+clean-modules:
+	-test -z $(FC_MODEXT) || $(RM) *.$(FC_MODEXT)
+
+
+advection_f90.$(OBJEXT) : ../RM_interface.$(OBJEXT)
+
+species_f90.$(OBJEXT) : ../RM_interface.$(OBJEXT)
 
 endif
 

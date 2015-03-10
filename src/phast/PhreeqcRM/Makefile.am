@@ -178,31 +178,30 @@ DEFS+=\
 	-DTEST_FORTRAN
 
 libphreeqcrm_la_SOURCES+=\
-	RM_interface.F90\
+	RM_interface_F.h\
 	RM_interface_F.cpp\
 	IPhreeqcPhast/IPhreeqc/fwrap.cpp\
 	IPhreeqcPhast/IPhreeqc/fwrap.h\
 	IPhreeqcPhast/IPhreeqc/IPhreeqcF.f
 
 include_HEADERS+=\
-	$(top_srcdir)/RM_interface_F.h\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f.inc
 
-install-data-hook:
-	@if test -n "$(FC_MODEXT)"; then \
-	  $(INSTALL_DATA) $(top_builddir)/*.$(FC_MODEXT) $(DESTDIR)$(includedir)/. ; \
-	fi
+##install-data-hook:
+##	@if test -n "$(FC_MODEXT)"; then \
+##	  $(INSTALL_DATA) $(top_builddir)/*.$(FC_MODEXT) $(DESTDIR)$(includedir)/. ; \
+##	fi
 
-uninstall-hook:
-	@if test -n "$(FC_MODEXT)"; then \
-	  $(RM) $(DESTDIR)$(includedir)/[pP][hH][rR][eE][eE][qQ][cC][rR][mM].$(FC_MODEXT) ; \
-	fi
+##uninstall-hook:
+##	@if test -n "$(FC_MODEXT)"; then \
+##	  $(RM) $(DESTDIR)$(includedir)/[pP][hH][rR][eE][eE][qQ][cC][rR][mM].$(FC_MODEXT) ; \
+##	fi
 
-mostlyclean-local: clean-modules
-.PHONY: clean-modules
-clean-modules:
-	-test -z $(FC_MODEXT) || $(RM) *.$(FC_MODEXT)
+##mostlyclean-local: clean-modules
+##.PHONY: clean-modules
+##clean-modules:
+##	-test -z $(FC_MODEXT) || $(RM) *.$(FC_MODEXT)
 
 endif
 
