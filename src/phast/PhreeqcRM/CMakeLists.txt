@@ -7,9 +7,14 @@ if (CMAKE_Fortran_COMPILER)
   enable_language(Fortran)
 endif()
 
-cmake_policy(SET CMP0054 OLD)
+if (POLICY CMP0054)
+  cmake_policy(PUSH)
+  cmake_policy(SET CMP0054 OLD)
+endif()
 project (PhreeqcRM CXX C )
-cmake_policy(SET CMP0054 NEW)
+if (POLICY CMP0054)
+  cmake_policy(POP)
+endif()
 
 ### overide docdir on windows
 ##if(WIN32 AND NOT CMAKE_INSTALL_DOCDIR)
