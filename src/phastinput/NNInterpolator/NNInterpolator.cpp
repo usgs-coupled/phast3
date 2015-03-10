@@ -38,7 +38,7 @@ NNInterpolator::~NNInterpolator(void)
 	if (this->delaunay_triangulation != NULL)
 		delaunay_destroy(this->delaunay_triangulation);
 	if (this->pin != NULL)
-		delete this->pin;
+		delete [] this->pin;
 	// KDtree* cleaned up in main Clear_KDtreeList()
 	std::map< const NNInterpolator *, KDtree * >::iterator cit = NNInterpolator::KDtreeMap.find(this);
 	if (cit != NNInterpolator::KDtreeMap.end())
