@@ -577,10 +577,12 @@ int do_something(void *cookie)
 	if (mpi_myself == 0)
 	{
 		MPI_Bcast(&method_number, 1, MPI_INTEGER, 0, *comm);
+		fprintf(stderr, "I am root.\n");
 		for (int i = 1; i < mpi_tasks; i++)
 		{
 			MPI_Status status;
 			MPI_Recv(&worker_number, 1, MPI_INTEGER, i, 0, MPI_COMM_WORLD, &status);
+			fprintf(stderr, "Recieved data from worker number %d.\n", worker_number);
 		}
 	}
 	else

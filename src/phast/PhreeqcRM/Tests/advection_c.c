@@ -472,9 +472,11 @@ int do_something(void *cookie)
 	if (mpi_myself == 0)
 	{
 		MPI_Bcast(&method_number, 1, MPI_INTEGER, 0, *comm);
+		fprintf(stderr, "I am Groot.\n");
 		for (i = 1; i < mpi_tasks; i++)
 		{
 			MPI_Recv(&worker_number, 1, MPI_INTEGER, i, 0, *comm, &status);
+			fprintf(stderr, "Recieved data from worker number %d.\n", worker_number);
 		}
 	}
 	else
