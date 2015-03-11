@@ -8,6 +8,9 @@ if [ $USER == charlton ]; then
     PHASTDIR=/home/charlton/reactive-transport/phastpp3-worker
 fi
 
+#VALGRIND="valgrind --leak-check=full --suppressions=/usr/lib64/openmpi/share/openmpi/openmpi-valgrind.supp "
+#VALGRIND="valgrind --leak-check=full "
+VALGRIND=
 EXDIR=$PHASTDIR/examples
 TMP=/lobo02home/dlpark/temp
 TMPDIR=/lobo02home/dlpark/temp
@@ -74,7 +77,7 @@ if [ $CONFIGURATION == "MPI_GFORTRAN_64_DEBUG" ]; then
 # 
 #   64 bit mpi_gfortran_64_debug
 #
-    /usr/lib64/openmpi/bin/mpirun -n 8 -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/mpi_gfortran_64_debug/phast
+    /usr/lib64/openmpi/bin/mpirun -n 8 -v -wdir $EXDIR/$NAME/0 $VALGRIND $PHASTDIR/src/phast/mpi_gfortran_64_debug/phast
 fi
 
 if [ $CONFIGURATION == "MPI_INTEL_64" ]; then
