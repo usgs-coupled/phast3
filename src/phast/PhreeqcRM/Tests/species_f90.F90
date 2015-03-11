@@ -2,11 +2,16 @@
 
 subroutine species_f90() 
   USE PhreeqcRM
+#ifdef IPHREEQC_MODULE
+  USE IPhreeqc
+#endif
   implicit none
 #ifdef USE_MPI    
   INCLUDE 'mpif.h'
 #endif 
+#ifndef IPHREEQC_MODULE
   INCLUDE 'IPhreeqc.f90.inc'
+#endif  
   interface
      subroutine species_advect_f90(c, bc_conc, ncomps, nxyz)
        implicit none
