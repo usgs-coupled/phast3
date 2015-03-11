@@ -40,7 +40,7 @@ Processing flow and transport data file.
 	FLUX_BC
 	        zone   84000  0 0 90000 48000 400
 			face X
-	                flux  	   0  10    # m/yr
+	                flux  	   0  10    
 	LEAKY_BC
 	        zone   0. 0. 0. 6000. 48000. 400.
 	                hydraulic_conductivity                    1.5e-5
@@ -70,49 +70,3 @@ WARNING: Identifiers Steady_flow_velocities, HDF_steady_flow_velocities,
 
 PHASTINPUT done.
 
-Running PHAST.
-
-.
-.
-Reading static data for flow and transport simulation
-Linear solver array dimension requirement (D4 direct solver).......... NSTSLV    33297 elements
-Primary storage requirement (D4 direct solver)........................ NPRIST    26456 elements
-Overhead storage requirement (D4 direct solver)....................... NOHST .    6841 elements
-                    *** Calculation Information ***
-          Row scaling only, using L-inf norm, will be done
-
-Beginning transient simulation.
-Reading transient data for simulation: Set  1
-     Time at which next set of transient parameters will be read .......... TIMCHG  1.000e+04  (yr)
-
-Beginning time step no.      1
-     Beginning flow calculation.
-     End of Time Step No.     1
-     Time ..................................................    2000.00     (yr)
-
-Beginning time step no.      2
-     Beginning flow calculation.
-     End of Time Step No.     2
-     Time ..................................................    4000.00     (yr)
-
-Beginning time step no.      3
-     Beginning flow calculation.
-     End of Time Step No.     3
-     Time ..................................................    6000.00     (yr)
-
-Beginning time step no.      4
-     Beginning flow calculation.
-     End of Time Step No.     4
-     Time ..................................................    8000.00     (yr)
-
-Beginning time step no.      5
-     Current time step length ...................................   2.000e+03 (yr)
-     Beginning flow calculation.
-     End of Time Step No.     5
-     Time ..................................................    10000.0     (yr)
-     Maximum change in potentiometric head   1.5937e-13      (m ) at location ( 5.400e+04, 4.800e+04,  400.    )(m)
-Done with transient simulation.
-
-                             ***** Simulation Completed *****
-     Last time value calculated ...................................... 1.0000e+04 (yr)
-     Last time step index ............................................       5

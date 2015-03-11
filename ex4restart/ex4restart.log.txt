@@ -16,6 +16,8 @@ Processing flow and transport data file.
 	        leaky_k                              m/sec
 	        leaky_thickness                      m
 	        flux                                 m/yr
+	        river_width                          m
+	        river_depth                          m
 	        river_bed_thickness                  m
 	        river_bed_hydraulic_conductivity     m/s     
 	        well_diameter                        in
@@ -90,6 +92,7 @@ Processing flow and transport data file.
 	                solution                     0         1
 	FLUX_BC
 	        zone   27000. 3000. 400.  90000. 45000. 400.
+	        	face Z
 	                flux                         0         -0.055
 	                associated_solution          0         1
 	SPECIFIED_HEAD_BC
@@ -98,11 +101,13 @@ Processing flow and transport data file.
 	                associated_solution_composition          0         1
 	LEAKY_BC
 	        zone   0. 48000. 0. 27000. 48000. 400.
+	        	face Y
 	                hydraulic_conductivity                    1.5e-5
 	                thickness                   30000.
 	                head                         0         305.0
 	                associated_solution                   0         1
 	       zone 0 0 0 39000 0 400
+	        	face Y
 	                hydraulic_conductivity       1.5E-5
 	                thickness                    20000
 	                head                         0         320
@@ -110,9 +115,9 @@ Processing flow and transport data file.
 	FREE_SURFACE_BC true
 	WELL 1 Observation well 1 in arsenic zone
 	        12000 36000
-	                diameter       2                               # inches
-	                pumping                      0         1       # L/day
-	                elevation      90 110                          # m
+	                diameter       2                               
+	                pumping                      0         1       
+	                elevation      90 110                          
 	HEAD_IC
 	        zone   0. 0. 0. 90000. 48000. 400.
 	                head   XYZ grid ex4.head.dat
@@ -151,203 +156,8 @@ Processing flow and transport data file.
 	               zone   0 0 0  90000 48000 0
 	               print 0
 	END
-WARNING: River width units not defined in UNITS data block, meters assumed.
-WARNING: River depth units not defined in UNITS data block, meters assumed.
-WARNING: Guessing boundary condition face to be Z
-Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
-WARNING: Guessing boundary condition face to be Y
-Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
-WARNING: Guessing boundary condition face to be Y
-Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
 WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
 	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
 
 PHASTINPUT done.
 
-Running PHAST.
-
-Output file:    ex4restart.chem.txt
-Chemistry file: ex4restart.chem.dat
-Database file:  phast.dat
-
-Running PHREEQC for initial conditions.
-
-Processing database file.
-	SOLUTION_MASTER_SPECIES
-	SOLUTION_SPECIES
-	PHASES
-	EXCHANGE_MASTER_SPECIES
-	EXCHANGE_SPECIES
-	SURFACE_MASTER_SPECIES
-	SURFACE_SPECIES
-	RATES
-	END
-
-Processing chemical data file.
-	SURFACE_MASTER_SPECIES
-	SURFACE_SPECIES
-	SOLUTION_MASTER_SPECIES
-	        As       H3AsO4        -1.0     74.9216         74.9216
-	SOLUTION_SPECIES
-	SOLUTION 1 20 x precipitation
-	END
-	USE solution 1
-	EQUILIBRIUM_PHASES 1
-	SAVE solution 1
-	END
-	SOLUTION 2 Brine
-	END
-	USE solution 2
-	EQUILIBRIUM_PHASES 2
-	SAVE solution 2
-	END
-	EXCHANGE 2
-	SURFACE 2
-	END
-	SELECTED_OUTPUT
-	USER_PUNCH
-	END
-PHREEQC done.
-. Central Oklahoma aquifer,
-. demonstration of PHAST
-Reading static data for flow and transport simulation
-Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    52264 elements
-Primary storage requirement (D4ZGCG iterative solver)................. NPRIST     6840 elements
-Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .   45424 elements
-                    *** Calculation Information ***
-          Row scaling only, using L-inf norm, will be done
-          Direction index for d4 zig-zag renumbering ............ IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    t
-          Number of search directions before restart ............ NSDR..   20
-          Tolerance on iterative solution ....................... EPSSLV 1.0e-10
-
-Beginning flow calculation for steady-state i.c.
-Reading transient data for simulation: Set  1
-WARNING:  2 print control intervals are less than defined time step length.
-Automatic Time Step Control Parameters for Steady Flow
-Maximum pressure change allowed per time step.................... DPTAS    1.18e+06  (Pa )
-Minimum time step required ...................................... DTIMMN    2.0      (yr )
-Maximum time step allowed ....................................... DTIMMX   2.00e+06(yr )
-
-Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..   -1.3345e-07     (m) at location ( 1.800e+04, 3.000e+04,  300.    )(m)
-     Fractional flow residual ...............   -1.7817e-08
-
-Done with steady-state flow.
-Equilibration of cells for initial conditions.
-     Time at which next set of transient parameters will be read .......... TIMCHG  1.000e+04  (yr)
-
-Beginning transient simulation.
-
-Beginning time step no.      1
-     Beginning solute-transport calculation.
-          H
-          O
-          As
-          C
-          Ca
-          Cl
-          Mg
-          Na
-          S
-          Charge
-     Beginning chemistry calculation.
-     End of Time Step No.     1
-     Time ..................................................    2000.00     (yr)
-
-Beginning time step no.      2
-     Beginning solute-transport calculation.
-          H
-          O
-          As
-          C
-          Ca
-          Cl
-          Mg
-          Na
-          S
-          Charge
-     Beginning chemistry calculation.
-     End of Time Step No.     2
-     Time ..................................................    4000.00     (yr)
-
-Beginning time step no.      3
-     Beginning solute-transport calculation.
-          H
-          O
-          As
-          C
-          Ca
-          Cl
-          Mg
-          Na
-          S
-          Charge
-     Beginning chemistry calculation.
-     End of Time Step No.     3
-     Time ..................................................    6000.00     (yr)
-
-Beginning time step no.      4
-     Beginning solute-transport calculation.
-          H
-          O
-          As
-          C
-          Ca
-          Cl
-          Mg
-          Na
-          S
-          Charge
-     Beginning chemistry calculation.
-     End of Time Step No.     4
-     Time ..................................................    8000.00     (yr)
-
-Beginning time step no.      5
-     Current time step length ...................................   2.000e+03 (yr)
-     Beginning solute-transport calculation.
-          H
-          No. of solver iterations, Relative residual:    7      1.4123441e-11
-          O
-          No. of solver iterations, Relative residual:    7      3.6376150e-11
-          As
-          No. of solver iterations, Relative residual:    7      9.0177571e-11
-          C
-          No. of solver iterations, Relative residual:    7      3.6382952e-11
-          Ca
-          No. of solver iterations, Relative residual:    7      4.2742239e-11
-          Cl
-          No. of solver iterations, Relative residual:    6      1.1527311e-11
-          Mg
-          No. of solver iterations, Relative residual:    7      4.2823622e-11
-          Na
-          No. of solver iterations, Relative residual:    7      4.0103703e-11
-          S
-          No. of solver iterations, Relative residual:    6      1.1531804e-11
-          Charge
-          No. of solver iterations, Relative residual:    7      1.3958275e-11
-     Beginning chemistry calculation.
-          Total cells: 657
-          Number of cells with same aqueous model: 540
-          Total iterations all cells: 3802
-          Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 15
-
-     End of Time Step No.     5
-     Time ..................................................    10000.0     (yr)
-     Maximum change in potentiometric head   0.0000e+00      (m ) at location ( 6.000e+04, 3.600e+04,  400.    )(m)
-     Maximum change in H .................. -2.2626e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
-     Maximum change in O .................. -4.9346e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
-     Maximum change in As ................. -6.1582e-07 (mol/kgw) at location ( 2.400e+04, 4.800e+04,  300.    )(m)
-     Maximum change in C .................. -1.6438e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
-     Maximum change in Ca .................  8.3869e-04 (mol/kgw) at location ( 3.600e+04, 4.800e+04, 0.000e+00)(m)
-     Maximum change in Cl ................. -8.8176e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
-     Maximum change in Mg .................  6.1697e-04 (mol/kgw) at location ( 3.600e+04, 4.800e+04, 0.000e+00)(m)
-     Maximum change in Na ................. -1.1361e-02 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
-     Maximum change in S .................. -5.9611e-06 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
-     Maximum change in Charge ............. -2.3081e-03 (mol/kgw) at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m)
-Done with transient simulation.
-
-                             ***** Simulation Completed *****
-     Last time value calculated ...................................... 1.0000e+04 (yr)
-     Last time step index ............................................       5
