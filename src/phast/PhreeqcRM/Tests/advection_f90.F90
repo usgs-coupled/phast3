@@ -1,6 +1,7 @@
 
 
-subroutine advection_f90()  
+subroutine advection_f90()  BIND(C)
+  USE, intrinsic :: ISO_C_BINDING
   USE PhreeqcRM
 #ifdef IPHREEQC_MODULE
   USE IPhreeqc
