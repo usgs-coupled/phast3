@@ -1,14 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
-// Fortran functions
-#if defined(_MSC_VER)
-#define FC_FUNC_(name,NAME) NAME
-#endif
-#if defined(FC_FUNC_)
-// Calls to Fortran
-#define advection_f90         FC_FUNC_ (advection_f90,       ADVECTION_F90)
-#define species_f90           FC_FUNC_ (species_f90,         SPECIES_F90)
-#endif
+
 
 #if defined(__cplusplus)
 extern "C" {

@@ -1,6 +1,7 @@
 
 
-subroutine species_f90() 
+subroutine species_f90()  BIND(C)
+  USE, intrinsic :: ISO_C_BINDING
   USE PhreeqcRM
 #ifdef IPHREEQC_MODULE
   USE IPhreeqc
