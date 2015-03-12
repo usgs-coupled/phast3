@@ -22,7 +22,7 @@ RATES
         Sr_decay
         -start
 10 rate = -TOT("Sr") * .01
-20 moles = rate * TIME
+20 moles = rate * TIME * SOLN_VOL
 30 SAVE moles
         -end
 END
