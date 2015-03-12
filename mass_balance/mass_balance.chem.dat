@@ -31,7 +31,7 @@ Add_Br
 -start
 10 k = 20  #moles/day
 20 moles = k * time/3600/24
-30 save moles
+30 save moles * SOLN_VOL
 -end
 KINETICS 1
 Add_Br

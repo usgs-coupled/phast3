@@ -1380,7 +1380,7 @@ K-feldspar
    80    moles = parm(1) * parm(2) * rate * (1 - SR("K-feldspar")) * time
    81 rem decrease rate on precipitation
    90    if SR("K-feldspar") > 1 then moles = moles * 0.1
-   100   save moles
+   100   save moles * SOLN_VOL
  -end
 
 ###########
@@ -1416,7 +1416,7 @@ Albite
    80    moles = parm(1) * parm(2) * rate * (1 - SR("Albite")) * time
    81 rem decrease rate on precipitation
    90    if SR("Albite") > 1 then moles = moles * 0.1
-   100   save moles
+   100   save moles * SOLN_VOL
  -end
 
 ########
@@ -1465,7 +1465,7 @@ Calcite
    220   mc  = TOT("C(4)")
    230   if mc < temp then temp = mc
    240   if -moles > temp then moles = -temp
-   300 SAVE moles
+   300 SAVE moles * SOLN_VOL
   -end
 
 #######
@@ -1493,7 +1493,7 @@ Pyrite
    25  rate = -10.19 + parm(1) + parm(3)*lm("O2") + parm(4)*lm("H+") + parm(2)*log10(m/m0)
    30  moles = 10^rate * time
    40 if (moles > m) then moles = m
-   200 save moles
+   200 save moles * SOLN_VOL
   -end
 
 ##########
@@ -1520,7 +1520,7 @@ Organic_C
    60   rate = rate + 1.e-13*mSO4/(1.e-4 + mSO4)
    70  moles = rate * m * (m/m0) * time
    80 if (moles > m) then moles = m
-   200 save moles
+   200 save moles * SOLN_VOL
  -end
 
 ###########
@@ -1552,6 +1552,6 @@ Pyrolusite
    100  Mn_t = tot("Mn")
    110  moles = 2e-3 * 6.98e-5 * (1-sr_pl) * time
    120  if moles <= -Mn_t then moles = -Mn_t
-   200  save moles
+   200  save moles * SOLN_VOL
   -end
 END

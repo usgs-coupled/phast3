@@ -62,7 +62,7 @@ Aerobic
 540 rate = rateO
 550 if rateS1 < rate then rate = rateS1
 560 mg_O = TIME*rate
-570 SAVE -mg_O
+570 SAVE -mg_O * SOLN_VOL
         -end
 Aerobic_biomass
         -start
@@ -100,7 +100,7 @@ Aerobic_biomass
 570 if rateS1 < rate then rate = rateS1
 580 if rateO < rate then rate = rateO
 590 mg_O_biomass = TIME*(rate - km * x1)
-600 SAVE -mg_O_biomass
+600 SAVE -mg_O_biomass * SOLN_VOL
         -end
 N_reduction
         -start
@@ -135,7 +135,7 @@ N_reduction
 540 rate = rateNI
 550 if rateS1 < rate then rate = rateS1
 560 mg_NI = TIME*rate
-570 SAVE -mg_NI 
+570 SAVE -mg_NI * SOLN_VOL
 
         -end
 N_reduction_biomass
@@ -174,7 +174,7 @@ N_reduction_biomass
 570 if rateS1 < rate then rate = rateS1
 580 if rateN < rate then rate = rateN
 590 mg_N_biomass = TIME*(rate - km * x2)
-600 SAVE -mg_N_biomass
+600 SAVE -mg_N_biomass * SOLN_VOL
         -end
 
 KINETICS 1 Kinetics for all cells except inlet boundary
