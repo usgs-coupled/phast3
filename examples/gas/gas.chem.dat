@@ -75,9 +75,9 @@ TSR_Seal
 20 if (TOT("C(-4)") < TOT("Sulfate")) then S1 = TOT("C(-4)")
 30 if (S1 <= 1e-8) then goto 200
 40	rate = -1.0e-15 #* TOT("Sulfate") / (TOT("Sulfate") + 1e-8) * TOT("C(-4)") / (TOT("C(-4)") + 1e-8)
-50	dS1 = rate * time
+50	dS1 = rate * time 
 60 if (dS1 > S1) then dS1 = S1
-200 save dS1
+200 save dS1 * SOLN_VOL
 -end
 
 TSR_Gascap
@@ -88,7 +88,7 @@ TSR_Gascap
 40	rate = -4.5e-15 #* TOT("Sulfate") / (TOT("Sulfate") + 1e-8) * TOT("C(-4)") / (TOT("C(-4)") + 1e-8)
 50	dS2 = rate * time
 60 if (dS2 > S2) then dS2 = S2
-200 save dS2
+200 save dS2 * SOLN_VOL
 -end
 
 TSR_GWC
@@ -99,7 +99,7 @@ TSR_GWC
 40	rate = -9.0e-15 # * TOT("Sulfate") / (TOT("Sulfate") + 1e-8) * TOT("C(-4)") / (TOT("C(-4)") + 1e-8)
 50	dS3 = rate * time
 60 if (dS3 > S3) then dS3 = S3
-200 save dS3
+200 save dS3 * SOLN_VOL
 -end
 
 TSR_Waterleg
@@ -110,7 +110,7 @@ TSR_Waterleg
 40	rate = -4.5e-15 # * TOT("Sulfate") / (TOT("Sulfate") + 1e-8) * TOT("C(-4)") / (TOT("C(-4)") + 1e-8)
 50	dS4 = rate * time
 60 if (dS4 > S4) then dS4 = S4
-200 save dS4
+200 save dS4 * SOLN_VOL
 -end
 
 
