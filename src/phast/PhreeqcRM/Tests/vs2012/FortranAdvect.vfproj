@@ -85,11 +85,11 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
 	<Files>
-		<Filter Name="Header Files" Filter="fi;fd">
-		<File RelativePath="..\..\IPhreeqcPhast\IPhreeqc\IPhreeqc.f90.inc"/></Filter>
+		<Filter Name="Header Files" Filter="fi;fd"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<File RelativePath="..\advection_f90.F90"/>
+		<File RelativePath="..\..\IPhreeqcPhast\IPhreeqc\IPhreeqc_interface.F90"/>
 		<File RelativePath="..\..\RM_interface.F90"/>
 		<File RelativePath="..\species_f90.F90"/></Filter></Files>
 	<Globals/></VisualStudioProject>

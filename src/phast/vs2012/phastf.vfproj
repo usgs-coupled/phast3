@@ -87,8 +87,7 @@
 	<Files>
 		<Filter Name="Header Files" Filter="fi;fd">
 		<File RelativePath="..\PhastFortran\ifrd.inc"/>
-		<File RelativePath="..\PhastFortran\ifwr.inc"/>
-		<File RelativePath="../PhreeqcRM/IPhreeqcPhast/IPhreeqc\IPhreeqc.f90.inc"/></Filter>
+		<File RelativePath="..\PhastFortran\ifwr.inc"/></Filter>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<Filter Name="COMMON_FOBJS">
@@ -207,5 +206,6 @@
 		<File RelativePath="..\PhastFortran\xfer_to_manager.F90"/>
 		<File RelativePath="..\PhastFortran\xfer_to_workers.F90"/></Filter>
 		<Filter Name="PhreeqcRM">
+		<File RelativePath="..\PhreeqcRM\IPhreeqcPhast\IPhreeqc\IPhreeqc_interface.F90"/>
 		<File RelativePath="..\PhreeqcRM\RM_interface.F90"/></Filter></Filter></Files>
 	<Globals/></VisualStudioProject>

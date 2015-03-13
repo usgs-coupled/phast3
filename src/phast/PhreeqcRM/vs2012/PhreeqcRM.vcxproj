@@ -394,31 +394,9 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhast.cxx" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhastLib.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap2.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap3.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap4.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap5.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap6.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap7.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap8.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='openmp_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqcLib.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc_interface_F.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\advection.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\basicsubs.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ChartHandler.cpp" />

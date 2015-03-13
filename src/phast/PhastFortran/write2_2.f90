@@ -21,6 +21,7 @@ SUBROUTINE write2_2
   USE mg2_m
   USE phys_const
   USE PhreeqcRM
+  USE IPhreeqc
   IMPLICIT NONE
   INTERFACE
       SUBROUTINE convert_to_moles(id, c, n)
@@ -29,7 +30,6 @@ SUBROUTINE write2_2
           INTEGER, INTENT(in) :: id, n
       END SUBROUTINE
   END INTERFACE 
-  INCLUDE 'IPhreeqc.f90.inc'
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
 !!$  CHARACTER(LEN=11) :: chu2, chu3, fmt1
