@@ -255,43 +255,6 @@ CSelectedOutput.o: \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/CVar.hxx \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h
-fwrap1.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap1.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap2.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap2.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap3.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap3.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap4.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap4.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap5.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap5.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap6.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap6.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap7.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap7.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap8.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap8.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.cpp \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
- ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/fwrap.h
 IPhreeqc.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
@@ -332,6 +295,12 @@ IPhreeqc.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/CVar.hxx \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h
+IPhreeqc_interface_F.o: \
+ ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp \
+ ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
+ ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
+ ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.h
 IPhreeqcLib.o: ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
  ../PhreeqcRM/IPhreeqcPhast/IPhreeqc/Var.h \
