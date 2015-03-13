@@ -162,7 +162,7 @@ HASH_STYLE=$(call ld-option, -Wl$(comma)--hash-style=sysv)
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMP_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -176,11 +176,11 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMP_GFORTRAN_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ 
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
-  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) $(PHREEQC_INCLUDES)
+  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) $(PHREEQC_INCLUDES) -ffpe-trap=invalid,zero,overflow
   CC           = g++
   CFLAGS       = -Wall -fopenmp -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS)
@@ -191,7 +191,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), MPI_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_GFORTRAN_64)/bin/mpif90
@@ -207,7 +207,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), MPI_GFORTRAN_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_GFORTRAN_64)/bin/mpif90
@@ -222,7 +222,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMP_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -236,7 +236,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMP_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -250,7 +250,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_IFORT_64)/bin/mpif90
@@ -265,7 +265,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_IFORT_64)/bin/mpif90
@@ -281,7 +281,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), MPICH_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES) -DUSE_GZ -DOLD_STYLE_XYZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES) -DUSE_GZ
   VPATH        = $(PHREEQC_VPATH)
   SZIP_ROOT=/home/dlpark/packages/szip2.0-linux-gcc3.2.3-enc
   SZIP_LIB=${SZIP_ROOT}/lib/libsz.a
@@ -312,7 +312,7 @@ endif
 
 COMMON_FOBJS =	\
 	RM_interface.o \
-	IPhreeqcF.o \
+	IPhreeqc_interface.o \
 	aplbce_flow.o \
 	aplbci_flow.o \
 	asembl_flow.o \
@@ -442,17 +442,9 @@ FileHandler.o \
 IPhreeqcPhast.o \
 IPhreeqcPhastLib.o \
 \
-fwrap2.o \
-fwrap3.o \
-fwrap4.o \
-fwrap5.o \
-fwrap6.o \
-fwrap7.o \
-fwrap8.o \
-fwrap.o \
 IPhreeqc.o \
 IPhreeqcLib.o \
-pp_sys.o \
+IPhreeqc_interface_F.o \
 CSelectedOutput.o \
 Var.o \
 \
@@ -594,7 +586,8 @@ XP_module.o: ../PhastFortran/XP_module.F90 mach_mod.o modules_g.o
 # -----------------------------------------------------------------------------
 # Module dependency list
 # -----------------------------------------------------------------------------
-IPhreeqcF.o: ../IPhreeqcPhast/IPhreeqc/IPhreeqcF.f module_dummy.o
+#IPhreeqcF.o: ../IPhreeqcPhast/IPhreeqc/IPhreeqcF.f module_dummy.o
+IPhreeqc_interface.o: ../IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90 module_dummy.o
 aplbce_flow.o: ../PhastFortran/aplbce_flow.f90 module_dummy.o
 aplbci_flow.o: ../PhastFortran/aplbci_flow.F90 module_dummy.o
 asembl_flow.o: ../PhastFortran/asembl_flow.f90 module_dummy.o
