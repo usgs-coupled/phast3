@@ -3,16 +3,11 @@
 subroutine advection_f90()  BIND(C)
   USE, intrinsic :: ISO_C_BINDING
   USE PhreeqcRM
-#ifdef IPHREEQC_MODULE
   USE IPhreeqc
-#endif
   implicit none
 #ifdef USE_MPI    
   INCLUDE 'mpif.h'
 #endif
-#ifndef IPHREEQC_MODULE
-  INCLUDE 'IPhreeqc.f90.inc'
-#endif  
   interface
      subroutine advect_f90(c, bc_conc, ncomps, nxyz)
        implicit none

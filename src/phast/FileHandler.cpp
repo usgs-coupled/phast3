@@ -916,14 +916,14 @@ FileHandler::WriteXYZ(int *print_xyz, int *xyz_mask)
 						RM_GetSelectedOutput(this->rm_id, local_selected_out.data());
 
 						// write xyz file
-#ifdef OLD_STYLE_XYZ
+#ifdef NEW_STYLE_XYZ
+						for (int irow = 0; irow < nxyz; irow++)
+						{
+#else
 						for (int ichem = 0; ichem < RM_GetChemistryCellCount(this->rm_id); ichem++)
 						{
 							PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 							int irow = Reaction_module_ptr->GetBackwardMapping()[ichem][0];
-#else
-						for (int irow = 0; irow < nxyz; irow++)
-						{
 #endif
 							if (xyz_mask[irow] <= 0) continue;
 							int active = 1;

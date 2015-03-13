@@ -20,30 +20,6 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap5.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap6.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap7.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap8.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -297,6 +273,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PhreeqcKeywords\Keywords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc_interface_F.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

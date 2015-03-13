@@ -23,6 +23,7 @@ SUBROUTINE write5
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE print_control_mod
   USE PhreeqcRM
+  USE IPhreeqc
   IMPLICIT NONE
   INTERFACE
       SUBROUTINE convert_to_moles(id, c, n)
@@ -31,7 +32,6 @@ SUBROUTINE write5
           INTEGER, INTENT(in) :: id, n
       END SUBROUTINE
   END INTERFACE 
-  INCLUDE 'IPhreeqc.f90.inc'
   INCLUDE 'ifwr.inc'
   INTRINSIC INDEX, INT
   CHARACTER(LEN=39) :: fmt2, fmt4
