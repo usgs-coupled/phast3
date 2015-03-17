@@ -516,7 +516,6 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\ErrorReporter.hxx" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Exchange.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ExchComp.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\fwrap.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\GasPhase.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolution.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolutionComp.h" />

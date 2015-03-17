@@ -25,18 +25,6 @@
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
-#ifdef SKIP_FC_FUNC
-#if defined(_MSC_VER)
-#define FC_FUNC_(name,NAME) NAME
-#endif
-
-#if defined(FC_FUNC_)
-// Calls to Fortran
-#define HDF_WRITE_INVARIANT         FC_FUNC_ (hdf_write_invariant,       HDF_WRITE_INVARIANT)
-#define HDF_BEGIN_TIME_STEP         FC_FUNC_ (hdf_begin_time_step,       HDF_BEGIN_TIME_STEP)
-#define HDF_END_TIME_STEP           FC_FUNC_ (hdf_end_time_step,         HDF_END_TIME_STEP)
-#endif
-#endif
 
 #if defined(__cplusplus)
 extern "C" {

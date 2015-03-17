@@ -337,9 +337,6 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ExchComp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\fwrap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\GasPhase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
