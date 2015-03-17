@@ -32,6 +32,18 @@ SUBROUTINE phast_manager
         
         INTEGER FUNCTION set_components() 
         END FUNCTION set_components
+
+	SUBROUTINE FH_FinalizeFiles() BIND(C, NAME='FH_FinalizeFiles')
+	   USE ISO_C_BINDING
+           IMPLICIT NONE
+        END SUBROUTINE FH_FinalizeFiles
+	SUBROUTINE FH_WriteFiles(ihdf, imedia, ixyz, iprint_xyz, print_restart) BIND(C, NAME='FH_WriteFiles')
+	   USE ISO_C_BINDING
+           IMPLICIT NONE
+           INTEGER(kind=C_INT), INTENT(in) :: ihdf, imedia, ixyz, print_restart
+           INTEGER(kind=C_INT), INTENT(in) :: iprint_xyz(*)
+        END SUBROUTINE FH_WriteFiles
+
     END INTERFACE
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err, j
@@ -101,7 +113,7 @@ SUBROUTINE phast_manager
     imedia = 0
     if (pr_hdf_media) imedia = 1
     CALL FH_WriteFiles(prhdfci,  imedia, prcphrqi, & ! Needs to be after calc_velocity    
-        iprint_xyz(1), 0) 
+        iprint_xyz, 0) 
     CALL flow_distribute                                  ! distribute  initial p and c_w to workers from manager
     IF(errexe .OR. errexi) GO TO 50
 !
@@ -226,7 +238,7 @@ SUBROUTINE phast_manager
             ixyz = 0
             if (prcphrq) ixyz = 1        
             CALL FH_WriteFiles(ihdf, imedia, ixyz, &
-                iprint_xyz(1), print_restart%print_flag_integer)   ! Needs to be after calc_velocity                                                         ! calc_velocity needs to be called before write_hdf (FH_WriteFiles)
+                iprint_xyz, print_restart%print_flag_integer)   ! Needs to be after calc_velocity                                                         ! calc_velocity needs to be called before write_hdf (FH_WriteFiles)
             IF (prhdfii == 1) THEN
                 CALL write_hdf_intermediate     
             ENDIF
@@ -747,7 +759,35 @@ SUBROUTINE process_restart_files()
     USE mcn
     USE mcv
     USE mpi_mod
+    USE ISO_C_BINDING
     IMPLICIT NONE 
+    INTERFACE
+	SUBROUTINE FH_SetPhreeqcRM(rm_id) BIND(C, NAME='FH_SetPhreeqcRM')
+	   USE ISO_C_BINDING
+           IMPLICIT NONE
+           INTEGER(kind=C_INT), INTENT(in) :: rm_id
+        END SUBROUTINE FH_SetPhreeqcRM
+	SUBROUTINE FH_SetNodes(x_node, y_node, z_node) BIND(C, NAME='FH_SetNodes')
+	   USE ISO_C_BINDING
+           IMPLICIT NONE
+           REAL(kind=C_DOUBLE), INTENT(in) :: x_node(*), y_node(*), z_node(*)
+        END SUBROUTINE FH_SetNodes
+	SUBROUTINE FH_ProcessRestartFiles(indx_sol1_ic,            &
+ 	        indx_sol2_ic,            & 
+	        ic_mxfrac) &
+           BIND(C, NAME='FH_ProcessRestartFiles')
+	   USE ISO_C_BINDING
+           IMPLICIT NONE
+           INTEGER(kind=C_INT), INTENT(in) :: indx_sol1_ic(*), indx_sol2_ic(*)
+           REAL(kind=C_DOUBLE), INTENT(in) :: ic_mxfrac(*)
+        END SUBROUTINE FH_ProcessRestartFiles
+	SUBROUTINE FH_SetRestartName(string) BIND(C, NAME='FH_SetRestartName')
+	   USE ISO_C_BINDING
+           IMPLICIT NONE
+           CHARACTER(kind=C_CHAR), INTENT(in) :: string(*)
+        END SUBROUTINE FH_SetRestartName
+
+    END INTERFACE
     INTEGER :: i
 #ifdef USE_MPI  
     if (mpi_myself == 0) then
@@ -756,14 +796,14 @@ SUBROUTINE process_restart_files()
 #endif 
     CALL FH_SetPhreeqcRM(rm_id)
     DO i = 1, num_restart_files
-        CALL FH_SetRestartName(restart_files(i))
+        CALL FH_SetRestartName(restart_files(i)//C_NULL_CHAR)
     ENDDO
     !CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
-    CALL FH_SetNodes(x_node(1), y_node(1), z_node(1))
+    CALL FH_SetNodes(x_node, y_node, z_node)
     CALL FH_ProcessRestartFiles(&
-	        indx_sol1_ic(1,1),            &
-	        indx_sol2_ic(1,1),            & 
-	        ic_mxfrac(1,1))
+	        indx_sol1_ic,            &
+	        indx_sol2_ic,            & 
+	        ic_mxfrac)
     END SUBROUTINE process_restart_files 
     
 INTEGER FUNCTION set_fdtmth()
@@ -787,6 +827,14 @@ SUBROUTINE run_transport
     USE mcv, ONLY: local_ns
     USE mpi_mod
     IMPLICIT NONE 
+    INTERFACE
+        SUBROUTINE TM_transport(rm_id, local_ns, nthreads) &
+			BIND(C, NAME='TM_transport')
+	    USE ISO_C_BINDING
+            IMPLICIT NONE
+            INTEGER(KIND=C_INT), INTENT(in) :: rm_id, local_ns, nthreads
+        END SUBROUTINE TM_transport
+    END INTERFACE
     INTEGER :: i
 #ifdef USE_MPI  
     if (mpi_myself == 0) then

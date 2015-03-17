@@ -25,6 +25,7 @@
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
+#ifdef SKIP_FC_FUNC
 #if defined(_MSC_VER)
 #define FC_FUNC_(name,NAME) NAME
 #endif
@@ -34,6 +35,7 @@
 #define HDF_WRITE_INVARIANT         FC_FUNC_ (hdf_write_invariant,       HDF_WRITE_INVARIANT)
 #define HDF_BEGIN_TIME_STEP         FC_FUNC_ (hdf_begin_time_step,       HDF_BEGIN_TIME_STEP)
 #define HDF_END_TIME_STEP           FC_FUNC_ (hdf_end_time_step,         HDF_END_TIME_STEP)
+#endif
 #endif
 
 #if defined(__cplusplus)
@@ -67,13 +69,13 @@ public:
 	//void SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation = NULL, int *mapping = NULL);
 	void SetNodes(double *x_node, double *y_node, double *z_node);
 	void SetPhreeqcRM(int rm_id);
-	IRM_RESULT SetRestartName(const char *name, long nchar);
+	IRM_RESULT SetRestartName(const char *name);
 	IRM_RESULT WriteRestartFile(int *print_restart = NULL, int *indices_ic = NULL);
 	IRM_RESULT WriteFiles(int *print_hdf = NULL, int *print_media = NULL, int *print_xyz = NULL, int *xyz_mask = NULL, int *print_restart = NULL);
 	IRM_RESULT WriteHDF(int *print_hdf, int *print_media);
 	IRM_RESULT WriteRestart(int *print_restart);
 	IRM_RESULT WriteXYZ(int *print_xyz, int *xyz_mask);
-    IRM_RESULT WriteBcRaw(double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l);
+    IRM_RESULT WriteBcRaw(double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix);
 
 protected:
 	bool HDFInitialized;
@@ -478,10 +480,11 @@ FileHandler::SetPhreeqcRM(int rm_id_in)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-FileHandler::SetRestartName(const char *name, long nchar)
+FileHandler::SetRestartName(const char *name)
 /* ---------------------------------------------------------------------- */
 {
-	std::string str = PhreeqcRM::Char2TrimString(name, nchar);
+	//std::string str = PhreeqcRM::Char2TrimString(name, nchar);
+	std::string str(name);
 	if (str.size() > 0)
 	{
 		int	i = (int) this->RestartFileMap.size();
@@ -1023,12 +1026,12 @@ FH_SetPhreeqcRM(int *rm_id)
 }
 /* ---------------------------------------------------------------------- */
 void
-FH_SetRestartName(const char *name, long nchar)
+FH_SetRestartName(const char *name)
 /* ---------------------------------------------------------------------- */
 {
 	if (name)
 	{
-		file_handler.SetRestartName(name, nchar);
+		file_handler.SetRestartName(name);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -1040,14 +1043,14 @@ FH_WriteFiles(int *print_hdf, int *print_media, int *print_xyz, int *xyz_mask, i
 }
 /* ---------------------------------------------------------------------- */
 void
-FH_WriteBcRaw(double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
+FH_WriteBcRaw(double *c, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix)
 /* ---------------------------------------------------------------------- */
 {
-	file_handler.WriteBcRaw(c, solution_list, bc_solution_count, solution_number, prefix, prefix_l);
+	file_handler.WriteBcRaw(c, solution_list, bc_solution_count, solution_number, prefix);
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-FileHandler::WriteBcRaw(double *c_in, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
+FileHandler::WriteBcRaw(double *c_in, int *solution_list, int * bc_solution_count, int * solution_number, char *prefix)
 /* ---------------------------------------------------------------------- */
 {
 	// c                 array of concentrations
@@ -1062,8 +1065,9 @@ FileHandler::WriteBcRaw(double *c_in, int *solution_list, int * bc_solution_coun
 	if (Reaction_module_ptr)
 	{
 		// Open file
-		std::string fn(prefix, prefix_l);
-		fn = trim_right(fn);
+		//std::string fn(prefix, prefix_l);
+                std::string fn(prefix);
+		//fn = trim_right(fn);
 		
 		std::ofstream *ofs;
 		if(this->BcZoneOstreams.find(fn) == this->BcZoneOstreams.end())

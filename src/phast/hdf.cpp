@@ -965,7 +965,7 @@ HDF_OPEN_TIME_STEP(int *iso_in, double *time, double *cnvtmi, int *print_chem,
  *-------------------------------------------------------------------------
  */
 void
-HDF_PRNTAR(int *iso_in, double array[], double frac[], double *cnv, char *name, int name_l)
+HDF_PRNTAR(int *iso_in, double array[], double frac[], double *cnv, char *name)
 {
 	char name_buffer[120];
 	hssize_t start[1];
@@ -977,9 +977,9 @@ HDF_PRNTAR(int *iso_in, double array[], double frac[], double *cnv, char *name, 
 	assert(root[iso].time_step_scalar_indices.size() > 0);
 
 	/* copy and trim scalar name label */
-	strncpy(name_buffer, name, name_l);
-	name_buffer[name_l] = '\0';
-	string_trim(name_buffer);
+	strcpy(name_buffer, name);
+	//name_buffer[name_l] = '\0';
+	//string_trim(name_buffer);
 
 	/* check if this f_scalar has been added to root.scalar_names yet */
 	/* phreeqc scalar count is proc.scalar_count */
@@ -1115,8 +1115,7 @@ HDF_VEL(int *iso_in, double vx_node[], double vy_node[], double vz_node[], int v
  *-------------------------------------------------------------------------
  */
 void
-HDF_WRITE_FEATURE(int *iso_in, char *feature_name, int *nodes1, int *node_count,
-				  int feature_name_l)
+HDF_WRITE_FEATURE(int *iso_in, char *feature_name, int *nodes1, int *node_count)
 {
 
 	char feature_name_copy[120];
@@ -1135,9 +1134,9 @@ HDF_WRITE_FEATURE(int *iso_in, char *feature_name, int *nodes1, int *node_count,
 	}
 
 	/* copy and trim feature_name */
-	strncpy(feature_name_copy, feature_name, feature_name_l);
-	feature_name_copy[feature_name_l] = '\0';
-	string_trim(feature_name_copy);
+	strcpy(feature_name_copy, feature_name);
+	//feature_name_copy[feature_name_l] = '\0';
+	//string_trim(feature_name_copy);
 
 	/* Create the "/szFeatures/feature_name" dataspace. */
 	dims[0] = maxdims[0] = *node_count;
@@ -1199,13 +1198,13 @@ HDF_WRITE_FEATURE(int *iso_in, char *feature_name, int *nodes1, int *node_count,
 void
 HDF_WRITE_GRID(int *iso_in, double x[], double y[], double z[],
 			   int *nx, int *ny, int *nz,
-			   int ibc[], char *UTULBL, int UTULBL_l)
+			   int ibc[], char *UTULBL)
 {
 	int iso = *iso_in;
 	/* copy and trim time units */
-	strncpy(root[iso].timestep_units, UTULBL, UTULBL_l);
-	root[iso].timestep_units[UTULBL_l] = '\0';
-	string_trim(root[iso].timestep_units);
+	strcpy(root[iso].timestep_units, UTULBL);
+	//root[iso].timestep_units[UTULBL_l] = '\0';
+	//string_trim(root[iso].timestep_units);
 
 	assert(root[iso].grid_gr_id > 0);	/* precondition */
 

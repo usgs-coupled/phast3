@@ -3,6 +3,8 @@
 */
 #ifndef TM_INTERFACE_H
 #define TM_INTERFACE_H
+
+#ifdef SKIP_FC_FUNC
 #if defined(_MSC_VER)
 #define FC_FUNC_(name,NAME) NAME
 #endif
@@ -16,6 +18,8 @@
 #define transport_component_thread         FC_FUNC_ (transport_component_thread,       TRANSPORT_COMPONENT_THREAD)
 #define zone_flow_write_chem               FC_FUNC_ (zone_flow_write_chem,             ZONE_FLOW_WRITE_CHEM)
 #endif
+#endif
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
