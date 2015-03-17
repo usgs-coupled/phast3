@@ -291,14 +291,16 @@ SUBROUTINE rhsn
                  END DO
               ENDIF
            END DO
-           DO iis=1,ns
-              cavg(iis) = sum_cqm_in(iis)/qm_in
-              qsbc4(iis) = qm_net*cavg(iis)
-              stotsi(iis) = stotsi(iis) + ufdt0*qsbc4(iis)
-!!$           rs(m,iis) = rs(m,iis) + ufdt0*qsbc4(iis)
-              sslb(lc,iis) = sslb(lc,iis) + qsbc4(iis)
-              stslbc(iis) = stslbc(iis) + ufdt0*qsbc4(iis)
-           END DO
+           if (qm_in .gt. 0.0_kdp) then
+               DO iis=1,ns
+                   cavg(iis) = sum_cqm_in(iis)/qm_in
+                   qsbc4(iis) = qm_net*cavg(iis)
+                   stotsi(iis) = stotsi(iis) + ufdt0*qsbc4(iis)
+                   !!$           rs(m,iis) = rs(m,iis) + ufdt0*qsbc4(iis)
+                   sslb(lc,iis) = sslb(lc,iis) + qsbc4(iis)
+                   stslbc(iis) = stslbc(iis) + ufdt0*qsbc4(iis)
+               END DO
+           endif
         ENDIF
      END DO
      DEALLOCATE (cavg, sum_cqm_in, &
@@ -399,15 +401,17 @@ SUBROUTINE rhsn
                           sum_cqm_in(iis) = sum_cqm_in(iis) + denrbc(ls)*qn*crbc_n(ls,iis)
                       END DO
                   ENDIF
-              END DO
-              DO iis=1,ns
-                  cavg(iis) = sum_cqm_in(iis)/qm_in
-                  qsbc4(iis) = qm_net*cavg(iis)
-                  stotsi(iis) = stotsi(iis) + ufdt0*qsbc4(iis)
-                  !!$           rs(m,iis) = rs(m,iis) + ufdt0*qsbc4(iis)
-                  ssrb(lc,iis) = ssrb(lc,iis) + qsbc4(iis)
-                  stsrbc(iis) = stsrbc(iis) + ufdt0*qsbc4(iis)
-              END DO
+              END DO     
+              if (qm_in .gt. 0.0_kdp) then
+                  DO iis=1,ns
+                      cavg(iis) = sum_cqm_in(iis)/qm_in
+                      qsbc4(iis) = qm_net*cavg(iis)
+                      stotsi(iis) = stotsi(iis) + ufdt0*qsbc4(iis)
+                      !!$           rs(m,iis) = rs(m,iis) + ufdt0*qsbc4(iis)
+                      ssrb(lc,iis) = ssrb(lc,iis) + qsbc4(iis)
+                      stsrbc(iis) = stsrbc(iis) + ufdt0*qsbc4(iis)
+                  END DO
+              endif
           else                       ! ... no inflow or outflow; treat as drain
               !qn = 0._kdp
           ENDIF             
