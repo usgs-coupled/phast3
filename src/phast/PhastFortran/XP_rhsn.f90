@@ -195,9 +195,11 @@ SUBROUTINE XP_rhsn_thread(xp)
                  sum_cqm_in = sum_cqm_in + denlbc(ls)*qn*xp%clbc_n(ls)
               ENDIF
            END DO
-           cavg = sum_cqm_in/qm_in
-           qsbc4 = qm_net*cavg
-           xp%rs(m) = xp%rs(m) + ufdt0*qsbc4
+           if (qm_in .gt. 0.0_kdp) then
+               cavg = sum_cqm_in/qm_in
+               qsbc4 = qm_net*cavg
+               xp%rs(m) = xp%rs(m) + ufdt0*qsbc4
+           endif
         ENDIF
      END DO
   END IF
@@ -269,9 +271,11 @@ SUBROUTINE XP_rhsn_thread(xp)
                       sum_cqm_in = sum_cqm_in + denrbc(ls)*qn*xp%crbc_n(ls)
                   ENDIF
               END DO
-              cavg = sum_cqm_in/qm_in
-              qsbc4 = qm_net*cavg
-              xp%rs(m) = xp%rs(m) + ufdt0*qsbc4
+              if (qm_in .gt. 0.0_kdp) then
+                  cavg = sum_cqm_in/qm_in
+                  qsbc4 = qm_net*cavg
+                  xp%rs(m) = xp%rs(m) + ufdt0*qsbc4
+              endif
           else                       ! ... no inflow or outflow; treat as drain
               !qn = 0._kdp
               !qfbc = 0._kdp
@@ -499,9 +503,11 @@ SUBROUTINE XP_rhsn(xp)
                  sum_cqm_in = sum_cqm_in + denlbc(ls)*qn*xp%clbc_n(ls)
               ENDIF
            END DO
-           cavg = sum_cqm_in/qm_in
-           qsbc4 = qm_net*cavg
-           xp%rs(m) = xp%rs(m) + ufdt0*qsbc4
+           if (qm_in .gt. 0.0_kdp) then
+               cavg = sum_cqm_in/qm_in
+               qsbc4 = qm_net*cavg
+               xp%rs(m) = xp%rs(m) + ufdt0*qsbc4
+           endif
         ENDIF
      END DO
   END IF
@@ -565,9 +571,11 @@ SUBROUTINE XP_rhsn(xp)
                       sum_cqm_in = sum_cqm_in + denrbc(ls)*qn*xp%crbc_n(ls)
                   ENDIF
               END DO
-              cavg = sum_cqm_in/qm_in
-              qsbc4 = qm_net*cavg
-              xp%rs(m) = xp%rs(m) + ufdt0*qsbc4
+              if (qm_in .gt. 0.0_kdp) then
+                  cavg = sum_cqm_in/qm_in
+                  qsbc4 = qm_net*cavg
+                  xp%rs(m) = xp%rs(m) + ufdt0*qsbc4
+              endif
           ENDIF
       END DO
   END IF

@@ -203,8 +203,10 @@ SUBROUTINE XP_aplbci_thread(xp)
               END IF
            ENDIF
         END DO
-        cavg = sum_cqm_in/qm_in
-        qsbc4 = qm_net*cavg
+        if (qm_in .gt. 0.0_kdp) then
+            cavg = sum_cqm_in/qm_in
+            qsbc4 = qm_net*cavg
+        endif
         dqsdc = 0._kdp
      ENDIF
      xp%va(7,ma) = xp%va(7,ma) - fdtmth*dqsdc 
@@ -333,8 +335,10 @@ SUBROUTINE XP_aplbci_thread(xp)
                   sum_cqm_in = sum_cqm_in + denrbc(ls)*qnp*xp%crbc(ls)  
               ENDIF
           END DO
-          cavg = sum_cqm_in/qm_in
-          qsbc4 = qm_net*cavg
+          if (qm_in .gt. 0.0_kdp) then
+              cavg = sum_cqm_in/qm_in
+              qsbc4 = qm_net*cavg
+          endif
           dqsdc = 0._kdp
       ENDIF
       xp%va(7,ma) = xp%va(7,ma) - fdtmth*dqsdc 
@@ -622,8 +626,10 @@ SUBROUTINE XP_aplbci(xp)
               END IF
            ENDIF
         END DO
-        cavg = sum_cqm_in/qm_in
-        qsbc4 = qm_net*cavg
+        if (qm_in .gt. 0.0_kdp) then
+            cavg = sum_cqm_in/qm_in
+            qsbc4 = qm_net*cavg
+        endif
         dqsdc = 0._kdp
      ENDIF
      va(7,ma) = va(7,ma) - fdtmth*dqsdc 
@@ -752,8 +758,10 @@ SUBROUTINE XP_aplbci(xp)
                   sum_cqm_in = sum_cqm_in + denrbc(ls)*qnp*xp%crbc(ls)  
               ENDIF
           END DO
-          cavg = sum_cqm_in/qm_in
-          qsbc4 = qm_net*cavg
+          if (qm_in .gt. 0.0_kdp) then
+              cavg = sum_cqm_in/qm_in
+              qsbc4 = qm_net*cavg
+          endif
           dqsdc = 0._kdp
       ENDIF
       va(7,ma) = va(7,ma) - fdtmth*dqsdc 

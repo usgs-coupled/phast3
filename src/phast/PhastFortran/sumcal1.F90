@@ -508,11 +508,13 @@
                     END DO
                 ENDIF
             END DO
-            DO iis=1,ns
-                cavg(iis) = sum_cqm_in(iis)/qm_in
-                qslbc(lc,iis) = qflbc(lc)*cavg(iis)
-                stotsi(iis) = stotsi(iis) + ufdt1*qslbc(lc,iis)
-            END DO
+            if (qm_in .gt. 0.0_kdp) then
+                DO iis=1,ns
+                    cavg(iis) = sum_cqm_in(iis)/qm_in
+                    qslbc(lc,iis) = qflbc(lc)*cavg(iis)
+                    stotsi(iis) = stotsi(iis) + ufdt1*qslbc(lc,iis)
+                END DO
+            endif
         END IF
         DO  iis=1,ns
             sslb(lc,iis)=sslb(lc,iis) + qslbc(lc,iis)
@@ -641,11 +643,13 @@
             ! Now all river segments of a cell have the same bottom
             if(hrbc >= zerbc(river_seg_first(lc))) then      
                 ! ... treat as river, drain has no solute flux?
-                DO iis=1,ns
-                    cavg(iis) = sum_cqm_in(iis)/qm_in
-                    qsrbc(lc,iis) = qfrbc(lc)*cavg(iis)
-                    stotsi(iis) = stotsi(iis) + ufdt1*qsrbc(lc,iis)
-                END DO
+                if (qm_in .gt. 0.0_kdp) then
+                    DO iis=1,ns
+                        cavg(iis) = sum_cqm_in(iis)/qm_in
+                        qsrbc(lc,iis) = qfrbc(lc)*cavg(iis)
+                        stotsi(iis) = stotsi(iis) + ufdt1*qsrbc(lc,iis)
+                    END DO
+                endif
             endif
         else                       ! ... no inflow or outflow; treat as drain
             qnp = 0._kdp
