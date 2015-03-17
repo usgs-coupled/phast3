@@ -3,6 +3,7 @@
 /*
  *   Functions called from FORTRAN
  */
+#ifdef SKIP_FC_FUNC
 #if defined(_MSC_VER)
 #define FC_FUNC_(name,NAME) NAME
 #endif
@@ -39,6 +40,8 @@
 #define HDF_WRITE_GRID         hdf_write_grid_
 #endif
 #endif
+#endif
+
 extern "C"
 {
 	void HDF_CLOSE_TIME_STEP(int *);
@@ -47,14 +50,12 @@ extern "C"
 	void HDF_INTERMEDIATE(void);
 	void HDF_OPEN_TIME_STEP(int *iso, double *time, double *cnvtmi, int *print_chem,
 							int *print_vel, int *f_scalar_count);
-	void HDF_PRNTAR(int *iso, double array[], double frac[], double *cnv, char *name,
-					int name_l);
+	void HDF_PRNTAR(int *iso, double array[], double frac[], double *cnv, char *name);
 	void HDF_VEL(int *iso, double vx_node[], double vy_node[], double vz_node[],
 				 int vmask[]);
-	void HDF_WRITE_FEATURE(int *iso, char *feature_name, int *nodes1, int *node_count,
-						   int feature_name_l);
+	void HDF_WRITE_FEATURE(int *iso, char *feature_name, int *nodes1, int *node_count);
 	void HDF_WRITE_GRID(int *iso, double x[], double y[], double z[], int *nx, int *ny,
-						int *nz, int ibc[], char *UTULBL, int UTULBL_l);
+						int *nz, int ibc[], char *UTULBL);
 }
 // called from C++
 void HDFBeginCTimeStep(int iso);

@@ -766,6 +766,18 @@ SUBROUTINE zone_flow_write_chem
   USE mpi_mod
   USE print_control_mod
   IMPLICIT NONE
+  INTERFACE
+    SUBROUTINE FH_WriteBcRaw(c, solution_list, bc_soln_count, solution_number_start, file_name) &
+         BIND(C, NAME='FH_WriteBcRaw')
+      USE ISO_C_BINDING
+      IMPLICIT NONE
+      REAL(kind=C_DOUBLE), INTENT(in) :: c(*)
+      INTEGER(kind=C_INT), INTENT(in) :: solution_list(*), bc_soln_count
+      INTEGER(kind=C_INT), INTENT(inout) :: solution_number_start
+      CHARACTER(kind=C_CHAR), INTENT(in) :: file_name
+
+    END SUBROUTINE FH_WriteBcRaw
+  END INTERFACE
   INTEGER ios
   INTEGER i, ii, jj, kk, m, izn
   REAL(KIND=kdp) :: current_time = 0

@@ -1,5 +1,6 @@
 ! ... $Id: hdf_f.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $
-SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself)
+SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself) BIND(C, NAME='HDF_WRITE_INVARIANT')
+  USE ISO_C_BINDING
   ! ... Preconditions:
   ! ...   Must be called before first call to EQUILIBRATE
   ! ...   
@@ -20,7 +21,41 @@ SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself)
        leak_seg_m, leak_seg_first, leak_seg_last, nfbc_cells, nlbc_cells   ! ... b.c. information
   USE mcch, ONLY: utulbl
   IMPLICIT NONE
-  INTEGER :: l_mpi_myself
+  INTERFACE
+	SUBROUTINE HDF_WRITE_GRID(iso, x, y, z, nx, ny, nz, ibc, utulbl) &
+           BIND (C, NAME='HDF_WRITE_GRID')
+	   USE ISO_C_BINDING
+	   implicit none
+	   INTEGER(kind=C_INT), INTENT(in) :: iso
+           REAL(kind=C_DOUBLE), INTENT(in) :: x(*), y(*), z(*)
+           INTEGER(kind=C_INT), INTENT(in) :: nx, ny, nz
+           INTEGER(kind=C_INT), INTENT(in) :: ibc(*)
+	   CHARACTER(kind=C_CHAR), INTENT(in) :: utulbl
+        END SUBROUTINE HDF_WRITE_GRID
+	SUBROUTINE HDF_WRITE_FEATURE(iso, string, mwbc, nwbc) &
+           BIND (C, NAME='HDF_WRITE_FEATURE')
+	   USE ISO_C_BINDING
+	   implicit none
+	   INTEGER(kind=C_INT), INTENT(in) :: iso
+	   CHARACTER(kind=C_CHAR), INTENT(in) :: string
+           INTEGER(kind=C_INT), INTENT(in) :: mwbc(*)
+           INTEGER(kind=C_INT), INTENT(in) :: nwbc
+        END SUBROUTINE HDF_WRITE_FEATURE
+	SUBROUTINE HDF_FINALIZE_INVARIANT(iso) &
+           BIND (C, NAME='HDF_FINALIZE_INVARIANT')
+	   USE ISO_C_BINDING
+	   implicit none
+	   INTEGER(kind=C_INT), INTENT(in) :: iso
+        END SUBROUTINE HDF_FINALIZE_INVARIANT
+	SUBROUTINE HDF_INITIALIZE_INVARIANT(iso) &
+           BIND (C, NAME='HDF_INITIALIZE_INVARIANT')
+	   USE ISO_C_BINDING
+	   implicit none
+	   INTEGER(kind=C_INT), INTENT(in) :: iso
+        END SUBROUTINE HDF_INITIALIZE_INVARIANT
+  END INTERFACE
+
+  INTEGER(kind=C_INT), INTENT(in) :: l_mpi_myself
   INTEGER :: a_err, i
   INTEGER :: iwel
   INTEGER :: index, nwbc                           ! ... Well index and node count
@@ -29,13 +64,13 @@ SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself)
   INTEGER, DIMENSION(nlbc_cells) :: temp_lbc
   INTEGER, DIMENSION(nrbc_seg) :: temp_rbc
   INTEGER, DIMENSION(ndbc_seg) :: temp_dbc
-  INTEGER, INTENT(in) :: iso
+  INTEGER(kind=C_INT), INTENT(in) :: iso
   !     ------------------------------------------------------------------
   !...
   IF (l_mpi_myself == 0) THEN
      CALL HDF_INITIALIZE_INVARIANT(iso)
   ENDIF
-  CALL HDF_WRITE_GRID(iso, x, y, z, nx, ny, nz, ibc, utulbl)
+  CALL HDF_WRITE_GRID(iso, x, y, z, nx, ny, nz, ibc, trim(utulbl)//C_NULL_CHAR)
   IF (l_mpi_myself == 0) THEN
      ! ... Count Well nodes
      nwbc = 0
@@ -59,32 +94,32 @@ SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself)
            index = index + 1
         END DO
      END DO
-     IF(nwbc > 0) CALL HDF_WRITE_FEATURE(iso, 'Wells', mwbc, nwbc)
-     IF(nsbc > 0) CALL HDF_WRITE_FEATURE(iso, 'Specified', msbc, nsbc)
+     IF(nwbc > 0) CALL HDF_WRITE_FEATURE(iso, 'Wells'//C_NULL_CHAR, mwbc, nwbc)
+     IF(nsbc > 0) CALL HDF_WRITE_FEATURE(iso, 'Specified'//C_NULL_CHAR, msbc, nsbc)
      !$$ if(nfbc > 0) CALL HDF_WRITE_FEATURE('Flux', mfbc, nfbc)
      IF(nfbc_cells > 0) THEN
         DO i = 1,nfbc_cells
            temp_fbc(i) = flux_seg_m(i)
         ENDDO
-        CALL HDF_WRITE_FEATURE(iso, 'Flux', temp_fbc, nfbc_cells)
+        CALL HDF_WRITE_FEATURE(iso, 'Flux'//C_NULL_CHAR, temp_fbc, nfbc_cells)
      ENDIF
      IF(nlbc_cells > 0) THEN
         DO i = 1,nlbc_cells
            temp_lbc(i) = leak_seg_m(i)
         ENDDO
-        CALL HDF_WRITE_FEATURE(iso, 'Leaky', temp_lbc, nlbc_cells)
+        CALL HDF_WRITE_FEATURE(iso, 'Leaky'//C_NULL_CHAR, temp_lbc, nlbc_cells)
      ENDIF
      IF(nrbc_seg > 0) THEN
         DO i = 1,nrbc_seg
            temp_rbc(i) = mrbc(i)
         ENDDO
-        CALL HDF_WRITE_FEATURE(iso, 'River', temp_rbc, nrbc_seg)
+        CALL HDF_WRITE_FEATURE(iso, 'River'//C_NULL_CHAR, temp_rbc, nrbc_seg)
      ENDIF
      IF(ndbc_seg > 0) THEN
         DO i = 1,ndbc_seg
            temp_dbc(i) = mdbc(i)
         ENDDO
-        CALL HDF_WRITE_FEATURE(iso, 'Drain', temp_dbc, ndbc_seg)
+        CALL HDF_WRITE_FEATURE(iso, 'Drain'//C_NULL_CHAR, temp_dbc, ndbc_seg)
      END IF
      ! 
      ! ... Deallocate the Well Nodes
@@ -101,15 +136,28 @@ SUBROUTINE HDF_WRITE_INVARIANT(iso, l_mpi_myself)
   ENDIF
 END SUBROUTINE HDF_WRITE_INVARIANT
 
-SUBROUTINE HDF_BEGIN_TIME_STEP(iso)
+SUBROUTINE HDF_BEGIN_TIME_STEP(iso) BIND(C, NAME='HDF_BEGIN_TIME_STEP')
+  USE ISO_C_BINDING
   USE mcc, ONLY: solute
   USE mcc, ONLY: prhdfhi, prhdfci, prhdfvi
   USE mcv, ONLY: time
   USE mcp, ONLY: cnvtmi
   USE hdf_media_m, ONLY: pr_hdf_media
   IMPLICIT NONE
+  INTERFACE
+	SUBROUTINE HDF_OPEN_TIME_STEP(iso, time, cnvtmi, prhdfci, prhdfvi, time_step_fscalar_count) &
+           BIND (C, NAME='HDF_OPEN_TIME_STEP')
+	   USE ISO_C_BINDING
+	   implicit none
+	   INTEGER(kind=C_INT), INTENT(in) :: iso
+           REAL(kind=C_DOUBLE), INTENT(in) :: time
+           REAL(kind=C_DOUBLE), INTENT(in) :: cnvtmi
+           INTEGER(kind=C_INT), INTENT(in) :: prhdfci, prhdfvi, time_step_fscalar_count
+        END SUBROUTINE HDF_OPEN_TIME_STEP
+  END INTERFACE
+
   INTEGER :: time_step_fscalar_count
-  INTEGER, INTENT(in) :: iso
+  INTEGER(kind=C_INT), INTENT(in) :: iso
   !     ------------------------------------------------------------------
   !...
   !*****seems like this could be simplified with direct pass of integer flag***
@@ -128,7 +176,8 @@ SUBROUTINE HDF_BEGIN_TIME_STEP(iso)
   CALL HDF_OPEN_TIME_STEP(iso, time, cnvtmi, prhdfci, prhdfvi, time_step_fscalar_count)
 END SUBROUTINE HDF_BEGIN_TIME_STEP
 
-SUBROUTINE HDF_END_TIME_STEP(iso)
+SUBROUTINE HDF_END_TIME_STEP(iso) BIND(C, NAME='HDF_END_TIME_STEP')
+  USE ISO_C_BINDING
 !!$  USE machine_constants, ONLY: kdp
   USE mcc,               ONLY:  prhdfhi, prhdfvi
   USE mcc_m,             ONLY: vmask, ntprhdfv, ntprhdfh
@@ -139,12 +188,38 @@ SUBROUTINE HDF_END_TIME_STEP(iso)
   USE mg2_m,             ONLY: hdprnt
   USE hdf_media_m,       ONLY: pr_hdf_media
   IMPLICIT NONE
-  INTEGER, INTENT(in) :: iso
+INTERFACE
+	SUBROUTINE HDF_PRNTAR(iso, hdprnt, frac, cnvli, string) &
+           BIND (C, NAME='HDF_PRNTAR')
+	   USE ISO_C_BINDING
+	   implicit none
+	   INTEGER(kind=C_INT), INTENT(in) :: iso
+           REAL(kind=C_DOUBLE), INTENT(in) :: hdprnt(*), frac(*)
+           REAL(kind=C_DOUBLE), INTENT(in) :: cnvli
+	   CHARACTER(kind=C_CHAR), INTENT(in) :: string
+        END SUBROUTINE HDF_PRNTAR
+	SUBROUTINE HDF_CLOSE_TIME_STEP(iso) &
+           BIND (C, NAME='HDF_CLOSE_TIME_STEP')
+	   USE ISO_C_BINDING
+	   implicit none
+	   INTEGER(kind=C_INT), INTENT(in) :: iso
+        END SUBROUTINE HDF_CLOSE_TIME_STEP
+	SUBROUTINE HDF_VEL(iso, vx_node, vy_node, vz_node, vmask) &
+           BIND (C, NAME='HDF_VEL')
+	   USE ISO_C_BINDING
+	   implicit none
+	   INTEGER(kind=C_INT), INTENT(in) :: iso
+           REAL(kind=C_DOUBLE), INTENT(in) :: vx_node(*), vy_node(*), vz_node(*)
+           INTEGER(kind=C_INT), INTENT(in) :: vmask(*)
+        END SUBROUTINE HDF_VEL
+  END INTERFACE
+  INTEGER(kind=C_INT), INTENT(in) :: iso
+  type (C_PTR) cptr,cptr1
   !     ------------------------------------------------------------------
   IF (prhdfhi == 1) THEN
      ! ... Write HDF current fluid head array
      ! ... NOTE: Don't need IBC array since hdf_write_invariant accounts for inactive cells
-     CALL HDF_PRNTAR(iso, hdprnt, frac, cnvli, 'Fluid Head('//unitl//')')
+     CALL HDF_PRNTAR(iso, hdprnt, frac, cnvli, 'Fluid Head('//unitl//')'//C_NULL_CHAR)
      ntprhdfh = ntprhdfh+1
   END IF
 
@@ -333,34 +408,34 @@ CONTAINS
        aprnt(m) = cell_props(m)%kxx
     END DO
     name = 'Kx '//TRIM(k_units)//' (cell vol avg)'
-    CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, trim(name)//C_NULL_CHAR)
 
     ! ...  Kyy
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%kyy
     END DO
     name = 'Ky '//TRIM(k_units)//' (cell vol avg)'
-    CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, trim(name)//C_NULL_CHAR)
 
     ! ...  Kzz
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%kzz
     END DO
     name = 'Kz '//TRIM(k_units)//' (cell vol avg)'
-    CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, trim(name)//C_NULL_CHAR)
 
     ! ...  Porosity
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%poros
     END DO
-    CALL HDF_PRNTAR(iso, aprnt, full, conv, 'Porosity (cell vol avg)')
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, 'Porosity (cell vol avg)'//C_NULL_CHAR)
 
     ! ...  Storage
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%storage
     END DO
     name = 'Specific Storage '//TRIM(s_units)//' (cell vol avg)'
-    CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, trim(name)//C_NULL_CHAR)
 
     IF (solute) THEN  
        ! ...  Alpha l
@@ -368,28 +443,28 @@ CONTAINS
           aprnt(m) = cell_props(m)%alphl
        END DO
        name = 'Long disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
-
+       CALL HDF_PRNTAR(iso, aprnt, full, conv, trim(name)//C_NULL_CHAR)
+   
        ! ...  Alpha th
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%alphth
        END DO
        name = 'Trans horiz disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
+       CALL HDF_PRNTAR(iso, aprnt, full, conv, trim(name)//C_NULL_CHAR)
 
        ! ...  Alpha tv
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%alphtv
        END DO
        name = 'Trans vert disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
+       CALL HDF_PRNTAR(iso, aprnt, full, conv, trim(name)//C_NULL_CHAR)
 
        ! ... Tortuosity
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%tort
        END DO
        name = 'Tortuosity (cell vol avg)'
-       CALL HDF_PRNTAR(iso, aprnt, full, conv, name)     
+       CALL HDF_PRNTAR(iso, aprnt, full, conv, trim(name)//C_NULL_CHAR)
     ENDIF
 
     DEALLOCATE (cell_props, aprnt, full,  &
@@ -412,6 +487,13 @@ END SUBROUTINE HDF_END_TIME_STEP
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SUBROUTINE write_hdf_intermediate()
   IMPLICIT NONE
+  INTERFACE
+	SUBROUTINE HDF_INTERMEDIATE() &
+ 	      BIND (C, NAME='HDF_INTERMEDIATE')
+	  USE ISO_C_BINDING
+	  implicit none
+	END SUBROUTINE HDF_INTERMEDIATE
+  END INTERFACE
   CALL HDF_INTERMEDIATE()  
 END SUBROUTINE write_hdf_intermediate
 

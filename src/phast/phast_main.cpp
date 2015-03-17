@@ -11,12 +11,14 @@
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
 
+#ifdef SKIP_FC_FUNC
 #if defined(_MSC_VER)
 #define FC_FUNC_(name,NAME) NAME
 #endif
 
 #if defined(FC_FUNC_)
 #define PHAST_SUB FC_FUNC_(phast_sub, PHAST_SUB)
+#endif
 #endif
 
 extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself, int *nthreads);

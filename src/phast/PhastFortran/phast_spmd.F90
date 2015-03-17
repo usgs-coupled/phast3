@@ -1,4 +1,5 @@
-SUBROUTINE phast_sub(l_mpi_tasks, l_mpi_myself, l_nthreads)
+SUBROUTINE PHAST_SUB(l_mpi_tasks, l_mpi_myself, l_nthreads) BIND(C, NAME='PHAST_SUB')
+  USE ISO_C_BINDING
   ! ... A three dimensional flow and solute transport code based
   ! ...      upon finite differences and fully coupled equation system
   ! ... Based upon HST3D Version 2.0
@@ -32,7 +33,7 @@ SUBROUTINE phast_sub(l_mpi_tasks, l_mpi_myself, l_nthreads)
   USE mpi_mod
 #endif
   IMPLICIT NONE
-  INTEGER :: l_mpi_tasks, l_mpi_myself, l_nthreads
+  INTEGER(kind=C_INT) :: l_mpi_tasks, l_mpi_myself, l_nthreads
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header
