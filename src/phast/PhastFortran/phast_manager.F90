@@ -420,12 +420,13 @@ SUBROUTINE transport_component(i)
     IF(errexe .OR. errexi) write (*,*) "transport_component failed."
 END SUBROUTINE transport_component
     
-SUBROUTINE transport_component_thread(i)
+SUBROUTINE transport_component_thread(i) BIND(C, NAME='transport_component_thread')
+    USE ISO_C_BINDING
     USE mcc, ONLY: mpi_myself, cylind, errexe, errexi, rm_id
     USE mcw, ONLY: nwel
     USE XP_module, ONLY: xp_list, XP_init_thread, XP_free_thread
     IMPLICIT none
-    INTEGER :: i
+    INTEGER(kind=C_INT) :: i
     CALL XP_init_thread(xp_list(i))
     CALL XP_coeff_trans_thread(xp_list(i))
     CALL XP_rhsn_thread(xp_list(i))
@@ -796,7 +797,7 @@ SUBROUTINE process_restart_files()
 #endif 
     CALL FH_SetPhreeqcRM(rm_id)
     DO i = 1, num_restart_files
-        CALL FH_SetRestartName(restart_files(i)//C_NULL_CHAR)
+        CALL FH_SetRestartName(trim(restart_files(i))//C_NULL_CHAR)
     ENDDO
     !CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
     CALL FH_SetNodes(x_node, y_node, z_node)
