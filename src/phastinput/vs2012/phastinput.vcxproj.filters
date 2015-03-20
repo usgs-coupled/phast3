@@ -197,9 +197,6 @@
     <ClInclude Include="..\BC_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Cell_Face.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\NNInterpolator\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>

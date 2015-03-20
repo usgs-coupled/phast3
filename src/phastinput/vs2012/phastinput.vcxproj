@@ -413,7 +413,6 @@
     <ClInclude Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.h" />
     <ClInclude Include="..\ArcRaster.h" />
     <ClInclude Include="..\BC_info.h" />
-    <ClInclude Include="..\Cell_Face.h" />
     <ClInclude Include="..\NNInterpolator\config.h" />
     <ClInclude Include="..\Cube.h" />
     <ClInclude Include="..\Data_source.h" />
