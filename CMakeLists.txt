@@ -48,7 +48,17 @@ if (PHAST_BUILD_MPI)
   endif()
 endif()
 
+
+##if (BUILD_CLR_LIBS)
+##  install(FILES "${PROJECT_SOURCE_DIR}/src/phreeqcpp/ZedGraph.dll" DESTINATION ${CMAKE_INSTALL_LIBDIR})
+##endif()
+
 ### tests
 ##enable_testing()
 ##
+add_subdirectory(database)
+add_subdirectory(doc)
+add_subdirectory(examples)
+#add_subdirectory(lib)
 add_subdirectory(src)
+
