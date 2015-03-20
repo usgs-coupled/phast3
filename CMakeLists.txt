@@ -1,15 +1,6 @@
 cmake_minimum_required (VERSION 2.8.10)
 
-##enable_language(Fortran)
-
-if (POLICY CMP0054)
-  cmake_policy(PUSH)
-  cmake_policy(SET CMP0054 OLD)
-endif()
 project(phast CXX C Fortran)
-if (POLICY CMP0054)
-  cmake_policy(POP)
-endif()
 
 ### overide docdir on windows
 ##if(WIN32 AND NOT CMAKE_INSTALL_DOCDIR)
@@ -28,8 +19,8 @@ endif()
 
 # check for openmp
 find_package(OpenMP)
-if (OPENMP_FOUND)
-endif()
+##if (OPENMP_FOUND)
+##endif()
 
 # check for boost
 find_package(Boost 1.33)
@@ -43,19 +34,17 @@ if (PHAST_BUILD_MPI)
   cmake_policy(SET CMP0054 OLD)
   find_package(MPI)
   cmake_policy(SET CMP0054 NEW)
-  
-  if (MPI_CXX_FOUND)
-  endif()
+ 
+  ##if (MPI_CXX_FOUND)
+  ##endif()
 endif()
 
-
-##if (BUILD_CLR_LIBS)
-##  install(FILES "${PROJECT_SOURCE_DIR}/src/phreeqcpp/ZedGraph.dll" DESTINATION ${CMAKE_INSTALL_LIBDIR})
-##endif()
 
 ### tests
 ##enable_testing()
 ##
+
+# subdirs
 add_subdirectory(database)
 add_subdirectory(doc)
 add_subdirectory(examples)
