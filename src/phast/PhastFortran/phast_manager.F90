@@ -399,12 +399,13 @@ SUBROUTINE time_parallel(i)
         
     endif
 END SUBROUTINE time_parallel
-SUBROUTINE transport_component(i)
+SUBROUTINE transport_component(i) BIND(C, NAME='transport_component')
+    USE ISO_C_BINDING
     USE mcc, ONLY: cylind, errexe, errexi, rm_id
     USE mcw, ONLY: nwel
     USE XP_module,  ONLY: xp_list
     IMPLICIT none
-    INTEGER :: i
+    INTEGER(kind=C_INT) :: i
     CALL coeff_trans
     CALL XP_rhsn(xp_list(i))
     IF(nwel > 0) THEN
