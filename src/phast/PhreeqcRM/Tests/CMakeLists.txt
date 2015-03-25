@@ -2,25 +2,26 @@
 if (PHREEQCRM_BUILD_FORTRAN)
   project(FortranAdvect Fortran)
   
-  # need to set for each project
-  if (PHREEQCRM_BUILD_MPI)
-    if (CMAKE_CONFIGURATION_TYPES)
-      SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
-      "Semicolon separated list of supported configuration types."
-      FORCE)
-    endif (CMAKE_CONFIGURATION_TYPES)
-  else (PHREEQCRM_BUILD_MPI)
-    if (CMAKE_CONFIGURATION_TYPES)
-      SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp" CACHE STRING 
-      "Semicolon separated list of supported configuration types."
-      FORCE)
-    endif (CMAKE_CONFIGURATION_TYPES)
-  endif (PHREEQCRM_BUILD_MPI)
+##  # need to set for each project
+##  if (PHREEQCRM_BUILD_MPI)
+##    if (CMAKE_CONFIGURATION_TYPES)
+##      SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
+##      "Semicolon separated list of supported configuration types."
+##      FORCE)
+##    endif (CMAKE_CONFIGURATION_TYPES)
+##  else (PHREEQCRM_BUILD_MPI)
+##    if (CMAKE_CONFIGURATION_TYPES)
+##      SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp" CACHE STRING 
+##      "Semicolon separated list of supported configuration types."
+##      FORCE)
+##    endif (CMAKE_CONFIGURATION_TYPES)
+##  endif (PHREEQCRM_BUILD_MPI)
   
   # source
   SET(FortranAdvect_SOURCES
     advection_f90.F90
     ../RM_interface.F90
+    ../IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90
     species_f90.F90
   )
   
@@ -38,20 +39,20 @@ endif()
 
 project(TestRM CXX)
 
-# need to set for each project
-if (PHREEQCRM_BUILD_MPI)
-  if (CMAKE_CONFIGURATION_TYPES)
-    SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
-    "Semicolon separated list of supported configuration types."
-    FORCE)
-  endif (CMAKE_CONFIGURATION_TYPES)
-else (PHREEQCRM_BUILD_MPI)
-  if (CMAKE_CONFIGURATION_TYPES)
-    SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp" CACHE STRING 
-    "Semicolon separated list of supported configuration types."
-    FORCE)
-  endif (CMAKE_CONFIGURATION_TYPES)
-endif (PHREEQCRM_BUILD_MPI)
+### need to set for each project
+##if (PHREEQCRM_BUILD_MPI)
+##  if (CMAKE_CONFIGURATION_TYPES)
+##    SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp;mpi;mpi_debug" CACHE STRING 
+##    "Semicolon separated list of supported configuration types."
+##    FORCE)
+##  endif (CMAKE_CONFIGURATION_TYPES)
+##else (PHREEQCRM_BUILD_MPI)
+##  if (CMAKE_CONFIGURATION_TYPES)
+##    SET(CMAKE_CONFIGURATION_TYPES "openmp_debug;openmp" CACHE STRING 
+##    "Semicolon separated list of supported configuration types."
+##    FORCE)
+##  endif (CMAKE_CONFIGURATION_TYPES)
+##endif (PHREEQCRM_BUILD_MPI)
 
 # Tests/advect.pqi
 configure_file (
@@ -123,6 +124,6 @@ if (PHREEQCRM_BUILD_MPI)
            ${MPIEXEC_PREFLAGS}
            $<TARGET_FILE:TestRM>
            ${MPIEXEC_POSTFLAGS}
-           CONFIGURATIONS mpi mpi_debug
+##           CONFIGURATIONS mpi mpi_debug
            )
 endif ()
