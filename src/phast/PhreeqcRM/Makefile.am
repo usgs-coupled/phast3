@@ -22,6 +22,8 @@ libphreeqcrm_la_SOURCES=\
 	IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
 	IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
+	IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp\
+	IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.h\
 	IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp\
 	IPhreeqcPhast/IPhreeqc/Var.c\
 	IPhreeqcPhast/IPhreeqc/Var.h\
@@ -181,8 +183,7 @@ libphreeqcrm_la_SOURCES+=\
 	RM_interface_F.h\
 	RM_interface_F.cpp\
 	IPhreeqcPhast/IPhreeqc/fwrap.cpp\
-	IPhreeqcPhast/IPhreeqc/fwrap.h\
-	IPhreeqcPhast/IPhreeqc/IPhreeqcF.f
+	IPhreeqcPhast/IPhreeqc/fwrap.h
 
 include_HEADERS+=\
 	$(top_srcdir)/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
