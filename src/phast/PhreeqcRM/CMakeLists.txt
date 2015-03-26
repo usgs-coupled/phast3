@@ -333,6 +333,7 @@ PhreeqcRM.h
 RM_interface_C.cpp
 RM_interface_C.h
 RM_interface_F.cpp
+RM_interface_F.h
 IPhreeqcPhast/IPhreeqcPhast.cxx
 IPhreeqcPhast/IPhreeqcPhast.h
 IPhreeqcPhast/IPhreeqcPhastLib.cpp
@@ -349,6 +350,7 @@ IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp
 IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h
 IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp
 IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp
+IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.h
 IPhreeqcPhast/IPhreeqc/Var.c
 IPhreeqcPhast/IPhreeqc/Var.h
 IPhreeqcPhast/IPhreeqc/Version.h
