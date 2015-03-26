@@ -5,29 +5,26 @@ README.TXT
 
 This file describes how to compile the PhreeqcRM library and use
 it in C++, C, and Fortran programs. The library may be compiled
-after generating Makefiles either with configure or CMake. For 
-Windows, Visual Studio solution files are provided for Visual
-Studio 2005 through 2013. All source and compilation-related
-files are available at the following web site:
+after generating Makefiles either with configure or CMake. All 
+source and compilation-related files are available at the 
+following web site:
+
 http://wwwbrr.cr.usgs.gov/projects/GWC_coupled/phreeqc/index.html.
 
 
-	  TABLE OF CONTENTS
+TABLE OF CONTENTS
 
-	  A. Distribution file
-	  B. Documentation
-	  C. Download and unzip the distribution file
-	  D. Linux Compiling, testing, and installing the PhreeqcRM library
-	  E. Windows Compilation of PhreeqcRM library
-	  F. Using the library
-	        F.1. C++
-		F.2. C
-                F.3. Fortran
-	  G. Tests
-	  H. Contacts
+	A. Distribution file
+	B. Documentation
+	C. Download and unzip the distribution file
+	D. Linux compiling, testing, and installing the PhreeqcRM library
+	E. Windows Compiling, testing, and installing the PhreeqcRM library
+	F. Using the library
+	G. Contacts
 
 
 A. Distribution file
+-----------------------------------------------------------------------------------
 
 	The following distribution package (containing the software, 
 	compilation-related files, and an advection example in
@@ -37,14 +34,22 @@ A. Distribution file
 
 
 B. Documentation
+-----------------------------------------------------------------------------------
+
+Descriptions and examples of PhreeqcRM methods for C++, C, and Fortran
+are available in HTML format in the doc directory of the distribution. 
 
 Parkhurst, D.L. and Wissmeier, Laurin, 2015, PhreeqcRM--A reaction module 
    for transport simulators based on the geochemical model PHREEQC: Advances in
    Water Resources, in press.
    
+Charlton, S.R., and Parkhurst, D.L., 2011, Modules based on the geochemical model 
+   PHREEQC for use in scripting and programming languages: Computers & Geosciences,
+   vol. 37, no. 10, p. 1653-1663.
+   
    *The following two user's guides are available in electronic format. Portable
-   Document Format (PDF) files are included in the doc subdirectory of the
-   PHREEQC program distribution.
+   Document Format (PDF) files are included in the doc subdirectory of all
+   PHREEQC program distributions.
    
 Parkhurst, D.L., and Appelo, C.A.J., 2013, Description of input and examples
    for PHREEQC version 3--A computer program for speciation, batch-reaction,
@@ -80,6 +85,7 @@ Charlton, S.R., and Parkhurst, D.L., 2002, PhreeqcI--A graphical user interface
 
 
 C. Download and unzip the distribution file
+-----------------------------------------------------------------------------------
 
 Follow the steps using gunzip, 7zip, or other compression program that can unzip a tar.gz file:
 
@@ -95,118 +101,196 @@ it before extracting the files. The following directory structure is created
 (the contents of each directory are shown to the right):
 
    phreeqcrm-@VERSION@-@REVISION@ Files related to configure and some source code
-     `--config      More configure files
-     `--database    Database files for PHREEQC
-     `--doc         Documentation files 
-     `--IPhreeqcPhast More source code for PhreeqcRM
-     `--VS2005      Visual Studio project for PhreeqcRM
-     `--VS2008      Visual Studio project for PhreeqcRM
-     `--VS2010      Visual Studio project for PhreeqcRM
-     `--VS2012      Visual Studio project for PhreeqcRM
-     `--VS2013      Visual Studio project for PhreeqcRM
-     `--Tests       Advection example in C++, C, and Fortran
+     ./config        More configure files
+     ./database      Database files for PHREEQC
+     ./doc           Documentation files 
+     ./IPhreeqcPhast More source code for PhreeqcRM
+     ./Tests         Advection example in C++, C, and Fortran
      `     --config      Linux configure
-     `     --VS2005      Visual Studio project for test program
-     `     --VS2008      Visual Studio project for test program
-     `     --VS2010      Visual Studio project for test program
-     `     --VS2012      Visual Studio project for test program
-     `     --VS2013      Visual Studio project for test program
 
-Notes:  (a) A compiled executable is not included in the distribution.
-        (b) It is recommended that no user files be kept in the directory structure.  
-
+Notes:  A compiled executable is not included in the distribution.
 
 D. Linux Compiling, testing, and installing the PhreeqcRM library
+-----------------------------------------------------------------------------------
 
 In general, to compile the software, you will need:
 
-       (a) a C++ compiler, and
-       (b) a minimal level of knowledge of configure or CMake, Make, the compiler, and
-           the Linux operating system.
+	(a) a C++ compiler, and
+	(b) a minimal level of knowledge of configure or CMake, Make, the compiler, and
+		the Linux operating system.
 
 A Makefile can be generated by configure, and the Makefile can be used to
 compile, test, and install the software.
 
 To compile, test, and install PHREEQC with configure:
 
-1.  Change directory to the directory that was extracted from the tar file.
+  D.1.  Change directory to the directory that was extracted from the tar file.
 
         cd phreeqcrm-@VERSION@-@REVISION@
         
-2.  Make a directory, for example, Release.
+        Run bootstrap:
+        ./bootstrap
+        
+        Bootstrap only needs to be run once.
+        
+  D.2.  Make a directory, for example, Release_openmp.
 	
-	mkdir Release
+	mkdir Release_openmp
 	
-3.  Change directory to Release.
+  D.3.  Change directory to Release_openmp.
 	
-	cd Release
+	cd Release_openmp
 
-4.  Run configure
-	
-	../configure
-	
-    Many of the options for configure can be seen by typing:
+  D.4.  Run configure
+
+	Many of the options for configure can be seen by typing:
     
     	../configure --help
+    
+	Most common options:
+    	--prefix=dir--specifies the directory for installation of the
+    		library. Default is /usr/local, $HOME would install
+    		to your home directory
+    	--with-mpi=yes--specifies that MPI (Message Passing Interface)
+    		will be used for parallelization of PhreeqcRM. Default 
+    		is no, in which case, OpenMP is used for parallelization.
+    	--disable-openmp--specifies that OpenMP is not used. This option 
+    	 	is used if you want neither kind of parallelization.
+    	--enable-fortran--specifies that you have a Fortran compiler
+    		and want to include Fortran files during "make check", 
+    		which compiles, links, and runs programs that use 
+    		PhreeqcRM.
+    		
+	Run configure as follows:	
+    	
+    	../configure [options] 
 
-5.  Compile the PhreeqcRM library
+  D.5.  Compile the PhreeqcRM library
 	
-	make
+	make [-j 4]
 	
-6.  Check that compiled version runs the test cases. Check may take several
-	minutes.
+    	Optionally, use -j n--where n is the number of compilations make runs in paralllel.
+	
+  D.6.  Compile and runs the test case. Make check may take several minutes. 
+  	The files in the directory PhreeqcRM/Tests are compiled and linked to the 
+	PhreeqcRM library. The Fortran files are optionally included (--enable-fortran
+	configure option). The source files in the Tests directory demonstrate
+	the use of almost all PhreeqcRM features for each programming language.
 	
 	make check
 	
-???    Results of running the test cases are stored in the directory
-    	
-???    	Release/test
-
-7.  Install the PhreeqcRM library. By default the program is installed in /usr/local/bin
-    and /usr/local/share/doc/phreeqcrm. You can specify an installation prefix
-    other than "/usr/local" by using the prefix option, prefix=$HOME for
-    example.
+  D.7.  Install the PhreeqcRM library. By default the program is installed in /usr/local/bin
+	and /usr/local/share/doc/phreeqcrm???. Alternatively, the directory defined
+	by --prefix in the configure command is used. 
     
     	make install
     	
-    The locations of various files are given (a) for default installation (make
-    install), and (b) if prefix is defined to be $HOME (make install prefix=
-    $HOME). $HOME is used to represent your home directory in the following
-    pathnames.
+	The locations of various files are given for default installation (no
+	--prefix definition). 
     
-    Executable:
-      	(a) /usr/local/bin/phreeqcrm.lib
-    	(b) $HOME/bin/phreeqcrm.lib
-    	
-    Documentation (PDFs, README, NOTICE, phreeqcrm.txt):
-    	
-    	(a) /usr/local/share/doc/phreeqcrm
-    	(b) $HOME/share/doc/phreeqcrm
+	Libraries:
+		/usr/local/bin/libphreeqcrm.a
+		/usr/local/bin/phreeqcrm.so
+		    
+	Include files:
+		C++ and C headers for user's code:
+		/usr/local/include/PhreeqcRM.h          (C++ header)
+		/usr/local/include/RM_interface_C.h     (C header)
+		
+		Optionally, may need one or more of the following:
+		/usr/local/include/IPhreeqc.hpp         (C++ header)
+		/usr/local/include/IPhreeqc.h           (C header)
+		/usr/local/include/IPhreeqcPhast.h      (C++ header)
+		/usr/local/include/Var.h                (IPhreeqc VAR structure)
+		/usr/local/include/IrmResult.h          (PhreeqcRM error code enum)
+		/usr/local/include/IPhreeqcCallbacks.h  (IPhreeqc callbacks)
+	
+	Documentation??? (PDFs, README, NOTICE, phreeqcrm.txt):
+		(a) /usr/local/share/doc/phreeqcrm
+		(b) $HOME/share/doc/phreeqcrm
     
-    Databases: 
+	Databases???: 
+		(a) /usr/local/share/doc/phreeqcrm/database
+		(b) $HOME/share/doc/phreeqcrm/database
     
-    	(a) /usr/local/share/doc/phreeqcrm/database
-    	(b) $HOME/share/doc/phreeqcrm/database
-    
 
- E. Windows Compilation of PhreeqcRM library
+E. Windows compiling, testing, and installing the PhreeqcRM library
 
-In general, to compile the PhreeqcRM library, you will need:
+	In general, to compile the PhreeqcRM library, you will need:
 
-       (a) a C++ compiler,
-       (b) familiarity with the compiler and the Windows operating system.
+		(a) CMake (build process manager)
+		(b) a C++ compiler,
+		(c) familiarity with the compiler and the Windows operating system.
+   
+  E.1. Download and install CMake
 
-Multiple Visual Studio projects (phreeqc.sln) are provided. Use the one that
-is compatible with your version of Visual Studio. Visual Studio is freely
-avaialble beginning with the 2013 version.
+	CMake can be downloaded from http://www.cmake.org/. If you download
+	the executable, CMake is installed when you execute it.
 
-You can include the PhreeqcRM project in the Visual Studio solution for
-your transport model.
+  E.2  Generate a Visual Studio solution
 
+	CMake has many options other than Visual Studio, but here we assume
+	that you are using some version of Visual Studio. On the first use
+	of CMake, it may be necessary to close all Visual Studio instances. 
+	
+	Open CMake. Fill in the top two lines.
+		Where is the source code: 
+			The PhreeqcRM directory. 
+		Where to build the binaries? 
+			A new directory. It is suggested that the name
+			of the directory include the characteristics of 
+			the library that is built, including the VS
+			version, OpenMP/MPI, 32/64 bit.
+			for example, vs2012_openmp_64.
+	
+	Click Configure. From the pulldown menu select the 64-bit version 
+	for your Visual Studio. Normally, the default radio button should
+	be sufficient. Click Finish. 
+	
+	Options in the top panel:
+	(1) BUILD_SHARED_LIBS--If checked, .dll and .lib files will be
+		created. If not checked, only a .lib file will be created.
+	(2) CMAKE_INSTALL_PREFIX--Sets the the install directory where the 
+		library and header files will be saved. It is suggested that
+		an INSTALL directory be defined inside the directory chosen 
+		for the binaries.
+	(3) PHREEQCRM_BUILD_MPI--Sets whether to build libraries that use
+		MPI (Message Passing Interface) for parallelization. If not 
+		clicked, the libraries will use OpenMP for parallelization.
+		If you choose the PHREEQCRM_BUILD_MPI checkbox, you will need
+		to have a version of MPI installed on your computer.
+	(4) PHREEQCRM_FORTRAN_TESTING--Sets whether the test calculations
+		(Tests directory) will include Fortran files (FortranAdvect
+		project). A Fortran compiler is required. 
+	
+	Click Configure until the screen is not red. If the screen remains 
+	red, you will have to deal with the CMake error messages.
+	
+	Click Generate.
+	
+	You should now have a Visual Studio solution file (.sln) in the 
+	directory chosen for the binaries (second line of CMake screen). 
+	At any point, you can delete the contents of the directory and
+	start over. You can make solutions for different Visual Studios,
+	or different parallelization in other directories.
+	
+  E.3. Compile and install PhreeqcRM
+
+        Open the Visual Studio solution in the build directory defined in CMake.
+        
+        Build ALL_BUILD.
+        
+        Build RUN_TESTS. Programs that test PhreeqcRM are compiled and run, 
+        including the TestRM project, and optionally (CMake option) the
+        FortransAdvect project. These projects use most of the features of
+        PhreeqcRM.
+        
+        Build INSTALL. The libraries, header files, and Fortran module source
+        files are installed in the install directory selected in CMake.
 
 F. Using the library
 
-F.1. C++
+  F.1. C++
      
      In C++, you will include the PhreeqcRM.h header file and 
      create a PhreeqcRM instance (multithreaded in these examples):
@@ -218,51 +302,35 @@ F.1. C++
 
      PhreeqcRM * myphreeqc_ = new PhreeqcRM(nxyz, nthreads);
 
-     You will need to link to the PhreeqcRM.lib that you compiled.
+     You will need to link to the PhreeqcRM.lib that you installed.
 
-F.2. C
+  F.2. C
 
      In C, you will include the C interface header, RM_interface_C.h, and
      create a PhreeqcRM instance.
 
-     #include "RM_interface.C.h"
+     #include "RM_interface_C.h"
      int rm_id;
      rm_id = RM_create(nxyz, nthreads);
 
-     You will need to link to the PhreeqcRM.lib that you compiled.
+     You will need to link to the PhreeqcRM.lib that you installed.
 
-F.3. Fortran
+  F.3. Fortran
 
-     In Fortran, you will need to include the source file RM_interface_F.F90
-     as one of the project files. This file defines the PhreeqcRM Fortran module.
-     In the source code, you will USE the PhreeqcRM module and
-     create a PhreeqcRM instance.
+     In Fortran, you will need to include the source file RM_interface.F90
+     in your project files. This files defines the PhreeqcRM Fortran module.
 
      USE PhreeqcRM
      integer rm_id
      rm_id = RM_create(nxyz, nthreads)
 
-     You will need to link to the PhreeqcRM.lib that you compiled.
+     You will need to link to the PhreeqcRM.lib that you installed.
 
+     If you use any IPhreeqc methods directly (optional, example in 
+     Advection_f90.F90), you need to include IPhreeqc_interface.F90 in your 
+     project files, which defines the IPhreeqc Fortran module.
 
-G. Tests
-
-An example advection calculation with geochemical reactions is provided in 
-the directory Tests. Nearly all PhreeqcRM methods are used in the
-C++, C, and Fortran Fortran files. 
-
-Configure, CMake, or Visual Studio may be used to compile the test program.
-Compilation-related files are provided in the Tests directory. Use thes files
-in the same way as described for the PhreeqcRM library.
-
-You will need to have a Fortran compiler and to set the preprocessor directive 
-TEST_FORTRAN to compile and test the Fortran version of the test program.
-
-The test programs may be compiled to be (1) multithreaded, preprocessor directive
-USE_OPENMP, (2) multiprocessor, preprocessor directive USE_MPI, or (3) serial,
-neither preprocessor directive.
-
-H. CONTACTS
+G. CONTACTS
 
 Inquiries about this software distribution should be directed to:
 
