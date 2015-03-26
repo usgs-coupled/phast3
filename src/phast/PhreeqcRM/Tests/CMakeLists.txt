@@ -100,6 +100,13 @@ if (PHREEQCRM_FORTRAN_TESTING)
   else ()
     SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM FortranAdvect)
   endif ()
+  # Override bug reported on:
+  # http://www.cmake.org/pipermail/cmake/2009-July/030954.html
+  if(WIN32 AND ${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")  
+    if (NOT CMAKE_Fortran_FLAGS_DEBUG MATCHES "/Od")
+      set(CMAKE_Fortran_FLAGS_DEBUG "/Od ${CMAKE_Fortran_FLAGS_DEBUG}")
+    endif()
+  endif()
 else ()
   if (PHREEQCRM_BUILD_MPI)
     SET(EXTRA_LIBS ${EXTRA_LIBS} PhreeqcRM ${MPI_CXX_LIBRARIES})
