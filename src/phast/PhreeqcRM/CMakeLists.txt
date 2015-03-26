@@ -518,6 +518,11 @@ endif()
 add_library(PhreeqcRM ${LIB_TYPE} ${PhreeqcRM_SOURCES})
 set_target_properties(PhreeqcRM PROPERTIES DEBUG_POSTFIX "d")
 
+# At least with MSMPI PhreeqcRM.dll requires MPI_CXX_LIBRARIES to link
+if (MSVC AND BUILD_SHARED_LIBS AND PHREEQCRM_BUILD_MPI)
+  target_link_libraries(PhreeqcRM ${MPI_CXX_LIBRARIES})
+endif()
+
 SET(PhreeqcRM_Headers
 ${PROJECT_SOURCE_DIR}/IrmResult.h
 ${PROJECT_SOURCE_DIR}/PhreeqcRM.h
