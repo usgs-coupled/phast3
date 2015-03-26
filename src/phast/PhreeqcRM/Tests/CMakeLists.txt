@@ -1,5 +1,5 @@
 ### tests
-if (PHREEQCRM_BUILD_FORTRAN)
+if (PHREEQCRM_FORTRAN_TESTING)
   project(FortranAdvect Fortran)
   
 ##  # need to set for each project
@@ -84,12 +84,12 @@ SET(TestRM_SOURCES
 # test executable
 add_executable(TestRM ${TestRM_SOURCES})
 
-if (PHREEQCRM_BUILD_FORTRAN)
+if (PHREEQCRM_FORTRAN_TESTING)
   set_target_properties(TestRM PROPERTIES COMPILE_DEFINITIONS "TEST_FORTRAN")
 endif ()
 
 # library dependencies
-if (PHREEQCRM_BUILD_FORTRAN)
+if (PHREEQCRM_FORTRAN_TESTING)
   # need extra mpi fortran libs if using msmpi
   if (MPI_Fortran_LIBRARIES MATCHES "msmpi.lib$")
     STRING(REGEX REPLACE "msmpi.lib$" "msmpifec.lib" EXTRA_FORTRAN_LIB ${MPI_Fortran_LIBRARIES})
@@ -114,6 +114,14 @@ target_link_libraries(TestRM ${EXTRA_LIBS})
 # test compile and run
 add_test(TestCompileAndRun TestRM)
 
+if (MSVC AND BUILD_SHARED_LIBS)
+  # copy dll
+  add_custom_command(TARGET TestRM POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:PhreeqcRM> $<TARGET_FILE_DIR:TestRM>
+  )
+endif()
+
+
 # MPI test (TODO Need to check if this works in Cmake 2.8)
 # 2.8 => change $<TARGET_FILE:TestRM>
 # get_property(exe_location TARGET testrm PROPERTY LOCATION)
@@ -124,6 +132,5 @@ if (PHREEQCRM_BUILD_MPI)
            ${MPIEXEC_PREFLAGS}
            $<TARGET_FILE:TestRM>
            ${MPIEXEC_POSTFLAGS}
-##           CONFIGURATIONS mpi mpi_debug
            )
 endif ()

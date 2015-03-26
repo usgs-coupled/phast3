@@ -22,10 +22,11 @@ class PHRQ_io;
 #include <string>
 
 #if defined(_WINDLL)
-#define IPQ_DLL_EXPORT __declspec(dllexport)
+#define IRM_DLL_EXPORT __declspec(dllexport)
 #else
-#define IPQ_DLL_EXPORT
+#define IRM_DLL_EXPORT
 #endif
+
 class PHRQ_io;
 class IPhreeqc;
 /**
@@ -34,7 +35,7 @@ class IPhreeqc;
  * @brief This class is derived from std::exception and is thrown
  * when an unrecoverable error has occured.
  */
-class IPQ_DLL_EXPORT PhreeqcRMStop : std::exception
+class IRM_DLL_EXPORT PhreeqcRMStop : std::exception
 {
 };
 
@@ -110,7 +111,7 @@ typedef enum {
  */
 
 
-class PhreeqcRM
+class IRM_DLL_EXPORT PhreeqcRM
 {
 public:
 	static void             CleanupReactionModuleInstances(void);
@@ -3549,6 +3550,12 @@ protected:
 private:
 	IRM_RESULT                                SetGeneric(std::vector<double> &destination, int newSize, const std::vector<double> &origin, int mpiMethod, const std::string &name, const double newValue = 0.0);
 protected:
+
+#if defined(_MSC_VER)
+/* disable warning C4251: 'identifier' : class 'type' needs to have dll-interface to be used by clients of class 'type2' */
+#pragma warning(disable:4251)
+#endif
+
 	bool component_h2o;                      // true: use H2O, excess H, excess O, and charge;
 	                                         // false total H, total O, and charge
 	std::string database_file_name;
@@ -3627,6 +3634,11 @@ private:
 	//friend class RM_interface;
 	static std::map<size_t, PhreeqcRM*> Instances;
 	static size_t InstancesIndex;
+
+#if defined(_MSC_VER)
+/* reset warning C4251 */
+#pragma warning(default:4251)
+#endif
 
 };
 #endif // !defined(PHREEQCRM_H_INCLUDED)
