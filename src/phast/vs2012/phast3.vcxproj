@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="mpi_debug|Win32">
@@ -138,7 +138,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='openmp_debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(BOOSTROOT);$(ProjectDir)..;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(BOOSTROOT);$(ProjectDir)..;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_OPENMP;USE_GZ;USE_PHRQ_ALLOC;_DEBUG;WIN32;_HAS_ITERATOR_DEBUGGING=0;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -169,7 +169,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(DEV_GMP_INC_MT);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(DEV_GMP_INC_MT);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;USE_OPENMP;USE_GZ;WIN32_MEMORY_DEBUG;xxUSE_PHRQ_ALLOC;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -200,7 +200,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_OPENMP;USE_GZ;NDEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -230,7 +230,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_OPENMP;USE_GZ;NDEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -257,7 +257,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_GZ;NDEBUG;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -287,7 +287,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;USE_MPI;USE_GZ;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -313,7 +313,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_GZ;USE_PHRQ_ALLOC;_DEBUG;USE_MPI;WIN32;_HAS_ITERATOR_DEBUGGING=0;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -347,7 +347,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_PHRQ_ALLOC;_DEBUG;USE_MPI;USE_GZ;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
