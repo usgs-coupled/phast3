@@ -503,6 +503,7 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.hpp" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqcCallbacks.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc_interface_F.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\GasComp.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\global_structures.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\NA.h" />
