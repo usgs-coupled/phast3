@@ -478,5 +478,8 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PhreeqcKeywords\Keywords.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc_interface_F.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
