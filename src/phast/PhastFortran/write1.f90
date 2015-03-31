@@ -41,13 +41,24 @@ SUBROUTINE write1
   WRITE(fuzf_tsv,5001) title(1:80),title(81:160)
 5001 FORMAT(a80)
   WRITE(fuzf_tsv,5011) 'Flow Rates'//ACHAR(9)//'('//unitm//'/'//TRIM(unittm)//')'
+  !WRITE(fuzf_tsv,5011) 'Time'//ACHAR(9)//'Zone'//ACHAR(9)//'Component'//ACHAR(9)//  &
+  !     'Total in'//ACHAR(9)//'Total out'//ACHAR(9)//'Internal face in'//  &
+  !     ACHAR(9)//'Internal face out'//ACHAR(9)//'Specified head in'//ACHAR(9)//  &
+  !     'Specified head out'//ACHAR(9)//'Flux in'//ACHAR(9)//'Flux out'//ACHAR(9)//  &
+  !     'Leaky in'//ACHAR(9)//'Leaky out'//ACHAR(9)//'River in'//ACHAR(9)//  &
+  !     'River out'//ACHAR(9)//'Drain in'//ACHAR(9)//'Drain out'//ACHAR(9)//  &
+  !     'Well in'//ACHAR(9)//'Well out'
   WRITE(fuzf_tsv,5011) 'Time'//ACHAR(9)//'Zone'//ACHAR(9)//'Component'//ACHAR(9)//  &
        'Total in'//ACHAR(9)//'Total out'//ACHAR(9)//'Internal face in'//  &
-       ACHAR(9)//'Internal face out'//ACHAR(9)//'Specified head in'//ACHAR(9)//  &
+       ACHAR(9)//'Internal face out'//ACHAR(9)// &
+       "Xm in"//ACHAR(9)//"Xm out"//ACHAR(9)//"Xp in"//ACHAR(9)//"Xp out"//ACHAR(9)// &
+       "Ym in"//ACHAR(9)//"Ym out"//ACHAR(9)//"Yp in"//ACHAR(9)//"Yp out"//ACHAR(9)// &
+       "Zm in"//ACHAR(9)//"Zm out"//ACHAR(9)//"Zp in"//ACHAR(9)//"Zp out"//ACHAR(9)// &
+       'Specified head in'//ACHAR(9)//  &
        'Specified head out'//ACHAR(9)//'Flux in'//ACHAR(9)//'Flux out'//ACHAR(9)//  &
        'Leaky in'//ACHAR(9)//'Leaky out'//ACHAR(9)//'River in'//ACHAR(9)//  &
        'River out'//ACHAR(9)//'Drain in'//ACHAR(9)//'Drain out'//ACHAR(9)//  &
-       'Well in'//ACHAR(9)//'Well out'
+       'Well in'//ACHAR(9)//'Well out'  
   WRITE(logline1,5013) title(1:80)
   WRITE(logline2,5013) title(81:160)
 5013 FORMAT(a80)
