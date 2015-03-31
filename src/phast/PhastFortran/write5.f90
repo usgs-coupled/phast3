@@ -464,27 +464,59 @@ SUBROUTINE write5
   IF(przf_tsv) THEN  
      ! ... Zonal flow rates to tab separated file, fuzf_tsv
      DO izn=1,num_flo_zones
+        !WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),zone_number(izn),ACHAR(9),'Water',ACHAR(9),  &
+        !     cnvmfi*qfzoni(izn),ACHAR(9),cnvmfi*qfzonp(izn),ACHAR(9),  &
+        !     cnvmfi*qfzoni_int(izn),ACHAR(9),cnvmfi*qfzonp_int(izn),ACHAR(9),  &
+        !     cnvmfi*qfzoni_sbc(izn),ACHAR(9),cnvmfi*qfzonp_sbc(izn),ACHAR(9),  &
+        !     cnvmfi*qfzoni_fbc(izn),ACHAR(9),cnvmfi*qfzonp_fbc(izn),ACHAR(9),  &
+        !     cnvmfi*qfzoni_lbc(izn),ACHAR(9),cnvmfi*qfzonp_lbc(izn),ACHAR(9),  &
+        !     cnvmfi*qfzoni_rbc(izn),ACHAR(9),cnvmfi*qfzonp_rbc(izn),ACHAR(9),  &
+        !     cnvmfi*qfzoni_dbc(izn),ACHAR(9),cnvmfi*qfzonp_dbc(izn),ACHAR(9),  &
+        !     cnvmfi*qfzoni_wel(izn),ACHAR(9),cnvmfi*qfzonp_wel(izn),ACHAR(9)
+!2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
         WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),zone_number(izn),ACHAR(9),'Water',ACHAR(9),  &
              cnvmfi*qfzoni(izn),ACHAR(9),cnvmfi*qfzonp(izn),ACHAR(9),  &
              cnvmfi*qfzoni_int(izn),ACHAR(9),cnvmfi*qfzonp_int(izn),ACHAR(9),  &
+             cnvmfi*qface_in(0,izn,3),ACHAR(9),cnvmfi*qface_out(0,izn,3),ACHAR(9), &  ! xm
+             cnvmfi*qface_in(0,izn,4),ACHAR(9),cnvmfi*qface_out(0,izn,4),ACHAR(9), &  ! xp
+             cnvmfi*qface_in(0,izn,2),ACHAR(9),cnvmfi*qface_out(0,izn,2),ACHAR(9), &  ! ym
+             cnvmfi*qface_in(0,izn,5),ACHAR(9),cnvmfi*qface_out(0,izn,5),ACHAR(9), &  ! yp
+             cnvmfi*qface_in(0,izn,1),ACHAR(9),cnvmfi*qface_out(0,izn,1),ACHAR(9), &  ! zm
+             cnvmfi*qface_in(0,izn,6),ACHAR(9),cnvmfi*qface_out(0,izn,6),ACHAR(9), &  ! zp
              cnvmfi*qfzoni_sbc(izn),ACHAR(9),cnvmfi*qfzonp_sbc(izn),ACHAR(9),  &
              cnvmfi*qfzoni_fbc(izn),ACHAR(9),cnvmfi*qfzonp_fbc(izn),ACHAR(9),  &
              cnvmfi*qfzoni_lbc(izn),ACHAR(9),cnvmfi*qfzonp_lbc(izn),ACHAR(9),  &
              cnvmfi*qfzoni_rbc(izn),ACHAR(9),cnvmfi*qfzonp_rbc(izn),ACHAR(9),  &
              cnvmfi*qfzoni_dbc(izn),ACHAR(9),cnvmfi*qfzonp_dbc(izn),ACHAR(9),  &
-             cnvmfi*qfzoni_wel(izn),ACHAR(9),cnvmfi*qfzonp_wel(izn),ACHAR(9)
-2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
+             cnvmfi*qfzoni_wel(izn),ACHAR(9),cnvmfi*qfzonp_wel(izn),ACHAR(9)        
+2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,28(1pg14.7,a))
         IF (solute) THEN
            DO  is=min_is,ns                           ! ... No printout of charge flows
+              !WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),zone_number(izn),ACHAR(9),comp_name(is),ACHAR(9),  &
+              !     cnvmfi*qszoni(is,izn),ACHAR(9),cnvmfi*qszonp(is,izn),ACHAR(9),  &
+              !     cnvmfi*qszoni_int(is,izn),ACHAR(9),cnvmfi*qszonp_int(is,izn),ACHAR(9),  &
+              !     cnvmfi*qszoni_sbc(is,izn),ACHAR(9),cnvmfi*qszonp_sbc(is,izn),ACHAR(9),  &
+              !     cnvmfi*qszoni_fbc(is,izn),ACHAR(9),cnvmfi*qszonp_fbc(is,izn),ACHAR(9),  &
+              !     cnvmfi*qszoni_lbc(is,izn),ACHAR(9),cnvmfi*qszonp_lbc(is,izn),ACHAR(9),  &
+              !     cnvmfi*qszoni_rbc(is,izn),ACHAR(9),cnvmfi*qszonp_rbc(is,izn),ACHAR(9),  &
+              !     cnvmfi*qszoni_dbc(is,izn),ACHAR(9),cnvmfi*qszonp_dbc(is,izn),ACHAR(9),  &
+              !     cnvmfi*qszoni_wel(is,izn),ACHAR(9),cnvmfi*qszonp_wel(is,izn),ACHAR(9)
               WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),zone_number(izn),ACHAR(9),comp_name(is),ACHAR(9),  &
                    cnvmfi*qszoni(is,izn),ACHAR(9),cnvmfi*qszonp(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_int(is,izn),ACHAR(9),cnvmfi*qszonp_int(is,izn),ACHAR(9),  &
+                   cnvmfi*qface_in(is,izn,3),ACHAR(9),cnvmfi*qface_out(is,izn,3),ACHAR(9), &  ! xm
+                   cnvmfi*qface_in(is,izn,4),ACHAR(9),cnvmfi*qface_out(is,izn,4),ACHAR(9), &  ! xp
+                   cnvmfi*qface_in(is,izn,2),ACHAR(9),cnvmfi*qface_out(is,izn,2),ACHAR(9), &  ! ym
+                   cnvmfi*qface_in(is,izn,5),ACHAR(9),cnvmfi*qface_out(is,izn,5),ACHAR(9), &  ! yp
+                   cnvmfi*qface_in(is,izn,1),ACHAR(9),cnvmfi*qface_out(is,izn,1),ACHAR(9), &  ! zm
+                   cnvmfi*qface_in(is,izn,6),ACHAR(9),cnvmfi*qface_out(is,izn,6),ACHAR(9), &  ! zp   
                    cnvmfi*qszoni_sbc(is,izn),ACHAR(9),cnvmfi*qszonp_sbc(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_fbc(is,izn),ACHAR(9),cnvmfi*qszonp_fbc(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_lbc(is,izn),ACHAR(9),cnvmfi*qszonp_lbc(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_rbc(is,izn),ACHAR(9),cnvmfi*qszonp_rbc(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_dbc(is,izn),ACHAR(9),cnvmfi*qszonp_dbc(is,izn),ACHAR(9),  &
-                   cnvmfi*qszoni_wel(is,izn),ACHAR(9),cnvmfi*qszonp_wel(is,izn),ACHAR(9)
+                   cnvmfi*qszoni_wel(is,izn),ACHAR(9),cnvmfi*qszonp_wel(is,izn),ACHAR(9)            
+              !write(*,*) is
            END DO
         END IF
      ENDDO

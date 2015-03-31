@@ -887,4 +887,21 @@ SUBROUTINE Timing_barrier()
         CALL MPI_BARRIER(world_comm, ierrmpi)
 #endif 
     endif
-END SUBROUTINE Timing_barrier  
+    END SUBROUTINE Timing_barrier  
+    
+#ifdef IPHREEQC_NO_FORTRAN_MODULE
+DOUBLE PRECISION FUNCTION Basic_Callback( x1, x2, str)
+    IMPLICIT none
+    DOUBLE PRECISION, INTENT(in) :: x1, x2
+    CHARACTER, INTENT(in) :: str
+    Basic_Callback = 0.0
+END FUNCTION Basic_Callback
+#else
+REAL(kind=C_DOUBLE) FUNCTION Basic_Callback( x1, x2, str)
+    USE ISO_C_BINDING
+    IMPLICIT none
+    REAL(kind=C_DOUBLE), INTENT(in) :: x1, x2
+    CHARACTER(kind=C_CHAR), INTENT(in) :: str
+    Basic_Callback = 0.0
+END FUNCTION Basic_Callback
+#endif
