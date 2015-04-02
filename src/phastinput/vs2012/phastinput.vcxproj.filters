@@ -174,19 +174,19 @@
     <ClCompile Include="..\write.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\Parser.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_base.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_io.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\PhastKeywords\Keywords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\Parser.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_base.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -347,22 +347,19 @@
     <ClInclude Include="..\Zone_budget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\Parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_io.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\phrqtype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\phast\PhreeqcRM\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\PhastKeywords\Keywords.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\Parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
