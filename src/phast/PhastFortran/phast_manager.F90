@@ -931,7 +931,11 @@ REAL(kind=C_DOUBLE) FUNCTION my_basic_fortran_callback(x1, x2, str, l) BIND(C, n
             else if (fstr(1:l) .eq. "cell_saturation") then
 				my_basic_fortran_callback = frac(j)
             else if (fstr(1:l) .eq. "cell_porosity") then
-				my_basic_fortran_callback = pv0(j) / volume(j) 
+                if (volume(j) .gt. 0.0d0) then
+				    my_basic_fortran_callback = pv0(j) / volume(j) 
+                else
+                    my_basic_fortran_callback = 0.0d0
+                endif
             endif
         endif
     endif
@@ -977,15 +981,17 @@ SUBROUTINE register_basic_callback_fortran()
         END FUNCTION my_basic_fortran_callback   
     END INTERFACE    
 
-	integer status, method_number, mpi_tasks, mpi_myself
-    integer i, j
+	integer status 
+    integer i, j, mpi_myself, method
+    
+    mpi_myself = RM_GetMpiMyself(rm_id)
     
 #ifdef USE_MPI    
-    if (mpi_myself == 0) then
-        CALL MPI_BCAST(METHOD_REGISTERBASICCALLBACK, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
+	if (mpi_myself == 0) then
+		method = METHOD_REGISTERBASICCALLBACK;
+		CALL MPI_Bcast(method, 1, MPI_INT, 0, MPI_COMM_WORLD, status)
     endif
 #endif 
-
     do i = 1, RM_GetThreadCount(rm_id) + 2
 		j = RM_GetIPhreeqcId(rm_id, i-1)
 		j = SetBasicFortranCallback(j, my_basic_fortran_callback)
