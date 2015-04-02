@@ -910,7 +910,7 @@ REAL(kind=C_DOUBLE) FUNCTION my_basic_fortran_callback(x1, x2, str, l) BIND(C, n
     REAL(kind=C_DOUBLE),    INTENT(in)        :: x1, x2
     CHARACTER(kind=C_CHAR), INTENT(in)        :: str(*)
     INTEGER(kind=C_INT),    INTENT(in), value :: l
-    character(100) fstr
+    character(len=l) fstr
 
     INTEGER :: list(4), i, j
     INTEGER :: size=4, rm_cell_number
@@ -945,7 +945,7 @@ Pure Function to_lower (str) Result (string)
 !   ==============================
 !   Changes a string to lower case
 !   ==============================
-
+USE mcv, only : frac
     Implicit None
     Character(*), Intent(In) :: str
     Character(LEN(str))      :: string
