@@ -620,7 +620,11 @@ SUBROUTINE InitializeRM
 
         ! ... Define mapping from 3D domain to chemistry
         CALL CreateMappingFortran(indx_sol1_ic)
-        status = RM_CreateMapping(rm_id, grid2chem)        
+        status = RM_CreateMapping(rm_id, grid2chem)    
+        
+        ! Set Basic callback for cell_volume, cell_saturation, cell_porosity, and cell_pore_volume
+        CALL register_basic_callback_fortran()
+        
         ! ... Make arrays in the correct order
         ALLOCATE(ic1_reordered(nxyz,7), ic2_reordered(nxyz,7), f1_reordered(nxyz,7),   &
         STAT = a_err)
@@ -889,19 +893,101 @@ SUBROUTINE Timing_barrier()
     endif
     END SUBROUTINE Timing_barrier  
     
-#ifdef IPHREEQC_NO_FORTRAN_MODULE
-DOUBLE PRECISION FUNCTION Basic_Callback( x1, x2, str)
-    IMPLICIT none
-    DOUBLE PRECISION, INTENT(in) :: x1, x2
-    CHARACTER, INTENT(in) :: str
-    Basic_Callback = 0.0
-END FUNCTION Basic_Callback
-#else
-REAL(kind=C_DOUBLE) FUNCTION Basic_Callback( x1, x2, str)
+REAL(kind=C_DOUBLE) FUNCTION my_basic_fortran_callback(x1, x2, str, l) BIND(C, name='my_basic_fortran_callback')
     USE ISO_C_BINDING
+    USE PhreeqcRM
+    USE mcv, only : frac
+    USE mcc, only : rm_id
+    USE mcn, only : volume, pv0
     IMPLICIT none
-    REAL(kind=C_DOUBLE), INTENT(in) :: x1, x2
-    CHARACTER(kind=C_CHAR), INTENT(in) :: str
-    Basic_Callback = 0.0
-END FUNCTION Basic_Callback
-#endif
+    INTERFACE
+        Pure Function to_lower (str) Result (string)
+            Character(*), Intent(In) :: str
+            Character(LEN(str))      :: string 
+        end function to_lower
+    END INTERFACE
+
+    REAL(kind=C_DOUBLE),    INTENT(in)        :: x1, x2
+    CHARACTER(kind=C_CHAR), INTENT(in)        :: str(*)
+    INTEGER(kind=C_INT),    INTENT(in), value :: l
+    character(100) fstr
+
+    INTEGER :: list(4), i, j
+    INTEGER :: size=4, rm_cell_number
+    
+    do i = 1, l
+        fstr(i:i) = str(i)
+    enddo
+    fstr = to_lower(fstr)
+	rm_cell_number = DINT(x1)
+    my_basic_fortran_callback = -999.9
+	if (rm_cell_number .ge. 0 .and. rm_cell_number < RM_GetChemistryCellCount(rm_id)) then
+		if (RM_GetBackwardMapping(rm_id, rm_cell_number, list, size) .eq. 0) then
+            j = list(1)+1
+			if (fstr(1:l) .eq. "cell_volume") then
+				my_basic_fortran_callback = volume(j) * 1000.
+            else if (fstr(1:l) .eq. "cell_pore_volume") then
+				my_basic_fortran_callback = pv0(j) * 1000.0  
+            else if (fstr(1:l) .eq. "cell_saturation") then
+				my_basic_fortran_callback = frac(j)
+            else if (fstr(1:l) .eq. "cell_porosity") then
+				my_basic_fortran_callback = pv0(j) / volume(j) 
+            endif
+        endif
+    endif
+END FUNCTION my_basic_fortran_callback
+Pure Function to_lower (str) Result (string)
+
+!   ==============================
+!   Changes a string to lower case
+!   ==============================
+
+    Implicit None
+    Character(*), Intent(In) :: str
+    Character(LEN(str))      :: string
+
+    Integer :: ic, i
+
+    Character(26), Parameter :: cap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    Character(26), Parameter :: low = 'abcdefghijklmnopqrstuvwxyz'
+
+!   Lower case each letter if it is upper case
+    string = str
+    do i = 1, LEN_TRIM(str)
+        ic = INDEX(cap, str(i:i))
+        if (ic > 0) string(i:i) = low(ic:ic)
+    end do
+
+End Function to_lower
+
+SUBROUTINE register_basic_callback_fortran()
+    USE IPhreeqc
+    USE PhreeqcRM
+    USE mpi_mod
+    USE mcc, only : rm_id
+    USE ISO_C_BINDING
+    implicit none
+    INTERFACE
+        REAL(kind=C_DOUBLE) FUNCTION my_basic_fortran_callback(x1, x2, str, l) BIND(C)
+            USE ISO_C_BINDING
+            IMPLICIT none
+            REAL(kind=C_DOUBLE), INTENT(in)           :: x1, x2
+            CHARACTER(kind=C_CHAR), INTENT(in)        :: str(*)
+            INTEGER(kind=C_INT),    INTENT(in), value :: l
+        END FUNCTION my_basic_fortran_callback   
+    END INTERFACE    
+
+	integer status, method_number, mpi_tasks, mpi_myself
+    integer i, j
+    
+#ifdef USE_MPI    
+    if (mpi_myself == 0) then
+        CALL MPI_BCAST(METHOD_REGISTERBASICCALLBACK, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
+    endif
+#endif 
+
+    do i = 1, RM_GetThreadCount(rm_id) + 2
+		j = RM_GetIPhreeqcId(rm_id, i-1)
+		j = SetBasicFortranCallback(j, my_basic_fortran_callback)
+    enddo
+END SUBROUTINE register_basic_callback_fortran

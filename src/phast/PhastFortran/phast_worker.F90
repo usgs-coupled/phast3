@@ -369,6 +369,9 @@ INTEGER(KIND=C_INT) FUNCTION mpi_methods(method) BIND(C)
     else if (method == METHOD_TIMINGBARRIER) then
         if (debug) write(*,*) "METHOD_TIMINGBARRIER"
         CALL Timing_barrier()
+    else if (method == METHOD_TIMINGBARRIER) then
+        if (debug) write(*,*) "METHOD_REGISTERBASICCALLBACK"
+        CALL register_basic_callback_fortran()
     endif
 #endif
     mpi_methods = return_value
