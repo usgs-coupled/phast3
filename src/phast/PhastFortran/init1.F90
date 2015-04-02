@@ -44,7 +44,7 @@ SUBROUTINE init1
   ! ... Allocate node information arrays: mcn
   ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
        x_face(nx-1), y_face(ny-1), z_face(nz-1),  &
-       pv0(nxyz), por(nxyz), &
+       pv0(nxyz), por(nxyz), volume(nxyz), &
        phreeqc_density(nxyz), &
        STAT = a_err)
   IF (a_err /= 0) THEN  
@@ -52,7 +52,7 @@ SUBROUTINE init1
      STOP  
   ENDIF
   ! ... Allocate boundary condition information: mcb and mcb_m
-  ALLOCATE(ibc(nxyz), char_ibc(nxyz), ibc_string(nxyz), volume(nxyz),  &
+  ALLOCATE(ibc(nxyz), char_ibc(nxyz), ibc_string(nxyz),  &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: init1, point 3"  

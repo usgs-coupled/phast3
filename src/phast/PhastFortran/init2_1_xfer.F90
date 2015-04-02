@@ -57,6 +57,8 @@ SUBROUTINE init2_1_xfer_m
           xp_comm, ierrmpi)
      CALL MPI_BCAST(pmcv(1), SIZE(pmcv), MPI_DOUBLE_PRECISION, manager, &
           xp_comm, ierrmpi)
+     CALL MPI_BCAST(volume(1), SIZE(volume), MPI_DOUBLE_PRECISION, manager, &
+          xp_comm, ierrmpi)
 
   ! *** 5 broadcast ibc
   CALL MPI_BCAST(ibc(1), nxyz, MPI_INTEGER, manager, &
@@ -318,6 +320,8 @@ SUBROUTINE init2_1_xfer_w
      CALL MPI_BCAST(pv(1), SIZE(pv), MPI_DOUBLE_PRECISION, manager, &
           xp_comm, ierrmpi)
      CALL MPI_BCAST(pmcv(1), SIZE(pmcv), MPI_DOUBLE_PRECISION, manager, &
+          xp_comm, ierrmpi)
+     CALL MPI_BCAST(volume(1), SIZE(volume), MPI_DOUBLE_PRECISION, manager, &
           xp_comm, ierrmpi)
 
   ! *** 5 broadcast ibc    
