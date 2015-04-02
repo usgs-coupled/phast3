@@ -83,7 +83,7 @@ SELECTED_OUTPUT
         -pH
 USER_PUNCH
 # Prints concentrations in mg/kgw to ex4.xyz.chem and ex4.h5
--heading        Ca      Mg      Na      Cl      C(4)    SO4     As
+-heading        Ca      Mg      Na      Cl      C(4)    SO4     As vol sat pv por
 10 PUNCH TOT("Ca")*1e3*40.08
 20 PUNCH TOT("Mg")*1e3*24.312
 30 PUNCH TOT("Na")*1e3*23.
@@ -91,4 +91,9 @@ USER_PUNCH
 50 PUNCH TOT("C(4)")*1e3*61.   # as HCO3-
 60 PUNCH TOT("S(6)")*1e3*96.   # as SO4
 70 PUNCH TOT("As")*1e6*74.296  # ug/L
+80 PUNCH cell_volume
+90 PUNCH cell_saturation
+100 PUNCH cell_pore_volume
+110 PUNCH cell_porosity
+
 END
