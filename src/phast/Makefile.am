@@ -169,6 +169,7 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/advection.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/basicsubs.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.cpp\
