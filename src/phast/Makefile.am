@@ -166,7 +166,6 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcF.f\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp\
