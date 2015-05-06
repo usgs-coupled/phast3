@@ -11,19 +11,19 @@ ADD_DEFINITIONS(-DPHRQ_IO_INPUT)
 # setup include directories
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories("${CMAKE_SOURCE_DIR}/src/phastinput/PhastKeywords")
-include_directories("${CMAKE_SOURCE_DIR}/src/phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp")
+include_directories("${CMAKE_SOURCE_DIR}/src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp")
 
 # source
 SET(phastinput_SOURCES
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx
-../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx
+../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h
 accumulate.cpp
 ArcRaster.cpp
 ArcRaster.h
