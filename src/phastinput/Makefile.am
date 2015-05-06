@@ -133,31 +133,31 @@ COMPILE = $(CXXCOMPILE)
 LTCOMPILE = $(LTCXXCOMPILE)
 
 $(srcdir)/PhastKeywords/Parser.cxx:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx .
 
 $(srcdir)/PhastKeywords/Parser.h:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h .
 
 $(srcdir)/PhastKeywords/PHRQ_base.cxx:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx .
 
 $(srcdir)/PhastKeywords/PHRQ_base.h:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h .
 
 $(srcdir)/PhastKeywords/PHRQ_io.cpp:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp .
 
 $(srcdir)/PhastKeywords/PHRQ_io.h:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h .
 
 $(srcdir)/PhastKeywords/phrqtype.h:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h .
 
 $(srcdir)/PhastKeywords/Utils.cxx:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx .
 
 $(srcdir)/PhastKeywords/Utils.h:
-	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h .
+	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h .
 
 DISTCLEANFILES=\
 	$(srcdir)/PhastKeywords/Parser.cxx\
