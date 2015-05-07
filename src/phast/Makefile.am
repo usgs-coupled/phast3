@@ -351,6 +351,7 @@ CLEANFILES=\
 	f_units.$(F90_MODEXT)\
 	hdf_media.$(F90_MODEXT)\
 	interpolate_mod.$(F90_MODEXT)\
+	iphreeqc.$(F90_MODEXT)\
 	ld_seg_mod.$(F90_MODEXT)\
 	machine_constants.$(F90_MODEXT)\
 	mcb2.$(F90_MODEXT)\
