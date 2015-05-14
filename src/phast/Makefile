@@ -162,13 +162,13 @@ HASH_STYLE=$(call ld-option, -Wl$(comma)--hash-style=sysv)
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMP_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ
+  DEFINES      = $(DEFINE_HDF)  -DSWIG_SHARED_OBJ -DNDEBUG -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP $(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
-  FFLAGS       = $(PROFILE) -g -O3 -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) 
+  FFLAGS       = $(PROFILE) -O3 -frecursive -fopenmp -fno-underscoring -cpp $(DEFINES) 
   CC           = g++
-  CFLAGS       = $(PROFILE) -Wall -fopenmp -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = $(PROFILE) -O3 -foptimize-sibling-calls -Wall -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS)
   LD_FLAGS     = $(PROFILE) $(LIBGFORTRAN_64) -lgomp -lm ${HASH_STYLE} ${HDF5_LIBS_64}
   LINKER       = $(CXX)
@@ -176,7 +176,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMP_GFORTRAN_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ 
+  DEFINES      = $(DEFINE_HDF)  -DSWIG_SHARED_OBJ -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP $(PHREEQC_INCLUDES) -DUSE_GZ 
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FGFORTRAN)
@@ -191,7 +191,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), MPI_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES) -DUSE_GZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DSWIG_SHARED_OBJ -DNDEBUG -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES $(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_GFORTRAN_64)/bin/mpif90
@@ -207,7 +207,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), MPI_GFORTRAN_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES -I$(PHREEQC_INCLUDES)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI)  -DSWIG_SHARED_OBJ -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES $(PHREEQC_INCLUDES)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_GFORTRAN_64)/bin/mpif90
@@ -222,7 +222,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMP_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ
+  DEFINES      = $(DEFINE_HDF) -DSWIG_SHARED_OBJ -DNDEBUG -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP $(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -236,7 +236,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMP_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP -I$(PHREEQC_INCLUDES) -DUSE_GZ
+  DEFINES      = $(DEFINE_HDF) -DSWIG_SHARED_OBJ -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DUSE_OPENMP $(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
@@ -250,7 +250,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES) -DUSE_GZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI)  -DSWIG_SHARED_OBJ -DNDEBUG -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC  $(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_IFORT_64)/bin/mpif90
@@ -265,7 +265,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -I$(PHREEQC_INCLUDES) -DUSE_GZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DSWIG_SHARED_OBJ  -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC $(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_IFORT_64)/bin/mpif90
@@ -281,7 +281,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), MPICH_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DNDEBUG -DHAVE_ISFINITE  -I$(PHREEQC_INCLUDES) -DUSE_GZ
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI)  -DSWIG_SHARED_OBJ -DNDEBUG -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC  $(PHREEQC_INCLUDES) -DUSE_GZ
   VPATH        = $(PHREEQC_VPATH)
   SZIP_ROOT=/home/dlpark/packages/szip2.0-linux-gcc3.2.3-enc
   SZIP_LIB=${SZIP_ROOT}/lib/libsz.a
