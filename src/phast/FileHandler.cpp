@@ -834,7 +834,10 @@ FileHandler::WriteXYZ(int *print_xyz, int *xyz_mask)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{	
-		Reaction_module_ptr->GetSaturation(this->saturation);
+		if (Reaction_module_ptr->GetComponentCount() > 0)
+		{
+			Reaction_module_ptr->GetSaturation(this->saturation);
+		}
 		int nso = RM_GetSelectedOutputCount(this->rm_id);
 		int nxyz = RM_GetSelectedOutputRowCount(this->rm_id); 
 		double current_time = RM_GetTimeConversion(this->rm_id) * RM_GetTime(this->rm_id);
