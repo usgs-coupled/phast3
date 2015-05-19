@@ -286,6 +286,9 @@ END SUBROUTINE phast_manager
 SUBROUTINE time_parallel(i)
     USE mcc, only: rm_id, solute
     USE mpi_mod
+#ifdef USE_OPENMP
+    USE omp_lib
+#endif
   USE PhreeqcRM
   IMPLICIT NONE
     integer :: i, ierr
