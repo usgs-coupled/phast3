@@ -303,7 +303,9 @@ SUBROUTINE time_parallel(i)
 #if defined(USE_MPI)
     !CALL Timing_barrier()
     t = MPI_Wtime()
-#else    
+#elif defined(USE_OPENMP)
+    t = omp_get_wtime();
+#else
     call SYSTEM_CLOCK(t_ticks, clock_rate, clock_max)
     t = real(t_ticks) / real(clock_rate)
 #endif    
