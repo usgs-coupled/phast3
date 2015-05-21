@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="mpi_debug|Win32">
@@ -188,6 +188,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
