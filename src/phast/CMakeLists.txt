@@ -352,11 +352,12 @@ if (PHAST_BUILD_MPI)
   include_directories(${MPI_CXX_INCLUDE_PATH})
   if (MPI_Fortran_INCLUDE_PATH)
     if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
-      set(MS_MPI_ARCH_DIR amd64)
+      include_directories(${MPI_Fortran_INCLUDE_PATH}/x64)
+      include_directories(${MPI_Fortran_INCLUDE_PATH}/amd64)
     else()
-      set(MS_MPI_ARCH_DIR i386)
+      include_directories(${MPI_Fortran_INCLUDE_PATH}/x86)
+      include_directories(${MPI_Fortran_INCLUDE_PATH}/i386)
     endif()
-    include_directories(${MPI_Fortran_INCLUDE_PATH}/${MS_MPI_ARCH_DIR})
   endif()
   set(LINK_LIBS ${LINK_LIBS} ${MPI_CXX_LIBRARIES})
   if (MPI_Fortran_LIBRARIES MATCHES "msmpi.lib$")
@@ -369,6 +370,14 @@ target_link_libraries(phast3 ${LINK_LIBS})
 
 # install
 install(TARGETS phast3 DESTINATION ${CMAKE_INSTALL_BINDIR})
+if (WIN32 AND HDF5_INCLUDE_DIR)
+  install(FILES 
+  "${HDF5_INCLUDE_DIR}/../bin/hdf5.dll"
+  "${HDF5_INCLUDE_DIR}/../bin/szip.dll"
+  "${HDF5_INCLUDE_DIR}/../bin/zlib.dll"
+  DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
+include (InstallRequiredSystemLibraries)
 
 ### tests
 ##enable_testing()
