@@ -4,7 +4,6 @@
 #include <math.h>
 #include <istream>
 #include "Cell_Face.h"
-//#include "gpc.h"
 class Point
 {
   public:
