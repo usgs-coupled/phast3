@@ -1,7 +1,5 @@
 #include "Point.h"
 #include <map>
-//#include "gpc.h"
-//#include "message.h"
 #include <stdio.h>
 #include <sstream>
 // constructor
