@@ -8,7 +8,7 @@ IF NOT ERRORLEVEL 1 GOTO RUN
 GOTO END
 
 :RUN
-"%TD%\phast-ser.exe"
+"%TD%\phast-mt.exe"
 
 :END
 endlocal
