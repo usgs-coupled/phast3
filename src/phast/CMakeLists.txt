@@ -143,6 +143,9 @@ if (PHAST_BUILD_MPI)
 else()
   if (PHAST_BUILD_OPENMP)
     ADD_DEFINITIONS(-DUSE_OPENMP)
+    SET_TARGET_PROPERTIES(phastf PROPERTIES
+                          COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+                          LINK_FLAGS "${OpenMP_Fortran_FLAGS}")
   endif()
 endif()
 
@@ -315,6 +318,12 @@ include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/
 
 add_library(PhreeqcRM STATIC ${PhreeqcRM_SOURCES})
 
+if (PHAST_BUILD_OPENMP)
+  SET_TARGET_PROPERTIES(PhreeqcRM PROPERTIES
+                        COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
+                        LINK_FLAGS "${OpenMP_CXX_FLAGS}")
+endif()
+
 #
 # phast3
 #
@@ -368,6 +377,12 @@ endif()
 
 target_link_libraries(phast3 ${LINK_LIBS})
 
+if (PHAST_BUILD_OPENMP)
+  SET_TARGET_PROPERTIES(phast3 PROPERTIES
+                        COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
+                        LINK_FLAGS "${OpenMP_CXX_FLAGS}")
+endif()
+
 # install
 install(TARGETS phast3 DESTINATION ${CMAKE_INSTALL_BINDIR})
 if (WIN32 AND HDF5_INCLUDE_DIR)
@@ -378,8 +393,3 @@ if (WIN32 AND HDF5_INCLUDE_DIR)
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 include (InstallRequiredSystemLibraries)
-
-### tests
-##enable_testing()
-##
-##add_subdirectory(Tests)

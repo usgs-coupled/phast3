@@ -1,4 +1,8 @@
+if (WIN32)
+cmake_minimum_required (VERSION 3.2.3)
+else()
 cmake_minimum_required (VERSION 2.8.10)
+endif()
 
 project(phast CXX C Fortran)
 
@@ -67,3 +71,4 @@ add_subdirectory(examples)
 #add_subdirectory(lib)
 add_subdirectory(src)
 
+include(CPack)
