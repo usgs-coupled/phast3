@@ -151,7 +151,7 @@ echo "Removed and recreated $DIST_SANDBOX"
 echo "Exporting revision $REVISION of PHAST into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/$REPOS_PATH" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phast3/$REPOS_PATH" \
              "$DISTNAME")
 if [ $? != 0 ] ; then
   exit $?;
@@ -160,17 +160,17 @@ fi
 echo "Exporting revision $REVISION of external database into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/database" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/database" \
              "$DISTNAME/database")
 if [ $? != 0 ] ; then
   exit $?;
 fi
 
-echo "Exporting revision $REVISION of external src/phast/phreeqcpp into sandbox..."
+echo "Exporting revision $REVISION of external doc/phreeqc3-doc into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqcpp/trunk/src" \
-             "$DISTNAME/src/phast/phreeqcpp")
+             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/doc" \
+             "$DISTNAME/doc/phreeqc3-doc")
 if [ $? != 0 ] ; then
   exit $?;
 fi
@@ -178,17 +178,35 @@ fi
 echo "Exporting revision $REVISION of external src/phast/KDtree into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/trunk/src/phastinput/KDtree" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phast3/trunk/src/phastinput/KDtree" \
              "$DISTNAME/src/phast/KDtree")
 if [ $? != 0 ] ; then
   exit $?;
 fi
 
-echo "Exporting revision $REVISION of external src/phast/phreeqcpp/phreeqc into sandbox..."
+echo "Exporting revision $REVISION of external src/phast/PhreeqcRM into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/src" \
-             "$DISTNAME/src/phast/phreeqcpp/phreeqc")
+             "http://internalbrr.cr.usgs.gov/svn_GW/PhreeqcRM/trunk" \
+             "$DISTNAME/src/phast/PhreeqcRM")
+if [ $? != 0 ] ; then
+  exit $?;
+fi
+
+echo "Exporting revision $REVISION of external src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc into sandbox..."
+(cd "$DIST_SANDBOX" && \
+        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/IPhreeqc/trunk/src" \
+             "$DISTNAME/src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc")
+if [ $? != 0 ] ; then
+  exit $?;
+fi
+
+echo "Exporting revision $REVISION of external src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp into sandbox..."
+(cd "$DIST_SANDBOX" && \
+        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/src" \
+             "$DISTNAME/src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp")
 if [ $? != 0 ] ; then
   exit $?;
 fi
@@ -318,16 +336,13 @@ fi
 
 VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 
-SED_FILES="$DISTPATH/src/phast/win32/phast_version.h \
-           $DISTPATH/src/phast/win32_2005/phast_version.h \
+SED_FILES="$DISTPATH/src/phast/phast_version.h \
            $DISTPATH/src/phast/phast.F90 \
            $DISTPATH/src/phast/phreeqcpp/phreeqc/revisions \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
-           $DISTPATH/src/phastinput/win32/phastinput_version.h \
+           $DISTPATH/src/phastinput/phastinput_version.h \
            $DISTPATH/README \
            $DISTPATH/RELEASE \
-           $DISTPATH/packages/win32-is/phast.ipr \
-           $DISTPATH/packages/win32-is/String?Tables/0009-English/value.shl"
 for vsn_file in $SED_FILES
 do
   sed \
