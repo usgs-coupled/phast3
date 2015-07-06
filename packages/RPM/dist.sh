@@ -337,7 +337,7 @@ fi
 VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 
 SED_FILES="$DISTPATH/src/phast/phast_version.h \
-           $DISTPATH/src/phast/phast.F90 \
+           $DISTPATH/src/phast/phast_spmd.F90 \
            $DISTPATH/src/phast/phreeqcpp/phreeqc/revisions \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
            $DISTPATH/src/phastinput/phastinput_version.h \
@@ -368,9 +368,9 @@ do
   cp "$vsn_file" "$vsn_file.dist"
 done
 
-echo "Copying src/phast/phreeqcpp/phreeqc/revisions to src/phast/phreeqc.revisions and doc/phreeqc.revisions"
-cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
-cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/doc/phreeqc.revisions"
+#echo "Copying src/phast/phreeqcpp/phreeqc/revisions to src/phast/phreeqc.revisions and doc/phreeqc.revisions"
+#cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
+#cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/doc/phreeqc.revisions"
 
 echo "Rolling $DISTNAME.tar ..."
 (cd "$DIST_SANDBOX" > /dev/null && tar c "$DISTNAME") > \
