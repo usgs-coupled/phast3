@@ -342,7 +342,7 @@ SED_FILES="$DISTPATH/src/phast/phast_version.h \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
            $DISTPATH/src/phastinput/phastinput_version.h \
            $DISTPATH/README \
-           $DISTPATH/RELEASE \
+           $DISTPATH/RELEASE"
 for vsn_file in $SED_FILES
 do
   sed \
