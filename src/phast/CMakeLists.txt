@@ -132,6 +132,7 @@ project(PhreeqcRM CXX)
 
 ADD_DEFINITIONS(-DSWIG_SHARED_OBJ)
 ADD_DEFINITIONS(-DUSE_PHRQ_ALLOC)
+ADD_DEFINITIONS(-DUSE_GZ)
 
 ADD_DEFINITIONS(-DHDF5_CREATE)
 ADD_DEFINITIONS(-DH5Dcreate_vers=1)
@@ -344,12 +345,14 @@ gzstream.cxx
 gzstream.h
 hdf.cpp
 hdf.h
-phast.rc
 phast_main.cpp
-phast_version.h
-resource.h
 )
 
+if (MSVC)
+  set(phast3_SOURCES ${phast3_SOURCES} phast.rc)
+  set(phast3_SOURCES ${phast3_SOURCES} phast_version.h)
+  set(phast3_SOURCES ${phast3_SOURCES} resource.h)
+endif()
 
 add_executable(phast3 ${phast3_SOURCES})
 
