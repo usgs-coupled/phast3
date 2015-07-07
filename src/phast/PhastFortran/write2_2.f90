@@ -89,7 +89,7 @@ SUBROUTINE write2_2
      IF(solute .AND. prtic_well_timser) THEN
         allocate(c_well(1,ns), tc(1), p_atm(1))
         ! ... Write static data to file 'FUPLT' for temporal plots
-        WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+2,'(1pe15.7,a)) '
+        WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+3,'(1pe15.7,a)) '
         DO  iwel=1,nwel
            m=mwel(iwel,nkswel(iwel))
            u1=cnvtmi*time
