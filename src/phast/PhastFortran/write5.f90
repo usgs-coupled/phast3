@@ -859,7 +859,7 @@ SUBROUTINE write5
               status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
               status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, pe, svalue)
               status = GetSelectedOutputValue(iphreeqc_id, 1, 3, vtype, alk, svalue) 
-              WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+2,'(1pe15.7,a))'
+              WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+3,'(1pe15.7,a))'
               WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
                    cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
                    (u10(is),ACHAR(9),is=1,ns),ph,ACHAR(9), &
