@@ -52,7 +52,7 @@ SUBROUTINE write5
   LOGICAL :: erflg, prthd, prthd2, prthd3
   REAL(KIND=kdp), PARAMETER :: cnv = 1._kdp
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: cwkt_mol
-  REAL(KIND=kdp) :: ph, alk
+  REAL(KIND=kdp) :: ph, alk, pe
   CHARACTER(LEN=130) :: logline1, logline2
   INTEGER :: status
   CHARACTER(LEN=100) :: string, svalue, line
@@ -814,7 +814,7 @@ SUBROUTINE write5
         if (iphreeqc_id < 0) then 
            status = RM_Abort(rm_id, iphreeqc_id, "writer, RM_GetIPhreeqcId");
         endif
-        status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -alkalinity");
+        status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -pe; -alkalinity");
         string = "RUN_CELLS; -cell 1"
         allocate(c_well(1,ns), tc(1), p_atm(1))
         DO  iwel=1,nwel
@@ -857,11 +857,13 @@ SUBROUTINE write5
                   enddo
               endif              
               status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
-              status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, alk, svalue)              
+              status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, pe, svalue)
+              status = GetSelectedOutputValue(iphreeqc_id, 1, 3, vtype, alk, svalue) 
               WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+2,'(1pe15.7,a))'
               WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
                    cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
-                   (u10(is),ACHAR(9),is=1,ns),ph,ACHAR(9), alk, ACHAR(9)
+                   (u10(is),ACHAR(9),is=1,ns),ph,ACHAR(9), &
+                   pe, ACHAR(9), alk, ACHAR(9)
            ENDIF
         END DO
         deallocate(c_well, tc, p_atm)

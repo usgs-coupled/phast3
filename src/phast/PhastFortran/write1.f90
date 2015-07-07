@@ -160,7 +160,8 @@ SUBROUTINE write1
      WRITE(fmt1,"(a,i2,a)") '(tr1,a,',ns+2,'a)'
      WRITE(fuplt,fmt1) 'x'//ACHAR(9)//'y'//ACHAR(9)//'z_datum'//  &
        ACHAR(9)//'Time'//ACHAR(9)//'Well_no'//ACHAR(9),  &
-       (comp_name(is)//ACHAR(9),is=1,ns),'pH'//ACHAR(9)//'Alkalinity'//ACHAR(9)
+       (comp_name(is)//ACHAR(9),is=1,ns),'pH'//ACHAR(9)&
+       //'pe'//ACHAR(9)//'Alkalinity'//ACHAR(9)
   endif
 !!$  ! ... Write static data to file 'FUBNFR' for b.c. flow summation
 !!$  WRITE(fubnfr,5001) title(1:80),title(81:160)
