@@ -56,7 +56,7 @@ SUBROUTINE write2_2
   INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
   INTEGER :: nr
   REAL(kind=kdp), PARAMETER :: cnv = 1._kdp
-  REAL(KIND=kdp) :: ph, alk
+  REAL(KIND=kdp) :: ph, alk, pe
   INTEGER :: da_err
   INTEGER :: a_err
   CHARACTER(LEN=100) :: string, svalue, line
@@ -83,7 +83,7 @@ SUBROUTINE write2_2
      if (iphreeqc_id < 0) then 
          status = RM_Abort(rm_id, iphreeqc_id, "write2_2, RM_GetIPhreeqcId");
      endif
-     string = "DELETE; -cell 1; SELECTED_OUTPUT; -reset false; -pH; -alkalinity"
+     string = "DELETE; -cell 1; SELECTED_OUTPUT; -reset false; -pH; -pe; -alkalinity"
      status = RunString(iphreeqc_id, string)
      string = "RUN_CELLS; -cell 1"
      IF(solute .AND. prtic_well_timser) THEN
@@ -114,10 +114,12 @@ SUBROUTINE write2_2
                enddo
            endif
            status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
-           status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, alk, svalue)
+           status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, pe, svalue)
+           status = GetSelectedOutputValue(iphreeqc_id, 1, 3, vtype, alk, svalue)  
            WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
                 cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
-                (c(m,iis),ACHAR(9),iis=1,ns),ph,ACHAR(9), alk, ACHAR(9)
+                (c(m,iis),ACHAR(9),iis=1,ns),ph,ACHAR(9),&
+                pe, ACHAR(9), alk, ACHAR(9) 
         END DO
         ntprtem = ntprtem+1
         deallocate(c_well, tc, p_atm)
