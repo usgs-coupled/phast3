@@ -7,6 +7,7 @@ project(phastinput CXX)
 ADD_DEFINITIONS(-DANSI_DECLARATORS)
 #ADD_DEFINITIONS(-DTRILIBRARY) set in config.h
 ADD_DEFINITIONS(-DPHRQ_IO_INPUT)
+ADD_DEFINITIONS(-DUSE_GZ)
 
 # setup include directories
 include_directories(${Boost_INCLUDE_DIRS})
@@ -134,6 +135,7 @@ Zone_budget.h
 
 if (MSVC)
   set(phastinput_SOURCES ${phastinput_SOURCES} phastinput.rc)
+  set(phastinput_SOURCES ${phastinput_SOURCES} phastinput_version.h)
   set(phastinput_SOURCES ${phastinput_SOURCES} resource.h)
 endif()
 
