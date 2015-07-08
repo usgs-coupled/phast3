@@ -1,3 +1,5 @@
+EXTRA_DIST = CMakeLists.txt
+
 AM_CPPFLAGS=-I$(srcdir)/PhastKeywords
 
 bin_PROGRAMS = phastinput

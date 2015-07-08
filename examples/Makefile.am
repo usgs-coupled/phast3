@@ -1,3 +1,5 @@
+EXTRA_DIST = CMakeLists.txt
+
 EXAMPLES_DIR = $(datadir)/doc/$(PACKAGE_TARNAME)-$(VERSION)/examples
 
 # decay

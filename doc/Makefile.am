@@ -1,3 +1,5 @@
+EXTRA_DIST = CMakeLists.txt
+
 # Docs
 #
 docdir = $(datadir)/doc/$(PACKAGE_TARNAME)-$(VERSION)
