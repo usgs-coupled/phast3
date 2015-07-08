@@ -192,7 +192,6 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\getopt.cpp" />
     <ClCompile Include="..\gpc.cpp" />
     <ClCompile Include="..\gpc_helper.cpp" />
     <ClCompile Include="..\main.cpp" />
@@ -420,7 +419,6 @@
     <ClInclude Include="..\Drain.h" />
     <ClInclude Include="..\Exterior_cell.h" />
     <ClInclude Include="..\Filedata.h" />
-    <ClInclude Include="..\getopt.h" />
     <ClInclude Include="..\gpc.h" />
     <ClInclude Include="..\gpc_helper.h" />
     <ClInclude Include="..\NNInterpolator\hash.h" />
