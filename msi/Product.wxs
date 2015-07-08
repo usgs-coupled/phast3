@@ -26,7 +26,7 @@
            Version="$(var.Version)"
            Manufacturer="$(var.Manufacturer)"
            UpgradeCode="$(var.UpgradeGuid)">
-		<Package InstallerVersion="200" Compressed="yes" />
+		<Package InstallerVersion="405" Compressed="yes" />
 
 		<Media Id="1" Cabinet="media.cab" EmbedCab="yes" />
 
@@ -51,13 +51,26 @@
       <!-- start menu -->
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="Phast $(var.Major).$(var.Minor).$(var.Build)">
+          <!--
           <Directory Id="MV.ApplicationProgramsFolder" Name="Model Viewer 1.3"/>
+          -->
         </Directory>
       </Directory>
     </Directory>
 
+    <DirectoryRef Id="TARGETDIR">
+      <?if $(sys.BUILDARCH)=x64 ?>
+      <Merge Id='VC110_CRT_x64' Language='0' SourceFile='..\Merge Modules\Microsoft_VC110_CRT_x64.msm' DiskId='1' />
+      <Merge Id='VC110_OpenMP_x64' Language='0' SourceFile='..\Merge Modules\Microsoft_VC110_OpenMP_x64.msm' DiskId='1' />
+      <Merge Id='w_fcompxe_redist_intel64_2013_sp1.1.139' Language="1033" SourceFile='..\Merge Modules\w_fcompxe_redist_intel64_2013_sp1.1.139.msm' DiskId='1' />
+      <?endif?>
+    </DirectoryRef>
+
     <Feature Id="ProgramFiles" Title="Program Files" Description="This component contains the program executables, files required during execution, and minimal informal documentation." AllowAdvertise="no" Level="1" Display="expand">
       <ComponentGroupRef Id="Bin" />
+      <MergeRef Id="VC110_CRT_x64" />
+      <MergeRef Id="VC110_OpenMP_x64" />
+      <MergeRef Id="w_fcompxe_redist_intel64_2013_sp1.1.139" />
       <ComponentGroupRef Id="Database" />
       <ComponentGroupRef Id="Environ" />
       <ComponentGroupRef Id="Lib" />
@@ -67,16 +80,20 @@
         <ComponentGroupRef Id="Doc" />
         <ComponentRef Id="DocShortcuts"/>
       </Feature>
+      <!--
       <Feature Id="Source" Title="Source Code" Description="This component contains the programs source code." AllowAdvertise="no" Level="1">
         <ComponentGroupRef Id="Src" />
       </Feature>
+      -->
       <Feature Id="Examples" Title="Examples" Description="This component contains sample input files." AllowAdvertise="no" Level="1">
         <ComponentGroupRef Id="Examples" />
       </Feature>
+      <!--
       <Feature Id="MV" Title="Model Viewer" Description="Model Viewer is a computer program that displays the results of three-dimensional ground-water models.  The included version contains support to view Hierarchical Data Format (HDF5) files created by PHAST." AllowAdvertise="no" Level="1">
         <ComponentGroupRef Id="MV" />
         <ComponentRef Id="MVShortcuts" />
       </Feature>
+      -->
     </Feature>
 
     <!-- gui -->

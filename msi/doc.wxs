@@ -19,7 +19,7 @@
                     <File Id="phreeqc.pdf" KeyPath="yes" Source="..\doc\phreeqc.pdf" />
                 </Component>
                 <Component Id="phreeqc.revisions.txt" Guid="*">
-                    <File Id="phreeqc.revisions.txt" KeyPath="yes" Source="..\doc\phreeqc.revisions" Name="phreeqc.revisions.txt" />
+                    <File Id="phreeqc.revisions.txt" KeyPath="yes" Source="..\doc\phreeqc3-doc\RELEASE.TXT" Name="phreeqc.revisions.txt" />
                 </Component>
                 <Component Id="RELEASE.txt" Guid="*">
                     <File Id="RELEASE.txt" KeyPath="yes" Source="..\RELEASE" Name="RELEASE.txt" />
