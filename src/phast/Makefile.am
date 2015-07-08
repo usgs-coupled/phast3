@@ -1,4 +1,4 @@
-EXTRA_DIST = CMakeLists.txt
+EXTRA_DIST = CMakeLists.txt phast.rc phast_version.h resource.h
 
 AM_CPPFLAGS=-I$(srcdir)/PhreeqcRM/src -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords $(BOOST_CPPFLAGS)
 
