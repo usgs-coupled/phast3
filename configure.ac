@@ -344,7 +344,6 @@ AC_SUBST(PHAST_SUFFIX)
 
 AC_CONFIG_FILES([
   Makefile
-  database/Makefile
   doc/Makefile
   examples/Makefile
   src/Makefile
