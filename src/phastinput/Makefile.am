@@ -1,4 +1,4 @@
-EXTRA_DIST = CMakeLists.txt
+EXTRA_DIST = CMakeLists.txt phastinput.rc phastinput_version.h resource.h
 
 AM_CPPFLAGS=-I$(srcdir)/PhastKeywords
 
