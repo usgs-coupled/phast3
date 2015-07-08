@@ -4,7 +4,7 @@ SUBDIRS = doc examples src
 
 # Docs
 #
-databasedir=$(docdir)/database
+databasedir=$(datadir)/doc/$(PACKAGE_TARNAME)-$(VERSION)/database
 
 dist_database_DATA=$(DATABASE)
 
