@@ -1,3 +1,3 @@
 ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = INSTALL NOTICE README RELEASE CMakeLists.txt
-SUBDIRS = src examples doc
+SUBDIRS = database doc examples src
