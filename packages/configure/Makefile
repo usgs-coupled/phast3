@@ -29,7 +29,7 @@ $(TARBALL) : $(EXPORT)
 	cd $(NAME)-$(VER)-$(REL) && autoreconf -fvi
 	cd $(NAME)-$(VER)-$(REL) && mkdir _build
 	cd $(NAME)-$(VER)-$(REL) && cd _build && ../configure
-	cd $(NAME)-$(VER)-$(REL) && cd _build && make distcheck
+	cd $(NAME)-$(VER)-$(REL) && cd _build && $(MAKE) distcheck
 	cd $(NAME)-$(VER)-$(REL) && cd _build && cp $(NAME)-$(VER)-$(REL).tar.gz ../..
 	rm -rf $(NAME)-$(VER)-$(REL)
 
