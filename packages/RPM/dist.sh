@@ -252,7 +252,8 @@ find "$DISTPATH/src" -type f -name '*.user' -print | xargs rm -rf
 echo "Deleting examples that aren't distributed"
 mv "$DISTPATH/examples" "$DISTPATH/examples-delete"
 mkdir "$DISTPATH/examples"
-cp "$DISTPATH/examples-delete/Makefile.am" "$DISTPATH/examples"
+cp "$DISTPATH/examples-delete/CMakeLists.txt" "$DISTPATH/examples"
+cp "$DISTPATH/examples-delete/Makefile.am"    "$DISTPATH/examples"
 EXAMPLES="decay \
           diffusion1d \
           diffusion2d \
