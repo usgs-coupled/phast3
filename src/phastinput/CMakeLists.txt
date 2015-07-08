@@ -43,8 +43,6 @@ Exterior_cell.cpp
 Exterior_cell.h
 Filedata.cpp
 Filedata.h
-getopt.cpp
-getopt.h
 gpc.cpp
 gpc.h
 gpc_helper.cpp

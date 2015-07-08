@@ -138,9 +138,6 @@
     <ClCompile Include="..\check.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\getopt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gpc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -219,9 +216,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Filedata.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\getopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\gpc.h">
