@@ -59,13 +59,31 @@ if (PHAST_BUILD_MPI)
   ##endif()
 endif()
 
+# database
+SET(phast_DATABASE
+database/Amm.dat
+database/frezchem.dat
+database/iso.dat
+database/llnl.dat
+database/minteq.dat
+database/minteq.v4.dat
+database/phast.dat
+database/pitzer.dat
+database/sit.dat
+database/wateq4f.dat
+)
+
+IF(WIN32)
+  install (FILES ${phast_DATABASE} DESTINATION database)
+ELSE()
+  install (FILES ${phast_DATABASE} DESTINATION ${CMAKE_INSTALL_DOCDIR}/database)
+ENDIF()
 
 ### tests
 ##enable_testing()
 ##
 
 # subdirs
-add_subdirectory(database)
 add_subdirectory(doc)
 add_subdirectory(examples)
 #add_subdirectory(lib)
