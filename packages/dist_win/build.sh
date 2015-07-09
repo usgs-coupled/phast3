@@ -57,6 +57,7 @@ export VER=`echo $tscriptname | sed -e "s/${PKG}\-//" -e 's/\-[^\-]*$//'`
 export REL=`echo $tscriptname | sed -e "s/${PKG}\-${VER}\-//"`
 export MAJOR=`echo $VER | sed -e 's/\.[^.]*//g'`
 export MINOR=`echo $VER | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//'`
+export PATCH=`echo $VER | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//' -e 's/[^\.]*\.//'`
 export BASEPKG=${PKG}-${VER}-${REL}
 export FULLPKG=${BASEPKG}
 LOWER='abcdefghijklmnopqrstuvwxyz'
@@ -100,6 +101,7 @@ PHAST_SLN=`cygpath -w ./src/phast/win32_2005/phastpp.sln`
 PHASTINPUT_SLN=`cygpath -w ./src/phastinput/vc80/phastinput.sln`
 PHASTHDF_SLN=`cygpath -w ./src/phasthdf/win32/phastexport.sln`
 MSI_SLN=`cygpath -w ./msi/msi.sln`
+BOOT_SLN=`cygpath -w ./PhastBootstrapper/PhastBootstrapper.sln`
 
 # Modelviewer 
 export MODELVIEWER_1_3="/cygdrive/c/Program Files/USGS/Model Viewer 1.3/"
@@ -244,32 +246,34 @@ conf() {
 
 build() {
   (cd ${objdir} && \
-# build phasthdf.exe
-  "${DEVENV}" "${PHASTHDF_SLN}"   /out phasthdf.log         /build "Release|Win32" && \
+### build phasthdf.exe
+##  "${DEVENV}" "${PHASTHDF_SLN}"   /out phasthdf.log         /build "Release|Win32" && \
 # build phasthdf.exe x64
   "${DEVENV}" "${PHASTHDF_SLN}"   /out phasthdf-x64.log     /build "Release|x64" && \
-# build phastinput.exe
-  "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log       /build "Release|Win32" && \
-# build phastinput.exe x64
-  "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput-x64.log   /build "Release|x64" && \
+### build phastinput.exe
+##  "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log       /build "Release|Win32" && \
+### build phastinput.exe x64
+##  "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput-x64.log   /build "Release|x64" && \
 # build phast.jar
   cp -f ./src/phasthdf/build.xml.in ./src/phasthdf/build.xml
   "${ANT}" -buildfile ./src/phasthdf/build.xml dist-Win32 && \
   "${ANT}" -buildfile ./src/phasthdf/build.xml dist-Win64 && \
-# build merge/phast.exe
-  "${DEVENV}" "${PHAST_SLN}"      /out phast-merge.log      /build "merge|Win32" && \
-# build merge/phast.exe x64
-  "${DEVENV}" "${PHAST_SLN}"      /out phast-merge-x64.log  /build "merge|x64" && \
-# build ser/phast.exe
-  "${DEVENV}" "${PHAST_SLN}"      /out phast-ser.log        /build "ser|Win32" && \
-# build ser/phast.exe x64
-  "${DEVENV}" "${PHAST_SLN}"      /out phast-ser-x64.log    /build "ser|x64" && \
-# build model viewer
-  "${MSDEV}" `cygpath -w ./ModelViewer/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD && \
-# build phast.msi
-  MSBuild.exe "${MSI_SLN}" /t:msi /p:Configuration=Release /p:Platform=x86 /p:TargetName=${FULLPKG}     /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} && \
+### build merge/phast.exe
+##  "${DEVENV}" "${PHAST_SLN}"      /out phast-merge.log      /build "merge|Win32" && \
+### build merge/phast.exe x64
+##  "${DEVENV}" "${PHAST_SLN}"      /out phast-merge-x64.log  /build "merge|x64" && \
+### build ser/phast.exe
+##  "${DEVENV}" "${PHAST_SLN}"      /out phast-ser.log        /build "ser|Win32" && \
+### build ser/phast.exe x64
+##  "${DEVENV}" "${PHAST_SLN}"      /out phast-ser-x64.log    /build "ser|x64" && \
+### build model viewer
+##  "${MSDEV}" `cygpath -w ./ModelViewer/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD && \
+### build phast.msi
+##  MSBuild.exe "${MSI_SLN}" /t:msi /p:Configuration=Release /p:Platform=x86 /p:TargetName=${FULLPKG}     /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} && \
 # build phast.msi x64
-  MsBuild.exe "${MSI_SLN}" /t:msi /p:Configuration=Release /p:Platform=x64 /p:TargetName=${FULLPKG}-x64 /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} )
+  MsBuild.exe "${MSI_SLN}" /t:msi /p:Configuration=Release /p:Platform=x64 /p:TargetName=${FULLPKG}-x64 /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Patch=${PATCH} /p:Build=${REL}  && \
+# build phast.msi x64
+  MsBuild.exe "${BOOT_SLN}" /t:PhastBootstrapper /p:Configuration=Release /p:Platform=x64 /p:TargetName=${FULLPKG}-x64 /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Patch=${PATCH} /p:Build=${REL} )
 }
 
 
