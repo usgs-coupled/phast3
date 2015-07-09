@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Note Major Minor and Build are set on the command line -->
-<!-- ie MSBuild.exe msi.sln /p:Major=2 /p:Minor=0 /p:Build=4498 -->
+<!-- ie MSBuild.exe msi.sln /p:Major=2 /p:Minor=1 /p:Patch=0 /p:Build=1111 -->
 
 <!-- format must be major.minor.build -->
 <!-- major and minor have a maximum value of 255 -->

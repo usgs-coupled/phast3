@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- ie MSBuild.exe msi.sln /p:Major=2 /p:Minor=1 /p:Patch=0 /p:Build=1111 -->
+
+<?define Version=$(var.Major).$(var.Minor).$(var.Build)?>
+<?define Manufacturer="U.S. Geological Survey"?>
+<?define FullName="phast x64 $(var.Version)"?>
+<?define UpgradeGuid="7ffbb859-eb02-4778-b714-0769209cf6d8"?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:bal='http://schemas.microsoft.com/wix/BalExtension'
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   
-  <Bundle Name="Phast x64 1.0.0-1111" Version="1.0.0.0" Manufacturer="U.S. Geological Survey" UpgradeCode="7ffbb859-eb02-4778-b714-0769209cf6d8">
+  <Bundle
+    Name="$(var.FullName)"
+    Version="$(var.Version)"
+    Manufacturer="$(var.Manufacturer)"
+    UpgradeCode="$(var.UpgradeGuid)">
     <!--
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
     -->
@@ -50,7 +61,7 @@
         Id="Phast"
         DisplayInternalUI="yes"
         Name="Phast x64 Setup"
-        SourceFile="C:\cygwin\home\charlton\programs\phreeqc\phast3-trunk\msi\bin\x64\Release\phast.msi"
+        SourceFile="..\..\msi\bin\x64\Release\phast-$(var.Major).$(var.Minor).$(var.Patch)-$(var.Build)-x64.msi"
         ForcePerMachine="yes"
         />
     </Chain>
