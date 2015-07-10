@@ -9,18 +9,19 @@ phasthdf: $(srcdir)/phasthdf.in Makefile
 	$(do_subst) < $(srcdir)/phasthdf.in > phasthdf
 	chmod +x phasthdf
 
-pkglib_DATA = \
-	dist/jhdf5.jar \
-	dist/jhdf5obj.jar \
-	dist/jhdf.jar \
-	dist/jhdfobj.jar \
-	dist/Linux/libjh5srb.so \
-	dist/Linux/libjhdf5.so \
-	dist/Linux/libjhdf.so \
-	dist/phast.jar
+pkglibdatadir = $(pkglibdir)
 
-$(pkglib_DATA):
-	$(ANT) -Dsrcdir=@srcdir@ dist-Linux
+pkglibdata_DATA = \
+	dist64/jhdf5.jar \
+	dist64/jhdf5obj.jar \
+	dist64/jhdf.jar \
+	dist64/jhdfobj.jar \
+	dist64/Linux/libjhdf5.so \
+	dist64/Linux/libjhdf.so \
+	dist64/phast.jar
+
+$(pkglibdata_DATA):
+	$(ANT) -Dsrcdir=@srcdir@ dist-Linux64
 
 clean-local:
 	$(ANT) -Dsrcdir=@srcdir@ clean

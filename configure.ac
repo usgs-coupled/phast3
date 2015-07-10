@@ -63,6 +63,10 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
+# ant (used to build phasthdf)
+AC_ARG_VAR(ANT, [Ant Java build tool command])
+AC_PATH_PROG([ANT], [ant])
+
 # determine f90 module suffix
 AX_F90_MODULE_EXTENSION
 F90_MODEXT=mod
@@ -349,6 +353,8 @@ AC_CONFIG_FILES([
   src/Makefile
   src/phast/Makefile
   src/phast/phast
+  src/phasthdf/Makefile
+  src/phasthdf/build.xml
   src/phastinput/Makefile
 ])
 
@@ -367,4 +373,10 @@ else
   echo "Enable OpenMP                = no"
 fi
 echo "Enable MPI                   = $with_mpi"
+if test -z "$ANT"; then
+  echo "Build phasthdf (reqs ant)    = no"
+else
+  echo "Build phasthdf (reqs ant)    = yes"
+  echo "Ant                          = $ANT"
+fi
 echo "*************************************"
