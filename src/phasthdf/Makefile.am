@@ -29,6 +29,7 @@ clean-local:
 endif
 
 EXTRA_DIST = \
+	CMakeLists.txt \
 	phasthdf.in \
 	hdf-java/linux/hdf-java-2.3.jar \
 	hdf-java/win/hdf-java-2.3.jar \
@@ -69,4 +70,12 @@ EXTRA_DIST = \
 	test/gov/usgs/phast/PhastH5FileTest.java \
 	test/gov/usgs/phast/PhastSuite.java \
 	test/gov/usgs/UsgsSuite.java \
-	test/gov/GovSuite.java
+	test/gov/GovSuite.java \
+	win32/CMakeLists.txt \
+	win32/phastexport.cpp \
+	win32/phastexport.h \
+	win32/phastexport.rc \
+	win32/phasthdf_version.h \
+	win32/resource.h \
+	win32/StdAfx.cpp
+
