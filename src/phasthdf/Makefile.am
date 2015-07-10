@@ -30,9 +30,8 @@ endif
 
 EXTRA_DIST = \
 	phasthdf.in \
-	hdf-java/linux/hdf-java-2.3.jar \
-	hdf-java/solaris/hdf-java-2.3.jar \
-	hdf-java/win/hdf-java-2.3.jar \
+	hdf-java/linux64/hdf-java-2.3.jar \
+	hdf-java/win64/hdf-java-2.3.jar \
 	src/corejava/Format.java \
 	src/gov/usgs/phast/JCheckList.java \
 	src/gov/usgs/phast/JMalformedHDFException.java \
