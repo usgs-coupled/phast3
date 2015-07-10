@@ -1,2 +1,5 @@
 add_subdirectory(phast)
+if (MSVC)
+  add_subdirectory(phasthdf)
+endif()
 add_subdirectory(phastinput)
