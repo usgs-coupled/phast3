@@ -74,8 +74,10 @@ EXTRA_DIST = \
 	win32/CMakeLists.txt \
 	win32/phastexport.cpp \
 	win32/phastexport.h \
+	win32/phastexport.ico \
 	win32/phastexport.rc \
 	win32/phasthdf_version.h \
 	win32/resource.h \
-	win32/StdAfx.cpp
-
+	win32/small.ico \
+	win32/StdAfx.cpp \
+	win32/StdAfx.h
