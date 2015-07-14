@@ -31,6 +31,15 @@ endif
 EXTRA_DIST = \
 	CMakeLists.txt \
 	phasthdf.in \
+	dist-lib64/jhdf.jar \
+	dist-lib64/jhdf5.jar \
+	dist-lib64/jhdf5obj.jar \
+	dist-lib64/jhdfobj.jar \
+	dist-lib64/phast.jar \
+	dist-lib64/Linux/libjhdf.so \
+	dist-lib64/Linux/libjhdf5.so \
+	dist-lib64/Win32/jhdf.dll \
+	dist-lib64/Win32/jhdf5.dll \
 	hdf-java/linux/hdf-java-2.3.jar \
 	hdf-java/win/hdf-java-2.3.jar \
 	hdf-java/solaris/hdf-java-2.3.jar \
