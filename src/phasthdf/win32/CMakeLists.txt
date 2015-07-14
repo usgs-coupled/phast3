@@ -11,10 +11,13 @@ project(phasthdf CXX)
 SET(phasthdf_SOURCES
 phastexport.cpp
 phastexport.h
+phastexport.ico
 phastexport.rc
 phasthdf_version.h
 resource.h
+small.ico
 StdAfx.cpp
+StdAfx.h
 )
 
 add_executable(phasthdf ${phasthdf_SOURCES})
