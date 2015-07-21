@@ -6,9 +6,7 @@
             <ComponentRef Id="phast_msmpi.exe" />
             <ComponentRef Id="phast_mt.exe" />
             <ComponentRef Id="phast.bat" />
-          <!--
             <ComponentRef Id="phasthdf.exe" />
-          -->
             <ComponentRef Id="phastinput.exe" />
             <ComponentRef Id="szip.dll" />
             <ComponentRef Id="zlib.dll" />
@@ -41,7 +39,6 @@
                 <Component Id="phast.bat" Guid="*">
                     <File Id="phast.bat" KeyPath="yes" Source="..\bin\phast2.bat" Name="phast.bat" />
                 </Component>
-              <!--
                 <Component Id="phasthdf.exe" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
                     <File Id="phasthdf.exe" KeyPath="yes" Source="..\src\phasthdf\win32\x64\Release\phasthdf.exe" />
@@ -49,7 +46,6 @@
                     <File Id="phasthdf.exe" KeyPath="yes" Source="..\src\phasthdf\win32\Release\phasthdf.exe" />
                   <?endif?>
                 </Component>
-              -->
                 <Component Id="phastinput.exe" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
                     <File Id="phastinput.exe" KeyPath="yes" Source="..\_build_mt_x64\INSTALL\bin\phastinput.exe" />
