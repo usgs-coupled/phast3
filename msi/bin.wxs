@@ -41,7 +41,7 @@
                 </Component>
                 <Component Id="phasthdf.exe" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="phasthdf.exe" KeyPath="yes" Source="..\src\phasthdf\win32\x64\Release\phasthdf.exe" />
+                    <File Id="phasthdf.exe" KeyPath="yes" Source="..\_build_mt_x64\INSTALL\bin\phasthdf.exe" />
                   <?else?>
                     <File Id="phasthdf.exe" KeyPath="yes" Source="..\src\phasthdf\win32\Release\phasthdf.exe" />
                   <?endif?>
