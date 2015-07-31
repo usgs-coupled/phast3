@@ -30,19 +30,6 @@
 
     <Chain>
       <ExePackage
-        Id="MSMpi"
-        Name="MS-MPI Setup"
-        InstallCommand="-unattend"
-        Cache="yes"
-        Compressed="yes"
-        PerMachine="yes"
-        Permanent="yes"
-        Vital="yes"
-        SourceFile="C:\Documents and Settings\All Users\Documents\Downloads\MSMpiSetup.exe"
-        DetectCondition="(MSMPI64Version = &quot;6.0.12436.10&quot;)"
-        />
-
-      <ExePackage
         Id="ModView"
         Name="Model Viewer 1.6 Setup"
         InstallCommand="/SILENT"
@@ -55,7 +42,6 @@
         DetectCondition="(ModViewDisplayName = &quot;Model Viewer 1.6&quot;)"
         />
 
-
       <!-- RollbackBoundary /-->
       <MsiPackage
         Id="Phast"
@@ -63,6 +49,23 @@
         Name="Phast x64 Setup"
         SourceFile="..\..\msi\bin\x64\Release\phast-$(var.Major).$(var.Minor).$(var.Patch)-$(var.Build)-x64.msi"
         ForcePerMachine="yes"
+        />
+
+      <!--
+      MSMpi should be installed last so that that ms-mpi mpiexec is first
+      Must be set as 'Permanent' since MSMpiSetup.exe has no uninstall option
+      -->
+      <ExePackage
+        Id="MSMpi"
+        Name="MS-MPI Setup"
+        InstallCommand="-unattend"
+        Cache="yes"
+        Compressed="yes"
+        PerMachine="yes"
+        Permanent="yes"
+        Vital="yes"
+        SourceFile="C:\Documents and Settings\All Users\Documents\Downloads\MSMpiSetup.exe"
+        DetectCondition="(MSMPI64Version = &quot;6.0.12436.10&quot;)"
         />
     </Chain>
 	</Bundle>
