@@ -59,7 +59,8 @@
     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
     CHARACTER(LEN=130) error_line
-    REAL(KIND=kdp), DIMENSION(nxyz) :: fracn
+    !REAL(KIND=kdp), DIMENSION(nxyz) :: fracn
+    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: fracn
     integer, dimension(nxy) :: mfsbcn
     INTEGER :: s_blk
     INTEGER, DIMENSION(:), ALLOCATABLE :: blks, displs
@@ -69,6 +70,7 @@
     ufdt1 = fdtmth
     nsa = MAX(ns,1)
     ALLOCATE(displs(0:nsa), blks(0:nsa),  &
+      fracn(nxyz), &
     STAT = a_err)
     IF (a_err /= 0) THEN
         PRINT *, "Array allocation failed: sumcal1"
@@ -794,6 +796,14 @@
     END DO
     ! ... Calculate the internal zone flow rates if requested
     IF(ABS(pri_zf) > 0. .OR. ABS(pri_zf_tsv) > 0.) CALL zone_flow
+    
+    DEALLOCATE (displs, blks,  &
+      fracn, &
+        stat = da_err)
+    IF (da_err /= 0) THEN
+        PRINT *, "Array deallocation failed, sumcal1"
+        STOP
+    ENDIF
 
 END SUBROUTINE sumcal1
     

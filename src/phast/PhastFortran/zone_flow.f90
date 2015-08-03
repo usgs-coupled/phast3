@@ -785,11 +785,14 @@ SUBROUTINE zone_flow_write_chem
   INTEGER :: solution_number, solution_number_start, bc_soln_count
   SAVE current_time, counter, solution_number_start
   CHARACTER * 130 file_name_base, file_name
-  INTEGER solution_list(nxyz), pos
+  !INTEGER solution_list(nxyz), pos
+  INTEGER pos
+  INTEGER, DIMENSION(:), ALLOCATABLE :: solution_list
  
   IF (.not. solute) RETURN
   if (print_zone_flows_xyzt%print_flag_integer == 0) return
-
+  allocate (solution_list(nxyz))
+  
   current_time = cnvtmi*time
   if (counter == 1) then
     solution_number_start = 10000000
@@ -841,7 +844,8 @@ SUBROUTINE zone_flow_write_chem
           solution_number_start = solution_number
       endif
   end do
-
+  
+  deallocate (solution_list)
   counter = counter + 1
 
 END SUBROUTINE zone_flow_write_chem
