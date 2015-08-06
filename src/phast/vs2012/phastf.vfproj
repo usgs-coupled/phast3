@@ -25,7 +25,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="mpi|Win32" OutputDirectory="$(ConfigurationName)\$(ProjectName)\" IntermediateDirectory="$(ConfigurationName)\$(ProjectName)\" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)/i386;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Interfaces="true"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)/x86;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -35,7 +35,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="mpi_debug|Win32" OutputDirectory="$(ConfigurationName)\$(ProjectName)\" IntermediateDirectory="$(ConfigurationName)\$(ProjectName)\" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)/i386;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)/x86;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -65,7 +65,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="mpi|x64" OutputDirectory="$(PlatformName)\$(ConfigurationName)\$(ProjectName)\" IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\$(ProjectName)\" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)/amd64;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" VectorizerDiagLevel="vectorizerDiagLevel5" RuntimeLibrary="rtMultiThreadedDLL" Interfaces="true"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)/x64;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" VectorizerDiagLevel="vectorizerDiagLevel5" RuntimeLibrary="rtMultiThreadedDLL" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -75,7 +75,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="mpi_debug|x64" OutputDirectory="$(PlatformName)\$(ConfigurationName)\$(ProjectName)\" IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\$(ProjectName)\" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)\amd64;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" Interfaces="true"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)\x64;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)../PhreeqcRM/IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="USE_MPI" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
