@@ -70,9 +70,9 @@ main(int argc, char *argv[])
 /*
  *   Use to cause output to be completely unbuffered
  */
-	setbuf(echo_file, NULL);
+	//setbuf(echo_file, NULL);
 /*	fprintf(std_error, "Done setbuf echo file...\n"); */
-	setbuf(hst_file, NULL);
+	//setbuf(hst_file, NULL);
 /*	fprintf(std_error, "Done setbuf hst_file...\n"); */
 /*
  *   Read input data for simulation
