@@ -20,7 +20,9 @@ pkglibdata_DATA = \
 	dist64/Linux/libjhdf.so \
 	dist64/phast.jar
 
-$(pkglibdata_DATA):
+$(pkglibdata_DATA): dist-Linux64
+
+dist-Linux64:
 	$(ANT) -Dsrcdir=@srcdir@ dist-Linux64
 
 clean-local:
