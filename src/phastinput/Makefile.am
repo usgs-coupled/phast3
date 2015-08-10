@@ -1,19 +1,8 @@
 EXTRA_DIST = CMakeLists.txt phastinput.rc phastinput_version.h resource.h
 
-AM_CPPFLAGS=-I$(srcdir)/common -I$(srcdir)/PhastKeywords
+AM_CPPFLAGS = -I$(srcdir)/common -I$(srcdir)/PhastKeywords
 
 bin_PROGRAMS = phastinput
-
-# BUILT_SOURCES=\
-# 	PhastKeywords/Parser.cxx\
-# 	PhastKeywords/Parser.h\
-# 	PhastKeywords/PHRQ_base.cxx\
-# 	PhastKeywords/PHRQ_base.h\
-# 	PhastKeywords/PHRQ_io.h\
-# 	PhastKeywords/PHRQ_io.cpp\
-# 	PhastKeywords/phrqtype.h\
-# 	PhastKeywords/Utils.cxx\
-# 	PhastKeywords/Utils.h
 
 phastinput_SOURCES=\
 	accumulate.cpp\
@@ -26,8 +15,8 @@ phastinput_SOURCES=\
 	common/Parser.h\
 	common/PHRQ_base.cxx\
 	common/PHRQ_base.h\
-	common/PHRQ_io.h\
 	common/PHRQ_io.cpp\
+	common/PHRQ_io.h\
 	common/phrqtype.h\
 	common/Utils.cxx\
 	common/Utils.h\
@@ -73,13 +62,13 @@ phastinput_SOURCES=\
 	NNInterpolator/minell.h\
 	NNInterpolator/nan.h\
 	NNInterpolator/nn.h\
+	NNInterpolator/nn_internal.h\
 	NNInterpolator/nnai.c\
 	NNInterpolator/nncommon-vulnerable.c\
 	NNInterpolator/nncommon.c\
 	NNInterpolator/NNInterpolator.cpp\
 	NNInterpolator/NNInterpolator.h\
 	NNInterpolator/nnpi.c\
-	NNInterpolator/nn_internal.h\
 	NNInterpolator/preader.c\
 	NNInterpolator/preader.h\
 	NNInterpolator/triangle.c\
@@ -112,9 +101,9 @@ phastinput_SOURCES=\
 	time.cpp\
 	timepi.h\
 	UniqueMap.h\
-	units_impl.cxx\
 	unit_impl.cxx\
 	unit_impl.h\
+	units_impl.cxx\
 	utilities.cpp\
 	Utilities.h\
 	Wedge.cpp\
@@ -133,41 +122,3 @@ phastinput_SOURCES=\
 
 COMPILE = $(CXXCOMPILE)
 LTCOMPILE = $(LTCXXCOMPILE)
-
-# $(srcdir)/PhastKeywords/Parser.cxx:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx .
-
-# $(srcdir)/PhastKeywords/Parser.h:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h .
-
-# $(srcdir)/PhastKeywords/PHRQ_base.cxx:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx .
-
-# $(srcdir)/PhastKeywords/PHRQ_base.h:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h .
-
-# $(srcdir)/PhastKeywords/PHRQ_io.cpp:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp .
-
-# $(srcdir)/PhastKeywords/PHRQ_io.h:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h .
-
-# $(srcdir)/PhastKeywords/phrqtype.h:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h .
-
-# $(srcdir)/PhastKeywords/Utils.cxx:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx .
-
-# $(srcdir)/PhastKeywords/Utils.h:
-# 	cd $(srcdir)/PhastKeywords && $(LN_S) ../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h .
-
-# DISTCLEANFILES=\
-# 	$(srcdir)/PhastKeywords/Parser.cxx\
-# 	$(srcdir)/PhastKeywords/Parser.h\
-# 	$(srcdir)/PhastKeywords/PHRQ_base.cxx\
-# 	$(srcdir)/PhastKeywords/PHRQ_base.h\
-# 	$(srcdir)/PhastKeywords/PHRQ_io.cpp\
-# 	$(srcdir)/PhastKeywords/PHRQ_io.h\
-# 	$(srcdir)/PhastKeywords/phrqtype.h\
-# 	$(srcdir)/PhastKeywords/Utils.cxx\
-# 	$(srcdir)/PhastKeywords/Utils.h
