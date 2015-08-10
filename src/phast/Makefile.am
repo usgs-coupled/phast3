@@ -1,6 +1,6 @@
 EXTRA_DIST = CMakeLists.txt phast.rc phast_version.h resource.h
 
-AM_CPPFLAGS=-I$(srcdir)/PhreeqcRM/src -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords $(BOOST_CPPFLAGS)
+AM_CPPFLAGS=-I$(srcdir)/PhreeqcRM/src -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords $(BOOST_CPPFLAGS)
 
 AM_FCFLAGS=-I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc
 
@@ -227,8 +227,8 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/parse.cpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.cpp\
@@ -237,12 +237,12 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io_output.cpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer_structures.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx\
@@ -303,8 +303,8 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/utilities.cpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/thread.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.c\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.h\
