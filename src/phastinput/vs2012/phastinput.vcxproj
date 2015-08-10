@@ -82,7 +82,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../PhastKeywords;../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../common;../PhastKeywords;../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ANSI_DECLARATORS;_SCL_SECURE_NO_WARNINGS;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -105,7 +105,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../PhastKeywords;../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../common;../PhastKeywords;../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ANSI_DECLARATORS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -123,7 +123,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../PhastKeywords;../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../common;../PhastKeywords;../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ANSI_DECLARATORS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -145,7 +145,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>../PhastKeywords;../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../common;../PhastKeywords;../../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ANSI_DECLARATORS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -162,10 +162,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\Parser.cxx" />
-    <ClCompile Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_base.cxx" />
-    <ClCompile Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_io.cpp" />
-    <ClCompile Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.cxx" />
     <ClCompile Include="..\accumulate.cpp" />
     <ClCompile Include="..\ArcRaster.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
@@ -180,6 +176,10 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="..\check.cpp" />
+    <ClCompile Include="..\common\Parser.cxx" />
+    <ClCompile Include="..\common\PHRQ_base.cxx" />
+    <ClCompile Include="..\common\PHRQ_io.cpp" />
+    <ClCompile Include="..\common\Utils.cxx" />
     <ClCompile Include="..\Cube.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
@@ -405,12 +405,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\Parser.h" />
-    <ClInclude Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_base.h" />
-    <ClInclude Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_io.h" />
-    <ClInclude Include="..\..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.h" />
     <ClInclude Include="..\ArcRaster.h" />
     <ClInclude Include="..\BC_info.h" />
+    <ClInclude Include="..\common\Parser.h" />
+    <ClInclude Include="..\common\phrqtype.h" />
+    <ClInclude Include="..\common\PHRQ_base.h" />
+    <ClInclude Include="..\common\PHRQ_io.h" />
+    <ClInclude Include="..\common\Utils.h" />
     <ClInclude Include="..\NNInterpolator\config.h" />
     <ClInclude Include="..\Cube.h" />
     <ClInclude Include="..\Data_source.h" />

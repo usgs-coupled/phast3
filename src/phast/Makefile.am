@@ -28,7 +28,6 @@ PHAST_SRC=\
 	gzstream.h\
 	hdf.cpp\
 	hdf.h\
-	phast_main.cpp\
 	KDtree/Cell_Face.h\
 	KDtree/KDtree.cpp\
 	KDtree/KDtree.h\
@@ -36,6 +35,7 @@ PHAST_SRC=\
 	KDtree/kdtree2.hpp\
 	KDtree/Point.cpp\
 	KDtree/Point.h\
+	phast_main.cpp\
 	PhastFortran/aplbce_flow.f90\
 	PhastFortran/aplbci_flow.F90\
 	PhastFortran/asembl_flow.f90\
@@ -167,11 +167,11 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/advection.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/basicsubs.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.cpp\
@@ -179,6 +179,15 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cl1.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.cpp\
@@ -227,8 +236,6 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/parse.cpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.cxx\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.cpp\
@@ -237,12 +244,7 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.cxx\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.cpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io_output.cpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer_structures.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx\
@@ -303,8 +305,6 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/utilities.cpp\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.cxx\
-	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/thread.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.c\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.h\

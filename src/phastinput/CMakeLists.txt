@@ -11,26 +11,27 @@ ADD_DEFINITIONS(-DUSE_GZ)
 
 # setup include directories
 include_directories(${Boost_INCLUDE_DIRS})
+include_directories("${CMAKE_SOURCE_DIR}/src/phastinput/common")
 include_directories("${CMAKE_SOURCE_DIR}/src/phastinput/PhastKeywords")
 include_directories("${CMAKE_SOURCE_DIR}/src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp")
 
 # source
 SET(phastinput_SOURCES
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx
-../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h
 accumulate.cpp
 ArcRaster.cpp
 ArcRaster.h
 BC_info.cpp
 BC_info.h
 check.cpp
+common/Parser.cxx
+common/Parser.h
+common/PHRQ_base.cxx
+common/PHRQ_base.h
+common/PHRQ_io.cpp
+common/PHRQ_io.h
+common/phrqtype.h
+common/Utils.cxx
+common/Utils.h
 Cube.cpp
 Cube.h
 Data_source.cpp
