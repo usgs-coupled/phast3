@@ -99,9 +99,10 @@ PHREEQC_INCLUDES = -I.. -I../PhreeqcRM/src \
 		   -I../PhreeqcRM/src/IPhreeqcPhast \
 		   -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc \
                    -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp \
+                   -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common \
                    -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords
 
-PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM/src:../PhreeqcRM/src/IPhreeqcPhast:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords:../KDtree
+PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM/src:../PhreeqcRM/src/IPhreeqcPhast:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords:../KDtree:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
@@ -712,6 +713,7 @@ depends:
 	-I../PhreeqcRM/src -I../PhreeqcRM/src/IPhreeqcPhast \
 	-I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc \
 	-I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp \
+	-I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common \
 	-I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords \
 	-I../KDtree \
 	../*.cxx ../*.cpp \
@@ -721,6 +723,8 @@ depends:
 	../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cxx \
 	../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cpp \
 	../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/*.cpp \
+	../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/*.cpp \
+	../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/*.cxx \
 	../KDtree/*.cpp $(PHASTINPUT_FILES) > ../dependencies
 #	cd temp_dependency_dir; gfortran -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast \
 #	../PhastFortran/*.f90 ../PhastFortran/*.F90 \
