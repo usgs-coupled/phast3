@@ -3,6 +3,7 @@ SUBROUTINE simulate_ss_flow
   ! ...      to the flow equation. This yields a steady-state pressure
   ! ...      (potentiometric head) solution for the transient solute 
   ! ...      transport simulation.
+  USE mcb
   USE mcc
   USE mcc_m
   USE mcp, ONLY: fdtmth
@@ -58,6 +59,17 @@ SUBROUTINE simulate_ss_flow
      CALL write5_ss_flow
      IF(converge_ss) EXIT          ! ... normal termination of time step loop
      IF(itime > maxitn) THEN
+        logline2 = "Maximum steady-state iterations."
+        status = RM_LogMessage(rm_id, logline2)
+        status = RM_ScreenMessage(rm_id, logline2)
+        if (nrbc_cells > 0) then
+            logline2 = "     Rivers can sometimes cause oscillations in the numerical solution."
+            status = RM_LogMessage(rm_id, logline2)
+            status = RM_ScreenMessage(rm_id, logline2)
+            logline2 = "     Try changing the number or location of vertical nodes near the water table."
+            status = RM_LogMessage(rm_id, logline2)
+            status = RM_ScreenMessage(rm_id, logline2)
+        endif
         ierr(146) = .TRUE.
         errexe = .TRUE.
      END IF
