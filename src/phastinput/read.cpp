@@ -95,23 +95,15 @@ STATIC int read_well(void);
 #ifdef SKIP
 STATIC int read_zone(char **next_char, struct zone *zone_ptr);
 #endif
-#if defined(__WPHAST__)
-extern int check_key(char *str);
-#else
 STATIC int check_key(char *str);
-#endif
 STATIC int check_line(const char *string, int allow_empty, int allow_eof,
 					  int allow_keyword, int print);
 STATIC int find_option(char *item, int *n, const char **list, int count_list,
 					   int exact);
-#if defined(__WPHAST__)
-extern int get_line(FILE * fp);
-#else
 STATIC int get_line(FILE * fp);
 STATIC int get_line();
 STATIC int get_logical_line(FILE * fp, int *l);
 STATIC int add_char_to_line(int *i, char c);
-#endif
 STATIC int get_true_false(char *string, int default_value);
 
 
@@ -733,6 +725,7 @@ get_logical_line(FILE * fp, int *l)
 	*l = i;
 	return (OK);
 }
+#endif /* __WPHAST__ */
 
 /* ---------------------------------------------------------------------- */
 int
@@ -755,6 +748,7 @@ add_char_to_line(int *i, char c)
 	return (OK);
 }
 
+#if !defined(__WPHAST__)
 /* ---------------------------------------------------------------------- */
 int
 get_line(FILE * fp)
@@ -858,6 +852,7 @@ get_line(FILE * fp)
 	}
 	return (return_value);
 }
+#endif /* __WPHAST__ */
 /* ---------------------------------------------------------------------- */
 int
 get_line()
@@ -897,7 +892,6 @@ get_line()
 	//int return_value = input_phrq_io.check_key(input_phrq_io.Get_m_line().begin(), input_phrq_io.Get_m_line().end());
 	return (return_value);
 }
-#endif /* __WPHAST__ */
 /* ---------------------------------------------------------------------- */
 int
 get_option(const char **opt_list, int count_opt_list, char **next_char)
