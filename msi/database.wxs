@@ -3,6 +3,7 @@
     <Fragment>
         <ComponentGroup Id="Database">
             <ComponentRef Id="Amm.dat" />
+            <ComponentRef Id="frezchem.dat" />
             <ComponentRef Id="iso.dat" />
             <ComponentRef Id="llnl.dat" />
             <ComponentRef Id="minteq.dat" />
@@ -18,6 +19,9 @@
             <Directory Id="database" Name="database">
                 <Component Id="Amm.dat" Guid="*">
                   <File Id="Amm.dat" KeyPath="yes" Source="$(var.DbDir)\Amm.dat" />
+                </Component>
+                <Component Id="frezchem.dat" Guid="*">
+                  <File Id="frezchem.dat" KeyPath="yes" Source="$(var.DbDir)\frezchem.dat" />
                 </Component>
                 <Component Id="iso.dat" Guid="*">
                     <File Id="iso.dat" KeyPath="yes" Source="$(var.DbDir)\iso.dat" />
