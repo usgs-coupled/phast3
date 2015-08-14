@@ -25,6 +25,10 @@ $(pkglibdata_DATA): dist-Linux64
 dist-Linux64:
 	$(ANT) -Dsrcdir=@srcdir@ dist-Linux64
 
+# force distclean-generic to be called after clean-local
+# for parallel cleans
+distclean-generic: clean-local
+
 clean-local:
 	$(ANT) -Dsrcdir=@srcdir@ clean
 
