@@ -337,7 +337,8 @@ fi
 
 VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 
-SED_FILES="$DISTPATH/src/phast/phast_version.h \
+SED_FILES="$DISTPATH/doc/phreeqc3-doc/RELEASE.TXT \
+           $DISTPATH/src/phast/phast_version.h \
            $DISTPATH/src/phast/PhastFortran/phast_spmd.F90 \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
            $DISTPATH/src/phastinput/phastinput_version.h \

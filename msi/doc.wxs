@@ -3,8 +3,9 @@
     <Fragment>
         <ComponentGroup Id="Doc">
             <ComponentRef Id="phast2_TM6_A35.pdf" />
-            <ComponentRef Id="phreeqc.pdf" />
-            <ComponentRef Id="phreeqc.revisions.txt" />
+            <ComponentRef Id="phreeqc2.pdf" />
+            <ComponentRef Id="phreeqc3.pdf" />
+            <ComponentRef Id="phreeqc.RELEASE.txt" />
             <ComponentRef Id="RELEASE.txt" />
             <ComponentRef Id="wrir02_4172.pdf" />
         </ComponentGroup>
@@ -15,11 +16,14 @@
                 <Component Id="phast2_TM6_A35.pdf" Guid="*">
                     <File Id="phast2_TM6_A35.pdf" KeyPath="yes" Source="..\doc\phast2-TM6-A35.pdf" />
                 </Component>
-                <Component Id="phreeqc.pdf" Guid="*">
-                    <File Id="phreeqc.pdf" KeyPath="yes" Source="..\doc\phreeqc.pdf" />
+                <Component Id="phreeqc2.pdf" Guid="*">
+                    <File Id="phreeqc2.pdf" KeyPath="yes" Source="..\doc\phreeqc.pdf" Name="phreeqc2.pdf" />
                 </Component>
-                <Component Id="phreeqc.revisions.txt" Guid="*">
-                    <File Id="phreeqc.revisions.txt" KeyPath="yes" Source="..\doc\phreeqc3-doc\RELEASE.TXT" Name="phreeqc.revisions.txt" />
+                <Component Id="phreeqc3.pdf" Guid="*">
+                    <File Id="phreeqc3.pdf" KeyPath="yes" Source="..\doc\phreeqc3-doc\Phreeqc_3_2013_manual.pdf" Name="phreeqc3.pdf" />
+                </Component>
+                <Component Id="phreeqc.RELEASE.txt" Guid="*">
+                    <File Id="phreeqc.RELEASE.txt" KeyPath="yes" Source="..\doc\phreeqc3-doc\RELEASE.TXT" Name="phreeqc.RELEASE.txt" />
                 </Component>
                 <Component Id="RELEASE.txt" Guid="*">
                     <File Id="RELEASE.txt" KeyPath="yes" Source="..\RELEASE" Name="RELEASE.txt" />
