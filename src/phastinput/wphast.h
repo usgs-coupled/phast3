@@ -5,7 +5,7 @@
 #include "../phqalloc.h"
 #else
 #ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
+// COMMENT: {8/13/2015 9:04:12 PM}#define _CRTDBG_MAP_ALLOC (SET IN PROJECT SETTINGS)
 #include <crtdbg.h>
 #endif
 #endif

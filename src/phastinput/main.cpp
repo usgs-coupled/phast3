@@ -507,6 +507,10 @@ clean_up(void)
 	if (hst_file != NULL)
 		fclose(hst_file);
 
+#ifdef __WPHAST__
+	keycount.clear();
+#endif
+
 	return (OK);
 }
 
