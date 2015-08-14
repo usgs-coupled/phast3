@@ -157,6 +157,15 @@ if [ $? != 0 ] ; then
   exit $?;
 fi
 
+echo "Exporting revision $REVISION of external phreeqc3/common into sandbox..."
+(cd "$DIST_SANDBOX" && \
+        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/src/common" \
+             "$DISTNAME/src/phastinput/common")
+if [ $? != 0 ] ; then
+  exit $?;
+fi
+
 echo "Exporting revision $REVISION of external database into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
