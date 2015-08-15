@@ -28,6 +28,7 @@ dist-Linux64:
 # force distclean-generic to be called after clean-local
 # for parallel cleans
 distclean-generic: clean-local
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 clean-local:
 	$(ANT) -Dsrcdir=@srcdir@ clean
