@@ -96,3 +96,5 @@ EXTRA_DIST = \
 	win32/small.ico \
 	win32/StdAfx.cpp \
 	win32/StdAfx.h
+
+DISTCLEANFILES = build.xml
