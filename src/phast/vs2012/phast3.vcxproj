@@ -156,6 +156,7 @@
       <AdditionalLibraryDirectories>$(DEV_GMP_LIB_MT);$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(OUTDIR);$(OUTDIR)phastf;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"
@@ -216,6 +217,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     <Link>
       <AdditionalDependencies>zdll.lib;phastf.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"
@@ -246,6 +248,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
     <Link>
       <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
@@ -272,6 +275,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <AdditionalDependencies>zdll.lib;phastf.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"
@@ -302,6 +306,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
@@ -335,6 +340,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <AssemblyDebug>true</AssemblyDebug>
       <ShowProgress>NotSet</ShowProgress>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"
@@ -369,6 +375,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
