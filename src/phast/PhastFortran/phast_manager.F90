@@ -257,6 +257,7 @@ SUBROUTINE phast_manager
     status = RM_LogMessage(rm_id, 'Done with transient flow and transport simulation.')
     status = RM_ScreenMessage(rm_id, 'Done with transient flow and transport simulation.')
     IF(errexe .OR. errexi) then
+        CALL errprt(1,200)  
         status = RM_LogMessage(rm_id, 'ERROR exit.')
         status = RM_ScreenMessage(rm_id, 'ERROR exit.')
     endif
