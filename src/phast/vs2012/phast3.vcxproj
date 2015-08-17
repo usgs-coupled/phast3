@@ -255,7 +255,6 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -285,9 +284,6 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;USE_MPI;USE_GZ;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
@@ -298,6 +294,9 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
