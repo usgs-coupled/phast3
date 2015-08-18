@@ -363,7 +363,6 @@ AC_CONFIG_FILES([
   src/phasthdf/build.xml
   src/phastinput/Makefile
   test/Makefile
-  test/phrqex11
 ])
 
 AC_OUTPUT
