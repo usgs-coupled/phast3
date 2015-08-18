@@ -7,6 +7,65 @@
 # in the same directory as this script.
 #
 
+PHASTINPUT=phastinput
+PHAST=phast-@PHAST_SUFFIX@
+MPIEXEC=@MPIEXEC@
+MPIEXEC_NUMPROC_FLAG=@MPIEXEC_NUMPROC_FLAG@
+
+if [ "@PHAST_SUFFIX@" = "ser" ]; then
+USAGE="USAGE: phast prefix [-n PROCESSES] [-db DATABASE]"
+else
+USAGE="USAGE: phast prefix [-db DATABASE]"
+fi
+
+ARG_PREV=""
+
+for ARG in $@
+do
+    if [ "$ARG_PREV" ]; then
+	
+	case $ARG_PREV in
+            -n)   PROCESSES="$ARG" ;;
+            -db)  DATABASE="$ARG" ;;
+            *)    ARG_PREV=$ARG ;;
+	esac
+	
+	ARG_PREV=""
+	
+    else
+	
+	case $ARG in
+	    -n|-db)
+		ARG_PREV=$ARG
+		;;
+	    -*)
+		echo "$USAGE"
+		exit 1
+		;;
+	    *)
+		if [ -n "$HAVE_PRE" ]; then
+		    echo "$USAGE"
+		    exit 1
+		fi
+		PREFIX=$ARG
+		HAVE_PRE=1
+		ARG_PREV=""
+		;;
+	esac
+    fi
+done
+
+# check prefix
+if [ "$PREFIX" = "" ]; then
+    echo "missing prefix"
+    echo "$USAGE"
+    exit 1
+fi
+
+if [ "@PHAST_SUFFIX@" = "ser" ]; then
+    PROCESSES=""
+fi
+
 # resolve symlinks (to determine BIN_DIR)
 prg=$0
 while [ -h "$prg" ] ; do
@@ -23,4 +82,17 @@ done
 BIN_DIR=`dirname $prg`
 
 # run
-$BIN_DIR/phastinput $* && $BIN_DIR/phast-@PHAST_SUFFIX@
+if [ "$PROCESSES" = "" ]; then
+    if [ "$DATABASE" = "" ]; then
+	$BIN_DIR/$PHASTINPUT $PREFIX && $MPIEXEC $BIN_DIR/$PHAST
+    else
+	$BIN_DIR/$PHASTINPUT $PREFIX $DATABASE && $MPIEXEC $BIN_DIR/$PHAST
+    fi
+else
+    if [ "$DATABASE" = "" ]; then
+	$BIN_DIR/$PHASTINPUT $PREFIX && $MPIEXEC $MPIEXEC_NUMPROC_FLAG $PROCESSES $BIN_DIR/$PHAST
+    else
+	$BIN_DIR/$PHASTINPUT $PREFIX $DATABASE && $MPIEXEC $MPIEXEC_NUMPROC_FLAG $PROCESSES $BIN_DIR/$PHAST
+    fi
+fi
+exit $?
