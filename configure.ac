@@ -354,6 +354,8 @@ AC_CONFIG_FILES([
   Makefile
   doc/Makefile
   examples/Makefile
+  examples/phrqex11/phrqex11.chem.dat
+  examples/phrqex11/phrqex11.trans.dat
   src/Makefile
   src/phast/Makefile
   src/phast/phast
