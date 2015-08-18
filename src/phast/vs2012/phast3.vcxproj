@@ -138,7 +138,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='openmp_debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(BOOSTROOT);$(ProjectDir)..;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(BOOSTROOT);$(ProjectDir)..;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_OPENMP;USE_GZ;USE_PHRQ_ALLOC;_DEBUG;WIN32;_HAS_ITERATOR_DEBUGGING=0;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -152,16 +152,13 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zdll.lib;PhreeqcRM.lib;phastf.lib;gmp.lib;hdf5dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_GMP_LIB_MT);$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(OUTDIR);$(OUTDIR)phastf;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>PhreeqcRM.lib;phastf.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_GMP_LIB_MT);$(DEV_IFC_LIB);$(DEV_HDF5_LIB);$(OUTDIR);$(OUTDIR)phastf;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"
-copy "$(DEV_HDF5_LIBDLL)\..\bin\zlib1.dll" "$(OutDir)"
-copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='openmp_debug|x64'">
@@ -170,7 +167,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(DEV_GMP_INC_MT);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_HDF5_X64_INC);$(DEV_GMP_INC_MT);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;USE_OPENMP;USE_GZ;WIN32_MEMORY_DEBUG;xxUSE_PHRQ_ALLOC;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -185,16 +182,13 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>phastf.lib;hdf5dll.lib;zlib1.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
-copy $(DEV_HDF5_X64_LIBDLL)\..\bin\zlib1.dll $(OutDir)
-copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='openmp|Win32'">
@@ -202,7 +196,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_HDF5_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_OPENMP;USE_GZ;NDEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -215,14 +209,11 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zdll.lib;phastf.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_HDF5_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"
-copy "$(DEV_HDF5_LIBDLL)\..\bin\zlib1.dll" "$(OutDir)"
-copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='openmp|x64'">
@@ -233,7 +224,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_HDF5_X64_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_OPENMP;USE_GZ;NDEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -246,21 +237,18 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIB);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
-copy $(DEV_HDF5_X64_LIBDLL)\..\bin\zlib1.dll $(OutDir)
-copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|Win32'">
     <ClCompile>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_HDF5_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_GZ;NDEBUG;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -272,15 +260,12 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zdll.lib;phastf.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_HDF5_LIB);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"
-copy "$(DEV_HDF5_LIBDLL)\..\bin\zlib1.dll" "$(OutDir)"
-copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi|x64'">
@@ -288,7 +273,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;USE_MPI;USE_GZ;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -303,15 +288,14 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_HDF5_X64_LIB);C:\Program Files\USGS\Phast for Windows x64 3.2.2-10043\bin;$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
-copy $(DEV_HDF5_X64_LIBDLL)\..\bin\zlib1.dll $(OutDir)
-copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|Win32'">
@@ -319,7 +303,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB122_INC);$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_HDF5_INC);$(DEV_GMP_INC_MT);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_GZ;USE_PHRQ_ALLOC;_DEBUG;USE_MPI;WIN32;_HAS_ITERATOR_DEBUGGING=0;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -334,8 +318,8 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zdll.lib;phastf.lib;PhreeqcRM.lib;hdf5dll.lib;gmp.lib;msmpi.lib;msmpifec.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_HDF5_LIB);$(MSMPI_LIB32);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <ShowProgress>NotSet</ShowProgress>
@@ -343,9 +327,6 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(DEV_HDF5_LIBDLL)\hdf5dll.dll" "$(OutDir)"
-copy "$(DEV_HDF5_LIBDLL)\..\bin\zlib1.dll" "$(OutDir)"
-copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='mpi_debug|x64'">
@@ -356,7 +337,7 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(DEV_ZLIB123_X64_INC);$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DEV_HDF5_X64_INC);$(MSMPI_INC);$(ProjectDir)../;$(ProjectDir)../PhreeqcRM/src;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common;$(ProjectDir)../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords;$(BOOSTROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_PHRQ_ALLOC;_DEBUG;USE_MPI;USE_GZ;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -370,17 +351,14 @@ copy "$(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" "$(OutDir)"</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>zlib1.lib;phastf.lib;hdf5dll.lib;msmpi.lib;msmpifec.lib;PhreeqcRM.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
-copy $(DEV_HDF5_X64_LIBDLL)\..\bin\zlib1.dll $(OutDir)
-copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
