@@ -336,6 +336,8 @@ AM_CONDITIONAL([BUILD_PHASTHDF], [test -n "$ANT"])
 if test "X$with_mpi" != "Xno"; then
   AC_DEFINE([USE_MPI], [] , [Set to use MPI])
   PHAST_SUFFIX=mpi
+  MPIEXEC=mpiexec
+  MPIEXEC_NUMPROC_FLAG=-np
 else
   if test "X$enable_openmp" != "Xno"; then
     AC_DEFINE([USE_OPENMP], [], [Set to to use OpenMP])
@@ -345,6 +347,8 @@ else
   fi
 fi
 AC_SUBST(PHAST_SUFFIX)
+AC_SUBST(MPIEXEC)
+AC_SUBST(MPIEXEC_NUMPROC_FLAG)
 
 AC_CONFIG_FILES([
   Makefile
