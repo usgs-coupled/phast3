@@ -1,7 +1,7 @@
 # Tests
 #
 
-testdir = $(docdir)/test
+####testdir = $(docdir)/test
 
 TESTS = phrqex11
 
