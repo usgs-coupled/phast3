@@ -17,10 +17,10 @@
                     <File Id="phast2_TM6_A35.pdf" KeyPath="yes" Source="..\doc\phast2-TM6-A35.pdf" />
                 </Component>
                 <Component Id="phreeqc2.pdf" Guid="*">
-                    <File Id="phreeqc2.pdf" KeyPath="yes" Source="..\doc\phreeqc.pdf" Name="phreeqc2.pdf" />
+                    <File Id="phreeqc2.pdf" KeyPath="yes" Source="..\doc\phreeqc2.pdf" Name="phreeqc2.pdf" />
                 </Component>
                 <Component Id="phreeqc3.pdf" Guid="*">
-                    <File Id="phreeqc3.pdf" KeyPath="yes" Source="..\doc\phreeqc3-doc\Phreeqc_3_2013_manual.pdf" Name="phreeqc3.pdf" />
+                    <File Id="phreeqc3.pdf" KeyPath="yes" Source="..\doc\phreeqc3.pdf" Name="phreeqc3.pdf" />
                 </Component>
                 <Component Id="phreeqc.RELEASE.txt" Guid="*">
                     <File Id="phreeqc.RELEASE.txt" KeyPath="yes" Source="..\doc\phreeqc3-doc\RELEASE.TXT" Name="phreeqc.RELEASE.txt" />
