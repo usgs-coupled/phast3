@@ -360,6 +360,7 @@ AC_CONFIG_FILES([
   src/phasthdf/Makefile
   src/phasthdf/build.xml
   src/phastinput/Makefile
+  test/Makefile
 ])
 
 AC_OUTPUT

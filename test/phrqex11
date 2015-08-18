@@ -1,0 +1,11 @@
+#! /bin/sh
+# Test phrqex11
+
+NAME=phrqex11
+DB=phast.dat
+
+: ${PHASTINPUT=phastinput}
+${PHASTINPUT} $DATADIR/$NAME/$NAME $DBDIR/$DB && ${PHAST}
+result=$?
+
+exit $result
