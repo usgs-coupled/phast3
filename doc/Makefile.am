@@ -11,7 +11,11 @@ DOCS= \
     phreeqc2.pdf \
     phreeqc3.pdf \
     wrir02-4172.pdf \
-    phreeqc.revisions
+    phreeqc.RELEASE.txt \
+    RELEASE.txt
 
-$(srcdir)/phreeqc.revisions:
-	cd $(srcdir) && $(LN_S) phreeqc3-doc/RELEASE.TXT phreeqc.revisions
+$(srcdir)/phreeqc.RELEASE.txt:
+	cd $(srcdir) && $(LN_S) phreeqc3-doc/RELEASE.TXT phreeqc.RELEASE.txt
+
+$(srcdir)/RELEASE.txt:
+	cd $(srcdir) && $(LN_S) ../RELEASE RELEASE.txt
