@@ -11,7 +11,7 @@ TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) \
                     PATH=.$(PATH_SEPARATOR)../src/phastinput$(PATH_SEPARATOR)../src/phast$(PATH_SEPARATOR)$$PATH \
                     PHAST=`echo phast-openmp|sed '$(transform)'` \
                     PHASTINPUT=`echo phastinput|sed '$(transform)'` \
-                    DATADIR=$(top_srcdir)/examples \
+                    DATADIR=$(top_builddir)/examples \
                     DBDIR=$(top_srcdir)/database
 
 
