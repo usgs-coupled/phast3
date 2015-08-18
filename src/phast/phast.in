@@ -13,9 +13,9 @@ MPIEXEC=@MPIEXEC@
 MPIEXEC_NUMPROC_FLAG=@MPIEXEC_NUMPROC_FLAG@
 
 if [ "@PHAST_SUFFIX@" = "ser" ]; then
-USAGE="USAGE: phast prefix [-n PROCESSES] [-db DATABASE]"
-else
 USAGE="USAGE: phast prefix [-db DATABASE]"
+else
+USAGE="USAGE: phast prefix [-n PROCESSES] [-db DATABASE]"
 fi
 
 ARG_PREV=""
