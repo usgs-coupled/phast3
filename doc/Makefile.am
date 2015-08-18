@@ -8,7 +8,7 @@ dist_doc_DATA = $(DOCS)
 
 DOCS= \
     phast2-TM6-A35.pdf \
-    phreeqc.pdf \
+    phreeqc2.pdf \
     wrir02-4172.pdf \
     phreeqc.revisions
 
