@@ -7,12 +7,13 @@ correspond to the underlying PHREEQC release number.
 
 PHAST version 3 uses PhreeqcRM (Parkhurst and Wissmeier, Advances in Water
 Resources, 2015) as the reaction engine. PhreeqcRM is maintained with the latest
-version of PHREEQC version3 and implements parallel processing with MPI
-(multiprocessing) and OpenMP (multithreading). Most testing has indicated that
+version of PHREEQC version 3 and implements parallel processing with MPI
+(multiprocessing) or OpenMP (multithreading). Most testing has indicated that
 the MPI parallelization is more efficient.
 
-PHAST version 3 uses the same input and output file structures as version 2. No
-changes in input are necessary to use version 3. 
+PHAST version 3 uses the same input and output file syntax as version 2. No
+changes in input are necessary to use version 3 and all previous input
+files should run with version 3.
 
 Phast4Windows is the Windows graphical user interface, which runs either
 multiprocessing with MSMPI (which is installed with P4W) or multithreading with

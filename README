@@ -6,27 +6,27 @@ equilibrium and kinetic chemical reactions. PHAST version 3 uses PhreeqcRM as th
 module; however, all input and output is unchanged from PHAST version 2.
 
 
-    TABLE OF CONTENTS
+TABLE OF CONTENTS
 
-    A. Distribution files
-    B. Documentation
-    C. Installing the Windows GUI Phast4Windows
-    D. Installing the batch version for Windows
-    E. Compiling and installing the batch version for Linux
-    F. Running the multithreaded batch version of PHAST 
-    G. Running the multiprocessor batch version of PHAST 
-    H. Running PHASTHDF to extract data from the HDF file
-    I. Running Model Viewer to visualize results on Windows
-    J. Input files
-    K. Examples
-    L. Contacts
+   A. Distribution files
+   B. Documentation
+   C. Installing the Windows GUI Phast4Windows
+   D. Installing the batch version for Windows
+   E. Compiling and installing the batch version for Linux
+   F. Running the batch versions of PHAST 
+   G. Running PHASTHDF to extract data from the HDF file
+   H. Running Model Viewer to visualize results on Windows
+   I. Input files
+   J. Examples
+   K. Contacts
+
 
 -----------------------------------------------------------------------------------
 A. Distribution files
 -----------------------------------------------------------------------------------
 
-   The following distribution packages of the batch version of PHREEQC are available
-   for Windows and Linux:
+The following distribution packages of the batch version of PHREEQC are available
+for Windows and Linux:
     
 phast4windows-@VERSION@-@REVISION@-x64.exe         Windows GUI for developing and running PHAST 
                                                    models. 64-bit executable compiled using 
@@ -46,37 +46,37 @@ B. Documentation
 
 PHAST:
 
-Parkhurst, D.L., Kipp, K.L., and Charlton, S.R., 2010, PHAST Version 2—A program for simulating
-   groundwater flow, solute transport, and multicomponent geochemical reactions: U.S. Geological
-   Survey Techniques and Methods 6–A35, 235 p.
+   Parkhurst, D.L., Kipp, K.L., and Charlton, S.R., 2010, PHAST Version 2—A program for simulating
+      groundwater flow, solute transport, and multicomponent geochemical reactions: U.S. Geological
+      Survey Techniques and Methods 6–A35, 235 p.
    
-Parkhurst, D.L., Kipp, K.L., Engesgaard, Peter, and Charlton, S.R., 2004, PHAST—A program for
-   simulating ground-water flow, solute transport, and multicomponent geochemical reactions:
-   U.S. Geological Survey Techniques and Methods 6–A8, 154 p.
+   Parkhurst, D.L., Kipp, K.L., Engesgaard, Peter, and Charlton, S.R., 2004, PHAST—A program for
+      simulating ground-water flow, solute transport, and multicomponent geochemical reactions:
+      U.S. Geological Survey Techniques and Methods 6–A8, 154 p.
 
-Parkhurst, D.L., and Wissmeier, Laurin, 2015, PhreeqcRM--A reaction module for transport
-   simulators based on the geochemical model PHREEQC: Advances in Water Resources, v. 83, p.
-   176-189. http://dx.doi.org/10.1016/j.advwatres.2015.06.001
+   Parkhurst, D.L., and Wissmeier, Laurin, 2015, PhreeqcRM--A reaction module for transport
+      simulators based on the geochemical model PHREEQC: Advances in Water Resources, v. 83, p.
+      176-189. http://dx.doi.org/10.1016/j.advwatres.2015.06.001
    
 PHREEQC:
 
-Parkhurst, D.L., and Appelo, C.A.J., 2013, Description of input and examples for PHREEQC version
-   3--A computer program for speciation, batch-reaction, one- dimensional transport, and inverse
-   geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43,
-   497 p. http://pubs.usgs.gov/tm/06/a43/.
+   Parkhurst, D.L., and Appelo, C.A.J., 2013, Description of input and examples for PHREEQC version
+      3--A computer program for speciation, batch-reaction, one- dimensional transport, and inverse
+      geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43,
+      497 p. http://pubs.usgs.gov/tm/06/a43/.
 
-Parkhurst, D.L., and Appelo, C.A.J., 1999, User's guide to PHREEQC (Version 2)-- A computer
-   program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical
-   calculations: U.S. Geological Survey Water-Resources Investigations Report 99-4259, 312 p.
-   http://pubs.er.usgs.gov/publication/wri994259.
+   Parkhurst, D.L., and Appelo, C.A.J., 1999, User's guide to PHREEQC (Version 2)-- A computer
+      program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical
+      calculations: U.S. Geological Survey Water-Resources Investigations Report 99-4259, 312 p.
+      http://pubs.er.usgs.gov/publication/wri994259.
 
-Charlton, S.R., and Parkhurst, D.L., 2011, Modules based on the geochemical model PHREEQC for use in
-   scripting and programming languages: Computers & Geosciences, v. 37, p. 1653-1663.
+   Charlton, S.R., and Parkhurst, D.L., 2011, Modules based on the geochemical model PHREEQC for use in
+      scripting and programming languages: Computers & Geosciences, v. 37, p. 1653-1663.
    
 PhreeqcI:
 
-Charlton, S.R., and Parkhurst, D.L., 2002, PhreeqcI--A graphical user interface to the
-   geochemical model PHREEQC: U.S. Geological Survey Fact Sheet FS-031-02, 2 p.
+   Charlton, S.R., and Parkhurst, D.L., 2002, PhreeqcI--A graphical user interface to the
+      geochemical model PHREEQC: U.S. Geological Survey Fact Sheet FS-031-02, 2 p.
 
 Isotopes:
 
@@ -84,16 +84,14 @@ Isotopes:
    Portable Document Format (PDF) of Thorstenson and Parkhurst (2002) is included in the doc
    subdirectory of the PHREEQC program distribution.
 
-Thorstenson, D.C., and Parkhurst, D.L., 2002, Calculation of individual isotope equilibrium
-   constants for implementation in geochemical models: U.S. Geological Survey Water-Resources
-   Investigations Report 02-4172, 129 p. http://pubs.er.usgs.gov/publication/wri024172.
+   Thorstenson, D.C., and Parkhurst, D.L., 2002, Calculation of individual isotope equilibrium
+      constants for implementation in geochemical models: U.S. Geological Survey Water-Resources
+      Investigations Report 02-4172, 129 p. http://pubs.er.usgs.gov/publication/wri024172.
 
-Thorstenson, D.C., and Parkhurst, D.L., 2004, Calculation of individual isotope equilibrium
-   constants for geochemical reactions: Geochimica et Cosmochimica Acta, v. 68, no. 11, p.
-   2449-2465.
+   Thorstenson, D.C., and Parkhurst, D.L., 2004, Calculation of individual isotope equilibrium
+      constants for geochemical reactions: Geochimica et Cosmochimica Acta, v. 68, no. 11, p.
+      2449-2465.
    
-   *Brief description of the program PhreeqcI.
-
 
 -----------------------------------------------------------------------------------   
 C. Installing the Windows GUI Phast4Windows
@@ -121,36 +119,38 @@ x64.exe, which installs the programs PHAST, PHASTHDF, and Model Viewer.
 
 The default installation directory is \Program Files\USGS\phast-@VERSION@, which
 contains the following subdirectories:
-	\bin                    Batch file, executables, and DLLs.
-	   hdf5.dll             HDF dll
-	   phast.bat            Batch file that runs phastinput and phast-mt.
-	   phasthdf.exe         Java utility to extract files from HDF output (.h5 file).
-	   phastinput.exe       Program that converts input files to intermediate Phast.tmp file.
-	   phast-msmpi.exe      MPI executable.
-	   phast-mt.exe         OpenMP executable.
-	   szip.dll             Utility dll for compression
-	   zlib.dll             Utility dll for compression
-	\database               Phreeqc database files.
-	   Amm.dat
-	   frezchem.dat
-	   iso.dat
-	   llnl.dat
-	   minteq.dat
-	   minteq.v4.dat
-	   phreeqc.dat
-	   pitzer.dat
-	   sit.dat
-	   wateq4f.dat
-	\doc                    Published reports.
-	   phast2-TM6-A35.pdf   PHAST version 2 (and 3) documentation
-	   phreeqc.pdf???          PHREEQC version 2 documentation
-	   ???                  PHREEQC version 3 documentation
-	   phreeqc.RELEASE.txt???  Release notes for PHREEQC version @VERSION@
-	   RELEASE.txt          Release notes for PHAST version @VERSION@
-	   wrir02-4172.pdf      Report on use of isotopes as thermodynamic components
-	\examples               PHAST examples, including ex1-6, which are described in  
-	                        the PHAST version 3 manual.  
-	\lib                    Java files for phasthdf.exe.     
+
+   \bin                    Batch file, executables, and DLLs.
+      hdf5.dll             HDF dll
+      phast.bat            Batch file that runs phastinput and phast-mt.
+      phasthdf.exe         Java utility to extract files from HDF output (.h5 file).
+      phastinput.exe       Program that converts input files to intermediate Phast.tmp file.
+      phast-msmpi.exe      MPI executable.
+      phast-mt.exe         OpenMP executable.
+      szip.dll             Utility dll for compression
+      zlib.dll             Utility dll for compression
+   \database               Phreeqc database files.
+      Amm.dat
+      frezchem.dat
+      iso.dat
+      llnl.dat
+      minteq.dat
+      minteq.v4.dat
+      phast.dat            Same as phreeqc.dat.
+      pitzer.dat
+      sit.dat
+      wateq4f.dat     
+   \doc                    Published reports.
+
+      phast2-TM6-A35.pdf   PHAST version 2 (and 3) documentation
+      phreeqc2.pdf         PHREEQC version 2 documentation
+      phreeqc3.pdf         PHREEQC version 3 documentation
+      phreeqc.RELEASE.txt  Release notes for PHREEQC version @VERSION@
+      RELEASE.txt          Release notes for PHAST version @VERSION@
+      wrir02-4172.pdf      Report on use of isotopes as thermodynamic components    
+   \examples               PHAST examples, including ex1-6, which are described in  
+                           the PHAST version 3 manual.  
+   \lib                    Java files for phasthdf.exe.     
 
 Model Viewer is installed in the directory C:\Program Files (x86)\USGS\Model Viewer x.x, where
 x.x is a version number.
@@ -162,22 +162,23 @@ E. Compiling and installing the batch version for Linux
 
 No support beyond this README file is provided for users compiling their own
 versions of the software. In general, to compile the software, you will need:
-	make
-	C++ compiler
-	Fortran 90 compiler
-	hdf5 libraries >= 1.6.5
-	boost C++ libraries >= 1.33
-	zlib libraries >= 1.2.2
+   make
+   C++ compiler
+   Fortran 90 compiler
+   hdf5 libraries >= 1.6.5
+   boost C++ libraries >= 1.33
+   zlib libraries >= 1.2.2
 
 Additionally for the MPI version:
-	mpi c++ wrapper: (ie mpic++ mpicxx mpiCC)
+   mpi c++ wrapper: (ie mpic++ mpicxx mpiCC)
+   mpi F90 wrapper: (ie mpif90)
 	
 A Makefile for your system can be generated by configure, and the Makefile can be used to
 compile, test, and install the software.
 
 E.1. Extracting the files
 
-   Follow the steps below to extract the files from a distribution tar file.
+Follow the steps below to extract the files from a distribution tar file.
 
    Steps in extracting files                  Explanation
    ----------------------------------------   -----------------------------------
@@ -193,56 +194,56 @@ E.1. Extracting the files
    shown to the right):
 
    phast-@VERSION@-@REVISION@   
-     aclocal.m4                 Configure file
-     CMakeLists.txt             CMake file
-     configure                  Configure executable
-     configure.ac               Configure file
-     INSTALL                    Brief description of configure
-     Makefile.am                Configure file
-     Makefile.in                Configure file
-     NOTICE                     User agreement
-     RELEASE                    PHAST release notes
-     README                     This file
-     /config                    More configure files
-     /database                  Database files 
-        Amm.dat
-        frezchem.dat
-        iso.dat
-        llnl.dat
-        minteq.dat
-        minteq.v4.dat
-        phreeqc.dat
-        pitzer.dat
-        sit.dat
-        wateq4f.dat     
-     /doc                       Documentation files 
-        phast2-TM6-A35.pdf      PHAST version 2 (and 3) documentation
-        phreeqc.pdf???          PHREEQC version 2 documentation
-        ???                     PHREEQC version 3 documentation
-        phreeqc.RELEASE.txt???  Release notes for PHREEQC version @VERSION@
-        RELEASE.txt             Release notes for PHAST version @VERSION@
-        wrir02-4172.pdf         Report on use of isotopes as thermodynamic components    
-     /m4                        Configure files
-     /examples                  Examples from user's guide--used in verification tests
-     /src                       Source code
-     test???                    Files used to test the compilation
+      aclocal.m4                 Configure file
+      CMakeLists.txt             CMake file
+      configure                  Configure executable
+      configure.ac               Configure file
+      INSTALL                    Brief description of configure
+      Makefile.am                Configure file
+      Makefile.in                Configure file
+      NOTICE                     User agreement
+      README                     This file
+      RELEASE                    PHAST release notes
+      /config                    More configure files
+      /database                  Database files 
+         Amm.dat
+         frezchem.dat
+         iso.dat
+         llnl.dat
+         minteq.dat
+         minteq.v4.dat
+         phast.dat               Same as phreeqc.dat.
+         pitzer.dat
+         sit.dat
+         wateq4f.dat     
+      /doc                       Documentation files 
+         phast2-TM6-A35.pdf      PHAST version 2 (and 3) documentation
+         phreeqc2.pdf            PHREEQC version 2 documentation
+         phreeqc3.pdf            PHREEQC version 3 documentation
+         phreeqc.RELEASE.txt     Release notes for PHREEQC version @VERSION@
+         RELEASE.txt             Release notes for PHAST version @VERSION@
+         wrir02-4172.pdf         Report on use of isotopes as thermodynamic components    
+      /examples                  Examples from user's guide--used in verification tests
+      /m4                        Configure files
+      /src                       Source code
+      /test                      Files used to test the compilation
 
-Notes:  (a) A compiled executable is not included in the Linux distribution.
+Notes: (a) A compiled executable is not included in the Linux distribution.
             
-        (b) It is recommended that no user files be kept in the installation directory
-	    structure.
+       (b) It is recommended that no user files be kept in the installation directory
+           structure.
 
 E.2.  Change directory to the directory that was extracted from the tar file.
 
-      cd phast-@VERSION@-@REVISION@
+   cd phast-@VERSION@-@REVISION@
 
 E.3.  Make a directory, for example, Release.
     
-      mkdir Release
+   mkdir Release
 
 E.4.  Change directory to Release.
     
-      cd Release
+   cd Release
 
 E.5.  Run configure
     
@@ -255,8 +256,11 @@ E.5.  Run configure
     		library. Default is /usr/local, $HOME would install
     		to your home directory.
       --with-mpi=yes--specifies that MPI (Message Passing Interface)
-    		will be used for parallelization of PhreeqcRM. Default 
-    		is no, in which case, OpenMP is used for parallelization.
+    		will be used for parallelization of PhreeqcRM. Make sure
+                the MPI binary directory (the directory that contains 
+                mpicc, for example) is included in your PATH environmental 
+                variable. Default is no, in which case, OpenMP is used 
+                for parallelization.
       --disable-openmp--specifies that OpenMP is not used. This option 
     	 	is used if you want neither kind of parallelization.
            
@@ -266,16 +270,17 @@ E.5.  Run configure
       
 E.6.  Compile the program
     
-    make [-j n]
+   make [-j n]
 
-    Optionally, use -j n--where n is the number of compilations make runs in parallel.
+   Optionally, use -j n--where n is the number of compilations make runs in parallel.
     
 E.7.  Check that compiled version runs the test cases. 
    Check may take several minutes.
     
       make check
     
-   Results of running the test cases are stored in the directory Release/test
+   Logs for running the test cases are stored in the directory Release/test. Results
+   of run are in Release/examples/phrqex11.
 
 E.8. Install the program. 
 
@@ -286,197 +291,98 @@ E.8. Install the program.
       make install
         
    The locations of various files are given below, where "install" is the installation directory,
-   /usr/local by default, or the value given by the --prefix option to configure.
+   /usr/local by default, or the value given by the --prefix option to configure. "install"
+   represents the install directory in the following list.
    
-???????????
+
    Executables:
-      install/bin/phast     
+      install/bin/phast                    Batch file for running phastinput and phast. The
+                                           version of phast (MPI or OpenMP) will depend
+                                           on the last "make install".
+      install/bin/phastinput               phastinput executable. phastinput converts
+                                           the *.trans.dat file to Phast.tmp, which
+                                           is read by phast.
+      install/bin/phasthdf                 Java utility to extract information from an 
+                                           HDF (.h5) file.
+      install/bin/phast-openmp             Executable for OpenMP version of phast.
+      install/bin/phast-mpi                Executable for MPI version of phast.
       
    Documentation:
         
-      install/share/doc/phast?????
-         Phreeqc_3_2013_manual.pdf         Manual for Phreeqc version 3
-         Phreeqc_2_1999_manual.pdf         Manual for Phreeqc version 2
-         wrir02-4172.pdf                   Documenation of isotope calculations
-         phreeqc.txt                       Short explanation for Phreeqc
-         RELEASE                           Release notes
-         README                            this readme file
-         NOTICE                            User rights notice
+      install/share/doc/phast-@VERSION@-@VER_DATE@
+         phast2-TM6-A35.pdf                PHAST version 2 (and 3) documentation
+         phreeqc2.pdf                      PHREEQC version 2 documentation
+         phreeqc3.pdf                      PHREEQC version 3 documentation
+         phreeqc.RELEASE.txt               Release notes for PHREEQC version @VERSION@
+         RELEASE.txt                       Release notes for PHAST version @VERSION@
+         wrir02-4172.pdf                   Report on use of isotopes as thermodynamic components    
     
-    Databases: 
+   Databases: 
     
-      install/share/doc/phreeqc/database
+      install/share/doc/phast-3.2.2-10105/database
          Amm.dat
          frezchem.dat
          iso.dat
          llnl.dat
          minteq.dat
          minteq.v4.dat
-         phreeqc.dat
+         phast.dat                         Same as phreeqc.dat.
          pitzer.dat
          sit.dat
-         wateq4f.dat
+         wateq4f.dat     
     
-    Example input files:
+   Example input files:
     
-      install/share/doc/phreeqc/examples
+      install/share/doc/phast-3.2.2-10105/examples
          Input files for examples. Ex1-6 are documented in the PHAST 2 manual
-????????????????      
- 
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-Building phast using configure:
--------------------------------
-
-Building phast requires the following:
-	make
-	C++ compiler
-	Fortran 90 compiler
-	hdf5 libraries >= 1.6.5
-	boost C++ libraries >= 1.33
-	zlib libraries >= 1.2.2
-
-And, additionally for the MPI version:
-	mpi c++ wrapper: (ie mpic++ mpicxx mpiCC)
-	
-The serial version of PHAST can be built and installed using the following
-commands:
-
-tar -xzf phast-@VERSION@-@REVISION@.tar.gz
-cd phast-@VERSION@-@REVISION@
-mkdir _build
-cd _build
-../configure [--prefix=dirname]                   # serial version
-make
-make install
-
-The parallel version of PHAST can be built and installed using the following
-commands:
-
-tar -xzf phast-@VERSION@-@REVISION@.tar.gz
-cd phast-@VERSION@-@REVISION@
-mkdir _build
-cd _build
-../configure [--prefix=dirname] --enable-mpi
-make
-make install
-
-
-Additional configuration settings may be specified to configure. Use
-the following command to display help for each setting:
-../configure --help
-
-Building PHASTHDF is not currently supported.
-
-
-DOCUMENTATION
-
-The doc subdirectory of each installation contains:
-
-??? same for P4W and PHAST.
-
-	phast2-TM6-A35.pdf--Documentation for PHAST (version 2 and 3).
-
-	phreeqc3??--Complete documentation of PHREEQC version 3 input.
-
-	phreeqc2??--Documentation of PHREEQC version 2, which contains
-	some information not contained in the version 3 documentation.
-
-	RELEASE.txt--Release notes for the each release of PHAST.
-	
-	phreeqc.revisions.txt???--Release notes for each release of
-	PHREEQC.
-	
-	wrir02-4172.pdf--Description of the implementation of isotopic
-	calculations in PHREEQC.
-
-PhreeqcRM is described in (Parkhurst and Wissmeier (Advances in Water
-Resources, 2015, http://dx.doi.org/10.1016/j.advwatres.2015.06.001).
-
-The ModelViewer/doc directory (Windows only, Program Files (x86)/USGS/)
-includes the documentation for ModelViewer, ofr02-106.pdf.
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 -----------------------------------------------------------------------------------  
-F. Running the multithreaded batch version of PHAST 
+F. Running the batch versions of PHAST 
 -----------------------------------------------------------------------------------  
 
-For reactive-transport simulations, PHAST needs three data files for execution, (1) the flow and
-transport data file,(2) the chemistry data file, and (3) the thermodynamic database file. For
-flow-only calculations, only the flow and transport data file is needed. Running PHAST is a two-
-step process that is automated in scripts (Unix, bin/phast; Windows, bin\phast.bat). A prefix,
-from which input and output file names are derived, is defined as an argument to the script.
-Within the script,the program PHASTINPUT (bin/phastinput) is run to generate an intermediate
-input file named Phast.tmp. Following successful completion of the PHASTINPUT program, the script
-invokes the program PHAST (bin/phast-ser), which performs the reactive- transport simulations.
-The script (Unix or Windows) is invoked from a command- line window as follows:
+For reactive-transport simulations, PHAST needs at least three data files for execution, (1) the 
+flow and transport data file,(2) the chemistry data file, and (3) the thermodynamic database file. 
+For flow-only calculations, only the flow and transport data file is needed. Running PHAST is a 
+two-step process that is automated in scripts (Unix, install/bin/phast; Windows, bin\phast.bat). 
+For windows, the path to the script is installed, and  you should be able to run without a 
+complete path. Similarly, if the install directory is in your path, you do not need complete
+path names. A prefix, from which input and output file names are derived, is defined as an 
+argument to the script. Within the script,the program phastinput (Unix, install/bin/phastinput; 
+Windows bin\phastinput) is run to generate an intermediate input file named Phast.tmp. Following 
+successful completion of the phastinput program, the script invokes the program phast, which 
+performs the reactive-transport simulations. For Unix, the script will run the version of phast 
+that was last installed (make install), either MPI or OpenMP.
 
-phast prefix [database] ???
+For the script is invoked as follows:
+
+   phast prefix [-n PROCESSES] [-db DATABASE]
 
 The flow and transport data file must be named prefix.trans.dat; the chemistry data file must be
-named prefix.chem.dat. Optionally, [database] is the name of the thermodynamic database file; if
-this argument is not defined, the database file is assumed to be named phast.dat.
+named prefix.chem.dat. Optionally, for OpenMP, PROCESSES is the number of processes or threads 
+to use for the calculations. Optionally, DATABASE is the name of the thermodynamic database file; 
+if this argument is not defined, the database file is assumed to be named phast.dat.
 
 
 -----------------------------------------------------------------------------------  
-G. Running the multiprocessor batch version of PHAST 
+G. Running PHASTHDF to extract data from the HDF file
 ----------------------------------------------------------------------------------- 
 
-An MPI version for PHAST has been compiled for Windows with the MSMPI version of MPI (bin\phast-
-msmpi.exe). For Linux, the MPI version is named phast-mpi. The MPI versions can be run with the
-mpiexec command, which has many options. 
-
-First, phastinput must been run for the input file, an example for Windows is as follows:
-
-"%INSTALLDIR%\bin\phastinput.exe prefix
-
-where %INSTALLDIR% represents the directory where the batch version of PHAST has been installed.
-MPI PHAST can then be run; an example for Windows is as follows:
-
-"%MSMPI_BIN%\mpiexec.exe" -n 4 "%INSTALLDIR%\bin64\phast-msmpi.exe"
-
-where %MSMPI_BIN% represents the path to MPI and 4 is the number of proccesses to run.
-
-The parallel versions use exactly the same input files as the multithreaded versions. Limited
-help with installation and running the parallel versions is given in Appendix C of the PHAST
-documentation (doc/phast.pdf).
-
-
------------------------------------------------------------------------------------  
-H. Running PHASTHDF to extract data from the HDF file
------------------------------------------------------------------------------------ 
-
-PHASTHDF (bin/phasthdf) is a Java program that allows you to extract data from the HDF output
-file (prefix.h5). Simply execute the program and define the HDF file and the data to extract from
-the screens provided.
+PHASTHDF (Linux, install/bin/phasthdf; Windows bin\phasthdf) is a Java program that allows 
+you to extract data from the HDF output file (prefix.h5). Simply execute the program and 
+define the HDF file and the data to extract from the screens provided.
 
 
 ----------------------------------------------------------------------------------- 
-I. Running MODEL VIEWER to visualize results on Windows
+H. Running MODEL VIEWER to visualize results on Windows
 ----------------------------------------------------------------------------------- 
 
-Model Viewer (Model Viewer\bin\modview.exe) is a graphical user interface that allows
+Model Viewer (\Model Viewer\bin\modview.exe) is a graphical user interface that allows
 visualization of data stored in the HDF output file (prefix.h5).
 
 
-xxxxxxxxxxxxxxxx
-EXECUTABLE FILES
-
-Executables are provided in the /bin directory of the PHAST distribution.
-The Linux versions include executables phast-ser, phast-lam (LAM parallel
-version, 32 bit version only), phast-openmpi (openmpi parallel version),
-phastinput, and phasthdf (program to extract data from an HDF file). All
-phast executables were compiled with Intel Fortran and GCC.
-
-The Windows versions include executables phast-ser, phast-mpich (MPICH
-parallel version), phastinput, and phasthdf (program to extract data from
-an HDF file). All phast executables were compiled with Intel Fortran and
-Microsoft C++ 2005.
-xxxxxxxxxxxxxxxxxxxxxxx
-
-
 ----------------------------------------------------------------------------------- 
-J. Input files
+I. Input files
 ----------------------------------------------------------------------------------- 
 
 The flow and transport data file, chemistry data file, and database file are all composed of
@@ -511,7 +417,7 @@ solution composition.
 
 
 ----------------------------------------------------------------------------------- 
-K. Examples
+J. Examples
 ----------------------------------------------------------------------------------- 
 
 Example problems are included in the examples directory of the installation.  Six of the examples
@@ -529,10 +435,9 @@ chemistry and are simply a test of the flow model.
 
 
 ----------------------------------------------------------------------------------- 
-L. Contacts
+K. Contacts
 ----------------------------------------------------------------------------------- 
 
 Hopefully this is enough to get you started. Please report bugs (dlpark@usgs.gov or
 h2osoft@usgs.gov) and we will try to fix any problems as soon as possible. Any other comments are
 appreciated.
-
