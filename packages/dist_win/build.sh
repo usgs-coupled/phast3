@@ -304,7 +304,9 @@ clean() {
 # build phast.msi x64
   MsBuild.exe "${BOOT_SLN}" /t:Clean /p:Configuration=Release /p:Platform=x64 /p:TargetName=${FULLPKG}-x64 /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Patch=${PATCH} /p:Build=${REL} && \
   rm -rf msi/bin && \
-  rm -rf msi/obj )
+  rm -rf msi/obj && \
+  rm -rf ../PhastBootstrapper/PhastBootstrapper/bin && \
+  rm -rf ../PhastBootstrapper/PhastBootstrapper/obj )
 }
 
 install() {
