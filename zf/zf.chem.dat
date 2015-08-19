@@ -24,25 +24,25 @@ RATES
         -start
 10 rate = -TOT("[A]") * .05/(3600*24)
 20 moles = rate * TIME
-30 SAVE moles
+30 SAVE moles * SOLN_VOL
         -end
         [B]_decay
         -start
 10 rate = -TOT("[B]") * .02/(3600*24)
 20 moles = rate * TIME
-30 SAVE moles
+30 SAVE moles * SOLN_VOL
         -end
         [C]_decay
         -start
 10 rate = -TOT("[C]") * .01/(3600*24)
 20 moles = rate * TIME
-30 SAVE moles
+30 SAVE moles * SOLN_VOL
         -end
         [D]_decay
         -start
 10 rate = -TOT("[D]") * .005/(3600*24)
 20 moles = rate * TIME
-30 SAVE moles
+30 SAVE moles * SOLN_VOL
         -end
 END
 #KINETICS 1

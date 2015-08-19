@@ -50,8 +50,8 @@ Aerobic
 420 NI = TOT("N(5)")*14*1000
 430 S1 = TOT("Substrate")*1000
 440 N = TOT("Ndis")*14*1000
-450 x1 = KIN("aerobic_biomass")
-460 x2 = KIN("N_reduction_biomass")              
+450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
 470 Ib = 1 + (x1 + x2) / kbio
 480 In = 1 + O / k_nc_do
 
@@ -85,8 +85,8 @@ Aerobic_biomass
 420 NI = TOT("N(5)")*14*1000
 430 S1 = TOT("Substrate")*1000
 440 N = TOT("Ndis")*14*1000
-450 x1 = KIN("aerobic_biomass")
-460 x2 = KIN("N_reduction_biomass")              
+450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
 470 Ib = 1 + (x1 + x2) / kbio
 480 In = 1 + O / k_nc_do
 
@@ -123,8 +123,8 @@ N_reduction
 420 NI = TOT("N(5)")*14*1000
 430 S1 = TOT("Substrate")*1000
 440 N = TOT("Ndis")*14*1000
-450 x1 = KIN("aerobic_biomass")
-460 x2 = KIN("N_reduction_biomass")              
+450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
 470 Ib = 1 + (x1 + x2) / kbio
 480 In = 1 + O / k_nc_do
 
@@ -159,8 +159,8 @@ N_reduction_biomass
 420 NI = TOT("N(5)")*14*1000
 430 S1 = TOT("Substrate")*1000
 440 N = TOT("Ndis")*14*1000
-450 x1 = KIN("aerobic_biomass")
-460 x2 = KIN("N_reduction_biomass")              
+450 x1 = KIN("aerobic_biomass") / SOLN_VOL
+460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
 470 Ib = 1 + (x1 + x2) / kbio
 480 In = 1 + O / k_nc_do
 

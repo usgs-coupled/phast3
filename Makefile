@@ -9,10 +9,11 @@ ifeq ($(USER), charlton)
   ##TOPDIR=/home/charlton/reactive-transport/phastpp3-worker
 endif
 
-#  VALGRIND=valgrind --leak-check=full
+#  VALGRIND=valgrind --leak-check=full --undef-value-errors=yes # --track-origins=yes
   VALGRIND=
   TEST=$(TOPDIR)/examples
-  PHAST_INPUT=$(VALGRIND) $(TOPDIR)/src/phastinput/phastinput
+#  PHAST_INPUT=$(VALGRIND) $(TOPDIR)/src/phastinput/phastinput
+  PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
   PHAST=$(VALGRIND) $(TOPDIR)/src/phast/openmp_gfortran_64/phast
 #  PHAST=$(VALGRIND) $(TOPDIR)/src/phast/openmp_gfortran_64_debug/phast
 #  PHAST=$(VALGRIND) $(TOPDIR)/src/phast/openmp_intel_64/phast
@@ -45,7 +46,7 @@ SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz
 
 PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel \
 	free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel shell_parallel tortuosity_parallel \
-	 ex5_parallel ex2_parallel ex6_parallel
+	 ex5_parallel ex2_parallel # ex6_parallel
 
 CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
 	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
