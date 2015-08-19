@@ -68,6 +68,7 @@ SOLUTION_METHOD
         -space                              0.5
         -time                               0.5
         -cross_dispersion                   false
+	-rebalance_fraction		    0.0
 PRINT_FREQUENCY
         0
         -hdf_chemistry                      400 day

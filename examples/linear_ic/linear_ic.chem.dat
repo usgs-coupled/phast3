@@ -80,20 +80,18 @@ KINETICS 1
         K-feldspar
                 -m0 2
                 -m  1
-#        k0 * A/V = 1e-16 mol/cm2/s * (10% fsp, 0.1mm cubes) 136/cm = 136.e-13 mol/dm3/s
-                -parms 1.36e4  0.1
+                -parms 6800 0.1 # 1.36e4  0.1
                 -tol 1e-12
         Pyrite  
                 -tol    1e-6
                 -m0     2
                 -m      1
-                -parms -5.0     0.1     .5      -0.11 
+                -parms -5.3     0.1     .5      -0.11 
 KINETICS 2
         K-feldspar
                 -m0 4
                 -m  2
-#        k0 * A/V = 1e-16 mol/cm2/s * (10% fsp, 0.1mm cubes) 136/cm = 136.e-13 mol/dm3/s
-                -parms 1.36e4  0.1
+                -parms 6800  0.1
                 -tol 1e-12
 END     
 SELECTED_OUTPUT
