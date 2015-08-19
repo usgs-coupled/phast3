@@ -82,6 +82,7 @@ PRINT_FREQUENCY
         -hdf_velocity           end
         -xyz_velocity           end
         -well                   end
+        -xyz_well               end
 	-head			end
 	-xyz_chemistry	        end
 

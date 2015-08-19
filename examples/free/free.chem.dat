@@ -45,9 +45,9 @@ K-feldspar
 70    rate = 10^-pk_H * ACT("H+")^0.5 + 10^-pk_w + 10^-pk_OH * ACT("OH-")^0.3
 71    rate = rate + 10^-pk_CO2 * (10^SI("CO2(g)"))^0.6
 #72   rate = rate + 10^-pk_org * TOT("DOC")^0.4
-80    moles = parm(1) * parm(2) * rate * (1 - SR("K-feldspar")) * time * SOLN_VOL
+80    moles = parm(1) * M0 * parm(2) * rate * (1 - SR("K-feldspar")) * time 
 81 rem decrease rate on precipitation
-90    if SR("K-feldspar") > 1 then moles = moles * 0.1 * SOLN_VOL
+90    if SR("K-feldspar") > 1 then moles = moles * 0.1 
 100   save moles
       -end 
       
@@ -68,8 +68,8 @@ Pyrite
 
    10 if (m <= 0) then goto 200
    20 if (si("Pyrite") >= 0) then goto 200
-   30  rate = -10.19 + parm(1) + parm(3)*lm("O2") + parm(4)*lm("H+") + parm(2)*log10(m/m0)
-   40  moles = 10^rate * time * SOLN_VOL
+   30  rate = -10.19 + parm(1) + log10(M0) + parm(3)*lm("O2") + parm(4)*lm("H+") + parm(2)*log10(m/m0)
+   40  moles = 10^rate * time 
    200 save moles 
   -end
   
@@ -110,13 +110,13 @@ KINETICS 1
                 -m0 2
                 -m  1
 #        k0 * A/V = 1e-16 mol/cm2/s * (10% fsp, 0.1mm cubes) 136/cm = 136.e-13 mol/dm3/s
-                -parms 1.36e4  0.1
+                -parms 6296 0.1 # 1.36e4  0.1
                 -tol 1e-12
         Pyrite  
                 -tol    1e-6
                 -m0     2
                 -m      1
-                -parms -5.0     0.1     .5      -0.11 
+                -parms -5.3     0.1     .5      -0.11 
 END
 SELECTED_OUTPUT
         -file free.dummy.sel
