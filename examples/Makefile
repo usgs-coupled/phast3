@@ -54,7 +54,7 @@ CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_
 	radial_clean river_clean unconf_clean well_clean ex2_clean free_clean \
 	ex4restart_clean print_check_ss_clean print_check_transient_clean ex4_start_time_clean \
 	mass_balance_clean simple_clean ex4_noedl_clean ex4_ddl_clean ex4_transient_clean leakysurface_clean \
-	flux_patches_clean patches_lf_clean zf_clean property_clean shell_clean ex5_clean ex6_clean
+	flux_patches_clean patches_lf_clean zf_clean property_clean shell_clean tortuosity_clean ex5_clean ex6_clean
 
 CLEAN_PARALLEL = decay_clean_parallel diffusion1d_clean_parallel diffusion2d_clean_parallel \
 	disp2d_clean_parallel ex3_clean_parallel kindred4.4_clean_parallel \
@@ -67,7 +67,7 @@ CLEAN_PARALLEL = decay_clean_parallel diffusion1d_clean_parallel diffusion2d_cle
 	ex4_start_time_clean_parallel mass_balance_clean_parallel simple_clean_parallel \
 	ex4_noedl_clean_parallel ex4_ddl_clean_parallel ex4_transient_clean_parallel leakysurface_clean_parallel \
 	flux_patches_clean_parallel patches_lf_clean_parallel zf_clean_parallel property_clean_parallel \
-	shell_clean_parallel ex5_clean_parallel ex6_clean_parallel
+	shell_clean_parallel tortuosity_clean_parallel ex5_clean_parallel ex6_clean_parallel
 
 CLEAN_CMD =  rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *.xyz* *backup* *.txt *.tsv Phast.tmp 
 
