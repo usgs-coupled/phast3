@@ -117,7 +117,7 @@ D. Installing the batch version for Windows
 You need administrator privileges to execute the installation file phast-@VERSION@-@REVISION@-
 x64.exe, which installs the programs PHAST, PHASTHDF, and Model Viewer.
 
-The default installation directory is \Program Files\USGS\phast-@VERSION@, which
+The default installation directory is \Program Files\USGS\phast-@MSI_VERSION@, which
 contains the following subdirectories:
 
    \bin                    Batch file, executables, and DLLs.
