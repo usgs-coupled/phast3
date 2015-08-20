@@ -227,9 +227,7 @@ SUBROUTINE phast_manager
                 CALL zone_flow_write_heads
             ENDIF
 	        CALL zone_flow_write_chem()
-            IF (.NOT.steady_flow) THEN
-                CALL write4                                 ! calc_velocity called
-            ENDIF
+            CALL write4                                    ! calc_velocity called
             ! write files
             ihdf = 0
             if (prhdfc .or. (prhdfhi .ne. 0) .or. (prhdfvi .ne. 0)) ihdf = 1

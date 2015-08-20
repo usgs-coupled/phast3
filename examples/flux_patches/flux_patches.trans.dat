@@ -248,7 +248,7 @@ PRINT_FREQUENCY
 		-progress_statistics         end 
 		-velocities             0
 		-wells                       end 
-		-xyz_chemistry          0
+		-xyz_chemistry               end
 		-xyz_components         0
 		-xyz_heads              0
 		-xyz_velocities         0

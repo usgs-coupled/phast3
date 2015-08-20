@@ -24,6 +24,12 @@ SUBROUTINE write4
   !     ------------------------------------------------------------------
   !...
   rxlbl='X'
+  if (steady_flow) then
+    if (ntprvel > 0) prvel = .false.
+    if (ntprmapv > 0) prmapv = .false.
+    if (ntprhdfv > 0) prhdfv = .false.
+  endif
+  
   IF(prvel .OR. prmapv .OR. prhdfv) THEN
      CALL calc_velocity
      lprnt1 = 1
