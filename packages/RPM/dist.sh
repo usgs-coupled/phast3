@@ -129,9 +129,9 @@ VER_UC=`echo $VERSION | sed -e "y/$LOWER/$UPPER/"`
 RELEASE_DATE="`date -d $RDATE  "+%B %e, %G"`"
 
 # format msi version number
-MAJOR=`echo $VER | sed -e 's/\.[^.]*//g'`
-MINOR=`echo $VER | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//'`
-PATCH=`echo $VER | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//' -e 's/[^\.]*\.//'`
+MAJOR=`echo $VERSION | sed -e 's/\.[^.]*//g'`
+MINOR=`echo $VERSION | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//'`
+PATCH=`echo $VERSION | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//' -e 's/[^\.]*\.//'`
 MSI_VERSION="${MAJOR}.${MINOR}.${REVISION}"
 
 if [ -z "$REPOS_PATH" ]; then
