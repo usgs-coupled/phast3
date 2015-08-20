@@ -128,6 +128,12 @@ VER_UC=`echo $VERSION | sed -e "y/$LOWER/$UPPER/"`
 # format date string
 RELEASE_DATE="`date -d $RDATE  "+%B %e, %G"`"
 
+# format msi version number
+MAJOR=`echo $VER | sed -e 's/\.[^.]*//g'`
+MINOR=`echo $VER | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//'`
+PATCH=`echo $VER | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//' -e 's/[^\.]*\.//'`
+MSI_VERSION="${MAJOR}.${MINOR}.${REVISION}"
+
 if [ -z "$REPOS_PATH" ]; then
   REPOS_PATH="branches/$VERSION"
 else
@@ -370,6 +376,7 @@ do
    -e "s/@VER_UC@/${VER_UC}/g" \
    -e "s/@PHREEQC_VER@/${PHREEQC_VER}/g" \
    -e "s/@PHREEQC_DATE@/${RELEASE_DATE}/g" \
+   -e "s/@MSI_VERSION@/${MSI_VERSION}/g" \
     < "$vsn_file" > "$vsn_file.tmp"
   mv -f "$vsn_file.tmp" "$vsn_file"
   if [ -n "$WIN" ]; then
