@@ -22,6 +22,7 @@ AC_DEFINE([PHRQ_IO_INPUT], , [Must be set for phastinput])
 # phast defines
 AC_DEFINE([SWIG_SHARED_OBJ], , [Must be set for phast])
 AC_DEFINE([USE_PHRQ_ALLOC], , [Must be set for phast])
+AC_DEFINE([USE_GZ], , [Must be set for phast])
 AC_DEFINE([H5Dcreate_vers], [1] , [Must be set to 1 for phast])
 AC_DEFINE([H5Gcreate_vers], [1] , [Must be set to 1 for phast])
 AC_DEFINE([H5Eset_auto_vers], [1] , [Must be set to 1 for phast])
