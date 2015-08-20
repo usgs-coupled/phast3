@@ -100,7 +100,7 @@ C. Installing the Windows GUI Phast4Windows
 You need administrator privileges to execute the installation file
 phast4windows-@VERSION@-@REVISION@-x64.exe.
 
-To install the GUI,execute phast4windows-@VERSION@-@REVISION@-x64.exe. Follow the directions on
+To install the GUI, execute phast4windows-@VERSION@-@REVISION@-x64.exe. Follow the directions on
 the screen to install the program. The GUI is completely independent from the batch version of
 PHAST.
 
@@ -284,9 +284,10 @@ E.7.  Check that compiled version runs the test cases.
 
 E.8. Install the program. 
 
-   By default the program is installed in /usr/local/bin and /usr/local/share/doc/phast. You can
-   specify an installation prefix other than "/usr/local" by using the prefix option of
-   configure, prefix=$HOME for example.
+   By default the program is installed in /usr/local/bin and 
+   /usr/local/share/doc/phast-@VERSION@-@REVISION@. You can specify an installation
+   prefix other than "/usr/local" by using the prefix option of configure, 
+   prefix=$HOME for example.
     
       make install
         
@@ -309,7 +310,7 @@ E.8. Install the program.
       
    Documentation:
         
-      install/share/doc/phast-@VERSION@-@VER_DATE@
+      install/share/doc/phast-@VERSION@-@REVISION@
          phast2-TM6-A35.pdf                PHAST version 2 (and 3) documentation
          phreeqc2.pdf                      PHREEQC version 2 documentation
          phreeqc3.pdf                      PHREEQC version 3 documentation
@@ -319,7 +320,7 @@ E.8. Install the program.
     
    Databases: 
     
-      install/share/doc/phast-3.2.2-10105/database
+      install/share/doc/phast-@VERSION@-@REVISION@/database
          Amm.dat
          frezchem.dat
          iso.dat
@@ -333,7 +334,7 @@ E.8. Install the program.
     
    Example input files:
     
-      install/share/doc/phast-3.2.2-10105/examples
+      install/share/doc/phast-@VERSION@-@REVISION@/examples
          Input files for examples. Ex1-6 are documented in the PHAST 2 manual
 
 
@@ -342,19 +343,19 @@ F. Running the batch versions of PHAST
 -----------------------------------------------------------------------------------  
 
 For reactive-transport simulations, PHAST needs at least three data files for execution, (1) the 
-flow and transport data file,(2) the chemistry data file, and (3) the thermodynamic database file. 
+flow and transport data file, (2) the chemistry data file, and (3) the thermodynamic database file. 
 For flow-only calculations, only the flow and transport data file is needed. Running PHAST is a 
 two-step process that is automated in scripts (Unix, install/bin/phast; Windows, bin\phast.bat). 
-For windows, the path to the script is installed, and  you should be able to run without a 
+For windows, the path to the script is installed, and you should be able to run without a 
 complete path. Similarly, if the install directory is in your path, you do not need complete
 path names. A prefix, from which input and output file names are derived, is defined as an 
-argument to the script. Within the script,the program phastinput (Unix, install/bin/phastinput; 
-Windows bin\phastinput) is run to generate an intermediate input file named Phast.tmp. Following 
+argument to the script. Within the script, the program phastinput (Unix, install/bin/phastinput; 
+Windows bin\phastinput.exe) is run to generate an intermediate input file named Phast.tmp. Following 
 successful completion of the phastinput program, the script invokes the program phast, which 
 performs the reactive-transport simulations. For Unix, the script will run the version of phast 
 that was last installed (make install), either MPI or OpenMP.
 
-For the script is invoked as follows:
+For Linux, the script is invoked as follows:
 
    phast prefix [-n PROCESSES] [-db DATABASE]
 
@@ -387,10 +388,10 @@ I. Input files
 
 The flow and transport data file, chemistry data file, and database file are all composed of
 keyword data blocks. The keyword data blocks for chemistry are identical to PHREEQC, and any
-PHREEQC calculation can be performed.  PHREEQC is run first when PHAST starts to define
+PHREEQC calculation can be performed. PHREEQC is run first when PHAST starts to define
 solutions, equilibrium-phase assemblages, exchange assemblages, surface assemblages, solid-
 solution assemblages, gas phases, and sets of kinetic reactions with associated identifying
-numbers.  The numbered entities are used to set initial conditions in the model domain and to
+numbers. The numbered entities are used to set initial conditions in the model domain and to
 define boundary solutions.
 
 The database file phast.dat is the same as phreeqc.dat distributed with PHREEQC. It contains the
@@ -421,9 +422,9 @@ J. Examples
 ----------------------------------------------------------------------------------- 
 
 Example problems are included in the examples directory of the installation.  Six of the examples
-are documented in the phast.pdf??? file. They include a pulse of a linearly decaying and sorbing
+are documented in the phast2-TM6-A35.pdf file. They include a pulse of a linearly decaying and sorbing
 component (ex1); chain decay resulting in production of three degradation products (ex2);
-microbial consumption of a substrate with microbial growth (ex3); and a field-scale model of for
+microbial consumption of a substrate with microbial growth (ex3); and a field-scale model for
 Central Oklahoma that uses most of the features of PHAST (ex4). A simulation of a sewage effluent
 plume at Cape Cod, Massachusetts (ex5), and another simulation of the sewage plume on a refined
 grid (ex6).
