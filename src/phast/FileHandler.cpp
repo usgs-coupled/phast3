@@ -54,7 +54,7 @@ public:
 	std::vector< std::ostream * > &GetXYZOstreams(void) {return this->XYZOstreams;}
 	std::vector< std::string > &GetHeadings(void) {return this->Headings;}
 	void SetHeadings(std::vector< std::string > &h) {this->Headings = h;}
-	//void SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation = NULL, int *mapping = NULL);
+	void SetSaturation(double *saturation);
 	void SetNodes(double *x_node, double *y_node, double *z_node);
 	void SetPhreeqcRM(int rm_id);
 	IRM_RESULT SetRestartName(const char *name);
@@ -75,7 +75,7 @@ protected:
 	std::vector<double> x_node;
 	std::vector<double> y_node;
 	std::vector<double> z_node;
-	std::vector<double> saturation;  // only root
+	double * saturation;  // only root
 	//std::vector<int> mapping;        // only root
 	std::vector<int> ic;
 	std::map <std::string, std::ostream * > BcZoneOstreams;
@@ -406,28 +406,17 @@ FileHandler::ProcessRestartFiles(
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
-FileHandler::SetPointers(double *x_node_in, double *y_node_in, double *z_node_in, int *ic_in,
-	double * saturation_in, int *mapping_in)
+FileHandler::SetSaturation(double * saturation_in)
 /* ---------------------------------------------------------------------- */
 {
-	this->x_node = x_node_in;
-	this->y_node = y_node_in;
-	this->z_node = z_node_in;
 	this->saturation = saturation_in;
-	this->mapping = mapping_in;  // only root
-	this->ic = ic_in;
-	if (this->x_node == NULL ||
-		this->y_node == NULL ||
-		this->z_node == NULL ||
-		this->ic == NULL)
+	if (this->saturation == NULL)
 	{
-		error_msg("NULL pointer in FileHandler.SetPointers ", 1);
+		error_msg("NULL pointer in FileHandler.SetSaturation ", 1);
 	}
 }
-#endif
 /* ---------------------------------------------------------------------- */
 void
 FileHandler::SetNodes(double *x_node_in, double *y_node_in, double *z_node_in)
@@ -437,7 +426,7 @@ FileHandler::SetNodes(double *x_node_in, double *y_node_in, double *z_node_in)
 		y_node_in == NULL ||
 		z_node_in == NULL )
 	{
-		error_msg("NULL pointer in FileHandler.SetPointers ", 1);
+		error_msg("NULL pointer in FileHandler.SetNodes ", 1);
 	}
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	int nxyz = Reaction_module_ptr->GetGridCellCount();
@@ -738,7 +727,7 @@ FileHandler::WriteRestart(int *print_restart)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->GetSaturation(this->saturation);
+		//Reaction_module_ptr->GetSaturation(this->saturation);
 		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
 		if (print_restart != 0)
 		{
@@ -834,10 +823,10 @@ FileHandler::WriteXYZ(int *print_xyz, int *xyz_mask)
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	if (Reaction_module_ptr)
 	{	
-		if (Reaction_module_ptr->GetComponentCount() > 0)
-		{
-			Reaction_module_ptr->GetSaturation(this->saturation);
-		}
+		//if (Reaction_module_ptr->GetComponentCount() > 0)
+		//{
+		//	Reaction_module_ptr->GetSaturation(this->saturation);
+		//}
 		int nso = RM_GetSelectedOutputCount(this->rm_id);
 		int nxyz = RM_GetSelectedOutputRowCount(this->rm_id); 
 		double current_time = RM_GetTimeConversion(this->rm_id) * RM_GetTime(this->rm_id);
@@ -922,7 +911,7 @@ FileHandler::WriteXYZ(int *print_xyz, int *xyz_mask)
 #endif
 							if (xyz_mask[irow] <= 0) continue;
 							int active = 1;
-							if (Reaction_module_ptr->GetForwardMapping()[irow] < 0 || saturation[irow] <= 0)
+							if (Reaction_module_ptr->GetForwardMapping()[irow] < 0 || saturation[irow] <= 0 || saturation[irow] > 1e29)
 							{
 								active = 0;
 							}
@@ -993,15 +982,13 @@ FH_ProcessRestartFiles(
 	file_handler.ProcessRestartFiles(initial_conditions1_in, 
 		initial_conditions2_in, fraction1_in);
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
-FH_SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation, int *mapping)
+FH_SetSaturation(double *saturation)
 /* ---------------------------------------------------------------------- */
 {
-	file_handler.SetPointers(x_node, y_node, z_node, ic, saturation, mapping);
+	file_handler.SetSaturation(saturation);
 }
-#endif
 /* ---------------------------------------------------------------------- */
 void
 FH_SetNodes(double *x_node, double *y_node, double *z_node)
