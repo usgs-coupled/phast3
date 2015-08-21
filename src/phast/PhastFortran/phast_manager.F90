@@ -776,12 +776,17 @@ SUBROUTINE process_restart_files()
 	   USE ISO_C_BINDING
            IMPLICIT NONE
            INTEGER(kind=C_INT), INTENT(in) :: rm_id
-        END SUBROUTINE FH_SetPhreeqcRM
+    END SUBROUTINE FH_SetPhreeqcRM
+	SUBROUTINE FH_SetSaturation(saturation) BIND(C, NAME='FH_SetSaturation')
+	   USE ISO_C_BINDING
+           IMPLICIT NONE
+           REAL(kind=C_DOUBLE), INTENT(in) :: saturation(*)
+    END SUBROUTINE FH_SetSaturation    
 	SUBROUTINE FH_SetNodes(x_node, y_node, z_node) BIND(C, NAME='FH_SetNodes')
 	   USE ISO_C_BINDING
            IMPLICIT NONE
            REAL(kind=C_DOUBLE), INTENT(in) :: x_node(*), y_node(*), z_node(*)
-        END SUBROUTINE FH_SetNodes
+    END SUBROUTINE FH_SetNodes
 	SUBROUTINE FH_ProcessRestartFiles(indx_sol1_ic,            &
  	        indx_sol2_ic,            & 
 	        ic_mxfrac) &
@@ -808,7 +813,7 @@ SUBROUTINE process_restart_files()
     DO i = 1, num_restart_files
         CALL FH_SetRestartName(trim(restart_files(i))//C_NULL_CHAR)
     ENDDO
-    !CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
+    CALL FH_SetSaturation(frac);
     CALL FH_SetNodes(x_node, y_node, z_node)
     CALL FH_ProcessRestartFiles(&
 	        indx_sol1_ic,            &

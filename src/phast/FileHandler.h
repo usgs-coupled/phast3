@@ -10,6 +10,7 @@ extern "C" {
 void FH_FinalizeFiles();
 void FH_ProcessRestartFiles(int *initial_conditions1_in, int *initial_conditions2_in, 
 	double *fraction1_in);
+void FH_SetSaturation(double *saturation);
 void FH_SetNodes(double *x_node, double *y_node, double *z_node);
 void FH_SetPhreeqcRM(int *rm_id);
 void FH_SetRestartName(const char *name);
