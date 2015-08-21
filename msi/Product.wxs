@@ -10,6 +10,7 @@
 <?define Version=$(var.Major).$(var.Minor).$(var.Build)?>
 <?define FolderName="phast-$(var.Major).$(var.Minor).$(var.Build)"?>
 <?define Manufacturer="U.S. Geological Survey"?>
+<?define Merge64Dir="C:\cygwin\home\charlton\programs\phreeqc"?>
 
 <?if $(sys.BUILDARCH)=x64 ?>
   <?define FullName="phast x64 $(var.Version)"?>
@@ -60,9 +61,9 @@
 
     <DirectoryRef Id="TARGETDIR">
       <?if $(sys.BUILDARCH)=x64 ?>
-      <Merge Id='VC110_CRT_x64' Language='0' SourceFile='..\Merge Modules\Microsoft_VC110_CRT_x64.msm' DiskId='1' />
-      <Merge Id='VC110_OpenMP_x64' Language='0' SourceFile='..\Merge Modules\Microsoft_VC110_OpenMP_x64.msm' DiskId='1' />
-      <Merge Id='w_fcompxe_redist_intel64_2013_sp1.1.139' Language="1033" SourceFile='..\Merge Modules\w_fcompxe_redist_intel64_2013_sp1.1.139.msm' DiskId='1' />
+      <Merge Id='VC110_CRT_x64' Language='0' SourceFile='$(var.Merge64Dir)\Merge Modules\Microsoft_VC110_CRT_x64.msm' DiskId='1' />
+      <Merge Id='VC110_OpenMP_x64' Language='0' SourceFile='$(var.Merge64Dir)\Merge Modules\Microsoft_VC110_OpenMP_x64.msm' DiskId='1' />
+      <Merge Id='w_fcompxe_redist_intel64_2013_sp1.1.139' Language="1033" SourceFile='$(var.Merge64Dir)\Merge Modules\w_fcompxe_redist_intel64_2013_sp1.1.139.msm' DiskId='1' />
       <?endif?>
     </DirectoryRef>
 

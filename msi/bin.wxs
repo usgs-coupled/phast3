@@ -1,4 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
+<?define CMakeBinaryDir="C:\cygwin\home\charlton\programs\phreeqc"?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <ComponentGroup Id="Bin">
@@ -17,23 +20,23 @@
             <Directory Id="bin" Name="bin">
                 <Component Id="hdf5.dll" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="hdf5.dll" KeyPath="yes" Source="..\_build_mt_x64\INSTALL\bin\hdf5.dll" />
+                    <File Id="hdf5.dll" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt_x64\INSTALL\bin\hdf5.dll" />
                   <?else?>
-                    <File Id="hdf5.dll" KeyPath="yes" Source="..\_build_mt\INSTALL\bin\hdf5.dll" />
+                    <File Id="hdf5.dll" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt\INSTALL\bin\hdf5.dll" />
                   <?endif?>
                 </Component>
                 <Component Id="phast_msmpi.exe" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="phast_msmpi.exe" KeyPath="yes" Source="..\_build_mpi_x64\INSTALL\bin\phast3.exe" Name="phast-msmpi.exe" />
+                    <File Id="phast_msmpi.exe" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mpi_x64\INSTALL\bin\phast3.exe" Name="phast-msmpi.exe" />
                   <?else?>
-                    <File Id="phast_msmpi.exe" KeyPath="yes" Source="...\_build_mpi\INSTALL\bin\phast3.exe" Name="phast-msmpi.exe" />
+                    <File Id="phast_msmpi.exe" KeyPath="yes" Source=".$(var.CMakeBinaryDir)\_build_mpi\INSTALL\bin\phast3.exe" Name="phast-msmpi.exe" />
                   <?endif?>
                 </Component>
                 <Component Id="phast_mt.exe" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="phast_mt.exe" KeyPath="yes" Source="..\_build_mt_x64\INSTALL\bin\phast3.exe" Name="phast-mt.exe" />
+                    <File Id="phast_mt.exe" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt_x64\INSTALL\bin\phast3.exe" Name="phast-mt.exe" />
                   <?else?>
-                    <File Id="phast_mt.exe" KeyPath="yes" Source="..\_build_mt\INSTALL\bin\phast3.exe" Name="phast-mt.exe" />
+                    <File Id="phast_mt.exe" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt\INSTALL\bin\phast3.exe" Name="phast-mt.exe" />
                   <?endif?>
                 </Component>
                 <Component Id="phast.bat" Guid="*">
@@ -41,30 +44,30 @@
                 </Component>
                 <Component Id="phasthdf.exe" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="phasthdf.exe" KeyPath="yes" Source="..\_build_mt_x64\INSTALL\bin\phasthdf.exe" />
+                    <File Id="phasthdf.exe" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt_x64\INSTALL\bin\phasthdf.exe" />
                   <?else?>
                     <File Id="phasthdf.exe" KeyPath="yes" Source="..\src\phasthdf\win32\Release\phasthdf.exe" />
                   <?endif?>
                 </Component>
                 <Component Id="phastinput.exe" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="phastinput.exe" KeyPath="yes" Source="..\_build_mt_x64\INSTALL\bin\phastinput.exe" />
+                    <File Id="phastinput.exe" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt_x64\INSTALL\bin\phastinput.exe" />
                   <?else?>
-                    <File Id="phastinput.exe" KeyPath="yes" Source="..\_build_mt\INSTALL\bin\phastinput.exe" />
+                    <File Id="phastinput.exe" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt\INSTALL\bin\phastinput.exe" />
                   <?endif?>
                 </Component>
                 <Component Id="szip.dll" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="szip.dll" KeyPath="yes" Source="..\_build_mt_x64\INSTALL\bin\szip.dll" />
+                    <File Id="szip.dll" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt_x64\INSTALL\bin\szip.dll" />
                   <?else?>
-                    <File Id="szip.dll" KeyPath="yes" Source="..\_build_mt\INSTALL\bin\szip.dll" />
+                    <File Id="szip.dll" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt\INSTALL\bin\szip.dll" />
                   <?endif?>
                 </Component>
                 <Component Id="zlib.dll" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="zlib.dll" KeyPath="yes" Source="..\_build_mt_x64\INSTALL\bin\zlib.dll" />
+                    <File Id="zlib.dll" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt_x64\INSTALL\bin\zlib.dll" />
                   <?else?>
-                    <File Id="zlib.dll" KeyPath="yes" Source="..\_build_mt\INSTALL\bin\zlib.dll" />
+                    <File Id="zlib.dll" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mt\INSTALL\bin\zlib.dll" />
                   <?endif?>
                 </Component>
             </Directory>
