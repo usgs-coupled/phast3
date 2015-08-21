@@ -1,4 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
+<?define CMakeBinaryDir="C:\cygwin\home\charlton\programs\phreeqc"?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <ComponentGroup Id="Lib">
@@ -19,35 +22,35 @@
             <Directory Id="lib" Name="lib">
                 <Component Id="jhdf.jar" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="jhdf.jar" KeyPath="yes" Source="..\_build_mpi_x64\INSTALL\lib\jhdf.jar" />
+                    <File Id="jhdf.jar" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mpi_x64\INSTALL\lib\jhdf.jar" />
                   <?else?>
                     <File Id="jhdf.jar" KeyPath="yes" Source="..\src\phasthdf\dist\jhdf.jar" />
                   <?endif?>
                 </Component>
                 <Component Id="jhdf5.jar" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="jhdf5.jar" KeyPath="yes" Source="..\_build_mpi_x64\INSTALL\lib\jhdf5.jar" />
+                    <File Id="jhdf5.jar" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mpi_x64\INSTALL\lib\jhdf5.jar" />
                   <?else?>
                     <File Id="jhdf5.jar" KeyPath="yes" Source="..\src\phasthdf\dist\jhdf5.jar" />
                   <?endif?>
                 </Component>
                 <Component Id="jhdf5obj.jar" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="jhdf5obj.jar" KeyPath="yes" Source="..\_build_mpi_x64\INSTALL\lib\jhdf5obj.jar" />
+                    <File Id="jhdf5obj.jar" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mpi_x64\INSTALL\lib\jhdf5obj.jar" />
                   <?else?>
                     <File Id="jhdf5obj.jar" KeyPath="yes" Source="..\src\phasthdf\dist\jhdf5obj.jar" />
                   <?endif?>
                 </Component>
                 <Component Id="jhdfobj.jar" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="jhdfobj.jar" KeyPath="yes" Source="..\_build_mpi_x64\INSTALL\lib\jhdfobj.jar" />
+                    <File Id="jhdfobj.jar" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mpi_x64\INSTALL\lib\jhdfobj.jar" />
                   <?else?>
                     <File Id="jhdfobj.jar" KeyPath="yes" Source="..\src\phasthdf\dist\jhdfobj.jar" />
                   <?endif?>
                 </Component>
                 <Component Id="phast.jar" Guid="*">
                   <?if $(sys.BUILDARCH)=x64 ?>
-                    <File Id="phast.jar" KeyPath="yes" Source="..\_build_mpi_x64\INSTALL\lib\phast.jar" />
+                    <File Id="phast.jar" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mpi_x64\INSTALL\lib\phast.jar" />
                   <?else?>
                     <File Id="phast.jar" KeyPath="yes" Source="..\src\phasthdf\dist\phast.jar" />
                   <?endif?>
@@ -60,14 +63,14 @@
                   <?endif?>
                     <Component Id="jhdf.dll" Guid="*">
                       <?if $(sys.BUILDARCH)=x64 ?>
-                        <File Id="jhdf.dll" KeyPath="yes" Source="..\_build_mpi_x64\INSTALL\lib\Win32\jhdf.dll" />
+                        <File Id="jhdf.dll" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mpi_x64\INSTALL\lib\Win32\jhdf.dll" />
                       <?else?>
                         <File Id="jhdf.dll" KeyPath="yes" Source="..\src\phasthdf\dist\Win32\jhdf.dll" />
                       <?endif?>
                     </Component>
                     <Component Id="jhdf5.dll" Guid="*">
                       <?if $(sys.BUILDARCH)=x64 ?>
-                        <File Id="jhdf5.dll" KeyPath="yes" Source="..\_build_mpi_x64\INSTALL\lib\Win32\jhdf5.dll" />
+                        <File Id="jhdf5.dll" KeyPath="yes" Source="$(var.CMakeBinaryDir)\_build_mpi_x64\INSTALL\lib\Win32\jhdf5.dll" />
                       <?else?>
                         <File Id="jhdf5.dll" KeyPath="yes" Source="..\src\phasthdf\dist\Win32\jhdf5.dll" />
                       <?endif?>
