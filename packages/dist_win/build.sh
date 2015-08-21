@@ -101,7 +101,7 @@ PHAST_SLN=`cygpath -w ./src/phast/win32_2005/phastpp.sln`
 PHASTINPUT_SLN=`cygpath -w ./src/phastinput/vc80/phastinput.sln`
 PHASTHDF_SLN=`cygpath -w ./src/phasthdf/win32/phastexport.sln`
 MSI_SLN=`cygpath -w ./msi/msi.sln`
-BOOT_SLN=`cygpath -w ./PhastBootstrapper/PhastBootstrapper.sln`
+BOOT_SLN=`cygpath -w ./Bootstrapper/PhastBootstrapper.sln`
 
 # Modelviewer 
 export MODELVIEWER_1_3="/cygdrive/c/Program Files/USGS/Model Viewer 1.3/"
@@ -305,8 +305,8 @@ clean() {
   MsBuild.exe "${BOOT_SLN}" /t:Clean /p:Configuration=Release /p:Platform=x64 /p:TargetName=${FULLPKG}-x64 /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Patch=${PATCH} /p:Build=${REL} && \
   rm -rf msi/bin && \
   rm -rf msi/obj && \
-  rm -rf ../PhastBootstrapper/PhastBootstrapper/bin && \
-  rm -rf ../PhastBootstrapper/PhastBootstrapper/obj )
+  rm -rf ../Bootstrapper/PhastBootstrapper/bin && \
+  rm -rf ../Bootstrapper/PhastBootstrapper/obj )
 }
 
 install() {
@@ -337,7 +337,7 @@ install() {
   /usr/bin/install -m 755 "${objdir}/msi/bin/x64/Release/${FULLPKG}-x64.msi" \
     ${instdir}/. && \
 # the x64 EXE
-  /usr/bin/install -m 755 "${objdir}/PhastBootstrapper/PhastBootstrapper/bin/x64/Release/${FULLPKG}-x64.exe" \
+  /usr/bin/install -m 755 "${objdir}/Bootstrapper/PhastBootstrapper/bin/x64/Release/${FULLPKG}-x64.exe" \
     ${instdir}/. && \
 # md5sums    
   if [ -x /usr/bin/md5sum ]; then \
