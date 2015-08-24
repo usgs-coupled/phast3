@@ -11,14 +11,13 @@ TABLE OF CONTENTS
    A. Distribution files
    B. Documentation
    C. Installing the Windows GUI Phast4Windows
-   D. Installing the batch version for Windows
-   E. Compiling and installing the batch version for Linux
-   F. Running the batch versions of PHAST 
-   G. Running PHASTHDF to extract data from the HDF file
-   H. Running Model Viewer to visualize results on Windows
-   I. Input files
-   J. Examples
-   K. Contacts
+   D. Installing and running the batch version for Windows
+   E. Compiling, installing, and running the batch version for Linux
+   F. Running PHASTHDF to extract data from the HDF file
+   G. Running Model Viewer to visualize results on Windows
+   H. Input files
+   I. Examples
+   J. Contacts
 
 
 -----------------------------------------------------------------------------------
@@ -111,15 +110,18 @@ x64 @VERSION@-@REVISION@.
 
 
 -----------------------------------------------------------------------------------   
-D. Installing the batch version for Windows
+D. Installing and running the batch version for Windows
 -----------------------------------------------------------------------------------
 
-You need administrator privileges to execute the installation file phast-@VERSION@-@REVISION@-
-x64.exe, which installs the programs PHAST, PHASTHDF, and Model Viewer.
+D.1. Installing the Windows batch versions of PHAST 
 
-The default installation directory is \Program Files\USGS\phast-@MSI_VERSION@, which
-contains the following subdirectories:
+   You need administrator privileges to execute the installation file phast-@VERSION@-@REVISION@-
+   x64.exe, which installs the programs PHAST, PHASTHDF, and Model Viewer.
 
+   The default installation directory is \Program Files\USGS\phast-@MSI_VERSION@, which contains the
+   following file and subdirectories:
+
+   README.txt              This file
    \bin                    Batch file, executables, and DLLs.
       hdf5.dll             HDF dll
       phast.bat            Batch file that runs phastinput and phast-mt.
@@ -141,23 +143,56 @@ contains the following subdirectories:
       sit.dat
       wateq4f.dat     
    \doc                    Published reports.
-
       phast2-TM6-A35.pdf   PHAST version 2 (and 3) documentation
+      phreeqc.RELEASE.txt  Release notes for PHREEQC version @VERSION@
       phreeqc2.pdf         PHREEQC version 2 documentation
       phreeqc3.pdf         PHREEQC version 3 documentation
-      phreeqc.RELEASE.txt  Release notes for PHREEQC version @VERSION@
       RELEASE.txt          Release notes for PHAST version @VERSION@
       wrir02-4172.pdf      Report on use of isotopes as thermodynamic components    
    \examples               PHAST examples, including ex1-6, which are described in  
                            the PHAST version 3 manual.  
    \lib                    Java files for phasthdf.exe.     
 
-Model Viewer is installed in the directory C:\Program Files (x86)\USGS\Model Viewer x.x, where
-x.x is a version number.
+D.2. Running the Windows batch versions of PHAST 
+
+   For reactive-transport simulations, PHAST needs at least three data files for execution, (1) the
+   flow and transport data file (prefix.trans.dat), (2) the chemistry data file (prefix.chem.dat), and
+   (3) the thermodynamic database file. For flow-only calculations, only the flow and transport data
+   file is needed. Running PHAST is a two-step process that is automated in Windows batch file
+   (install\bin\phast.bat), where "install" is the directory where phast is installed (usually
+   C:\Program Files\USGS\phast-@VERSION@-@REVISION@). The path to this directory is added to the PATH
+   environmental variable when phast is install, so the batch file can normally be executed by typing
+   "phast" at a command prompt; otherwise, a complete path to the batch file is needed.
+
+   The batch file is invoked as follows:
+
+      phast prefix [DATABASE]  
+
+   A prefix, from which input and output file names are derived, is defined as an argument to the
+   script. Optionally, the chemistry database file name may be specified. If DATABASE is not defined,
+   the database file is assumed to be named phast.dat.
+
+   Within the batch file, the program phastinput (install\bin\phastinput.exe) is run to generate an
+   intermediate input file named Phast.tmp. Following successful completion of the phastinput program,
+   the script invokes the OpenMP version of phast (install\bin\phast-mt.exe).
+
+   To run the MPI version of phast, it is necessary to use the mpiexec command at a command prompt. A
+   simple example of running the MPI version of phast follows:
+
+      mpiexec -n 4 "C:\Program Files\USGS\phast-3.2.10148\bin\phast-msmpi.exe"
+      
+   where 4 is the number of processes to use for parallel processing.
+
+D.3. Running Model Viewer
+
+   Model Viewer is a program that can be used for 3D visualization of results from the .h5 output file
+   of phast. installed in the directory C:\Program Files (x86)\USGS\Model Viewer x.x, where x.x is a
+   version number. You can execute the program by double clicking or typing at a command prompt
+   (C:\Program Files (x86)\USGS\Model Viewer 1.6\bin\modview.exe).
 
      
 -----------------------------------------------------------------------------------   
-E. Compiling and installing the batch version for Linux
+E. Compiling, installing, and running the batch version for Linux
 -----------------------------------------------------------------------------------
 
 No support beyond this README file is provided for users compiling their own
@@ -337,36 +372,35 @@ E.8. Install the program.
       install/share/doc/phast-@VERSION@-@REVISION@/examples
          Input files for examples. Ex1-6 are documented in the PHAST 2 manual
 
+E.9. Running the Unix batch versions of PHAST 
+
+For reactive-transport simulations, PHAST needs at least three data files for execution, (1) the flow
+and transport data file (prefix.trans.dat), (2) the chemistry data file (prefix.chem.dat), and (3) the
+thermodynamic database file. For flow-only calculations, only the flow and transport data file is
+needed. Running PHAST is a two-step process that is automated in a Unix script (install/bin/phast,
+where "install" is the directory where phast is installed). If the install directory is in your path,
+you do not need a complete path name to run the phast script; otherwise, a complete path to the script
+is needed.
+
+The script is invoked as follows:
+
+   phast prefix [-n PROCESSES] [-db DATABASE]  
+
+A prefix, from which input and output file names are derived, is defined as an argument to the script.
+Optionally, the number of threads or processes to run in parallel and the chemistry database file name
+may be specified. If PROCESSES is not specified, then the number of threads or processes will be set
+equal to the number of processors on the computer. If DATABASE is not defined, the database file is
+assumed to be named phast.dat.
+
+Within the script, the program phastinput (install/bin/phastinput) is run to generate an
+intermediate input file named Phast.tmp. Following successful completion of the phastinput program, the
+script invokes the program phast, which performs the reactive-transport simulations. The script will
+run the version of phast that was last installed (make install), either MPI (install/bin/phast-mpi) or
+OpenMP (install/bin/phast-openmp).
+
 
 -----------------------------------------------------------------------------------  
-F. Running the batch versions of PHAST 
------------------------------------------------------------------------------------  
-
-For reactive-transport simulations, PHAST needs at least three data files for execution, (1) the 
-flow and transport data file, (2) the chemistry data file, and (3) the thermodynamic database file. 
-For flow-only calculations, only the flow and transport data file is needed. Running PHAST is a 
-two-step process that is automated in scripts (Unix, install/bin/phast; Windows, bin\phast.bat). 
-For windows, the path to the script is installed, and you should be able to run without a 
-complete path. Similarly, if the install directory is in your path, you do not need complete
-path names. A prefix, from which input and output file names are derived, is defined as an 
-argument to the script. Within the script, the program phastinput (Unix, install/bin/phastinput; 
-Windows bin\phastinput.exe) is run to generate an intermediate input file named Phast.tmp. Following 
-successful completion of the phastinput program, the script invokes the program phast, which 
-performs the reactive-transport simulations. For Unix, the script will run the version of phast 
-that was last installed (make install), either MPI or OpenMP.
-
-For Linux, the script is invoked as follows:
-
-   phast prefix [-n PROCESSES] [-db DATABASE]
-
-The flow and transport data file must be named prefix.trans.dat; the chemistry data file must be
-named prefix.chem.dat. Optionally, for OpenMP, PROCESSES is the number of processes or threads 
-to use for the calculations. Optionally, DATABASE is the name of the thermodynamic database file; 
-if this argument is not defined, the database file is assumed to be named phast.dat.
-
-
------------------------------------------------------------------------------------  
-G. Running PHASTHDF to extract data from the HDF file
+F. Running PHASTHDF to extract data from the HDF file
 ----------------------------------------------------------------------------------- 
 
 PHASTHDF (Linux, install/bin/phasthdf; Windows bin\phasthdf) is a Java program that allows 
@@ -375,7 +409,7 @@ define the HDF file and the data to extract from the screens provided.
 
 
 ----------------------------------------------------------------------------------- 
-H. Running MODEL VIEWER to visualize results on Windows
+G. Running MODEL VIEWER to visualize results on Windows
 ----------------------------------------------------------------------------------- 
 
 Model Viewer (\Model Viewer\bin\modview.exe) is a graphical user interface that allows
@@ -383,7 +417,7 @@ visualization of data stored in the HDF output file (prefix.h5).
 
 
 ----------------------------------------------------------------------------------- 
-I. Input files
+H. Input files
 ----------------------------------------------------------------------------------- 
 
 The flow and transport data file, chemistry data file, and database file are all composed of
@@ -418,7 +452,7 @@ solution composition.
 
 
 ----------------------------------------------------------------------------------- 
-J. Examples
+I. Examples
 ----------------------------------------------------------------------------------- 
 
 Example problems are included in the examples directory of the installation.  Six of the examples
@@ -436,7 +470,7 @@ chemistry and are simply a test of the flow model.
 
 
 ----------------------------------------------------------------------------------- 
-K. Contacts
+J. Contacts
 ----------------------------------------------------------------------------------- 
 
 Hopefully this is enough to get you started. Please report bugs (dlpark@usgs.gov or
