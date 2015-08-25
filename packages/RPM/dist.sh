@@ -381,7 +381,7 @@ do
    -e "/set(PHAST_VERSION_MAJOR/s/[0-9]\+/$ver_major/" \
    -e "/set(PHAST_VERSION_MINOR/s/[0-9]\+/$ver_minor/" \
    -e "/set(PHAST_VERSION_PATCH/s/[0-9]\+/$ver_patch/" \
-   -e "/set(PHAST_VERSION_REVISION/s/[0-9]\+/$REVISION_SVN/" \
+   -e "/set(PHAST_REVISION/s/[0-9]\+/$REVISION_SVN/" \
     < "$vsn_file" > "$vsn_file.tmp"
   mv -f "$vsn_file.tmp" "$vsn_file"
   if [ -n "$WIN" ]; then
