@@ -7,13 +7,15 @@ endif()
 project(phast CXX C Fortran)
 
 # set version numbers
-set(PHAST_VERSION "3.0.0")
+set(PHAST_VERSION_MAJOR "3")
+set(PHAST_VERSION_MINOR "0")
+set(PHAST_VERSION_PATCH "0")
 set(PHAST_REVISION "9000")
 
 # set default windows installation path
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
   GetDefaultWindowsPrefixBase(CMAKE_GENERIC_PROGRAM_FILES)  
-  SET(CMAKE_INSTALL_PREFIX "${CMAKE_GENERIC_PROGRAM_FILES}/USGS/${PROJECT_NAME}-${PHAST_VERSION}-${PHAST_REVISION}" CACHE PATH "Install path prefix, prepeneded onto install directories." FORCE)   
+  SET(CMAKE_INSTALL_PREFIX "${CMAKE_GENERIC_PROGRAM_FILES}/USGS/${PROJECT_NAME}-${PHAST_VERSION_MAJOR}.${PHAST_VERSION_MINOR}.${PHAST_VERSION_PATCH}-${PHAST_REVISION}" CACHE PATH "Install path prefix, prepeneded onto install directories." FORCE)   
 endif()
 
 include(GNUInstallDirs)
