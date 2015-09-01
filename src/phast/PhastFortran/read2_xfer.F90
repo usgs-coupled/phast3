@@ -310,6 +310,7 @@ SUBROUTINE read2_xfer_w
   USE mcn
   USE mcp
   USE mcs
+  USE mcv
   USE mcw
   USE mg2_m
   USE mpi_mod
@@ -323,6 +324,7 @@ SUBROUTINE read2_xfer_w
   REAL(KIND=kdp), DIMENSION(1:10) :: array_recv_r
   !     ------------------------------------------------------------------
   !...
+  if (.not. xp_group) return
   nr = nx
   WRITE(logline1,'(a)') 'Receiving static data for flow and transport simulation'
   status = RM_LogMessage(rm_id, logline1)

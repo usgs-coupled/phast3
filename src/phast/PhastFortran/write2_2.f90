@@ -74,57 +74,59 @@ SUBROUTINE write2_2
   mflbl=' mass '
   rxlbl='X'
   nr = nx
-  ! ... Load and compute molal concentrations
-  c_mol = c
-  CALL convert_to_moles(rm_id, c_mol, nxyz)
-  IF(nwel > 0) THEN
-     nthreads = RM_GetThreadCount(rm_id)
-     iphreeqc_id = RM_GetIPhreeqcId(rm_id, nthreads + 1)
-     if (iphreeqc_id < 0) then 
-         status = RM_Abort(rm_id, iphreeqc_id, "write2_2, RM_GetIPhreeqcId");
-     endif
-     string = "DELETE; -cell 1; SELECTED_OUTPUT; -reset false; -pH; -pe; -alkalinity"
-     status = RunString(iphreeqc_id, string)
-     string = "RUN_CELLS; -cell 1"
-     IF(solute .AND. prtic_well_timser) THEN
-        allocate(c_well(1,ns), tc(1), p_atm(1))
-        ! ... Write static data to file 'FUPLT' for temporal plots
-        WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+3,'(1pe15.7,a)) '
-        DO  iwel=1,nwel
-           m=mwel(iwel,nkswel(iwel))
-           u1=cnvtmi*time
-           u2=0._kdp
-           ! ... Observation well Q=0 at initial conditions
-           u2=p(m)/(den0*gz)+zwt(iwel)
-           ! ... Well has ambient cell concentrations at initial conditions
-           iis = 1
-           !CALL RM_calculate_well_ph(c(m,iis), ph, alk)
-           tc = 25.0
-           p_atm = 1.0
-           do i = 1, ns
-               c_well(1,i) = c(m,i)
-           enddo       
-           iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well, 1, tc, p_atm)
-           status = RunString(iphreeqc_id, string)
-           if (status .ne. 0) then
-               status = RM_ErrorMessage(rm_id, "Well calculation of pH, write2_2.")
-               do i = 1, GetErrorStringLineCount(iphreeqc_id)
-                   call GetErrorStringLine(iphreeqc_id, i, line)
-                   status = RM_ErrorMessage(rm_id, line)
-               enddo
-           endif
-           status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
-           status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, pe, svalue)
-           status = GetSelectedOutputValue(iphreeqc_id, 1, 3, vtype, alk, svalue)  
-           WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
-                cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
-                (c(m,iis),ACHAR(9),iis=1,ns),ph,ACHAR(9),&
-                pe, ACHAR(9), alk, ACHAR(9) 
-        END DO
-        ntprtem = ntprtem+1
-        deallocate(c_well, tc, p_atm)
-     END IF
-  END IF
+  if (solute) then 
+      ! ... Load and compute molal concentrations
+      c_mol = c
+      CALL convert_to_moles(rm_id, c_mol, nxyz)
+      IF(nwel > 0) THEN
+          nthreads = RM_GetThreadCount(rm_id)
+          iphreeqc_id = RM_GetIPhreeqcId(rm_id, nthreads + 1)
+          if (iphreeqc_id < 0) then 
+              status = RM_Abort(rm_id, iphreeqc_id, "write2_2, RM_GetIPhreeqcId");
+          endif
+          string = "DELETE; -cell 1; SELECTED_OUTPUT; -reset false; -pH; -pe; -alkalinity"
+          status = RunString(iphreeqc_id, string)
+          string = "RUN_CELLS; -cell 1"
+          IF(solute .AND. prtic_well_timser) THEN
+              allocate(c_well(1,ns), tc(1), p_atm(1))
+              ! ... Write static data to file 'FUPLT' for temporal plots
+              WRITE(fmt2,"(a,i2,a)") '(tr1,4(1pe15.7,a),i3,a,',ns+3,'(1pe15.7,a)) '
+              DO  iwel=1,nwel
+                  m=mwel(iwel,nkswel(iwel))
+                  u1=cnvtmi*time
+                  u2=0._kdp
+                  ! ... Observation well Q=0 at initial conditions
+                  u2=p(m)/(den0*gz)+zwt(iwel)
+                  ! ... Well has ambient cell concentrations at initial conditions
+                  iis = 1
+                  !CALL RM_calculate_well_ph(c(m,iis), ph, alk)
+                  tc = 25.0
+                  p_atm = 1.0
+                  do i = 1, ns
+                      c_well(1,i) = c(m,i)
+                  enddo       
+                  iphreeqc_id = RM_Concentrations2Utility(rm_id, c_well, 1, tc, p_atm)
+                  status = RunString(iphreeqc_id, string)
+                  if (status .ne. 0) then
+                      status = RM_ErrorMessage(rm_id, "Well calculation of pH, write2_2.")
+                      do i = 1, GetErrorStringLineCount(iphreeqc_id)
+                          call GetErrorStringLine(iphreeqc_id, i, line)
+                          status = RM_ErrorMessage(rm_id, line)
+                      enddo
+                  endif
+                  status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
+                  status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, pe, svalue)
+                  status = GetSelectedOutputValue(iphreeqc_id, 1, 3, vtype, alk, svalue)  
+                  WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
+                  cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
+                  (c(m,iis),ACHAR(9),iis=1,ns),ph,ACHAR(9),&
+                  pe, ACHAR(9), alk, ACHAR(9) 
+              END DO
+              ntprtem = ntprtem+1
+              deallocate(c_well, tc, p_atm)
+          END IF
+      END IF
+  endif
   IF(prtic_p .OR. prtic_c) THEN
      IF(errexi) GO TO 390
      ! ... Print initial condition distributions and aquifer properties
