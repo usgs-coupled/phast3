@@ -153,254 +153,258 @@ FileHandler::ProcessRestartFiles(
 			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
 			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
 			memcpy(fraction1.data(),           fraction1_in,           array_size * sizeof(double));
+			memcpy(this->ic.data(), &initial_conditions1[0], array_size * sizeof(int));
 		}
-#ifdef USE_MPI
-		// Transfer arrays
-		MPI_Bcast(initial_conditions1.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(initial_conditions2.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(fraction1.data(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-#endif
-		memcpy(this->ic.data(), &initial_conditions1[0], array_size * sizeof(int));
-		/*
-		* Read any restart files
-		*/
-		cxxStorageBin restart_bin;
-		for (std::map < std::string, int >::iterator it = RestartFileMap.begin(); it != RestartFileMap.end(); it++)
+		if (RestartFileMap.size() > 0) 
 		{
-			int	ifile = -100 - it->second;
-			// Open file, use gsztream
-			igzstream myfile;
-			myfile.open(it->first.c_str());
-			if (!myfile.good())
-
+#ifdef USE_MPI
+			// Transfer arrays
+			MPI_Bcast(initial_conditions1.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(initial_conditions2.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(fraction1.data(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+			//memcpy(this->ic.data(), &initial_conditions1[0], array_size * sizeof(int));
+			/*
+			* Read any restart files
+			*/
+			cxxStorageBin restart_bin;
+			for (std::map < std::string, int >::iterator it = RestartFileMap.begin(); it != RestartFileMap.end(); it++)
 			{
-				rtn = IRM_FAIL;
-				std::ostringstream errstr;
-				errstr << "File could not be opened: " << it->first.c_str();
-				//RM_ErrorMessage(this->rm_id, errstr.str().c_str());
-				int result = IRM_FAIL;
-				RM_Abort(this->rm_id, result, errstr.str().c_str());
-			}
-			// read file
-			CParser	cparser(myfile, this->Get_io());
-			cparser.set_echo_file(CParser::EO_NONE);
-			cparser.set_echo_stream(CParser::EO_NONE);
+				int	ifile = -100 - it->second;
+				// Open file, use gsztream
+				igzstream myfile;
+				myfile.open(it->first.c_str());
+				if (!myfile.good())
 
-			// skip headers
-			while (cparser.check_line("restart", false, true, true, false) == PHRQ_io::LT_EMPTY);
-
-			// read number of lines of index
-			int	n = -1;
-			if (!(cparser.get_iss() >> n) || n < 4)
-			{
-				myfile.close();
-				std::ostringstream errstr;
-				errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
-				int result = IRM_FAIL;
-				RM_Abort(this->rm_id, result, errstr.str().c_str());
-			}
-
-			// points are x, y, z, cell_no
-			std::vector < Point > pts, soln_pts;
-			// index:
-			// 0 solution
-			// 1 ppassemblage
-			// 2 exchange
-			// 3 surface
-			// 4 gas phase
-			// 5 ss_assemblage
-			// 6 kinetics
-			std::vector<int> c_index;
-			for (int i = 0; i < n; i++)
-			{
-				cparser.check_line("restart", false, false, false, false);
-				double
-					x,
-					y,
-					z,
-					v;
-				cparser.get_iss() >> x;
-				cparser.get_iss() >> y;
-				cparser.get_iss() >> z;
-				cparser.get_iss() >> v;
-				pts.push_back(Point(x, y, z, v));
-
-				int dummy;
-				
-				// Solution
-				cparser.get_iss() >> dummy;
-				c_index.push_back(dummy);
-				// Don't put location in soln_pts if solution undefined
-				if (dummy != -1)
-					soln_pts.push_back(Point(x, y, z, v));
-
-				// c_index defines entities present for each cell in restart file
-				for (int j = 1; j < 7; j++)
 				{
+					rtn = IRM_FAIL;
+					std::ostringstream errstr;
+					errstr << "File could not be opened: " << it->first.c_str();
+					//RM_ErrorMessage(this->rm_id, errstr.str().c_str());
+					int result = IRM_FAIL;
+					RM_Abort(this->rm_id, result, errstr.str().c_str());
+				}
+				// read file
+				CParser	cparser(myfile, this->Get_io());
+				cparser.set_echo_file(CParser::EO_NONE);
+				cparser.set_echo_stream(CParser::EO_NONE);
+
+				// skip headers
+				while (cparser.check_line("restart", false, true, true, false) == PHRQ_io::LT_EMPTY);
+
+				// read number of lines of index
+				int	n = -1;
+				if (!(cparser.get_iss() >> n) || n < 4)
+				{
+					myfile.close();
+					std::ostringstream errstr;
+					errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
+					int result = IRM_FAIL;
+					RM_Abort(this->rm_id, result, errstr.str().c_str());
+				}
+
+				// points are x, y, z, cell_no
+				std::vector < Point > pts, soln_pts;
+				// index:
+				// 0 solution
+				// 1 ppassemblage
+				// 2 exchange
+				// 3 surface
+				// 4 gas phase
+				// 5 ss_assemblage
+				// 6 kinetics
+				std::vector<int> c_index;
+				for (int i = 0; i < n; i++)
+				{
+					cparser.check_line("restart", false, false, false, false);
+					double
+						x,
+						y,
+						z,
+						v;
+					cparser.get_iss() >> x;
+					cparser.get_iss() >> y;
+					cparser.get_iss() >> z;
+					cparser.get_iss() >> v;
+					pts.push_back(Point(x, y, z, v));
+
+					int dummy;
+
+					// Solution
 					cparser.get_iss() >> dummy;
 					c_index.push_back(dummy);
-				}
+					// Don't put location in soln_pts if solution undefined
+					if (dummy != -1)
+						soln_pts.push_back(Point(x, y, z, v));
 
-			}
-			// Make Kd tree
-			KDtree index_tree(pts);
-			KDtree index_tree_soln(soln_pts);
-
-			cxxStorageBin tempBin;
-			tempBin.read_raw(cparser);
-
-			for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
-			{
-				int i = Reaction_module_ptr->GetBackwardMapping()[j][0];   /* i is nxyz number */
-				Point p(x_node[i], y_node[i], z_node[i]);
-				int	k = (int) index_tree.Interpolate3d(p);	            // k is index number in tempBin
-				int	k_soln = (int) index_tree_soln.Interpolate3d(p);	// k is index number in tempBin
-
-				// solution
-				if (initial_conditions1[i * 7] == ifile)
-				{
-					// All solutions must be defined
-					if (tempBin.Get_Solution(k_soln) != NULL)
+					// c_index defines entities present for each cell in restart file
+					for (int j = 1; j < 7; j++)
 					{
-						restart_bin.Set_Solution(j, tempBin.Get_Solution(k_soln));
+						cparser.get_iss() >> dummy;
+						c_index.push_back(dummy);
 					}
-					else
-					{
-						assert(false);
-						initial_conditions1[7 * i] = -1;
-					}
-				}
 
-				// PPassemblage
-				if (initial_conditions1[i * 7 + 1] == ifile)
+				}
+				// Make Kd tree
+				KDtree index_tree(pts);
+				KDtree index_tree_soln(soln_pts);
+
+				cxxStorageBin tempBin;
+				tempBin.read_raw(cparser);
+
+				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
 				{
-					if (c_index[k * 7 + 1] != -1)	// entity k should be defined in tempBin
+					int i = Reaction_module_ptr->GetBackwardMapping()[j][0];   /* i is nxyz number */
+					Point p(x_node[i], y_node[i], z_node[i]);
+					int	k = (int) index_tree.Interpolate3d(p);	            // k is index number in tempBin
+					int	k_soln = (int) index_tree_soln.Interpolate3d(p);	// k is index number in tempBin
+
+					// solution
+					if (initial_conditions1[i * 7] == ifile)
 					{
-						if (tempBin.Get_PPassemblage(k) != NULL)
+						// All solutions must be defined
+						if (tempBin.Get_Solution(k_soln) != NULL)
 						{
-							restart_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
+							restart_bin.Set_Solution(j, tempBin.Get_Solution(k_soln));
 						}
 						else
 						{
 							assert(false);
-							initial_conditions1[7 * i + 1] = -1;
+							initial_conditions1[7 * i] = -1;
 						}
 					}
-				}
 
-				// Exchange
-				if (initial_conditions1[i * 7 + 2] == ifile)
-				{
-					if (c_index[k * 7 + 2] != -1)	// entity k should be defined in tempBin
+					// PPassemblage
+					if (initial_conditions1[i * 7 + 1] == ifile)
 					{
-						if (tempBin.Get_Exchange(k) != NULL)
+						if (c_index[k * 7 + 1] != -1)	// entity k should be defined in tempBin
 						{
-							restart_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
-						}
-						else
-						{
-							assert(false);
-							initial_conditions1[7 * i + 2] = -1;
+							if (tempBin.Get_PPassemblage(k) != NULL)
+							{
+								restart_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
+							}
+							else
+							{
+								assert(false);
+								initial_conditions1[7 * i + 1] = -1;
+							}
 						}
 					}
-				}
 
-				// Surface
-				if (initial_conditions1[i * 7 + 3] == ifile)
-				{
-					if (c_index[k * 7 + 3] != -1)	// entity k should be defined in tempBin
+					// Exchange
+					if (initial_conditions1[i * 7 + 2] == ifile)
 					{
-						if (tempBin.Get_Surface(k) != NULL)
+						if (c_index[k * 7 + 2] != -1)	// entity k should be defined in tempBin
 						{
-							restart_bin.Set_Surface(j, tempBin.Get_Surface(k));
-						}
-						else
-						{
-							assert(false);
-							initial_conditions1[7 * i + 3] = -1;
+							if (tempBin.Get_Exchange(k) != NULL)
+							{
+								restart_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
+							}
+							else
+							{
+								assert(false);
+								initial_conditions1[7 * i + 2] = -1;
+							}
 						}
 					}
-				}
 
-				// Gas phase
-				if (initial_conditions1[i * 7 + 4] == ifile)
-				{
-					if (c_index[k * 7 + 4] != -1)	// entity k should be defined in tempBin
+					// Surface
+					if (initial_conditions1[i * 7 + 3] == ifile)
 					{
-						if (tempBin.Get_GasPhase(k) != NULL)
+						if (c_index[k * 7 + 3] != -1)	// entity k should be defined in tempBin
 						{
-							restart_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
-						}
-						else
-						{
-							assert(false);
-							initial_conditions1[7 * i + 4] = -1;
+							if (tempBin.Get_Surface(k) != NULL)
+							{
+								restart_bin.Set_Surface(j, tempBin.Get_Surface(k));
+							}
+							else
+							{
+								assert(false);
+								initial_conditions1[7 * i + 3] = -1;
+							}
 						}
 					}
-				}
 
-				// Solid solution
-				if (initial_conditions1[i * 7 + 5] == ifile)
-				{
-					if (c_index[k * 7 + 5] != -1)	// entity k should be defined in tempBin
+					// Gas phase
+					if (initial_conditions1[i * 7 + 4] == ifile)
 					{
-						if (tempBin.Get_SSassemblage(k) != NULL)
+						if (c_index[k * 7 + 4] != -1)	// entity k should be defined in tempBin
 						{
-							restart_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
-						}
-						else
-						{
-							assert(false);
-							initial_conditions1[7 * i + 5] = -1;
+							if (tempBin.Get_GasPhase(k) != NULL)
+							{
+								restart_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
+							}
+							else
+							{
+								assert(false);
+								initial_conditions1[7 * i + 4] = -1;
+							}
 						}
 					}
-				}
 
-				// Kinetics
-				if (initial_conditions1[i * 7 + 6] == ifile)
-				{
-					if (c_index[k * 7 + 6] != -1)	// entity k should be defined in tempBin
+					// Solid solution
+					if (initial_conditions1[i * 7 + 5] == ifile)
 					{
-						if (tempBin.Get_Kinetics(k) != NULL)
+						if (c_index[k * 7 + 5] != -1)	// entity k should be defined in tempBin
 						{
-							restart_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
+							if (tempBin.Get_SSassemblage(k) != NULL)
+							{
+								restart_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
+							}
+							else
+							{
+								assert(false);
+								initial_conditions1[7 * i + 5] = -1;
+							}
 						}
-						else
+					}
+
+					// Kinetics
+					if (initial_conditions1[i * 7 + 6] == ifile)
+					{
+						if (c_index[k * 7 + 6] != -1)	// entity k should be defined in tempBin
 						{
-							assert(false);
-							initial_conditions1[7 * i + 6] = -1;
+							if (tempBin.Get_Kinetics(k) != NULL)
+							{
+								restart_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
+							}
+							else
+							{
+								assert(false);
+								initial_conditions1[7 * i + 6] = -1;
+							}
 						}
 					}
 				}
-			}
-			myfile.close();
+				myfile.close();
 #ifdef USE_MPI	
-			for (int i = Reaction_module_ptr->GetStartCell()[mpi_myself]; 
-				i <= Reaction_module_ptr->GetEndCell()[mpi_myself]; i++)
-			{
-				Reaction_module_ptr->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
-			}
-#else
-			// put restart definitions in reaction module
-			Reaction_module_ptr->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
-			int nthreads = Reaction_module_ptr->GetThreadCount();
-			for (int n = 1; n < nthreads; n++)
-			{
-				std::ostringstream delete_command;
-				delete_command << "DELETE; -cells\n";
-				for (int i = Reaction_module_ptr->GetStartCell()[n]; 
-					i <= Reaction_module_ptr->GetEndCell()[n]; i++)
+				for (int i = Reaction_module_ptr->GetStartCell()[mpi_myself]; 
+					i <= Reaction_module_ptr->GetEndCell()[mpi_myself]; i++)
 				{
-					cxxStorageBin sz_bin;
-					Reaction_module_ptr->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(sz_bin, i);
-					Reaction_module_ptr->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
-					delete_command << i << "\n";
+					Reaction_module_ptr->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
 				}
-				int status = Reaction_module_ptr->GetWorkers()[0]->RunString(delete_command.str().c_str());
-				Reaction_module_ptr->ErrorHandler(status, "ProcessRestartFiles, RunString");
-				//if (Reaction_module_ptr->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(id);
-			}
+#else
+				// put restart definitions in reaction module
+				Reaction_module_ptr->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
+				int nthreads = Reaction_module_ptr->GetThreadCount();
+				for (int n = 1; n < nthreads; n++)
+				{
+					std::ostringstream delete_command;
+					delete_command << "DELETE; -cells\n";
+					for (int i = Reaction_module_ptr->GetStartCell()[n]; 
+						i <= Reaction_module_ptr->GetEndCell()[n]; i++)
+					{
+						cxxStorageBin sz_bin;
+						Reaction_module_ptr->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(sz_bin, i);
+						Reaction_module_ptr->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
+						delete_command << i << "\n";
+					}
+					int status = Reaction_module_ptr->GetWorkers()[0]->RunString(delete_command.str().c_str());
+					Reaction_module_ptr->ErrorHandler(status, "ProcessRestartFiles, RunString");
+					//if (Reaction_module_ptr->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(id);
+				}
 #endif
+			}
 		}
 		return rtn;
 	}

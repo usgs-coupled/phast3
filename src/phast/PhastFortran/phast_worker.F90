@@ -92,59 +92,34 @@ SUBROUTINE worker_init1
     USE mcw
     USE print_control_mod        
     USE f_units, ONLY: print_rde
-    !USE mcb
-    !USE mcn
     IMPLICIT NONE
     INTEGER :: a_err, da_err, iis, nsa
 
     nsa = MAX(ns,1)
     nxy = nx * ny  
     nxyz = nxy * nz  
-    write(*,*) "worker_init1 ", mpi_myself
-    ! print arrays
-    ALLOCATE (iprint_chem(nxyz), iprint_xyz(nxyz), &
-    STAT = a_err)
+    ! All workers
+    ALLOCATE (x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
+        STAT = a_err)
     IF (a_err /= 0) THEN  
-        PRINT *, "Array allocation failed: worker_init1 2"  
+        PRINT *, "Array allocation failed: worker_init1, point 1"  
         STOP  
     ENDIF
+    ALLOCATE (pv0(nxyz), volume(nxyz), frac(nxyz), & 
+        STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array allocation failed: worker_init1, point 2"  
+        STOP  
+    ENDIF   
     ALLOCATE ( &
-    indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), &
-    c(nxyz,nsa), &
-    ic_mxfrac(7,nxyz), &
-    STAT = a_err)
+        indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), & !        c(nxyz,nsa), &
+        ic_mxfrac(7,nxyz), &
+        STAT = a_err)
     IF (a_err /= 0) THEN  
         PRINT *, "Array allocation failed: worker_init1 3"  
         STOP  
     ENDIF
-
-    print_rde = .FALSE.
-
-    ! ... additional init1 for worker (formerly init1_xfer)
-    nxyzh = (nxyz+MOD(nxyz,2))/2
-    mtp1 = nxyz - nxy + 1          ! ... first cell in top plane of global mesh
-
-    ! ... Allocate node information arrays: mcn
-    ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
-    x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
-    pv0(nxyz), volume(nxyz), por(nxyz), & ! tort(npmz), &
-    phreeqc_density(nxyz), &
-    STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array allocation failed: init1_xfer_w, point 2"  
-        STOP  
-    ENDIF
-
-    ! ... Allocate boundary condition information: mcb and mcb_m
-    ALLOCATE(ibc(nxyz), char_ibc(nxyz), &
-    STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array allocation failed: init1_xfer_w, point 3"  
-        STOP  
-    ENDIF
-    pv0 = 0
-    ibc = 0
-
+    
     ! ... Set up time marching units and conversion factors
     IF (tmunit == 1) THEN 
         cnvtm = 1._kdp  
@@ -204,32 +179,64 @@ SUBROUTINE worker_init1
     cnvhci = 1._kdp/cnvhc
     cnvmfi = cnvmfi*cnvl2i  
     cnvt2i = 0._kdp
+    
+    print_rde = .FALSE.
+    
+    if (xp_group) then
+        ! ... additional init1 for worker (formerly init1_xfer)
+        nxyzh = (nxyz+MOD(nxyz,2))/2
+        mtp1 = nxyz - nxy + 1          ! ... first cell in top plane of global mesh
 
-    ALLOCATE(caprnt(nxyz),  & 
-    STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: init1_xfer_w, point 5"  
-        STOP
-    ENDIF
+        ! XP workers
+        ! ... Allocate node information arrays: mcn
+        ALLOCATE (rm(nx), x(nx), y(ny), z(nz),  &
+        x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
+        por(nxyz), & 
+        STAT = a_err)
+        IF (a_err /= 0) THEN  
+            PRINT *, "Array allocation failed: init1_xfer_w, point 2"  
+            STOP  
+        ENDIF
 
-    ! *** many of these arrays are unused by worker ***
-    ! ... Allocate dependent variable arrays: mcv
-    ALLOCATE (dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
-    sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
-    zfs(nxy),  &
-    eh(1), frac(nxyz), frac_icchem(nxyz), p(nxyz), t(1),  &
-    STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: init1_xfer_w, point 6"
-        STOP
-    ENDIF
-    dp = 0
-    dt = 0
-    zfs = -1.e20_kdp
-    dt = 0._kdp
-    t = 0._kdp
+        ! ... Allocate boundary condition information: mcb and mcb_m
+        ALLOCATE(ibc(nxyz), char_ibc(nxyz), &
+        STAT = a_err)
+        IF (a_err /= 0) THEN  
+            PRINT *, "Array allocation failed: init1_xfer_w, point 3"  
+            STOP  
+        ENDIF
+        pv0 = 0
+        ibc = 0
 
+        !ALLOCATE(caprnt(nxyz),  & 
+        !STAT = a_err)
+        !IF (a_err /= 0) THEN
+        !    PRINT *, "Array allocation failed: init1_xfer_w, point 5"  
+        !    STOP
+        !ENDIF
+
+        ! *** many of these arrays are unused by worker ***
+        ! ... Allocate dependent variable arrays: mcv
+        ALLOCATE (dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
+        sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
+        zfs(nxy),  &
+        eh(1), frac_icchem(nxyz), p(nxyz), t(1),  &
+        STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array allocation failed: init1_xfer_w, point 6"
+            STOP
+        ENDIF
+        dp = 0
+        dt = 0
+        zfs = -1.e20_kdp
+        dt = 0._kdp
+        t = 0._kdp
+    endif
 END SUBROUTINE worker_init1
+
+   
+    
+    
 SUBROUTINE worker_closef
 #if defined(USE_MPI)
   ! ... Closes and deletes files and writes indices of time values
@@ -277,12 +284,6 @@ SUBROUTINE worker_closef
   ! ... Close files and free memory in phreeqc
   IF (solute) THEN  
      CALL phreeqc_free(solute)
-     DEALLOCATE (iprint_chem, iprint_xyz, &
-          STAT = da_err)
-     IF (da_err /= 0) THEN  
-        PRINT *, "Array deallocation failed worker_closef: 1"  
-        STOP  
-     ENDIF
      DEALLOCATE (c, ic_mxfrac, &
           STAT = da_err)
      IF (da_err /= 0) THEN  
@@ -401,62 +402,56 @@ SUBROUTINE worker_deallocate_nonxp
     nsa = MAX(ns,1)
     nxy = nx * ny  
     nxyz = nxy * nz  
-    write(*,*) "worker_dealloc_nonxp ", mpi_myself
-    ! print arrays
-    DEALLOCATE (iprint_chem, iprint_xyz, &
-    STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: worker_dealloc_nonxp 2"  
-        STOP  
-    ENDIF
     DEALLOCATE ( &
-    indx_sol1_ic, indx_sol2_ic, &
-    c, &
+    indx_sol1_ic, indx_sol2_ic, & !    c, &
     ic_mxfrac, &
     STAT = a_err)
     IF (a_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: worker_dealloc_nonxp 3"  
+        PRINT *, "Array deallocation failed: worker_dealloc_nonxp 1"  
         STOP  
     ENDIF
-
+    DEALLOCATE (x_node, y_node, z_node, &
+        STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array deallocation failed: worker_dealloc_nonxp 1"  
+        STOP  
+    ENDIF
     ! ... Allocate node information arrays: mcn
     !    pv0(nxyz), volume(nxyz), por(nxyz), & ! tort(npmz), &
-    !    phreeqc_density(nxyz), &
-    DEALLOCATE (rm, x, y, z, x_node, y_node, z_node,  &
-    x_face, y_face, z_face, pv, &
-    por, & 
-    phreeqc_density, &
-    STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 2"  
-        STOP  
-    ENDIF
+    !DEALLOCATE (rm, x, y, z, x_node, y_node, z_node,  &
+    !x_face, y_face, z_face, pv, &
+    !por, & 
+    !STAT = a_err)
+    !IF (a_err /= 0) THEN  
+    !    PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 2"  
+    !    STOP  
+    !ENDIF
 
     ! ... Allocate boundary condition information: mcb and mcb_m
-    DEALLOCATE(ibc, char_ibc, &
-    STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 3"  
-        STOP  
-    ENDIF
+    !DEALLOCATE(ibc, char_ibc, &
+    !STAT = a_err)
+    !IF (a_err /= 0) THEN  
+    !    PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 3"  
+    !    STOP  
+    !ENDIF
 
-    DEALLOCATE(caprnt,  & 
-    STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 5"  
-        STOP
-    ENDIF
+    !DEALLOCATE(caprnt,  & 
+    !STAT = a_err)
+    !IF (a_err /= 0) THEN
+    !    PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 5"  
+    !    STOP
+    !ENDIF
 
     ! *** many of these arrays are unused by worker ***
     ! ... Allocate dependent variable arrays: mcv
-    DEALLOCATE (dzfsdt, dp, dt,  &
-    sxx, syy, szz, vxx, vyy, vzz,  &
-    zfs,  &
-    eh, frac_icchem, p, t,  & !frac(nxyz), 
-    STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 6"
-        STOP
-    ENDIF
+    !DEALLOCATE (dzfsdt, dp, dt,  &
+    !sxx, syy, szz, vxx, vyy, vzz,  &
+    !zfs,  &
+    !eh, frac_icchem, p, t,  & !frac(nxyz), 
+    !STAT = a_err)
+    !IF (a_err /= 0) THEN
+    !    PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 6"
+    !    STOP
+    !ENDIF
 
 END SUBROUTINE worker_deallocate_nonxp

@@ -498,7 +498,7 @@ SUBROUTINE InitialEquilibrationRM
     USE machine_constants, ONLY: kdp
     USE mcc, ONLY:               iprint_xyz, prcphrqi, prf_chem_phrqi, prhdfci, rm_id, solute, steady_flow
     USE mcg, ONLY:               grid2chem, nxyz
-    USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density, pv0, por, volume
+    USE mcn, ONLY:               x_node, y_node, z_node, pv0, por, volume
     USE mcp, ONLY:               pv
     USE mcv, ONLY:               c, frac, sat, time_phreeqc
     USE hdf_media_m, ONLY:       pr_hdf_media
@@ -545,8 +545,6 @@ SUBROUTINE InitialEquilibrationRM
         status = RM_RunCells(rm_id)     
         !status = RM_GetConcentrations(rm_id, c(1,1))
         status = RM_GetConcentrations(rm_id, c)
-        !status = RM_GetDensity(rm_id, phreeqc_density(1))
-        !status = RM_SetDensity(rm_id, phreeqc_density(1))
     ENDIF  
     !imedia = 0
     !if (pr_hdf_media) imedia = 1
@@ -667,7 +665,7 @@ SUBROUTINE TimeStepRM
     USE mcc, ONLY:               iprint_xyz, rm_id, solute, steady_flow
     USE mcc_m, ONLY:             prcphrq, prhdfc
     USE mcg, ONLY:               grid2chem, nxyz
-    USE mcn, ONLY:               x_node, y_node, z_node, phreeqc_density, volume, por
+    USE mcn, ONLY:               x_node, y_node, z_node, volume, por
     USE mcp, ONLY:               pv
     USE mcv,  ONLY:              c, deltim, frac, indx_sol1_ic, sat, time, ns
     USE hdf_media_m, ONLY:       pr_hdf_media
@@ -718,8 +716,6 @@ SUBROUTINE TimeStepRM
         status = RM_RunCells(rm_id)  
         CALL time_parallel(11)                                    ! 11 - 10 run cells
         status = RM_GetConcentrations(rm_id, c)
-        !status = RM_GetDensity(rm_id, phreeqc_density(1))
-        !status = RM_SetDensity(rm_id, phreeqc_density(1))
         CALL time_parallel(12)                                    ! 12 - 11 chemistry communication
     ENDIF    ! ... Done with chemistry    
     !ihdf = 0
@@ -816,9 +812,9 @@ SUBROUTINE process_restart_files()
     CALL FH_SetSaturation(frac);
     CALL FH_SetNodes(x_node, y_node, z_node)
     CALL FH_ProcessRestartFiles(&
-	        indx_sol1_ic,            &
-	        indx_sol2_ic,            & 
-	        ic_mxfrac)
+        indx_sol1_ic,            &
+        indx_sol2_ic,            & 
+        ic_mxfrac)
     if (.not. xp_group) then
         call worker_deallocate_nonxp
     endif

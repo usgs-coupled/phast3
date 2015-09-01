@@ -46,7 +46,6 @@ SUBROUTINE init1
   ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
   x_face(nx-1), y_face(ny-1), z_face(nz-1),  &
   pv0(nxyz), por(nxyz), volume(nxyz), &
-  phreeqc_density(nxyz), &
   STAT = a_err)
   IF (a_err /= 0) THEN  
       PRINT *, "Array allocation failed: init1, point 2"  
