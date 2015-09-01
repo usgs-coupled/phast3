@@ -75,7 +75,7 @@ protected:
 	std::vector<double> x_node;
 	std::vector<double> y_node;
 	std::vector<double> z_node;
-	double * saturation;  // only root
+	double * saturation;               // only root
 	//std::vector<int> mapping;        // only root
 	std::vector<int> ic;
 	std::map <std::string, std::ostream * > BcZoneOstreams;
@@ -405,6 +405,13 @@ FileHandler::ProcessRestartFiles(
 				}
 #endif
 			}
+		}
+		if (mpi_myself != 0) 
+		{
+			x_node.clear();
+			y_node.clear();
+			z_node.clear();
+			ic.clear();
 		}
 		return rtn;
 	}
