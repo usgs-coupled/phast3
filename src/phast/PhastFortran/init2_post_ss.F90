@@ -159,7 +159,7 @@ SUBROUTINE init2_post_ss
         wspcum(iwel,iis) = 0._kdp  
      END DO
   END DO
-  frac_icchem = frac
+  !frac_icchem = frac
   DO m=1,nxyz  
 !     IF(.NOT.fresur) THEN
 !        pv(m) = pv(m) + pmcv(m)*(p(m)-p0)

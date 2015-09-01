@@ -52,8 +52,8 @@
     rm_id = RM_Create(nxyz, MPI_COMM_WORLD)
     nxyz = RM_GetGridCellCount(rm_id)
 
-    allocate(grid2chem(nxyz))
-    grid2chem = -1
+    !allocate(grid2chem(nxyz))
+    !grid2chem = -1
     
     IF (rm_id.LT.0) THEN
         WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
@@ -64,7 +64,7 @@
     status = RM_MpiWorker(rm_id)
 
     CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
-    deallocate(grid2chem)
+    !deallocate(grid2chem)
     CALL terminate_phast_worker
     if (RM_Destroy(rm_id) < 0) then
         write (*,*) 'RM_Destroy failed.'
@@ -191,7 +191,7 @@ SUBROUTINE worker_init1
         ! ... Allocate node information arrays: mcn
         ALLOCATE (rm(nx), x(nx), y(ny), z(nz),  &
         x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
-        por(nxyz), & 
+        por(1), & 
         STAT = a_err)
         IF (a_err /= 0) THEN  
             PRINT *, "Array allocation failed: init1_xfer_w, point 2"  
@@ -217,15 +217,24 @@ SUBROUTINE worker_init1
 
         ! *** many of these arrays are unused by worker ***
         ! ... Allocate dependent variable arrays: mcv
-        ALLOCATE (dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
-        sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
-        zfs(nxy),  &
-        eh(1), frac_icchem(nxyz), p(nxyz), t(1),  &
+        !ALLOCATE (dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
+        !sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
+        !zfs(nxy),  &
+        !eh(1), frac_icchem(nxyz), p(nxyz), t(1),  &
+        !STAT = a_err)
+        !IF (a_err /= 0) THEN
+        !    PRINT *, "Array allocation failed: init1_xfer_w, point 6"
+        !    STOP
+        !ENDIF
+        ALLOCATE (dzfsdt(1), dp(0:nxyz), dt(0:0),  &
+        sxx(1), syy(1), szz(1), vxx(1), vyy(1), vzz(1),  &
+        zfs(1),  &
+        eh(1), frac_icchem(1), p(nxyz), t(1),  &
         STAT = a_err)
         IF (a_err /= 0) THEN
             PRINT *, "Array allocation failed: init1_xfer_w, point 6"
             STOP
-        ENDIF
+        ENDIF        
         dp = 0
         dt = 0
         zfs = -1.e20_kdp
