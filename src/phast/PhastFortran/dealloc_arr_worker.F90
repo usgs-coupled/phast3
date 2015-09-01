@@ -68,13 +68,6 @@ SUBROUTINE dealloc_arr_worker
             STOP
         ENDIF
     endif
-    if (allocated(phreeqc_density)) then
-        DEALLOCATE (phreeqc_density, STAT = da_err)     
-        IF (da_err /= 0) THEN  
-            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.22"  
-            STOP
-        ENDIF
-    endif 
     if (allocated(tort)) then
         DEALLOCATE (tort, STAT = da_err)     
         IF (da_err /= 0) THEN  
@@ -120,14 +113,14 @@ SUBROUTINE dealloc_arr_worker
         ENDIF
     endif
     ! ... Deallocate character strings for output: mcch
-    if (allocated(caprnt)) then
-        DEALLOCATE(caprnt,  & 
-            STAT = da_err)
-        IF (da_err /= 0) THEN
-            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 3"  
-            STOP
-        ENDIF
-    endif
+    !if (allocated(caprnt)) then
+    !    DEALLOCATE(caprnt,  & 
+    !        STAT = da_err)
+    !    IF (da_err /= 0) THEN
+    !        PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 3"  
+    !        STOP
+    !    ENDIF
+    !endif
     ! ... Deallocate dependent variable arrays: mcv
     if (allocated(dzfsdt)) then
         DEALLOCATE (dzfsdt, dp, dt,  &
