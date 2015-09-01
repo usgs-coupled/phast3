@@ -207,8 +207,8 @@ SUBROUTINE init2_1_xfer_m
   ! ... create MPI structure for two real arrays
      CALL MPI_BCAST(frac(1), SIZE(frac), MPI_DOUBLE_PRECISION, manager,  &
           xp_comm, ierrmpi) 
-     CALL MPI_BCAST(frac_icchem(1), SIZE(frac_icchem), MPI_DOUBLE_PRECISION, manager,  &
-          xp_comm, ierrmpi)
+     !CALL MPI_BCAST(frac_icchem(1), SIZE(frac_icchem), MPI_DOUBLE_PRECISION, manager,  &
+     !     xp_comm, ierrmpi)
 
   ! *** 21 broadcast mfsbc
   CALL MPI_BCAST(mfsbc, nxy, MPI_INTEGER, manager, &
@@ -637,8 +637,8 @@ SUBROUTINE init2_1_xfer_w
   ! ... receive the initial condition fraction of cell that is saturated
      CALL MPI_BCAST(frac(1), SIZE(frac), MPI_DOUBLE_PRECISION, manager,  &
           xp_comm, ierrmpi) 
-     CALL MPI_BCAST(frac_icchem(1), SIZE(frac_icchem), MPI_DOUBLE_PRECISION, manager,  &
-          xp_comm, ierrmpi)
+     !CALL MPI_BCAST(frac_icchem(1), SIZE(frac_icchem), MPI_DOUBLE_PRECISION, manager,  &
+     !     xp_comm, ierrmpi)
 
   ! *** 21 broadcast mfsbc  
   ! ... receive the pointer to the free-surface cells

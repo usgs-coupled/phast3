@@ -1262,14 +1262,14 @@ SUBROUTINE init2_1
   DO m=1,nxyz-nxy         ! ... do all but the top plane
      IF(ibc(m) == -1) THEN 
         frac(m) = 0._kdp
-        frac_icchem(m) = 0._kdp
+        !frac_icchem(m) = 0._kdp
         vmask(m) = 0
      ELSEIF(.NOT.fresur) THEN  
         frac(m) = 1._kdp
-        frac_icchem(m) = 1._kdp
+        !frac_icchem(m) = 1._kdp
         vmask(m) = 1
      ELSEIF(fresur) THEN
-        frac_icchem(m) = 1._kdp
+        !frac_icchem(m) = 1._kdp
         imod = MOD(m,nxy)
         k = (m-imod)/nxy + MIN(1,imod)
         IF(k == 1) THEN
@@ -1353,15 +1353,15 @@ SUBROUTINE init2_1
   DO m=nxyz-nxy+1,nxyz       ! ...      top plane 
      IF(ibc(m) ==  -1) THEN
         frac(m) = 0._kdp
-        frac_icchem(m) = 0._kdp
+        !frac_icchem(m) = 0._kdp
         vmask(m) = 0
      ELSEIF(.NOT.fresur) THEN
         frac(m) = 1._kdp
-        frac_icchem(m) = 1._kdp
+        !frac_icchem(m) = 1._kdp
         vmask(m) = 1
      ELSEIF(fresur) THEN
         !$$        den(m) = den0
-        frac_icchem(m) = 1._kdp
+        !frac_icchem(m) = 1._kdp
         ! ... top plane
         k = nz
         IF(p(m) > 0._kdp) THEN
