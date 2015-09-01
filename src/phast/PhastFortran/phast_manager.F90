@@ -624,7 +624,7 @@ SUBROUTINE InitializeRM
 
         ! ... Define mapping from 3D domain to chemistry
         CALL CreateMappingFortran(indx_sol1_ic)
-        status = RM_CreateMapping(rm_id, grid2chem)    
+        status = RM_CreateMapping(rm_id, grid2chem)  
         
         ! Set Basic callback for cell_volume, cell_saturation, cell_porosity, and cell_pore_volume
         CALL register_basic_callback_fortran()
@@ -650,8 +650,8 @@ SUBROUTINE InitializeRM
             ic2_reordered,           & ! Fortran nxyz x 7 end-member 2
             f1_reordered)              ! Fortran nxyz x 7 fraction of end-member 1   
         
-        CALL process_restart_files()
-        status = RM_GetConcentrations(rm_id, c)          
+        CALL process_restart_files() 
+        status = RM_GetConcentrations(rm_id, c)   
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
             STAT = a_err)
@@ -819,7 +819,10 @@ SUBROUTINE process_restart_files()
 	        indx_sol1_ic,            &
 	        indx_sol2_ic,            & 
 	        ic_mxfrac)
-    END SUBROUTINE process_restart_files 
+    if (.not. xp_group) then
+        call worker_deallocate_nonxp
+    endif
+END SUBROUTINE process_restart_files 
     
 INTEGER FUNCTION set_fdtmth()
     USE mcc, ONLY: mpi_myself

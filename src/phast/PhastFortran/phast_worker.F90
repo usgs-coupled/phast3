@@ -92,144 +92,144 @@ SUBROUTINE worker_init1
     USE mcw
     USE print_control_mod        
     USE f_units, ONLY: print_rde
-        !USE mcb
-        !USE mcn
-        IMPLICIT NONE
-        INTEGER :: a_err, da_err, iis, nsa
- 
-        nsa = MAX(ns,1)
-        nxy = nx * ny  
-        nxyz = nxy * nz  
+    !USE mcb
+    !USE mcn
+    IMPLICIT NONE
+    INTEGER :: a_err, da_err, iis, nsa
 
-        ! print arrays
-        ALLOCATE (iprint_chem(nxyz), iprint_xyz(nxyz), &
-            STAT = a_err)
-        IF (a_err /= 0) THEN  
-            PRINT *, "Array allocation failed: worker_init1 2"  
-            STOP  
-        ENDIF
-        ALLOCATE ( &
-            indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), &
-            c(nxyz,nsa), &
-            ic_mxfrac(7,nxyz), &
-            STAT = a_err)
-        IF (a_err /= 0) THEN  
-            PRINT *, "Array allocation failed: worker_init1 3"  
-            STOP  
-        ENDIF
+    nsa = MAX(ns,1)
+    nxy = nx * ny  
+    nxyz = nxy * nz  
+    write(*,*) "worker_init1 ", mpi_myself
+    ! print arrays
+    ALLOCATE (iprint_chem(nxyz), iprint_xyz(nxyz), &
+    STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array allocation failed: worker_init1 2"  
+        STOP  
+    ENDIF
+    ALLOCATE ( &
+    indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), &
+    c(nxyz,nsa), &
+    ic_mxfrac(7,nxyz), &
+    STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array allocation failed: worker_init1 3"  
+        STOP  
+    ENDIF
 
-        print_rde = .FALSE.
+    print_rde = .FALSE.
 
-        ! ... additional init1 for worker (formerly init1_xfer)
-        nxyzh = (nxyz+MOD(nxyz,2))/2
-        mtp1 = nxyz - nxy + 1          ! ... first cell in top plane of global mesh
+    ! ... additional init1 for worker (formerly init1_xfer)
+    nxyzh = (nxyz+MOD(nxyz,2))/2
+    mtp1 = nxyz - nxy + 1          ! ... first cell in top plane of global mesh
 
-        ! ... Allocate node information arrays: mcn
-        ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
-            x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
-            pv0(nxyz), volume(nxyz), por(nxyz), & ! tort(npmz), &
-            phreeqc_density(nxyz), &
-            STAT = a_err)
-        IF (a_err /= 0) THEN  
-            PRINT *, "Array allocation failed: init1_xfer_w, point 2"  
-            STOP  
-        ENDIF
+    ! ... Allocate node information arrays: mcn
+    ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
+    x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
+    pv0(nxyz), volume(nxyz), por(nxyz), & ! tort(npmz), &
+    phreeqc_density(nxyz), &
+    STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array allocation failed: init1_xfer_w, point 2"  
+        STOP  
+    ENDIF
 
-        ! ... Allocate boundary condition information: mcb and mcb_m
-        ALLOCATE(ibc(nxyz), char_ibc(nxyz), &
-            STAT = a_err)
-        IF (a_err /= 0) THEN  
-            PRINT *, "Array allocation failed: init1_xfer_w, point 3"  
-            STOP  
-        ENDIF
-        pv0 = 0
-        ibc = 0
+    ! ... Allocate boundary condition information: mcb and mcb_m
+    ALLOCATE(ibc(nxyz), char_ibc(nxyz), &
+    STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array allocation failed: init1_xfer_w, point 3"  
+        STOP  
+    ENDIF
+    pv0 = 0
+    ibc = 0
 
-        ! ... Set up time marching units and conversion factors
-        IF (tmunit == 1) THEN 
-            cnvtm = 1._kdp  
-        ELSEIF (tmunit == 2) THEN   
-            cnvtm = 60._kdp  
-        ELSEIF (tmunit == 3) THEN   
-            cnvtm = 3600._kdp  
-        ELSEIF (tmunit == 4) THEN    
-            cnvtm = 86400._kdp  
-        ELSEIF (tmunit == 6) THEN   
-            cnvtm = 3.155815d7  
-        ENDIF
-        cnvtmi = 1._kdp/cnvtm  
-        cnvl = 1._kdp  
-        cnvm = 1._kdp  
-        cnvp = 1._kdp  
-        cnvvs = 1._kdp  
-        cnvcn = 1._kdp  
-        cnvhe = 1._kdp  
-        cnvme = 1._kdp  
-        cnvt1 = 1._kdp  
-        cnvt2 = 0._kdp  
-        cnvthc = 1._kdp  
-        cnvhtc = 1._kdp  
-        cnvhf = 1._kdp  
-        cnvl2 = cnvl*cnvl  
-        cnvl3 = cnvl2*cnvl  
-        cnvd = cnvm/cnvl3  
-        cnvvf = cnvl3/cnvtm  
-        cnvff = cnvvf/cnvl2  
-        cnvmf = cnvm/(cnvtm*cnvl2)  
-        cnvsf = cnvmf  
-        cnvdf = cnvl2/cnvtm  
-        cnvvl = cnvl/cnvtm  
-        cnvcn = cnvcn*cnvvl  
-        cnvhc = cnvhe/(cnvm*cnvt1)  
-        ! ... Calculate inverse conversion factors
-        cnvli = 1._kdp/cnvl
-        cnvmi = 1._kdp/cnvm
-        cnvpi = 1._kdp/cnvp
-        cnvvsi = 1._kdp/cnvvs
-        cnvcni = 1._kdp/cnvcn
-        cnvhei = 1._kdp/cnvhe
-        cnvmei = 1._kdp/cnvme
-        cnvt1i = 1._kdp/cnvt1
-        cnvhfi = 1._kdp/cnvhf
-        cnvl2i = 1._kdp/cnvl2
-        cnvl3i = 1._kdp/cnvl3
-        cnvdi = 1._kdp/cnvd
-        cnvvfi = 1._kdp/cnvvf
-        cnvffi = 1._kdp/cnvff
-        cnvmfi = 1._kdp/cnvmf
-        cnvsfi = 1._kdp/cnvsf
-        cnvdfi = 1._kdp/cnvdf
-        cnvvli = 1._kdp/cnvvl
-        cnvcni = 1._kdp/cnvcn
-        cnvhci = 1._kdp/cnvhc
-        cnvmfi = cnvmfi*cnvl2i  
-        cnvt2i = 0._kdp
+    ! ... Set up time marching units and conversion factors
+    IF (tmunit == 1) THEN 
+        cnvtm = 1._kdp  
+    ELSEIF (tmunit == 2) THEN   
+        cnvtm = 60._kdp  
+    ELSEIF (tmunit == 3) THEN   
+        cnvtm = 3600._kdp  
+    ELSEIF (tmunit == 4) THEN    
+        cnvtm = 86400._kdp  
+    ELSEIF (tmunit == 6) THEN   
+        cnvtm = 3.155815d7  
+    ENDIF
+    cnvtmi = 1._kdp/cnvtm  
+    cnvl = 1._kdp  
+    cnvm = 1._kdp  
+    cnvp = 1._kdp  
+    cnvvs = 1._kdp  
+    cnvcn = 1._kdp  
+    cnvhe = 1._kdp  
+    cnvme = 1._kdp  
+    cnvt1 = 1._kdp  
+    cnvt2 = 0._kdp  
+    cnvthc = 1._kdp  
+    cnvhtc = 1._kdp  
+    cnvhf = 1._kdp  
+    cnvl2 = cnvl*cnvl  
+    cnvl3 = cnvl2*cnvl  
+    cnvd = cnvm/cnvl3  
+    cnvvf = cnvl3/cnvtm  
+    cnvff = cnvvf/cnvl2  
+    cnvmf = cnvm/(cnvtm*cnvl2)  
+    cnvsf = cnvmf  
+    cnvdf = cnvl2/cnvtm  
+    cnvvl = cnvl/cnvtm  
+    cnvcn = cnvcn*cnvvl  
+    cnvhc = cnvhe/(cnvm*cnvt1)  
+    ! ... Calculate inverse conversion factors
+    cnvli = 1._kdp/cnvl
+    cnvmi = 1._kdp/cnvm
+    cnvpi = 1._kdp/cnvp
+    cnvvsi = 1._kdp/cnvvs
+    cnvcni = 1._kdp/cnvcn
+    cnvhei = 1._kdp/cnvhe
+    cnvmei = 1._kdp/cnvme
+    cnvt1i = 1._kdp/cnvt1
+    cnvhfi = 1._kdp/cnvhf
+    cnvl2i = 1._kdp/cnvl2
+    cnvl3i = 1._kdp/cnvl3
+    cnvdi = 1._kdp/cnvd
+    cnvvfi = 1._kdp/cnvvf
+    cnvffi = 1._kdp/cnvff
+    cnvmfi = 1._kdp/cnvmf
+    cnvsfi = 1._kdp/cnvsf
+    cnvdfi = 1._kdp/cnvdf
+    cnvvli = 1._kdp/cnvvl
+    cnvcni = 1._kdp/cnvcn
+    cnvhci = 1._kdp/cnvhc
+    cnvmfi = cnvmfi*cnvl2i  
+    cnvt2i = 0._kdp
 
-        ALLOCATE(caprnt(nxyz),  & 
-            STAT = a_err)
-        IF (a_err /= 0) THEN
-            PRINT *, "Array allocation failed: init1_xfer_w, point 5"  
-            STOP
-        ENDIF
+    ALLOCATE(caprnt(nxyz),  & 
+    STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array allocation failed: init1_xfer_w, point 5"  
+        STOP
+    ENDIF
 
-        ! *** many of these arrays are unused by worker ***
-        ! ... Allocate dependent variable arrays: mcv
-        ALLOCATE (dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
-            sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
-            zfs(nxy),  &
-            eh(1), frac(nxyz), frac_icchem(nxyz), p(nxyz), t(1),  &
-            STAT = a_err)
-        IF (a_err /= 0) THEN
-            PRINT *, "Array allocation failed: init1_xfer_w, point 6"
-            STOP
-        ENDIF
-        dp = 0
-        dt = 0
-        zfs = -1.e20_kdp
-        dt = 0._kdp
-        t = 0._kdp
+    ! *** many of these arrays are unused by worker ***
+    ! ... Allocate dependent variable arrays: mcv
+    ALLOCATE (dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
+    sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
+    zfs(nxy),  &
+    eh(1), frac(nxyz), frac_icchem(nxyz), p(nxyz), t(1),  &
+    STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array allocation failed: init1_xfer_w, point 6"
+        STOP
+    ENDIF
+    dp = 0
+    dt = 0
+    zfs = -1.e20_kdp
+    dt = 0._kdp
+    t = 0._kdp
 
-    END SUBROUTINE worker_init1
+END SUBROUTINE worker_init1
 SUBROUTINE worker_closef
 #if defined(USE_MPI)
   ! ... Closes and deletes files and writes indices of time values
@@ -376,3 +376,87 @@ INTEGER(KIND=C_INT) FUNCTION mpi_methods(method) BIND(C)
 #endif
     mpi_methods = return_value
 END FUNCTION mpi_methods
+SUBROUTINE worker_deallocate_nonxp
+    ! ... Initializes dimensions, unit labels, conversion factors
+    USE machine_constants, ONLY: kdp, one_plus_eps
+    USE mcb, ONLY: char_ibc, fresur, ibc, adj_wr_ratio, qfsbc, nsbc
+    USE mcc
+    USE mcg
+    USE mcch
+    USE mcg
+    USE mcn
+    USE mcp
+    USE mcs
+    USE mcv
+    USE mcv_m, ONLY: exchange_units, surface_units, ssassemblage_units,  &
+    ppassemblage_units, gasphase_units, kinetics_units
+    USE mcw
+    USE print_control_mod        
+    USE f_units, ONLY: print_rde
+    !USE mcb
+    !USE mcn
+    IMPLICIT NONE
+    INTEGER :: a_err, da_err, iis, nsa
+
+    nsa = MAX(ns,1)
+    nxy = nx * ny  
+    nxyz = nxy * nz  
+    write(*,*) "worker_dealloc_nonxp ", mpi_myself
+    ! print arrays
+    DEALLOCATE (iprint_chem, iprint_xyz, &
+    STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array deallocation failed: worker_dealloc_nonxp 2"  
+        STOP  
+    ENDIF
+    DEALLOCATE ( &
+    indx_sol1_ic, indx_sol2_ic, &
+    c, &
+    ic_mxfrac, &
+    STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array deallocation failed: worker_dealloc_nonxp 3"  
+        STOP  
+    ENDIF
+
+    ! ... Allocate node information arrays: mcn
+    !    pv0(nxyz), volume(nxyz), por(nxyz), & ! tort(npmz), &
+    !    phreeqc_density(nxyz), &
+    DEALLOCATE (rm, x, y, z, x_node, y_node, z_node,  &
+    x_face, y_face, z_face, pv, &
+    por, & 
+    phreeqc_density, &
+    STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 2"  
+        STOP  
+    ENDIF
+
+    ! ... Allocate boundary condition information: mcb and mcb_m
+    DEALLOCATE(ibc, char_ibc, &
+    STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 3"  
+        STOP  
+    ENDIF
+
+    DEALLOCATE(caprnt,  & 
+    STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 5"  
+        STOP
+    ENDIF
+
+    ! *** many of these arrays are unused by worker ***
+    ! ... Allocate dependent variable arrays: mcv
+    DEALLOCATE (dzfsdt, dp, dt,  &
+    sxx, syy, szz, vxx, vyy, vzz,  &
+    zfs,  &
+    eh, frac_icchem, p, t,  & !frac(nxyz), 
+    STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array deallocation failed: worker_dealloc_nonxp, point 6"
+        STOP
+    ENDIF
+
+END SUBROUTINE worker_deallocate_nonxp

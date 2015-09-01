@@ -25,11 +25,18 @@ SUBROUTINE dealloc_arr_worker
 
     ! ... Only solute
     DEALLOCATE (comp_name, &
-        indx_sol1_ic, indx_sol2_ic, &
         STAT = da_err)
     IF (da_err /= 0) THEN  
-        PRINT *, "Array allocation failed: phast_worker 2"  
+        PRINT *, "Array deallocation failed: phast_worker 2"  
         STOP  
+    ENDIF
+    if (allocated(indx_sol1_ic)) then
+        DEALLOCATE (indx_sol1_ic, indx_sol2_ic, &
+            STAT = da_err)
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: phast_worker 2.1"  
+            STOP 
+        endif
     ENDIF
     ! ... Deallocate from init1
     ! ... Deallocate node information arrays: mcn
@@ -74,39 +81,73 @@ SUBROUTINE dealloc_arr_worker
             PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.3"  
             STOP
         ENDIF
+    endif   
+    if (allocated(x_node)) then
+        DEALLOCATE (x_node, y_node, z_node, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.31"  
+            STOP
+        ENDIF
+    endif     
+    if (allocated(rm)) then
+         DEALLOCATE (rm, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 1"  
+            STOP
+        ENDIF
+    endif   
+    if (allocated(x)) then
+         DEALLOCATE (x, y, z, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 1.01"  
+            STOP
+        ENDIF
+    endif       
+    if (allocated(x_face)) then
+         DEALLOCATE (x_face, y_face, z_face, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 1.01"  
+            STOP
+        ENDIF
     endif    
-    DEALLOCATE (rm, x, y, z, x_node, y_node, z_node,  &
-        x_face, y_face, z_face, &
-        STAT = da_err)
-    IF (da_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 1"  
-        STOP
-    ENDIF
     ! ... Deallocate boundary condition information: mcb and mcb_m
-    DEALLOCATE(ibc, char_ibc, &
-        STAT = da_err)
-    IF (da_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 2"  
-        STOP
-    ENDIF
+    if (allocated(ibc)) then
+        DEALLOCATE(ibc, char_ibc, &
+            STAT = da_err)
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 2"  
+            STOP
+        ENDIF
+    endif
     ! ... Deallocate character strings for output: mcch
-    DEALLOCATE(caprnt,  & 
-        STAT = da_err)
-    IF (da_err /= 0) THEN
-        PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 3"  
-        STOP
-    ENDIF
+    if (allocated(caprnt)) then
+        DEALLOCATE(caprnt,  & 
+            STAT = da_err)
+        IF (da_err /= 0) THEN
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 3"  
+            STOP
+        ENDIF
+    endif
     ! ... Deallocate dependent variable arrays: mcv
-    DEALLOCATE (dzfsdt, dp, dt,  &
-        sxx, syy, szz, vxx, vyy, vzz,  &
-        zfs,  &
-        eh, frac, frac_icchem, p, t,  &
-        STAT = da_err)
-    IF (da_err /= 0) THEN
-        PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 4"  
-        STOP
-    ENDIF
-
+    if (allocated(dzfsdt)) then
+        DEALLOCATE (dzfsdt, dp, dt,  &
+            sxx, syy, szz, vxx, vyy, vzz,  &
+            zfs,  &
+            eh, frac_icchem, p, t,  &
+            STAT = da_err)
+        IF (da_err /= 0) THEN
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 4"  
+            STOP
+        ENDIF
+    endif
+    if (allocated(frac)) then
+        DEALLOCATE(frac,  & 
+            STAT = da_err)
+        IF (da_err /= 0) THEN
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 4.1"  
+            STOP
+        ENDIF
+    endif
     ! ... Deallocate from read2
     ! ... Deallocate the parameter arrays: mcp
     IF (xp_group) THEN

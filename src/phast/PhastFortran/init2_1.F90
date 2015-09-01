@@ -1280,7 +1280,7 @@ SUBROUTINE init2_1
               zp1=z(2)
               zfsl = up0/(den0*gz) + z0     ! Hydrostatic
               frac(m)=2.*(zfsl-z0)/(zp1-z0)
-              frac(m)=MIN(1._kdp,frac(m))
+              !frac(m)=MIN(1._kdp,frac(m))
               vmask(m) = 1
            ELSE
               frac(m)=0._kdp       ! draining cell is empty
@@ -1296,7 +1296,7 @@ SUBROUTINE init2_1
                  zp1=z(k+1)
                  zfsl = up0/(den0*gz) + z0     ! Hydrostatic
                  frac(m) = 2.*(zfsl-z0)/(zp1-z0)
-                 frac(m) = MIN(1._kdp,frac(m))
+                 !frac(m) = MIN(1._kdp,frac(m))
                  vmask(m) = 1
               ELSE
                  frac(m) = 0._kdp       ! ... Empty column of cells
@@ -1310,7 +1310,7 @@ SUBROUTINE init2_1
                  z0=z(k)
                  zfsl = up0/(den0*gz) + z0     ! hydrostatic
                  frac(m) = (2.*zfsl-(z0+zm1))/(z0-zm1)
-                 frac(m) = MIN(1._kdp,frac(m))
+                 !frac(m) = MIN(1._kdp,frac(m))
                  vmask(m) = 1
               ELSE
                  up0=p(m)
@@ -1330,7 +1330,7 @@ SUBROUTINE init2_1
                  zm1=z(k-1)
                  zfsl = up0/(den0*gz) + z0     ! Hydrostatic
                  frac(m) = (2.*zfsl-(z0+zm1))/(zp1-zm1)
-                 frac(m) = MIN(1._kdp,frac(m))
+                 !frac(m) = MIN(1._kdp,frac(m))
                  vmask(m) = 1
               ELSE
                  up0=p(m)
