@@ -95,6 +95,374 @@ FileHandler::~FileHandler()
 {
 	delete this->io;
 }
+#define SAVE_MEMORY
+#if defined(SAVE_MEMORY) && defined(USE_MPI)
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+FileHandler::ProcessRestartFiles(
+	int *initial_conditions1_in,
+	int *initial_conditions2_in, 
+	double *fraction1_in)
+	/* ---------------------------------------------------------------------- */
+{
+	/*
+	*      nxyz - number of cells
+	*      initial_conditions1 - Fortran, 7 x nxyz integer array, containing
+	*      entity numbers for
+	*           solution number
+	*           pure_phases number
+	*           exchange number
+	*           surface number
+	*           gas number
+	*           solid solution number
+	*           kinetics number
+	*      initial_conditions2 - Fortran, 7 x nxyz integer array, containing
+	*			 entity numbers
+	*      fraction1 - Fortran 7 x n_cell  double array, fraction for entity 1  
+	*
+	*      Routine mixes solutions, pure_phase assemblages,
+	*      exchangers, surface complexers, gases, solid solution assemblages,
+	*      and kinetics for each cell.
+	*   
+	*      saves results in restart_bin and then the reaction module
+	*/
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
+	if (Reaction_module_ptr)
+	{
+		IRM_RESULT rtn = IRM_OK;
+		int nxyz = Reaction_module_ptr->GetGridCellCount();
+		int count_chemistry = Reaction_module_ptr->GetChemistryCellCount();
+		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
+		size_t array_size = (size_t) (7 *nxyz);
+
+		std::vector < int > initial_conditions1, initial_conditions2;
+		std::vector < double > fraction1;
+		initial_conditions1.resize(array_size);
+		initial_conditions2.resize(array_size);
+		fraction1.resize(array_size);
+		this->ic.resize(array_size);
+
+		// Check for null pointer
+		if (mpi_myself == 0)
+		{
+			if (initial_conditions1_in == NULL ||
+				initial_conditions2_in == NULL ||
+				fraction1_in == NULL)
+			{
+				int result = IRM_FAIL;
+				RM_Abort(this->rm_id, result, "NULL pointer in call to ProcessRestartFiles");
+			}
+			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
+			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
+			memcpy(fraction1.data(),           fraction1_in,           array_size * sizeof(double));
+			memcpy(this->ic.data(), &initial_conditions1[0], array_size * sizeof(int));
+		}
+		/*
+		* Read any restart files
+		*/
+		int block = 5000;
+		for (std::map < std::string, int >::iterator it = RestartFileMap.begin(); it != RestartFileMap.end(); it++)
+		{
+			if (mpi_myself == 0)
+			{	
+				std::cerr << "Reading restart file " << it->first << std::endl;
+				int	ifile = -100 - it->second;
+				// Open file, use gsztream
+				igzstream myfile;
+				myfile.open(it->first.c_str());
+				if (!myfile.good())
+
+				{
+					rtn = IRM_FAIL;
+					std::ostringstream errstr;
+					errstr << "File could not be opened: " << it->first.c_str();
+					int result = IRM_FAIL;
+					RM_Abort(this->rm_id, result, errstr.str().c_str());
+				}
+				// read file
+				CParser	cparser(myfile, this->Get_io());
+				cparser.set_echo_file(CParser::EO_NONE);
+				cparser.set_echo_stream(CParser::EO_NONE);
+
+				// skip headers
+				while (cparser.check_line("restart", false, true, true, false) == PHRQ_io::LT_EMPTY);
+
+				// read number of lines of index
+				int	n = -1;
+				if (!(cparser.get_iss() >> n) || n < 4)
+				{
+					myfile.close();
+					std::ostringstream errstr;
+					errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
+					int result = IRM_FAIL;
+					RM_Abort(this->rm_id, result, errstr.str().c_str());
+				}
+
+				// points are x, y, z, cell_no
+				std::vector < Point > pts, soln_pts;
+				// index:
+				// 0 solution
+				// 1 ppassemblage
+				// 2 exchange
+				// 3 surface
+				// 4 gas phase
+				// 5 ss_assemblage
+				// 6 kinetics
+				std::vector<int> c_index;
+				for (int i = 0; i < n; i++)
+				{
+					cparser.check_line("restart", false, false, false, false);
+					double
+						x,
+						y,
+						z,
+						v;
+					cparser.get_iss() >> x;
+					cparser.get_iss() >> y;
+					cparser.get_iss() >> z;
+					cparser.get_iss() >> v;
+					pts.push_back(Point(x, y, z, v));
+
+					int dummy;
+
+					// Solution
+					cparser.get_iss() >> dummy;
+					c_index.push_back(dummy);
+					// Don't put location in soln_pts if solution undefined
+					if (dummy != -1)
+						soln_pts.push_back(Point(x, y, z, v));
+
+					// c_index defines entities present for each cell in restart file
+					for (int j = 1; j < 7; j++)
+					{
+						cparser.get_iss() >> dummy;
+						c_index.push_back(dummy);
+					}
+
+				}
+				// Make Kd tree
+				KDtree index_tree(pts);
+				KDtree index_tree_soln(soln_pts);
+
+				cxxStorageBin tempBin;
+				tempBin.read_raw(cparser);   // For big restart file, can't read in each process
+				// root reads and distributes
+				int pct = 0;
+				std::cerr << "\tRestart transfer ";
+
+				for (int n = 0; n < Reaction_module_ptr->GetMpiTasks(); n++)
+				{						
+					int count = Reaction_module_ptr->GetEndCell()[n] - Reaction_module_ptr->GetStartCell()[n] + 1;
+					int nblocks = count / block;
+					if (count % block > 0) nblocks += 1;
+					for (int iblock = 0; iblock < nblocks; iblock++)
+					{
+						cxxStorageBin restart_bin;
+						int start = Reaction_module_ptr->GetStartCell()[n] + iblock*block;
+						int end = Reaction_module_ptr->GetStartCell()[n] + (iblock + 1)*block - 1;
+						if (end > Reaction_module_ptr->GetEndCell()[n])
+						{
+							end = Reaction_module_ptr->GetEndCell()[n];
+						}
+						for (int j = start; j <= end; j++)
+						{
+							/* j is count_chem number */
+							int i = Reaction_module_ptr->GetBackwardMapping()[j][0];   /* i is nxyz number */
+							Point p(x_node[i], y_node[i], z_node[i]);
+							int	k = (int) index_tree.Interpolate3d(p);	            // k is index number in tempBin
+							int	k_soln = (int) index_tree_soln.Interpolate3d(p);	// k is index number in tempBin
+
+							// solution
+							if (initial_conditions1[i * 7] == ifile)
+							{
+								// All solutions must be defined
+								if (tempBin.Get_Solution(k_soln) != NULL)
+								{
+									restart_bin.Set_Solution(j, tempBin.Get_Solution(k_soln));
+								}
+								else
+								{
+									assert(false);
+									initial_conditions1[7 * i] = -1;
+								}
+							}
+
+							// PPassemblage
+							if (initial_conditions1[i * 7 + 1] == ifile)
+							{
+								if (c_index[k * 7 + 1] != -1)	// entity k should be defined in tempBin
+								{
+									if (tempBin.Get_PPassemblage(k) != NULL)
+									{
+										restart_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
+									}
+									else
+									{
+										assert(false);
+										initial_conditions1[7 * i + 1] = -1;
+									}
+								}
+							}
+
+							// Exchange
+							if (initial_conditions1[i * 7 + 2] == ifile)
+							{
+								if (c_index[k * 7 + 2] != -1)	// entity k should be defined in tempBin
+								{
+									if (tempBin.Get_Exchange(k) != NULL)
+									{
+										restart_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
+									}
+									else
+									{
+										assert(false);
+										initial_conditions1[7 * i + 2] = -1;
+									}
+								}
+							}
+
+							// Surface
+							if (initial_conditions1[i * 7 + 3] == ifile)
+							{
+								if (c_index[k * 7 + 3] != -1)	// entity k should be defined in tempBin
+								{
+									if (tempBin.Get_Surface(k) != NULL)
+									{
+										restart_bin.Set_Surface(j, tempBin.Get_Surface(k));
+									}
+									else
+									{
+										assert(false);
+										initial_conditions1[7 * i + 3] = -1;
+									}
+								}
+							}
+
+							// Gas phase
+							if (initial_conditions1[i * 7 + 4] == ifile)
+							{
+								if (c_index[k * 7 + 4] != -1)	// entity k should be defined in tempBin
+								{
+									if (tempBin.Get_GasPhase(k) != NULL)
+									{
+										restart_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
+									}
+									else
+									{
+										assert(false);
+										initial_conditions1[7 * i + 4] = -1;
+									}
+								}
+							}
+
+							// Solid solution
+							if (initial_conditions1[i * 7 + 5] == ifile)
+							{
+								if (c_index[k * 7 + 5] != -1)	// entity k should be defined in tempBin
+								{
+									if (tempBin.Get_SSassemblage(k) != NULL)
+									{
+										restart_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
+									}
+									else
+									{
+										assert(false);
+										initial_conditions1[7 * i + 5] = -1;
+									}
+								}
+							}
+
+							// Kinetics
+							if (initial_conditions1[i * 7 + 6] == ifile)
+							{
+								if (c_index[k * 7 + 6] != -1)	// entity k should be defined in tempBin
+								{
+									if (tempBin.Get_Kinetics(k) != NULL)
+									{
+										restart_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
+									}
+									else
+									{
+										assert(false);
+										initial_conditions1[7 * i + 6] = -1;
+									}
+								}
+							}
+							// Cell has been added to restart_bin
+						}
+						// block has been written to restart_bin
+						if (n == 0)   
+						{
+							// restart_bin to root
+							for (int i = Reaction_module_ptr->GetStartCell()[mpi_myself]; 
+								i <= Reaction_module_ptr->GetEndCell()[mpi_myself]; i++)
+							{
+								Reaction_module_ptr->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
+							}
+						}
+						else           
+						{
+							// restart_bin to nonroot
+							std::ostringstream dump;
+							restart_bin.dump_raw(dump, 0);
+							size_t string_size = dump.str().size() + 1;
+							MPI_Send(&string_size, 1, MPI_INT, n, 0, MPI_COMM_WORLD);
+							MPI_Send((void *) dump.str().c_str(), (int) string_size, MPI_CHAR, n, 0, MPI_COMM_WORLD);
+						}
+						if ((end * 100) / count_chemistry > pct)
+						{
+							int pct_block_count = ((end * 10) / count_chemistry) * 10;
+							if (pct_block_count < 100)
+							{
+								std::cerr << pct_block_count << "% ";
+							}
+							pct = pct_block_count + 10;
+						}
+						//MPI_Barrier(MPI_COMM_WORLD);
+					}
+					// end of loop on blocks for a task for a restart file
+				}	
+				std::cerr << "100% " << std::endl;
+				// end of loop on tasks for a restart file
+				myfile.close();
+			}
+			// end of root for a restart file
+			else           
+			{		
+				// nonroot receives initial conditions
+				for (int n = 0; n < Reaction_module_ptr->GetMpiTasks(); n++)
+				{			
+					int count = Reaction_module_ptr->GetEndCell()[n] - Reaction_module_ptr->GetStartCell()[n] + 1;
+					int nblocks = count / block;
+					if (count % block > 0) nblocks += 1;
+					for (int iblock = 0; iblock < nblocks; iblock++)
+					{ 
+						if (mpi_myself == n) 
+						{
+							int begin_cell = iblock*block;
+							int end_cell = begin_cell + block - 1;
+							if (end_cell > Reaction_module_ptr->GetEndCell()[n]) end_cell = Reaction_module_ptr->GetEndCell()[n];
+
+							MPI_Status mpi_status;
+							int size;
+							MPI_Recv(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &mpi_status);
+							char * string_buffer = new char[size + 1];
+							MPI_Recv((void *) string_buffer, size, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &mpi_status);
+							string_buffer[size] = '\0';
+							Reaction_module_ptr->GetWorkers()[0]->RunString(string_buffer);
+						}
+						//MPI_Barrier(MPI_COMM_WORLD);
+					}
+				}				
+			}
+			// end of nonroot for restart file
+		}  
+		// end of restart file loop
+		return rtn;
+	}
+	return IRM_BADINSTANCE;
+}
+#else // SAVE_MEMORY
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 FileHandler::ProcessRestartFiles(
@@ -417,6 +785,7 @@ FileHandler::ProcessRestartFiles(
 	}
 	return IRM_BADINSTANCE;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 FileHandler::SetSaturation(double * saturation_in)
