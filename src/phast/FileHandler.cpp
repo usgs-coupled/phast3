@@ -248,7 +248,7 @@ FileHandler::ProcessRestartFiles(
 				tempBin.read_raw(cparser);   // For big restart file, can't read in each process
 				// root reads and distributes
 				int pct = 0;
-				std::cerr << "\tRestart transfer ";
+				std::cerr << "Restart transfer ";
 
 				for (int n = 0; n < Reaction_module_ptr->GetMpiTasks(); n++)
 				{						
