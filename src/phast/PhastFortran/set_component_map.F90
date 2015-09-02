@@ -92,6 +92,7 @@ END SUBROUTINE set_component_map
 #else
 SUBROUTINE set_component_map
   USE mcc
+  USE mcs
   USE mcv
 #if defined(USE_MPI)
   USE mpi_mod
@@ -113,9 +114,8 @@ SUBROUTINE set_component_map
   ENDIF
   
   ! How many transport processes will be used?
-  max_processes = 1000
   nprocesses = mpi_tasks
-  if (nprocesses .gt. max_processes) nprocesses = max_processes
+  if (nprocesses .gt. max_transporters) nprocesses = max_transporters
   if (nprocesses .gt. ns) nprocesses = ns
 
   ! Can we use processes 1-processes?
@@ -184,7 +184,7 @@ SUBROUTINE set_component_map
         IF (component_map(i) == mpi_myself) THEN
            local_ns = local_ns + 1
            local_component_map(i) = local_ns
-           print *, i, local_component_map(i), component_map(i), nprocesses
+           ! print *, i, local_component_map(i), component_map(i), nprocesses
         ENDIF
      ENDDO
   ENDIF
