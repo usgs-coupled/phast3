@@ -28,7 +28,7 @@ SUBROUTINE PHAST_SUB(l_mpi_tasks, l_mpi_myself, l_nthreads) BIND(C, NAME='PHAST_
   ! ...      FUVS  - Viscosity field
   USE mcch, ONLY: version_name
   USE mcc
-  USE mcs, ONLY: nthreads
+  USE mcs, ONLY: nthreads, max_transporters
 #if defined(USE_MPI)
   USE mpi_mod
 #endif
@@ -41,6 +41,7 @@ SUBROUTINE PHAST_SUB(l_mpi_tasks, l_mpi_myself, l_nthreads) BIND(C, NAME='PHAST_
   !... 
   nthreads = l_nthreads
 #if defined(USE_MPI)
+  if (nthreads > 0) max_transporters = nthreads
   world_comm = MPI_COMM_WORLD
   mpi_tasks = l_mpi_tasks
   mpi_myself = l_mpi_myself  
