@@ -187,3 +187,54 @@ SUBROUTINE tfx_distribute
     END IF
 #endif
 END SUBROUTINE tfx_distribute
+    
+SUBROUTINE callback_distribute_static
+  ! ... Transfer pv0, volume to all workers
+#if defined(USE_MPI)
+  USE mcb
+  USE mcc
+  USE mcg
+  USE mcn
+  USE mcp
+  USE mcv
+  USE mcv_m
+  USE mpi_mod
+  IMPLICIT NONE
+  !     ------------------------------------------------------------------
+  if (.not. solute) return
+  if (mpi_myself == 0) then
+      CALL MPI_BCAST(METHOD_CALLBACKDISTRIBUTESTATIC, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+  IF (mpi_tasks > 1) THEN
+      CALL MPI_BCAST(pv0(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+      world_comm, ierrmpi)   
+      CALL MPI_BCAST(volume(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+      world_comm, ierrmpi)   
+      CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+      world_comm, ierrmpi)   
+  ENDIF
+#endif     
+END SUBROUTINE callback_distribute_static
+SUBROUTINE callback_distribute_frac
+  ! ... Transfer frac to all workers
+#if defined(USE_MPI)
+  USE mcb
+  USE mcc
+  USE mcg
+  USE mcp
+  USE mcv
+  USE mcv_m
+  USE mpi_mod
+  IMPLICIT NONE
+  !     ------------------------------------------------------------------
+  ! ... Transfer pv0, volume to all workers
+  if (.not. solute .or. .not. steady_flow) return
+  if (mpi_myself == 0) then
+      CALL MPI_BCAST(METHOD_CALLBACKDISTRIBUTEFRAC, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
+  endif
+  IF (mpi_tasks > 1) THEN
+      CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+          world_comm, ierrmpi)   
+  ENDIF
+#endif     
+END SUBROUTINE callback_distribute_frac

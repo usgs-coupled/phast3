@@ -94,6 +94,7 @@ SUBROUTINE phast_manager
         CALL init3_distribute                              ! Distribute for MPI
     ENDIF
     CALL zone_flow_write_heads                             ! Write zone flows 
+    CALL callback_distribute_static
 !
 ! ... Use Reaction Module to equilbrate cells  
 !
@@ -129,6 +130,7 @@ SUBROUTINE phast_manager
             CALL time_parallel(0)                         ! Timing
             CALL c_distribute
             CALL p_distribute
+            CALL callback_distribute_frac
             CALL time_parallel(1)                         ! 1 - 0, flow and transport communication
             IF (.NOT. steady_flow) THEN
                 CALL coeff_flow
