@@ -388,7 +388,7 @@ HDF_CLOSE_TIME_STEP(int *iso_in)
 			}
 			status =
 				H5Dwrite(dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-				root[iso].time_step_scalar_indices.data());
+				&root[iso].time_step_scalar_indices.front());
 			if (status < 0)
 			{
 				assert(0);
@@ -1049,7 +1049,7 @@ HDF_PRNTAR(int *iso_in, double array[], double frac[], double *cnv, char *name)
 	assert(root[iso].current_file_dset_id > 0);	/* precondition */
 	if (H5Dwrite
 		(root[iso].current_file_dset_id, H5T_NATIVE_DOUBLE, mem_dspace,
-		root[iso].current_file_dspace_id, H5P_DEFAULT, root[iso].f_array.data()) < 0)
+		root[iso].current_file_dspace_id, H5P_DEFAULT, &root[iso].f_array.front()) < 0)
 	{
 		assert(0);
 		sprintf(error_string, "HDF Error: Unable to write dataset\n");
@@ -1265,7 +1265,7 @@ HDF_WRITE_GRID(int *iso_in, double x[], double y[], double z[],
 		/* Write the "/Grid/Active" dataset */
 		if (H5Dwrite
 			(dset_id, H5T_NATIVE_INT, dspace_id, H5S_ALL, H5P_DEFAULT,
-			root[iso].active.data()) < 0)
+			&root[iso].active.front()) < 0)
 		{
 			printf("HDF Error: Unable to write \"/%s/%s\" dataset\n",
 				szGrid, szActive);
@@ -1414,7 +1414,7 @@ write_proc_timestep(int iso, int rank, int cell_count, hid_t file_dspace_id,
 	assert(status >= 0);
 
 	status = H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, mem_dspace, file_dspace_id,
-		H5P_DEFAULT, array.data());
+		H5P_DEFAULT, &array.front());
 	if (status < 0)
 	{
 		sprintf(error_string, "HDF ERROR: Unable to write dataspace\n");

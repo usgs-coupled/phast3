@@ -152,10 +152,10 @@ FileHandler::ProcessRestartFiles(
 				int result = IRM_FAIL;
 				RM_Abort(this->rm_id, result, "NULL pointer in call to ProcessRestartFiles");
 			}
-			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
-			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
-			memcpy(fraction1.data(),           fraction1_in,           array_size * sizeof(double));
-			memcpy(this->ic.data(), &initial_conditions1[0], array_size * sizeof(int));
+			memcpy(&initial_conditions1.front(), initial_conditions1_in, array_size * sizeof(int));
+			memcpy(&initial_conditions2.front(), initial_conditions2_in, array_size * sizeof(int));
+			memcpy(&fraction1.front(),           fraction1_in,           array_size * sizeof(double));
+			memcpy(&this->ic.front(), &initial_conditions1[0], array_size * sizeof(int));
 		}
 		/*
 		* Read any restart files
@@ -518,18 +518,18 @@ FileHandler::ProcessRestartFiles(
 				int result = IRM_FAIL;
 				RM_Abort(this->rm_id, result, "NULL pointer in call to ProcessRestartFiles");
 			}
-			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
-			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
-			memcpy(fraction1.data(),           fraction1_in,           array_size * sizeof(double));
-			memcpy(this->ic.data(), &initial_conditions1[0], array_size * sizeof(int));
+			memcpy((void *) &initial_conditions1.front(), initial_conditions1_in, array_size * sizeof(int));
+			memcpy((void *) &initial_conditions2.front(), initial_conditions2_in, array_size * sizeof(int));
+			memcpy((void *) &fraction1.front(),           fraction1_in,           array_size * sizeof(double));
+			memcpy((void *) &this->ic.front(),           &initial_conditions1[0], array_size * sizeof(int));
 		}
 		if (RestartFileMap.size() > 0) 
 		{
 #ifdef USE_MPI
 			// Transfer arrays
-			MPI_Bcast(initial_conditions1.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(initial_conditions2.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(fraction1.data(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			MPI_Bcast(&initial_conditions1.front(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(&initial_conditions2.front(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(&fraction1.front(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 			//memcpy(this->ic.data(), &initial_conditions1[0], array_size * sizeof(int));
 			/*
@@ -979,7 +979,7 @@ FileHandler::WriteHDF(int *print_hdf, int *print_media)
 						if (status >= 0)
 						{
 							local_selected_out.resize((size_t) (nxyz*ncol));
-							RM_GetSelectedOutput(this->rm_id, local_selected_out.data());
+							RM_GetSelectedOutput(this->rm_id, &local_selected_out.front());
 							if ( !this->GetHDFInvariant())
 							{
 								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
@@ -1077,7 +1077,7 @@ FileHandler::WriteHDF(int id, int *print_hdf, int *print_media)
 					if (status >= 0)
 					{
 						local_selected_out.resize((size_t) (nxyz*ncol));
-						RM_GetSelectedOutput(id, local_selected_out.data());
+						RM_GetSelectedOutput(id, &local_selected_out.front());
 						if ( !this->GetHDFInvariant())
 						{
 							HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
@@ -1277,7 +1277,7 @@ FileHandler::WriteXYZ(int *print_xyz, int *xyz_mask)
 					{
 						this->Get_io()->Set_punch_ostream(this->GetXYZOstreams()[iso]);
 						local_selected_out.resize((size_t) (nxyz*ncol));
-						RM_GetSelectedOutput(this->rm_id, local_selected_out.data());
+						RM_GetSelectedOutput(this->rm_id, &local_selected_out.front());
 
 						// write xyz file
 #ifdef NEW_STYLE_XYZ
@@ -1450,7 +1450,7 @@ FileHandler::WriteBcRaw(double *c_in, int *solution_list, int * bc_solution_coun
 		// Create std vector of concentrations
 		std::vector<double> c;
 		c.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
-		memcpy(c.data(), c_in, Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
+		memcpy(&c.front(), c_in, Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetComponentCount());
 
 		//
 		int raw_number = *solution_number;
