@@ -382,6 +382,12 @@ INTEGER(KIND=C_INT) FUNCTION mpi_methods(method) BIND(C)
     else if (method == METHOD_REGISTERBASICCALLBACK) then
         if (debug) write(*,*) "METHOD_REGISTERBASICCALLBACK"
         CALL register_basic_callback_fortran()
+    else if (method == METHOD_CALLBACKDISTRIBUTESTATIC) then
+        if (debug) write(*,*) "METHOD_CALLBACKDISTRIBUTESTATIC"
+        CALL callback_distribute_static
+    else if (method == METHOD_CALLBACKDISTRIBUTEFRAC) then
+        if (debug) write(*,*) "METHOD_CALLBACKDISTRIBUTEFRAC"
+        CALL callback_distribute_frac
     endif
 #endif
     mpi_methods = return_value

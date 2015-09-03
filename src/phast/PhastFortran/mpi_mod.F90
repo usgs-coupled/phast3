@@ -26,7 +26,10 @@ MODULE mpi_mod
              METHOD_CGATHER                = 1015, &
              METHOD_TIMESTEPSAVE           = 1016, &
              METHOD_TIMINGBARRIER          = 1017, &
-             METHOD_REGISTERBASICCALLBACK  = 1018
+             METHOD_REGISTERBASICCALLBACK  = 1018, &
+             METHOD_CALLBACKDISTRIBUTESTATIC= 1019, &
+             METHOD_CALLBACKDISTRIBUTEFRAC = 1020
+  
   
 CONTAINS  
 
