@@ -582,6 +582,10 @@ SUBROUTINE InitializeRM
  
     IF(solute) THEN
 
+        ! ... Define mapping from 3D domain to chemistry
+        CALL CreateMappingFortran(indx_sol1_ic)
+        status = RM_CreateMapping(rm_id, grid2chem)  
+        
         ! ... Send data to threads or workers
         status = RM_SetUnitsSolution(rm_id, 3)
         status = RM_SetUnitsExchange(rm_id, exchange_units)
@@ -621,10 +625,6 @@ SUBROUTINE InitializeRM
         
         status = RM_SetRebalanceFraction(rm_id, rebalance_fraction_f)
         status = RM_SetRebalanceByCell(rm_id, rebalance_method_f)
-
-        ! ... Define mapping from 3D domain to chemistry
-        CALL CreateMappingFortran(indx_sol1_ic)
-        status = RM_CreateMapping(rm_id, grid2chem)  
         
         ! Set Basic callback for cell_volume, cell_saturation, cell_porosity, and cell_pore_volume
         CALL register_basic_callback_fortran()
