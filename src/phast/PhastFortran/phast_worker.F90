@@ -99,26 +99,28 @@ SUBROUTINE worker_init1
     nxy = nx * ny  
     nxyz = nxy * nz  
     ! All workers
-    ALLOCATE (x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
+    !ALLOCATE (x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
+    !STAT = a_err)
+    !IF (a_err /= 0) THEN  
+    !    PRINT *, "Array allocation failed: worker_init1, point 1"  
+    !    STOP  
+    !ENDIF
+    if (use_callback) then
+        ALLOCATE (pv0(nxyz), volume(nxyz), frac(nxyz), & 
         STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array allocation failed: worker_init1, point 1"  
-        STOP  
-    ENDIF
-    ALLOCATE (pv0(nxyz), volume(nxyz), frac(nxyz), & 
-        STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array allocation failed: worker_init1, point 2"  
-        STOP  
-    ENDIF   
-    ALLOCATE ( &
-        indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), & !        c(nxyz,nsa), &
-        ic_mxfrac(7,nxyz), &
-        STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array allocation failed: worker_init1 3"  
-        STOP  
-    ENDIF
+        IF (a_err /= 0) THEN  
+            PRINT *, "Array allocation failed: worker_init1, point 2"  
+            STOP  
+        ENDIF   
+    endif
+    !ALLOCATE ( &
+    !    indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), & !        c(nxyz,nsa), &
+    !    ic_mxfrac(7,nxyz), &
+    !    STAT = a_err)
+    !IF (a_err /= 0) THEN  
+    !    PRINT *, "Array allocation failed: worker_init1 3"  
+    !    STOP  
+    !ENDIF
     
     ! ... Set up time marching units and conversion factors
     IF (tmunit == 1) THEN 
@@ -188,6 +190,13 @@ SUBROUTINE worker_init1
         mtp1 = nxyz - nxy + 1          ! ... first cell in top plane of global mesh
 
         ! XP workers
+        ALLOCATE (x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
+        STAT = a_err)
+        IF (a_err /= 0) THEN  
+            PRINT *, "Array allocation failed: worker_init1, point 1"  
+            STOP  
+        ENDIF        
+        
         ! ... Allocate node information arrays: mcn
         ALLOCATE (rm(nx), x(nx), y(ny), z(nz),  &
         x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
@@ -417,20 +426,20 @@ SUBROUTINE worker_deallocate_nonxp
     nsa = MAX(ns,1)
     nxy = nx * ny  
     nxyz = nxy * nz  
-    DEALLOCATE ( &
-    indx_sol1_ic, indx_sol2_ic, & !    c, &
-    ic_mxfrac, &
-    STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: worker_dealloc_nonxp 1"  
-        STOP  
-    ENDIF
-    DEALLOCATE (x_node, y_node, z_node, &
-        STAT = a_err)
-    IF (a_err /= 0) THEN  
-        PRINT *, "Array deallocation failed: worker_dealloc_nonxp 1"  
-        STOP  
-    ENDIF
+    !DEALLOCATE ( &
+    !indx_sol1_ic, indx_sol2_ic, & !    c, &
+    !ic_mxfrac, &
+    !STAT = a_err)
+    !IF (a_err /= 0) THEN  
+    !    PRINT *, "Array deallocation failed: worker_dealloc_nonxp 1"  
+    !    STOP  
+    !ENDIF
+    !DEALLOCATE (x_node, y_node, z_node, &
+    !    STAT = a_err)
+    !IF (a_err /= 0) THEN  
+    !    PRINT *, "Array deallocation failed: worker_dealloc_nonxp 1"  
+    !    STOP  
+    !ENDIF
     ! ... Allocate node information arrays: mcn
     !    pv0(nxyz), volume(nxyz), por(nxyz), & ! tort(npmz), &
     !DEALLOCATE (rm, x, y, z, x_node, y_node, z_node,  &

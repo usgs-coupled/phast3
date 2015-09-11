@@ -202,6 +202,7 @@ SUBROUTINE callback_distribute_static
   IMPLICIT NONE
   !     ------------------------------------------------------------------
   if (.not. solute) return
+  if (.not. use_callback) return
   if (mpi_myself == 0) then
       CALL MPI_BCAST(METHOD_CALLBACKDISTRIBUTESTATIC, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
   endif
@@ -229,6 +230,7 @@ SUBROUTINE callback_distribute_frac
   !     ------------------------------------------------------------------
   ! ... Transfer pv0, volume to all workers
   if (.not. solute .or. .not. steady_flow) return
+  if (.not. use_callback) return
   if (mpi_myself == 0) then
       CALL MPI_BCAST(METHOD_CALLBACKDISTRIBUTEFRAC, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
   endif
