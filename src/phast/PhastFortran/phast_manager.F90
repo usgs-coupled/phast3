@@ -813,7 +813,9 @@ SUBROUTINE process_restart_files()
         CALL FH_SetRestartName(trim(restart_files(i))//C_NULL_CHAR)
     ENDDO
     CALL FH_SetSaturation(frac);
-    CALL FH_SetNodes(x_node, y_node, z_node)
+    if (mpi_myself .eq. 0) then
+        CALL FH_SetNodes(x_node, y_node, z_node)
+    endif
     CALL FH_ProcessRestartFiles(&
         indx_sol1_ic,            &
         indx_sol2_ic,            & 
