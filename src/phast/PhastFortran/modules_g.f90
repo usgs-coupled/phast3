@@ -75,7 +75,7 @@ MODULE mcc
   LOGICAL :: autots, crosd, cylind, eeunit, gausel=.FALSE., heat, milu,  &
        scalmf, solute, tsfail
   LOGICAL :: oldstyle_head_file=.FALSE.
-  LOGICAL :: steady_flow, converge_ss
+  LOGICAL :: steady_flow, converge_ss, use_callback=.true.
   REAL(KIND=kdp) :: timchg=0.0_kdp, timrst, rebalance_fraction_f = 0.5_kdp
   INTEGER :: rebalance_method_f
   REAL(KIND=kdp) :: dptas=0.0_kdp, dtimmn=0.0_kdp, dtimmx=0.0_kdp, dtimu=0.0_kdp, dttas=0.0_kdp, &

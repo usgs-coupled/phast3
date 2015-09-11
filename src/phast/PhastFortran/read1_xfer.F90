@@ -32,8 +32,10 @@ SUBROUTINE read1_distribute
      array_bcst_i(11) = nsbc; array_bcst_i(12) = nfbc; array_bcst_i(13) = nlbc
      array_bcst_i(14) = nrbc;  array_bcst_i(15) = ndbc; array_bcst_i(16) = nwel
      array_bcst_i(17) = slmeth; array_bcst_i(18) = nral
+     array_bcst_i(19) = 0
+     if (use_callback) array_bcst_i(19) = 1
   ENDIF
-    CALL MPI_BCAST(array_bcst_i(1), 18, MPI_INTEGER, manager, &
+    CALL MPI_BCAST(array_bcst_i(1), 19, MPI_INTEGER, manager, &
         world_comm, jerr)
 
   IF (mpi_myself > 0) THEN
@@ -57,6 +59,8 @@ SUBROUTINE read1_distribute
      nsbc = array_bcst_i(11); nfbc = array_bcst_i(12); nlbc = array_bcst_i(13)
      nrbc = array_bcst_i(14);  ndbc = array_bcst_i(15); nwel = array_bcst_i(16)
      slmeth = array_bcst_i(17); nral = array_bcst_i(18)
+     use_callback = .FALSE.
+     IF (array_bcst_i(19) == 1) use_callback = .TRUE.
   ENDIF
 #endif     
 END SUBROUTINE read1_distribute

@@ -810,11 +810,12 @@ FileHandler::SetNodes(double *x_node_in, double *y_node_in, double *z_node_in)
 	}
 	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(this->rm_id);
 	int nxyz = Reaction_module_ptr->GetGridCellCount();
-	this->x_node.resize(nxyz);
-	this->y_node.resize(nxyz);
-	this->z_node.resize(nxyz);
+
 	if (Reaction_module_ptr->GetMpiMyself() == 0)
 	{
+		this->x_node.resize(nxyz);
+		this->y_node.resize(nxyz);
+		this->z_node.resize(nxyz);
 		for (int i = 0; i < nxyz; i++)
 		{
 			this->x_node[i] = x_node_in[i];
@@ -823,9 +824,9 @@ FileHandler::SetNodes(double *x_node_in, double *y_node_in, double *z_node_in)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->x_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&this->y_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&this->z_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(&this->x_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(&this->y_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(&this->z_node[0], nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */

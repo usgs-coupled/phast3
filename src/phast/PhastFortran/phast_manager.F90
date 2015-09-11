@@ -52,6 +52,7 @@ SUBROUTINE phast_manager
     !     ------------------------------------------------------------------
     errexi=.FALSE.
     errexe=.FALSE.
+    !use_callback = .FALSE.
 !
 ! ... static data, group 1
 !
@@ -817,9 +818,9 @@ SUBROUTINE process_restart_files()
         indx_sol1_ic,            &
         indx_sol2_ic,            & 
         ic_mxfrac)
-    if (.not. xp_group) then
-        call worker_deallocate_nonxp
-    endif
+    !if (.not. xp_group) then
+    !    call worker_deallocate_nonxp
+    !endif
 END SUBROUTINE process_restart_files 
     
 INTEGER FUNCTION set_fdtmth()
@@ -978,7 +979,7 @@ SUBROUTINE register_basic_callback_fortran()
     USE IPhreeqc
     USE PhreeqcRM
     USE mpi_mod
-    USE mcc, only : rm_id
+    USE mcc, only : rm_id, use_callback
     USE ISO_C_BINDING
     implicit none
     INTERFACE
@@ -994,6 +995,7 @@ SUBROUTINE register_basic_callback_fortran()
 	integer status 
     integer i, j, mpi_myself, method
     
+    if (.not. use_callback) return
     mpi_myself = RM_GetMpiMyself(rm_id)
     
 #ifdef USE_MPI    
