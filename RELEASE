@@ -1,6 +1,32 @@
 ---------------------------------------
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
+---------------
+svn 10160-10244
+---------------
+Revised PhreeqcRM and PHAST to minimize memory footprint for MPI. Removed many unneeded
+variables from the PHAST workers, both for workers that do chemistry only, and workers
+that do both chemistry and transport. Revised the logic of PhreeqcRM so some variables,
+like porosity and saturation, have only the values related to the cells that are
+defined to each worker. The changes should considerably decrease the total amount of
+memory needed for a PHAST MPI run.
+
+The processing of restart files was revised for MPI. Previously, each process read the
+entire restart file. For machines that have many processors, like some SGI computers,
+the total memory needed to process the restart files when using many worker processes
+was quite large. Now, the root process reads the restart file, and distributes the
+initial conditions to the worker processes.
+
+MPI PHAST now takes a single integer argument. This argument specifies the number of
+transport calculations that will be run simultaneously. The total number of tranport
+calculations is equal to the number of components in the system, normally 6-20.
+Decreasing the number of simultaneous transport calculations will decrease the total
+memory footprint of a calculation. If memory is not an issue, use the default (no
+argument) to run all transport calculations simultaneously.
+
+---------------------------------------
+PHAST, Version 3.2.2 (August 24, 2015)
+---------------------------------------
 
 Initial release of PHAST and Phast4Windows version 3. Release numbers will now
 correspond to the underlying PHREEQC release number.
