@@ -2,12 +2,14 @@ SUBROUTINE XP_asmslc_thread(xp)
   ! ... Performs the assembly and solution of the concentration for the
   ! ...     solute transport equations for one selected component
   USE machine_constants, ONLY: kdp
+  USE mcb
   USE mcc, only: slmeth, errexe, ierr, crosd, cylind, rm_id
   USE mcg, only: nxyz
   USE mcm, only:
   USE mcs, only: col_scale, row_scale, ci, ident_diagc, mrno
   USE mcs2, only:
   USE mcw, only: wqmeth
+  USE mcp
   USE XP_module, ONLY: Transporter
   USE scale_jds_mod, only: rowscale, colscale
   USE solver_direct_mod, only: tfrds_thread
@@ -82,6 +84,26 @@ SUBROUTINE XP_asmslc_thread(xp)
   ! ... If adjustable time step, check for unacceptable time step length
   ! *** only fixed time steps for solute in Phast
   ! ... Do a second solute transport for explicit cross-derivative fluxes
+
+if (trim(xp%comp_name) .ne. 'Charge') then
+  DO  m=1,nxyz
+     IF(ibc(m) == -1) CYCLE
+     if (xp%c_w(m)+xp%dc(m) .lt. -1.0d-10) then
+	if (itrn > 10) then
+     	   write(*,*) 'Failed in XP_asmslc, negative concentration: ', trim(xp%comp_name), xp%c_w(m)+xp%dc(m)
+	   if (fdsmth .ne. 1.0 .or. fdtmth .ne. 0.0) then
+     	      write(*,*) '    Try upstream-in-space (1.0) and backward-in-time (0.0) weighting in SOLUTION_METHOD.'
+	   endif
+	   errexe = .true.
+	   return
+	else	
+	   write(*,*) 'XP rerun: ', trim(xp%comp_name), xp%c_w(m)+xp%dc(m), xp%c_w(m), xp%dc(m)
+	   goto 30
+	endif		
+     endif
+  END DO
+endif
+
   IF(crosd .AND. itrn < 2) GOTO 30  
   ! ... Calculate layer solute flow rates for cylindrical single well
   IF(cylind) THEN
