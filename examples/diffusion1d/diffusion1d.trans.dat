@@ -45,8 +45,8 @@ SOLUTION_METHOD
       -tolerance 1E-10
       -save_directions 10
       -maximum_iterations 500
-      -space_differencing 0.5   # does not matter
-      -time_differencing  0.5
+#      -space_differencing 0.5   # does not matter
+#      -time_differencing  0.5
       -cross_dispersion	  false
 SPECIFIED_HEAD_BC
       -zone 0 0 0 0 0 1

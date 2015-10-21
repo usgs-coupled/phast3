@@ -13,6 +13,7 @@ SOLUTION_METHOD
         -direct_solver          true
         -space_differencing     0.5
         -time_differencing      0.5
+	-rebalance_frac         0.5
 SOLUTE_TRANSPORT		true
         -diffusivity            0.0             #m^2/s
 GRID
