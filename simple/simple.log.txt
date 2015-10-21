@@ -1,117 +1,1146 @@
-Running PHASTINPUT.
+Initial PHREEQC run.
+Done with Initial PHREEQC run.
+.
+.
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    29670 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST     3838 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .   25832 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+          Direction index for d4 zig-zag renumbering ............ IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    T
+          Number of search directions before restart ............ NSDR..   20
+          Tolerance on iterative solution ....................... EPSSLV 1.0E-18
 
-Processing flow and transport data file.
+Beginning flow calculation for steady-state i.c.
+Reading transient data for simulation: Set  1
+Automatic Time Step Control Parameters for Steady Flow
+Maximum pressure change allowed per time step.................... DPTAS    9.81E+04  (Pa )
+Minimum time step required ...................................... DTIMMN   1.00E-04  (yr )
+Maximum time step allowed ....................................... DTIMMX   1.00E+04(yr )
 
-	SOLUTE_TRANSPORT true
-		 diffusivity 0
-	STEADY_FLOW true
-		head_tolerance 1e-12
-		flow_balance_tolerance 1e-12
-		minimum_time_step 0.0001
-		maximum_time_step 10000
-		head_change_target 10
-		iterations 500
-	FREE_SURFACE_BC false
-	SOLUTION_METHOD
-		iterative_solver   true
-		tolerance          1e-018
-		save_directions    20
-		maximum_iterations 500
-		space_differencing 0
-		time_differencing  1
-		cross_dispersion   false
-		rebalance_fraction 0.5
-	UNITS
-		time                             years
-		horizontal_grid                  m
-		vertical_grid                    m
-		head                             m
-		hydraulic_conductivity           meters/year
-		specific_storage                 1/m
-		dispersivity                     m
-		flux                             meters/year
-	GRID
-		uniform X 0 10 101
-		uniform Y 0 1 2
-		uniform Z 0 1 2
-		chemistry_dimensions X
-		print_orientation XY
-	MEDIA
-		zone 0 0 0 10 1 1
-			active                   1
-			kx                       1
-			ky                       1
-			kz                       1
-			porosity                 0.1
-			specific_storage         1e-6
-			long_dispersivity        0.1
-			horizontal_dispersivity  0.1
-			vertical_dispersivity    0.1
-	SPECIFIED_HEAD_BC
-		zone 0 0 0 0 1 1
-			head
-				0	10
-			associated_solution_composition
-				0	2
-	SPECIFIED_HEAD_BC
-		zone 10 0 0 10 1 1
-			head
-				0	0
-			associated_solution_composition
-				0	2
-	HEAD_IC
-		zone 0 0 0 10 1 1
-			head                     X 10 0 0 10
-	CHEMISTRY_IC
-		zone 0 0 0 10 1 1
-			solution            1
-	PRINT_INITIAL
-		boundary_conditions        false
-		components                 false
-		conductances               false
-		echo_input                 true
-		fluid_properties           true
-		force_chemistry_print      false
-		hdf_chemistry              true
-		hdf_heads                  true
-		hdf_steady_flow_velocities true
-		heads                      true
-		media_properties           false
-		solution_method            true
-		steady_flow_velocities     true
-		wells                      true
-		xyz_chemistry              false
-		xyz_components             false
-		xyz_heads                  false
-		xyz_steady_flow_velocities false
-		xyz_wells                  false
-	PRINT_FREQUENCY
-		save_final_heads false
-		0
-			bc_flow_rates          0
-			components             0
-			conductances           0
-			flow_balance                end 
-			force_chemistry_print  0
-			hdf_chemistry          .2
-			hdf_heads                   end 
-			hdf_velocities              end 
-			heads                       end 
-			progress_statistics         end 
-			velocities                  end
-			wells                       end 
-			xyz_chemistry          .2
-			xyz_components         0
-			xyz_heads              0
-			xyz_velocities         0
-			xyz_wells              0
-			boundary_conditions    false
-			restart		end
-	TIME_CONTROL
-		time_step
-			0 0.01
-		time_change
-			0.5 yr
+Beginning steady state time step no.      1
+     Maximum change in potentiometric head ..   -1.0773E-14     (m) at location (  3.90    ,  0.00    ,  0.00    )(m)
+     Fractional flow residual ...............    1.2831E-15
 
-PHASTINPUT done.
+Done with steady-state flow.
+Equilibration of cells for initial conditions.
+     Time at which next set of transient parameters will be read .......... TIMCHG  0.500      (yr)
+Beginning transient simulation.
 
+Beginning time step no.      1
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     1
+     Time ..................................................   1.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.02      Cumulative:         0.02
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.02      Cumulative:         0.02
+     Time chemistry messages:          0.03      Cumulative:         0.03
+                     Chemistry send:             0.03      Cumulative:         0.03
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      2
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     2
+     Time ..................................................   2.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.02
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.01      Cumulative:         0.03
+     Time chemistry messages:          0.00      Cumulative:         0.03
+                     Chemistry send:             0.00      Cumulative:         0.03
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      3
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     3
+     Time ..................................................   3.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.02
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.03
+     Time chemistry messages:          0.00      Cumulative:         0.04
+                     Chemistry send:             0.00      Cumulative:         0.04
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      4
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     4
+     Time ..................................................   4.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.03
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.03
+     Time chemistry messages:          0.00      Cumulative:         0.04
+                     Chemistry send:             0.00      Cumulative:         0.04
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      5
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     5
+     Time ..................................................   5.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.03
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.04
+     Time chemistry messages:          0.00      Cumulative:         0.04
+                     Chemistry send:             0.00      Cumulative:         0.04
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      6
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     6
+     Time ..................................................   6.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.04
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.04
+     Time chemistry messages:          0.00      Cumulative:         0.05
+                     Chemistry send:             0.00      Cumulative:         0.04
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      7
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     7
+     Time ..................................................   7.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.04
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.04
+     Time chemistry messages:          0.00      Cumulative:         0.05
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      8
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     8
+     Time ..................................................   8.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.04
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.05
+     Time chemistry messages:          0.00      Cumulative:         0.06
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      9
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     9
+     Time ..................................................   9.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.05
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.05
+     Time chemistry messages:          0.00      Cumulative:         0.06
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     10
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    10
+     Time ..................................................   0.100000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.05
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.05
+     Time chemistry messages:          0.00      Cumulative:         0.06
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     11
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    11
+     Time ..................................................   0.110000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.06
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.06
+     Time chemistry messages:          0.00      Cumulative:         0.07
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     12
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    12
+     Time ..................................................   0.120000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.06
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.06
+     Time chemistry messages:          0.00      Cumulative:         0.07
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     13
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    13
+     Time ..................................................   0.130000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.06
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.07
+     Time chemistry messages:          0.00      Cumulative:         0.07
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     14
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    14
+     Time ..................................................   0.140000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.07
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.07
+     Time chemistry messages:          0.00      Cumulative:         0.08
+                     Chemistry send:             0.00      Cumulative:         0.07
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     15
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    15
+     Time ..................................................   0.150000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.07
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.07
+     Time chemistry messages:          0.00      Cumulative:         0.08
+                     Chemistry send:             0.00      Cumulative:         0.07
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     16
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    16
+     Time ..................................................   0.160000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.07
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.07
+     Time chemistry messages:          0.00      Cumulative:         0.08
+                     Chemistry send:             0.00      Cumulative:         0.07
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     17
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    17
+     Time ..................................................   0.170000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.08
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.02      Cumulative:         0.09
+     Time chemistry messages:          0.01      Cumulative:         0.10
+                     Chemistry send:             0.01      Cumulative:         0.08
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     18
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    18
+     Time ..................................................   0.180000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.09
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.02      Cumulative:         0.10
+     Time chemistry messages:          0.02      Cumulative:         0.11
+                     Chemistry send:             0.01      Cumulative:         0.10
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    19
+     Time ..................................................   0.190000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.11
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.11
+     Time chemistry messages:          0.02      Cumulative:         0.13
+                     Chemistry send:             0.01      Cumulative:         0.11
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     20
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    20
+     Time ..................................................   0.200000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.11
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.02      Cumulative:         0.13
+     Time chemistry messages:          0.01      Cumulative:         0.13
+                     Chemistry send:             0.00      Cumulative:         0.12
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     21
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    21
+     Time ..................................................   0.210000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.14
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.16
+     Time chemistry messages:          0.03      Cumulative:         0.16
+                     Chemistry send:             0.03      Cumulative:         0.15
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     22
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    22
+     Time ..................................................   0.220000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.16
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.20
+     Time chemistry messages:          0.03      Cumulative:         0.19
+                     Chemistry send:             0.03      Cumulative:         0.18
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     23
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    23
+     Time ..................................................   0.230000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.19
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.23
+     Time chemistry messages:          0.03      Cumulative:         0.22
+                     Chemistry send:             0.03      Cumulative:         0.21
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     24
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    24
+     Time ..................................................   0.240000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.22
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.26
+     Time chemistry messages:          0.03      Cumulative:         0.25
+                     Chemistry send:             0.03      Cumulative:         0.24
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     25
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    25
+     Time ..................................................   0.250000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.25
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.29
+     Time chemistry messages:          0.03      Cumulative:         0.28
+                     Chemistry send:             0.03      Cumulative:         0.27
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     26
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    26
+     Time ..................................................   0.260000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.28
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.32
+     Time chemistry messages:          0.03      Cumulative:         0.32
+                     Chemistry send:             0.03      Cumulative:         0.29
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     27
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    27
+     Time ..................................................   0.270000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.31
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.35
+     Time chemistry messages:          0.03      Cumulative:         0.35
+                     Chemistry send:             0.03      Cumulative:         0.32
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     28
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    28
+     Time ..................................................   0.280000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.33
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.38
+     Time chemistry messages:          0.03      Cumulative:         0.38
+                     Chemistry send:             0.03      Cumulative:         0.35
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     29
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    29
+     Time ..................................................   0.290000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.36
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.41
+     Time chemistry messages:          0.03      Cumulative:         0.41
+                     Chemistry send:             0.03      Cumulative:         0.38
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     30
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    30
+     Time ..................................................   0.300000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.39
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.44
+     Time chemistry messages:          0.03      Cumulative:         0.44
+                     Chemistry send:             0.03      Cumulative:         0.41
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     31
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    31
+     Time ..................................................   0.310000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.42
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.47
+     Time chemistry messages:          0.03      Cumulative:         0.47
+                     Chemistry send:             0.03      Cumulative:         0.44
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     32
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    32
+     Time ..................................................   0.320000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.45
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.50
+     Time chemistry messages:          0.03      Cumulative:         0.50
+                     Chemistry send:             0.03      Cumulative:         0.47
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     33
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    33
+     Time ..................................................   0.330000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.48
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.53
+     Time chemistry messages:          0.03      Cumulative:         0.53
+                     Chemistry send:             0.03      Cumulative:         0.50
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     34
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    34
+     Time ..................................................   0.340000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.51
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.56
+     Time chemistry messages:          0.03      Cumulative:         0.56
+                     Chemistry send:             0.03      Cumulative:         0.53
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     35
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    35
+     Time ..................................................   0.350000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.54
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.59
+     Time chemistry messages:          0.03      Cumulative:         0.59
+                     Chemistry send:             0.03      Cumulative:         0.56
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     36
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    36
+     Time ..................................................   0.360000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.04      Cumulative:         0.58
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.59
+     Time chemistry messages:          0.01      Cumulative:         0.60
+                     Chemistry send:             0.01      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     37
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    37
+     Time ..................................................   0.370000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.58
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.60
+     Time chemistry messages:          0.00      Cumulative:         0.60
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     38
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    38
+     Time ..................................................   0.380000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.58
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.60
+     Time chemistry messages:          0.00      Cumulative:         0.60
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     39
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    39
+     Time ..................................................   0.390000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.58
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.60
+     Time chemistry messages:          0.00      Cumulative:         0.60
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     40
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    40
+     Time ..................................................   0.400000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.59
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.60
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     41
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    41
+     Time ..................................................   0.410000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.59
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.60
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     42
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    42
+     Time ..................................................   0.420000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.59
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.60
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     43
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    43
+     Time ..................................................   0.430000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.59
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.61
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     44
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    44
+     Time ..................................................   0.440000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.59
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.61
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     45
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    45
+     Time ..................................................   0.450000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.59
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.61
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     46
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    46
+     Time ..................................................   0.460000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.60
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.61
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     47
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    47
+     Time ..................................................   0.470000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.60
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.61
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     48
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    48
+     Time ..................................................   0.480000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.60
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.61
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     49
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    49
+     Time ..................................................   0.490000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.60
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.61
+     Time chemistry messages:          0.00      Cumulative:         0.61
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     50
+     Current time step length ...................................   1.000E-02 (yr)
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:    6      2.3335801E-19
+          No. of solver iterations, Relative residual:   21      1.0531249E-20
+          No. of solver iterations, Relative residual:   21      3.6444103E-21
+          No. of solver iterations, Relative residual:   21      1.2232120E-20
+          No. of solver iterations, Relative residual:   21      1.3600462E-21
+          No. of solver iterations, Relative residual:   21      3.8048923E-20
+          No. of solver iterations, Relative residual:   21      8.9194615E-21
+     Beginning chemistry calculation.
+     End of Time Step No.    50
+     Time ..................................................   0.500000     (yr)
+     Maximum change in H2O ................  4.6798E-03 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -5.8714E-09 (mol/kgw) at location (  5.70    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  3.9788E-09 (mol/kgw) at location (  4.20    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -1.0621E-08 (mol/kgw) at location (  5.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Br ................. -2.8776E-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  2.8859E-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na .................  8.3037E-08 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.60
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.62
+     Time chemistry messages:          0.80      Cumulative:         1.41
+                     Chemistry send:             0.00      Cumulative:         0.57
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.80      Cumulative:         0.00
+Done with transient flow and transport simulation.

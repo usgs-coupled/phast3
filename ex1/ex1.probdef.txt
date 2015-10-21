@@ -130,13 +130,13 @@
 
                Initial fluid in region ...............................  1.200000E-03  (kg) ;  1.200000E-06  (m^3)
 
-               Initial solute in region:H2O                             1.200000E-03  (kg)
+               Initial solute in region:H2O                             1.196452E-03  (kg)
 
-               Initial solute in region:H                               2.421778E-13  (kg)
+               Initial solute in region:H                               2.427614E-13  (kg)
 
-               Initial solute in region:O                               1.923085E-12  (kg)
+               Initial solute in region:O                               1.938321E-12  (kg)
 
-               Initial solute in region:Charge                         -1.298552E-16  (kg)
+               Initial solute in region:Charge                         -1.455501E-15  (kg)
 
                Initial solute in region:A                               0.000000E+00  (kg)
 

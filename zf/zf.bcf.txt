@@ -54,7 +54,7 @@
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................   0.000e+00  (d)
+     Time .......................................................    0.00      (d)
 
 
                          Specified Head B.C.: Flow Rates (average over time step)
@@ -850,6 +850,6 @@
 
 
 
-                                       ***** Simulation Completed *****
+                      ***** Flow and Transport Simulation Completed *****
                Last time value calculated ......................................  40.00     (d)
                Last time step index ............................................       4

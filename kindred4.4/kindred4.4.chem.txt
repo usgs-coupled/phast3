@@ -1,20 +1,3 @@
-Output file:    kindred4.4.chem.txt
-Chemistry file: kindred4.4.chem.dat
-Database file:  phast.dat
-
-------------------
-Reading data base.
-------------------
-
-	SOLUTION_MASTER_SPECIES
-	SOLUTION_SPECIES
-	PHASES
-	EXCHANGE_MASTER_SPECIES
-	EXCHANGE_SPECIES
-	SURFACE_MASTER_SPECIES
-	SURFACE_SPECIES
-	RATES
-	END
 ------------------------------------
 Reading input data for simulation 1.
 ------------------------------------
@@ -75,13 +58,16 @@ Initial solution 1.	Initial condition
 
                                        pH  =   7.000    
                                        pe  =   8.000    
+       Specific Conductance (µS/cm, 25°C)  = 17
+                          Density (g/cm³)  =   0.99705
+                               Volume (L)  =   1.00297
                         Activity of water  =   1.000
                            Ionic strength  =   1.429e-04
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.475e-10
+                 Total alkalinity (eq/kg)  =   1.261e-09
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
-                      Temperature (deg C)  =  25.000
+                         Temperature (°C)  =  25.00
                   Electrical balance (eq)  =   3.736e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
                                Iterations  =   7
@@ -96,31 +82,34 @@ Initial solution 1.	Initial condition
 
 ----------------------------Distribution of species----------------------------
 
-                                                   Log       Log         Log 
-   Species                 Molality    Activity  Molality  Activity     Gamma
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
 
-   OH-                    1.015e-07   1.001e-07    -6.994    -7.000    -0.006
-   H+                     1.014e-07   1.000e-07    -6.994    -7.000    -0.006
-   H2O                    5.551e+01   1.000e+00     1.744    -0.000     0.000
-H(0)             1.416e-33
-   H2                     7.079e-34   7.079e-34   -33.150   -33.150     0.000
-N(5)             1.428e-04
-   NO3-                   1.428e-04   1.408e-04    -3.845    -3.851    -0.006
-Na               1.428e-04
-   Na+                    1.428e-04   1.408e-04    -3.845    -3.851    -0.006
-   NaOH                   9.305e-12   9.305e-12   -11.031   -11.031     0.000
-Ndis             7.139e-07
-   Ndis                   7.139e-07   7.140e-07    -6.146    -6.146     0.000
-O(0)             1.875e-04
-   O2                     9.375e-05   9.375e-05    -4.028    -4.028     0.000
+   OH-             1.026e-07   1.012e-07    -6.989    -6.995    -0.006     -4.13
+   H+              1.014e-07   1.000e-07    -6.994    -7.000    -0.006      0.00
+   H2O             5.551e+01   1.000e+00     1.744    -0.000     0.000     18.07
+H(0)          1.416e-33
+   H2              7.079e-34   7.079e-34   -33.150   -33.150     0.000     28.61
+N(5)          1.428e-04
+   NO3-            1.428e-04   1.408e-04    -3.845    -3.851    -0.006     29.47
+Na            1.428e-04
+   Na+             1.428e-04   1.408e-04    -3.845    -3.851    -0.006     -1.51
+   NaOH            1.425e-21   1.425e-21   -20.846   -20.846     0.000     (0)  
+Ndis          7.139e-07
+   Ndis            7.139e-07   7.140e-07    -6.146    -6.146     0.000     (0)  
+O(0)          1.875e-04
+   O2              9.375e-05   9.375e-05    -4.028    -4.028     0.000     30.40
 
 ------------------------------Saturation indices-------------------------------
 
-	Phase               SI log IAP  log KT
+  Phase               SI** log IAP   log K(298 K,   1 atm)
 
-	H2(g)           -30.00  -33.15   -3.15  H2
-	H2O(g)           -1.51   -0.00    1.51  H2O
-	O2(g)            -1.07   -4.03   -2.96  O2
+  H2(g)           -30.05    -33.15   -3.10  H2
+  H2O(g)           -1.50     -0.00    1.50  H2O
+  O2(g)            -1.14     -4.03   -2.89  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
 
 Initial solution 2.	Infilling
 
@@ -138,13 +127,16 @@ Initial solution 2.	Infilling
 
                                        pH  =   7.000    
                                        pe  =   8.000    
+       Specific Conductance (µS/cm, 25°C)  = 17
+                          Density (g/cm³)  =   0.99706
+                               Volume (L)  =   1.00297
                         Activity of water  =   1.000
                            Ionic strength  =   1.429e-04
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.302e-10
+                 Total alkalinity (eq/kg)  =   1.244e-09
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
-                      Temperature (deg C)  =  25.000
+                         Temperature (°C)  =  25.00
                   Electrical balance (eq)  =   3.736e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
                                Iterations  =   7
@@ -159,33 +151,36 @@ Initial solution 2.	Infilling
 
 ----------------------------Distribution of species----------------------------
 
-                                                   Log       Log         Log 
-   Species                 Molality    Activity  Molality  Activity     Gamma
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
 
-   OH-                    1.015e-07   1.001e-07    -6.994    -7.000    -0.006
-   H+                     1.014e-07   1.000e-07    -6.994    -7.000    -0.006
-   H2O                    5.551e+01   9.998e-01     1.744    -0.000     0.000
-H(0)             1.416e-33
-   H2                     7.079e-34   7.079e-34   -33.150   -33.150     0.000
-N(5)             1.428e-04
-   NO3-                   1.428e-04   1.408e-04    -3.845    -3.851    -0.006
-Na               1.428e-04
-   Na+                    1.428e-04   1.408e-04    -3.845    -3.851    -0.006
-   NaOH                   9.303e-12   9.303e-12   -11.031   -11.031     0.000
-Ndis             7.140e-07
-   Ndis                   7.140e-07   7.140e-07    -6.146    -6.146     0.000
-O(0)             1.875e-04
-   O2                     9.375e-05   9.375e-05    -4.028    -4.028     0.000
-Substrate        1.000e-02
-   Substrate              1.000e-02   1.000e-02    -2.000    -2.000     0.000
+   OH-             1.026e-07   1.012e-07    -6.989    -6.995    -0.006     -4.13
+   H+              1.014e-07   1.000e-07    -6.994    -7.000    -0.006      0.00
+   H2O             5.551e+01   9.998e-01     1.744    -0.000     0.000     18.07
+H(0)          1.416e-33
+   H2              7.079e-34   7.079e-34   -33.150   -33.150     0.000     28.61
+N(5)          1.428e-04
+   NO3-            1.428e-04   1.408e-04    -3.845    -3.851    -0.006     29.47
+Na            1.428e-04
+   Na+             1.428e-04   1.408e-04    -3.845    -3.851    -0.006     -1.51
+   NaOH            1.425e-21   1.425e-21   -20.846   -20.846     0.000     (0)  
+Ndis          7.140e-07
+   Ndis            7.140e-07   7.140e-07    -6.146    -6.146     0.000     (0)  
+O(0)          1.875e-04
+   O2              9.375e-05   9.375e-05    -4.028    -4.028     0.000     30.40
+Substrate     1.000e-02
+   Substrate       1.000e-02   1.000e-02    -2.000    -2.000     0.000     (0)  
 
 ------------------------------Saturation indices-------------------------------
 
-	Phase               SI log IAP  log KT
+  Phase               SI** log IAP   log K(298 K,   1 atm)
 
-	H2(g)           -30.00  -33.15   -3.15  H2
-	H2O(g)           -1.51   -0.00    1.51  H2O
-	O2(g)            -1.07   -4.03   -2.96  O2
+  H2(g)           -30.05    -33.15   -3.10  H2
+  H2O(g)           -1.50     -0.00    1.50  H2O
+  O2(g)            -1.14     -4.03   -2.89  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
 
 ------------------
 End of simulation.
@@ -216,8 +211,8 @@ Reading input data for simulation 2.
 	420 NI = TOT("N(5)")*14*1000
 	430 S1 = TOT("Substrate")*1000
 	440 N = TOT("Ndis")*14*1000
-	450 x1 = KIN("aerobic_biomass")
-	460 x2 = KIN("N_reduction_biomass")              
+	450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+	460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
 	470 Ib = 1 + (x1 + x2) / kbio
 	480 In = 1 + O / k_nc_do
 	500    REM  **  Oxygen rate ***
@@ -227,7 +222,7 @@ Reading input data for simulation 2.
 	540 rate = rateO
 	550 if rateS1 < rate then rate = rateS1
 	560 mg_O = TIME*rate
-	570 SAVE -mg_O
+	570 SAVE -mg_O * SOLN_VOL
 	        end
 	Aerobic_biomass
 	        start
@@ -249,8 +244,8 @@ Reading input data for simulation 2.
 	420 NI = TOT("N(5)")*14*1000
 	430 S1 = TOT("Substrate")*1000
 	440 N = TOT("Ndis")*14*1000
-	450 x1 = KIN("aerobic_biomass")
-	460 x2 = KIN("N_reduction_biomass")              
+	450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+	460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
 	470 Ib = 1 + (x1 + x2) / kbio
 	480 In = 1 + O / k_nc_do
 	500    REM  **  Nitrogen rate ***
@@ -263,7 +258,7 @@ Reading input data for simulation 2.
 	570 if rateS1 < rate then rate = rateS1
 	580 if rateO < rate then rate = rateO
 	590 mg_O_biomass = TIME*(rate - km * x1)
-	600 SAVE -mg_O_biomass
+	600 SAVE -mg_O_biomass * SOLN_VOL
 	        end
 	N_reduction
 	        start
@@ -285,8 +280,8 @@ Reading input data for simulation 2.
 	420 NI = TOT("N(5)")*14*1000
 	430 S1 = TOT("Substrate")*1000
 	440 N = TOT("Ndis")*14*1000
-	450 x1 = KIN("aerobic_biomass")
-	460 x2 = KIN("N_reduction_biomass")              
+	450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+	460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
 	470 Ib = 1 + (x1 + x2) / kbio
 	480 In = 1 + O / k_nc_do
 	500    REM  **  Nitrate rate ***
@@ -296,7 +291,7 @@ Reading input data for simulation 2.
 	540 rate = rateNI
 	550 if rateS1 < rate then rate = rateS1
 	560 mg_NI = TIME*rate
-	570 SAVE -mg_NI 
+	570 SAVE -mg_NI * SOLN_VOL
 	        end
 	N_reduction_biomass
 	        start
@@ -318,8 +313,8 @@ Reading input data for simulation 2.
 	420 NI = TOT("N(5)")*14*1000
 	430 S1 = TOT("Substrate")*1000
 	440 N = TOT("Ndis")*14*1000
-	450 x1 = KIN("aerobic_biomass")
-	460 x2 = KIN("N_reduction_biomass")              
+	450 x1 = KIN("aerobic_biomass") / SOLN_VOL
+	460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
 	470 Ib = 1 + (x1 + x2) / kbio
 	480 In = 1 + O / k_nc_do
 	500    REM  **  Nitrate rate ***
@@ -332,7 +327,7 @@ Reading input data for simulation 2.
 	570 if rateS1 < rate then rate = rateS1
 	580 if rateN < rate then rate = rateN
 	590 mg_N_biomass = TIME*(rate - km * x2)
-	600 SAVE -mg_N_biomass
+	600 SAVE -mg_N_biomass * SOLN_VOL
 	        end
 	KINETICS 1 Kinetics for all cells except inlet boundary
 	Aerobic
@@ -370,19 +365,7 @@ End of simulation.
 Reading input data for simulation 3.
 ------------------------------------
 
-List of Components:
-	1	H
-	2	O
-	3	N
-	4	Na
-	5	Ndis
-	6	Substrate
-	7	Charge
-List of master species:
-	1	N(-3)
-	2	N(0)
-	3	N(3)
-	4	N(5)
-	5	Na
-	6	Ndis
-	7	Substrate
+------------------------------
+End of Run after 5.05 Seconds.
+------------------------------
+

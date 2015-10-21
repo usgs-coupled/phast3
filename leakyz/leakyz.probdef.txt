@@ -73,13 +73,13 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000e-03
+                    Viscosity factor ........................................... VISFAC -1.000E-03
 
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
@@ -88,7 +88,7 @@
 
  ------------------------------------------------------------------------------------------------------------------------
 
-               Initial fluid in region ...............................  9.599994e+09  (kg) ;  9.599994e+06  (m^3)
+               Initial fluid in region ...............................  9.599994E+09  (kg) ;  9.599994E+06  (m^3)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -96,18 +96,18 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   0.000e+00  (s)
+     Time ..............................    0.00      (s)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  4.320e+04  (s)
+          Fixed time step length .......................................... DELTIM  4.320E+04  (s)
           Time at which next set of transient
-               parameters will be read .................................... TIMCHG  8.640e+04  (s)
+               parameters will be read .................................... TIMCHG  8.640E+04  (s)
 
  ------------------------------------------------------------------------------------------------------------------------
 
 
-                                       ***** Simulation Completed *****
-               Last time value calculated ...................................... 8.6400e+04 (s)
+                      ***** Flow and Transport Simulation Completed *****
+               Last time value calculated ...................................... 8.6400E+04 (s)
                Last time step index ............................................       2
