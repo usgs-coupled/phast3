@@ -240,7 +240,7 @@ SUBROUTINE phast_manager
             if (prcphrq) ixyz = 1        
             CALL FH_WriteFiles(ihdf, imedia, ixyz, &
                 iprint_xyz, print_restart%print_flag_integer)   ! Needs to be after calc_velocity                                                         ! calc_velocity needs to be called before write_hdf (FH_WriteFiles)
-            IF (prhdfii == 1) THEN
+            IF (prhdfii == 1 .and. (RM_GetSelectedOutputCount(rm_id) .gt. 0)) THEN
                 CALL write_hdf_intermediate     
             ENDIF
             CALL update_print_flags                        ! Update times for next printouts
