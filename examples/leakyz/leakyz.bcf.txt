@@ -29,7 +29,7 @@
 
                               *** Output at End of Time Step No.     1 ***
 
-     Time .......................................................   4.320e+04  (s)
+     Time .......................................................   4.320E+04  (s)
 
 
                          Specified Head B.C.: Flow Rates (average over time step)
@@ -141,7 +141,7 @@
 
                               *** Output at End of Time Step No.     2 ***
 
-     Time .......................................................   8.640e+04  (s)
+     Time .......................................................   8.640E+04  (s)
 
 
                          Specified Head B.C.: Flow Rates (average over time step)
@@ -252,6 +252,6 @@
 
 
 
-                                       ***** Simulation Completed *****
-               Last time value calculated ...................................... 8.6400e+04 (s)
+                      ***** Flow and Transport Simulation Completed *****
+               Last time value calculated ...................................... 8.6400E+04 (s)
                Last time step index ............................................       2

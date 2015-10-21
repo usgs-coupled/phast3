@@ -1,87 +1,122 @@
-Running PHASTINPUT.
+Initial PHREEQC run.
+Done with Initial PHREEQC run.
+..       3D analytic, continuous injection, 4 species chain decay
+..       Sun, Peterson, Clement (1999) J. Cont. Hyd., Example 6.3
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV   573356 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST    76076 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .  497280 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+          Direction index for d4 zig-zag renumbering ............ IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    T
+          Number of search directions before restart ............ NSDR..   20
+          Tolerance on iterative solution ....................... EPSSLV 1.0E-14
 
-Processing flow and transport data file.
+Beginning flow calculation for steady-state i.c.
+Reading transient data for simulation: Set  1
+Automatic Time Step Control Parameters for Steady Flow
+Maximum pressure change allowed per time step.................... DPTAS    3.68E+04  (Pa )
+Minimum time step required ...................................... DTIMMN   1.00E-02  (d  )
+Maximum time step allowed ....................................... DTIMMX   1.00E+04(d  )
 
-	TITLE
-	.       3D analytic, continuous injection, 4 species chain decay
-	.       Sun, Peterson, Clement (1999) J. Cont. Hyd., Example 6.3
-	.       Documentation compares PHAST with chain decay from 
-	.       Sun and others combined with Wexler (TWRI, 1992) solution 
-	.       to patch source 
-	SOLUTE_TRANSPORT                            true
-	STEADY_FLOW true
-	UNITS
-	        time                               day
-	        horizontal                         m
-	        vertical                           m
-	        head                               m
-	        hydraulic_conductivity             m/d     
-	        specific_storage                   1/m
-	        dispersivity                       m
-	GRID
-	        uniform X  0.0    100    26        
-	        uniform Y  0.0    20.5   2
-	        overlay_uniform Y                  
-	                    0.5    19.5   20        
-	        uniform Z  0.0    12.5   2
-	        overlay_uniform Z
-	                    0.5    11.5   12        
-	        print_orientation XY
-	MEDIA
-	        zone   0 0 0 100 41 25
-	                kx                         2
-	                ky                         2
-	                kz                         2
-	                porosity                   0.1
-	                storage                    0
-	                longitudinal_dispersivity  1.5
-	                horizontal_dispersivity    0.45
-	                vertical_dispersivity      0.15
-	FREE_SURFACE_BC false
-	SPECIFIED_HEAD_BC
-	        zone   0 0 0 0 41 25
-	                head                       0   1
-	                fixed_solution_composition             0   1
-	        zone   0 15 10 0 26 15
-	                fixed_solution_composition             0   2
-	        zone   100 0 0 100 41 25
-	                head                       0   0
-	                associated_solution_composition        0   1
-	HEAD_IC
-	        zone   0 0 0 100 41 25
-	                head   X 1.0 0.0 0.0 100.0
-	CHEMISTRY_IC
-	        zone   0 0 0 100 41 25
-	                solution                   1
-	SOLUTION_METHOD
-	        iterative_solver                          true
-	        tolerance                          1e-14
-	        space_differencing                              0.5
-	        time_differencing                               0.5
-	        cross_dispersion                   false
-	PRINT_FREQUENCY
-	        0
-	        end_of_period_default		    false
-	        hdf_chemistry                      40 day
-	        velocity                                40 day
-	        xyz_chemistry                      40 day
-	        xyz_head                           40 day
-	        xyz_velocity                       40 day
-		zone_flows                         40 day
-		zone_flow_heads		    1 step
-WARNING: Indentifier -zone_flow_heads is obsolete. Using -zone_flow_xyzt.
-	ZONE_FLOWS 11  X = 50 to 100
-		    zone   50 0 0 100 20.5 12.5
-		    write_heads_xyzt zf.subgrid.heads		 
-WARNING: -write_heads_xyzt identifier is obsolete.
-Using write_xyzt to give a prefix for .heads.xyzt, .soln.xyzt, and .soln.bc files.
-in ZONE_FLOW, definition 1.
-	TIME_CONTROL
-	        time_step                          0   10  day 
-	        time_end                           40 day
-	END             
-WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
-	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
+Beginning steady state time step no.      1
+     Maximum change in potentiometric head ..    9.3649E-16     (m) at location (  48.0    ,  20.5    ,  11.5    )(m)
+     Fractional flow residual ...............   -1.5207E-15
 
-PHASTINPUT done.
+Done with steady-state flow.
+Equilibration of cells for initial conditions.
+     Time at which next set of transient parameters will be read .......... TIMCHG   40.0      (d)
+Beginning transient simulation.
 
+Beginning time step no.      1
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          [A]
+     Beginning chemistry calculation.
+     End of Time Step No.     1
+     Time ..................................................    10.0000     (d)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.09      Cumulative:         0.09
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.04      Cumulative:         0.04
+     Time chemistry messages:          0.48      Cumulative:         0.48
+                     Chemistry send:             0.00      Cumulative:         0.00
+                     Chemistry receive:          0.02      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.46      Cumulative:         0.00
+
+Beginning time step no.      2
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          [A]
+     Beginning chemistry calculation.
+     End of Time Step No.     2
+     Time ..................................................    20.0000     (d)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.06      Cumulative:         0.16
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.04      Cumulative:         0.08
+     Time chemistry messages:          0.36      Cumulative:         0.84
+                     Chemistry send:             0.00      Cumulative:         0.01
+                     Chemistry receive:          0.02      Cumulative:         0.04
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.33      Cumulative:         0.00
+
+Beginning time step no.      3
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          [A]
+     Beginning chemistry calculation.
+     End of Time Step No.     3
+     Time ..................................................    30.0000     (d)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.06      Cumulative:         0.22
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.04      Cumulative:         0.12
+     Time chemistry messages:          0.38      Cumulative:         1.22
+                     Chemistry send:             0.00      Cumulative:         0.01
+                     Chemistry receive:          0.02      Cumulative:         0.06
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.36      Cumulative:         0.00
+
+Beginning time step no.      4
+     Current time step length ...................................    10.0     (d)
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          [A]
+          No. of solver iterations, Relative residual:    6      1.3572432E-15
+          No. of solver iterations, Relative residual:    6      1.8212034E-16
+          No. of solver iterations, Relative residual:    6      1.3721427E-15
+          No. of solver iterations, Relative residual:    6      1.3096349E-15
+          No. of solver iterations, Relative residual:    6      1.7143798E-16
+     Beginning chemistry calculation.
+     End of Time Step No.     4
+     Time ..................................................    40.0000     (d)
+     Maximum change in H2O ................  2.8042E-02 (mol/kgw) at location (  8.00    ,  4.50    ,  3.50    )(m)
+     Maximum change in H ..................  1.0275E-10 (mol/kgw) at location (  8.00    ,  20.5    , 0.500    )(m)
+     Maximum change in O ..................  8.6691E-05 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in Charge ............. -6.1459E-13 (mol/kgw) at location (  8.00    ,  0.00    ,  4.50    )(m)
+     Maximum change in [A] ................  1.5827E-04 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.06      Cumulative:         0.28
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.05      Cumulative:         0.17
+     Time chemistry messages:          1.99      Cumulative:         3.22
+                     Chemistry send:             0.00      Cumulative:         0.01
+                     Chemistry receive:          0.02      Cumulative:         0.08
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                1.97      Cumulative:         0.00
+Done with transient flow and transport simulation.

@@ -1,20 +1,3 @@
-Output file:    disp2d.chem.txt
-Chemistry file: disp2d.chem.dat
-Database file:  phast.dat
-
-------------------
-Reading data base.
-------------------
-
-	SOLUTION_MASTER_SPECIES
-	SOLUTION_SPECIES
-	PHASES
-	EXCHANGE_MASTER_SPECIES
-	EXCHANGE_SPECIES
-	SURFACE_MASTER_SPECIES
-	SURFACE_SPECIES
-	RATES
-	END
 ------------------------------------
 Reading input data for simulation 1.
 ------------------------------------
@@ -40,16 +23,19 @@ Initial solution 1.
 
 ----------------------------Description of solution----------------------------
 
-                                       pH  =   7.000      Charge balance
+                                       pH  =   6.997      Charge balance
                                        pe  =   4.000    
+       Specific Conductance (µS/cm, 25°C)  = 0
+                          Density (g/cm³)  =   0.99704
+                               Volume (L)  =   1.00297
                         Activity of water  =   1.000
-                           Ionic strength  =   1.001e-07
+                           Ionic strength  =   1.006e-07
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.121e-18
+                 Total alkalinity (eq/kg)  =   3.040e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
-                      Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =  -3.121e-18
+                         Temperature (°C)  =  25.00
+                  Electrical balance (eq)  =  -3.040e-17
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   2
                                   Total H  = 1.110124e+02
@@ -57,24 +43,27 @@ Initial solution 1.
 
 ----------------------------Distribution of species----------------------------
 
-                                                   Log       Log         Log 
-   Species                 Molality    Activity  Molality  Activity     Gamma
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
 
-   OH-                    1.001e-07   1.001e-07    -7.000    -7.000    -0.000
-   H+                     1.001e-07   1.001e-07    -7.000    -7.000    -0.000
-   H2O                    5.551e+01   1.000e+00     1.744    -0.000     0.000
-H(0)             1.417e-25
-   H2                     7.087e-26   7.087e-26   -25.150   -25.150     0.000
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -42.081   -42.081     0.000
+   OH-             1.006e-07   1.006e-07    -6.997    -6.997    -0.000     -4.14
+   H+              1.006e-07   1.006e-07    -6.997    -6.997    -0.000      0.00
+   H2O             5.551e+01   1.000e+00     1.744    -0.000     0.000     18.07
+H(0)          1.433e-25
+   H2              7.166e-26   7.166e-26   -25.145   -25.145     0.000     28.61
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -42.090   -42.090     0.000     30.40
 
 ------------------------------Saturation indices-------------------------------
 
-	Phase               SI log IAP  log KT
+  Phase               SI** log IAP   log K(298 K,   1 atm)
 
-	H2(g)           -22.00  -25.15   -3.15  H2
-	H2O(g)           -1.51   -0.00    1.51  H2O
-	O2(g)           -39.12  -42.08   -2.96  O2
+  H2(g)           -22.04    -25.14   -3.10  H2
+  H2O(g)           -1.50     -0.00    1.50  H2O
+  O2(g)           -39.20    -42.09   -2.89  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
 
 ------------------
 End of simulation.
@@ -106,16 +95,19 @@ Initial solution 2.
 
 ----------------------------Description of solution----------------------------
 
-                                       pH  =   6.999      Charge balance
+                                       pH  =   6.997      Charge balance
                                        pe  =   4.000    
+       Specific Conductance (µS/cm, 25°C)  = 123
+                          Density (g/cm³)  =   0.99708
+                               Volume (L)  =   1.00298
                         Activity of water  =   1.000
                            Ionic strength  =   1.000e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -7.167e-21
+                 Total alkalinity (eq/kg)  =   9.918e-20
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
-                      Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =  -2.132e-17
+                         Temperature (°C)  =  25.00
+                  Electrical balance (eq)  =  -1.847e-17
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   3
                                   Total H  = 1.110124e+02
@@ -123,30 +115,33 @@ Initial solution 2.
 
 ----------------------------Distribution of species----------------------------
 
-                                                   Log       Log         Log 
-   Species                 Molality    Activity  Molality  Activity     Gamma
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
 
-   H+                     1.036e-07   1.002e-07    -6.985    -6.999    -0.015
-   OH-                    1.036e-07   9.993e-08    -6.985    -7.000    -0.016
-   H2O                    5.551e+01   1.000e+00     1.744    -0.000     0.000
-Cl               1.000e-03
-   Cl-                    1.000e-03   9.649e-04    -3.000    -3.016    -0.016
-H(0)             1.421e-25
-   H2                     7.103e-26   7.104e-26   -25.149   -25.148     0.000
-Na               1.000e-03
-   Na+                    1.000e-03   9.652e-04    -3.000    -3.015    -0.015
-   NaOH                   6.364e-11   6.365e-11   -10.196   -10.196     0.000
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -42.083   -42.083     0.000
+   OH-             1.042e-07   1.005e-07    -6.982    -6.998    -0.016     -4.11
+   H+              1.042e-07   1.007e-07    -6.982    -6.997    -0.015      0.00
+   H2O             5.551e+01   1.000e+00     1.744    -0.000     0.000     18.07
+Cl            1.000e-03
+   Cl-             1.000e-03   9.649e-04    -3.000    -3.016    -0.016     18.07
+H(0)          1.435e-25
+   H2              7.177e-26   7.179e-26   -25.144   -25.144     0.000     28.61
+Na            1.000e-03
+   Na+             1.000e-03   9.652e-04    -3.000    -3.015    -0.015     -1.48
+   NaOH            9.699e-21   9.701e-21   -20.013   -20.013     0.000     (0)  
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -42.092   -42.092     0.000     30.40
 
 ------------------------------Saturation indices-------------------------------
 
-	Phase               SI log IAP  log KT
+  Phase               SI** log IAP   log K(298 K,   1 atm)
 
-	H2(g)           -22.00  -25.15   -3.15  H2
-	H2O(g)           -1.51   -0.00    1.51  H2O
-	Halite           -7.61   -6.03    1.58  NaCl
-	O2(g)           -39.12  -42.08   -2.96  O2
+  H2(g)           -22.04    -25.14   -3.10  H2
+  H2O(g)           -1.50     -0.00    1.50  H2O
+  Halite           -7.60     -6.03    1.57  NaCl
+  O2(g)           -39.20    -42.09   -2.89  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
 
 ------------------
 End of simulation.
@@ -171,12 +166,7 @@ End of simulation.
 Reading input data for simulation 4.
 ------------------------------------
 
-List of Components:
-	1	H
-	2	O
-	3	Cl
-	4	Na
-	5	Charge
-List of master species:
-	1	Cl
-	2	Na
+------------------------------
+End of Run after 4.62 Seconds.
+------------------------------
+

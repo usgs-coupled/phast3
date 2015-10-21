@@ -392,7 +392,7 @@
                               *** Output at End of Time Step No.   272 ***
 
      Time .......................................................    68.0      (d)
-     Maximum change in potentiometric head ...  1.9634e-12      (m )   at location (  3.50    ,  1.00    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  1.9718E-12      (m )   at location (  3.50    ,  0.00    ,  0.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -653,6 +653,6 @@
 
 
 
-                                       ***** Simulation Completed *****
+                      ***** Flow and Transport Simulation Completed *****
                Last time value calculated ......................................  68.00     (d)
                Last time step index ............................................     272

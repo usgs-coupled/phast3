@@ -6740,329 +6740,329 @@
 
                               *** Output at End of Time Step No.     2 ***
 
-     Time .......................................................   1.936e+03  (yr)
+     Time .......................................................   1.936E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.257751e+10  (kg/yr)
- Fluid outflow ..............................................  3.256942e+10  (kg/yr)
+ Fluid inflow ...............................................  3.257751E+10  (kg/yr)
+ Fluid outflow ..............................................  3.256942E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.783087e+09  (kg/yr)
- Internal face fluid outflow ................................  6.580668e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.783087E+09  (kg/yr)
+ Internal face fluid outflow ................................  6.580668E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.096921e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.579443e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.501954e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.096921E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.579443E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.501954E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
                               *** Output at End of Time Step No.    12 ***
 
-     Time .......................................................   1.941e+03  (yr)
+     Time .......................................................   1.941E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.268096e+10  (kg/yr)
- Fluid outflow ..............................................  3.267550e+10  (kg/yr)
+ Fluid inflow ...............................................  3.268095E+10  (kg/yr)
+ Fluid outflow ..............................................  3.267550E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.751387e+09  (kg/yr)
- Internal face fluid outflow ................................  6.653310e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.751384E+09  (kg/yr)
+ Internal face fluid outflow ................................  6.653308E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.097331e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.592957e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.504888e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.097331E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.592957E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.504888E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
                               *** Output at End of Time Step No.    22 ***
 
-     Time .......................................................   1.946e+03  (yr)
+     Time .......................................................   1.946E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.419673e+10  (kg/yr)
- Fluid outflow ..............................................  3.411614e+10  (kg/yr)
+ Fluid inflow ...............................................  3.419660E+10  (kg/yr)
+ Fluid outflow ..............................................  3.411605E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.320382e+09  (kg/yr)
- Internal face fluid outflow ................................  7.671621e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.320248E+09  (kg/yr)
+ Internal face fluid outflow ................................  7.671557E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.097739e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.787635e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.546713e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.097739E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.787635E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.546711E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
                               *** Output at End of Time Step No.    42 ***
 
-     Time .......................................................   1.956e+03  (yr)
+     Time .......................................................   1.956E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.294990e+10  (kg/yr)
- Fluid outflow ..............................................  3.296155e+10  (kg/yr)
+ Fluid inflow ...............................................  3.294996E+10  (kg/yr)
+ Fluid outflow ..............................................  3.296161E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.735439e+09  (kg/yr)
- Internal face fluid outflow ................................  6.846561e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.735495E+09  (kg/yr)
+ Internal face fluid outflow ................................  6.846603E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.097429e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.621447e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.514070e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.097429E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.621447E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.514072E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
                               *** Output at End of Time Step No.    72 ***
 
-     Time .......................................................   1.971e+03  (yr)
+     Time .......................................................   1.971E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.374093e+10  (kg/yr)
- Fluid outflow ..............................................  3.373821e+10  (kg/yr)
+ Fluid inflow ...............................................  3.374090E+10  (kg/yr)
+ Fluid outflow ..............................................  3.373817E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.565861e+09  (kg/yr)
- Internal face fluid outflow ................................  7.403444e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.565832E+09  (kg/yr)
+ Internal face fluid outflow ................................  7.403420E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.097653e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.717507e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.535823e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.097653E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.717507E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.535822E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
                               *** Output at End of Time Step No.    86 ***
 
-     Time .......................................................   1.978e+03  (yr)
+     Time .......................................................   1.978E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.307099e+10  (kg/yr)
- Fluid outflow ..............................................  3.308846e+10  (kg/yr)
+ Fluid inflow ...............................................  3.307106E+10  (kg/yr)
+ Fluid outflow ..............................................  3.308856E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.728685e+09  (kg/yr)
- Internal face fluid outflow ................................  6.938673e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.728762E+09  (kg/yr)
+ Internal face fluid outflow ................................  6.938732E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.097468e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.634230e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.517511e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.097468E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.634230E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.517514E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
                               *** Output at End of Time Step No.    98 ***
 
-     Time .......................................................   1.984e+03  (yr)
+     Time .......................................................   1.984E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.294052e+10  (kg/yr)
- Fluid outflow ..............................................  3.294841e+10  (kg/yr)
+ Fluid inflow ...............................................  3.294056E+10  (kg/yr)
+ Fluid outflow ..............................................  3.294846E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.729711e+09  (kg/yr)
- Internal face fluid outflow ................................  6.847225e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.729752E+09  (kg/yr)
+ Internal face fluid outflow ................................  6.847258E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.097418e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.621081e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.512701e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.097418E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.621081E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.512702E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
                               *** Output at End of Time Step No.   122 ***
 
-     Time .......................................................   1.996e+03  (yr)
+     Time .......................................................   1.996E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.281305e+10  (kg/yr)
- Fluid outflow ..............................................  3.281450e+10  (kg/yr)
+ Fluid inflow ...............................................  3.281306E+10  (kg/yr)
+ Fluid outflow ..............................................  3.281452E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.741028e+09  (kg/yr)
- Internal face fluid outflow ................................  6.746733e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.741038E+09  (kg/yr)
+ Internal face fluid outflow ................................  6.746741E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.097380e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.607202e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.509397e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.097380E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.607202E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.509397E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
                               *** Output at End of Time Step No.   126 ***
 
-     Time .......................................................   1.998e+03  (yr)
+     Time .......................................................   1.998E+03  (yr)
 
                                         *** Zonal Flow Summary, zone:   1 ***
-           1                                                                              
+                                                                                          
                          Current Time Step                         Rates
 
- Fluid inflow ...............................................  3.261162e+10  (kg/yr)
- Fluid outflow ..............................................  3.266309e+10  (kg/yr)
+ Fluid inflow ...............................................  3.261162E+10  (kg/yr)
+ Fluid outflow ..............................................  3.266311E+10  (kg/yr)
 
 
                Current Time Step Internal Faces
                                                                  Rates
 
- Internal face fluid inflow .................................  6.817188e+09  (kg/yr)
- Internal face fluid outflow ................................  6.632543e+09  (kg/yr)
+ Internal face fluid inflow .................................  6.817195E+09  (kg/yr)
+ Internal face fluid outflow ................................  6.632560E+09  (kg/yr)
 
 
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000e+00  (kg/yr)
- Specified head b.c. fluid outflow ..........................  1.097353e+10  (kg/yr)
- Flux b.c. fluid inflow .....................................  2.579443e+10  (kg/yr)
- Flux b.c. fluid outflow ....................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid inflow ..................................  0.000000e+00  (kg/yr)
- Leakage b.c. fluid outflow .................................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- River leakage b.c. fluid outflow ...........................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid inflow ............................  0.000000e+00  (kg/yr)
- Drain leakage b.c. fluid outflow ...........................  1.505702e+10  (kg/yr)
- Well fluid inflow ..........................................  0.000000e+00  (kg/yr)
- Well fluid outflow .........................................  0.000000e+00  (kg/yr)
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/yr)
+ Specified head b.c. fluid outflow ..........................  1.097353E+10  (kg/yr)
+ Flux b.c. fluid inflow .....................................  2.579443E+10  (kg/yr)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/yr)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/yr)
+ Drain leakage b.c. fluid outflow ...........................  1.505703E+10  (kg/yr)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/yr)
+ Well fluid outflow .........................................  0.000000E+00  (kg/yr)
 
 
 
-                                       ***** Simulation Completed *****
+                      ***** Flow and Transport Simulation Completed *****
                Last time value calculated ......................................  1998.     (yr)
                Last time step index ............................................     126

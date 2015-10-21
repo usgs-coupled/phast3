@@ -5,51 +5,51 @@
 
                               *** Output at End of Time Step No.     2 ***
 
-     Time .......................................................   8.640e+04  (s)
+     Time .......................................................   8.640E+04  (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  9.257600e+02  (kg/s)     3.999283e+07  (kg)
- Fluid outflow ..............................................  9.257600e+02  (kg/s)     3.999283e+07  (kg)
- Change in fluid in region ..................................  5.273907e-08  (kg/s)     2.278328e-03  (kg)
- Residual imbalance ......................................... -1.379737e-11  (kg/s)    -5.960464e-07  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fluid inflow ...............................................  9.257600E+02  (kg/s)     3.999283E+07  (kg)
+ Fluid outflow ..............................................  9.257600E+02  (kg/s)     3.999283E+07  (kg)
+ Change in fluid in region ..................................  5.273907E-08  (kg/s)     2.278328E-03  (kg)
+ Residual imbalance ......................................... -1.396984E-11  (kg/s)    -6.034970E-07  (kg)
+ Fractional imbalance .......................................                             -0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
 
- Step total specified head b.c. fluid net inflow ............ -3.999283e+07  (kg)
- Step total flux b.c. fluid net inflow ......................  0.000000e+00  (kg)
- Step total leakage b.c. fluid net inflow ...................  3.999283e+07  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
- Step total well fluid net inflow ...........................  0.000000e+00  (kg)
+ Step total specified head b.c. fluid net inflow ............ -3.999283E+07  (kg)
+ Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
+ Step total leakage b.c. fluid net inflow ...................  3.999283E+07  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
+ Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
                Cumulative Summary
                                                                  Amounts
 
- Cumulative Fluid inflow ....................................  7.998597e+07  (kg)
- Cumulative Fluid outflow ...................................  7.998541e+07  (kg)
- Cumulative Change in fluid in region .......................  5.570176e+02  (kg)
- Current Fluid in region ....................................  2.400001e+09  (kg)
- Current Fluid volume in region .............................  2.400001e+06  (m ^3)
- Residual imbalance ......................................... -3.874302e-07  (kg)
- Fractional imbalance .......................................      0.0000
+ Cumulative Fluid inflow ....................................  7.998597E+07  (kg)
+ Cumulative Fluid outflow ...................................  7.998541E+07  (kg)
+ Cumulative Change in fluid in region .......................  5.570176E+02  (kg)
+ Current Fluid in region ....................................  2.400001E+09  (kg)
+ Current Fluid volume in region .............................  2.400001E+06  (m ^3)
+ Residual imbalance ......................................... -9.983778E-07  (kg)
+ Fractional imbalance .......................................     -0.0000
 
                Cumulative Summary by Boundary Condition Type
                                                                  Amounts
 
- Cumulative specified head b.c. fluid net inflow ............ -7.998541e+07  (kg)
- Cumulative flux b.c. fluid net inflow ......................  0.000000e+00  (kg)
- Cumulative leakage b.c. fluid net inflow ...................  7.998597e+07  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000e+00  (kg)
+ Cumulative specified head b.c. fluid net inflow ............ -7.998541E+07  (kg)
+ Cumulative flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
+ Cumulative leakage b.c. fluid net inflow ...................  7.998597E+07  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
+ Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
 
-                                       ***** Simulation Completed *****
-               Last time value calculated ...................................... 8.6400e+04 (s)
+                      ***** Flow and Transport Simulation Completed *****
+               Last time value calculated ...................................... 8.6400E+04 (s)
                Last time step index ............................................       2
