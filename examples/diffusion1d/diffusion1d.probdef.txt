@@ -325,7 +325,7 @@
 
                     Automatic Time Step Control Parameters for Steady Flow
           Maximum pressure change allowed per time step.................... DPTAS     2.9      (Pa )
-          Minimum time step required ...................................... DTIMMN   1.00e-05  (s  )
+          Minimum time step required ...................................... DTIMMN   1.00E-05  (s  )
           Maximum time step allowed ....................................... DTIMMX    10.      (s  )
 
 
@@ -335,18 +335,18 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   0.000e+00  (s)
+     Time ..............................    0.00      (s)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  1.000e-02  (s)
+          Fixed time step length .......................................... DELTIM  1.000E-02  (s)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.00      (s)
 
  ------------------------------------------------------------------------------------------------------------------------
 
 
-                                       ***** Simulation Completed *****
+                      ***** Flow and Transport Simulation Completed *****
                Last time value calculated ......................................  1.000     (s)
                Last time step index ............................................     100

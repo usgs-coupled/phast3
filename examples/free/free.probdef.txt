@@ -96,41 +96,41 @@
 
                Initial fluid in region ...............................  5.000000E+01  (kg) ;  5.000000E-02  (m^3)
 
-               Initial solute in region:H2O                             4.985321E+01  (kg)
+               Initial solute in region:H2O                             4.985128E+01  (kg)
 
-               Initial solute in region:H                               5.177512E-06  (kg)
+               Initial solute in region:H                               4.597050E-06  (kg)
 
-               Initial solute in region:O                               5.288852E-01  (kg)
+               Initial solute in region:O                               5.443332E-01  (kg)
 
-               Initial solute in region:Charge                         -1.930191E-11  (kg)
+               Initial solute in region:Charge                         -6.060842E-11  (kg)
 
                Initial solute in region:A                               0.000000E+00  (kg)
 
                Initial solute in region:Al                              0.000000E+00  (kg)
 
-               Initial solute in region:Ba                              2.325490E-07  (kg)
+               Initial solute in region:Ba                              2.341756E-07  (kg)
 
                Initial solute in region:Br                              0.000000E+00  (kg)
 
-               Initial solute in region:C                               6.068185E-05  (kg)
+               Initial solute in region:C                               5.315081E-05  (kg)
 
-               Initial solute in region:Ca                              1.190155E-02  (kg)
+               Initial solute in region:Ca                              1.344905E-02  (kg)
 
-               Initial solute in region:Cl                              1.767447E-03  (kg)
+               Initial solute in region:Cl                              1.767379E-03  (kg)
 
                Initial solute in region:Fe                              0.000000E+00  (kg)
 
                Initial solute in region:K                               0.000000E+00  (kg)
 
-               Initial solute in region:Na                              3.674798E-01  (kg)
+               Initial solute in region:Na                              3.767994E-01  (kg)
 
-               Initial solute in region:Ntg                             6.510392E-04  (kg)
+               Initial solute in region:Ntg                             6.495489E-04  (kg)
 
-               Initial solute in region:S                               2.648292E-01  (kg)
+               Initial solute in region:S                               2.725860E-01  (kg)
 
                Initial solute in region:Si                              0.000000E+00  (kg)
 
-               Initial solute in region:Sr                              1.646617E-05  (kg)
+               Initial solute in region:Sr                              1.552942E-05  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------

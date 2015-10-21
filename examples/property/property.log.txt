@@ -1,195 +1,1244 @@
-Running PHASTINPUT.
+Initial PHREEQC run.
+Done with Initial PHREEQC run.
+.
+.
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    29670 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST     3838 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .   25832 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+          Direction index for d4 zig-zag renumbering ............ IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    T
+          Number of search directions before restart ............ NSDR..   20
+          Tolerance on iterative solution ....................... EPSSLV 1.0E-18
+Equilibration of cells for initial conditions.
+Beginning transient simulation.
+Reading transient data for simulation: Set  1
+     Time at which next set of transient parameters will be read .......... TIMCHG  0.100      (yr)
 
-Processing flow and transport data file.
+Beginning time step no.      1
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     1
+     Time ..................................................   5.000000E-02 (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.02      Cumulative:         0.02
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.03
+     Time chemistry messages:          0.03      Cumulative:         0.03
+                     Chemistry send:             0.03      Cumulative:         0.03
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
 
-	SOLUTE_TRANSPORT true
-		 diffusivity 0
-	STEADY_FLOW false
-		head_tolerance 1e-12
-		flow_balance_tolerance 1e-12
-		minimum_time_step 0.0001
-		maximum_time_step 10000
-		head_change_target 10
-		iterations 500
-	FREE_SURFACE_BC false
-	SOLUTION_METHOD
-		iterative_solver   true
-		tolerance          1e-018
-		save_directions    20
-		maximum_iterations 500
-		space_differencing 0
-		time_differencing  1
-		cross_dispersion   false
-		rebalance_fraction 0.5
-	UNITS
-		time                             years
-		horizontal_grid                  m
-		vertical_grid                    m
-		head                             m
-		hydraulic_conductivity           meters/year
-		specific_storage                 1/m
-		dispersivity                     m
-		flux                             meters/year
-		leaky_hydraulic_conductivity                   m/yr
-		leaky_thickness                  m
-	GRID
-		uniform X 0 10 101
-		uniform Y 0 1 2
-		uniform Z 0 1 2
-		chemistry_dimensions X
-		print_orientation XY
-	MEDIA
-		zone 0 0 0 10 1 1
-			active                   1
-			kx                       constant  1
-			ky                       points    grid
-				0	0	0	1
-			kz                       points    grid
-				0 	0	0	1
-				end_points
-			kz                       points    grid
-WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definition 1.
-				0 	0	0	1
-				end_point
-			kz                       points    grid
-WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definition 1.
-				0 	0	0	1
-				end_points
-			porosity                 X	0.1	0	0.2	10
-			specific_storage         1e-6
-			long_dispersivity        xyz grid property.mix 
-			horizontal_dispersivity  0.1
-			vertical_dispersivity    .1
-		prism 
-			perimeter points grid
-				0 0
-				10 0
-				10 1
-				0 1
-				end_points
-			active                   1
-		prism 
-			perimeter points grid
-				0 0
-				10 0
-				10 1
-				0 1
-				end_points
-			active                   1
-		prism 
-			perimeter points grid
-				0 0
-				10 0
-				10 1
-				0 1
-			active                   1
-	FLUX_BC
-		zone 0 0 0 0 1 1
-		associated_solution
-			0   sec  mixture 1 2 constant 0.5
-			0.1 yr   mixture 1 2 points map
-				0  0  0  .1
-				0  1  1  .9
-				end_points
-			0.2 yr mixture 1 2 xyz grid property.mix	
-			0.3 yr constant 1
-			0.4 yr points map
-				0  0  0   1
-				10 10 10  2
-				end_points
-			0.5 yr xyz    map  property.solns
-			0.6 yr 2
-			0.7 yr Y 1 0 2 1
-			1.0  mixture 1 2 constant 0.5
-			1.1  mixture 1 2 points grid
-				0  0  0  .1
-				10 10 10 .9
-				end_points
-			1.2  mixture 1 2 xyz grid property.mix	
-			1.3  constant 1
-			1.4  points map
-				0  0  0   1
-				10 10 10  2
-				end_points
-			1.5  xyz    grid  property.solns
-			1.6  2
-			1.7  Y 1 0 2 1
-		face X
-		flux  
-			0  1
-	LEAKY_BC		
-		zone 9 0 0 10 0 1
-		associated_solution
-		        0  mixture 1 2 xyzt grid property.mix.xyzt
-			1.5   yr  mixture 1 2 X .5 9 1 10
-		face Y
-		head  
-			0  xyzt grid property.xyzt	
-		k   1
-		thickness 1
-	SPECIFIED_HEAD_BC
-		zone 10 0 0 10 1 1
-			head
-				0	0
-			associated_solution_composition
-				0	2
-	HEAD_IC
-		zone 0 0 0 10 1 1
-			head                     X 10 0 0 10
-	CHEMISTRY_IC
-		zone 0 0 0 10 1 1
-			solution            1
-	PRINT_INITIAL
-		boundary_conditions        false
-		components                 false
-		conductances               false
-		echo_input                 true
-		fluid_properties           true
-		force_chemistry_print      false
-		hdf_chemistry              true
-		hdf_heads                  true
-		hdf_steady_flow_velocities true
-		heads                      true
-		media_properties           false
-		solution_method            true
-		steady_flow_velocities     true
-		wells                      true
-		xyz_chemistry              false
-		xyz_components             false
-		xyz_heads                  false
-		xyz_steady_flow_velocities false
-		xyz_wells                  false
-	PRINT_FREQUENCY
-		save_final_heads false
-		0
-			bc_flow_rates          0
-			components             0
-			conductances           0
-			flow_balance                end 
-			force_chemistry_print  0
-			hdf_chemistry          .2
-			hdf_heads                   end 
-			hdf_velocities              end 
-			heads                       end 
-			progress_statistics         end 
-			velocities                  end
-			wells                       end 
-			xyz_chemistry          .2
-			xyz_components         0
-			xyz_heads              0
-			xyz_velocities         0
-			xyz_wells              0
-			boundary_conditions    false
-			restart		end
-	TIME_CONTROL
-		time_step
-			0 0.05
-		time_change
-			2 yr
-WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
-	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
-WARNING: Identifiers Steady_flow_velocities, HDF_steady_flow_velocities,
-         and XYZ_steady_flow_velocities only apply for steady-flow calculations.
+Beginning time step no.      2
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   33      2.1336920E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   10      1.4676341E-19
+          No. of solver iterations, Relative residual:   21      2.7239262E-20
+          No. of solver iterations, Relative residual:   21      4.4505813E-20
+          No. of solver iterations, Relative residual:   21      1.6730179E-20
+          No. of solver iterations, Relative residual:   21      4.7330616E-20
+          No. of solver iterations, Relative residual:   21      1.1285502E-19
+          No. of solver iterations, Relative residual:   21      1.0428513E-19
+     Beginning chemistry calculation.
+     End of Time Step No.     2
+     Time ..................................................   0.100000     (yr)
+     Maximum change in potentiometric head   1.8361E-04      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H2O ................  4.4271E-02 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  2.5551E-08 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  2.7316E-08 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -5.0506E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -1.3676E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  1.3755E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na .................  7.9155E-07 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.03      Cumulative:         0.05
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.03      Cumulative:         0.06
+     Time chemistry messages:          0.82      Cumulative:         0.86
+                     Chemistry send:             0.02      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.80      Cumulative:         0.00
+Reading transient data for simulation: Set  2
+     Time at which next set of transient parameters will be read .......... TIMCHG  0.200      (yr)
 
-PHASTINPUT done.
+Beginning time step no.      3
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     3
+     Time ..................................................   0.150000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.05
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.01      Cumulative:         0.07
+     Time chemistry messages:          0.00      Cumulative:         0.86
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
 
+Beginning time step no.      4
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   32      6.7359256E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:    9      9.3607942E-19
+          No. of solver iterations, Relative residual:   21      4.3899379E-20
+          No. of solver iterations, Relative residual:   21      5.1079542E-19
+          No. of solver iterations, Relative residual:   21      9.2102247E-20
+          No. of solver iterations, Relative residual:   21      3.0233706E-19
+          No. of solver iterations, Relative residual:   21      6.9873417E-19
+          No. of solver iterations, Relative residual:   21      1.0923624E-19
+     Beginning chemistry calculation.
+     End of Time Step No.     4
+     Time ..................................................   0.200000     (yr)
+     Maximum change in potentiometric head   1.1357E-10      (m ) at location (  0.00    ,  1.00    ,  0.00    )(m)
+     Maximum change in H2O ................ -2.8555E-02 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  1.0171E-07 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in O .................. -3.9441E-08 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge .............  1.8059E-07 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br .................  4.8958E-04 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -4.8950E-04 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -5.1296E-07 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.06
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.01      Cumulative:         0.08
+     Time chemistry messages:          0.63      Cumulative:         1.49
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.63      Cumulative:         0.00
+Reading transient data for simulation: Set  3
+     Time at which next set of transient parameters will be read .......... TIMCHG  0.300      (yr)
+
+Beginning time step no.      5
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     5
+     Time ..................................................   0.250000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.06
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.08
+     Time chemistry messages:          0.00      Cumulative:         1.49
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      6
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   34      5.5647434E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:    9      9.5788036E-19
+          No. of solver iterations, Relative residual:   21      5.1138832E-20
+          No. of solver iterations, Relative residual:   21      4.0441812E-20
+          No. of solver iterations, Relative residual:   21      9.9364917E-20
+          No. of solver iterations, Relative residual:   21      8.4722406E-20
+          No. of solver iterations, Relative residual:   21      6.4529333E-20
+          No. of solver iterations, Relative residual:   21      7.6463834E-20
+     Beginning chemistry calculation.
+     End of Time Step No.     6
+     Time ..................................................   0.300000     (yr)
+     Maximum change in potentiometric head  -1.6040E-15      (m ) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in H2O ................ -3.0832E-02 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  2.9838E-08 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in O ..................  1.5993E-08 (mol/kgw) at location (  1.20    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -3.9335E-08 (mol/kgw) at location (  1.80    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -1.0656E-04 (mol/kgw) at location (  1.80    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  1.0689E-04 (mol/kgw) at location (  1.80    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -5.5381E-07 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.06
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.01      Cumulative:         0.09
+     Time chemistry messages:          0.66      Cumulative:         2.15
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.66      Cumulative:         0.00
+Reading transient data for simulation: Set  4
+     Time at which next set of transient parameters will be read .......... TIMCHG  0.400      (yr)
+
+Beginning time step no.      7
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     7
+     Time ..................................................   0.350000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.07
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.10
+     Time chemistry messages:          0.00      Cumulative:         2.15
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.00
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.      8
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   34      8.9225624E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   10      8.3290377E-19
+          No. of solver iterations, Relative residual:   21      3.5105383E-20
+          No. of solver iterations, Relative residual:   21      5.5178529E-20
+          No. of solver iterations, Relative residual:   21      2.7847722E-20
+          No. of solver iterations, Relative residual:   21      1.1373568E-19
+          No. of solver iterations, Relative residual:   21      7.4719914E-20
+          No. of solver iterations, Relative residual:   21      4.6936412E-20
+     Beginning chemistry calculation.
+     End of Time Step No.     8
+     Time ..................................................   0.400000     (yr)
+     Maximum change in potentiometric head   1.8840E-15      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H2O ................ -3.1320E-02 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  5.3655E-08 (mol/kgw) at location ( 0.300    ,  1.00    ,  1.00    )(m)
+     Maximum change in O .................. -1.3638E-08 (mol/kgw) at location ( 0.700    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge .............  7.7137E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br .................  2.0911E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -2.0909E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -5.6257E-07 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.07
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.01      Cumulative:         0.11
+     Time chemistry messages:          0.70      Cumulative:         2.85
+                     Chemistry send:             0.00      Cumulative:         0.05
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.70      Cumulative:         0.00
+Reading transient data for simulation: Set  5
+     Time at which next set of transient parameters will be read .......... TIMCHG  0.500      (yr)
+
+Beginning time step no.      9
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.     9
+     Time ..................................................   0.450000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.08
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.00      Cumulative:         0.11
+     Time chemistry messages:          0.00      Cumulative:         2.85
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     10
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   35      2.4756838E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   21      1.4675074E-19
+          No. of solver iterations, Relative residual:   21      1.0011304E-19
+          No. of solver iterations, Relative residual:   21      3.5626783E-20
+          No. of solver iterations, Relative residual:   21      1.8646007E-19
+          No. of solver iterations, Relative residual:   21      7.0487249E-20
+          No. of solver iterations, Relative residual:   21      6.9830952E-20
+          No. of solver iterations, Relative residual:   21      1.4149702E-19
+     Beginning chemistry calculation.
+     End of Time Step No.    10
+     Time ..................................................   0.500000     (yr)
+     Maximum change in potentiometric head  -1.1909E-15      (m ) at location (  1.60    ,  0.00    ,  1.00    )(m)
+     Maximum change in H2O ................ -3.1349E-02 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  2.8445E-08 (mol/kgw) at location (  1.10    ,  1.00    ,  1.00    )(m)
+     Maximum change in O .................. -6.5376E-09 (mol/kgw) at location (  1.50    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge .............  3.9829E-08 (mol/kgw) at location (  1.20    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br .................  1.0799E-04 (mol/kgw) at location (  1.20    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -1.0795E-04 (mol/kgw) at location (  1.20    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -5.6310E-07 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.08
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.01      Cumulative:         0.12
+     Time chemistry messages:          0.85      Cumulative:         3.70
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.85      Cumulative:         0.00
+Reading transient data for simulation: Set  6
+     Time at which next set of transient parameters will be read .......... TIMCHG  0.600      (yr)
+
+Beginning time step no.     11
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    11
+     Time ..................................................   0.550000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.09
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.13
+     Time chemistry messages:          0.00      Cumulative:         3.70
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     12
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   32      2.6027077E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:    9      3.2795254E-19
+          No. of solver iterations, Relative residual:   10      3.9044652E-19
+          No. of solver iterations, Relative residual:   21      7.7242908E-20
+          No. of solver iterations, Relative residual:   21      3.2357405E-20
+          No. of solver iterations, Relative residual:   21      5.3739425E-20
+          No. of solver iterations, Relative residual:   21      3.1842518E-20
+          No. of solver iterations, Relative residual:   21      4.5458772E-20
+     Beginning chemistry calculation.
+     End of Time Step No.    12
+     Time ..................................................   0.600000     (yr)
+     Maximum change in potentiometric head   3.1122E-04      (m ) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in H2O ................ -3.1512E-02 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  3.7081E-08 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  2.4554E-08 (mol/kgw) at location (  9.90    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge .............  4.6416E-08 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br .................  1.2571E-04 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -1.2627E-04 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -5.6216E-07 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.09
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.14
+     Time chemistry messages:          1.02      Cumulative:         4.72
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                1.02      Cumulative:         0.00
+Reading transient data for simulation: Set  7
+     Time at which next set of transient parameters will be read .......... TIMCHG  0.700      (yr)
+
+Beginning time step no.     13
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    13
+     Time ..................................................   0.650000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.10
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.14
+     Time chemistry messages:          0.00      Cumulative:         4.72
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     14
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   32      6.5611570E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   21      2.5637347E-19
+          No. of solver iterations, Relative residual:   21      1.0743420E-19
+          No. of solver iterations, Relative residual:   21      9.4305774E-20
+          No. of solver iterations, Relative residual:   21      9.7143844E-20
+          No. of solver iterations, Relative residual:   21      2.2395795E-20
+          No. of solver iterations, Relative residual:   21      7.8859991E-20
+          No. of solver iterations, Relative residual:   21      1.6836157E-19
+     Beginning chemistry calculation.
+     End of Time Step No.    14
+     Time ..................................................   0.700000     (yr)
+     Maximum change in potentiometric head   1.9245E-10      (m ) at location (  0.00    ,  1.00    ,  0.00    )(m)
+     Maximum change in H2O ................ -3.0812E-02 (mol/kgw) at location (  9.60    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  4.2927E-08 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  4.3639E-08 (mol/kgw) at location ( 0.200    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -9.8745E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -2.6768E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  2.6769E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -5.4841E-07 (mol/kgw) at location (  9.60    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.10
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.15
+     Time chemistry messages:          0.72      Cumulative:         5.44
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.72      Cumulative:         0.00
+Reading transient data for simulation: Set  8
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.00      (yr)
+
+Beginning time step no.     15
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    15
+     Time ..................................................   0.750000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.11
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.15
+     Time chemistry messages:          0.00      Cumulative:         5.44
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     16
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    16
+     Time ..................................................   0.800000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.11
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.16
+     Time chemistry messages:          0.00      Cumulative:         5.44
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     17
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    17
+     Time ..................................................   0.850000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.11
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.17
+     Time chemistry messages:          0.00      Cumulative:         5.44
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     18
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    18
+     Time ..................................................   0.900000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.12
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.17
+     Time chemistry messages:          0.00      Cumulative:         5.44
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     19
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    19
+     Time ..................................................   0.950000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.12
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.17
+     Time chemistry messages:          0.00      Cumulative:         5.44
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     20
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   34      6.3143182E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   21      2.7881252E-20
+          No. of solver iterations, Relative residual:   21      5.3684046E-20
+          No. of solver iterations, Relative residual:   21      6.3429297E-20
+          No. of solver iterations, Relative residual:   21      2.8209772E-20
+          No. of solver iterations, Relative residual:   21      1.8314339E-19
+          No. of solver iterations, Relative residual:   21      5.7136799E-19
+          No. of solver iterations, Relative residual:   21      1.1799144E-19
+     Beginning chemistry calculation.
+     End of Time Step No.    20
+     Time ..................................................    1.00000     (yr)
+     Maximum change in potentiometric head  -1.8744E-15      (m ) at location ( 0.900    ,  1.00    ,  1.00    )(m)
+     Maximum change in H2O ................ -2.5730E-02 (mol/kgw) at location (  9.60    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -9.3140E-08 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  8.1238E-08 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -2.5562E-07 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -6.9294E-04 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  6.9294E-04 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -4.5740E-07 (mol/kgw) at location (  9.60    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.12
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.17
+     Time chemistry messages:          0.78      Cumulative:         6.22
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.78      Cumulative:         0.00
+Reading transient data for simulation: Set  9
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.10      (yr)
+
+Beginning time step no.     21
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    21
+     Time ..................................................    1.05000     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.13
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.18
+     Time chemistry messages:          0.00      Cumulative:         6.23
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     22
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   33      2.7901361E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   10      4.5549517E-20
+          No. of solver iterations, Relative residual:   10      4.0324990E-19
+          No. of solver iterations, Relative residual:   21      6.1025338E-20
+          No. of solver iterations, Relative residual:   21      1.3191570E-19
+          No. of solver iterations, Relative residual:   21      3.7249635E-20
+          No. of solver iterations, Relative residual:   21      1.4196265E-19
+          No. of solver iterations, Relative residual:   21      1.8477906E-20
+     Beginning chemistry calculation.
+     End of Time Step No.    22
+     Time ..................................................    1.10000     (yr)
+     Maximum change in potentiometric head   1.3945E-04      (m ) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in H2O ................ -1.7997E-02 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  2.6690E-08 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  2.6724E-08 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -4.3773E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -1.1866E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  1.1866E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -3.2077E-07 (mol/kgw) at location (  9.70    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.13
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.19
+     Time chemistry messages:          0.75      Cumulative:         6.98
+                     Chemistry send:             0.00      Cumulative:         0.06
+                     Chemistry receive:          0.00      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.75      Cumulative:         0.00
+Reading transient data for simulation: Set 10
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.20      (yr)
+
+Beginning time step no.     23
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    23
+     Time ..................................................    1.15000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.02      Cumulative:         0.14
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.02      Cumulative:         0.21
+     Time chemistry messages:          0.03      Cumulative:         7.01
+                     Chemistry send:             0.03      Cumulative:         0.09
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     24
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   32      5.3857523E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   10      4.9155803E-19
+          No. of solver iterations, Relative residual:   10      6.2461443E-19
+          No. of solver iterations, Relative residual:   21      9.8670334E-20
+          No. of solver iterations, Relative residual:   21      1.1955414E-19
+          No. of solver iterations, Relative residual:   21      1.3403165E-20
+          No. of solver iterations, Relative residual:   21      3.5242724E-20
+          No. of solver iterations, Relative residual:   21      7.0826158E-20
+     Beginning chemistry calculation.
+     End of Time Step No.    24
+     Time ..................................................    1.20000     (yr)
+     Maximum change in potentiometric head   8.6196E-11      (m ) at location (  0.00    ,  1.00    ,  0.00    )(m)
+     Maximum change in H2O ................ -1.5966E-02 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  2.7979E-08 (mol/kgw) at location (  9.20    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  2.8922E-08 (mol/kgw) at location ( 0.300    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -5.6992E-08 (mol/kgw) at location ( 0.700    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -1.5450E-04 (mol/kgw) at location ( 0.700    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  1.5450E-04 (mol/kgw) at location ( 0.700    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -2.8229E-07 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.15
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.03      Cumulative:         0.23
+     Time chemistry messages:          0.76      Cumulative:         7.77
+                     Chemistry send:             0.00      Cumulative:         0.09
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.76      Cumulative:         0.00
+Reading transient data for simulation: Set 11
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.30      (yr)
+
+Beginning time step no.     25
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    25
+     Time ..................................................    1.25000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.01      Cumulative:         0.15
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.24
+     Time chemistry messages:          0.00      Cumulative:         7.77
+                     Chemistry send:             0.00      Cumulative:         0.09
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     26
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   33      7.1680684E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   21      1.2141377E-19
+          No. of solver iterations, Relative residual:   21      1.7586170E-19
+          No. of solver iterations, Relative residual:   21      1.9878617E-20
+          No. of solver iterations, Relative residual:   21      3.5407551E-19
+          No. of solver iterations, Relative residual:   21      5.8050318E-20
+          No. of solver iterations, Relative residual:   21      8.4741989E-20
+          No. of solver iterations, Relative residual:   21      4.4740396E-20
+     Beginning chemistry calculation.
+     End of Time Step No.    26
+     Time ..................................................    1.30000     (yr)
+     Maximum change in potentiometric head  -2.5353E-15      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H2O ................ -1.3163E-02 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  2.9742E-08 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in O ..................  1.4470E-08 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge .............  4.5534E-08 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br .................  1.2339E-04 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -1.2362E-04 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -2.3168E-07 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.16
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.25
+     Time chemistry messages:          0.72      Cumulative:         8.48
+                     Chemistry send:             0.00      Cumulative:         0.09
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.71      Cumulative:         0.00
+Reading transient data for simulation: Set 12
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.40      (yr)
+
+Beginning time step no.     27
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    27
+     Time ..................................................    1.35000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.01      Cumulative:         0.16
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.26
+     Time chemistry messages:          0.00      Cumulative:         8.49
+                     Chemistry send:             0.00      Cumulative:         0.10
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     28
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   35      4.2945972E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   21      8.4003604E-20
+          No. of solver iterations, Relative residual:   21      9.3184366E-20
+          No. of solver iterations, Relative residual:   21      1.3292883E-19
+          No. of solver iterations, Relative residual:   21      5.1337099E-20
+          No. of solver iterations, Relative residual:   21      9.6397288E-20
+          No. of solver iterations, Relative residual:   21      2.0861056E-19
+          No. of solver iterations, Relative residual:   21      1.0873345E-19
+     Beginning chemistry calculation.
+     End of Time Step No.    28
+     Time ..................................................    1.40000     (yr)
+     Maximum change in potentiometric head  -1.1541E-15      (m ) at location ( 0.600    ,  1.00    ,  1.00    )(m)
+     Maximum change in H2O ................ -1.0298E-02 (mol/kgw) at location (  9.40    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -6.7548E-06 (mol/kgw) at location (  9.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in O .................. -3.3877E-06 (mol/kgw) at location (  9.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge .............  7.8822E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br .................  2.1367E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -2.1367E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -1.8052E-07 (mol/kgw) at location (  9.40    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.16
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.27
+     Time chemistry messages:          0.78      Cumulative:         9.27
+                     Chemistry send:             0.00      Cumulative:         0.10
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.78      Cumulative:         0.00
+Reading transient data for simulation: Set 13
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.50      (yr)
+
+Beginning time step no.     29
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    29
+     Time ..................................................    1.45000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.01      Cumulative:         0.17
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.27
+     Time chemistry messages:          0.00      Cumulative:         9.27
+                     Chemistry send:             0.00      Cumulative:         0.10
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     30
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   34      4.8378543E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   10      8.9614957E-19
+          No. of solver iterations, Relative residual:   21      2.1884408E-20
+          No. of solver iterations, Relative residual:   21      6.7855615E-20
+          No. of solver iterations, Relative residual:   21      1.8945010E-19
+          No. of solver iterations, Relative residual:   21      3.9095465E-20
+          No. of solver iterations, Relative residual:   21      2.5746658E-20
+          No. of solver iterations, Relative residual:   21      7.6104748E-20
+     Beginning chemistry calculation.
+     End of Time Step No.    30
+     Time ..................................................    1.50000     (yr)
+     Maximum change in potentiometric head   3.6885E-15      (m ) at location (  2.40    ,  1.00    ,  0.00    )(m)
+     Maximum change in H2O ................ -7.8110E-03 (mol/kgw) at location (  9.40    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -6.8792E-07 (mol/kgw) at location (  9.10    ,  0.00    ,  1.00    )(m)
+     Maximum change in O .................. -3.4301E-07 (mol/kgw) at location (  9.10    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge .............  4.4306E-08 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br .................  1.2026E-04 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -1.2021E-04 (mol/kgw) at location (  9.30    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -1.3580E-07 (mol/kgw) at location (  9.40    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.17
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.28
+     Time chemistry messages:          0.68      Cumulative:         9.95
+                     Chemistry send:             0.00      Cumulative:         0.10
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.68      Cumulative:         0.00
+Reading transient data for simulation: Set 14
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.60      (yr)
+
+Beginning time step no.     31
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    31
+     Time ..................................................    1.55000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.03      Cumulative:         0.20
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.28
+     Time chemistry messages:          0.01      Cumulative:         9.95
+                     Chemistry send:             0.01      Cumulative:         0.10
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     32
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   35      2.9194671E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   10      1.4682274E-19
+          No. of solver iterations, Relative residual:   21      2.0287853E-19
+          No. of solver iterations, Relative residual:   21      3.1850908E-20
+          No. of solver iterations, Relative residual:   21      2.2184261E-20
+          No. of solver iterations, Relative residual:   21      5.6649750E-20
+          No. of solver iterations, Relative residual:   21      2.9874436E-20
+          No. of solver iterations, Relative residual:   21      3.3168230E-20
+     Beginning chemistry calculation.
+     End of Time Step No.    32
+     Time ..................................................    1.60000     (yr)
+     Maximum change in potentiometric head   1.5223E-15      (m ) at location ( 0.900    ,  0.00    ,  0.00    )(m)
+     Maximum change in H2O ................ -5.6483E-03 (mol/kgw) at location (  9.40    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -1.0783E-07 (mol/kgw) at location (  9.10    ,  0.00    ,  1.00    )(m)
+     Maximum change in O .................. -6.6722E-08 (mol/kgw) at location (  9.50    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge .............  3.8871E-08 (mol/kgw) at location (  10.0    ,  0.00    ,  1.00    )(m)
+     Maximum change in Br .................  1.0548E-04 (mol/kgw) at location (  10.0    ,  0.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -1.0535E-04 (mol/kgw) at location (  10.0    ,  0.00    ,  1.00    )(m)
+     Maximum change in Na ................. -9.9102E-08 (mol/kgw) at location (  9.40    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.20
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.29
+     Time chemistry messages:          0.81      Cumulative:        10.77
+                     Chemistry send:             0.00      Cumulative:         0.10
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.81      Cumulative:         0.00
+Reading transient data for simulation: Set 15
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.70      (yr)
+
+Beginning time step no.     33
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    33
+     Time ..................................................    1.65000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.04      Cumulative:         0.24
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.03      Cumulative:         0.33
+     Time chemistry messages:          0.03      Cumulative:        10.80
+                     Chemistry send:             0.03      Cumulative:         0.13
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     34
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   34      5.5986760E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:    9      5.4100868E-19
+          No. of solver iterations, Relative residual:   10      2.4165424E-19
+          No. of solver iterations, Relative residual:   21      2.2036213E-19
+          No. of solver iterations, Relative residual:   21      1.5020238E-19
+        Charge
+          Br
+          Cl
+          Na
+          No. of solver i          No. of solver iterations, Relative residual:   21      8.7806715E-20
+          No. of solver iterations, Relative residual:   21      4.0077522E-20
+     Beginning chemistry calculation.
+     End of Time Step No.    34
+     Time ..................................................    1.70000     (yr)
+     Maximum change in potentiometric head  -1.5479E-15      (m ) at location ( 0.700    ,  0.00    ,  1.00    )(m)
+     Maximum change in H2O ................  4.1406E-03 (mol/kgw) at location (  8.60    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -3.0418E-08 (mol/kgw) at location ( 0.900    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  4.3630E-08 (mol/kgw) at location ( 0.200    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -9.8662E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -2.6746E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  2.6746E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na .................  7.4639E-08 (mol/kgw) at location (  8.60    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.03      Cumulative:         0.27
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.04      Cumulative:         0.36
+     Time chemistry messages:          0.68      Cumulative:        11.47
+                     Chemistry send:             0.02      Cumulative:         0.15
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.66      Cumulative:         0.00
+Reading transient data for simulation: Set 16
+     Time at which next set of transient parameters will be read .......... TIMCHG   2.00      (yr)
+
+Beginning time step no.     35
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    35
+     Time ..................................................    1.75000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.01      Cumulative:         0.27
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.37
+     Time chemistry messages:          0.00      Cumulative:        11.48
+                     Chemistry send:             0.00      Cumulative:         0.15
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     36
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    36
+     Time ..................................................    1.80000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.27
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.01      Cumulative:         0.38
+     Time chemistry messages:          0.00      Cumulative:        11.48
+                     Chemistry send:             0.00      Cumulative:         0.15
+                     Chemistry receive:          0.00      Cumulative:         0.02
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     37
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    37
+     Time ..................................................    1.85000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.28
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.38
+     Time chemistry messages:          0.00      Cumulative:        11.48
+                     Chemistry send:             0.00      Cumulative:         0.15
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     38
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    38
+     Time ..................................................    1.90000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.28
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.38
+     Time chemistry messages:          0.00      Cumulative:        11.48
+                     Chemistry send:             0.00      Cumulative:         0.16
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     39
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+     Beginning chemistry calculation.
+     End of Time Step No.    39
+     Time ..................................................    1.95000     (yr)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.28
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.39
+     Time chemistry messages:          0.00      Cumulative:        11.48
+                     Chemistry send:             0.00      Cumulative:         0.16
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.00      Cumulative:         0.00
+
+Beginning time step no.     40
+     Current time step length ...................................   5.000E-02 (yr)
+     Beginning flow calculation.
+          No. of solver iterations, Relative residual:   35      4.0212893E-19
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Br
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   21      2.2849204E-20
+          No. of solver iterations, Relative residual:   21      8.9348114E-20
+          No. of solver iterations, Relative residual:   21      2.3831073E-19
+          No. of solver iterations, Relative residual:   21      1.7687229E-20
+          No. of solver iterations, Relative residual:   21      1.6765859E-19
+          No. of solver iterations, Relative residual:   21      7.6258887E-20
+          No. of solver iterations, Relative residual:   21      2.3293971E-19
+     Beginning chemistry calculation.
+     End of Time Step No.    40
+     Time ..................................................    2.00000     (yr)
+     Maximum change in potentiometric head   1.2457E-15      (m ) at location (  3.70    ,  1.00    ,  0.00    )(m)
+     Maximum change in H2O ................  1.7190E-03 (mol/kgw) at location (  8.70    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -9.3144E-08 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  8.1238E-08 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -2.5562E-07 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -6.9294E-04 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  6.9294E-04 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na .................  3.0751E-08 (mol/kgw) at location (  8.70    ,  1.00    ,  1.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.01
+     Time transport:                   0.00      Cumulative:         0.28
+     Time flow/trans messages:         0.00      Cumulative:         0.01
+     Time chemistry:                   0.00      Cumulative:         0.39
+     Time chemistry messages:          0.74      Cumulative:        12.22
+                     Chemistry send:             0.00      Cumulative:         0.16
+                     Chemistry receive:          0.00      Cumulative:         0.03
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.74      Cumulative:         0.00
+Done with transient flow and transport simulation.

@@ -1,136 +1,73 @@
-Running PHASTINPUT.
+Initial PHREEQC run.
+Done with Initial PHREEQC run.
+.
+.
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    95889 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST    12635 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .   83254 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+          Direction index for d4 zig-zag renumbering ............ IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    T
+          Number of search directions before restart ............ NSDR..   20
+          Tolerance on iterative solution ....................... EPSSLV 1.0E-10
 
-Processing flow and transport data file.
+Beginning flow calculation for steady-state i.c.
+Reading transient data for simulation: Set  1
+Automatic Time Step Control Parameters for Steady Flow
+Maximum pressure change allowed per time step.................... DPTAS    2.94E+03  (Pa )
+Minimum time step required ...................................... DTIMMN    10.      (s  )
+Maximum time step allowed ....................................... DTIMMX   1.00E+07(s  )
 
-	SOLUTE_TRANSPORT true
-	    diffusivity  1e-009
-	STEADY_FLOW true
-	FREE_SURFACE_BC false
-	SOLUTION_METHOD
-		iterative_solver   true
-		tolerance          1e-010
-		save_directions    20
-		maximum_iterations 500
-		space_differencing 0
-		time_differencing  1
-		cross_dispersion   false
-		rebalance_fraction 0.5
-		rebalance_by_cell  false
-	UNITS
-		time                             s
-		horizontal_grid                  m
-		vertical_grid                    m
-		head                             m
-		hydraulic_conductivity           m/s
-		specific_storage                 1/m
-		dispersivity                     m
-		flux                             m/s
-		leaky_hydraulic_conductivity     m/s
-		leaky_thickness                  m
-		well_diameter                    m
-		well_flow_rate                   m^3/s
-		river_bed_hydraulic_conductivity m/s
-		river_bed_thickness              m
-	GRID
-		uniform X 0 1 11
-		uniform Y 0 1 11
-		uniform Z 0 1 11
-		snap X 0.001
-		snap Y 0.001
-		snap Z 0.001
-		chemistry_dimensions XYZ
-		print_orientation XY
-	MEDIA
-		zone 0 0 0 1 1 1
-			active                   1
-			kx                       1
-			ky                       1
-			kz                       1
-			porosity                 0.2
-			specific_storage         0.0001
-			long_dispersivity        1
-			horizontal_dispersivity  1
-			vertical_dispersivity    1
-		zone .2 .2  0 .8  .8 .5
-			shell	 0.2 .2 .1
-			kx                       0.01
-			ky                       0.01
-			kz                       0.01
-			porosity                 0.1	
-			specific_storage                 0.0002
-			long_dispersivity        .3
-			horizontal_dispersivity  .2
-			vertical_dispersivity    .1		
-		zone 0.5 0 0 1.0 1.0 0.2
-			active                   0
-	FLUX_BC
-		zone 0 0 0 0 1 1
-			face X
-			associated_solution
-				0	1
-			flux
-				0	1e-5
-	SPECIFIED_HEAD_BC
-		zone 100 0 0 1 1 1
-			head
-				0	10
-			associated_solution_composition
-				0	1
-	HEAD_IC
-		zone 0 0 0 1 1 1
-			head                     0
-	CHEMISTRY_IC
-		zone 0 0 0 1 1 1
-			solution            1
-	PRINT_INITIAL
-		boundary_conditions        false
-		components                 false
-		conductances               false
-		echo_input                 true
-		fluid_properties           true
-		force_chemistry_print      false
-		hdf_chemistry              true
-		hdf_heads                  true
-		hdf_media                  true
-		hdf_steady_flow_velocities true
-		heads                      true
-		media_properties           true
-		solution_method            true
-		steady_flow_velocities     false
-		wells                      true
-		xyz_chemistry              false
-		xyz_components             false
-		xyz_heads                  false
-		xyz_steady_flow_velocities false
-		xyz_wells                  false
-	PRINT_FREQUENCY
-		save_final_heads false
-		0
-			bc_flow_rates          0
-			components             0
-			conductances           0
-			flow_balance                end 
-			force_chemistry_print  0
-			hdf_chemistry               end 
-			hdf_heads                   end 
-			hdf_velocities              end 
-			heads                       end 
-			progress_statistics         end 
-			velocities                  end
-			wells                       end 
-			xyz_chemistry          0
-			xyz_components         0
-			xyz_heads              0
-			xyz_velocities         0
-			xyz_wells              0
-			boundary_conditions    false
-	TIME_CONTROL
-		time_step
-			0 1e4
-		time_change
-			1e4
-WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
-	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
+Beginning steady state time step no.      1
+     Maximum change in potentiometric head ..    1.0000E+01     (m) at location (  1.00    , 0.900    ,  1.00    )(m)
+     Fractional flow residual ...............    2.0000E+00
 
-PHASTINPUT done.
+Beginning steady state time step no.      2
+     Maximum change in potentiometric head ..    1.1882E-03     (m) at location (  0.00    , 0.500    ,  0.00    )(m)
+     Fractional flow residual ...............    6.6909E-04
 
+Beginning steady state time step no.      3
+     Maximum change in potentiometric head ..    1.0576E-07     (m) at location (  0.00    , 0.500    ,  0.00    )(m)
+     Fractional flow residual ...............    2.6143E-08
+
+Done with steady-state flow.
+Equilibration of cells for initial conditions.
+     Time at which next set of transient parameters will be read .......... TIMCHG  1.000E+04  (s)
+Beginning transient simulation.
+
+Beginning time step no.      1
+     Current time step length ...................................   1.000E+04 (s)
+     Beginning solute-transport calculation.
+          H2O
+          H
+          O
+          Charge
+          Cl
+          Na
+          No. of solver iterations, Relative residual:   16      4.2155789E-11
+          No. of solver iterations, Relative residual:   16      4.2155789E-11
+          No. of solver iterations, Relative residual:   16      4.2155787E-11
+          No. of solver iterations, Relative residual:   16      4.2155789E-11
+          No. of solver iterations, Relative residual:   16      4.2165623E-11
+          No. of solver iterations, Relative residual:   16      4.2164607E-11
+     Beginning chemistry calculation.
+     End of Time Step No.     1
+     Time ..................................................    10000.0     (s)
+     Maximum change in H2O ................  1.1550E-01 (mol/kgw) at location (  0.00    , 0.200    ,  0.00    )(m)
+     Maximum change in H ..................  4.3357E-10 (mol/kgw) at location (  0.00    , 0.800    ,  0.00    )(m)
+     Maximum change in O ..................  2.1830E-10 (mol/kgw) at location (  0.00    , 0.800    ,  0.00    )(m)
+     Maximum change in Charge ............. -3.0184E-12 (mol/kgw) at location (  0.00    , 0.200    ,  0.00    )(m)
+     Maximum change in Cl .................  2.0809E-06 (mol/kgw) at location (  0.00    , 0.200    ,  0.00    )(m)
+     Maximum change in Na .................  2.0809E-06 (mol/kgw) at location (  0.00    , 0.200    ,  0.00    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.01      Cumulative:         0.01
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+     Time chemistry:                   0.02      Cumulative:         0.02
+     Time chemistry messages:          0.78      Cumulative:         0.78
+                     Chemistry send:             0.00      Cumulative:         0.00
+                     Chemistry receive:          0.01      Cumulative:         0.01
+                     Files 3:                    0.00      Cumulative:         0.00
+                     Other files:                0.77      Cumulative:         0.00
+Done with transient flow and transport simulation.

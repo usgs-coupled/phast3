@@ -25,20 +25,20 @@
           Iterative generalized conjugate gradient solver with d4 zig-zag reduction is selected
 
                          *** Problem Dimension Information ***
-          Number of nodes in x-direction .................................. NX ...     26
-          Number of nodes in y-direction .................................. NY ...     22
-          Number of nodes in z-direction .................................. NZ ...     14
-          Total number of nodes ........................................... NXYZ .   8008
+          Number of nodes in x-direction .................................. NX ...     39
+          Number of nodes in y-direction .................................. NY ...     27
+          Number of nodes in z-direction .................................. NZ ...     19
+          Total number of nodes ........................................... NXYZ .  20007
 
-          Number of porous media zones .................................... NPMZ .   6825
-          Number of specified pressure or mass fraction b.c. .............. NSBC .    616
+          Number of porous media zones .................................... NPMZ .  17784
+          Number of specified pressure or mass fraction b.c. .............. NSBC .   1026
           Number of specified flux b.c. cells ............................. NFBC .      0
           Number of leakage cells ......................................... NLBC .      0
           Number of river leakage cells ................................... NRBC .      0
           Number of drain leakage cells ................................... NDBC .      0
           Number of wells ................................................. NWEL .      0
 
-          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV   573356 elements
+          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV  1431223 elements
  ------------------------------------------------------------------------------------------------------------------------
 
 
@@ -57,8 +57,13 @@
 
 
 
-          21          22          23          24          25          26
-          80.00       84.00       88.00       92.00       96.00      100.00
+          21          22          23          24          25          26          27          28          29          30
+          80.00       84.00       88.00       92.00       96.00      100.00      104.00      108.00      112.00      116.00
+
+
+
+          31          32          33          34          35          36          37          38          39
+         120.00      124.00      128.00      132.00      136.00      140.00      144.00      148.00      150.00
 
 
 
@@ -66,17 +71,17 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-           0.00        0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
+          -5.00       -4.50       -3.50       -2.50       -1.50       -0.50        0.50        1.50        2.50        3.50
 
 
 
           11          12          13          14          15          16          17          18          19          20
-           9.50       10.50       11.50       12.50       13.50       14.50       15.50       16.50       17.50       18.50
+           4.50        5.50        6.50        7.50        8.50        9.50       10.50       11.50       12.50       13.50
 
 
 
-          21          22
-          19.50       20.50
+          21          22          23          24          25          26          27
+          14.50       15.50       16.50       17.50       18.50       19.50       20.50
 
 
 
@@ -84,12 +89,12 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-           0.00        0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
+          -5.00       -4.50       -3.50       -2.50       -1.50       -0.50        0.50        1.50        2.50        3.50
 
 
 
-          11          12          13          14
-           9.50       10.50       11.50       12.50
+          11          12          13          14          15          16          17          18          19
+           4.50        5.50        6.50        7.50        8.50        9.50       10.50       11.50       12.50
 
 
 
@@ -122,15 +127,15 @@
 
  ------------------------------------------------------------------------------------------------------------------------
 
-               Initial fluid in region ...............................  2.562500E+06  (kg) ;  2.562500E+03  (m^3)
+               Initial fluid in region ...............................  6.693750E+06  (kg) ;  6.693750E+03  (m^3)
 
-               Initial solute in region:H2O                             2.554923E+06  (kg)
+               Initial solute in region:H2O                             6.673957E+06  (kg)
 
-               Initial solute in region:H                               5.155422E-04  (kg)
+               Initial solute in region:H                               1.354153E-03  (kg)
 
-               Initial solute in region:O                               4.093907E-03  (kg)
+               Initial solute in region:O                               1.081312E-02  (kg)
 
-               Initial solute in region:Charge                         -2.764750E-07  (kg)
+               Initial solute in region:Charge                         -8.118967E-06  (kg)
 
                Initial solute in region:[A]                             0.000000E+00  (kg)
 
@@ -151,7 +156,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM   10.0      (d)
+          Fixed time step length .......................................... DELTIM   1.00      (d)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   400.      (d)
 
@@ -160,4 +165,4 @@
 
                       ***** Flow and Transport Simulation Completed *****
                Last time value calculated ......................................  400.0     (d)
-               Last time step index ............................................      40
+               Last time step index ............................................     400

@@ -4465,7 +4465,7 @@ C.2.22.1 .. FDSMTH,FDTMTH
 C.2.22.2 .. CROSD [T/F]
      F
 C.2.22.3 .. rebalance fraction for parallel processing, rebalance_by_cell 0/1
-     0.5 1
+     0 1
 C.2.22.4 .. TOLDEN{.001},MAXITN{5}
      .001  100
 C.....     restarted conjugate gradient solver
