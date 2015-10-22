@@ -6,7 +6,10 @@ PHAST, Version @VERSION@ (@VER_DATE@)
 svn 10417
 ---------
 Corner case for HDF file with no SELECTED_OUTPUT definition did not 
-handle intermediate HDF file correctly.
+handle intermediate HDF file correctly. 
+
+Installer for P4W revised to install even if MPI installation fails. In this case, the MPI version 
+of PHAST will not run, but the OpenMP version will still work.
 
 ---------
 svn 10400
