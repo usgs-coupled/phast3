@@ -28,7 +28,7 @@
 #   To build a Windows package pass -win.
 
 # echo everything
-# set -x
+set -x
 
 # A quick and dirty usage message
 USAGE="USAGE: ./dist.sh -v VERSION -vp PHREEQC_VER -r REVISION -d RELEASE_DATE \
@@ -142,7 +142,8 @@ fi
 
 DISTNAME="phast-${VERSION}${VER_NUMTAG}"
 DIST_SANDBOX=.dist_sandbox
-DISTPATH="$DIST_SANDBOX/$DISTNAME"
+#DISTPATH="$DIST_SANDBOX/$DISTNAME"
+DISTPATH="."
 
 echo "Distribution will be named: $DISTNAME"
 echo " release branch's revision: $REVISION"
@@ -150,92 +151,92 @@ echo "     executable's revision: $REVISION_SVN"
 echo "     constructed from path: /$REPOS_PATH"
 echo "              release date: $RELEASE_DATE"
 
-rm -rf "$DIST_SANDBOX"
-mkdir "$DIST_SANDBOX"
-echo "Removed and recreated $DIST_SANDBOX"
-
-echo "Exporting revision $REVISION of PHAST into sandbox..."
-(cd "$DIST_SANDBOX" && \
-        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phast3/$REPOS_PATH" \
-             "$DISTNAME")
-if [ $? != 0 ] ; then
-  exit $?;
-fi
-
-echo "Exporting revision $REVISION of external phreeqc3/common into sandbox..."
-(cd "$DIST_SANDBOX" && \
-        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/src/common" \
-             "$DISTNAME/src/phastinput/common")
-if [ $? != 0 ] ; then
-  exit $?;
-fi
-
-echo "Exporting revision $REVISION of external database into sandbox..."
-(cd "$DIST_SANDBOX" && \
-        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/database" \
-             "$DISTNAME/database")
-if [ $? != 0 ] ; then
-  exit $?;
-fi
-
-echo "Exporting revision $REVISION of external doc/phreeqc3-doc into sandbox..."
-(cd "$DIST_SANDBOX" && \
-        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/doc" \
-             "$DISTNAME/doc/phreeqc3-doc")
-if [ $? != 0 ] ; then
-  exit $?;
-fi
-
-echo "Exporting revision $REVISION of external src/phast/KDtree into sandbox..."
-(cd "$DIST_SANDBOX" && \
-        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phast3/trunk/src/phastinput/KDtree" \
-             "$DISTNAME/src/phast/KDtree")
-if [ $? != 0 ] ; then
-  exit $?;
-fi
-
-echo "Exporting revision $REVISION of external src/phast/PhreeqcRM into sandbox..."
-(cd "$DIST_SANDBOX" && \
-        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/PhreeqcRM/trunk" \
-             "$DISTNAME/src/phast/PhreeqcRM")
-if [ $? != 0 ] ; then
-  exit $?;
-fi
-
-echo "Exporting revision $REVISION of external src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc into sandbox..."
-(cd "$DIST_SANDBOX" && \
-        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/IPhreeqc/trunk/src" \
-             "$DISTNAME/src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc")
-if [ $? != 0 ] ; then
-  exit $?;
-fi
-
-echo "Exporting revision $REVISION of external src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp into sandbox..."
-(cd "$DIST_SANDBOX" && \
-        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/src" \
-             "$DISTNAME/src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp")
-if [ $? != 0 ] ; then
-  exit $?;
-fi
-
-if [ -n "$WIN" ]; then
-  echo "Exporting revision $REVISION of ModelViewer into sandbox..."
-  (cd "$DIST_SANDBOX" && \
-          ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-                "http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk" \
-                "$DISTNAME/ModelViewer")
-  if [ $? != 0 ] ; then
-    exit $?;
-  fi
-fi  
+##rm -rf "$DIST_SANDBOX"
+##mkdir "$DIST_SANDBOX"
+##echo "Removed and recreated $DIST_SANDBOX"
+##
+##echo "Exporting revision $REVISION of PHAST into sandbox..."
+##(cd "$DIST_SANDBOX" && \
+##        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##             "http://internalbrr.cr.usgs.gov/svn_GW/phast3/$REPOS_PATH" \
+##             "$DISTNAME")
+##if [ $? != 0 ] ; then
+##  exit $?;
+##fi
+##
+##echo "Exporting revision $REVISION of external phreeqc3/common into sandbox..."
+##(cd "$DIST_SANDBOX" && \
+##        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/src/common" \
+##             "$DISTNAME/src/phastinput/common")
+##if [ $? != 0 ] ; then
+##  exit $?;
+##fi
+##
+##echo "Exporting revision $REVISION of external database into sandbox..."
+##(cd "$DIST_SANDBOX" && \
+##        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/database" \
+##             "$DISTNAME/database")
+##if [ $? != 0 ] ; then
+##  exit $?;
+##fi
+##
+##echo "Exporting revision $REVISION of external doc/phreeqc3-doc into sandbox..."
+##(cd "$DIST_SANDBOX" && \
+##        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/doc" \
+##             "$DISTNAME/doc/phreeqc3-doc")
+##if [ $? != 0 ] ; then
+##  exit $?;
+##fi
+##
+##echo "Exporting revision $REVISION of external src/phast/KDtree into sandbox..."
+##(cd "$DIST_SANDBOX" && \
+##        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##             "http://internalbrr.cr.usgs.gov/svn_GW/phast3/trunk/src/phastinput/KDtree" \
+##             "$DISTNAME/src/phast/KDtree")
+##if [ $? != 0 ] ; then
+##  exit $?;
+##fi
+##
+##echo "Exporting revision $REVISION of external src/phast/PhreeqcRM into sandbox..."
+##(cd "$DIST_SANDBOX" && \
+##        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##             "http://internalbrr.cr.usgs.gov/svn_GW/PhreeqcRM/trunk" \
+##             "$DISTNAME/src/phast/PhreeqcRM")
+##if [ $? != 0 ] ; then
+##  exit $?;
+##fi
+##
+##echo "Exporting revision $REVISION of external src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc into sandbox..."
+##(cd "$DIST_SANDBOX" && \
+##        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##             "http://internalbrr.cr.usgs.gov/svn_GW/IPhreeqc/trunk/src" \
+##             "$DISTNAME/src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc")
+##if [ $? != 0 ] ; then
+##  exit $?;
+##fi
+##
+##echo "Exporting revision $REVISION of external src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp into sandbox..."
+##(cd "$DIST_SANDBOX" && \
+##        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc3/trunk/src" \
+##             "$DISTNAME/src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp")
+##if [ $? != 0 ] ; then
+##  exit $?;
+##fi
+##
+##if [ -n "$WIN" ]; then
+##  echo "Exporting revision $REVISION of ModelViewer into sandbox..."
+##  (cd "$DIST_SANDBOX" && \
+##          ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+##                "http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk" \
+##                "$DISTNAME/ModelViewer")
+##  if [ $? != 0 ] ; then
+##    exit $?;
+##  fi
+##fi  
 
 echo "Making examples clean"
 (cd "$DISTPATH/examples" && [ -f Makefile ] && make TOPDIR=.. clean > /dev/null)
@@ -362,56 +363,47 @@ SED_FILES="$DISTPATH/CMakeLists.txt \
            $DISTPATH/RELEASE"
 for vsn_file in $SED_FILES
 do
-  sed \
-   -e "/#define *PHAST_VER_MAJOR/s/[0-9]\+/$ver_major/" \
-   -e "/#define *PHAST_VER_MINOR/s/[0-9]\+/$ver_minor/" \
-   -e "/#define *PHAST_VER_PATCH/s/[0-9]\+/$ver_patch/" \
-   -e "/#define *PHAST_VER_TAG/s/\".*\"/\" ($VER_TAG)\"/" \
-   -e "/#define *PHAST_VER_NUMTAG/s/\".*\"/\"$VER_NUMTAG\"/" \
-   -e "/#define *PHAST_VER_REVISION/s/[0-9]\+/$REVISION_SVN/" \
-   -e "s/@VERSION@/${VERSION}/g" \
-   -e "s/@REVISION@/${REVISION}/g" \
-   -e "s/@VER_DATE@/${RELEASE_DATE}/g" \
-   -e "s/@RELEASE_DATE@/${RELEASE_DATE}/g" \
-   -e "s/@VERSION_LONG@/$VERSION_LONG/g" \
-   -e "s/@VER_UC@/${VER_UC}/g" \
-   -e "s/@PHREEQC_VER@/${PHREEQC_VER}/g" \
-   -e "s/@PHREEQC_DATE@/${RELEASE_DATE}/g" \
-   -e "s/@MSI_VERSION@/${MSI_VERSION}/g" \
-   -e "/set(PHAST_VERSION_MAJOR/s/[0-9]\+/$ver_major/" \
-   -e "/set(PHAST_VERSION_MINOR/s/[0-9]\+/$ver_minor/" \
-   -e "/set(PHAST_VERSION_PATCH/s/[0-9]\+/$ver_patch/" \
-   -e "/set(PHAST_REVISION/s/[0-9]\+/$REVISION_SVN/" \
-    < "$vsn_file" > "$vsn_file.tmp"
-  mv -f "$vsn_file.tmp" "$vsn_file"
-  if [ -n "$WIN" ]; then
-    unix2dos "$vsn_file"
+  if [ -e "$vsn_file" ]; then
+    sed \
+     -e "/#define *PHAST_VER_MAJOR/s/[0-9]\+/$ver_major/" \
+     -e "/#define *PHAST_VER_MINOR/s/[0-9]\+/$ver_minor/" \
+     -e "/#define *PHAST_VER_PATCH/s/[0-9]\+/$ver_patch/" \
+     -e "/#define *PHAST_VER_TAG/s/\".*\"/\" ($VER_TAG)\"/" \
+     -e "/#define *PHAST_VER_NUMTAG/s/\".*\"/\"$VER_NUMTAG\"/" \
+     -e "/#define *PHAST_VER_REVISION/s/[0-9]\+/$REVISION_SVN/" \
+     -e "s/@VERSION@/${VERSION}/g" \
+     -e "s/@REVISION@/${REVISION}/g" \
+     -e "s/@VER_DATE@/${RELEASE_DATE}/g" \
+     -e "s/@RELEASE_DATE@/${RELEASE_DATE}/g" \
+     -e "s/@VERSION_LONG@/$VERSION_LONG/g" \
+     -e "s/@VER_UC@/${VER_UC}/g" \
+     -e "s/@PHREEQC_VER@/${PHREEQC_VER}/g" \
+     -e "s/@PHREEQC_DATE@/${RELEASE_DATE}/g" \
+     -e "s/@MSI_VERSION@/${MSI_VERSION}/g" \
+     -e "/set(PHAST_VERSION_MAJOR/s/[0-9]\+/$ver_major/" \
+     -e "/set(PHAST_VERSION_MINOR/s/[0-9]\+/$ver_minor/" \
+     -e "/set(PHAST_VERSION_PATCH/s/[0-9]\+/$ver_patch/" \
+     -e "/set(PHAST_REVISION/s/[0-9]\+/$REVISION_SVN/" \
+      < "$vsn_file" > "$vsn_file.tmp"
+    mv -f "$vsn_file.tmp" "$vsn_file"
+    if [ -n "$WIN" ]; then
+      unix2dos "$vsn_file"
+    fi
+    cp "$vsn_file" "$vsn_file.dist"
   fi
-  cp "$vsn_file" "$vsn_file.dist"
 done
 
-#echo "Copying src/phast/phreeqcpp/phreeqc/revisions to src/phast/phreeqc.revisions and doc/phreeqc.revisions"
-#cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
-#cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/doc/phreeqc.revisions"
+echo "REVISION_SVN=$REVISION_SVN"
+echo "VERSION_LONG=$VERSION_LONG"
+echo "VER_NUMTAG=$VER_NUMTAG"
+echo "VER_TAG=$VER_TAG"
+echo "ver_major=$ver_major"
+echo "ver_minor=$ver_minor"
+echo "ver_patch=$ver_patch"
+echo "MSI_VERSION=${MSI_VERSION}"
+echo "PHREEQC_VER=${PHREEQC_VER}"
+echo "RELEASE_DATE=${RELEASE_DATE}"
+echo "REVISION=${REVISION}"
+echo "VERSION=${VERSION}"
+echo "VER_UC=${VER_UC}"
 
-echo "Rolling $DISTNAME.tar ..."
-(cd "$DIST_SANDBOX" > /dev/null && tar c "$DISTNAME") > \
-"$DISTNAME.tar"
-
-echo "Compressing to $DISTNAME.tar.gz ..."
-gzip -9f "$DISTNAME.tar"
-echo "Removing sandbox..."
-rm -rf "$DIST_SANDBOX"
-
-echo ""
-echo "Done:"
-ls -l "$DISTNAME.tar.gz"
-echo ""
-echo "md5sums:"
-md5sum "$DISTNAME.tar.gz"
-type sha1sum > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-  echo ""
-  echo "sha1sums:"
-  sha1sum "$DISTNAME.tar.gz"
-fi
