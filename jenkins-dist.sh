@@ -26,6 +26,7 @@
 #   specified, it will build a release tarball.
 #  
 #   To build a Windows package pass -win.
+NAME=phast
 
 # echo everything
 set -x
@@ -353,7 +354,8 @@ fi
 
 VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 
-SED_FILES="$DISTPATH/CMakeLists.txt \
+SED_FILES="$DISTPATH/configure.ac \
+           $DISTPATH/CMakeLists.txt \
            $DISTPATH/doc/phreeqc3-doc/RELEASE.TXT \
            $DISTPATH/src/phast/phast_version.h \
            $DISTPATH/src/phast/PhastFortran/phast_spmd.F90 \
@@ -365,6 +367,7 @@ for vsn_file in $SED_FILES
 do
   if [ -e "$vsn_file" ]; then
     sed \
+     -e "s/AC_INIT(.*)/AC_INIT([$NAME$REPOS_TAG], [$VERSION-$REVISION], [dlpark@usgs.gov])/g" \
      -e "/#define *PHAST_VER_MAJOR/s/[0-9]\+/$ver_major/" \
      -e "/#define *PHAST_VER_MINOR/s/[0-9]\+/$ver_minor/" \
      -e "/#define *PHAST_VER_PATCH/s/[0-9]\+/$ver_patch/" \
