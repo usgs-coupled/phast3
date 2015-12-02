@@ -1,9 +1,9 @@
 #define PHAST_VER_MAJOR      2
 #define PHAST_VER_MINOR      2
-#define PHAST_VER_PATCH      1  
+#define PHAST_VER_PATCH      1
 #define PHAST_VER_REVISION   6485
 
-#define RELEASE_DATE           "April 17, 2012"
+#define RELEASE_DATE           "@RELEASE_DATE@"
 
 #define APR_STRINGIFY(n) APR_STRINGIFY_HELPER(n)
 #define APR_STRINGIFY_HELPER(n) #n
