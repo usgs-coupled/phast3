@@ -115,3 +115,18 @@ Remove-Item -Recurse "src/phastinput/test"
 Write-Output "Renaming phreeqc.dat to phast.dat"
 Move-Item "database/phreeqc.dat" "database/phast.dat"
 
+# build
+Write-Output "Building with VS2005"
+$Env:FULLPKG=$Env:NAME-$Env:VER-$Env:REL
+$Env:MSI_SLN=".\msi\msi.sln"
+$Env:BOOT_SLN=".\Bootstrapper\PhastBootstrapper.sln"
+$MsBuild = "c:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\MsBuild.exe"
+
+# build msi
+$msi_opts="$Env:MSI_SLN" /t:msi /p:Configuration=Release /p:Platform=x64 /p:TargetName=$Env:FULLPKG-x64 /p:Major=$Env:ver_major /p:Minor=$Env:ver_minor /p:Patch=$Env:ver_patch /p:Build=$Env:REL /verbosity:detailed"
+Invoke-Expression "$MsBuild $msi_opts"
+
+# build bootstrap
+$boot_opts="$Env:BOOT_SLN" /t:PhastBootstrapper /p:Configuration=Release /p:Platform=x64 /p:TargetName=$Env:FULLPKG-x64 /p:Major=$Env:ver_major /p:Minor=$Env:ver_minor /p:Patch=$Env:ver_patch /p:Build=$Env:REL /verbosity:detailed"
+Invoke-Expression "$MsBuild $boot_opts"
+
