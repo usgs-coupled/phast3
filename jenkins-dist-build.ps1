@@ -123,10 +123,10 @@ $Env:BOOT_SLN=".\Bootstrapper\PhastBootstrapper.sln"
 $MsBuild = "c:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\MsBuild.exe"
 
 # build msi
-$msi_opts="$Env:MSI_SLN" /t:msi /p:Configuration=Release /p:Platform=x64 /p:TargetName=$Env:FULLPKG-x64 /p:Major=$Env:ver_major /p:Minor=$Env:ver_minor /p:Patch=$Env:ver_patch /p:Build=$Env:REL /verbosity:detailed"
+$msi_opts="$Env:MSI_SLN /t:msi /p:Configuration=Release /p:Platform=x64 /p:TargetName=$Env:FULLPKG-x64 /p:Major=$Env:ver_major /p:Minor=$Env:ver_minor /p:Patch=$Env:ver_patch /p:Build=$Env:REL /verbosity:detailed"
 Invoke-Expression "$MsBuild $msi_opts"
 
 # build bootstrap
-$boot_opts="$Env:BOOT_SLN" /t:PhastBootstrapper /p:Configuration=Release /p:Platform=x64 /p:TargetName=$Env:FULLPKG-x64 /p:Major=$Env:ver_major /p:Minor=$Env:ver_minor /p:Patch=$Env:ver_patch /p:Build=$Env:REL /verbosity:detailed"
+$boot_opts="$Env:BOOT_SLN /t:PhastBootstrapper /p:Configuration=Release /p:Platform=x64 /p:TargetName=$Env:FULLPKG-x64 /p:Major=$Env:ver_major /p:Minor=$Env:ver_minor /p:Patch=$Env:ver_patch /p:Build=$Env:REL /verbosity:detailed"
 Invoke-Expression "$MsBuild $boot_opts"
 
