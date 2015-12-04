@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<?define CMakeBinaryDir="C:\cygwin\home\charlton\programs\phreeqc"?>
+<?define CMakeBinaryDir=".."?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
