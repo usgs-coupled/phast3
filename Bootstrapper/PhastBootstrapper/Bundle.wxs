@@ -38,7 +38,7 @@
         PerMachine="yes"
         Permanent="yes"
         Vital="yes"
-        SourceFile="C:\Documents and Settings\All Users\Documents\Downloads\modview1_6.exe"
+        SourceFile="C:\Users\Public\Downloads\modview1_6.exe"
         DetectCondition="(ModViewDisplayName = &quot;Model Viewer 1.6&quot;)"
         />
 
@@ -64,7 +64,7 @@
         PerMachine="yes"
         Permanent="yes"
         Vital="yes"
-        SourceFile="C:\Documents and Settings\All Users\Documents\Downloads\MSMpiSetup.exe"
+        SourceFile="C:\Users\Public\Downloads\MSMpiSetup.exe"
         DetectCondition="(MSMPI64Version = &quot;6.0.12436.10&quot;)"
         />
     </Chain>
