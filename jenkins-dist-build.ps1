@@ -207,3 +207,11 @@ Invoke-Expression "$MsBuild $msi_opts"
 # build bootstrap
 $boot_opts="$Env:BOOT_SLN /t:PhastBootstrapper /p:Configuration=Release /p:Platform=x64 /p:TargetName=$Env:FULLPKG-x64 /p:Major=$Env:ver_major /p:Minor=$Env:ver_minor /p:Patch=$Env:ver_patch /p:Build=$Env:REL /verbosity:detailed"
 Invoke-Expression "$MsBuild $boot_opts"
+
+# set wphast parameters
+Remove-Item ".\wphast.properties"
+Write-Output "NAME=p4w"         >> ".\wphast.properties"
+Write-Output "DATE=${Env:DATE}" >> ".\wphast.properties"
+Write-Output "REL=${Env:REL}"   >> ".\wphast.properties"
+Write-Output "VER=${Env:VER}"   >> ".\wphast.properties"
+Write-Output "TAG=trunk"        >> ".\wphast.properties"
