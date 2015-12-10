@@ -210,8 +210,8 @@ Invoke-Expression "$MsBuild $boot_opts"
 
 # set wphast parameters
 Remove-Item ".\wphast.properties"
-Write-Output "NAME=p4w"         >> ".\wphast.properties"
-Write-Output "DATE=${Env:DATE}" >> ".\wphast.properties"
-Write-Output "REL=${Env:REL}"   >> ".\wphast.properties"
-Write-Output "VER=${Env:VER}"   >> ".\wphast.properties"
-Write-Output "TAG=trunk"        >> ".\wphast.properties"
+"NAME=p4w"         | Out-File -FilePath ".\wphast.properties" -Encoding ascii
+"DATE=${Env:DATE}" | Out-File -FilePath ".\wphast.properties" -Encoding ascii -Append
+"REL=${Env:REL}"   | Out-File -FilePath ".\wphast.properties" -Encoding ascii -Append
+"VER=${Env:VER}"   | Out-File -FilePath ".\wphast.properties" -Encoding ascii -Append
+"TAG=trunk"        | Out-File -FilePath ".\wphast.properties" -Encoding ascii -Append
