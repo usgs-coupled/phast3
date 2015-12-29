@@ -200,6 +200,8 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dw.cpp\
@@ -264,6 +266,8 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Serializer.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Serializer.h\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/sit.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h\
