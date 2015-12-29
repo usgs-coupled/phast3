@@ -1,3 +1,6 @@
+# use gnuwin32 wget NOT alias (wget -> Invoke-WebRequest)
+Remove-Item -Path Alias:\wget
+
 # set date
 if ([string]::IsNullOrEmpty($Env:DATE)) {
   $Env:DATE = date +%x
