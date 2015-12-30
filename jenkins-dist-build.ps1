@@ -1,6 +1,8 @@
 # use gnuwin32 wget NOT alias (wget -> Invoke-WebRequest)
-If (Test-Path Alias:wget) {Remove-Item Alias:wget}  # script scope
-If (Test-Path Alias:wget) {Remove-Item Alias:wget}  # global scope
+While (Test-Path Alias:wget) {
+  Write-Output "remove"
+  Remove-Item Alias:wget # script scope
+}
 Get-Command wget
 exit
 
