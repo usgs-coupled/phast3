@@ -1,6 +1,6 @@
 # use gnuwin32 wget NOT alias (wget -> Invoke-WebRequest)
-Remove-Item -Path Alias:wget
-Get-Command wget
+If (Test-Path Alias:wget) {Remove-Item Alias:wget}  # script scope
+If (Test-Path Alias:wget) {Remove-Item Alias:wget}  # global scope
 
 # set date
 if ([string]::IsNullOrEmpty($Env:DATE)) {
