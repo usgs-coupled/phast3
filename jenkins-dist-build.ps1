@@ -1,10 +1,7 @@
 # use gnuwin32 wget NOT alias (wget -> Invoke-WebRequest)
 While (Test-Path Alias:wget) {
-  Write-Output "remove"
-  Remove-Item Alias:wget # script scope
+  Remove-Item Alias:wget
 }
-Get-Command wget
-exit
 
 # set date
 if ([string]::IsNullOrEmpty($Env:DATE)) {
