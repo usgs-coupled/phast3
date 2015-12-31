@@ -1,5 +1,11 @@
 gzstream.o: ../gzstream.cxx
 FileHandler.o: ../FileHandler.cpp ../PhreeqcRM/src/PhreeqcRM.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../PhreeqcRM/src/IrmResult.h ../FileHandler.h \
  ../PhreeqcRM/src/RM_interface_C.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.h \
@@ -7,11 +13,6 @@ FileHandler.o: ../FileHandler.cpp ../PhreeqcRM/src/PhreeqcRM.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
@@ -47,13 +48,24 @@ hdf.o: ../hdf.cpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../hdf.h
 phast_main.o: ../phast_main.cpp ../hdf.h ../PhreeqcRM/src/PhreeqcRM.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../PhreeqcRM/src/IrmResult.h
 TM_interface.o: ../TM_interface.cpp ../TM_interface.h
 PhreeqcRM.o: ../PhreeqcRM/src/PhreeqcRM.cpp ../PhreeqcRM/src/PhreeqcRM.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../PhreeqcRM/src/IrmResult.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
@@ -62,12 +74,10 @@ PhreeqcRM.o: ../PhreeqcRM/src/PhreeqcRM.cpp ../PhreeqcRM/src/PhreeqcRM.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Serializer.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
@@ -110,8 +120,14 @@ PhreeqcRM.o: ../PhreeqcRM/src/PhreeqcRM.cpp ../PhreeqcRM/src/PhreeqcRM.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h
 RM_interface_C.o: ../PhreeqcRM/src/RM_interface_C.cpp \
- ../PhreeqcRM/src/PhreeqcRM.h ../PhreeqcRM/src/IrmResult.h \
- ../PhreeqcRM/src/RM_interface_C.h \
+ ../PhreeqcRM/src/PhreeqcRM.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
+ ../PhreeqcRM/src/IrmResult.h ../PhreeqcRM/src/RM_interface_C.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.h \
@@ -120,11 +136,6 @@ RM_interface_C.o: ../PhreeqcRM/src/RM_interface_C.cpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
@@ -150,8 +161,14 @@ RM_interface_C.o: ../PhreeqcRM/src/RM_interface_C.cpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h
 RM_interface_F.o: ../PhreeqcRM/src/RM_interface_F.cpp \
- ../PhreeqcRM/src/PhreeqcRM.h ../PhreeqcRM/src/IrmResult.h \
- ../PhreeqcRM/src/RM_interface_F.h \
+ ../PhreeqcRM/src/PhreeqcRM.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
+ ../PhreeqcRM/src/IrmResult.h ../PhreeqcRM/src/RM_interface_F.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.h \
@@ -160,11 +177,6 @@ RM_interface_F.o: ../PhreeqcRM/src/RM_interface_F.cpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
@@ -358,7 +370,8 @@ cxxKinetics.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 cxxMix.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
@@ -462,7 +475,8 @@ ExchComp.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 GasComp.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
@@ -496,7 +510,8 @@ GasComp.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 GasPhase.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
@@ -626,7 +641,8 @@ KineticsComp.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 NameDouble.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
@@ -660,6 +676,7 @@ NameDouble.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h
 NumKeyword.o: \
@@ -706,6 +723,7 @@ PPassemblageComp.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 PPassemblage.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx \
@@ -863,6 +881,57 @@ ReadClass.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+Serializer.o: \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Serializer.cxx \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Serializer.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h
 Solution.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
@@ -900,7 +969,8 @@ Solution.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 SolutionIsotope.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
@@ -935,7 +1005,8 @@ SolutionIsotope.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 SSassemblage.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
@@ -972,7 +1043,8 @@ SSassemblage.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 SScomp.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
@@ -1006,7 +1078,8 @@ SScomp.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 SS.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
@@ -1041,6 +1114,7 @@ SS.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 StorageBin.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.cxx \
@@ -1128,7 +1202,8 @@ SurfaceCharge.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 SurfaceComp.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
@@ -1162,7 +1237,8 @@ SurfaceComp.o: \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 Surface.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.cxx \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
@@ -1525,6 +1601,9 @@ dense.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.cpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialsmath.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h
+Dictionary.o: \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.cpp \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 dumper.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.cpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
@@ -2198,7 +2277,9 @@ prep.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/prep.cpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
- ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
+ ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h
 print.o: ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/print.cpp \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h \
  ../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h \
