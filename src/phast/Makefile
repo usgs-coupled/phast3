@@ -454,6 +454,7 @@ ChartObject.o \
 CurveObject.o \
 cxxKinetics.o \
 cxxMix.o \
+Dictionary.o \
 dumper.o \
 Exchange.o \
 ExchComp.o \
@@ -477,6 +478,7 @@ Reaction.o \
 ReadClass.o \
 runner.o \
 SelectedOutput.o \
+Serializer.o \
 Solution.o \
 SolutionIsotope.o \
 SSassemblage.o \
