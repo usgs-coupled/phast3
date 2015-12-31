@@ -64,7 +64,7 @@ SOLUTION_METHOD
         -direct
         -space  0
         -time   1
-        -cross_dispersion true
+#        -cross_dispersion true
 PRINT_INITIAL
         -components     true
         -HDF_chemistry  true
