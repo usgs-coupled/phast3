@@ -3,6 +3,17 @@ PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
 
 ---------
+svn 10632
+---------
+PhreeqcRM: Revised transfer of data for MPI when rebalancing. Serializes lists of
+characters, integers, and doubles, instead of writing full "dump" version of each
+reaction. Is much faster for cell transfers when rebalancing among processes.
+
+---------------------------------------
+PHAST, Version 3.3.3, October 23, 2015 
+---------------------------------------
+
+---------
 svn 10417
 ---------
 Corner case for HDF file with no SELECTED_OUTPUT definition did not 
