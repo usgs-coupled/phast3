@@ -136,7 +136,7 @@
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
           Backwards-in-space (upstream) differencing for advective terms
-          The cross-derivative solute flux terms will be calculated explicitly
+          The cross-derivative solute flux terms will NOT BE calculated
 
                            Row scaling only, using L-inf norm, will be done
 
