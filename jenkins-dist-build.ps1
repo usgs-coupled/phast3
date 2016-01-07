@@ -77,19 +77,16 @@ do {
   wget $location -O leftItem.xml 2> $null
 } until ((Select-Xml -Path .\leftItem.xml -XPath "/leftItem"))
 
-### verify phast-dist-linux is buildable (THIS DOESN'T SEEM TO BE WORKING)
-##[string]$buildable="$((Select-Xml -Path .\leftItem.xml -XPath "/leftItem/buildable").Node.InnerText)"
-##if ($buildable -contains 'false') {
-##  throw "*** phast-dist-linux cannot be built ***`n"
-##}
-
-[string]$build="$((Select-Xml -Path .\leftItem.xml -XPath "/leftItem/executable/url").Node.InnerText)api/xml"
+[string]$build="$((Select-Xml -Path .\leftItem.xml -XPath "/leftItem/executable/url").Node.InnerText)"
+if ([string]::IsNullOrEmpty($build)) {
+  throw "*** phast-dist-linux cannot be built ***`n"
+}
 Write-Output "build=$build"
 
 # wget until <freeStyleBuild><building>false</building></freeStyleBuild>
 do {
   Start-Sleep -s 20
-  wget $build -O freeStyleBuild.xml 2> $null
+  wget "${build}api/xml" -O freeStyleBuild.xml 2> $null
   [string]$building = (Select-Xml -Path .\freeStyleBuild.xml -XPath "/freeStyleBuild/building").Node.InnerText
   Write-Output "building=$building"
 } until($building -contains 'false')
