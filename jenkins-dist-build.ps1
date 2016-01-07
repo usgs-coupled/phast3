@@ -77,6 +77,12 @@ do {
   wget $location -O leftItem.xml 2> $null
 } until ((Select-Xml -Path .\leftItem.xml -XPath "/leftItem"))
 
+# verify phast-dist-linux is buildable
+[string]$buildable="$((Select-Xml -Path .\leftItem.xml -XPath "/leftItem/buildable").Node.InnerText)"
+if ($buildable -contains 'false') {
+  throw "*** phast-dist-linux cannot be built ***`n"
+}
+
 [string]$build="$((Select-Xml -Path .\leftItem.xml -XPath "/leftItem/executable/url").Node.InnerText)api/xml"
 Write-Output "build=$build"
 
