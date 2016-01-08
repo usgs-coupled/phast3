@@ -92,18 +92,12 @@ do {
 } until($building -contains 'false')
 
 [string]$url=(Select-Xml -Path .\freeStyleBuild.xml -XPath "/freeStyleBuild/url").Node.InnerText
-[string]$file=((Select-Xml -Path .\freeStyleBuild.xml -XPath "/freeStyleBuild/artifact") | Select-Object -First 1).Node.relativePath
-[string]$download="${url}artifact/${file}"
+$artifacts=(Select-Xml -Path .\freeStyleBuild.xml -XPath "/freeStyleBuild/artifact")
 
-Write-Output "url=$url"
-Write-Output "file=$file"
-Write-Output "download=$download"
-
-# download cmake tar.gz file
-if (Test-Path -Path "${Env:FULLPKG}.tar.gz" -PathType Leaf) {
-  Remove-Item ".\${Env:FULLPKG}.tar.gz"
+foreach ($art in $artifacts) {
+  ${relPath}=${art}.Node.relativePath
+  wget "${url}artifact/${relPath}" 2> $null
 }
-wget $download 2> $null
 
 # untar cmake package
 if (Test-Path -Path ".\${Env:FULLPKG}" -PathType Container) {
