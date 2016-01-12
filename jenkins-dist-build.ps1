@@ -94,10 +94,13 @@ do {
 [string]$url=(Select-Xml -Path .\freeStyleBuild.xml -XPath "/freeStyleBuild/url").Node.InnerText
 $artifacts=(Select-Xml -Path .\freeStyleBuild.xml -XPath "/freeStyleBuild/artifact")
 
+New-Item ".\phast_dist" -ItemType directory
+Set-Location "phast_dist"
 foreach ($art in $artifacts) {
   ${relPath}=${art}.Node.relativePath
   wget "${url}artifact/${relPath}" 2> $null
 }
+Set-Location ".."
 
 # untar cmake package
 if (Test-Path -Path ".\${Env:FULLPKG}" -PathType Container) {
@@ -106,8 +109,8 @@ if (Test-Path -Path ".\${Env:FULLPKG}" -PathType Container) {
 if (Test-Path -Path ".\${Env:FULLPKG}.tar" -PathType Leaf) {
   Remove-Item ".\${Env:FULLPKG}.tar"
 }
-& 'C:\Program Files\7-Zip\7z.exe' e "${Env:FULLPKG}.tar.gz"
-& 'C:\Program Files\7-Zip\7z.exe' x "${Env:FULLPKG}.tar"
+& 'C:\Program Files\7-Zip\7z.exe' e "phast_dist/${Env:FULLPKG}.tar.gz"
+& 'C:\Program Files\7-Zip\7z.exe' x "phast_dist/${Env:FULLPKG}.tar"
 Set-Location "${Env:FULLPKG}"
 
 # copy ctest files
