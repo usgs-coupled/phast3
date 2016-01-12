@@ -110,7 +110,7 @@ if (Test-Path -Path ".\${Env:FULLPKG}.tar" -PathType Leaf) {
   Remove-Item ".\${Env:FULLPKG}.tar"
 }
 & 'C:\Program Files\7-Zip\7z.exe' e "phast_dist/${Env:FULLPKG}.tar.gz"
-& 'C:\Program Files\7-Zip\7z.exe' x "phast_dist/${Env:FULLPKG}.tar"
+& 'C:\Program Files\7-Zip\7z.exe' x "${Env:FULLPKG}.tar"
 Set-Location "${Env:FULLPKG}"
 
 # copy ctest files
