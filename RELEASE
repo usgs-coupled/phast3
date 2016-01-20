@@ -1,6 +1,10 @@
 ---------------------------------------
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
+---------
+svn 10668
+---------
+All programs: Now using Jenkins for continuous integration. 
 
 ---------
 svn 10632
