@@ -1,6 +1,21 @@
 ---------------------------------------
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
+
+---------
+svn 11020
+---------
+P4W: Fixed a bug in prisms that did not have a perimeter 
+defined.
+
+---------
+svn 10937
+---------
+P4W: Implemented PRINT_LOCATIONS in P4W.
+
+-----------------------------------------------
+PHAST, Version 3.3.5, (10806): February 3, 2016
+-----------------------------------------------
 ---------
 svn 10668
 ---------
