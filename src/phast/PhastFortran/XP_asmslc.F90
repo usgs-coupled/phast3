@@ -91,8 +91,9 @@ if (trim(xp%comp_name) .ne. 'Charge') then
      if (xp%c_w(m)+xp%dc(m) .lt. -1.0d-10) then
 	if (itrn > 10) then
      	   write(*,*) 'Failed in XP_asmslc, negative concentration: ', trim(xp%comp_name), xp%c_w(m)+xp%dc(m)
-	   if (fdsmth .ne. 1.0 .or. fdtmth .ne. 0.0) then
-     	      write(*,*) '    Try upstream-in-space (1.0) and backward-in-time (0.0) weighting in SOLUTION_METHOD.'
+	   if (fdtmth .ne. 1.0 .or. fdsmth .ne. 0.0) then
+              write(*,*) 'fdsmth: ',fdsmth, '     fdtmth: ', fdtmth
+     	      write(*,*) '    Try upstream-in-space (0.0) and backward-in-time (1.0) weighting in SOLUTION_METHOD.'
 	   endif
 	   errexe = .true.
 	   return
