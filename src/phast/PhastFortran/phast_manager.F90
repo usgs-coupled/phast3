@@ -449,7 +449,7 @@ SUBROUTINE transport_component_thread(i) BIND(C, NAME='transport_component_threa
     CALL XP_asmslc_thread(xp_list(i))
     CALL XP_sumcal1(xp_list(i))
     CALL XP_free_thread(xp_list(i))
-    IF(errexe .OR. errexi) write(*,*) "transport_component_thread failed."
+    IF(errexe .OR. errexi) write(*,*) "transport_component_thread failed, ", xp_list(i)%comp_name,"."
 END SUBROUTINE transport_component_thread
     
 SUBROUTINE CreateRM 
