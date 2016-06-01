@@ -183,7 +183,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Console</SubSystem>
@@ -238,7 +238,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIB);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -289,7 +289,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_HDF5_X64_LIB);C:\Program Files\USGS\Phast for Windows x64 3.2.2-10043\bin;$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_HDF5_X64_LIBDLL);C:\Program Files\USGS\Phast for Windows x64 3.2.2-10043\bin;$(DEV_IFC_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Release</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -352,7 +352,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>phastf.lib;PhreeqcRM.lib;msmpi.lib;msmpifec.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIB);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(MSMPI_LIB64);$(OUTDIR);$(OUTDIR)phastf;%(AdditionalLibraryDirectories);$(SolutionDir)$(platform)\Debug</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
