@@ -1,8 +1,6 @@
 KNOBS
 	-step 	10
 	-pe	10
-#	-diagonal
-#-conv 1e-10
 SOLUTION_MASTER_SPECIES
 [N2] 	[N2]	0.0	28	28
 SOLUTION_SPECIES
@@ -54,95 +52,44 @@ SURFACE_SPECIES
 	log_k	0.0
 
         AnionOH + H+ = AnionOH2+
-#       Fit parameter
-	log_k	4.1
+	log_k	%    AnionOH2_k %
 
         AnionOH = AnionO- + H+
         log_k 		-7.0
 
- 	AnionOH + PO4-3 + 3H+ = AnionH2PO4 + H2O
-	log_k		 0.0000000000e+00	
-	-offset 0
-
  	AnionOH + PO4-3 + 2H+ = AnionHPO4- + H2O
-#       Fit parameter
-	log_k	 	 26.7
-#	log_k	 	 0
-	-offset 0
+	log_k	 	 %   AnionHPO4_k %
 
- 	AnionOH + PO4-3 + H+ = AnionPO4-2 + H2O
-#       Fit parameter
-	log_k	 	 0.0000000000e+00	
-#	log_k	 	 22.1
-	-offset 0
-
-#	AnionOH + H3BO3 = AnionH2Bo3 + H2O
-#	log_k	0.62		#D&M
-
+#Cation
 	CationOH = CationOH
 	log_k	0.0
 
         CationOH + H+ = CationOH2+
-#       Fit parameter
-#        log_k 		-5
-	log_k	4.1
+	log_k	%   CationOH2_k % 
 
         CationOH = CationO- + H+
         log_k 		 -7.
 
-        CationOH + Ca+2 = CationOHCa+2
-        log_k 		 0
-
         CationOH + Ca+2 = CationOCa+ + H+
-#       Fit parameter
-        log_k 		 8.20000000000e+00	
-	-offset 	-1.0000000000e+01
-
-        CationOH + Mg+2 = CationOHMg+2
-        log_k 		 0.0000000000e+00	
-	-offset 	-1.0000000000e+01
+        log_k 		 %   Cation_k    % 
 
         CationOH + Mg+2 = CationOMg+ + H+
-#       Fit parameter
-        log_k 		 8.2000000000e+00	
-	-offset 	-1.0000000000e+01
-
-        CationOH + K+ = CationOHK+
-        log_k 		 0.0000000000e+00	
-	-offset 	-1.0000000000e+01
+        log_k 		 %   Cation_k    % 
 
         CationOH + K+ = CationOK + H+
-#       Fit parameter
-        log_k 		 8.2000000000e+00	
-	-offset 	-1.0000000000e+01
-
-        CationOH + Na+ = CationOHNa+
-        log_k 		 0.0000000000e+00	
-	-offset 	-1.0000000000e+01
+        log_k 		 %   Cation_k    % 
 
         CationOH + Na+ = CationONa + H+
-#       Fit parameter
-        log_k 		 8.2000000000e+00	
-	-offset 	-1.0000000000e+01
-
- 	CationOH + AmmH+ = CationOAmmH2+
-	log_k		 0.0000000000e+00
-	-offset 	-1.0000000000e+01
+        log_k 		 %   Cation_k    % 
 
  	CationOH + AmmH+ = CationOAmmH + H+
-#       Fit parameter
-	log_k		 8.2000000000e+00
-	-offset 	-1.0000000000e+01
+        log_k 		 %   Cation_k    % 
 
         CationOH + Mn+2 = CationOMn+ + H+
-#       Fit parameter
-        log_k 		 8.2000000000e+00	
-	-offset 	-1.0000000000e+01
+        log_k 		 %   Cation_k    % 
 
         CationOH + Fe+2 = CationOFe+ + H+
-#       Fit parameter
-        log_k 		 8.2000000000e+00	
-	-offset 	-1.0000000000e+01
+        log_k 		 %   Cation_k    % 
 
 TITLE 1-D evolution of sewage plume
 #    Uncontaminated groundwater based on Doug Kent's criteria from memo of 4/98
@@ -167,7 +114,7 @@ SOLUTION 1 Uncontaminated groundwater
 #	N(organic) 0.0
 #	P	2.3
 #	F	0.0
-	O(0)	250
+	O(0)	%        DO     % 
 #	Toc	26
 #	B	1.0
 #	[N2]    100
@@ -194,12 +141,12 @@ SOLUTION 2 Sewage effluent with oxygen, double P
 	N(5)	1050     # based on 12 mg/L N (Smith)
 #	N(3)	73
 #	N(organic)  230
-	P	380
+	P	%   Effluent_P %
 #	F	33
-	O(0)	250
-	Toc	 1.6000000000e+03
+	O(0)	%            DO % 
+	Toc	%           TOC % # 1.6000000000e+03
 #	Toc	1667	# based on 20 mg/L average
-	Soc	1000
+	Soc	%           SOC % # 1000
 #	B	56
 #	[N2]    100
 SOLUTION 3 Rain
@@ -232,8 +179,8 @@ SOLUTION 4 Sewage effluent with oxygen
 #	N(organic)  230
 	P	190	# based on average analyses
 #	F	33
-	O(0)	250
-	Toc	 1.6000000000e+03
+	O(0)	%        DO     % 
+	%           TOC % # 1.6000000000e+03
 #	Toc	1667	# based on 20 mg/L average
 #	Soc	1000
 #	B	56
@@ -264,78 +211,11 @@ EQUILIBRIUM_PHASES 2 Extra manganese
 #	Manganite	0	0
 #	Rhodochrosite	0	0
 END
-RATES
-Remove_N2
-      -start
-20 k = 1e-2/(24*3600)
-30 rate = k*MOL("N2")
-40 moles = rate*TIME * SOLN_VOL
-200   save moles
-      -end
 
-Strengite
-      -start
-10    k = 2e-3/(24*3600)
-20    rate = -k*TOT("P")*SI("Strengite")/(1 + ABS(SI("Strengite")))
-30    moles = rate * TIME * SOLN_VOL
-200   save moles
-      -end
-
-Vivianite
-      -start
-10    k = 2e-3/(24*3600)
-20    rate = -k*TOT("P")*SI("Vivianite")/(1 + ABS(SI("Vivianite")))
-30    moles = rate * TIME * SOLN_VOL
-200   save moles
-      -end
-
-Decay
-      -start
-10    tToc = tot("Toc")
-12    if (tToc <= 1e-10) then goto 200
-40    rate =  1.0000000000e-07
-60    moles = rate * tToc * time * SOLN_VOL
-90    if (moles >= tToc) then moles = tToc - 1e-10*tToc
-200   save moles
-      -end
-
-SOC
-      -start
-10 REM Before cessation, sorb carbon
-20 if (TOTAL_TIME/(365.25*24*3600) >= 1996) THEN GOTO 200
-30 if TOT("Soc") < 1e-9 THEN GOTO 1000
-40 k = 1e-3/(24*3600)
-50 rate = k*TOT("Soc") * SOLN_VOL
-60 moles = -rate*TIME 		# result is negative, M will increase
-70 GOTO 1000
-190 REM
-200 REM After cessation, react sorbed carbon
-210 if (M <= 0) THEN GOTO 1000
-220 ea = TOT("O(0)") + TOT("N(5)")
-230 if ea < 1e-9 THEN GOTO 1000
-240 k = 1e-3/(24*3600)
-250 rate = k*ea * SOLN_VOL
-260 moles = rate*TIME   	# result is positive, M will decrease
-1000   save moles
-      -end
-SOC_decomposition
-      -start
-10 REM After cessation, react sorbed carbon
-20 if (TOTAL_TIME/(365.25*24*3600) < 1996) THEN GOTO 1000
-210 if (KIN("SOC") <= 0) THEN GOTO 1000
-220 ea = TOT("O(0)") + TOT("N(5)")
-230 if ea < 1e-9 THEN GOTO 1000
-240 k = 1e-3/(24*3600)
-250 rate = k*ea * SOLN_VOL
-260 moles = rate*TIME   	# result is positive, M will decrease
-1000   save moles
-      -end
-
-END
 RATES # REVISED
 Remove_N2
       -start
-20 k = 1e-2/(24*3600)
+20 k = %   Remove_N2_k %   # 1e-2/(24*3600)
 30 rate = k * MOL("N2") * MOL("N2") / (1e-7 + MOL("N2"))
 40 moles = rate * TIME * SOLN_VOL
 200   save moles
@@ -343,7 +223,7 @@ Remove_N2
 
 Strengite
       -start
-10    k = 2e-3/(24*3600)
+10    k = %    Remove_P_k %  # 2e-3/(24*3600)
 20    rate = -k*TOT("P")*SI("Strengite")/(1 + ABS(SI("Strengite")))
 30    moles = rate * TIME * SOLN_VOL
 200   save moles
@@ -351,7 +231,7 @@ Strengite
 
 Vivianite
       -start
-10    k = 2e-3/(24*3600)
+10    k = %    Remove_P_k % # 2e-3/(24*3600)
 20    rate = -k*TOT("P")*SI("Vivianite")/(1 + ABS(SI("Vivianite")))
 30    moles = rate * TIME * SOLN_VOL
 200   save moles
@@ -361,7 +241,7 @@ Decay
       -start
 10    tToc = tot("Toc")
 #12    if (tToc <= 1e-10) then goto 200
-40    rate =  1.0000000000e-07
+40    rate =  %       Decay_k %    # 1.0000000000e-07
 60    moles = rate * tToc * time * tToc / (1e-7 + tToc) * SOLN_VOL
 #90    if (moles >= tToc) then moles = tToc - 1e-10*tToc
 200   save moles
@@ -372,7 +252,7 @@ SOC
 10 REM Before cessation, sorb carbon
 20 if (TOTAL_TIME/(365.25*24*3600) >= 1996) THEN GOTO 200
 #30 if TOT("Soc") < 1e-9 THEN GOTO 1000
-40 k = 1e-3/(24*3600)
+40 k = %    Sorb_SOC_k % # 1e-3/(24*3600)
 50 rate = k*TOT("Soc") * TOT("Soc") / (1e-7 + TOT("Soc")) * SOLN_VOL
 60 moles = -rate*TIME 		# result is negative, M will increase
 70 GOTO 1000
@@ -393,7 +273,7 @@ SOC_decomposition
 210 if (KIN("SOC") <= 0) THEN GOTO 1000
 220 ea = TOT("O(0)") + TOT("N(5)")
 #230 if ea < 1e-9 THEN GOTO 1000
-240 k = 1e-3/(24*3600)
+240 k = %   React_SOC_k % # 1e-3/(24*3600)
 250 rate = k*ea * ea / (1e-7 + ea) * SOLN_VOL
 260 moles = rate*TIME   	# result is positive, M will decrease
 1000   save moles
@@ -460,9 +340,9 @@ SOC_decomposition
 SURFACE 1
 	-equil solution 1
 #       Fit parameter
-  	CationOH       1.8000000000e-02    3.0000000000e-01   4.1500000000e+03
+  	CationOH       %  Cation_sites %    3.0000000000e-01   4.1500000000e+03
 #       Fit parameter
- 	AnionOH        3.45000000e-03    3.0000000000e-01   4.1500000000e+03
+ 	AnionOH        %  Cation_sites %    3.0000000000e-01   4.1500000000e+03
 END
 
 SELECTED_OUTPUT
