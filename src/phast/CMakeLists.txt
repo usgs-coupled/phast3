@@ -194,7 +194,6 @@ PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h
-PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dw.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.cxx
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.cxx
