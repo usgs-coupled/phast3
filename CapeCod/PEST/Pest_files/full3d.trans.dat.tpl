@@ -278,8 +278,8 @@ PRINT_FREQUENCY
 		-zone_flow_xyzt         end 
 		-zone_flow_tsv          end 
 		-hdf_intermediate       end 
-	1992
-		-xyz_chemistry          1 yr
+	1993
+		-xyz_chemistry          0.25 yr
 TIME_CONTROL
 	-time_step
 		0 

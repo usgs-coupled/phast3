@@ -75,6 +75,9 @@ DEL %PROJECT_DIR%\phast.bat1
 DEL %PROJECT_DIR%\phast.bat2
 DEL %PROJECT_DIR%\phast.bat3  
 
+REM interpolator.control
+call :SED @PHAST_ROOT_NAME@ %PHAST_ROOT_NAME%    %PEST_FILES_DIR%\interpolator.control       > %PROJECT_DIR%\interpolator.control
+
 REM make tmp dirs and run parallel pest workers
 set MASTER=%COMPUTERNAME%
 for /l %%X in (1, 1, %NODES%) do (
@@ -86,6 +89,7 @@ for /l %%X in (1, 1, %NODES%) do (
 	copy %PEST_FILES_DIR%\*.ins                            .\
 	copy %INPUT_DIR%\phast.dat                             .\
 	copy %PROJECT_DIR%\phast.bat                           .\
+	copy %PROJECT_DIR%\interpolator.control                .\
 	copy %OBSERVATIONS_DIR\*.obs                           .\
 	START /B %PEST_BIN_DIR%\beopest64.exe %PROJECT_DIR%\%PST% /H %MASTER%:%PORT% & cd %PROJECT_DIR%\..
 	cd %PROJECT_DIR%\..

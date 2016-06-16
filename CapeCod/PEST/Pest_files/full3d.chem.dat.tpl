@@ -350,8 +350,11 @@ SELECTED_OUTPUT
 	-reset 	false
 
 USER_PUNCH
-	-head	pH	PO4	Fe	Mn	NH3	Cl	DOC	NO3	O2	SorbedP	Pyrolusite	Fe(OH)3(a)	Ca	Mg	Na	Alk	S-2	Kin_streng	KIN_viv	SI_sid	SI_stren	SI_viv	EQ_mang	EQ_rhodo	EQ_sid	Soc Kin_Soc	[N2]	N2
-	-start
+	-head	pH	P_uM	Fe_uM	Mn_uM	Amm_uM	Cl_uM	Toc_uM	NO3_uM	O2_uM	SorbedP_uM	\
+	                Pyrolusite_uM	Fe(OH)3(a)_uM	Ca_uM	Mg_uM	Na_uM	Alk_uM	Sulfide_uM	Kin_streng_uM \
+	                KIN_viv_uM	SI_sid	SI_stren	SI_viv	Manganite_uM	Rhodochrosite_uM \
+	                Siderite_uM	Soc_uM Kin_Soc_uM [N2]_uM	N2_uM
+-start
 20 PUNCH -la("H+")
 30 PUNCH TOT("P")*1e6
 40 PUNCH TOT("Fe")*1e6
