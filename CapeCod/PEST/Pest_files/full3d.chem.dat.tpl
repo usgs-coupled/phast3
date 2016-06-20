@@ -1,3 +1,4 @@
+ptf %
 KNOBS
 	-step 	10
 	-pe	10
@@ -180,7 +181,7 @@ SOLUTION 4 Sewage effluent with oxygen
 	P	190	# based on average analyses
 #	F	33
 	O(0)	%        DO     % 
-	%           TOC % # 1.6000000000e+03
+	Toc     %           TOC % # 1.6000000000e+03
 #	Toc	1667	# based on 20 mg/L average
 #	Soc	1000
 #	B	56
@@ -342,7 +343,7 @@ SURFACE 1
 #       Fit parameter
   	CationOH       %  Cation_sites %    3.0000000000e-01   4.1500000000e+03
 #       Fit parameter
- 	AnionOH        %  Cation_sites %    3.0000000000e-01   4.1500000000e+03
+ 	AnionOH        %   Anion_sites %    3.0000000000e-01   4.1500000000e+03
 END
 
 SELECTED_OUTPUT
