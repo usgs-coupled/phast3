@@ -1,7 +1,7 @@
 pcf 
 * control data 
 restart estimation 
-     17   227      1      0     5 
+     17   227      2      0     1 
      2     1   single   point   1   0   0 
 10.0  -3.0    0.3    0.03     -9  999  LAMFORGIVE DERFORGIVE 
 0.2   2.0   1.0e-3 absparmax(1)=0.3
@@ -16,24 +16,23 @@ restart estimation
 chem         relative      1.00000E-02  0.0000    switch     2.0000      parabolic
 trans        relative      1.00000E-02  0.0000    switch     2.0000      parabolic
 * parameter data 
-AnionOH2_k	fixed		relative	4.1		1	10	chem	6.667E-01	-1.067E+01	1
-AnionHPO4_k	none		absolute(1)	26.7		25.	30.	chem	1.0		0.0		1
-Cation_sites	fixed		relative	3450e-6		1	10	chem	6.667E-01	-1.067E+01	1
-CationOH2_k	fixed		relative	4.1		1	10	chem	4.000E-01	-7.400E+00	1
-Cation_k	fixed		relative	-1.8		1	10	chem	6.667E-01	-1.067E+01	1
-Cation_sites	fixed		relative	23000e-6	1	10	chem	6.667E-01	-1.067E+01	1
-DO		fixed		relative	250.		1	10	chem	4.444E-01	-8.444E+00	1
-Remove_N2_k	fixed		relative	1.16e-7		1	10	chem	4.444E-01	-8.444E+00	1
-Effluent_P	fixed		relative	380.		1	10	chem	4.444E-01	-8.444E+00	1
-Remove_P_k	fixed		relative	1.16e-8		1	10	chem	4.444E-01	-8.444E+00	1
-TOC		fixed		relative	1600.0		1	10	chem	6.667E-01	-1.067E+01	1
-Decay_k		fixed		relative	1e-7		1	10	chem	3.333E-01	-7.333E+00	1
-SOC		fixed		relative	1000.		1	10	chem	6.667E-01	-1.067E+01	1
-Sorb_SOC_k	fixed		relative	1.16e-7		1	10	chem	4.444E-01	-8.444E+00	1
-React_SOC_k	fixed		relative	1.16e-7		1	10	chem	4.444E-01	-8.444E+00	1
-time_step	fixed		relative	0.125		1	10	trans	0.025		0.25		1
-time_change	fixed		relative	1994		1	10	trans	1995		2015		1
-
+AnionOH2_k	fixed		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
+AnionHPO4_k	none		absolute(1)	26.7		25.		30.0		chem	1.0		0.0		1
+Anion_sites	fixed		factor		3450e-6		3450e-8		3450e-4		chem	1.0		0.0		1
+CationOH2_k	fixed		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
+Cation_k	fixed		absolute(1)	-1.8		-4.0		0.0		chem	1.0		0.0		1
+Cation_sites	fixed		factor		23000e-6	23000e-8	23000e-4	chem	1.0		0.0		1
+DO		fixed		factor		250.0		100.0		500.		chem	1.0		0.0		1
+Remove_N2_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+Effluent_P	fixed		factor		380.0		100.0		500.0		chem	1.0		0.0		1
+Remove_P_k	fixed		factor		1.16e-8		1e-10		1e-5		chem	1.0		0.0		1
+TOC		fixed		factor		1600.0		160.0		16000.0		chem	1.0		0.0		1
+Decay_k		fixed		factor		1e-7		1e-9		1e-5		chem	1.0		0.0		1
+SOC		fixed		factor		1000.0		10.0		10000.0		chem	1.0		0.0		1
+Sorb_SOC_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+React_SOC_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+time_step	fixed		absolute(1)	0.125		0.0		0.25		trans	1.0		0.0		1
+time_change	fixed		absolute(1)	1994		1994		2015		trans	1.0		0.0		1
 
 * observation groups 
 P
@@ -271,6 +270,6 @@ P_uM_1993_227     0.41000E+00    0.10000E+01             P
 @PROJECT_DIR@\phast.bat
 
 * model input/output 
-@PROJECT_DIR@\@PHAST_ROOT_NAME@.chem.dat.tpl		@PHAST_ROOT_NAME@.chem.dat
-@PROJECT_DIR@\@PHAST_ROOT_NAME@.trans.dat.tpl		@PHAST_ROOT_NAME@.trans.dat
+@PROJECT_DIR@/@PHAST_ROOT_NAME@.chem.dat.tpl		@PHAST_ROOT_NAME@.chem.dat
+@PROJECT_DIR@/@PHAST_ROOT_NAME@.trans.dat.tpl		@PHAST_ROOT_NAME@.trans.dat
 P_uM_1993.ins		                		P_uM_1993.calc 

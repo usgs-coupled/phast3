@@ -11,6 +11,7 @@ REM Set variables
 set PHAST_ROOT_NAME=full3d
 set NODES=%1
 set PHAST_NODES=%2
+REM ":\=/" replaces \ with /
 set PHAST_NODES_SED=%PHAST_NODES:\=/%
 set PST=phast.pst
 set HOME=%cd%
@@ -25,7 +26,6 @@ set "PEST_BIN_DIR=%HOME%\bin"
 set PEST_BIN_DIR_SED=%PEST_BIN_DIR:\=/%
 set OBSERVATIONS_DIR=%HOME%\Data
 
-
 REM check files
 set errors=0
 for %%i in ( 
@@ -33,7 +33,6 @@ for %%i in (
     %PEST_FILES_DIR%\%PHAST_ROOT_NAME%.chem.dat.tpl
     %PEST_FILES_DIR%\%PHAST_ROOT_NAME%.trans.dat.tpl
     %PEST_FILES_DIR%\phast.pst.tpl
-    %PEST_FILES_DIR%\observations.control.tpl
     %PEST_FILES_DIR%\phast.bat.tpl
     %OBSERVATIONS_DIR%\P_uM_1993.obs
     %PEST_BIN_DIR%/beopest64.exe
@@ -62,12 +61,12 @@ mkdir %PROJECT_DIR%
 REM Sed files
 
 REM phast.pst
-call :SED @PROJECT_DIR@ %PROJECT_DIR_SED%/         %PEST_FILES_DIR%\phast.pst.tpl > %PROJECT_DIR%\phast.pst1
-call :SED @PHAST_ROOT_NAME@ %PHAST_ROOT_NAME%/     %PROJECT_DIR%\phast.pst1       > %PROJECT_DIR%\phast.pst
+call :SED @PROJECT_DIR@ %PROJECT_DIR_SED%          %PEST_FILES_DIR%\phast.pst.tpl > %PROJECT_DIR%/phast.pst1
+call :SED @PHAST_ROOT_NAME@ %PHAST_ROOT_NAME%      %PROJECT_DIR%\phast.pst1       > %PROJECT_DIR%\phast.pst
 DEL %PROJECT_DIR%\phast.pst1
 
 REM phast.bat
-call :SED @PEST_BIN_DIR@ %PEST_BIN_DIR_SED%/     %PEST_FILES_DIR%\phast.bat.tpl > %PROJECT_DIR%\phast.bat1
+call :SED @PEST_BIN_DIR@ %PEST_BIN_DIR_SED%      %PEST_FILES_DIR%\phast.bat.tpl > %PROJECT_DIR%\phast.bat1
 call :SED @PHAST_NODES@ %PHAST_NODES%            %PROJECT_DIR%\phast.bat1       > %PROJECT_DIR%\phast.bat2
 call :SED @DEL@ DEL                              %PROJECT_DIR%\phast.bat2       > %PROJECT_DIR%\phast.bat3
 call :SED @PHAST_ROOT_NAME@ %PHAST_ROOT_NAME%    %PROJECT_DIR%\phast.bat3       > %PROJECT_DIR%\phast.bat
@@ -78,6 +77,14 @@ DEL %PROJECT_DIR%\phast.bat3
 REM interpolator.control
 call :SED @PHAST_ROOT_NAME@ %PHAST_ROOT_NAME%    %PEST_FILES_DIR%\interpolator.control       > %PROJECT_DIR%\interpolator.control
 
+REM copy other files
+copy %PEST_FILES_DIR%\%PHAST_ROOT_NAME%.chem.dat.tpl   %PROJECT_DIR%
+copy %PEST_FILES_DIR%\%PHAST_ROOT_NAME%.trans.dat.tpl  %PROJECT_DIR%
+copy %PEST_FILES_DIR%\*.ins                            %PROJECT_DIR%
+copy %INPUT_DIR%\phast.dat                             %PROJECT_DIR%
+copy %OBSERVATIONS_DIR%\*.obs                          %PROJECT_DIR%
+REM copy %OBSERVATIONS_DIR%\*.tsv                          %PROJECT_DIR% 
+	
 REM make tmp dirs and run parallel pest workers
 set MASTER=%COMPUTERNAME%
 for /l %%X in (1, 1, %NODES%) do (
@@ -90,7 +97,8 @@ for /l %%X in (1, 1, %NODES%) do (
 	copy %INPUT_DIR%\phast.dat                             .\
 	copy %PROJECT_DIR%\phast.bat                           .\
 	copy %PROJECT_DIR%\interpolator.control                .\
-	copy %OBSERVATIONS_DIR\*.obs                           .\
+	copy %OBSERVATIONS_DIR%\*.obs                          .\
+REM	copy %OBSERVATIONS_DIR%\*.tsv                          .\ 
 	START /B %PEST_BIN_DIR%\beopest64.exe %PROJECT_DIR%\%PST% /H %MASTER%:%PORT% & cd %PROJECT_DIR%\..
 	cd %PROJECT_DIR%\..
 )
@@ -103,8 +111,9 @@ GOTO :FINISH_UP
 
 :USAGE
 echo.
-echo usage: webpest_pc n  
-echo where  n is number of workers to start
+echo usage: webpest_pc n_pest n_phast
+echo where  n_pest is number of PEST workers to start
+echo and    n_phast is number of PHAST workers for parallel PHAST
 GOTO :EOF
 
 :SED
