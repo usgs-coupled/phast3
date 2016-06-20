@@ -12,7 +12,6 @@ set PHAST_ROOT_NAME=full3d
 set NODES=%1
 set PHAST_NODES=%2
 REM ":\=/" replaces \ with /
-set PHAST_NODES_SED=%PHAST_NODES:\=/%
 set PST=phast.pst
 set HOME=%cd%
 set HOME_SED=%HOME:\=/%
