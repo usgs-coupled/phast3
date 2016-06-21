@@ -17,7 +17,7 @@ chem         relative      1.00000E-02  0.0000    switch     2.0000      parabol
 trans        relative      1.00000E-02  0.0000    switch     2.0000      parabolic
 * parameter data 
 AnionOH2_k	fixed		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
-AnionHPO4_k	none		absolute(1)	26.7		25.		30.0		chem	1.0		0.0		1
+AnionHPO4_k	fixed		absolute(1)	26.7		25.		30.0		chem	1.0		0.0		1
 Anion_sites	fixed		factor		3450e-6		3450e-8		3450e-4		chem	1.0		0.0		1
 CationOH2_k	fixed		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
 Cation_k	fixed		absolute(1)	-1.8		-4.0		0.0		chem	1.0		0.0		1
@@ -25,13 +25,13 @@ Cation_sites	fixed		factor		23000e-6	23000e-8	23000e-4	chem	1.0		0.0		1
 DO		fixed		factor		250.0		100.0		500.		chem	1.0		0.0		1
 Remove_N2_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
 Effluent_P	fixed		factor		380.0		100.0		500.0		chem	1.0		0.0		1
-Remove_P_k	fixed		factor		1.16e-8		1e-10		1e-5		chem	1.0		0.0		1
+Remove_P_k	none		factor		1.16e-8		1e-10		1e-5		chem	1.0		0.0		1
 TOC		fixed		factor		1600.0		160.0		16000.0		chem	1.0		0.0		1
 Decay_k		fixed		factor		1e-7		1e-9		1e-5		chem	1.0		0.0		1
 SOC		fixed		factor		1000.0		10.0		10000.0		chem	1.0		0.0		1
 Sorb_SOC_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
 React_SOC_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
-time_step	fixed		absolute(1)	0.125		0.0		0.25		trans	1.0		0.0		1
+time_step	fixed		absolute(1)	0.25		0.0		0.25		trans	1.0		0.0		1
 time_change	fixed		absolute(1)	1994		1994		2015		trans	1.0		0.0		1
 
 * observation groups 
