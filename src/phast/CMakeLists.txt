@@ -10,7 +10,7 @@ PhastFortran/XP_asembl.f90
 PhastFortran/XP_asmslc.F90
 PhastFortran/XP_crsdsp.f90
 PhastFortran/XP_etom2.f90
-PhastFortran/XP_module.f90
+PhastFortran/XP_module.F90
 PhastFortran/XP_rhsn.f90
 PhastFortran/XP_sumcal1.f90
 PhastFortran/XP_wbcflo.f90
