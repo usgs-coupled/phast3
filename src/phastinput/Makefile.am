@@ -1,6 +1,6 @@
 EXTRA_DIST = CMakeLists.txt phastinput.rc phastinput_version.h resource.h
 
-AM_CPPFLAGS = -I$(srcdir)/common -I$(srcdir)/PhastKeywords
+AM_CPPFLAGS = -I$(srcdir)/common -I$(srcdir)/PhastKeywords $(BOOST_CPPFLAGS)
 
 bin_PROGRAMS = phastinput
 
