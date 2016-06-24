@@ -2,32 +2,32 @@ pcf
 * control data 
 restart estimation 
      17   227      2      0     1 
-     2     1   single   point   1   0   0 
-10.0  -3.0    0.3    0.03     -9  999  LAMFORGIVE DERFORGIVE 
+     2     1   double   point   1   0   0 
+10.0  -3.0    0.3    0.03     9  0  LAMFORGIVE DERFORGIVE 
 0.2   2.0   1.0e-3 absparmax(1)=0.3
 0.1  noaui 
 30   .005  4   4  .005   4 
 1    1    1  
 * singular value decomposition 
 1 
-1 5e-7 
+10 5e-7 
 1 
 * parameter groups 
-chem         relative      1.00000E-02  0.0000    switch     2.0000      parabolic
+chem         relative      1.00000E-02  0.0000    always_2   2.0000      parabolic
 trans        relative      1.00000E-02  0.0000    switch     2.0000      parabolic
 * parameter data 
-AnionOH2_k	fixed		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
-AnionHPO4_k	fixed		absolute(1)	26.7		25.		30.0		chem	1.0		0.0		1
-Anion_sites	fixed		factor		3450e-6		3450e-8		3450e-4		chem	1.0		0.0		1
-CationOH2_k	fixed		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
-Cation_k	fixed		absolute(1)	-1.8		-4.0		0.0		chem	1.0		0.0		1
-Cation_sites	fixed		factor		18000e-6	23000e-8	23000e-4	chem	1.0		0.0		1
+AnionHPO4_k	none		absolute(1)	26.7		26.2		27.2		chem	1.0		0.0		1
+Anion_sites	none		factor		3450e-6		1150e-6		4600e-6		chem	1.0		0.0		1
+Cation_k	none		absolute(1)	-1.8		-2.8		-0.8		chem	1.0		0.0		1
+Cation_sites	none		factor		23000e-6	9000e-6		36000e-6	chem	1.0		0.0		1
+TOC		none		factor		1600.0		800.0		3200.0		chem	1.0		0.0		1
+Decay_k		none		factor		1e-7		0.5e-7		2e-7		chem	1.0		0.0		1
+Effluent_P	none		factor		380.0		190.0		500.0		chem	1.0		0.0		1
+AnionOH2_k	none		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
+CationOH2_k	none		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
+Remove_P_k	none		factor		1.16e-8		1e-9		1e-7		chem	1.0		0.0		1
 DO		fixed		factor		250.0		100.0		500.		chem	1.0		0.0		1
 Remove_N2_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
-Effluent_P	fixed		factor		380.0		100.0		500.0		chem	1.0		0.0		1
-Remove_P_k	none		factor		2.1e-8		1e-10		1e-5		chem	1.0		0.0		1
-TOC		fixed		factor		1600.0		160.0		16000.0		chem	1.0		0.0		1
-Decay_k		fixed		factor		1e-7		1e-9		1e-5		chem	1.0		0.0		1
 SOC		fixed		factor		1000.0		10.0		10000.0		chem	1.0		0.0		1
 Sorb_SOC_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
 React_SOC_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
