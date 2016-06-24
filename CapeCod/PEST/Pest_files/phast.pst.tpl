@@ -19,7 +19,7 @@ trans        relative      1.00000E-02  0.0000    switch     2.0000      parabol
 AnionHPO4_k	none		absolute(1)	26.7		26.2		27.2		chem	1.0		0.0		1
 Anion_sites	none		factor		3450e-6		1150e-6		4600e-6		chem	1.0		0.0		1
 Cation_k	none		absolute(1)	-1.8		-2.8		-0.8		chem	1.0		0.0		1
-Cation_sites	none		factor		23000e-6	9000e-6		36000e-6	chem	1.0		0.0		1
+Cation_sites	none		factor		18000e-6	9000e-6		36000e-6	chem	1.0		0.0		1
 TOC		none		factor		1600.0		800.0		3200.0		chem	1.0		0.0		1
 Decay_k		none		factor		1e-7		0.5e-7		2e-7		chem	1.0		0.0		1
 Effluent_P	none		factor		380.0		190.0		500.0		chem	1.0		0.0		1
