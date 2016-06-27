@@ -46,6 +46,7 @@ decay_k, remove_p_k are sensitive.
 Plan for run 2: calculate sensitivities for SOC parameters.
 
 =================================================================================
-1. fix cation_k, cation_sites, anionoh2_k
+2. fix cation_k, cation_sites, anionoh2_k
    increase effluent_p
+   change wt to sqrt(max) (except 795 observation)
    
