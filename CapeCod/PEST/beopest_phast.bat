@@ -106,6 +106,46 @@ REM Run parallel pest Master
 cd %PROJECT_DIR%
 %PEST_BIN_DIR%\beopest64.exe %PROJECT_DIR%\%PST% /H /L /p1 :%PORT% 
 
+REM tidy up
+IF "%ERRORLEVEL%" == "0" (
+    if exist %PROJECT_DIR%\..\pest_results rmdir /s/q %PROJECT_DIR%\..\pest_results
+    mkdir %PROJECT_DIR%\..\pest_results
+    cd %PROJECT_DIR%
+REM results    
+    copy %PHAST_ROOT_NAME%* 		..\pest_results
+    DEL  				..\pest_results\*intermediate*
+    copy interpolator.control		..\pest_results
+    copy *.calc				..\pest_results
+    copy *.ins				..\pest_results
+    copy *.obs				..\pest_results
+    copy phast*				..\pest_results
+    DEL 				..\pest_results\Phast.tmp
+    copy ..\beopest_phast.bat		..\pest_results
+REM pest_files
+    cd ..\pest_results
+    mkdir pest_files
+    copy ..\pest_files\*.tpl		.\pest_files
+    copy ..\pest_files\*.rmf		.\pest_files
+    copy ..\beopest_phast.bat		.\pest_files
+REM plots
+REM Plot residuals and correlation
+    %PEST_BIN_DIR%\pest_plot phast.rei phast_fit.pdf none
+REM Plot parameters changes
+    %PEST_BIN_DIR%\parm_plot phast.pst phast.sen phast_par_calib.pdf none
+REM Plot sensitivities
+    %PEST_BIN_DIR%\sen_plot phast.sen phast_sensitivity.pdf
+REM Plot contributions to phi by observation group
+    %PEST_BIN_DIR%\pcon_plot phast.rec phast_phi.pdf none
+REM Compute influence statistics
+    %PEST_BIN_DIR%\infstat phast phast.infstat
+    cd   %PROJECT_DIR%\..
+REM
+REM run sensitivity plots here
+REM
+) else (
+    echo Beopest failed.
+)
+
 GOTO :FINISH_UP
 
 :USAGE

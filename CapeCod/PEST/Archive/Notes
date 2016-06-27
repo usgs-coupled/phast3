@@ -1,0 +1,51 @@
+Parameter estimation for Cape Cod Phosphorus simulations
+
+
+=================================================================================
+1. Initial run, my pc
+
+weighting is 1/sqrt(max(calc,obs))
+
+AnionHPO4_k	none		absolute(1)	26.7		26.2		27.2		chem	1.0		0.0		1
+Anion_sites	none		factor		3450e-6		1150e-6		4600e-6		chem	1.0		0.0		1
+Cation_k	none		absolute(1)	-1.8		-2.8		-0.8		chem	1.0		0.0		1
+Cation_sites	none		factor		18000e-6	9000e-6		36000e-6	chem	1.0		0.0		1
+TOC		none		factor		1600.0		800.0		3200.0		chem	1.0		0.0		1
+Decay_k		none		factor		1e-7		0.5e-7		2e-7		chem	1.0		0.0		1
+Effluent_P	none		factor		380.0		190.0		500.0		chem	1.0		0.0		1
+AnionOH2_k	none		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
+CationOH2_k	none		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
+Remove_P_k	none		factor		2.1e-8		1e-9		1e-7		chem	1.0		0.0		1
+DO		fixed		factor		250.0		100.0		500.		chem	1.0		0.0		1
+Remove_N2_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+SOC		fixed		factor		1000.0		10.0		10000.0		chem	1.0		0.0		1
+Sorb_SOC_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+React_SOC_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+time_step	fixed		absolute(1)	0.25		0.0		0.25		trans	1.0		0.0		1
+time_change	fixed		absolute(1)	1994		1994		2015		trans	1.0		0.0		1
+
+Fitting lowered phi fron 12000 to 5000.
+
+Misses peak concentrations.
+
+decay_k, remove_p_k are sensitive.
+
+ Number of observations with non-zero weight =   227
+ Parameter name    Group          Current value    Sensitivity
+   anionhpo4_k     chem             26.7000         0.133469    
+   anion_sites     chem            3.450000E-03      78.5215    
+   cation_k        chem            -1.80000         9.223766E-02
+   cation_sites    chem            1.800000E-02      4.52684    
+   toc             chem             1600.00         2.664285E-03
+   decay_k         chem            6.243502E-08     7.083642E+06
+   effluent_p      chem             380.000         1.093420E-03
+   anionoh2_k      chem             4.10000         0.113738    
+   cationoh2_k     chem             4.10000         2.861612E-03
+   remove_p_k      chem            3.677511E-08     7.586993E+06
+   
+Plan for run 2: calculate sensitivities for SOC parameters.
+
+=================================================================================
+1. fix cation_k, cation_sites, anionoh2_k
+   increase effluent_p
+   

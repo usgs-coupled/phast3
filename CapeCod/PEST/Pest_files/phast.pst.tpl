@@ -25,7 +25,7 @@ Decay_k		none		factor		1e-7		0.5e-7		2e-7		chem	1.0		0.0		1
 Effluent_P	none		factor		380.0		190.0		500.0		chem	1.0		0.0		1
 AnionOH2_k	none		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
 CationOH2_k	none		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
-Remove_P_k	none		factor		1.16e-8		1e-9		1e-7		chem	1.0		0.0		1
+Remove_P_k	none		factor		2.1e-8		1e-9		1e-7		chem	1.0		0.0		1
 DO		fixed		factor		250.0		100.0		500.		chem	1.0		0.0		1
 Remove_N2_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
 SOC		fixed		factor		1000.0		10.0		10000.0		chem	1.0		0.0		1
