@@ -1,26 +1,27 @@
 #!/bin/sh
 ##SBATCH -p normal
 #SBATCH -p UV
+##SBATCH -p exper
 #SBATCH -A nrp
-#SBATCH -n 10
+#SBATCH -n 11
 #SBATCH -c 8
 ##SBATCH --ntasks-per-node=1
 #SBATCH --ntasks-per-socket=1
-#SBATCH --output=full3d.n8.out
+#SBATCH --output=full3d.UV.out
 #SBATCH --mem-per-cpu=500M
 #SBATCH -t24:00:00
 ##SBATCH --ntasks-per-node=1
 ##SBATCH --threads-per-core=1
 ##SBATCH --hint compute_bound
 ##SBATCH --hint nomultithread
-#SBATCH --exclusive
+##SBATCH --exclusive
 
 #module load openmpi/1.8.8-gcc
 #module load mpi/openmpi-1.8.8-intel
 #module load tools/pest-13.5-gnu
 
 PHAST_ROOT_NAME=full3d
-NODES=10
+NODES=11
 PROCESSES=${NODES}
 PHAST_NODES=8
 PST=phast.pst
@@ -94,26 +95,28 @@ time ${BIN_DIR}/ppest ${PROJECT_DIR}/${PST} /H /L :4004
 #time srun --mpi=${MPITYPE} -n ${PROCESSES} ${BIN_DIR}/ppest ${PROJECT_DIR}/${PST} /M /L ${PROJECT_DIR}/psttemp
 
 # Tidy up
-rm -rf ${PROJECT_DIR}/../pest_results
-mkdir ${PROJECT_DIR}/../pest_results
-cp phast.jac         ../pest_results
-cp phast.jco         ../pest_results
-cp phast.jst         ../pest_results
-cp phast.mtt         ../pest_results
-cp phast.par         ../pest_results
-cp phast.prf         ../pest_results
-cp phast.pst         ../pest_results
-cp phast.rec         ../pest_results
-cp phast.rei         ../pest_results
-cp phast.res         ../pest_results
-cp phast.rmr         ../pest_results
-cp phast.rsd         ../pest_results
-cp phast.rst         ../pest_results
-cp phast.sen         ../pest_results
-cp phast.seo         ../pest_results
-cp phast.svd         ../pest_results
+rm -rf ${LOCAL_HOME}/pest_results
+mkdir ${LOCAL_HOME}/pest_results
+cp psttemp1/${PHAST_ROOT_NAME}*          ${LOCAL_HOME}/pest_results
+rm -rf                          ${LOCAL_HOME}/pest_results/*intermediate*
+rm -rf                          ${LOCAL_HOME}/pest_results/*h5*
+cp interpolator.control		${LOCAL_HOME}/pest_results
+cp psttemp1/*.calc		${LOCAL_HOME}/pest_results
+cp *.ins			${LOCAL_HOME}/pest_results
+cp *.obs			${LOCAL_HOME}/pest_results
+cp phast*			${LOCAL_HOME}/pest_results
+rm -rf				${LOCAL_HOME}/pest_results/Phast.tmp
+cp ${LOCAL_HOME}/phast.slurm	${LOCAL_HOME}/pest_results
+cp ${LOCAL_HOME}/full3d.UV.out	${LOCAL_HOME}/pest_results
 
-cd ${PROJECT_DIR}/..
+REM pest_files
+cd ${LOCAL_HOME}/pest_results
+mkdir ${LOCAL_HOME}/pest_results/Pest_files
+cp ${LOCAL_HOME}/Pest_files/*.tpl		${LOCAL_HOME}/pest_results/Pest_files
+cp ${LOCAL_HOME}/Pest_files/*.rmf		${LOCAL_HOME}/pest_results/Pest_files
+
+
+cd ${LOCAL_HOME}
 
 #time /home/dlpark/programs/phast3-trunk/src/phastinput/phastinput MoMaS
 
