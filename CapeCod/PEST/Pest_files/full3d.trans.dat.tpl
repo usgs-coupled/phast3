@@ -14,8 +14,8 @@ STEADY_FLOW false
 FREE_SURFACE_BC true
 SOLUTION_METHOD
 	-iterative_solver   true
-	-tolerance          1e-016
-	-save_directions    30
+	-tolerance          1e-015
+	-save_directions    40
 	-maximum_iterations 500
 	-space_differencing 0
 	-time_differencing  1

@@ -3,7 +3,7 @@
 #SBATCH -p UV
 ##SBATCH -p exper
 #SBATCH -A nrp
-#SBATCH -n 11
+#SBATCH -n 10
 #SBATCH -c 8
 ##SBATCH --ntasks-per-node=1
 #SBATCH --ntasks-per-socket=1
@@ -21,7 +21,7 @@
 #module load tools/pest-13.5-gnu
 
 PHAST_ROOT_NAME=full3d
-NODES=11
+NODES=10
 PROCESSES=${NODES}
 PHAST_NODES=8
 PST=phast.pst
