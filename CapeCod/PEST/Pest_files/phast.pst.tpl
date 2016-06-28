@@ -34,10 +34,10 @@ React_SOC_k	none		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
 time_step	fixed		absolute(1)	0.125		0.0		0.25		trans	1.0		0.0		1
 time_change	fixed		absolute(1)	1994		1994		2015		trans	1.0		0.0		1
 pond_level	none		absolute(1)	10.19		9.89		12.19		trans	1.0		0.0		1
-bottom_kxy	none		factor  	0.000106	1e-6		1e-2		trans	1.0		0.0		1
-bottom_kz	tied		factor		0.00003		0.3e-6		0.3e-2		trans	1.0		0.0		1
-middle_kxy	none		factor		0.00106		1e-6		1e-2		trans	1.0		0.0		1
-middle_kz	tied		factor		0.0003		0.3e-6		0.3e-2		trans	1.0		0.0		1
+bottom_kxy	none		factor  	0.0001		1e-6		1.1e-3		trans	1.0		0.0		1
+bottom_kz	tied		factor		0.00003		0.3e-6		0.3e-3		trans	1.0		0.0		1
+middle_kxy	none		factor		0.001		1e-6		1.1e-3		trans	1.0		0.0		1
+middle_kz	tied		factor		0.0003		0.3e-6		0.3e-3		trans	1.0		0.0		1
 bottom_kz	bottom_kxy
 middle_kz	middle_kxy
 * observation groups 
