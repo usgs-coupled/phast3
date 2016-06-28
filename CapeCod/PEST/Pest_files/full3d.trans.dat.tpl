@@ -94,8 +94,14 @@ MEDIA
 		-active                   1
 	-box 600 -1200 -50 1000 400 20 GRID
 		-active                   1
-	-box 625 25 7.5 1000 400 20 GRID
-		-active                   0
+	-box -600 -1200 -30 1000 400 -15 GRID
+			-Kx                       %    bottom_kxy %
+			-Ky                       %    bottom_kxy %
+			-Kz                       %     bottom_kz %
+	-box -600 -1200 -15 1000 400 0 GRID
+			-Kx                       %    middle_kxy %
+			-Ky                       %    middle_kxy %
+			-Kz                       %     middle_kz %
 FLUX_BC
 	-box -600 -1200 15 1200 800 15 GRID
 		-face Z
@@ -213,7 +219,8 @@ LEAKY_BC
 SPECIFIED_HEAD_BC
 	-box 600 0 7.5 1200 400 15 GRID
 		-head
-			0 years	13.42
+			#0 years	13.42
+			0 years   %    pond_level %
 		-associated_solution
 			0 years	1
 HEAD_IC
@@ -259,26 +266,26 @@ PRINT_FREQUENCY
 		-boundary_conditions    false 
 		-components             0
 		-conductances           0
-		-end_of_period_default  true 
+		-end_of_period_default  false 
 		-flow_balance           1    years
 		-force_chemistry_print  0
-		-HDF_chemistry          0.5    years
-		-HDF_heads              end 
+		-HDF_chemistry          0    years
+		-HDF_heads              0 
 		-HDF_velocities         0
-		-heads                  end 
-		-progress_statistics    end 
+		-heads                  0 
+		-progress_statistics    0 
 		-restart_file           0
 		-velocities             0
 		-wells                  end 
 		-xyz_chemistry          0
 		-xyz_components         0
-		-xyz_heads              500    years
+		-xyz_heads              0    years
 		-xyz_velocities         0
 		-xyz_wells              0
 		-zone_flow              end 
 		-zone_flow_xyzt         end 
 		-zone_flow_tsv          end 
-		-hdf_intermediate       end 
+		-hdf_intermediate       0 
 	1993
 		-xyz_chemistry          0.25 yr
 TIME_CONTROL

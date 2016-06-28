@@ -50,3 +50,45 @@ Plan for run 2: calculate sensitivities for SOC parameters.
    increase effluent_p
    change wt to sqrt(max) (except 795 observation)
    
+ Parameter name    Group          Current value    Sensitivity
+   anionhpo4_k     chem             26.7000          7.81439      x   
+   anion_sites     chem            3.450000E-03      3818.84    
+   cation_sites    chem            1.800000E-02      288.571    
+   toc             chem             1600.00         0.285020      x  
+   decay_k         chem            1.029606E-07     3.982696E+08
+   effluent_p      chem             500.000         5.481123E-02  x
+   remove_p_k      chem            2.103348E-08     1.784344E+09
+   soc             chem             1000.00         4.918278E-04  x
+   sorb_soc_k      chem            5.085866E-08     3.119610E+06
+   react_soc_k     chem            1.493485E-08     3.146763E+07
+
+=================================================================================
+3. Adding Pond level, and hydraulic conductivity as parameters
+   reducing time step to 0.125
+   weight is 1/max^0.75
+   removed most printing in trans.dat.tpl
+   
+AnionHPO4_k	fixed		absolute(1)	26.7		26.2		27.2		chem	1.0		0.0		1
+Anion_sites	none		factor		3450e-6		1150e-6		4600e-6		chem	1.0		0.0		1
+Cation_k	fixed		absolute(1)	-1.8		-2.8		-0.8		chem	1.0		0.0		1
+Cation_sites	none		factor		18000e-6	9000e-6		36000e-6	chem	1.0		0.0		1
+TOC		fixed		factor		1600.0		800.0		3200.0		chem	1.0		0.0		1
+Decay_k		none		factor		1e-7		0.5e-7		2e-7		chem	1.0		0.0		1
+Effluent_P	fixed		factor		500.		190.0		500.0		chem	1.0		0.0		1
+AnionOH2_k	fixed		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
+CationOH2_k	fixed		absolute(1)	4.1		2.0		6.0		chem	1.0		0.0		1
+Remove_P_k	none		factor		2.1e-8		1e-9		1e-7		chem	1.0		0.0		1
+DO		fixed		factor		250.0		100.0		500.		chem	1.0		0.0		1
+Remove_N2_k	fixed		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+SOC		fixed		factor		1000.0		10.0		10000.0		chem	1.0		0.0		1
+Sorb_SOC_k	none		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+React_SOC_k	none		factor		1.16e-7		1e-9		1e-5		chem	1.0		0.0		1
+time_step	fixed		absolute(1)	0.25		0.0		0.25		trans	1.0		0.0		1
+time_change	fixed		absolute(1)	1994		1994		2015		trans	1.0		0.0		1
+pond_level	none		absolute(1)	10.19		9.89		12.19		trans	1.0		0.0		1
+bottom_kxy	none		factor  	0.0000106	1e-6		1e-3		trans	1.0		0.0		1
+bottom_kz	tied		factor		0.000003	0.3e-6		0.3e-3		trans	1.0		0.0		1
+middle_kxy	none		factor		0.000106	1e-6		1e-3		trans	1.0		0.0		1
+middle_kz	tied		factor		0.00003		0.3e-6		0.3e-3		trans	1.0		0.0		1
+bottom_kz	bottom_kxy
+middle_kz	middle_kxy   
