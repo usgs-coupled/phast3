@@ -288,6 +288,7 @@ PRINT_FREQUENCY
 		-hdf_intermediate       0 
 	1993
 		-xyz_chemistry          0.25 yr
+		-HDF_chemistry          1    years
 TIME_CONTROL
 	-time_step
 		0 
