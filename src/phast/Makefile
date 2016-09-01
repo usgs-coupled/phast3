@@ -100,7 +100,9 @@ PHREEQC_INCLUDES = -I.. -I../PhreeqcRM/src \
 		   -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc \
                    -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp \
                    -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common \
-                   -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords
+                   -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords \
+		  -I${BOOST_ROOT}/include
+
 
 PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM/src:../PhreeqcRM/src/IPhreeqcPhast:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords:../KDtree:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common
 
@@ -116,9 +118,12 @@ IF_HOME=/lobo02home/intel/Compiler/11.0/083/lib
 IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -Xlinker -Bdynamic -lpthread -ldl 
 
 # The following apply to Mpi versions
-MPI_GFORTRAN_64=/usr/lib64/openmpi
-MPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
+#MPI_GFORTRAN_64=/usr/lib64/openmpi
+MPI_GFORTRAN_64 = /cxfs/projects/spack/opt/spack/linux-x86_64/gcc-4.4.7/openmpi-1.8.8-72q36csmgq7qgf6nuhqnthbxdghzjpfz
+BOOST_ROOT=/cxfs/projects/root/opt/boost/1.59.0/gcc
 
+#MPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
+MPI_IFORT_64=/opt/intel/impi/5.0.1.035/intel64
 # -----------------------------------------------------------------------------
 .f.o :
 	${FC} -c ${FFLAGS} $<
@@ -137,7 +142,8 @@ MPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 #hdf options
 HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
+#HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
+HDF5_LIBS_64=-lhdf5 -lz -lpthread
 
 # -----------------------------------------------------------------------------
 #hdf options
@@ -190,7 +196,6 @@ ifeq ($(CFG), OPENMP_GFORTRAN_64_DEBUG)
 endif
 
 # -----------------------------------------------------------------------------
-
 ifeq ($(CFG), MPI_GFORTRAN_64)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DSWIG_SHARED_OBJ -DNDEBUG -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES $(PHREEQC_INCLUDES) -DUSE_GZ
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
@@ -204,6 +209,20 @@ ifeq ($(CFG), MPI_GFORTRAN_64)
   LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -lmpi_usempi -ldl ${HASH_STYLE} 
   LINKER       = $(CXX)
 endif
+
+#ifeq ($(CFG), MPI_GFORTRAN_64)
+#  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) -DSWIG_SHARED_OBJ -DNDEBUG -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES $(PHREEQC_INCLUDES) -DUSE_GZ
+#  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
+#  VPATH        = $(PHREEQC_VPATH)
+#  FC           = $(MPI_GFORTRAN_64)/bin/mpif90
+#  FFLAGS       = -O3 -fno-underscoring -cpp $(DEFINES) 
+#  CXX          = $(MPI_GFORTRAN_64)/bin/mpiCC
+#  CC           = $(MPI_GFORTRAN_64)/bin/mpiCC
+#  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+#  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
+#  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -lmpi_usempi -ldl ${HASH_STYLE} 
+#  LINKER       = $(CXX)
+#endif
 
 # -----------------------------------------------------------------------------
 
@@ -255,12 +274,12 @@ ifeq ($(CFG), MPI_INTEL_64)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(MPI_IFORT_64)/bin/mpif90
-  FFLAGS       = -mcmodel=large -O3 -nus $(DEFINES)
-  CXX          = $(MPI_IFORT_64)/bin/mpiCC
-  CC           = $(MPI_IFORT_64)/bin/mpiCC
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
+  FFLAGS       = -mcmodel=large -O3 $(DEFINES) -I$(MPI_IFORT_64)/include
+  CXX          = $(MPI_IFORT_64)/bin/mpicc
+  CC           = $(MPI_IFORT_64)/bin/mpicc
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) -I$(MPI_IFORT_64)/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS)
-  LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} -lmpi_f77 ${HASH_STYLE} 
+  LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} ${HASH_STYLE} -L$(MPI_IFORT_64)/lib
   LINKER       = $(CXX)
 endif
 
@@ -501,7 +520,6 @@ cl1.o \
 cvdense.o \
 cvode.o \
 dense.o \
-dw.o \
 gases.o \
 input.o \
 integrate.o \
