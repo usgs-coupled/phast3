@@ -14,8 +14,9 @@ PROGRAM=phastinput
 
 # Linux
 #CC=gcc
-PHASTINPUT_INCLUDES = -I../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp -IPhastKeywords
-VPATH    = ./../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp:./PhastKeywords
+BOOST_ROOT=/cxfs/projects/root/opt/boost/1.59.0/gcc
+PHASTINPUT_INCLUDES = -I../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -IPhastKeywords -I${BOOST_ROOT}/include -I../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common
+VPATH    = ./../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp:../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common:./PhastKeywords
 
 CXX=g++
 CC=g++
@@ -174,9 +175,9 @@ depends:
 	./NNInterpolator/*.c ./NNInterpolator/*.cpp \
         ./Shapefiles/*.c ./Shapefiles/*.cpp \
         ./KDtree/*.cpp \
-        ../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp \
-        ../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx \
-        ../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx \
-        ../phast/PhreeqcRM/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx \
+        ../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp \
+        ../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx \
+        ../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx \
+        ../phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx \
         ./PhastKeywords/Keywords.cpp \
         > dependencies
