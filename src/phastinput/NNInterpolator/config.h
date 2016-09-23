@@ -3,7 +3,9 @@
 #define isnan _isnan
 #define strdup _strdup
 #define copysign _copysign
+#if (_MSC_VER < 1900)
 #define rint (int)
+#endif
 #define M_PI 3.14159265358979323846
 #define TRILIBRARY
 #define NO_TIMER
