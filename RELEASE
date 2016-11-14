@@ -3,6 +3,15 @@ PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
 
 ---------
+svn 11770
+---------
+PHAST: Minor code change to eliminate compiler warnings.
+
+-----------------------------------------------
+Version 3.3.8 (11728): September 13, 2016
+-----------------------------------------------
+
+---------
 svn 11170
 ---------
 PHAST: Added to error messages when a transport calculation fails.
