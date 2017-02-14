@@ -67,6 +67,7 @@ $trigger += ${Env:REL}
 $trigger += '&VER='
 $trigger += ${Env:VER}
 $trigger += '&delay=0sec'
+$trigger += "&token=${TOKEN}"
 Write-Output "trigger=$trigger"
 
 # trigger build
