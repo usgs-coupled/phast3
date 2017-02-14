@@ -56,6 +56,9 @@ Write-Output "Env:MSI_VERSION=$Env:MSI_VERSION"
 Write-Output "Env:FULLPKG=$Env:FULLPKG"
 
 # create phast-dist-linux build URL
+[string]$PASS8080="3ccd668c7f469a58902282cb26b556f0"
+[string[]]$AUTH="--auth-no-challenge","--http-user=charlton","--http-password=${PASS8080}"
+[string]$TOKEN = 'ABCDEFG'
 [string]$trigger = 'http://136.177.112.8:8080/job/phast-dist-linux/buildWithParameters'
 $trigger += '?DATE='
 $trigger += ${Env:DATE} -replace '/','%2f'
@@ -67,14 +70,14 @@ $trigger += '&delay=0sec'
 Write-Output "trigger=$trigger"
 
 # trigger build
-wget -S $trigger -O start.html 2> queue.out
+wget ${AUTH} -S $trigger -O start.html 2> queue.out
 [string]$location="$((-Split (cat .\queue.out | Select-String "Location"))[1])api/xml"
 Write-Output "location=$location"
 
 # wget until <waitingItem> changes to <leftItem>
 do {
   Start-Sleep -s 2
-  wget $location -O leftItem.xml 2> $null
+  wget ${AUTH} $location -O leftItem.xml 2> $null
 } until ((Select-Xml -Path .\leftItem.xml -XPath "/leftItem"))
 
 [string]$build="$((Select-Xml -Path .\leftItem.xml -XPath "/leftItem/executable/url").Node.InnerText)"
@@ -86,7 +89,7 @@ Write-Output "build=$build"
 # wget until <freeStyleBuild><building>false</building></freeStyleBuild>
 do {
   Start-Sleep -s 20
-  wget "${build}api/xml" -O freeStyleBuild.xml 2> $null
+  wget ${AUTH} "${build}api/xml" -O freeStyleBuild.xml 2> $null
   [string]$building = (Select-Xml -Path .\freeStyleBuild.xml -XPath "/freeStyleBuild/building").Node.InnerText
   Write-Output "building=$building"
 } until($building -contains 'false')
@@ -98,7 +101,7 @@ New-Item ".\phast_dist" -ItemType directory
 Set-Location "phast_dist"
 foreach ($art in $artifacts) {
   ${relPath}=${art}.Node.relativePath
-  wget "${url}artifact/${relPath}" 2> $null
+  wget ${AUTH} "${url}artifact/${relPath}" 2> $null
 }
 Set-Location ".."
 
