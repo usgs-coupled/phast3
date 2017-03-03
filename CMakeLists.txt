@@ -64,6 +64,7 @@ endif()
 # database
 SET(phast_DATABASE
 database/Amm.dat
+database/ColdChem.dat
 database/frezchem.dat
 database/iso.dat
 database/llnl.dat
