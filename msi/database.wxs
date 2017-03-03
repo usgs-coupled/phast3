@@ -1,8 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <ComponentGroup Id="Database">
             <ComponentRef Id="Amm.dat" />
+            <ComponentRef Id="ColdChem.dat" />
             <ComponentRef Id="frezchem.dat" />
             <ComponentRef Id="iso.dat" />
             <ComponentRef Id="llnl.dat" />
@@ -19,6 +20,9 @@
             <Directory Id="database" Name="database">
                 <Component Id="Amm.dat" Guid="*">
                   <File Id="Amm.dat" KeyPath="yes" Source="$(var.DbDir)\Amm.dat" />
+                </Component>
+                <Component Id="ColdChem.dat" Guid="*">
+                  <File Id="ColdChem.dat" KeyPath="yes" Source="$(var.DbDir)\ColdChem.dat" />
                 </Component>
                 <Component Id="frezchem.dat" Guid="*">
                   <File Id="frezchem.dat" KeyPath="yes" Source="$(var.DbDir)\frezchem.dat" />
