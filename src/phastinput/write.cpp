@@ -2270,7 +2270,7 @@ write_calculation_transient(void)
 	/* time change */
 	output_msg(OUTPUT_HST, "C.3.7.4 .. TIMCHG\n");
 	/*  output_msg(OUTPUT_HST,"     %f\n", current_time_end.value * current_time_end.input_to_user); */
-	output_msg(OUTPUT_HST, "     %g\n", current_end_time);
+	output_msg(OUTPUT_HST, "     %25.15e\n", current_end_time);
 	return (OK);
 }
 
