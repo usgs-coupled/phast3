@@ -56,10 +56,11 @@ Write-Output "Env:MSI_VERSION=$Env:MSI_VERSION"
 Write-Output "Env:FULLPKG=$Env:FULLPKG"
 
 # create phast-dist-linux build URL
+[string]$IP=(dig +short myip.opendns.com `@resolver1.opendns.com)
 [string]$PASS8080="3ccd668c7f469a58902282cb26b556f0"
 [string[]]$AUTH="--auth-no-challenge","--http-user=charlton","--http-password=${PASS8080}"
 [string]$TOKEN = 'ABCDEFG'
-[string]$trigger = 'http://136.177.112.8:8080/job/phast-dist-linux/buildWithParameters'
+[string]$trigger = "http://${IP}:8080/job/phast-dist-linux/buildWithParameters"
 $trigger += '?DATE='
 $trigger += ${Env:DATE} -replace '/','%2f'
 $trigger += '&REL='
