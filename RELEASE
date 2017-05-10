@@ -1,6 +1,17 @@
 ---------------------------------------
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
+---------
+svn 12679
+---------
+PHAST: Phastinput did not have enough precision in the field for the end
+of a simulation period. Under some conditions, the number written could
+be the same as the previous period, which caused an error exit. More
+digits are now written in the Phast.tmp file. 
+
+-----------------------------------------------
+Version 3.3.11 (12535): March 10, 2017 
+-----------------------------------------------
 
 -----------------------------------------------
 Version 3.3.10 (12220): January 12, 2017
