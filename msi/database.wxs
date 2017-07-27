@@ -4,6 +4,7 @@
         <ComponentGroup Id="Database">
             <ComponentRef Id="Amm.dat" />
             <ComponentRef Id="ColdChem.dat" />
+            <ComponentRef Id="core10.dat" />
             <ComponentRef Id="frezchem.dat" />
             <ComponentRef Id="iso.dat" />
             <ComponentRef Id="llnl.dat" />
@@ -23,6 +24,9 @@
                 </Component>
                 <Component Id="ColdChem.dat" Guid="*">
                   <File Id="ColdChem.dat" KeyPath="yes" Source="$(var.DbDir)\ColdChem.dat" />
+                </Component>
+                <Component Id="core10.dat" Guid="*">
+                  <File Id="core10.dat" KeyPath="yes" Source="$(var.DbDir)\core10.dat" />
                 </Component>
                 <Component Id="frezchem.dat" Guid="*">
                   <File Id="frezchem.dat" KeyPath="yes" Source="$(var.DbDir)\frezchem.dat" />
