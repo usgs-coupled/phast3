@@ -65,6 +65,7 @@ endif()
 SET(phast_DATABASE
 database/Amm.dat
 database/ColdChem.dat
+database/core10.dat
 database/frezchem.dat
 database/iso.dat
 database/llnl.dat
