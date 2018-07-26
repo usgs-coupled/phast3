@@ -114,7 +114,7 @@ SUBROUTINE wellsr
         !             UTWKT=T0H
      END IF
      iwfss=INT(SIGN(1._kdp,uqwvkt))
-     IF(ABS(uqwvkt) < 1.e-8_kdp) iwfss=0
+     IF(ABS(uqwvkt) < MIN_WELL_FLOW) iwfss=0
      IF(awqm == 20.OR.awqm == 40) THEN
         IF(upwkt > upm) THEN
            iwfss=-1
@@ -258,7 +258,7 @@ SUBROUTINE wellsr
      END DO
      IF(awqm == 20.OR.awqm == 40) THEN
         iwfss=INT(SIGN(1._kdp,uqwv))
-        IF(ABS(uqwv) < 1.e-8_kdp) iwfss=0
+        IF(ABS(uqwv) < MIN_WELL_FLOW) iwfss=0
         uqwvkt=uqwv
      END IF
      ! ... Sum mass, heat, and solute flow rates for the well
@@ -504,7 +504,7 @@ SUBROUTINE wellsr
      IF(awqm == 40) THEN
         ! ... Specified surface pressure
         iwfss=INT(SIGN(1._kdp,uqwm))
-        IF(ABS(uqwm) <= 1.e-8_kdp) iwfss=0
+        IF(ABS(uqwm) <= MIN_WELL_FLOW) iwfss=0
         uqwmr=uqwm
         IF(iwfss > 0) THEN
            ! ... Production well

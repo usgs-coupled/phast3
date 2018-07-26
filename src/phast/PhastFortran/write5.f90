@@ -659,7 +659,7 @@ SUBROUTINE write5
 !!$!           hwcell=p(mkt)/(den0*gz)+zwt(iwel)  !***incorrect
 !!$           u1=time
 !!$           iwfss=INT(SIGN(1.d0,qwm(iwel)))
-!!$           IF(ABS(qwm(iwel)) < 1.e-8_kdp) iwfss=0
+!!$           IF(ABS(qwm(iwel)) < MIN_WELL_FLOW) iwfss=0
 !!$           IF(wqmeth(iwel) > 0) THEN
 !!$              ! ... Production or injection well
 !!$!              u2=pwkt(iwel)/(den0*gz)+zwt(iwel) !*** not correct
@@ -707,7 +707,7 @@ SUBROUTINE write5
                  IF(wqmeth(iwel) >= 40) wrcalc=.TRUE.
                  mkt=mwel(iwel,nkswel(iwel))
                  iwfss=INT(SIGN(1.d0,qwm(iwel)))
-                 IF(ABS(qwm(iwel)) < 1.e-8_kdp) iwfss=0
+                 IF(ABS(qwm(iwel)) < MIN_WELL_FLOW) iwfss=0
                  IF(wqmeth(iwel) > 0) THEN
                     ! ... Production or injection well
                     DO  is=is1,is2
@@ -823,7 +823,7 @@ SUBROUTINE write5
            !           hwcell=p(mkt)/(den0*gz)+zwt(iwel)  !***wrong formula
            u1=time
            iwfss=INT(SIGN(1.d0,qwm(iwel)))
-           IF(ABS(qwm(iwel)) < 1.e-8_kdp) iwfss=0
+           IF(ABS(qwm(iwel)) < MIN_WELL_FLOW) iwfss=0
            IF(wqmeth(iwel) > 0 .AND. iwfss /= 0) THEN
               ! ... Production or injection well
               !              u2=pwkt(iwel)/(den0*gz)+zwt(iwel)  !***incorrect

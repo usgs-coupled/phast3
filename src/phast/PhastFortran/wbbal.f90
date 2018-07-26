@@ -36,7 +36,7 @@ SUBROUTINE wbbal
      !$$         wrcalc=.false.
      uqwm = - qwm(iwel)  
      iwfss = INT(SIGN(1._kdp,uqwm))  
-     IF(ABS(uqwm) < 1.e-8_kdp) iwfss = 0  
+     IF(ABS(uqwm) < MIN_WELL_FLOW) iwfss = 0  
      nks = nkswel(iwel)  
      !$$         mmkt=mwel(iwel,nks)
      DO 10 ks=1,nks  

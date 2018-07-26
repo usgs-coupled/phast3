@@ -14,7 +14,7 @@ SUBROUTINE XP_wellsr_thread(xp)
   USE mcp, ONLY: vis0, den0, gz
   USE mcv, ONLY: itime, frac, p
   USE mcw, ONLY: nwel, wqmeth, nkswel, mwel, wi, pwsurs, pwkts, wrisl, wrangl, &
-    twrend, tolfpw, mxitqw, tolqw
+    twrend, tolfpw, mxitqw, tolqw, MIN_WELL_FLOW
   USE XP_module, ONLY: Transporter
   USE PhreeqcRM
   IMPLICIT NONE
@@ -110,7 +110,7 @@ SUBROUTINE XP_wellsr_thread(xp)
         END IF
      END IF
      iwfss = INT(SIGN(1._kdp,uqwvkt))
-     IF(ABS(uqwvkt) < 1.e-8_kdp) iwfss = 0
+     IF(ABS(uqwvkt) < MIN_WELL_FLOW) iwfss = 0
      IF(awqm == 20 .OR. awqm == 40) THEN
         IF(upwkt > upm) THEN
            iwfss = -1
@@ -243,7 +243,7 @@ SUBROUTINE XP_wellsr_thread(xp)
      END DO
      IF(awqm == 20 .OR. awqm == 40) THEN
         iwfss = INT(SIGN(1._kdp,uqwv))
-        IF(ABS(uqwv) < 1.e-8_kdp) iwfss = 0
+        IF(ABS(uqwv) < MIN_WELL_FLOW) iwfss = 0
         uqwvkt = uqwv
      END IF
      ! ... Sum mass solute flow rates for the well
@@ -405,7 +405,7 @@ SUBROUTINE XP_wellsr_thread(xp)
      IF(awqm == 40) THEN
         ! ... Specified surface pressure
         iwfss = INT(SIGN(1._kdp,uqwm))
-        IF(ABS(uqwm) <= 1.e-8_kdp) iwfss = 0
+        IF(ABS(uqwm) <= MIN_WELL_FLOW) iwfss = 0
         uqwmr = uqwm
         IF(iwfss > 0) THEN
            ! ... Production well
@@ -668,7 +668,7 @@ SUBROUTINE XP_wellsr(xp)
         END IF
      END IF
      iwfss = INT(SIGN(1._kdp,uqwvkt))
-     IF(ABS(uqwvkt) < 1.e-8_kdp) iwfss = 0
+     IF(ABS(uqwvkt) < MIN_WELL_FLOW) iwfss = 0
      IF(awqm == 20 .OR. awqm == 40) THEN
         IF(upwkt > upm) THEN
            iwfss = -1
@@ -798,7 +798,7 @@ SUBROUTINE XP_wellsr(xp)
      END DO
      IF(awqm == 20 .OR. awqm == 40) THEN
         iwfss = INT(SIGN(1._kdp,uqwv))
-        IF(ABS(uqwv) < 1.e-8_kdp) iwfss = 0
+        IF(ABS(uqwv) < MIN_WELL_FLOW) iwfss = 0
         uqwvkt = uqwv
      END IF
      ! ... Sum mass solute flow rates for the well
@@ -957,7 +957,7 @@ SUBROUTINE XP_wellsr(xp)
      IF(awqm == 40) THEN
         ! ... Specified surface pressure
         iwfss = INT(SIGN(1._kdp,uqwm))
-        IF(ABS(uqwm) <= 1.e-8_kdp) iwfss = 0
+        IF(ABS(uqwm) <= MIN_WELL_FLOW) iwfss = 0
         uqwmr = uqwm
         IF(iwfss > 0) THEN
            ! ... Production well
