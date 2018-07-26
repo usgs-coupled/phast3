@@ -138,7 +138,7 @@ SUBROUTINE rhsn
         ! ... Step cumulative flow rates from wells. To be converted to amounts
         ! ...      in SUMCAL
         iwfss=INT(SIGN(1._kdp,-qwm_n(iwel)))
-        IF(ABS(qwm_n(iwel)) < 1.e-8_kdp) iwfss=0
+        IF(ABS(qwm_n(iwel)) < MIN_WELL_FLOW) iwfss=0
         IF(iwfss >= 0) THEN            ! ... Production well
            stfwp(iwel) = -ufdt0*qwm_n(iwel)
            stotfp=stotfp+stfwp(iwel)

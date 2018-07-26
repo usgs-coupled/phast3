@@ -49,7 +49,7 @@ SUBROUTINE wbcflo
   END DO
   ! ... Sum mass flow rates for the well
   iwfss=INT(SIGN(1.d0,-qwm(1)))
-  IF(ABS(qwm(1)) < 1.e-8_kdp) iwfss=0
+  IF(ABS(qwm(1)) < MIN_WELL_FLOW) iwfss=0
   florev=.FALSE.
   IF(iwfss >= 0) THEN               ! ... Production well
      uqwm=0._kdp

@@ -15,7 +15,7 @@ SUBROUTINE XP_wellsc_thread(xp)
   USE mcp, ONLY: fdtmth, vis0, den0, gz, p0, t0, cnvtmi
   USE mcv, ONLY: itime, frac, p, time
   USE mcw, ONLY: nwel, wqmeth, nkswel, mwel, wi, pwsurs, pwkts, wrisl, wrangl, &
-    twk, twsrkt, twrend, tolfpw, ehwend, mxitqw, eod, tolqw, twsur
+    twk, twsrkt, twrend, tolfpw, ehwend, mxitqw, eod, tolqw, twsur, MIN_WELL_FLOW
   USE phys_const
   USE XP_module, ONLY: Transporter
   USE PhreeqcRM
@@ -114,7 +114,7 @@ SUBROUTINE XP_wellsc_thread(xp)
         END IF
      END IF
      iwfss = INT(SIGN(1._kdp,uqwvkt))
-     IF(ABS(uqwvkt) < 1.e-8_kdp) iwfss = 0
+     IF(ABS(uqwvkt) < MIN_WELL_FLOW) iwfss = 0
      IF(awqm == 20 .OR. awqm == 40) THEN
         IF(upwkt > upm) THEN
            iwfss = -1
@@ -222,7 +222,7 @@ SUBROUTINE XP_wellsc_thread(xp)
      END DO
      IF(awqm == 20 .OR. awqm == 40) THEN
         iwfss = INT(SIGN(1._kdp,uqwv))
-        IF(ABS(uqwv) < 1.e-8_kdp) iwfss = 0
+        IF(ABS(uqwv) < MIN_WELL_FLOW) iwfss = 0
         uqwvkt = uqwv
      END IF
      ! ... Sum mass and solute flow rates for the well
@@ -458,7 +458,7 @@ SUBROUTINE XP_wellsc_thread(xp)
         IF(awqm == 40) THEN
            ! ... Specified surface pressure
            iwfss = INT(SIGN(1._kdp,uqwm))
-           IF(ABS(uqwm) < 1.e-8_kdp) iwfss = 0
+           IF(ABS(uqwm) < MIN_WELL_FLOW) iwfss = 0
            uqwmr = uqwm
            IF(iwfss >= 0) THEN
               ! ... Production well
@@ -735,7 +735,7 @@ SUBROUTINE XP_wellsc(xp)
         END IF
      END IF
      iwfss = INT(SIGN(1._kdp,uqwvkt))
-     IF(ABS(uqwvkt) < 1.e-8_kdp) iwfss = 0
+     IF(ABS(uqwvkt) < MIN_WELL_FLOW) iwfss = 0
      IF(awqm == 20 .OR. awqm == 40) THEN
         IF(upwkt > upm) THEN
            iwfss = -1
@@ -842,7 +842,7 @@ SUBROUTINE XP_wellsc(xp)
      END DO
      IF(awqm == 20 .OR. awqm == 40) THEN
         iwfss = INT(SIGN(1._kdp,uqwv))
-        IF(ABS(uqwv) < 1.e-8_kdp) iwfss = 0
+        IF(ABS(uqwv) < MIN_WELL_FLOW) iwfss = 0
         uqwvkt = uqwv
      END IF
      ! ... Sum mass and solute flow rates for the well
@@ -1076,7 +1076,7 @@ SUBROUTINE XP_wellsc(xp)
         IF(awqm == 40) THEN
            ! ... Specified surface pressure
            iwfss = INT(SIGN(1._kdp,uqwm))
-           IF(ABS(uqwm) < 1.e-8_kdp) iwfss = 0
+           IF(ABS(uqwm) < MIN_WELL_FLOW) iwfss = 0
            uqwmr = uqwm
            IF(iwfss >= 0) THEN
               ! ... Production well

@@ -378,7 +378,7 @@ SUBROUTINE write5_ss_flow
 !!$!        hwcell=p(mkt)/(den0*gz)+zwt(iwel)
 !!$        u1=time
 !!$        iwfss=INT(SIGN(1.d0,qwm(iwel)))
-!!$        IF(ABS(qwm(iwel)) < 1.e-8_kdp) iwfss=0
+!!$        IF(ABS(qwm(iwel)) < MIN_WELL_FLOW) iwfss=0
 !!$        IF(wqmeth(iwel) > 0) THEN
 !!$           ! ... Production or injection well
 !!$!           u2=pwkt(iwel)/(den0*gz)+zwt(iwel)
