@@ -252,7 +252,7 @@ MODULE mcw
        pwk, twk, wi, wsf
   INTEGER :: isign, nshut
   INTEGER, PARAMETER :: maxord=6, maxpts=10, meth=1
-  REAL(KIND=kdp):: MIN_WELL_FLOW=1.e-10_kdp
+  REAL(KIND=kdp):: MIN_WELL_FLOW=1.e-12_kdp
   INTEGER ::  mxitqw, nwel
   LOGICAL :: cwatch, wrcalc
   REAL(KIND=kdp) :: b0, b1, b2, c00, dengl, dntest, ehwend, gcosth, p00, pwrend, qhfac, t00, &
