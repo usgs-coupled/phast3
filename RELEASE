@@ -1,6 +1,25 @@
 ---------------------------------------
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
+---------------
+Git Dec 6, 2018
+---------------
+PHAST: Changes to the restart file. 
+
+Previously, the unsaturated zone cells were indicated by a -1 in the 
+first entry after the cell number in the table at the top of the file and 
+positive numbers were used for partially and totally saturated cells 
+(undifferentiated). Now, a 1 is used to indicate a saturated cell, a 0 is 
+used to indicate a partially saturated cell, and a -1 is used to indicate 
+an unsaturated cell.
+
+Previously, the reactants in unsaturated cells were not written to the 
+restart file. Now, the total set of reactants for all cells are written 
+to the restart file. Thus, there is a change for partially saturated and 
+unsaturated cells: for partially saturated and unsaturated cells, the 
+reactants in the unsaturated part are added to the reactants in the 
+saturated part, and the sum is written to the restart file.
+
 ---------
 svn 12679
 ---------

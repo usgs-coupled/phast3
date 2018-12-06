@@ -1158,7 +1158,7 @@ FileHandler::WriteRestart(int *print_restart)
 					int i = Reaction_module_ptr->GetBackwardMapping()[j][0];			/* i is nxyz number */
 					gzprintf(restart_file, "%e %e %e %d ",  x_node[i], y_node[i], z_node[i], j);
 					// write all solutions
-					gzprintf(restart_file, "%d ", this->ic[7 * i]);
+					//gzprintf(restart_file, "%d ", this->ic[7 * i]);
 					// solution, use -1 if cell is dry
 					//if (this->saturation[i] > 0.0)
 					//{
@@ -1168,6 +1168,18 @@ FileHandler::WriteRestart(int *print_restart)
 					//{
 					//	gzprintf(restart_file, "-1 ");
 					//}
+					if (this->saturation[i] >= 1.0)
+					{
+						gzprintf(restart_file, "%d ", 1);
+					}
+					else if (this->saturation[i] > 0.0)
+					{
+						gzprintf(restart_file, "%d ", 0);
+					}
+					else 
+					{
+						gzprintf(restart_file, "-1 ");
+					}
 					// pp_assemblage
 					gzprintf(restart_file, "%d ", this->ic[7 * i + 1]);
 					// exchange
