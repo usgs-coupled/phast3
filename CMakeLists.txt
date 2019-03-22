@@ -74,6 +74,7 @@ database/minteq.v4.dat
 database/phast.dat
 database/pitzer.dat
 database/sit.dat
+database/Tipping_Hurley.dat
 database/wateq4f.dat
 )
 
