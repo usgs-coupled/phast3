@@ -221,7 +221,8 @@ MODULE mcv
        sxx, syy, szz, vxx, vyy, vzz,  &
        zfs
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  eh, frac, sat, zfsn, frac_icchem,  &
-       p, t
+       p, t, &
+       vx_node, vy_node, vz_node  
   INTEGER :: itime=0
   REAL(KIND=kdp) :: deltim, deltim_sav, deltim_transient, time, time_phreeqc
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: c, ic_mxfrac 

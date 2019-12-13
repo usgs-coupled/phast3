@@ -96,6 +96,7 @@ SUBROUTINE phast_manager
     ENDIF
     CALL zone_flow_write_heads                             ! Write zone flows 
     CALL callback_distribute_static
+    CALL callback_distribute_frac
 !
 ! ... Use Reaction Module to equilbrate cells  
 !
@@ -131,7 +132,6 @@ SUBROUTINE phast_manager
             CALL time_parallel(0)                         ! Timing
             CALL c_distribute
             CALL p_distribute
-            CALL callback_distribute_frac
             CALL time_parallel(1)                         ! 1 - 0, flow and transport communication
             IF (.NOT. steady_flow) THEN
                 CALL coeff_flow
@@ -186,6 +186,7 @@ SUBROUTINE phast_manager
             CALL time_parallel(4)                          ! 4 - 3, flow
             IF(.NOT.steady_flow) THEN
                 CALL flow_distribute
+                CALL callback_distribute_frac
             ENDIF
             CALL time_parallel(5)                          ! 5 - 4, flow communication
             !
@@ -909,7 +910,7 @@ SUBROUTINE Timing_barrier()
 REAL(kind=C_DOUBLE) FUNCTION my_basic_fortran_callback(x1, x2, str, l) BIND(C, name='my_basic_fortran_callback')
     USE ISO_C_BINDING
     USE PhreeqcRM
-    USE mcv, only : frac
+    USE mcv, only : frac, vx_node, vy_node, vz_node
     USE mcc, only : rm_id
     USE mcn, only : volume, pv0
     IMPLICIT none
@@ -949,6 +950,14 @@ REAL(kind=C_DOUBLE) FUNCTION my_basic_fortran_callback(x1, x2, str, l) BIND(C, n
                 else
                     my_basic_fortran_callback = 0.0d0
                 endif
+            else if (fstr(1:l) .eq. "velocity_x") then
+                my_basic_fortran_callback = vx_node(j)
+            else if (fstr(1:l) .eq. "velocity_y") then
+                my_basic_fortran_callback = vy_node(j)
+            else if (fstr(1:l) .eq. "velocity_z") then
+                my_basic_fortran_callback = vz_node(j)
+            else if (fstr(1:l) .eq. "transport_cell_no") then
+                my_basic_fortran_callback = DBLE(j);
             endif
         endif
     endif

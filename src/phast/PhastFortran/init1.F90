@@ -184,6 +184,7 @@ SUBROUTINE init1
   sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
   zfs(nxy),  &
   eh(1), frac(nxyz), sat(nxyz), frac_icchem(1),  &
+  vx_node(nxyz), vy_node(nxyz), vz_node(nxyz), &
   p(nxyz), t(1),  &
   STAT = a_err)
   IF (a_err /= 0) THEN
@@ -193,9 +194,9 @@ SUBROUTINE init1
   dp = 0
   ! ... Allocate dependent variable arrays: mcv_m
   ! ...      component arrays
+  !vx_node(nxyz), vy_node(nxyz), vz_node(nxyz),  &
   ALLOCATE (icmax(nsa), jcmax(nsa), kcmax(nsa),  &
   indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz),  &
-  vx_node(nxyz), vy_node(nxyz), vz_node(nxyz),  &
   dc(0:nxyz,nsa),  &
   dcmax(nsa), dsir(nsa), dsir_chem(nsa),  &
   stsaif(1), stsetb(1), stsfbc(nsa), stslbc(nsa),  &

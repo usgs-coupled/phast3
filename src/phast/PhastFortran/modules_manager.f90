@@ -178,8 +178,8 @@ MODULE mcv_m
   IMPLICIT NONE
   SAVE
   INTEGER, DIMENSION(:), ALLOCATABLE :: icmax, jcmax, kcmax, icsbc, icfbc, iclbc, icrbc
+  !     vx_node, vy_node, vz_node,  &
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
-       vx_node, vy_node, vz_node,  &
        dcmax, dsir, dsir_chem, ssres, ssresf, stotsi, stotsp, stsaif, &
        stsetb, stsfbc, stslbc, stsrbc, stsdbc, stssbc, stswel, tsres, tsresf
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: qsfx, qsfy, qsfz
