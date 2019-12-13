@@ -71,6 +71,7 @@ SUBROUTINE dealloc_arr
        sxx, syy, szz, vxx, vyy, vzz,  &
        zfs,  &
        eh, frac, sat, frac_icchem, p, t,  &
+       vx_node, vy_node, vz_node, &
        STAT = da_err)
   IF (da_err /= 0) THEN
      PRINT *, "Array deallocation failed: dealloc_arr, init1, point 6"  
@@ -78,9 +79,9 @@ SUBROUTINE dealloc_arr
   ENDIF
   ! ... Deallocate dependent variable arrays: mcv_m
   ! ...      component arrays
+  !     vx_node, vy_node, vz_node,  &
   DEALLOCATE (icmax, jcmax, kcmax,  &
        indx_sol1_ic, indx_sol2_ic,  &
-       vx_node, vy_node, vz_node,  &
        dc,  &
        dcmax, dsir, dsir_chem,  &
        stsaif, stsetb, stsfbc, stslbc,  &

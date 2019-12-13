@@ -183,8 +183,8 @@ SUBROUTINE HDF_END_TIME_STEP(iso) BIND(C, NAME='HDF_END_TIME_STEP')
   USE mcc_m,             ONLY: vmask, ntprhdfv, ntprhdfh
   USE mcch_m,            ONLY: unitl
   USE mcp,               ONLY: cnvli, cnvvli
-  USE mcv,               ONLY: frac
-  USE mcv_m,             ONLY: vx_node, vy_node, vz_node
+  USE mcv,               ONLY: frac, vx_node, vy_node, vz_node
+  !USE mcv_m,             ONLY: vx_node, vy_node, vz_node
   USE mg2_m,             ONLY: hdprnt
   USE hdf_media_m,       ONLY: pr_hdf_media
   IMPLICIT NONE

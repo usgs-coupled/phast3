@@ -212,7 +212,7 @@ SUBROUTINE callback_distribute_static
       CALL MPI_BCAST(volume(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
       world_comm, ierrmpi)   
       CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-      world_comm, ierrmpi)   
+      world_comm, ierrmpi)    
   ENDIF
 #endif     
 END SUBROUTINE callback_distribute_static
@@ -229,14 +229,24 @@ SUBROUTINE callback_distribute_frac
   IMPLICIT NONE
   !     ------------------------------------------------------------------
   ! ... Transfer pv0, volume to all workers
-  if (.not. solute .or. .not. steady_flow) return
+  if (.not. solute) return
   if (.not. use_callback) return
   if (mpi_myself == 0) then
+      CALL calc_velocity
+      vx_node = vx_node*cnvvli
+      vy_node = vy_node*cnvvli
+      vz_node = vz_node*cnvvli
       CALL MPI_BCAST(METHOD_CALLBACKDISTRIBUTEFRAC, 1, MPI_INTEGER, manager, world_comm, ierrmpi) 
   endif
   IF (mpi_tasks > 1) THEN
       CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
-          world_comm, ierrmpi)   
+          world_comm, ierrmpi)
+      CALL MPI_BCAST(vx_node(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+          world_comm, ierrmpi)
+      CALL MPI_BCAST(vy_node(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+          world_comm, ierrmpi)
+      CALL MPI_BCAST(vz_node(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+          world_comm, ierrmpi)
   ENDIF
 #endif     
 END SUBROUTINE callback_distribute_frac

@@ -141,6 +141,14 @@ SUBROUTINE dealloc_arr_worker
             STOP
         ENDIF
     endif
+    if (allocated(vx_node)) then
+        DEALLOCATE(vx_node, vy_node, vz_node,  & 
+            STAT = da_err)
+        IF (da_err /= 0) THEN
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 4.1a"  
+            STOP
+        ENDIF
+    endif
     ! ... Deallocate from read2
     ! ... Deallocate the parameter arrays: mcp
     IF (xp_group) THEN

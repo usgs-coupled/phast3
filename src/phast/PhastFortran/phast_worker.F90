@@ -106,8 +106,9 @@ SUBROUTINE worker_init1
     !    STOP  
     !ENDIF
     if (use_callback) then
-        ALLOCATE (pv0(nxyz), volume(nxyz), frac(nxyz), & 
-        STAT = a_err)
+        ALLOCATE (pv0(nxyz), volume(nxyz), frac(nxyz), &
+            vx_node(nxyz), vy_node(nxyz), vz_node(nxyz), &
+            STAT = a_err)
         IF (a_err /= 0) THEN  
             PRINT *, "Array allocation failed: worker_init1, point 2"  
             STOP  
