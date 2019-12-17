@@ -2,10 +2,31 @@
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
 ---------------------
+Git December 17, 2019
+---------------------
+
+PHAST: Added 4 Basic functions. 
+
+TRANSPORT_CELL_NO: Returns the cell number, in the transport model numbering,
+for the current chemical cell calculation. 
+
+VELOCITY_X: Returns the X component of the velocity vector at the cell node. 
+It is a signed quantity.
+
+VELOCITY_Y: Returns the Y component of the velocity vector at the cell node. 
+It is a signed quantity.
+
+VELOCITY_Z: Returns the Z component of the velocity vector at the cell node. 
+It is a signed quantity.
+
+The magnitude of the velocity vector is 
+SQRT(VELOCITY_X^2 + VELOCITY_Y^2 + VELOCITY_Z^2)
+
+---------------------
 Git November 20, 2019
 ---------------------
 
-Updated to PHREEQC 3.6.0.
+PHAST: Updated to PHREEQC 3.6.0.
 
 ---------------
 Git Dec 6, 2018
