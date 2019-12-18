@@ -1,5 +1,5 @@
 if (WIN32)
-cmake_minimum_required (VERSION 3.2.3)
+cmake_minimum_required (VERSION 3.10)
 else()
 cmake_minimum_required (VERSION 2.8.10)
 endif()
@@ -53,12 +53,7 @@ find_package(HDF5 NAMES hdf5)
 # check for MPI
 option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)" "OFF")
 if (PHAST_BUILD_MPI)
-  cmake_policy(SET CMP0054 OLD)
   find_package(MPI REQUIRED)
-  cmake_policy(SET CMP0054 NEW)
- 
-  ##if (MPI_CXX_FOUND)
-  ##endif()
 endif()
 
 # database
