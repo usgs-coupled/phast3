@@ -40,7 +40,7 @@ diffusion2d/diffusion2d.trans.dat
 diffusion2d/phast.dat
 )
 
-install(FILES ${decay} DESTINATION ${example_decaydir})
+install(FILES ${diffusion2d} DESTINATION ${example_diffusion2ddir})
 
 
 # disp2d
