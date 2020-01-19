@@ -1,0 +1,107 @@
+#
+# https://code.chs.usgs.gov/coupled/phast3
+#
+image: buildpack-deps:bionic-scm
+
+stages:
+  - sync
+
+before_script:
+  - eval $(ssh-agent -s)
+  - echo "${SSH_PRIVATE_KEY_ENC}" | base64 --decode | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan ${CI_SERVER_HOST} >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  - git config --global user.email "darth@empire.com"
+  - git config --global user.name "Darth Vader"
+ 
+subtree-sync:
+  stage: sync
+
+  ##
+  ## Only run if on the master branch and the variable GROUP is set
+  ##
+  ## change this to
+  ## only:
+  ##  - master@$GROUP/phast3
+  ## and set GROUP to coupled before merge
+  only:
+    refs:
+      - master
+    variables:
+      - $GROUP
+  
+  script:
+    ##
+    ## Must re-clone in order for the subtree merge to work
+    ## tried re-setting the url for the origin but didn't work
+    ##
+    - cd ..
+    - rm -rf ${CI_PROJECT_NAME}
+    - git clone git@${CI_SERVER_HOST}:${CI_PROJECT_PATH}.git
+    - cd ${CI_PROJECT_NAME}
+
+    ##
+    ## Sync subtrees
+    ##
+    - |
+      #!/bin/bash -ex
+      #
+      # phast3\                     git@${CI_SERVER_HOST}:${GROUP}/phast3.git
+      # ├─database<SYMLINKD>\       ├─database<SYMLINKD>                                                               [src\phast\PhreeqcRM\database]
+      # ├─doc\                      ├─git@${CI_SERVER_HOST}:${GROUP}/subtrees/phast3-doc.git                           doc
+      # │ └─phreeqc3-doc\           │ └─git@${CI_SERVER_HOST}:${GROUP}/subtrees/phreeqc3-doc.git                       doc/phreeqc3-doc
+      # ├─examples\                 ├─git@${CI_SERVER_HOST}:${GROUP}/subtrees/phast3-examples.git                      examples
+      # └─src\                      └─src
+      #   ├─phast\                    ├─phast
+      #   │ ├─KDtree<SYMLINKD>\       │ ├─KDtree<SYMLINKD>                                                             [..\phastinput\KDtree]
+      #   │ └─PhreeqcRM\              │ └─git@${CI_SERVER_HOST}:${GROUP}/phreeqcrm.git                                 src/phast/PhreeqcRM
+      #   │   ├─database\             │   ├─git@${CI_SERVER_HOST}:${GROUP}/subtrees/phreeqc3-database.git              src/phast/database
+      #   │   └─src\                  │   └─git@${CI_SERVER_HOST}:${GROUP}/subtrees/PhreeqcRM-src.git                  src/phast/PhreeqcRM/src
+      #   │     └─IPhreeqcPhast\      │     └─IPhreeqcPhast
+      #   │       └─IPhreeqc\         │       └─git@${CI_SERVER_HOST}:${GROUP}/subtrees/IPhreeqc-src.git               src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc
+      #   │         └─phreeqcpp\      │         └─git@${CI_SERVER_HOST}:${GROUP}/subtrees/phreeqc3-src.git             src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp
+      #   │           └─common\       │           └─git@${CI_SERVER_HOST}:${GROUP}/subtrees/phreeqc3-src-common.git    src/phast/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common
+      #   └─phastinput\               └─git@${CI_SERVER_HOST}:${GROUP}/subtrees/phast3-src-phastinput.git              src/phastinput
+      #     └─common<SYMLINKD>\         └─common<SYMLINKD>                                                             [..\phast\PhreeqcRM\src\IPhreeqcPhast\IPhreeqc\phreeqcpp\common]
+
+      git_subtree() {
+        git subtree "${1}" --prefix="${2}" "${4}" master 2>&1 | grep -v "^[[:digit:]].*/[[:digit:]].*"
+      }
+
+      declare -A urls=( \
+        ["phast3-doc"]="git@${CI_SERVER_HOST}:${GROUP}/subtrees/phast3-doc.git" \
+        ["phast3-examples"]="git@${CI_SERVER_HOST}:${GROUP}/subtrees/phast3-examples.git" \
+        ["PhreeqcRM"]="git@${CI_SERVER_HOST}:${GROUP}/PhreeqcRM.git" \
+        ["phast3-src-phastinput"]="git@${CI_SERVER_HOST}:${GROUP}/subtrees/phast3-src-phastinput.git" \
+      )
+
+      declare -A prefixes=( \
+        ["phast3-doc"]="doc" \
+        ["phast3-examples"]="examples" \
+        ["PhreeqcRM"]="src/phast/PhreeqcRM" \
+        ["phast3-src-phastinput"]="src/phastinput" \
+      )
+
+      export GIT_EDITOR=true
+
+      for remote in "${!urls[@]}"; do
+        git_subtree "pull" "${prefixes[$remote]}" "$remote" "${urls[$remote]}"
+      done
+
+      for remote in "${!urls[@]}"; do
+        git_subtree "push" "${prefixes[$remote]}" "$remote" "${urls[$remote]}"
+      done
+
+      git status
+      git push origin master
+
+## Downstream Projects
+## none
+
+## Upstream Projects
+## phreeqcrm https://code.chs.usgs.gov/coupled/phreeqcrm
+## phast3-doc https://code.chs.usgs.gov/coupled/subtrees/phast3-doc
+## phast3-examples https://code.chs.usgs.gov/coupled/subtrees/phast3-examples
+## phast3-src-phastinput https://code.chs.usgs.gov/coupled/subtrees/phast3-src-phastinput
