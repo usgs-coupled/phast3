@@ -6,6 +6,10 @@ solution 2
 	 Na	2
 	 Cl	2
 END
-SELECTED_OUTPUT
+SELECTED_OUTPUT 1
 	-reset false
 	-totals Cl Na
+SELECTED_OUTPUT 2
+USER_PUNCH 2
+-heading SC
+10 PUNCH SC
