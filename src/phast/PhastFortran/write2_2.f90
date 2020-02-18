@@ -86,7 +86,7 @@ SUBROUTINE write2_2
               status = RM_Abort(rm_id, iphreeqc_id, "write2_2, RM_GetIPhreeqcId");
           endif
           write(string,"(I)") well_so_dummy_number
-          string = "DELETE; -cell 1; SELECTED_OUTPUT "//string//"; -reset false; -pH; -pe; -alkalinity"
+          string = "DELETE; -cell 1; SELECTED_OUTPUT "//TRIM(string)//"; -reset false; -pH; -pe; -alkalinity"
           status = RunString(iphreeqc_id, string)
           string = "RUN_CELLS; -cell 1"
           IF(solute .AND. prtic_well_timser) THEN
@@ -354,11 +354,11 @@ SUBROUTINE write_well_so(xw,yw,zw,xtime,iwel)
 
         DO isel = 1, GetSelectedOutputCount(utility_iphreeqc)
             n_user = GetNthSelectedOutputUserNumber(utility_iphreeqc, isel)
-            if (n_user .eq. well_so_dummy_number) continue
+            if (n_user .eq. well_so_dummy_number) cycle
 
             ! Write x, y, z, time, well_no
-            WRITE(well_so_units(isel),'(tr1,(a15,a))', advance='NO') 'x'//ACHAR(9)//'y'//ACHAR(9)//'z_datum'//  &
-                ACHAR(9)//'Time'//ACHAR(9)//'Well_no'//ACHAR(9)
+            WRITE(well_so_units(isel),'(tr1,A)', advance='NO') '              x'//ACHAR(9)//'              y'//ACHAR(9)// &
+            '        z_datum'//ACHAR(9)//'           Time'//ACHAR(9)//'        Well_no'//ACHAR(9)
 
             ! so headings
             status = SetCurrentSelectedOutputUserNumber(utility_iphreeqc, n_user)
@@ -374,17 +374,17 @@ SUBROUTINE write_well_so(xw,yw,zw,xtime,iwel)
     ! Write selected output
     DO isel = 1, GetSelectedOutputCount(utility_iphreeqc)
         n_user = GetNthSelectedOutputUserNumber(utility_iphreeqc, isel)
-        if (n_user .eq. well_so_dummy_number) continue
+        if (n_user .eq. well_so_dummy_number) cycle
 
         ! Write x, y, z, time, well_no
-        WRITE(well_so_units(isel),'(tr1,4(1pe15.7,a),i15,a)') xw,ACHAR(9),yw,ACHAR(9),  &
+        WRITE(well_so_units(isel),'(tr1,4(1pe15.7,a),i15,a)',advance='NO') xw,ACHAR(9),yw,ACHAR(9),  &
             zw,ACHAR(9),xtime,ACHAR(9),iwel,ACHAR(9)
         ! Write so
         status = SetCurrentSelectedOutputUserNumber(utility_iphreeqc, n_user)
         DO j=1,GetSelectedOutputColumnCount(utility_iphreeqc)
             IF (GetSelectedOutputValue(utility_iphreeqc, 1, j, vt, dv, sv).EQ.ipq_ok) THEN
                 IF (vt.EQ.tt_double) THEN
-                    WRITE(well_so_units(isel),"(1pe15.7,a)",advance="NO") dv, ACHAR(9)
+                    WRITE(well_so_units(isel),"(1pe15.7,a)",advance='NO') dv, ACHAR(9)
                 ELSE IF (vt.EQ.tt_string) THEN
                     WRITE(well_so_units(isel),"(A15,A)",advance="NO") sv, ACHAR(9)
                 END IF

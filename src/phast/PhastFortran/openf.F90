@@ -5,8 +5,6 @@ SUBROUTINE openf
   USE mcc
   USE mcs, only : nthreads
   USE PhreeqcRM
-  USE IPhreeqc
-  USE well_so_files
 !#if defined(USE_MPI)
 !  USE mpi_mod
 !#endif
@@ -15,7 +13,6 @@ SUBROUTINE openf
   INTEGER :: ios, length
   LOGICAL :: lerror 
   INTEGER :: i, a_err
-  INTEGER :: isel, n_user
   CHARACTER(LEN=255) :: restart_name
   !     ------------------------------------------------------------------
   !...
@@ -107,30 +104,6 @@ SUBROUTINE openf
 
       fname=f3name(1:length)//'.wel.xyz.tsv'
       CALL myopen(fuplt, fname, lerror)
-      
-      utility_iphreeqc = RM_GetIPhreeqcId (rm_id, nthreads + 1)
-      well_so_dummy_number = 1
-      well_so_count = GetSelectedOutputCount(utility_iphreeqc)
-      if (well_so_count .gt. 0) then
-          allocate(well_so_units(well_so_count))
-          length = LEN_TRIM(f3name)
-          do isel = 1, well_so_count
-              n_user = GetNthSelectedOutputUserNumber(utility_iphreeqc, isel)
-              if (n_user .ge. well_so_dummy_number) well_so_dummy_number = n_user + 1
-              write(fname,"(I)") n_user
-              IF (LEN_TRIM(f3name(1:length)//'_wel_so_'//TRIM(ADJUSTL(fname))//'.tsv') .GT. LEN(fname)) THEN
-                  WRITE(*,*) 'Prefix too long:' , f3name(1:length)
-                  STOP "Stopping."
-              ENDIF
-              ios = 1
-              open (FILE = TRIM(f3name(1:length)//'_wel_so_'//TRIM(ADJUSTL(fname))//'.tsv'), NEWUNIT = well_so_units(isel), &
-                  IOSTAT=ios,ACTION='WRITE')
-              IF (ios > 0) THEN
-                  lerror = .TRUE.
-                  WRITE(*,*) 'ERROR: Opening file ', TRIM(f3name(1:length)//'_wel_so_'//TRIM(ADJUSTL(fname))//'.tsv')
-              ENDIF
-          enddo
-      endif
   endif
   IF (lerror) THEN
      STOP 'Stopping because of error(s) opening files.'

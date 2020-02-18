@@ -816,7 +816,7 @@ SUBROUTINE write5
            status = RM_Abort(rm_id, iphreeqc_id, "writer, RM_GetIPhreeqcId");
         endif
         write(string,"(I)") well_so_dummy_number
-        string = "DELETE; -cell 1; SELECTED_OUTPUT "//string//"; -reset false; -pH; -pe; -alkalinity"
+        string = "DELETE; -cell 1; SELECTED_OUTPUT "//TRIM(string)//"; -reset false; -pH; -pe; -alkalinity"
         !status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -pe; -alkalinity");
         string = "RUN_CELLS; -cell 1"
         allocate(c_well(1,ns), tc(1), p_atm(1))
@@ -870,6 +870,7 @@ SUBROUTINE write5
                    pe, ACHAR(9), alk, ACHAR(9)
               CALL write_well_so(cnvli*xw(iwel),cnvli*yw(iwel),cnvli*zwt(iwel),cnvtmi*time,iwel)
            ENDIF
+           well_so_need_heading = .FALSE.
         END DO
         deallocate(c_well, tc, p_atm)
         ntprtem = ntprtem+1
