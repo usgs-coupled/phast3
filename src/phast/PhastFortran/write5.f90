@@ -24,6 +24,7 @@ SUBROUTINE write5
   USE print_control_mod
   USE PhreeqcRM
   USE IPhreeqc
+  USE well_so_files
   IMPLICIT NONE
   INTERFACE
       SUBROUTINE convert_to_moles(id, c, n)
@@ -814,7 +815,9 @@ SUBROUTINE write5
         if (iphreeqc_id < 0) then 
            status = RM_Abort(rm_id, iphreeqc_id, "writer, RM_GetIPhreeqcId");
         endif
-        status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -pe; -alkalinity");
+        write(string,"(I)") well_so_dummy_number
+        string = "DELETE; -cell 1; SELECTED_OUTPUT "//TRIM(string)//"; -reset false; -pH; -pe; -alkalinity"
+        !status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -pe; -alkalinity");
         string = "RUN_CELLS; -cell 1"
         allocate(c_well(1,ns), tc(1), p_atm(1))
         DO  iwel=1,nwel
@@ -855,7 +858,8 @@ SUBROUTINE write5
                       call GetErrorStringLine(iphreeqc_id, i, line)
                       status = RM_ErrorMessage(rm_id, line)
                   enddo
-              endif              
+              endif
+              status = SetCurrentSelectedOutputUserNumber(utility_iphreeqc, well_so_dummy_number)
               status = GetSelectedOutputValue(iphreeqc_id, 1, 1, vtype, pH, svalue)
               status = GetSelectedOutputValue(iphreeqc_id, 1, 2, vtype, pe, svalue)
               status = GetSelectedOutputValue(iphreeqc_id, 1, 3, vtype, alk, svalue) 
@@ -864,7 +868,9 @@ SUBROUTINE write5
                    cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
                    (u10(is),ACHAR(9),is=1,ns),ph,ACHAR(9), &
                    pe, ACHAR(9), alk, ACHAR(9)
+              CALL write_well_so(cnvli*xw(iwel),cnvli*yw(iwel),cnvli*zwt(iwel),cnvtmi*time,iwel)
            ENDIF
+           well_so_need_heading = .FALSE.
         END DO
         deallocate(c_well, tc, p_atm)
         ntprtem = ntprtem+1

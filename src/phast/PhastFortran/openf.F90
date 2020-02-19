@@ -3,6 +3,8 @@ SUBROUTINE openf
   USE f_units
   USE mcch
   USE mcc
+  USE mcs, only : nthreads
+  USE PhreeqcRM
 !#if defined(USE_MPI)
 !  USE mpi_mod
 !#endif

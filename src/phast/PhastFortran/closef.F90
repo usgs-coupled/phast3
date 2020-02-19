@@ -24,11 +24,13 @@ SUBROUTINE closef
   USE mcw_m
   USE mg2_m, ONLY: hdprnt, wt_elev
   USE PhreeqcRM
+  USE IPhreeqc
+  USE well_so_files
   IMPLICIT NONE
   CHARACTER(LEN=6), DIMENSION(50) :: st
   INTEGER :: da_err, i1p, i2p, ifu, ip, izn  
   CHARACTER(LEN=130) :: logline1, logline2, logline3
-  INTEGER :: status
+  INTEGER :: status, isel
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file
@@ -168,6 +170,12 @@ SUBROUTINE closef
     CALL myclose(fuzf, st(fuzf))
     CALL myclose(fuzf_tsv, st(fuzf_tsv))
     CALL myclose(fuplt, st(fuplt))  
+    if (well_so_count .gt. 0) then
+        do isel = 1, well_so_count
+            CALL myclose(well_so_units(isel),st(fuplt)) 
+        enddo
+        deallocate(well_so_units)
+    endif
     CALL myclose(fupmap, st(fupmap))  
     CALL myclose(fupmp2, st(fupmp2))  
     CALL myclose(fupmp3, st(fupmp3))  

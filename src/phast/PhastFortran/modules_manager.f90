@@ -263,3 +263,12 @@ MODULE hdf_media_m
   REAL(KIND=kdp) :: fluid_density, fluid_compressibility, fluid_viscosity
   CHARACTER(LEN=120) :: k_units, s_units, alpha_units
 END MODULE hdf_media_m
+    
+MODULE well_so_files
+  USE machine_constants, ONLY: kdp
+  IMPLICIT NONE
+  SAVE
+  INTEGER :: well_so_count, well_so_dummy_number, utility_iphreeqc
+  INTEGER, DIMENSION(:), ALLOCATABLE :: well_so_units
+  LOGICAL :: well_so_need_heading=.TRUE.
+END MODULE well_so_files  
