@@ -509,7 +509,7 @@ SUBROUTINE CreateRM
             do isel = 1, well_so_count
                 n_user = GetNthSelectedOutputUserNumber(utility_iphreeqc, isel)
                 if (n_user .ge. well_so_dummy_number) well_so_dummy_number = n_user + 1
-                write(fname,"(I)") n_user
+                write(fname,"(I20)") n_user
                 IF (LEN_TRIM(f3name(1:length)//'.wel.so_'//TRIM(ADJUSTL(fname))//'.tsv') .GT. LEN(fname)) THEN
                     WRITE(*,*) 'Prefix too long:' , f3name(1:length)
                     STOP "Stopping."

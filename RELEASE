@@ -1,6 +1,40 @@
 ---------------------------------------
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
+
+
+---------------------
+Git February 19, 2020
+---------------------
+
+PHAST: Added new output files for wells. Selected output files can now 
+be written for wells. The SELECTED_OUTPUT and USER_PUNCH definitions 
+from the .chem.dat files are now used to write files named 
+prefix.well.so_n.tsv, where n is the user number of the SELECTED_OUTPUT 
+definition. 
+
+The water composition of an extraction well is run with the utility 
+IPhreeqc instance as a SOLUTION, generating selected output files, one 
+for each SELECTED_OUTPUT definition in the .chem.dat file. The printing 
+of initial conditions is controlled by the print flag PRINT_INITIAL; 
+-xyz_well (the same print flag used for initial conditions for the 
+prefix.wel.xyz.tsv file). Similarly, print frequency to the new files is 
+controlled by PRINT_FREQUENCY; -xyz_well (the same print flag used to 
+control print frequency to the prefix.wel.xyz.tsv file).
+
+The selected output file has columns for x, y, z, time, and well number
+prepended to the columns for the selected output file. A line for each
+well is included for initial conditions (if specified) and each printing
+interval as specified by PRINT_FREQUENCY; -xyz_well.
+
+These new files make the prefix.wel.xyz.tsv file somewhat obsolete. 
+The new selected output files allow much more flexibility to obtain
+information about the well water, including pH, temperature, specific
+conductance, concentrations, and saturation indices. 
+
+
+Version 3.6.2-15100 January 28, 2020
+
 ---------------------
 Git December 17, 2019
 ---------------------

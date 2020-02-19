@@ -85,7 +85,7 @@ SUBROUTINE write2_2
           if (iphreeqc_id < 0) then 
               status = RM_Abort(rm_id, iphreeqc_id, "write2_2, RM_GetIPhreeqcId");
           endif
-          write(string,"(I)") well_so_dummy_number
+          write(string,"(I20)") well_so_dummy_number
           string = "DELETE; -cell 1; SELECTED_OUTPUT "//TRIM(string)//"; -reset false; -pH; -pe; -alkalinity"
           status = RunString(iphreeqc_id, string)
           string = "RUN_CELLS; -cell 1"
@@ -125,8 +125,8 @@ SUBROUTINE write2_2
                   (c(m,iis),ACHAR(9),iis=1,ns),ph,ACHAR(9),&
                   pe, ACHAR(9), alk, ACHAR(9) 
                   CALL write_well_so(cnvli*xw(iwel),cnvli*yw(iwel),cnvli*zwt(iwel),cnvtmi*time,iwel)
+                  well_so_need_heading = .FALSE.
               END DO
-              well_so_need_heading = .FALSE.
               ntprtem = ntprtem+1
               deallocate(c_well, tc, p_atm)
           END IF
