@@ -869,8 +869,8 @@ SUBROUTINE write5
                    (u10(is),ACHAR(9),is=1,ns),ph,ACHAR(9), &
                    pe, ACHAR(9), alk, ACHAR(9)
               CALL write_well_so(cnvli*xw(iwel),cnvli*yw(iwel),cnvli*zwt(iwel),cnvtmi*time,iwel)
+              well_so_need_heading = .FALSE.
            ENDIF
-           well_so_need_heading = .FALSE.
         END DO
         deallocate(c_well, tc, p_atm)
         ntprtem = ntprtem+1
