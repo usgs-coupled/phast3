@@ -815,7 +815,7 @@ SUBROUTINE write5
         if (iphreeqc_id < 0) then 
            status = RM_Abort(rm_id, iphreeqc_id, "writer, RM_GetIPhreeqcId");
         endif
-        write(string,"(I)") well_so_dummy_number
+        write(string,"(I20)") well_so_dummy_number
         string = "DELETE; -cell 1; SELECTED_OUTPUT "//TRIM(string)//"; -reset false; -pH; -pe; -alkalinity"
         !status = RunString(iphreeqc_id, "DELETE; -cell 1;SELECTED_OUTPUT; -reset false; -pH; -pe; -alkalinity");
         string = "RUN_CELLS; -cell 1"
