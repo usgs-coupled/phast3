@@ -396,6 +396,7 @@ CLEANFILES=\
 	xp_module.$(F90_MODEXT)\
 	mcp_m.$(F90_MODEXT)\
 	phreeqcrm.$(F90_MODEXT)\
-	mg2_m.$(F90_MODEXT)
+	mg2_m.$(F90_MODEXT)\
+	well_so_files.$(F90_MODEXT)
 
 include .depend
