@@ -149,7 +149,7 @@
 
                Initial solute in region:H                               1.898373E+00  (kg)
 
-               Initial solute in region:O                               1.517134E+01  (kg)
+               Initial solute in region:O                               1.517175E+01  (kg)
 
                Initial solute in region:Charge                         -1.311087E-02  (kg)
 
