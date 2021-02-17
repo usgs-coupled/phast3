@@ -1,0 +1,32 @@
+Files from Don Walter:
+
+Grid spacing is 400 ft.
+Recharge .0061589 ft/d = 2.25 ft/y = 27 in/yr (+/- other terms)
+	 27 / 12 *.3048 / 365.25 = 1.877618E-03 m/d
+
+bedrock_pts
+	X	Y	elev(ft)			(-99.90 missing elev?)
+drains_pts
+	X	Y	head(ft)?	Leakance(ft^2/d)   KA/b = 1600 
+							   1 ft * KA/b = 1600 ft^3/d
+
+head_all_pts
+	X	Y	Z		head(ft)	(888.00 missing head)
+head_pts
+	X	Y	head(ft)			(888.00 missing head)
+kh_points
+	X	Y	Z		Kh(ft/d)	(0.00 missing Kh)
+kz_points
+	X	Y	Z		Kz(ft/d)	(0.00 missing Kh)
+recharge_pts
+	X	Y	recharge(ft/d)
+streams_pts
+	X	Y	head(ft)	Leakance(?)?
+							   1 ft * KA/b = 16000 ft^3/d
+
+							   16000 ft^3/d = 453 m^3/d
+							   A = 20 m * (400*.3048) = 2438.4
+							   .3048 m * K * 2438.4 / 1 m = 453
+							   K = 0.61 m/d
+wells_pts
+	X	Y	Z		Rate(ft^3/d?)?

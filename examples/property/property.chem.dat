@@ -1,0 +1,29 @@
+#DATABASE ../minteq.v4.dat
+
+SOLUTION 1
+    units umol/l
+    pH 6.5
+    Na 1e3
+    Br 1e3
+END
+
+SOLUTION 2
+     units umol/l
+    pH 7.15
+    Na 1e3
+    Cl 1e3
+END
+PRINT
+        -reset false
+	-warnings 2
+SELECTED_OUTPUT
+	-file property.sel
+	-reset                false
+USER_PUNCH
+        -headings Distance Time Na Cl Br
+        -start
+        10 punch DIST
+        20 PUNCH (TOTAL_TIME/365/24/60/60)
+        30 punch TOT("Na"), TOT("Cl"), TOT("Br")
+        -end
+END

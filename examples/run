@@ -1,0 +1,98 @@
+#!/bin/sh
+if [ $USER == dlpark ]; then
+    PHASTDIR=/raid/home/dlpark/programs/phast3-trunk
+fi
+
+if [ $USER == charlton ]; then
+    ##PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phastpp
+    PHASTDIR=/home/charlton/reactive-transport/phastpp3-worker
+fi
+
+#VALGRIND="valgrind --leak-check=full --suppressions=/usr/lib64/openmpi/share/openmpi/openmpi-valgrind.supp "
+#VALGRIND="valgrind --leak-check=full "
+VALGRIND=
+EXDIR=$PHASTDIR/examples
+TMP=/lobo02home/dlpark/temp
+TMPDIR=/lobo02home/dlpark/temp
+MPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
+
+# 64-Bit Parallel versions
+CONFIGURATION=MPI_GFORTRAN_64
+#CONFIGURATION=MPI_GFORTRAN_64_DEBUG
+#CONFIGURATION=MPI_INTEL_64
+#CONFIGURATION=MPI_INTEL_64_DEBUG
+#
+#   make directory
+#
+NAME=$1
+cd $NAME
+mkdir -p 0
+rm -f 0/*
+#
+#   distribute files
+#
+if [ -f $NAME.trans.dat ]; then 
+    cp $NAME.trans.dat 0
+    fi
+if [ -f $NAME.chem.dat ]; then 
+    cp $NAME.chem.dat 0
+    fi
+if [ -f $NAME.head.dat ]; then 
+    cp $NAME.head.dat 0
+    fi
+if [ $NAME == "ex4restart" ]; then 
+    cp ex4.head.dat 0
+    cp ex4.restart.gz 0
+    fi
+if [ $NAME == "print_check_transient" ]; then 
+    cp print_check_ss.head.dat 0
+    fi
+if [ $NAME == "property" ]; then 
+    cp property.solns property.mix property.mix.xyzt property.xyzt 0
+    fi
+if [ $NAME == "ex4_transient" ]; then 
+    cp ex4.head.dat 0
+    fi
+if [ -f phast.dat ]; then 
+    cp phast.dat 0
+    fi
+
+#
+#   run phastinput
+#
+$PHASTDIR/src/phastinput/phastinput $NAME
+cd 0
+cp ../Phast.tmp .
+cp ../$NAME.log.txt .
+echo Done phastinput.
+
+if [ $CONFIGURATION == "MPI_GFORTRAN_64" ]; then
+# 
+#   64 bit mpi_gfortran_64
+#
+    /usr/lib64/openmpi/bin/mpirun -n 8 -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/mpi_gfortran_64/phast
+fi
+
+if [ $CONFIGURATION == "MPI_GFORTRAN_64_DEBUG" ]; then
+# 
+#   64 bit mpi_gfortran_64_debug
+#
+    /usr/lib64/openmpi/bin/mpirun -n 8 -v -wdir $EXDIR/$NAME/0 $VALGRIND $PHASTDIR/src/phast/mpi_gfortran_64_debug/phast
+fi
+
+if [ $CONFIGURATION == "MPI_INTEL_64" ]; then
+# 
+#   64 bit openmpi_intel_64
+#
+    $MPI_IFORT_64/bin/mpiexec  -n 8 -H lobo02 -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/mpi_intel_64/phast
+fi
+
+if [ $CONFIGURATION == "MPI_INTEL_64_DEBUG" ]; then
+# 
+#   64 bit mpi_intel_64_debug
+#
+    $MPI_IFORT_64/bin/mpiexec  -n 8 -H lobo02 -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/mpi_intel_64_debug/phast
+fi
+
+
+

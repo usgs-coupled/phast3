@@ -1,0 +1,54 @@
+.
+.
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4 direct solver).......... NSTSLV    33297 elements
+Primary storage requirement (D4 direct solver)........................ NPRIST    26456 elements
+Overhead storage requirement (D4 direct solver)....................... NOHST .    6841 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+Beginning transient simulation.
+Reading transient data for simulation: Set  1
+     Time at which next set of transient parameters will be read .......... TIMCHG  1.000E+04  (yr)
+
+Beginning time step no.      1
+     Beginning flow calculation.
+     End of Time Step No.     1
+     Time ..................................................    2000.00     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.00
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+
+Beginning time step no.      2
+     Beginning flow calculation.
+     End of Time Step No.     2
+     Time ..................................................    4000.00     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.00
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+
+Beginning time step no.      3
+     Beginning flow calculation.
+     End of Time Step No.     3
+     Time ..................................................    6000.00     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.00
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+
+Beginning time step no.      4
+     Beginning flow calculation.
+     End of Time Step No.     4
+     Time ..................................................    8000.00     (yr)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.00
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+
+Beginning time step no.      5
+     Current time step length ...................................   2.000E+03 (yr)
+     Beginning flow calculation.
+     End of Time Step No.     5
+     Time ..................................................    10000.0     (yr)
+     Maximum change in potentiometric head  -1.7467E-13      (m ) at location ( 6.000E+04, 4.800E+04,  200.    )(m)
+     Time flow:                        0.00      Cumulative:         0.00
+     Time transport:                   0.00      Cumulative:         0.00
+     Time flow/trans messages:         0.00      Cumulative:         0.00
+Done with transient flow and transport simulation.

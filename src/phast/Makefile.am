@@ -1,0 +1,403 @@
+EXTRA_DIST = CMakeLists.txt phast.rc phast_version.h resource.h
+
+AM_CPPFLAGS=-I$(srcdir)/PhreeqcRM/src -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords $(BOOST_CPPFLAGS)
+
+AM_FCFLAGS=-I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc
+
+FCDEFS=-DHDF5_CREATE
+
+dist_bin_SCRIPTS = phast
+
+if BUILD_MPI
+bin_PROGRAMS = phast-mpi
+FCDEFS+=-DUSE_MPI
+else
+if BUILD_OPENMP
+bin_PROGRAMS = phast-openmp
+FCDEFS+=-DUSE_OPENMP
+else
+bin_PROGRAMS = phast-ser
+endif #BUILD_OPENMP
+endif #BUILD_MPI 
+
+PHAST_SRC=\
+	.depend\
+	FileHandler.cpp\
+	FileHandler.h\
+	gzstream.cxx\
+	gzstream.h\
+	hdf.cpp\
+	hdf.h\
+	KDtree/Cell_Face.h\
+	KDtree/KDtree.cpp\
+	KDtree/KDtree.h\
+	KDtree/kdtree2.cpp\
+	KDtree/kdtree2.hpp\
+	KDtree/Point.cpp\
+	KDtree/Point.h\
+	phast_main.cpp\
+	PhastFortran/aplbce_flow.f90\
+	PhastFortran/aplbci_flow.F90\
+	PhastFortran/asembl_flow.f90\
+	PhastFortran/asmslp_flow.F90\
+	PhastFortran/calc_frac2.F90\
+	PhastFortran/calc_velocity.f90\
+	PhastFortran/calcc.f90\
+	PhastFortran/clog.f90\
+	PhastFortran/closef.F90\
+	PhastFortran/coeff_flow.F90\
+	PhastFortran/coeff_trans.F90\
+	PhastFortran/create_mapping.f90\
+	PhastFortran/dealloc_arr.F90\
+	PhastFortran/dealloc_arr_worker.F90\
+	PhastFortran/dump.f90\
+	PhastFortran/error1.f90\
+	PhastFortran/error2.f90\
+	PhastFortran/error3.f90\
+	PhastFortran/error4.f90\
+	PhastFortran/errprt.f90\
+	PhastFortran/etom1.f90\
+	PhastFortran/etom2.f90\
+	PhastFortran/hdf_f.F90\
+	PhastFortran/ifrd.inc\
+	PhastFortran/ifwr.inc\
+	PhastFortran/incidx.f90\
+	PhastFortran/indx_rewi.f90\
+	PhastFortran/indx_rewi_bc.f90\
+	PhastFortran/init1.F90\
+	PhastFortran/init2_1.F90\
+	PhastFortran/init2_1_xfer.F90\
+	PhastFortran/init2_2.f90\
+	PhastFortran/init2_3.f90\
+	PhastFortran/init2_post_ss.F90\
+	PhastFortran/init3.F90\
+	PhastFortran/init3_xfer.F90\
+	PhastFortran/interpolate_mod.f90\
+	PhastFortran/ld_seg_mod.f90\
+	PhastFortran/ldchar.f90\
+	PhastFortran/ldchar_bc.f90\
+	PhastFortran/mach_mod.f90\
+	PhastFortran/modules_g.f90\
+	PhastFortran/modules_manager.f90\
+	PhastFortran/mpi_mod.F90\
+	PhastFortran/mtoijk.f90\
+	PhastFortran/nintrp.f90\
+	PhastFortran/openf.F90\
+	PhastFortran/phast_manager.F90\
+	PhastFortran/phast_spmd.F90\
+	PhastFortran/phast_worker.F90\
+	PhastFortran/Pointers_to_fortran.h\
+	PhastFortran/prchar.f90\
+	PhastFortran/print_control_mod.f90\
+	PhastFortran/printar.f90\
+	PhastFortran/read1.F90\
+	PhastFortran/read1_xfer.F90\
+	PhastFortran/read2.F90\
+	PhastFortran/read2_xfer.F90\
+	PhastFortran/read3.F90\
+	PhastFortran/read3_xfer.F90\
+	PhastFortran/reorder_mod.f90\
+	PhastFortran/rewi_mod.f90\
+	PhastFortran/rhsn.f90\
+	PhastFortran/rhsn_flow.f90\
+	PhastFortran/rhsn_manager.F90\
+	PhastFortran/rhsn_ss_flow.f90\
+	PhastFortran/sbcflo.f90\
+	PhastFortran/scale_jds_mod.f90\
+	PhastFortran/set_component_map.F90\
+	PhastFortran/simulate_ss_flow.f90\
+	PhastFortran/solver_direct_mod.f90\
+	PhastFortran/solver_iter_mod.f90\
+	PhastFortran/stonb.f90\
+	PhastFortran/sumcal0_manager.F90\
+	PhastFortran/sumcal1.F90\
+	PhastFortran/sumcal1_manager.F90\
+	PhastFortran/sumcal2.f90\
+	PhastFortran/sumcal_ss_flow.f90\
+	PhastFortran/terminate_phast.F90\
+	PhastFortran/terminate_phast_worker.F90\
+	PhastFortran/time_step_save.F90\
+	PhastFortran/timestep.F90\
+	PhastFortran/timestep_ss_flow.f90\
+	PhastFortran/timestep_worker.F90\
+	PhastFortran/update_print_flags.f90\
+	PhastFortran/uppercase.f90\
+	PhastFortran/wbbal.f90\
+	PhastFortran/wbcflo.f90\
+	PhastFortran/wellsc.f90\
+	PhastFortran/wellsc_ss_flow.f90\
+	PhastFortran/wellsr.f90\
+	PhastFortran/wellsr_ss_flow.f90\
+	PhastFortran/welris.f90\
+	PhastFortran/wfdydz.f90\
+	PhastFortran/write1.f90\
+	PhastFortran/write2_1.f90\
+	PhastFortran/write2_2.f90\
+	PhastFortran/write3.f90\
+	PhastFortran/write3_ss_flow.f90\
+	PhastFortran/write4.f90\
+	PhastFortran/write5.f90\
+	PhastFortran/write5_ss_flow.f90\
+	PhastFortran/write6.f90\
+	PhastFortran/xfer_to_manager.F90\
+	PhastFortran/xfer_to_workers.F90\
+	PhastFortran/XP_aplbce.f90\
+	PhastFortran/XP_aplbci.F90\
+	PhastFortran/XP_asembl.f90\
+	PhastFortran/XP_asmslc.F90\
+	PhastFortran/XP_crsdsp.f90\
+	PhastFortran/XP_etom2.f90\
+	PhastFortran/XP_module.F90\
+	PhastFortran/XP_rhsn.f90\
+	PhastFortran/XP_sumcal1.f90\
+	PhastFortran/XP_wbcflo.f90\
+	PhastFortran/XP_wellsc.f90\
+	PhastFortran/XP_wellsr.f90\
+	PhastFortran/zone_flow.f90\
+	PhastFortran/zone_flow_ss.f90\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CVar.hxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Debug.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/ErrorReporter.hxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/fwrap.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/fwrap.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.f.inc\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.f90.inc\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/advection.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/basicsubs.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cl1.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_exports.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/gases.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/input.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/integrate.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/inverse.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/isotopes.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/kinetics.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/mainsubs.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/model.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/parse.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io_output.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer_structures.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/prep.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/print.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/read.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ReadClass.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/readtr.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Serializer.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Serializer.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/sit.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/spread.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/step.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/structures.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialsmath.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialsmath.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/tally.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/tidy.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/transport.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/utilities.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/thread.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.c\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Var.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Version.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.cxx\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.f90.inc\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.h\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.cpp\
+	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h\
+	PhreeqcRM/src/IrmResult.h\
+	PhreeqcRM/src/PhreeqcRM.cpp\
+	PhreeqcRM/src/PhreeqcRM.h\
+	PhreeqcRM/src/RM_interface.F90\
+	PhreeqcRM/src/RM_interface_C.cpp\
+	PhreeqcRM/src/RM_interface_C.h\
+	PhreeqcRM/src/RM_interface_F.cpp\
+	PhreeqcRM/src/RM_interface_F.h\
+	TM_interface.cpp\
+	TM_interface.h
+
+phast_openmp_SOURCES=$(PHAST_SRC)
+
+phast_mpi_SOURCES=$(PHAST_SRC)
+
+phast_ser_SOURCES=$(PHAST_SRC)
+
+phast_openmp_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
+
+phast_mpi_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
+
+phast_ser_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
+
+# We must override the default PPFCCOMPILE since ifort can't
+# handle the FC_FUNC define correctly so $(DEFS) is replaced
+# by $(FCDEFS)
+#
+PPFCCOMPILE = $(FC) $(FCDEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
+
+# compile all C files as C++
+#
+COMPILE = $(CXXCOMPILE)
+
+CLEANFILES=\
+	$(SCRIPTS)\
+	f_units.$(F90_MODEXT)\
+	hdf_media.$(F90_MODEXT)\
+	interpolate_mod.$(F90_MODEXT)\
+	iphreeqc.$(F90_MODEXT)\
+	ld_seg_mod.$(F90_MODEXT)\
+	machine_constants.$(F90_MODEXT)\
+	mcb2.$(F90_MODEXT)\
+	mcb.$(F90_MODEXT)\
+	mcch.$(F90_MODEXT)\
+	mcc.$(F90_MODEXT)\
+	mcg.$(F90_MODEXT)\
+	mcm.$(F90_MODEXT)\
+	mcn.$(F90_MODEXT)\
+	mcp.$(F90_MODEXT)\
+	mcs2.$(F90_MODEXT)\
+	mcs.$(F90_MODEXT)\
+	mct.$(F90_MODEXT)\
+	mcv.$(F90_MODEXT)\
+	mcw.$(F90_MODEXT)\
+	mg2.$(F90_MODEXT)\
+	mg3.$(F90_MODEXT)\
+	mpi_mod.$(F90_MODEXT)\
+	phys_const.$(F90_MODEXT)\
+	print_control_mod.$(F90_MODEXT)\
+	rewi_mod.$(F90_MODEXT)\
+	mcb2_m.$(F90_MODEXT)\
+	scale_jds_mod.$(F90_MODEXT)\
+	mcw_m.$(F90_MODEXT)\
+	mcv_m.$(F90_MODEXT)\
+	mcc_m.$(F90_MODEXT)\
+	solver_iter_mod.$(F90_MODEXT)\
+	mcch_m.$(F90_MODEXT)\
+	mcg_m.$(F90_MODEXT)\
+	mcb_m.$(F90_MODEXT)\
+	mct_m.$(F90_MODEXT)\
+	hdf_media_m.$(F90_MODEXT)\
+	solver_direct_mod.$(F90_MODEXT)\
+	reorder_mod.$(F90_MODEXT)\
+	mcm_m.$(F90_MODEXT)\
+	mg3_m.$(F90_MODEXT)\
+	xp_module.$(F90_MODEXT)\
+	mcp_m.$(F90_MODEXT)\
+	phreeqcrm.$(F90_MODEXT)\
+	mg2_m.$(F90_MODEXT)\
+	well_so_files.$(F90_MODEXT)
+
+include .depend

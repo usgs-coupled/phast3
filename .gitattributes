@@ -1,0 +1,8 @@
+examples/MoMaS/easy/1d-adv/MoMaS_1.bit.uis.chem.xyz.tsv filter=lfs diff=lfs merge=lfs -text
+examples/capecod/WalterData/kz_points filter=lfs diff=lfs merge=lfs -text
+examples/capecod/ex5/Parameters/iniital_C.dat filter=lfs diff=lfs merge=lfs -text
+examples/ex5/plume.heads.xyzt filter=lfs diff=lfs merge=lfs -text
+examples/capecod/WalterData/kh_points filter=lfs diff=lfs merge=lfs -text
+examples/capecod/WalterData/head_all_pts filter=lfs diff=lfs merge=lfs -text
+examples/capecod/Phast.tmp filter=lfs diff=lfs merge=lfs -text
+examples/MoMaS/MoMaS_1.chem.xyz.tsv filter=lfs diff=lfs merge=lfs -text

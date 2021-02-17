@@ -1,0 +1,338 @@
+
+# /
+/aclocal.m4
+/autom4te.cache
+/config
+/configure
+/Makefile.in
+
+# /doc/
+/doc/Makefile.in
+
+# /examples/
+/examples/*.log
+/examples/*.h5
+/examples/0
+/examples/*.wphast
+/examples/Makefile.in
+
+# /examples/decay/
+/examples/decay/*.log
+/examples/decay/*.h5
+/examples/decay/0
+/examples/decay/*.wphast
+
+# /examples/diffusion1d/
+/examples/diffusion1d/*.wphast
+
+# /examples/diffusion2d/
+/examples/diffusion2d/*.wphast
+
+# /examples/disp2d/
+/examples/disp2d/*.log
+/examples/disp2d/*.h5
+/examples/disp2d/0
+/examples/disp2d/*.wphast
+
+# /examples/ex1/
+/examples/ex1/*.log
+/examples/ex1/*.h5
+/examples/ex1/0
+/examples/ex1/*.wphast
+
+# /examples/ex2/
+/examples/ex2/*.log
+/examples/ex2/*.h5
+/examples/ex2/0
+/examples/ex2/*.wphast
+
+# /examples/ex3/
+/examples/ex3/*.log
+/examples/ex3/*.h5
+/examples/ex3/0
+/examples/ex3/*.wphast
+
+# /examples/ex4/
+/examples/ex4/*.log
+/examples/ex4/*.h5
+/examples/ex4/0
+/examples/ex4/*.wphast
+
+# /examples/ex4v1/
+/examples/ex4v1/*.log
+/examples/ex4v1/*.h5
+/examples/ex4v1/0
+/examples/ex4v1/*.wphast
+
+# /examples/free/
+/examples/free/*.log
+/examples/free/*.h5
+/examples/free/0
+/examples/free/*.wphast
+
+# /examples/kindred4.4/
+/examples/kindred4.4/*.log
+/examples/kindred4.4/*.h5
+/examples/kindred4.4/0
+/examples/kindred4.4/*.wphast
+
+# /examples/leaky/
+/examples/leaky/*.log
+/examples/leaky/*.h5
+/examples/leaky/0
+/examples/leaky/*.wphast
+
+# /examples/leakyx/
+/examples/leakyx/*.log
+/examples/leakyx/*.h5
+/examples/leakyx/0
+/examples/leakyx/*.wphast
+
+# /examples/leakyz/
+/examples/leakyz/*.log
+/examples/leakyz/*.h5
+/examples/leakyz/0
+/examples/leakyz/*.wphast
+
+# /examples/linear_bc/
+/examples/linear_bc/*.log
+/examples/linear_bc/*.h5
+/examples/linear_bc/0
+/examples/linear_bc/*.wphast
+
+# /examples/linear_ic/
+/examples/linear_ic/*.log
+/examples/linear_ic/*.h5
+/examples/linear_ic/0
+/examples/linear_ic/*.wphast
+
+# /examples/notch/
+/examples/notch/*.log
+/examples/notch/*.h5
+/examples/notch/0
+/examples/notch/*.wphast
+
+# /examples/radial/
+/examples/radial/*.log
+/examples/radial/*.h5
+/examples/radial/0
+/examples/radial/*.wphast
+
+# /examples/river/
+/examples/river/*.log
+/examples/river/*.h5
+/examples/river/0
+/examples/river/*.wphast
+
+# /examples/shell/
+/examples/shell/*.log
+/examples/shell/*.h5
+/examples/shell/0
+/examples/shell/*.wphast
+
+# /examples/unconf/
+/examples/unconf/*.log
+/examples/unconf/*.h5
+/examples/unconf/0
+/examples/unconf/*.wphast
+
+# /examples/well/
+/examples/well/*.log
+/examples/well/*.h5
+/examples/well/0
+/examples/well/*.wphast
+
+# /msi/
+/msi/bin
+/msi/msi.suo
+/msi/obj
+
+# /packages/RPM/
+/packages/RPM/BUILD
+/packages/RPM/RPMS
+/packages/RPM/SRPMS
+/packages/RPM/tmp
+/packages/RPM/*.log
+/packages/RPM/*.gz
+
+# /packages/dist_win/
+/packages/dist_win/*.log
+/packages/dist_win/*.tstamp
+/packages/dist_win/phast-*.gz
+/packages/dist_win/phast-*.bz2
+/packages/dist_win/phast-*.exe
+/packages/dist_win/phast-*.sh
+/packages/dist_win/*.log.gz
+/packages/dist_win/Mv-*.gz
+
+# /packages/win32-is/
+/packages/win32-is/*._ip
+
+# /packages/win32-is/Media/SingleDisk/
+/packages/win32-is/Media/SingleDisk/Disk?Images
+/packages/win32-is/Media/SingleDisk/Log?Files
+/packages/win32-is/Media/SingleDisk/Report?Files
+
+# /packages/win32-is/Script Files/
+/packages/win32-is/Script Files/Setup.dbg
+/packages/win32-is/Script Files/Setup.Inx
+/packages/win32-is/Script Files/Setup.map
+/packages/win32-is/Script Files/Setup.Obs
+/packages/win32-is/Script Files/setup.brk
+
+# /src/
+/src/Makefile.in
+
+# /src/phast/
+/src/phast/Makefile.in
+/src/phast/mpi_absoft
+/src/phast/mpi_absoft_debug
+/src/phast/mpi_absoft_no_hdf_debug
+/src/phast/mpi_lahey
+/src/phast/mpi_lahey_debug
+/src/phast/mpich_absoft
+/src/phast/serial_absoft
+/src/phast/serial_absoft_debug
+/src/phast/serial_lahey
+/src/phast/serial_sun
+
+# /src/phast/PhastFortran/
+/src/phast/PhastFortran/mpi_absoft
+/src/phast/PhastFortran/mpi_absoft_debug
+/src/phast/PhastFortran/mpi_absoft_no_hdf_debug
+/src/phast/PhastFortran/mpi_lahey
+/src/phast/PhastFortran/mpi_lahey_debug
+/src/phast/PhastFortran/mpich_absoft
+/src/phast/PhastFortran/serial_absoft
+/src/phast/PhastFortran/serial_absoft_debug
+/src/phast/PhastFortran/serial_lahey
+/src/phast/PhastFortran/serial_sun
+
+# /src/phast/vs2005/
+/src/phast/vs2005/*.ncb
+/src/phast/vs2005/*.suo
+/src/phast/vs2005/merge
+/src/phast/vs2005/merge_debug
+/src/phast/vs2005/ser
+/src/phast/vs2005/ser_debug
+/src/phast/vs2005/x64
+
+# /src/phast/vs2010/
+/src/phast/vs2010/Debug
+/src/phast/vs2010/ser_debug
+
+# /src/phast/vs2012/
+/src/phast/vs2012/IPhreeqcPhast.vcxproj.user
+/src/phast/vs2012/phastpp.suo
+/src/phast/vs2012/phastpp.u2d
+/src/phast/vs2012/phastpp.v11.suo
+/src/phast/vs2012/phreeqcpp.vcxproj.user
+
+# /src/phast/vs6/
+/src/phast/vs6/merge
+/src/phast/vs6/merge_debug
+/src/phast/vs6/mpich
+/src/phast/vs6/mpich_debug
+/src/phast/vs6/mpich_no_hdf_debug
+/src/phast/vs6/mpich_profile
+/src/phast/vs6/ser_debug_mem
+/src/phast/vs6/phast.ncb
+/src/phast/vs6/phast.plg
+/src/phast/vs6/phast.aps
+/src/phast/vs6/ser
+/src/phast/vs6/ser_debug
+/src/phast/vs6/phast.dep
+/src/phast/vs6/*.opt
+/src/phast/vs6/*.mak
+/src/phast/vs6/phastpp.ncb
+/src/phast/vs6/phreeqcpp.ncb
+/src/phast/vs6/*.suo
+
+# /src/phasthdf/
+/src/phasthdf/apidoc
+/src/phasthdf/build
+/src/phasthdf/build_test
+/src/phasthdf/build.xml
+/src/phasthdf/dist
+/src/phasthdf/lib
+/src/phasthdf/Makefile.in
+
+# /src/phasthdf/src/corejava/
+/src/phasthdf/src/corejava/*.class
+
+# /src/phasthdf/src/gov/usgs/
+/src/phasthdf/src/gov/usgs/*.class
+
+# /src/phasthdf/src/gov/usgs/phast/
+/src/phasthdf/src/gov/usgs/phast/*.class
+
+# /src/phasthdf/src/sample/
+/src/phasthdf/src/sample/*.class
+
+# /src/phasthdf/test/corejava/
+/src/phasthdf/test/corejava/*.class
+
+# /src/phasthdf/test/gov/
+/src/phasthdf/test/gov/*.class
+
+# /src/phasthdf/test/gov/usgs/
+/src/phasthdf/test/gov/usgs/*.class
+
+# /src/phasthdf/test/gov/usgs/phast/
+/src/phasthdf/test/gov/usgs/phast/*.class
+
+# /src/phasthdf/win32/
+/src/phasthdf/win32/*.ncb
+/src/phasthdf/win32/*.opt
+/src/phasthdf/win32/Debug
+/src/phasthdf/win32/Release
+/src/phasthdf/win32/UDebug
+/src/phasthdf/win32/URelease
+/src/phasthdf/win32/lib
+/src/phasthdf/win32/phastexport.aps
+/src/phasthdf/win32/phastexport.dep
+/src/phasthdf/win32/phastexport.mak
+/src/phasthdf/win32/phastexport.plg
+/src/phasthdf/win32/phastexport.suo
+
+# /src/phastinput/
+/src/phastinput/Makefile.in
+/src/phastinput/phastinput
+
+# /src/phastinput/PhastKeywords/
+/src/phastinput/PhastKeywords/Parser.cxx
+/src/phastinput/PhastKeywords/Parser.h
+/src/phastinput/PhastKeywords/PHRQ_base.cxx
+/src/phastinput/PhastKeywords/PHRQ_base.h
+/src/phastinput/PhastKeywords/PHRQ_io.h
+/src/phastinput/PhastKeywords/PHRQ_io.cpp
+/src/phastinput/PhastKeywords/phrqtype.h
+/src/phastinput/PhastKeywords/Utils.cxx
+/src/phastinput/PhastKeywords/Utils.h
+
+# /src/phastinput/test/
+/src/phastinput/test/Debug
+/src/phastinput/test/Release
+/src/phastinput/test/CPPDebug
+/src/phastinput/test/*.ncb
+/src/phastinput/test/*.suo
+/src/phastinput/test/*.aps
+
+# /src/phastinput/vs2005/
+/src/phastinput/vs2005/Debug
+/src/phastinput/vs2005/Release
+/src/phastinput/vs2005/phastinput.aps
+/src/phastinput/vs2005/phastinput.ncb
+/src/phastinput/vs2005/phastinput.suo
+/src/phastinput/vs2005/x64
+
+# /src/phastinput/vs2010/
+/src/phastinput/vs2010/Debug
+/src/phastinput/vs2010/Release
+/src/phastinput/vs2010/phastinput.aps
+/src/phastinput/vs2010/phastinput.ncb
+/src/phastinput/vs2010/phastinput.suo
+/src/phastinput/vs2010/x64
+
+# /test/
+/test/Makefile.in

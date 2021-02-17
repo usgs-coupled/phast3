@@ -1,0 +1,13 @@
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	SOLUTION 1 
+		 ph 7 charge
+	SOLUTION 2
+		 ph 7 
+		 Na  1 charge
+		 Cl  1
+	PRINT
+	warning 10
+	reset false

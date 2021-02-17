@@ -1,0 +1,64 @@
+Well 6
+	275158	829109
+	-diameter	0.3048
+	-solution	
+		0	1
+	-elevation	-7.62	-1.524
+	-pumping_rate
+		0	582.761
+Well 8
+	275158	828743
+	-diameter	0.3048
+	-solution	
+		0	1
+	-elevation	-13.716	-7.62
+	-pumping_rate
+		0	524.428
+Well 44
+	280767	824476
+	-diameter	0.3048
+	-solution	
+		0	1
+	-elevation	3.50215	9.59815
+	-pumping_rate
+		0	1149.95
+Well 72
+	277231	819111
+	-diameter	0.3048
+	-solution	
+		0	1
+	-elevation	-7.62	-1.524
+	-pumping_rate
+		0	2550.78
+Well 73
+	281986	818624
+	-diameter	0.3048
+	-solution	
+		0	1
+	-elevation	-0.71628	5.37972
+	-pumping_rate
+		0	38.4543
+Well 74
+	282352	817404
+	-diameter	0.3048
+	-solution	
+		0	1
+	-elevation	-5.55346	0.542544
+	-pumping_rate
+		0	412.86
+Well 75
+	280523	816673
+	-diameter	0.3048
+	-solution	
+		0	1
+	-elevation	-10.668	-4.572
+	-pumping_rate
+		0	1876.56
+Well 76
+	275524	816185
+	-diameter	0.3048
+	-solution	
+		0	1
+	-elevation	-10.668	-4.572
+	-pumping_rate
+		0	1262.93

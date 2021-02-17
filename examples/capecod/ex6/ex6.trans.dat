@@ -1,0 +1,285 @@
+TITLE Modeling nitrogen reactions in sewage plume
+SOLUTE_TRANSPORT                      true
+STEADY_FLOW                           false
+FREE_SURFACE_BC                       true
+SOLUTION_METHOD
+        -iterative_solver             true
+        -tolerance                    1e-12
+        -space_differencing           0
+        -time_differencing            1
+        -cross_dispersion             false
+        -rebalance_fraction           0.0
+UNITS
+        -time                         yr
+        -horizontal_grid              m
+        -vertical_grid                m
+        -map_horizontal               m
+        -map_vertical                 m
+        -head                         m
+        -hydraulic_conductivity       m/d
+        -specific_storage             1/m
+        -dispersivity                 m
+        -flux                         m/d
+        -leaky_hydraulic_cond         m/d
+        -leaky_thickness              m
+        -drain_hydraulic_cond         m/d
+        -drain_thickness              m
+        -drain_width                  m
+GRID
+        # 100 m grid
+        -uniform X 276400 281300  50  # 100 m grid
+        -uniform Y 811000 822300 114  # 100 m grid
+        -uniform Z -120   20      15  # 10  m grid
+#        # 50 m grid
+#        -uniform X 276400 281300  99  # 50 m grid
+#        -uniform Y 811000 822300 227  # 50 m grid
+#        -uniform Z -120   20      29  # 5  m grid
+#        # modified 25 m grid
+#        -uniform X 276400 281300  99  # 50 m grid
+#        -uniform Y 811000 822300 227  # 50 m grid
+#        -overlay_uniform X 277100 280300 129 # 25 m
+#        -overlay_uniform Y 813000 822000 361 # 25 m
+#        -uniform Z -120   20     57   # 2.5  m grid
+#        # true 25 m grid
+#        -uniform X 276400 281300 197  # 25 m grid
+#        -uniform Y 811000 822300 453  # 25 m grid
+#        -uniform Z -120   20     57   # 2.5  m grid
+        -snap   X                     0.001
+        -snap   Y                     0.001
+        -snap   Z                     0.001
+        -chemistry_dimensions         XYZ
+        -print_orientation            XY
+        -grid_origin                  0  0  0
+        -grid_angle                   0
+MEDIA
+        # Default is inactive
+        -domain
+        #-box 275000 810000 -200 285000 830000 50 MAP
+                -active               0
+                -porosity             0.39
+                -specific_storage     0.39 
+                -Kx        XYZ        MAP    ../ex5/Parameters/kh_meters 
+                -Ky        XYZ        MAP    ../ex5/Parameters/kh_meters 
+                -Kz        XYZ        MAP    ../ex5/Parameters/kz_meters        
+                -long_dispersivity    0
+                -horizontal_disp      0
+                -vertical_disp        0                
+        # Activate inside model outline, above bedrock to sea level
+        -prism
+                -perimeter SHAPE      GRID   ../ex5/ArcData/ModelExtent.shp
+                -bottom    ARCRASTER  GRID   ../ex5/ArcData/bedrock.txt
+                -top       CONSTANT   GRID   0
+                -active                      1
+        # 0 m to top, inside coast        
+        -prism
+                -perimeter SHAPE      GRID   ../ex5/ArcData/OnShore.shp
+                -bottom    CONSTANT   GRID   0
+                -active                      1
+        -prism
+                -description Plume submodel outline
+                -perimeter POINTS GRID 
+                        281100.   822300.    -200
+                        281100.   821100.    -200
+                        280500.   819000.    -200
+                        280000    817400.    -200
+                        279900.   816300.    -200
+                        279700.   814100.    -200
+                        279500.   811400.    -200
+                        279500.   809400.    -200        
+                        285000.   809400.    -200
+                        285000.   822300.    -200
+                        end_points        
+                -active                      0
+FLUX_BC
+        -prism
+                -description Rainfall
+                -bottom    CONSTANT   GRID   0
+                -perimeter SHAPE      GRID   ../ex5/ArcData/OnShore.shp
+                -face Z
+                -flux
+                        0             -0.00188
+                -associated_solution
+                        0             3  
+        -box 279725 821500 0 279825 821600 50
+                -description Beds 1-4
+                -face Z
+                -flux
+                        0             0
+                        1936          -0.037
+                        1941          -0.114
+                        1946          -0.023
+                        1956          -0.126
+                        1971          -0.05
+                        1978          -0.114
+                        1984          0
+                -associated_solution
+                        0             2                        
+        -box 279625 821425 0 279725 821525 50
+                -description Beds 5-8
+                -face Z
+                -flux
+                        0             0
+                        1941          -0.114
+                        1946          -0.023
+                        1956          -0.126
+                        1971          -0.05
+                        1978          0
+                        1984          -0.038
+                        1996          0
+                -associated_solution
+                        0             2
+        -box 279525 821475 0 279625 821575 50
+                -description Beds 9-12
+                -face Z
+                -flux
+                        0             0
+                        1941          -0.114
+                        1946          -0.023
+                        1956          -0.126
+                        1971          -0.05
+                        1978          0
+                        1984          -0.038
+                        1996          0
+                -associated_solution
+                        0             2                        
+        -box 279400 821575 0 279500 821675 50
+                -description Beds 13-16
+                -face Z
+                -flux
+                        0             0
+                        1941          -0.114
+                        1946          -0.023
+                        1956          0
+                -associated_solution
+                        0             2                        
+        -box 279500 821700 0 279600 821800 50
+                -description Beds 19-25
+                -face Z
+                -flux
+                        0             0
+                        1941          -0.114
+                        1946          -0.023
+                        1956          0
+                -associated_solution
+                        0             2                        
+SPECIFIED_HEAD_BC
+        -prism
+                -description Constant head ocean
+                -top       CONSTANT   GRID   0
+                -bottom    CONSTANT   GRID   -10
+                -perimeter SHAPE      GRID   ../ex5/ArcData/OffShore.shp
+                -exterior_cells_only  Z
+                -head
+                        0             0.0
+                -associated_solution
+                        0             1                        
+        -box 275000 822300 -200 285000 822300 20 MAP
+                -description Constant head at north end of sub region
+                -head   
+                        0  XYZT       GRID   ../ex5/plume.heads.xyzt
+                -associated_solution
+                        0             1                        
+        -box 279500 815300 -50 285000 822300 20 MAP
+                -description Constant head on part of east edge of sub region
+                -exterior_cells_only  X
+                -head        
+                        0  XYZT       GRID   ../ex5/plume.heads.xyzt
+                -associated_solution
+                        0             1
+        -prism
+                -description Constant head for ponds
+                -bottom    SHAPE      GRID   ../ex5/ArcData/SimpleBath.shp 10
+                -perimeter SHAPE      GRID   ../ex5/ArcData/SimplePonds.shp
+                -head        
+                        0  XYZT       GRID   ../ex5/plume.heads.xyzt
+                -associated_solution
+                        0             1
+DRAIN 3 Bourne River
+        -point  279187.9    815453.3
+                -width                20
+                -bed_hydraulic        1
+                -bed_thickness        1
+                -z                    2.97
+        -point  279141.9    814825.4
+        -point  279108.7    814446.3
+                -width                20
+                -bed_hydraulic        1
+                -bed_thickness        1
+                -z                    0                
+DRAIN 4 Backus River (Cranberry bogs)
+        -point  278572.0    817160.5
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    7.16
+        -point  278404.6    816798.4
+        -point  278260.8    816171.1
+        -point  278104.0    815347.7
+        -point  278146.1    814774.8
+        -point  278077.8    814393.5
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    0
+DRAIN 5 West Boundary Coonamessett River
+        -point 277365.6    819130.2
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    9.92
+        -point  277224.7    818453.8
+        -point  277381.6    817842.1
+        -point  277365.6    817312.8
+        -point  277461.8    816574.9
+        -point  277349.5    815885.2
+        -point  277301.4    814730.3
+        -point  277260.0    814502.1
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    0
+HEAD_IC
+        -domain 
+                -head      XYZ        GRID   ../ex5/ex5.head.200.dat
+CHEMISTRY_IC
+        -domain 
+                -solution             1
+                -surface              1                 
+PRINT_INITIAL
+        -heads                        false
+PRINT_FREQUENCY
+        -save_final_heads             true
+        0
+                -end_of_period        false 
+                -flow_balance         1  years 
+                -HDF_chemistry        5  years
+                -HDF_heads            10 years 
+                -HDF_velocities       0  years
+                -heads                0  years 
+                -progress_statistics  1  step 
+                -zone_flow            1  years
+                -zone_flow_tsv        1  years                 
+ZONE_FLOW 1 Ashumet Pond
+        -prism
+                -bottom    SHAPE      GRID   ../ex5/ArcData/AshumetBath.shp 10
+                -perimeter SHAPE      GRID   ../ex5/ArcData/Ashumet.shp        
+ZONE_FLOW 2 Coonamessett Pond
+        -prism
+                -bottom    SHAPE      GRID   ../ex5/ArcData/CoonaBath.shp 10
+                -perimeter SHAPE      GRID   ../ex5/ArcData/Coona.shp                
+ZONE_FLOW 3 Coonamessett River 
+        -box 276400 811000  -200 277499  818000 20
+ZONE_FLOW 4 Backus River and southern specified bc
+        -box 277500 811000  -200 281300  818000 20
+ZONE_FLOW 5 Coonamessett R, Backus R, and ocean
+        -combination 3 4
+ZONE_FLOW 6 Entire domain 
+        -domain
+TIME_CONTROL
+        -time_step
+                0                     0.5   # num disp, v dt / 2 ~ 50
+                #0                     0.25  # num disp, v dt / 2 ~ 25
+                #0                     0.125 # num disp, v dt / 2 ~ 12.5
+                #0                     0.0625 # num disp, v dt / 2 ~ 6.25
+        -time_change                  2200
+        -start_time                   1935

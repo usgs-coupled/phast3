@@ -1,0 +1,2853 @@
+
+
+                          .                                                                               
+                          .                                                                               
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2
+           0.00        1.00
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2
+           0.00        1.00
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2           3           4           5
+           0.00        1.00        2.00        3.00        4.00
+
+
+
+                              *** Output at End of Time Step No.     1 ***
+
+     Time .......................................................   1.000E-04  (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.2501E-10  5.2501E-10
+  1  5.2501E-10  5.2501E-10
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  4.1957E-09  4.1957E-09
+  1  4.1957E-09  4.1957E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.6215E-12 -3.6215E-12
+  1 -3.6215E-12 -3.6215E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  2.4997E-06  2.4997E-06
+  1  2.4997E-06  2.4997E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  1.9974E-04  1.9974E-04
+  1  1.9974E-04  1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.7469E-05  5.7469E-05
+  1  5.7469E-05  5.7469E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+
+                              *** Output at End of Time Step No.     2 ***
+
+     Time .......................................................   2.000E-04  (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.2501E-10  5.2501E-10
+  1  5.2501E-10  5.2501E-10
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  4.1957E-09  4.1957E-09
+  1  4.1957E-09  4.1957E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.6215E-12 -3.6215E-12
+  1 -3.6215E-12 -3.6215E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  2.4997E-06  2.4997E-06
+  1  2.4997E-06  2.4997E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  1.9974E-04  1.9974E-04
+  1  1.9974E-04  1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.7469E-05  5.7469E-05
+  1  5.7469E-05  5.7469E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+
+                              *** Output at End of Time Step No.     3 ***
+
+     Time .......................................................    1.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.2501E-10  5.2501E-10
+  1  5.2501E-10  5.2501E-10
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  4.1957E-09  4.1957E-09
+  1  4.1957E-09  4.1957E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.6215E-12 -3.6215E-12
+  1 -3.6215E-12 -3.6215E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  2.4997E-06  2.4997E-06
+  1  2.4997E-06  2.4997E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  1.9974E-04  1.9974E-04
+  1  1.9974E-04  1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.7469E-05  5.7469E-05
+  1  5.7469E-05  5.7469E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+
+                              *** Output at End of Time Step No.     4 ***
+
+     Time .......................................................    2.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.2501E-10  5.2501E-10
+  1  5.2501E-10  5.2501E-10
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  4.1957E-09  4.1957E-09
+  1  4.1957E-09  4.1957E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.6215E-12 -3.6215E-12
+  1 -3.6215E-12 -3.6215E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  2.4997E-06  2.4997E-06
+  1  2.4997E-06  2.4997E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  1.9974E-04  1.9974E-04
+  1  1.9974E-04  1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.7469E-05  5.7469E-05
+  1  5.7469E-05  5.7469E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+
+                              *** Output at End of Time Step No.     5 ***
+
+     Time .......................................................    3.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.2501E-10  5.2501E-10
+  1  5.2501E-10  5.2501E-10
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  4.1957E-09  4.1957E-09
+  1  4.1957E-09  4.1957E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.6215E-12 -3.6215E-12
+  1 -3.6215E-12 -3.6215E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  2.4997E-06  2.4997E-06
+  1  2.4997E-06  2.4997E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  1.9974E-04  1.9974E-04
+  1  1.9974E-04  1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.7469E-05  5.7469E-05
+  1  5.7469E-05  5.7469E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+
+                              *** Output at End of Time Step No.     6 ***
+
+     Time .......................................................    4.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.2501E-10  5.2501E-10
+  1  5.2501E-10  5.2501E-10
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  4.1957E-09  4.1957E-09
+  1  4.1957E-09  4.1957E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.6215E-12 -3.6215E-12
+  1 -3.6215E-12 -3.6215E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  2.4997E-06  2.4997E-06
+  1  2.4997E-06  2.4997E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  1.9974E-04  1.9974E-04
+  1  1.9974E-04  1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.7469E-05  5.7469E-05
+  1  5.7469E-05  5.7469E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+
+                              *** Output at End of Time Step No.     7 ***
+
+     Time .......................................................    5.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   2.500       2.500    
+  1   2.500       2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.2501E-10  5.2501E-10
+  1  5.2501E-10  5.2501E-10
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  4.1957E-09  4.1957E-09
+  1  4.1957E-09  4.1957E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.6215E-12 -3.6215E-12
+  1 -3.6215E-12 -3.6215E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  2.4997E-06  2.4997E-06
+  1  2.4997E-06  2.4997E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  1.9974E-04  1.9974E-04
+  1  1.9974E-04  1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.7469E-05  5.7469E-05
+  1  5.7469E-05  5.7469E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2   0.000       0.000    
+  1   0.000       0.000    
+
+
+
+                              *** Output at End of Time Step No.     8 ***
+
+     Time .......................................................    6.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.3044E-07 -2.3044E-07
+  1 -2.3044E-07 -2.3044E-07
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.7264E-02 -2.7264E-02
+  1 -2.7264E-02 -2.7264E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  8.5847E-13  8.5823E-13
+  1  8.5834E-13  8.5847E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.2498E-06 -1.2498E-06
+  1 -1.2498E-06 -1.2498E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.0125E-13 -2.0125E-13
+  1 -2.0125E-13 -2.0125E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.1746E-08 -1.1746E-08
+  1 -1.1746E-08 -1.1746E-08
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.9974E-04 -1.9974E-04
+  1 -1.9974E-04 -1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.6635E-06 -2.6635E-06
+  1 -2.6635E-06 -2.6635E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -6.7440E-04 -6.7440E-04
+  1 -6.7440E-04 -6.7440E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.7684E-09 -1.7684E-09
+  1 -1.7684E-09 -1.7684E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -5.2399E-19 -5.2399E-19
+  1 -5.2399E-19 -5.2399E-19
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.1355E-14 -1.1355E-14
+  1 -1.1355E-14 -1.1355E-14
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.8872E-02 -1.8872E-02
+  1 -1.8872E-02 -1.8872E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.2573E-05 -3.2573E-05
+  1 -3.2573E-05 -3.2573E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.3653E-02 -1.3653E-02
+  1 -1.3653E-02 -1.3653E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -6.2842E-13 -6.2842E-13
+  1 -6.2842E-13 -6.2842E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -7.7898E-07 -7.7898E-07
+  1 -7.7898E-07 -7.7898E-07
+
+
+
+                              *** Output at End of Time Step No.     9 ***
+
+     Time .......................................................    7.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.3044E-07 -2.3044E-07
+  1 -2.3044E-07 -2.3044E-07
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.7264E-02 -2.7264E-02
+  1 -2.7264E-02 -2.7264E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  5.4450E-13  5.4426E-13
+  1  5.4436E-13  5.4449E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.2498E-06 -1.2498E-06
+  1 -1.2498E-06 -1.2498E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.6833E-13 -2.6833E-13
+  1 -2.6833E-13 -2.6833E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.1746E-08 -1.1746E-08
+  1 -1.1746E-08 -1.1746E-08
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.9974E-04 -1.9974E-04
+  1 -1.9974E-04 -1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.6635E-06 -2.6635E-06
+  1 -2.6635E-06 -2.6635E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -6.7440E-04 -6.7440E-04
+  1 -6.7440E-04 -6.7440E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.7686E-09 -1.7686E-09
+  1 -1.7686E-09 -1.7686E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -5.2410E-19 -5.2410E-19
+  1 -5.2410E-19 -5.2410E-19
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.5140E-14 -1.5140E-14
+  1 -1.5140E-14 -1.5140E-14
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.8872E-02 -1.8872E-02
+  1 -1.8872E-02 -1.8872E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.2573E-05 -3.2573E-05
+  1 -3.2573E-05 -3.2573E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.3653E-02 -1.3653E-02
+  1 -1.3653E-02 -1.3653E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -8.3789E-13 -8.3789E-13
+  1 -8.3789E-13 -8.3789E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -7.7898E-07 -7.7898E-07
+  1 -7.7898E-07 -7.7898E-07
+
+
+
+                              *** Output at End of Time Step No.    10 ***
+
+     Time .......................................................    8.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.3044E-07 -2.3044E-07
+  1 -2.3044E-07 -2.3044E-07
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.7264E-02 -2.7264E-02
+  1 -2.7264E-02 -2.7264E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  1.0614E-13  1.0591E-13
+  1  1.0601E-13  1.0614E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.2498E-06 -1.2498E-06
+  1 -1.2498E-06 -1.2498E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.3541E-13 -3.3541E-13
+  1 -3.3541E-13 -3.3541E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.1746E-08 -1.1746E-08
+  1 -1.1746E-08 -1.1746E-08
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.9974E-04 -1.9974E-04
+  1 -1.9974E-04 -1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.6635E-06 -2.6635E-06
+  1 -2.6635E-06 -2.6635E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -6.7440E-04 -6.7440E-04
+  1 -6.7440E-04 -6.7440E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.7689E-09 -1.7689E-09
+  1 -1.7689E-09 -1.7689E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -5.2410E-19 -5.2410E-19
+  1 -5.2410E-19 -5.2410E-19
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.8926E-14 -1.8926E-14
+  1 -1.8926E-14 -1.8926E-14
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.8872E-02 -1.8872E-02
+  1 -1.8872E-02 -1.8872E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.2573E-05 -3.2573E-05
+  1 -3.2573E-05 -3.2573E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.3653E-02 -1.3653E-02
+  1 -1.3653E-02 -1.3653E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.0474E-12 -1.0474E-12
+  1 -1.0474E-12 -1.0474E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -7.7898E-07 -7.7898E-07
+  1 -7.7898E-07 -7.7898E-07
+
+
+
+                              *** Output at End of Time Step No.    11 ***
+
+     Time .......................................................    9.00      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.3044E-07 -2.3044E-07
+  1 -2.3044E-07 -2.3044E-07
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.7264E-02 -2.7264E-02
+  1 -2.7264E-02 -2.7264E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -4.7126E-14 -4.7362E-14
+  1 -4.7260E-14 -4.7126E-14
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.2498E-06 -1.2498E-06
+  1 -1.2498E-06 -1.2498E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -4.0250E-13 -4.0250E-13
+  1 -4.0250E-13 -4.0250E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.1746E-08 -1.1746E-08
+  1 -1.1746E-08 -1.1746E-08
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.9974E-04 -1.9974E-04
+  1 -1.9974E-04 -1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.6635E-06 -2.6635E-06
+  1 -2.6635E-06 -2.6635E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -6.7440E-04 -6.7440E-04
+  1 -6.7440E-04 -6.7440E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.7694E-09 -1.7694E-09
+  1 -1.7694E-09 -1.7694E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -5.2410E-19 -5.2410E-19
+  1 -5.2410E-19 -5.2410E-19
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -2.2711E-14 -2.2711E-14
+  1 -2.2711E-14 -2.2711E-14
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.8872E-02 -1.8872E-02
+  1 -1.8872E-02 -1.8872E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -3.2573E-05 -3.2573E-05
+  1 -3.2573E-05 -3.2573E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.3653E-02 -1.3653E-02
+  1 -1.3653E-02 -1.3653E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -1.2568E-12 -1.2568E-12
+  1 -1.2568E-12 -1.2568E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  2
+
+           1           2
+  2 -7.7898E-07 -7.7898E-07
+  1 -7.7898E-07 -7.7898E-07
+
+
+
+                              *** Output at End of Time Step No.    12 ***
+
+     Time .......................................................    10.0      (s)
+
+
+                         Specified Flux B.C.: Flow Rates (at end of time step)
+                         (positive is into the region)
+                    Fluid Mass   (kg/s)
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H2O                           
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2  -2.500      -2.500    
+  1  -2.500      -2.500    
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: H                             
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -2.3044E-07 -2.3044E-07
+  1 -2.3044E-07 -2.3044E-07
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: O                             
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -2.7264E-02 -2.7264E-02
+  1 -2.7264E-02 -2.7264E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Charge                        
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -5.3628E-13 -5.3651E-13
+  1 -5.3641E-13 -5.3628E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: A                             
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -1.2498E-06 -1.2498E-06
+  1 -1.2498E-06 -1.2498E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Al                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -4.6958E-13 -4.6958E-13
+  1 -4.6958E-13 -4.6958E-13
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ba                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -1.1746E-08 -1.1746E-08
+  1 -1.1746E-08 -1.1746E-08
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Br                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -1.9974E-04 -1.9974E-04
+  1 -1.9974E-04 -1.9974E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: C                             
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -2.6635E-06 -2.6635E-06
+  1 -2.6635E-06 -2.6635E-06
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ca                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -6.7440E-04 -6.7440E-04
+  1 -6.7440E-04 -6.7440E-04
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Cl                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -1.7702E-09 -1.7702E-09
+  1 -1.7702E-09 -1.7702E-09
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Fe                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -5.2410E-19 -5.2410E-19
+  1 -5.2410E-19 -5.2410E-19
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: K                             
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -2.6496E-14 -2.6496E-14
+  1 -2.6496E-14 -2.6496E-14
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Na                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -1.8872E-02 -1.8872E-02
+  1 -1.8872E-02 -1.8872E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Ntg                           
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -3.2573E-05 -3.2573E-05
+  1 -3.2573E-05 -3.2573E-05
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: S                             
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -1.3653E-02 -1.3653E-02
+  1 -1.3653E-02 -1.3653E-02
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Si                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -1.4663E-12 -1.4663E-12
+  1 -1.4663E-12 -1.4663E-12
+
+
+                    Flux B.C.: Associated Advective Solute   (kg/s)
+                    Component: Sr                            
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2 -7.7898E-07 -7.7898E-07
+  1 -7.7898E-07 -7.7898E-07
+
+
+
+
+                      ***** Flow and Transport Simulation Completed *****
+               Last time value calculated ......................................  10.00     (s)
+               Last time step index ............................................      12

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ie MSBuild.exe msi.sln /p:Major=2 /p:Minor=1 /p:Patch=0 /p:Build=1111 -->
+
+<?define Version=$(var.Major).$(var.Minor).$(var.Build)?>
+<?define Manufacturer="U.S. Geological Survey"?>
+<?define FullName="phast x64 $(var.Version)"?>
+<?define UpgradeGuid="7ffbb859-eb02-4778-b714-0769209cf6d8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal='http://schemas.microsoft.com/wix/BalExtension'
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  
+  <Bundle
+    Name="$(var.FullName)"
+    Version="$(var.Version)"
+    Manufacturer="$(var.Manufacturer)"
+    UpgradeCode="$(var.UpgradeGuid)">
+    <!--
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+    -->
+    
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+      <bal:WixStandardBootstrapperApplication LicenseUrl="" SuppressOptionsUI="yes"/>
+    </BootstrapperApplicationRef>
+
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\MPI" Value="Version" Variable="MSMPI64Version" Win64="yes" />
+    
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Model Viewer_is1" Value="DisplayName" Variable="ModViewDisplayName" Win64="no" />
+
+    <Chain>
+      <ExePackage
+        Id="ModView"
+        Name="Model Viewer 1.6 Setup"
+        InstallCommand="/SILENT"
+        Cache="yes"
+        Compressed="yes"
+        PerMachine="yes"
+        Permanent="yes"
+        Vital="yes"
+        SourceFile="C:\Users\Public\Downloads\modview1_6.exe"
+        DetectCondition="(ModViewDisplayName = &quot;Model Viewer 1.6&quot;)"
+        />
+
+      <!-- RollbackBoundary /-->
+      <MsiPackage
+        Id="Phast"
+        DisplayInternalUI="yes"
+        Name="Phast x64 Setup"
+        SourceFile="..\..\msi\bin\x64\Release\phast-$(var.Major).$(var.Minor).$(var.Patch)-$(var.Build)-x64.msi"
+        ForcePerMachine="yes"
+        />
+
+      <!--
+      MSMpi should be installed last so that that ms-mpi mpiexec is first
+      Must be set as 'Permanent' since MSMpiSetup.exe has no uninstall option
+      -->
+      <ExePackage
+        Id="MSMpi"
+        Name="MS-MPI Setup"
+        InstallCommand="-unattend"
+        Cache="yes"
+        Compressed="yes"
+        PerMachine="yes"
+        Permanent="yes"
+        Vital="yes"
+        SourceFile="C:\Users\Public\Downloads\MSMpiSetup.exe"
+        DetectCondition="(MSMPI64Version = &quot;6.0.12436.10&quot;)"
+        />
+    </Chain>
+	</Bundle>
+</Wix>

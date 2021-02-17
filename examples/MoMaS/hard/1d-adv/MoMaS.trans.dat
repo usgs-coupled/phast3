@@ -1,0 +1,191 @@
+# <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+# <WPhast>
+#   <!--Exported from C:\Programs\phastpp3-worker\examples\MoMaS\MoMaS.p4w-->
+#   <!--Exported to   C:\Programs\phastpp3-worker\examples\MoMaS\MoMaS.trans.dat-->
+# </WPhast>
+# 
+SOLUTE_TRANSPORT true
+	-diffusivity  1e-009
+STEADY_FLOW true
+	-head_tolerance 1e-005
+	-flow_balance_tolerance 1e-005
+	-minimum_time_step 0.0001
+	-iterations 1000
+	-growth_factor 2
+FREE_SURFACE_BC false
+SOLUTION_METHOD
+	-iterative_solver   true
+	-tolerance          1e-010
+	-save_directions    20
+	-maximum_iterations 500
+	-space_differencing 0.0
+	-time_differencing  1.0
+	-cross_dispersion   false
+	-rebalance_fraction 0.5
+	-rebalance_by_cell  true
+	#-threads 1
+UNITS
+	-time                             s
+	-horizontal_grid                  m
+	-vertical_grid                    m
+	-map_horizontal                   m
+	-map_vertical                     m
+	-head                             m
+	-hydraulic_conductivity           m/s
+	-specific_storage                 1/m
+	-dispersivity                     m
+	-flux                             m/s
+	-leaky_hydraulic_conductivity     m/s
+	-leaky_thickness                  m
+	-well_diameter                    m
+	-well_flow_rate                   m^3/s
+	-well_depth                       m
+	-river_bed_hydraulic_conductivity m/s
+	-river_bed_thickness              m
+	-river_width                      m
+	-river_depth                      m
+	-drain_hydraulic_conductivity     m/s
+	-drain_thickness                  m
+	-drain_width                      m
+	-equilibrium_phases               WATER
+	-exchange                         WATER
+	-surface                          WATER
+	-solid_solutions                  WATER
+	-kinetics                         WATER
+	-gas_phase                        WATER
+GRID
+	#-uniform X 0 2.1 2 
+	-uniform X 0 2.1 1760
+	#-uniform X 0 2.1 2101 
+	#-uniform X 0 2.1 1051
+	#-uniform X 0 2.1 22
+	#-uniform X 0 2.1 43
+	#-uniform X 0 2.1 85
+	#-uniform X 0 2.1 106
+	#-overlay_uniform X 0.01 2.09 105 # 0.02 m
+	#-overlay_uniform X 0.005 2.095 210 # 0.01
+	#-overlay_uniform X 0.0025 2.0975 420   #0.005
+	#-overlay_uniform X 0.001 2.099 1050 # 0.002 m
+	-uniform Y 0 1 2
+	-uniform Z 0 1 2
+	-snap X 0.0001
+	-snap Y 0.0001
+	-snap Z 0.0001
+	-chemistry_dimensions X
+	-print_orientation XY
+	-grid_origin   0  0  0
+	-grid_angle    0
+PRINT_LOCATIONS
+	-xyz_chemistry
+		-sample X 2
+MEDIA
+	-domain
+		-active                   1
+		-Kx                       0.01
+		-Ky                       0.01
+		-Kz                       0.01
+		-porosity                 0.25
+		-specific_storage         2e-6
+		-long_dispersivity        0.01
+		-horizontal_dispersivity  0.001
+		-vertical_dispersivity    0.001
+#!		-long_dispersivity        10
+#!		-horizontal_dispersivity  1
+#!		-vertical_dispersivity    1
+		-tortuosity               1
+	-box 1.0 -0.0001 -0.0001 1.1 1.0001 1.0001 GRID
+		-description Region B
+		-active                   1
+		-Kx                       1e-005
+		-Ky                       1e-005
+		-Kz                       1e-005
+		-porosity                 0.5
+		-long_dispersivity        0.06
+		-horizontal_dispersivity  0.006
+		-vertical_dispersivity    0.006
+#!		-long_dispersivity        60
+#!		-horizontal_dispersivity  6
+#!		-vertical_dispersivity    6
+FLUX_BC
+	-box -0.0001 -0.0001 -0.0001 0.0001 1.0001 1.0001 GRID
+		-face X
+		-associated_solution
+			0 seconds	0
+			5000 seconds	1001
+		-flux
+			0 seconds	0.0055
+SPECIFIED_HEAD_BC
+	-box 2.0999 -0.0001 -0.0001 2.1001 1.0001 1.0001 GRID
+		-head
+			0 seconds	1
+		-associated_solution
+			0 seconds	0
+HEAD_IC
+	-domain
+		-head                     1
+	-box 0 -0.0001 -0.0001 2.1001 1.0001 1.0001 GRID
+		-head	X     58  1.0   1.0   1.1	
+CHEMISTRY_IC
+	-domain
+		-solution            1
+		-surface             1
+		-kinetics            1
+		-equilibrium_phases  1
+	-box 1.0 -0.0001 -0.0001 1.1 1.0001 1.0001 GRID
+		-description Region B
+		-solution            11
+		-surface             11
+PRINT_INITIAL
+	-boundary_conditions        false
+	-components                 false
+	-conductances               false
+	-echo_input                 true
+	-fluid_properties           true
+	-force_chemistry_print      false
+	-HDF_chemistry              true
+	-HDF_heads                  true
+	-HDF_media                  true
+	-HDF_steady_flow_velocities true
+	-heads                      true
+	-media_properties           false
+	-solution_method            true
+	-steady_flow_velocities     true
+	-wells                      true
+	-xyz_chemistry              true
+	-xyz_components             false
+	-xyz_heads                  false
+	-xyz_steady_flow_velocities false
+	-xyz_wells                  false
+PRINT_FREQUENCY
+	-save_final_heads false
+	0
+		-bc_flow_rates          0
+		-boundary_conditions    false 
+		-components             0
+		-conductances           0
+		-end_of_period_default  true 
+		-flow_balance           end 
+		-force_chemistry_print  0
+		-HDF_chemistry          0 # 2.5 s 
+		-HDF_heads              0 
+		-HDF_velocities         0 
+		-heads                  0 
+		-progress_statistics    0 
+		-restart_file           0
+		-velocities             0
+		-wells                  0 
+		-xyz_chemistry          2    seconds
+		-xyz_components         0
+		-xyz_heads              0
+		-xyz_velocities         0
+		-xyz_wells              0
+		-zone_flow              0 
+		-zone_flow_xyzt         0
+		-zone_flow_tsv          0 
+		-hdf_intermediate       0 
+TIME_CONTROL
+	-time_step
+		0 0.05
+	-time_change
+		10
+	-start_time 0

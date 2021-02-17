@@ -1,0 +1,16 @@
+  Sun et al test problem 6.3  first component
+ Solute transport in a semi-infinite
+aquifer of infinite width and height with a 'patch' source
+Model Data:  V=0.2 m/d, DX=1.5*0.2, DY=0.3*1.5*0.2, DZ=0.1*1.5*0.2 m^2/d
+  WS=11 m, HS=5 m, decay rate=0.05 d^-1, C0=1.0 mg/L
+  y1=15 m, y2=26 m, z1=10 m, z2=15 m
+====
+  6  8   1   1 104   1                                                     # NX,NY,NZ,NT,NMAX,IPLT
+'mg/L'     ' m/d'     ' m^2/d'   'd^-1'   'm'      'd'                     # CUNITS,VUNITS,DUNITS,KUNITS,LUNITS,TUNITS
+     1.0       0.2     0.3      0.09      0.03  0.05                       # C0,VX,DX,DY,DZ,DK             
+    15. 26. 10. 15.                                                        # Y1,Y2,Z1,Z2
+0.    5. 10. 15. 20.  25.                                                  # (X(I),I=1,NX)
+  5. 10. 15. 20. 21. 25. 30. 35.                                           # (Y(I),I=1,NY)
+    13.                                                                    # (Z(I),I=1,NZ)
+    400.                                                                   # (T(I),I=1,NT)
+ 1000.    1000.     0.1                                                    # Not used, Plotting

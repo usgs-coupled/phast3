@@ -1,0 +1,136 @@
+SURFACE_MASTER_SPECIES
+        Surf    SurfOH
+SURFACE_SPECIES
+        SurfOH = SurfOH
+                log_k   0.0
+        SurfOH  + H+ = SurfOH2+
+                log_k   7.29
+        SurfOH = SurfO- + H+
+                log_k   -8.93
+        SurfOH + AsO4-3 + 3H+ = SurfH2AsO4 + H2O
+                log_k   29.31
+        SurfOH + AsO4-3 + 2H+ = SurfHAsO4- + H2O
+                log_k   23.51
+        SurfOH + AsO4-3 = SurfOHAsO4-3
+                log_k   10.58
+SOLUTION_MASTER_SPECIES
+        As       H3AsO4        -1.0     74.9216         74.9216
+SOLUTION_SPECIES
+#
+# Nordstrom and Archer
+#
+#H2AsO4- 		482	
+	H3AsO4 = H2AsO4- + H+
+	log_k	-2.3
+	delta_h	-7.066	kJ
+#HAsO4-2 		483	
+	H3AsO4 = HAsO4-2 + 2H+
+	log_k	-9.46
+	delta_h	-3.846	kJ
+
+#AsO43- 		484	
+	H3AsO4 = AsO4-3 + 3H+
+	log_k	-21.11
+	delta_h	14.354	kJ
+#
+# Old Wateq4f
+#
+#H2AsO4-             482
+        H3AsO4 = H2AsO4- + H+ 
+        log_k           -2.243
+        delta_h -1.69 kcal
+
+#HAsO4-2             483
+        H3AsO4 = HAsO4-2 + 2H+ 
+        log_k           -9.001
+        delta_h -0.92 kcal
+
+#AsO4-3              484
+        H3AsO4 = AsO4-3 + 3H+
+        log_k           -20.597
+        delta_h 3.43 kcal
+#
+#  Dzombak and Morel
+#
+#H3AsO4 primary master species
+        H3AsO4 = H3AsO4
+        log_k           0.0
+#H2AsO4-             482
+        H3AsO4 = AsO4-3 + 3H+
+        log_k   -20.7
+#HAsO4-2                483     
+        H+ + AsO4-3 = HAsO4-2
+        log_k   11.50
+#AsO4-3              484
+        2H+ + AsO4-3 = H2AsO4-
+        log_k           18.46
+
+SOLUTION 1 20 x precipitation
+        pH      4.6
+        pe      4.0     O2(g)   -0.7
+        temp    25.
+        units   mmol/kgw
+        Ca      .191625
+        Mg      .035797
+        Na      .122668
+        Cl      .133704
+        C       .01096
+        S       .235153         charge
+END
+USE solution 1
+EQUILIBRIUM_PHASES 1
+        Dolomite        0.0     1.6
+        Calcite         0.0     0.1
+        CO2(g)          -1.5    100.
+SAVE solution 1
+END
+SOLUTION 2 Brine
+        pH      5.713
+        pe      4.0     O2(g)   -0.7
+        temp    25.
+        units   mol/kgw
+        Ca      .4655
+        Mg      .1609
+        Na      5.402
+        Cl      6.642           charge
+        C       .00396
+        S       .004725
+        As      .01 umol/kgw
+END
+USE solution 2
+EQUILIBRIUM_PHASES 2
+        Dolomite        0.0     1.6
+        Calcite         0.0     0.1
+SAVE solution 2
+END
+EXCHANGE 2
+        -equil with solution 2
+        X       0.5
+SURFACE 2
+        -equil solution 2
+        SurfOH          0.14     600.    30.
+END
+#!EXCHANGE_MIX 2
+#!	2 0.33
+#!END
+#!EQUILIBRIUM_PHASES_MIX 2
+#!	2 0.33
+#!END
+#!SURFACE_MIX 2
+#!	2 0.33
+#!END
+SELECTED_OUTPUT
+        -file ex4_transient.dummy.sel
+        -reset false
+        -pH
+USER_PUNCH
+# Prints concentrations in mg/kgw to ex4.xyz.chem
+-heading        Ca      Mg      Na      Cl      C(4)    SO4     As
+10 PUNCH TOT("Ca")*1e3*40.08
+20 PUNCH TOT("Mg")*1e3*24.312
+30 PUNCH TOT("Na")*1e3*23.
+40 PUNCH TOT("Cl")*1e3*35.45
+50 PUNCH TOT("C(4)")*1e3*61.   # as HCO3-
+60 PUNCH TOT("S(6)")*1e3*96.   # as SO4
+70 PUNCH TOT("As")*1e6*74.296  # ug/L
+END

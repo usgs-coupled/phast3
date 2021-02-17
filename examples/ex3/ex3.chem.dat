@@ -1,0 +1,91 @@
+TITLE 
+        Kindred and Celia, WRR, 1989, v. 25, p. 1154
+        Problem 4.1. Aerobic Biodegradation
+SOLUTION_MASTER_SPECIES
+        Substrate       Substrate       0       1.0     1.0
+SOLUTION_SPECIES
+        Substrate = Substrate
+        log_k   0.0
+SOLUTION 1  Initial condition
+        units   mg/L
+        pH      7.0     
+        pe      8
+        Substrate       0.0
+        O(0)            3
+SOLUTION 2  Infilling
+        units   mg/L
+        pH      7.0     
+        pe      8
+        Substrate       10. 
+        O(0)            3
+END
+RATES
+Aerobic
+        -start
+200 vmaxO = 1/(24*3600)
+210 vmaxS1 = 1/(24*3600)
+240 Kh1O = .1
+250 Kh1S1 = .1
+290 kbio = 1
+320 km = .01/(24*3600)
+
+410 O = TOT("O(0)")*16*1000
+430 S1 = TOT("Substrate")*1000
+450 x1 = KIN("aerobic_biomass") / SOLN_VOL
+470 Ib = 1 + x1 / kbio
+
+500    REM  **  Oxygen rate ***
+510 rateO = (vmaxO * x1 / Ib) * (O / ( kh1O + O))
+520    REM  **  Substrate rate **
+530 rateS1 = 2*(vmaxS1 * x1 / Ib) * (S1 / ( kh1S1 + S1))
+560 rate = rateO
+570 if rateS1 < rate then rate = rateS1
+590 mg_O = -TIME * rate * SOLN_VOL
+600 SAVE mg_O
+        -end
+
+Aerobic_biomass
+        -start
+200 vmaxO = 1/(24*3600)
+210 vmaxS1 = 1/(24*3600)
+240 Kh1O = .1
+250 Kh1S1 = .1
+290 kbio = 1
+320 km = .01/(24*3600)
+
+410 O = TOT("O(0)")*16*1000
+430 S1 = TOT("Substrate")*1000
+450 x1 = KIN("aerobic_biomass") / SOLN_VOL
+470 Ib = 1 + x1 / kbio
+
+520    REM  **  Substrate rate ***
+530 rateS1 = 0.25 * (vmaxS1 * x1 / Ib) * (S1 / ( kh1S1 + S1))
+540    REM  **  Oxygen rate ***
+550 rateO = 0.125 * (vmaxO * x1 / Ib) * (O / ( kh1O + O))
+560 rate = RateO
+570 if rateS1 < rate then rate = rateS1
+590 mg_O_biomass = -TIME * (rate - km * x1) * SOLN_VOL
+600 SAVE mg_O_biomass
+        -end
+
+KINETICS 1
+Aerobic
+#     mg_O * 1/gfw * 1/1000 = mg_O * 1/(16*1000) = mg_O * 6.25e-5
+#     mg_O * (mg_S/mg_O)* 1 / gfw * 1/1000 = mg_O * 0.5 * 1/(1*1000) = mg_O * 5e-4
+        -formula  O 6.25e-5 Substrate 5e-4
+        -m 0
+Aerobic_biomass
+        -formula  Substrate  0
+        -m 0.2
+KINETICS 2
+Aerobic_biomass
+        -formula  Substrate  0
+        -m 0.2
+SELECTED_OUTPUT
+        -file ex3.dummy.sel
+        -reset false
+USER_PUNCH
+-headings Substrate O(0) O_biomass 
+10 PUNCH TOT("Substrate")*1000,  TOT("O(0)")*16*1000
+20 PUNCH KIN("Aerobic_biomass") / SOLN_VOL
+END

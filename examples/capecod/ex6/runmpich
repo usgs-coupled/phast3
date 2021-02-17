@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+#   make directory
+#
+NAME=ex6
+mkdir -p 0
+rm -f 0/*
+#
+#  Set names
+#
+PHASTDIR=/cygdrive/c/Programs/phastpp
+PHAST=c:/Programs/phastpp/src/phast/win32_2005/x64/ser/phast.exe
+#PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/merge_debug/phast.exe
+#PHAST_MPICH=c:\\Programs\\phastpp\\src\\phast\\win32_2005\\x64\\merge\\phast.exe
+PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/x64/merge/phast.exe
+#PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/vc80/Release/phastinput.exe
+PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/vc80/x64/Release/phastinput.exe
+EXDIR=$PHASTDIR/examples
+MPICHRUN=/cygdrive/c/Program\ Files/MPICH2/bin/mpiexec
+#
+#   run phastinput
+#
+$PHAST_INPUT $NAME
+#
+#   distribute files
+#
+cp $NAME.trans.dat 0
+cp $NAME.chem.dat 0
+cp phast.dat 0
+cp Phast.tmp 0 
+
+cd 0
+
+echo Done phastinput.
+#
+#   run phast_mpich
+#
+#echo $PHAST
+
+time "$MPICHRUN"  -channel shm -localonly 4 -wdir $EXDIR\\$NAME\\0  $PHAST_MPICH 
+
+#echo time $MPICHRUN -channel shm -np 3 -localonly -wdir $EXDIR/$NAME/0 $PHAST_MPICH
+#time "$MPICHRUN" -channel shm -np 1 -localonly -wdir $EXDIR/$NAME/0 "C:\Program Files (x86)\Microsoft Visual Studio 8\Common7\IDE\devenv.exe"
+#time $PHAST

@@ -1,0 +1,371 @@
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	TITLE
+	        Kindred and Celia, WRR, 1989, v. 25, p. 1154. Problem 4.4. 
+	        Aerobic biodegradation combined with nitrate-reducing metabolism
+	SOLUTION_MASTER_SPECIES
+	        Substrate       Substrate       0       1.0     1.0
+	        Ndis            Ndis            0.0     N       14.0067
+	SOLUTION_SPECIES
+	        Substrate = Substrate
+	        log_k   0.0
+	        Ndis = Ndis
+	        log_k   0.0
+	SOLUTION 1  Initial condition
+	        units   mg/L
+	        pH      7.0     
+	        pe      8
+	        Substrate       0.0
+	        O(0)            3
+	        N(5)            2
+	        Ndis            0.01
+	        Na              1       charge
+	SOLUTION 2  Infilling
+	        units   mg/L
+	        pH      7.0     
+	        pe      8
+	        Substrate       10. 
+	        O(0)            3
+	        N(5)            2
+	        Ndis            0.01
+	        Na              1       charge
+	END
+-----
+TITLE
+-----
+
+        Kindred and Celia, WRR, 1989, v. 25, p. 1154. Problem 4.4. 
+        Aerobic biodegradation combined with nitrate-reducing metabolism
+
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	Initial condition
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	N(5)              1.428e-04   1.428e-04
+	Na                1.428e-04   1.428e-04  Charge balance
+	Ndis              7.139e-07   7.139e-07
+	O(0)              1.875e-04   1.875e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000    
+                                       pe  =   8.000    
+       Specific Conductance (µS/cm, 25°C)  = 17
+                          Density (g/cm³)  =   0.99705
+                               Volume (L)  =   1.00297
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.429e-04
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.261e-09
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                         Temperature (°C)  =  25.00
+                  Electrical balance (eq)  =   3.736e-15
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
+                               Iterations  =   7
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550683e+01
+
+---------------------------------Redox couples---------------------------------
+
+	Redox couple             pe  Eh (volts)
+
+	O(-2)/O(0)          13.5130      0.7994
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   OH-             1.026e-07   1.012e-07    -6.989    -6.995    -0.006     -4.13
+   H+              1.014e-07   1.000e-07    -6.994    -7.000    -0.006      0.00
+   H2O             5.551e+01   1.000e+00     1.744    -0.000     0.000     18.07
+H(0)          1.416e-33
+   H2              7.079e-34   7.079e-34   -33.150   -33.150     0.000     28.61
+N(5)          1.428e-04
+   NO3-            1.428e-04   1.408e-04    -3.845    -3.851    -0.006     29.47
+Na            1.428e-04
+   Na+             1.428e-04   1.408e-04    -3.845    -3.851    -0.006     -1.51
+   NaOH            1.425e-21   1.425e-21   -20.846   -20.846     0.000     (0)  
+Ndis          7.139e-07
+   Ndis            7.139e-07   7.140e-07    -6.146    -6.146     0.000     (0)  
+O(0)          1.875e-04
+   O2              9.375e-05   9.375e-05    -4.028    -4.028     0.000     30.40
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(298 K,   1 atm)
+
+  H2(g)           -30.05    -33.15   -3.10  H2
+  H2O(g)           -1.50     -0.00    1.50  H2O
+  O2(g)            -1.14     -4.03   -2.89  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+Initial solution 2.	Infilling
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	N(5)              1.428e-04   1.428e-04
+	Na                1.428e-04   1.428e-04  Charge balance
+	Ndis              7.140e-07   7.140e-07
+	O(0)              1.875e-04   1.875e-04
+	Substrate         1.000e-02   1.000e-02
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000    
+                                       pe  =   8.000    
+       Specific Conductance (µS/cm, 25°C)  = 17
+                          Density (g/cm³)  =   0.99706
+                               Volume (L)  =   1.00297
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.429e-04
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.244e-09
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                         Temperature (°C)  =  25.00
+                  Electrical balance (eq)  =   3.736e-15
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.00
+                               Iterations  =   7
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550683e+01
+
+---------------------------------Redox couples---------------------------------
+
+	Redox couple             pe  Eh (volts)
+
+	O(-2)/O(0)          13.5130      0.7994
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   OH-             1.026e-07   1.012e-07    -6.989    -6.995    -0.006     -4.13
+   H+              1.014e-07   1.000e-07    -6.994    -7.000    -0.006      0.00
+   H2O             5.551e+01   9.998e-01     1.744    -0.000     0.000     18.07
+H(0)          1.416e-33
+   H2              7.079e-34   7.079e-34   -33.150   -33.150     0.000     28.61
+N(5)          1.428e-04
+   NO3-            1.428e-04   1.408e-04    -3.845    -3.851    -0.006     29.47
+Na            1.428e-04
+   Na+             1.428e-04   1.408e-04    -3.845    -3.851    -0.006     -1.51
+   NaOH            1.425e-21   1.425e-21   -20.846   -20.846     0.000     (0)  
+Ndis          7.140e-07
+   Ndis            7.140e-07   7.140e-07    -6.146    -6.146     0.000     (0)  
+O(0)          1.875e-04
+   O2              9.375e-05   9.375e-05    -4.028    -4.028     0.000     30.40
+Substrate     1.000e-02
+   Substrate       1.000e-02   1.000e-02    -2.000    -2.000     0.000     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(298 K,   1 atm)
+
+  H2(g)           -30.05    -33.15   -3.10  H2
+  H2O(g)           -1.50     -0.00    1.50  H2O
+  O2(g)            -1.14     -4.03   -2.89  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+	RATES
+	Aerobic
+	        start
+	200 vmaxO = 1/(24*3600)
+	210 vmaxS1 = 1/(24*3600)
+	220 vmaxN = .1/(24*3600)
+	230 vmaxNI = 1/(24*3600)
+	240 Kh1O = .1
+	250 Kh1S1 = .1
+	260 Kh1N = .01
+	270 Kh2NI = .1
+	280 Kh2S1 = .1
+	290 kbio = 1
+	300 YN = 7
+	310 YNI = .1
+	320 km = .01/(24*3600)
+	330 k_nc_do = .001
+	410 O = TOT("O(0)")*16*1000
+	420 NI = TOT("N(5)")*14*1000
+	430 S1 = TOT("Substrate")*1000
+	440 N = TOT("Ndis")*14*1000
+	450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+	460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
+	470 Ib = 1 + (x1 + x2) / kbio
+	480 In = 1 + O / k_nc_do
+	500    REM  **  Oxygen rate ***
+	510 rateO = (vmaxO * x1 / Ib) * (O / ( kh1O + O))
+	520    REM  **  Substrate rate **
+	530 rateS1 = 2*(vmaxS1 * x1 / Ib) * (S1 / ( kh1S1 + S1))
+	540 rate = rateO
+	550 if rateS1 < rate then rate = rateS1
+	560 mg_O = TIME*rate
+	570 SAVE -mg_O * SOLN_VOL
+	        end
+	Aerobic_biomass
+	        start
+	200 vmaxO = 1/(24*3600)
+	210 vmaxS1 = 1/(24*3600)
+	220 vmaxN = .1/(24*3600)
+	230 vmaxNI = 1/(24*3600)
+	240 Kh1O = .1
+	250 Kh1S1 = .1
+	260 Kh1N = .01
+	270 Kh2NI = .1
+	280 Kh2S1 = .1
+	290 kbio = 1
+	300 YN = 7
+	310 YNI = .1
+	320 km = .01/(24*3600)
+	330 k_nc_do = .001
+	410 O = TOT("O(0)")*16*1000
+	420 NI = TOT("N(5)")*14*1000
+	430 S1 = TOT("Substrate")*1000
+	440 N = TOT("Ndis")*14*1000
+	450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+	460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
+	470 Ib = 1 + (x1 + x2) / kbio
+	480 In = 1 + O / k_nc_do
+	500    REM  **  Nitrogen rate ***
+	510 rateN = YN*(vmaxN * x1 / Ib) * (N / ( kh1N + N))
+	520    REM  **  Substrate rate ***
+	530 rateS1 = .25*(vmaxS1 * x1 / Ib) * (S1 / ( kh1S1 + S1))
+	540    REM  **  Oxygen rate ***
+	550 rateO = 0.125*(vmaxO * x1 / Ib) * (O / ( kh1O + O))
+	560 rate = RateN
+	570 if rateS1 < rate then rate = rateS1
+	580 if rateO < rate then rate = rateO
+	590 mg_O_biomass = TIME*(rate - km * x1)
+	600 SAVE -mg_O_biomass * SOLN_VOL
+	        end
+	N_reduction
+	        start
+	200 vmaxO = 1/(24*3600)
+	210 vmaxS1 = 1/(24*3600)
+	220 vmaxN = .1/(24*3600)
+	230 vmaxNI = 1/(24*3600)
+	240 Kh1O = .1
+	250 Kh1S1 = .1
+	260 Kh1N = .01
+	270 Kh2NI = .1
+	280 Kh2S1 = .1
+	290 kbio = 1
+	300 YN = 7
+	310 YNI = .1
+	320 km = .01/(24*3600)
+	330 k_nc_do = .001
+	410 O = TOT("O(0)")*16*1000
+	420 NI = TOT("N(5)")*14*1000
+	430 S1 = TOT("Substrate")*1000
+	440 N = TOT("Ndis")*14*1000
+	450 x1 = KIN("aerobic_biomass") / SOLN_VOL             
+	460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
+	470 Ib = 1 + (x1 + x2) / kbio
+	480 In = 1 + O / k_nc_do
+	500    REM  **  Nitrate rate ***
+	510 rateNI = (vmaxNI * x2 / (Ib*In)) * (NI / ( kh2NI + NI))
+	520    REM  **  Substrate rate ***
+	530 rateS1 = 2*(vmaxS1 * x2 / (Ib)) * (S1 / ( kh2S1 + S1))
+	540 rate = rateNI
+	550 if rateS1 < rate then rate = rateS1
+	560 mg_NI = TIME*rate
+	570 SAVE -mg_NI * SOLN_VOL
+	        end
+	N_reduction_biomass
+	        start
+	200 vmaxO = 1/(24*3600)
+	210 vmaxS1 = 1/(24*3600)
+	220 vmaxN = .1/(24*3600)
+	230 vmaxNI = 1/(24*3600)
+	240 Kh1O = .1
+	250 Kh1S1 = .1
+	260 Kh1N = .01
+	270 Kh2NI = .1
+	280 Kh2S1 = .1
+	290 kbio = 1
+	300 YN = 7
+	310 YNI = .1
+	320 km = .01/(24*3600)
+	330 k_nc_do = .001
+	410 O = TOT("O(0)")*16*1000
+	420 NI = TOT("N(5)")*14*1000
+	430 S1 = TOT("Substrate")*1000
+	440 N = TOT("Ndis")*14*1000
+	450 x1 = KIN("aerobic_biomass") / SOLN_VOL
+	460 x2 = KIN("N_reduction_biomass") / SOLN_VOL             
+	470 Ib = 1 + (x1 + x2) / kbio
+	480 In = 1 + O / k_nc_do
+	500    REM  **  Nitrate rate ***
+	510 rateNI = YNI*(vmaxNI * x2 / (Ib*In)) * (NI / ( kh2NI + NI))
+	520    REM  **  Substrate rate ***
+	530 rateS1 = .2*(vmaxS1 * x2 / (Ib)) * (S1 / ( kh2S1 + S1))
+	540    REM  **  Nitrogen rate ***
+	550 rateN = YN*(vmaxN * x2 / Ib) * (N / ( kh1N + N))
+	560 rate = RateNI
+	570 if rateS1 < rate then rate = rateS1
+	580 if rateN < rate then rate = rateN
+	590 mg_N_biomass = TIME*(rate - km * x2)
+	600 SAVE -mg_N_biomass * SOLN_VOL
+	        end
+	KINETICS 1 Kinetics for all cells except inlet boundary
+	Aerobic
+	        formula  O 6.25e-5 Substrate 5e-4
+	        m 0
+	Aerobic_biomass
+	        formula  Ndis  1.02041E-05 
+	        m 0.2
+	N_reduction
+	        formula  NaNO3  7.14286E-05 Substrate 5e-4
+	        m 0
+	N_reduction_biomass
+	        formula  Ndis  1.02041E-05 
+	        m 0.1
+	KINETICS 2  Special kinetics for inlet boundary
+	Aerobic_biomass
+	        formula    Ndis  0
+	        m 0.2
+	N_reduction_biomass
+	        formula  Ndis  0
+	        m 0.1
+	SELECTED_OUTPUT
+	        file kindred4.4.sel
+	        reset false
+	USER_PUNCH
+	headings Substrate N(5) Ndis O(0) O_biomass N_biomass
+	10 PUNCH TOT("Substrate")*1000, TOT("N(5)")*14*1000, TOT("Ndis")*14*1000, TOT("O(0)")*16*1000
+	20 PUNCH KIN("Aerobic_biomass"), KIN("N_reduction_biomass")
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 3.
+------------------------------------
+
+------------------------------
+End of Run after 5.05 Seconds.
+------------------------------
+

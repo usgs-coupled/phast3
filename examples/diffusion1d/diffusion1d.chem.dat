@@ -1,0 +1,18 @@
+SOLUTION 1 
+	 -pH 7 charge
+SOLUTION 2
+	 -pH 7 
+	 Na  1 charge
+	 Cl  1
+
+PRINT
+-warn 10
+-reset false
+
+END
+SELECTED_OUTPUT
+	-reset false
+USER_PUNCH
+-heading	Cl
+10 PUNCH TOT("Cl")
+END

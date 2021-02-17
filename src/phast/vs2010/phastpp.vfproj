@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectType="typeStaticLibrary" ProjectCreator="Intel Fortran" Keyword="Static Library" Version="11.0" ProjectIdGuid="{12E87AB4-B82A-4104-A74C-379229396B15}">
+	<Platforms>
+		<Platform Name="Win32"/>
+		<Platform Name="x64"/></Platforms>
+	<Configurations>
+		<Configuration Name="ser|Win32" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhreeqcRM;$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Interfaces="true"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="ser_debug|Win32" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/MTd" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" ParallelDebugChecks="true" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc;$(ProjectDir)../PhreeqcRM" EnableRecursion="true" ReentrantCode="reentrancyThreaded" WarnDeclarations="true" WarnUnusedVariables="true" WarnTruncateSource="true" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" FloatingPointSpeculation="fpSpeculationStrict" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="merge|Win32" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC);$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" PreprocessorDefinitions="USE_MPI;NO_UNDERSCORES" Interfaces="true"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="merge_debug|Win32" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC);$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" PreprocessorDefinitions="USE_MPI;NO_UNDERSCORES" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="ser|x64" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" EnableRecursion="true" ReentrantCode="reentrancyThreaded" OpenMP="OpenMPParallelCode" Interfaces="true"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="ser_debug|x64" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="merge|x64" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(MSMPI_INC);$(MSMPI_INC)/amd64;$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" PreprocessorDefinitions="USE_MPI;NO_UNDERSCORES" VectorizerDiagLevel="vectorizerDiagLevel5" Interfaces="true"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="merge_debug|x64" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC);$(ProjectDir)../PhastFortran;$(ProjectDir)../PhreeqcRM;$(ProjectDir)..\IPhreeqcPhast\IPhreeqc" PreprocessorDefinitions="USE_MPI;NO_UNDERSCORES" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd">
+		<File RelativePath="..\PhastFortran\ifrd.inc"/>
+		<File RelativePath="..\PhastFortran\ifwr.inc"/>
+		<File RelativePath="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.f90.inc"/>
+		<File RelativePath="..\PhastFortran\mpi_windows.inc">
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/></File>
+		<File RelativePath="..\PhreeqcRM\RM_interface.f90.inc"/></Filter>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<Filter Name="COMMON_FOBJS">
+		<File RelativePath="..\PhastFortran\aplbce_flow.f90"/>
+		<File RelativePath="..\PhastFortran\aplbci_flow.F90"/>
+		<File RelativePath="..\PhastFortran\asembl_flow.f90"/>
+		<File RelativePath="..\PhastFortran\asmslp_flow.F90"/>
+		<File RelativePath="..\PhastFortran\calc_velocity.f90"/>
+		<File RelativePath="..\PhastFortran\calcc.f90"/>
+		<File RelativePath="..\PhastFortran\clog.f90"/>
+		<File RelativePath="..\PhastFortran\closef.F90"/>
+		<File RelativePath="..\PhastFortran\coeff_flow.F90"/>
+		<File RelativePath="..\PhastFortran\coeff_trans.F90"/>
+		<File RelativePath="..\PhastFortran\create_mapping.f90"/>
+		<File RelativePath="..\PhastFortran\dealloc_arr.F90"/>
+		<File RelativePath="..\PhastFortran\dealloc_arr_worker.F90"/>
+		<File RelativePath="..\PhastFortran\dump.f90"/>
+		<File RelativePath="..\PhastFortran\error1.f90"/>
+		<File RelativePath="..\PhastFortran\error2.f90"/>
+		<File RelativePath="..\PhastFortran\error3.f90"/>
+		<File RelativePath="..\PhastFortran\error4.f90"/>
+		<File RelativePath="..\PhastFortran\errprt.f90"/>
+		<File RelativePath="..\PhastFortran\etom1.f90"/>
+		<File RelativePath="..\PhastFortran\etom2.f90"/>
+		<File RelativePath="..\PhastFortran\incidx.f90"/>
+		<File RelativePath="..\PhastFortran\indx_rewi.f90"/>
+		<File RelativePath="..\PhastFortran\indx_rewi_bc.f90"/>
+		<File RelativePath="..\PhastFortran\init1.F90"/>
+		<File RelativePath="..\PhastFortran\init2_1.F90"/>
+		<File RelativePath="..\PhastFortran\init2_1_xfer.F90"/>
+		<File RelativePath="..\PhastFortran\init2_2.f90"/>
+		<File RelativePath="..\PhastFortran\init2_3.f90"/>
+		<File RelativePath="..\PhastFortran\init2_post_ss.F90"/>
+		<File RelativePath="..\PhastFortran\init3.F90"/>
+		<File RelativePath="..\PhastFortran\init3_xfer.F90"/>
+		<File RelativePath="..\PhastFortran\interpolate_mod.f90"/>
+		<File RelativePath="..\PhastFortran\ld_seg_mod.f90"/>
+		<File RelativePath="..\PhastFortran\ldchar.f90"/>
+		<File RelativePath="..\PhastFortran\ldchar_bc.f90"/>
+		<File RelativePath="..\PhastFortran\mach_mod.f90"/>
+		<File RelativePath="..\PhastFortran\modules_g.f90"/>
+		<File RelativePath="..\PhastFortran\modules_manager.f90"/>
+		<File RelativePath="..\PhastFortran\mtoijk.f90"/>
+		<File RelativePath="..\PhastFortran\nintrp.f90"/>
+		<File RelativePath="..\PhastFortran\openf.F90"/>
+		<File RelativePath="..\PhastFortran\phast_manager.F90"/>
+		<File RelativePath="..\PhastFortran\phast_spmd.F90"/>
+		<File RelativePath="..\PhastFortran\prchar.f90"/>
+		<File RelativePath="..\PhastFortran\print_control_mod.f90"/>
+		<File RelativePath="..\PhastFortran\printar.f90"/>
+		<File RelativePath="..\PhastFortran\read1.F90"/>
+		<File RelativePath="..\PhastFortran\read1_xfer.F90"/>
+		<File RelativePath="..\PhastFortran\read2.F90"/>
+		<File RelativePath="..\PhastFortran\read2_xfer.F90"/>
+		<File RelativePath="..\PhastFortran\read3.F90"/>
+		<File RelativePath="..\PhastFortran\read3_xfer.F90"/>
+		<File RelativePath="..\PhastFortran\reorder_mod.f90"/>
+		<File RelativePath="..\PhastFortran\rewi_mod.f90"/>
+		<File RelativePath="..\PhastFortran\rhsn.f90"/>
+		<File RelativePath="..\PhastFortran\rhsn_manager.F90"/>
+		<File RelativePath="..\PhastFortran\rhsn_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\sbcflo.f90"/>
+		<File RelativePath="..\PhastFortran\scale_jds_mod.f90"/>
+		<File RelativePath="..\PhastFortran\set_component_map.F90"/>
+		<File RelativePath="..\PhastFortran\simulate_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\solver_direct_mod.f90"/>
+		<File RelativePath="..\PhastFortran\solver_iter_mod.f90"/>
+		<File RelativePath="..\PhastFortran\stonb.f90"/>
+		<File RelativePath="..\PhastFortran\sumcal1.F90"/>
+		<File RelativePath="..\PhastFortran\sumcal1_manager.F90"/>
+		<File RelativePath="..\PhastFortran\sumcal2.f90"/>
+		<File RelativePath="..\PhastFortran\sumcal_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\terminate_phast.F90"/>
+		<File RelativePath="..\PhastFortran\terminate_phast_worker.F90"/>
+		<File RelativePath="..\PhastFortran\time_step_save.F90"/>
+		<File RelativePath="..\PhastFortran\timestep.F90"/>
+		<File RelativePath="..\PhastFortran\timestep_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\timestep_worker.F90"/>
+		<File RelativePath="..\PhastFortran\update_print_flags.f90"/>
+		<File RelativePath="..\PhastFortran\uppercase.f90"/>
+		<File RelativePath="..\PhastFortran\wbbal.f90"/>
+		<File RelativePath="..\PhastFortran\wbcflo.f90"/>
+		<File RelativePath="..\PhastFortran\wellsc.f90"/>
+		<File RelativePath="..\PhastFortran\wellsc_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\wellsr.f90"/>
+		<File RelativePath="..\PhastFortran\wellsr_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\welris.f90"/>
+		<File RelativePath="..\PhastFortran\wfdydz.f90"/>
+		<File RelativePath="..\PhastFortran\write1.f90"/>
+		<File RelativePath="..\PhastFortran\write2_1.f90"/>
+		<File RelativePath="..\PhastFortran\write2_2.f90"/>
+		<File RelativePath="..\PhastFortran\write3.f90"/>
+		<File RelativePath="..\PhastFortran\write3_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\write4.f90"/>
+		<File RelativePath="..\PhastFortran\write5.f90"/>
+		<File RelativePath="..\PhastFortran\write5_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\write6.f90"/>
+		<File RelativePath="..\PhastFortran\XP_aplbce.f90"/>
+		<File RelativePath="..\PhastFortran\XP_aplbci.F90"/>
+		<File RelativePath="..\PhastFortran\XP_asembl.f90"/>
+		<File RelativePath="..\PhastFortran\XP_asmslc.F90"/>
+		<File RelativePath="..\PhastFortran\XP_crsdsp.f90"/>
+		<File RelativePath="..\PhastFortran\XP_etom2.f90"/>
+		<File RelativePath="..\PhastFortran\XP_module.f90"/>
+		<File RelativePath="..\PhastFortran\XP_rhsn.f90"/>
+		<File RelativePath="..\PhastFortran\XP_sumcal1.f90"/>
+		<File RelativePath="..\PhastFortran\XP_wbcflo.f90"/>
+		<File RelativePath="..\PhastFortran\XP_wellsc.f90"/>
+		<File RelativePath="..\PhastFortran\XP_wellsr.f90"/>
+		<File RelativePath="..\PhastFortran\zone_flow.f90"/>
+		<File RelativePath="..\PhastFortran\zone_flow_ss.f90"/></Filter>
+		<Filter Name="HDF_OBJS">
+		<File RelativePath="..\PhastFortran\hdf_f.F90"/></Filter>
+		<Filter Name="MPI_OBJS">
+		<File RelativePath="..\PhastFortran\mpi_mod.F90"/>
+		<File RelativePath="..\PhastFortran\phast_worker.F90"/>
+		<File RelativePath="..\PhastFortran\xfer_to_manager.F90"/>
+		<File RelativePath="..\PhastFortran\xfer_to_workers.F90"/></Filter></Filter></Files>
+	<Globals/></VisualStudioProject>

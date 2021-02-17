@@ -1,0 +1,129 @@
+TITLE
+.       Belousov-Zhabotinskii Reaction
+.
+SOLUTE_TRANSPORT true
+		 -diff 1e-9
+UNITS
+      -time		sec
+      -horizontal_grid	mm
+      -vertical_grid	mm
+      -head		mm
+      -hydraulic_conductivity meters/seconds
+      -specific_storage 1/meters
+      -dispersivity	meters
+      -flux		mm/s
+      -leaky_hydraulic_conductivity meters/seconds
+      -leaky_thickness		    meters
+      -well_diameter		    in
+      -well_flow_rate		    liter/days
+      -river_bed_hydraulic_conductivity meters/seconds
+      -river_bed_thickness		meters
+GRID
+#      -uniform   X   0 1	26   # 0.04 mm
+      -uniform   X   0 1	51   # 0.02 mm
+      -overlay_nonuniform  X  0.02
+      -snap X 1e-10
+#      -uniform   Y   0 1	26   # 0.04 mm
+      -uniform   Y   0 1	51   # 0.02 mm
+      -overlay_nonuniform  Y  0.02
+      -snap Y 1e-10
+# 1e-6*1e-6*1*10 = 1e-11 mol/m
+      -uniform   Z   0 1	2
+      -chemistry_dimensions XY
+      -print_orientation XY
+MEDIA
+      -zone 0 0 0 10 10 1
+            -Kx 1e-10
+            -Ky 1e-10
+            -Kz 1e-10
+            -porosity 1.0
+            -specific_storage 0
+            -longitudinal_dispersivity 0
+            -horizontal_dispersivity   0
+            -vertical_dispersivity     0
+	    -active 1
+STEADY_FLOW true
+      -head_tolerance 1e-10
+      -flow_balance_tolerance 0.001e-3
+SOLUTION_METHOD
+      -iterative_solver true
+      -tolerance 1E-20
+      -save_directions 10
+      -maximum_iterations 500
+      -space_differencing 0.5   # does not matter
+      -time_differencing  0.5
+      -cross_dispersion	  false
+#FLUX_BC
+#      -zone 1 1 0 1 1 1
+#	    -face X
+#            -flux 
+#		  0	-0.1
+#            -associated_solution 
+#		  0	1
+#SPECIFIED_HEAD_BC
+#      -zone 0 0 0 0 0 1
+#            -head 
+#		0 1
+#            -associated_solution 
+#		  0     1
+#      -zone 10 10 0 10 10 1
+#            -head 
+#		0 1.00000001
+#            -associated_solution 
+#		  0     1
+HEAD_IC
+      -zone 0 0 0 10 10 1
+            -head 1
+CHEMISTRY_IC
+      -zone 0 0 0 10 10 1
+            -solution 1
+      -zone 0 0 0 0 0 1
+            -solution 2
+PRINT_INITIAL
+      -boundary_conditions false
+      -components false
+      -conductance false
+      -echo_input false
+      -fluid_properties false
+      -force_chemistry_print false
+      -HDF_chemistry true
+      -HDF_heads false
+      -HDF_steady_flow_velocities false
+      -heads false
+      -media_properties false
+      -solution_method false
+      -steady_flow_velocities true
+      -wells false
+      -xyz_chemistry false
+      -xyz_components false
+      -xyz_heads true
+      -xyz_steady_flow_velocities true
+      -xyz_wells false
+PRINT_FREQUENCY
+	0
+      -bc_flow_rates 0 
+      -boundary_conditions false
+      -components 0 
+      -conductance 0 
+      -flow_balance 0 
+      -force_chemistry_print 0 
+      -HDF_chemistry 10 sec
+      -HDF_heads 0 
+      -HDF_velocities 0 
+      -heads 0 
+      -progress_statistics 0 
+      -save_final_heads true
+      -velocities 0 
+      -wells 0 
+      -xyz_chemistry  10 s
+      -xyz_components 0 
+      -xyz_heads 0 
+      -xyz_velocities 0 
+TIME_CONTROL
+      -time_step 
+#		 0 1 sec
+#		 0 0.5 s
+		 0 0.1 sec
+#		 0 0.25 sec
+      -time_change 4 sec
+END

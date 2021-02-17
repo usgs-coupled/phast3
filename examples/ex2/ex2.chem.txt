@@ -1,0 +1,235 @@
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	SOLUTION_MASTER_SPECIES
+	        [A]   [A]   1       1       1
+	        [B]   [B]   1       1       1
+	        [C]   [C]   1       1       1
+	        [D]   [D]   1       1       1
+	SOLUTION_SPECIES
+	        [A] = [A]
+	                log_k   0
+	        [B] = [B]
+	                log_k   0
+	        [C] = [C]
+	                log_k   0
+	        [D] = [D]
+	                log_k   0
+	SOLUTION 1
+	END
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Pure water     
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000    
+                                       pe  =   4.000    
+       Specific Conductance (µS/cm, 25°C)  = 0
+                          Density (g/cm³)  =   0.99704
+                               Volume (L)  =   1.00297
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.007e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.217e-09
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                         Temperature (°C)  =  25.00
+                  Electrical balance (eq)  =  -1.217e-09
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.60
+                               Iterations  =   0
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   OH-             1.013e-07   1.012e-07    -6.995    -6.995    -0.000     -4.14
+   H+              1.001e-07   1.000e-07    -7.000    -7.000    -0.000      0.00
+   H2O             5.551e+01   1.000e+00     1.744     0.000     0.000     18.07
+H(0)          1.416e-25
+   H2              7.079e-26   7.079e-26   -25.150   -25.150     0.000     28.61
+O(0)          0.000e+00
+   O2              0.000e+00   0.000e+00   -42.080   -42.080     0.000     30.40
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(298 K,   1 atm)
+
+  H2(g)           -22.05    -25.15   -3.10  H2
+  H2O(g)           -1.50      0.00    1.50  H2O
+  O2(g)           -39.19    -42.08   -2.89  O2
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+	SOLUTION 2
+	        units   mmol/kgw
+	        pe      12.0    O2(g)   -0.67
+	        [A]   1.0
+	END
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 2.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	[A]               1.000e-03   1.000e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000    
+                                       pe  =  13.629      Equilibrium with O2(g)
+       Specific Conductance (µS/cm, 25°C)  = 0
+                          Density (g/cm³)  =   0.99704
+                               Volume (L)  =   1.00297
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.006e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.000e-03
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                         Temperature (°C)  =  25.00
+                  Electrical balance (eq)  =  -1.214e-09
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.60
+                               Iterations  =   3
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550676e+01
+
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma   cm³/mol
+
+   OH-             1.013e-07   1.012e-07    -6.995    -6.995    -0.000     -4.14
+   H+              1.000e-07   1.000e-07    -7.000    -7.000    -0.000      0.00
+   H2O             5.551e+01   1.000e+00     1.744    -0.000     0.000     18.07
+H(0)          0.000e+00
+   H2              0.000e+00   0.000e+00   -44.409   -44.409     0.000     28.61
+O(0)          5.478e-04
+   O2              2.739e-04   2.739e-04    -3.562    -3.562     0.000     30.40
+[A]           1.000e-03
+   [A]             1.000e-03   1.000e-03    -3.000    -3.000     0.000     (0)  
+
+------------------------------Saturation indices-------------------------------
+
+  Phase               SI** log IAP   log K(298 K,   1 atm)
+
+  H2(g)           -41.31    -44.41   -3.10  H2
+  H2O(g)           -1.50     -0.00    1.50  H2O
+  O2(g)            -0.67     -3.56   -2.89  O2	 Pressure   0.2 atm, phi 1.000
+
+**For a gas, SI = log10(fugacity). Fugacity = pressure * phi / 1 atm.
+  For ideal gases, phi = 1.
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 3.
+------------------------------------
+
+	RATES
+	        [A]_decay
+	        start
+	10 rate = -TOT("[A]") * .05/(3600*24)
+	20 moles = rate * TIME * SOLN_VOL
+	30 SAVE moles
+	        end
+	        [B]_decay
+	        start
+	10 rate = -TOT("[B]") * .02/(3600*24)
+	20 moles = rate * TIME * SOLN_VOL
+	30 SAVE moles
+	        end
+	        [C]_decay
+	        start
+	10 rate = -TOT("[C]") * .01/(3600*24)
+	20 moles = rate * TIME * SOLN_VOL
+	30 SAVE moles
+	        end
+	        [D]_decay
+	        start
+	10 rate = -TOT("[D]") * .005/(3600*24)
+	20 moles = rate * TIME * SOLN_VOL
+	30 SAVE moles
+	        end
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 4.
+------------------------------------
+
+	KINETICS 1
+	        [A]_decay
+	                formula [A] 1 [B] -1.0
+	                m 0
+	        [B]_decay
+	                formula [B] 1 [C] -1.0
+	                m 0
+	        [C]_decay
+	                formula [C] 1 [D] -1.0
+	                m 0
+	        [D]_decay
+	                formula [D] 1
+	                m 0
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 5.
+------------------------------------
+
+	SELECTED_OUTPUT
+	        file ex2.dummy.sel
+	        reset false
+	USER_PUNCH
+	        heading A B C D 
+	        start
+	10 PUNCH TOT("[A]")*1000
+	20 PUNCH TOT("[B]")*1000
+	30 PUNCH TOT("[C]")*1000
+	40 PUNCH TOT("[D]")*1000
+	        end
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 6.
+------------------------------------
+
+------------------------------
+End of Run after 4.74 Seconds.
+------------------------------
+

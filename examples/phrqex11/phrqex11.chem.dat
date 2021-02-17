@@ -1,0 +1,33 @@
+TITLE PHREEQC example 11.--Transport and ion exchange
+SOLUTION 0  CaCl2
+        units   mmol/kgw
+        pH      7.0     charge
+        pe      12.5   O2(g)  -0.68
+        temp    25.0
+        Ca      0.6
+        Cl      1.2
+SOLUTION 1  Initial solution for column
+        units   mmol/kgw
+        pH      7.0     charge
+        pe      12.5   O2(g)  -0.68
+        temp    25.0
+        Na      1.0
+        K       0.2
+        N(5)    1.2
+END
+EXCHANGE 1
+        equilibrate 1
+        X       0.0011
+END
+SELECTED_OUTPUT
+        -file phrqex11.sel
+        -reset false
+END
+USER_PUNCH
+-heading Pore_volume Na Cl K Ca 
+10 PUNCH TOTAL_TIME/86400*3
+20 PUNCH TOT("Na") * 1000
+30 PUNCH TOT("Cl") * 1000
+40 PUNCH TOT("K") * 1000
+50 PUNCH TOT("Ca") * 1000
+END

@@ -1,0 +1,14 @@
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	SOLUTION 1 
+		 ph 7 charge
+	SOLUTION 2
+		 ph 7 
+		 units mol/kgw
+		 Na  10 charge
+		 Cl  10
+	PRINT
+	warning 10
+	reset false
