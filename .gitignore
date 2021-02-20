@@ -1,4 +1,7 @@
-
+*.o
+*.exe
+/src/phast/openmp_gfortran_64
+/src/phast/openmp_gfortran_64_debug
 # /
 /aclocal.m4
 /autom4te.cache

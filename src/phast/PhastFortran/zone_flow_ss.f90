@@ -96,6 +96,7 @@ SUBROUTINE zone_flow_ss
               qfzoni_int(izn) = qfzoni_int(izn) - szz(m)
               qfzoni(izn) = qfzoni(izn) - szz(m)
            END IF
+#ifdef SKIP
            IF (szz(mijkm) < 0.) THEN
               qfzonp_int(izn) = qfzonp_int(izn) - szz(mijkm)
               qfzonp(izn) = qfzonp(izn) - szz(mijkm)
@@ -103,6 +104,7 @@ SUBROUTINE zone_flow_ss
               qfzoni_int(izn) = qfzoni_int(izn) + szz(mijkm)
               qfzoni(izn) = qfzoni(izn) + szz(mijkm)
            END IF
+#endif
         ELSEIF(zone_ib(izn)%face_indx(ifc) == 1) THEN
            ! ... Z-direction mass flow rates
            mijkm = m-nxy

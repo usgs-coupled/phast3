@@ -1,0 +1,20 @@
+.
+.
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV     3930 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST      418 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .    3512 elements
+
+Beginning flow calculation for steady-state i.c.
+Reading transient data for simulation: Set  1
+Automatic Time Step Control Parameters for Steady Flow
+Maximum pressure change allowed per time step.................... DPTAS    2.94E+02  (Pa )
+Minimum time step required ...................................... DTIMMN   1.00E-03  (s  )
+Maximum time step allowed ....................................... DTIMMX   1.00E+03(s  )
+
+Beginning steady state time step no.      1
+     Maximum change in potentiometric head ..    1.0000E-01     (m) at location (  0.00    , 0.100    , 0.100    )(m)
+     Fractional flow residual ...............   -1.9644E-10
+
+Beginning steady state time step no.      2
+     Maximum change in potentiometric head ..    6.5530E-11     (m) at location ( 0.100    ,  0.00    , 2.000E-02)(m)

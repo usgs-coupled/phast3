@@ -319,6 +319,8 @@ SUBROUTINE write5_ss_flow
      ENDDO
      ntprzf_tsv = ntprzf_tsv+1
   END IF
+  CALL flush(fuzf_tsv)
+  CALL flush(fuzf)
   IF(prwel) THEN
      nsa = MAX(ns,1)
      ALLOCATE (chu10a(nsa), chu11a(nsa), &

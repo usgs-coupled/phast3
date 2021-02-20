@@ -1,0 +1,180 @@
+
+
+                          .                                                                               
+                          .                                                                               
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2
+           0.00        0.10
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2
+           0.00        0.10
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2           3           4           5           6           7           8           9          10
+           0.00        0.01        0.02        0.03        0.04        0.05        0.06        0.07        0.08        0.09
+
+
+
+          11
+           0.10
+
+
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2
+           0.00        0.10
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2
+           0.00        0.10
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2           3           4           5           6           7           8           9          10
+           0.00        0.01        0.02        0.03        0.04        0.05        0.06        0.07        0.08        0.09
+
+
+
+          11
+           0.10
+
+
+
+                                   Index Numbers for Flow Zones
+
+                    Areal Layers
+
+                                                            K =  1
+
+           1           2
+  2          3.          3.
+  1          3.          3.
+
+                                                            K = 11
+
+           1           2
+  2          2.          2.
+  1          2.          2.
+
+
+
+                              *** Output at End of Steady State Iteration No.     2 ***
+
+     Time .......................................................    0.00      (s)
+
+                                        *** Zonal Flow Summary, zone:   1 ***
+          Total_domain                                                                    
+                         Current Time Step                         Rates
+
+ Fluid inflow ...............................................  1.000000E-08  (kg/s)
+ Fluid outflow ..............................................  1.000000E-08  (kg/s)
+
+
+               Current Iteration Step Internal Faces
+                                                                 Rates
+
+ Internal face fluid inflow .................................  0.000000E+00  (kg/s)
+ Internal face fluid outflow ................................  0.000000E+00  (kg/s)
+
+
+               Current Iteration Step by Boundary Condition Type
+                                                                 Rates
+
+ Specified head b.c. fluid inflow ...........................  1.000000E-08  (kg/s)
+ Specified head b.c. fluid outflow ..........................  1.000000E-08  (kg/s)
+ Flux b.c. fluid inflow .....................................  0.000000E+00  (kg/s)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/s)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/s)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/s)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/s)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/s)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/s)
+ Drain leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/s)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/s)
+ Well fluid outflow .........................................  0.000000E+00  (kg/s)
+
+
+                                        *** Zonal Flow Summary, zone:   2 ***
+          Top_cell                                                                        
+                         Current Time Step                         Rates
+
+ Fluid inflow ...............................................  1.000000E-08  (kg/s)
+ Fluid outflow ..............................................  1.000000E-08  (kg/s)
+
+
+               Current Iteration Step Internal Faces
+                                                                 Rates
+
+ Internal face fluid inflow .................................  0.000000E+00  (kg/s)
+ Internal face fluid outflow ................................  1.000000E-08  (kg/s)
+
+
+               Current Iteration Step by Boundary Condition Type
+                                                                 Rates
+
+ Specified head b.c. fluid inflow ...........................  1.000000E-08  (kg/s)
+ Specified head b.c. fluid outflow ..........................  0.000000E+00  (kg/s)
+ Flux b.c. fluid inflow .....................................  0.000000E+00  (kg/s)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/s)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/s)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/s)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/s)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/s)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/s)
+ Drain leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/s)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/s)
+ Well fluid outflow .........................................  0.000000E+00  (kg/s)
+
+
+                                        *** Zonal Flow Summary, zone:   3 ***
+          Bottom_cell                                                                     
+                         Current Time Step                         Rates
+
+ Fluid inflow ...............................................  1.000000E-08  (kg/s)
+ Fluid outflow ..............................................  1.000000E-08  (kg/s)
+
+
+               Current Iteration Step Internal Faces
+                                                                 Rates
+
+ Internal face fluid inflow .................................  1.000000E-08  (kg/s)
+ Internal face fluid outflow ................................  0.000000E+00  (kg/s)
+
+
+               Current Iteration Step by Boundary Condition Type
+                                                                 Rates
+
+ Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/s)
+ Specified head b.c. fluid outflow ..........................  1.000000E-08  (kg/s)
+ Flux b.c. fluid inflow .....................................  0.000000E+00  (kg/s)
+ Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/s)
+ Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/s)
+ Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/s)
+ River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/s)
+ River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/s)
+ Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/s)
+ Drain leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/s)
+ Well fluid inflow ..........................................  0.000000E+00  (kg/s)
+ Well fluid outflow .........................................  0.000000E+00  (kg/s)
+
