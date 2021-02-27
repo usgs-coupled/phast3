@@ -1,0 +1,90 @@
+                                    ****************************************************
+                                    *                                                  *
+                                    *    PHAST: A Three Dimensional Flow and Solute    *
+                                    *         Reactive Transport Simulator             *
+                                    *             Version: @VERSIO           *
+                                    *                                                  *
+                                    ****************************************************
+
+
+
+
+
+
+                          .                                                                               
+                          .                                                                               
+
+                         *** Fundamental Information ***
+                    Isothermal simulation
+                    No solute transport simulaton
+                    Cartesian coordinates
+                    Data is in metric units
+                    Time unit selected is seconds 
+
+          Iterative generalized conjugate gradient solver with d4 zig-zag reduction is selected
+
+                         *** Problem Dimension Information ***
+          Number of nodes in x-direction .................................. NX ...      2
+          Number of nodes in y-direction .................................. NY ...      2
+          Number of nodes in z-direction .................................. NZ ...     11
+          Total number of nodes ........................................... NXYZ .     44
+
+          Number of porous media zones .................................... NPMZ .     10
+          Number of specified pressure or mass fraction b.c. .............. NSBC .      8
+          Number of specified flux b.c. cells ............................. NFBC .      0
+          Number of leakage cells ......................................... NLBC .      0
+          Number of river leakage cells ................................... NRBC .      0
+          Number of drain leakage cells ................................... NDBC .      0
+          Number of wells ................................................. NWEL .      0
+
+          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV     3930 elements
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                              ***  Static Data ***
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2
+           0.00        0.10
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2
+           0.00        0.10
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2           3           4           5           6           7           8           9          10
+           0.00        0.01        0.02        0.03        0.04        0.05        0.06        0.07        0.08        0.09
+
+
+
+          11
+           0.10
+
+
+
+
+                              Z-Axis is Positive Vertically Upward
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+                    Automatic Time Step Control Parameters for Steady Flow
+          Maximum pressure change allowed per time step.................... DPTAS    2.94E+02  (Pa )
+          Minimum time step required ...................................... DTIMMN   1.00E-03  (s  )
+          Maximum time step allowed ....................................... DTIMMX   1.00E+03  (s  )
+
+
+ ------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                        *** Transient Data ***
