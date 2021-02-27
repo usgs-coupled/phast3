@@ -1,7 +1,16 @@
 ---------------------------------------
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
+---------------------
+Git February 19, 2021
+---------------------
 
+PHAST: Fixed zero divide when running with one cell and
+dumping the module.
+
+PHAST: Bug fix for ZoneFlow. Steady state flow in the Z direction
+incorrectly accounted for the internal flow boundaries. Revisions
+have fixed the problem. 
 
 ---------------------
 Git February 19, 2020

@@ -481,7 +481,7 @@ _getopt_internal(int argc, char *const *argv, const char *optstring,
 #if defined(WIN32)
 #pragma warning( disable : 4244 )	// 'function' : conversion from '__w64 int' to 'int', possible loss of data
 #endif
-			if (!strncmp(p->name, nextchar, s - nextchar))
+			if (!strncmp(p->name, nextchar, (size_t) (s - nextchar)))
 #if defined(WIN32)
 #pragma warning( default : 4244 )	// 'function' : conversion from '__w64 int' to 'int', possible loss of data
 #endif
