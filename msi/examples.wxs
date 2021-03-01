@@ -131,6 +131,8 @@
             <ComponentRef Id="zf.chem.dat" />
             <ComponentRef Id="zf.subgrid.heads" />
             <ComponentRef Id="zf.trans.dat" />
+            <!-- ZoneSteady -->
+            <ComponentRef Id="ZoneSteady.trans.dat" />
         </ComponentGroup>
     </Fragment>
     <Fragment>
@@ -591,6 +593,11 @@
                     </Component>
                     <Component Id="zf.trans.dat" Guid="*">
                         <File Id="zf.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\zf\zf.trans.dat" />
+                    </Component>
+                </Directory>
+                <Directory Id="ZoneSteady" Name="ZoneSteady">
+                    <Component Id="ZoneSteady.trans.dat" Guid="*">
+                        <File Id="ZoneSteady.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\ZoneSteady\ZoneSteady.trans.dat" />
                     </Component>
                 </Directory>
             </Directory>
