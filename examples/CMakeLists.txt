@@ -458,3 +458,14 @@ zf/zf.trans.dat
 )
 
 install(FILES ${zf} DESTINATION ${example_zfdir})
+
+
+# ZoneSteady
+#
+set(example_ZoneSteadydir ${EXAMPLES_DIR}/ZoneSteady)
+
+set(ZoneSteady
+ZoneSteady/ZoneSteady.trans.dat
+)
+
+install(FILES ${ZoneSteady} DESTINATION ${example_ZoneSteadydir})
