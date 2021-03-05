@@ -303,7 +303,8 @@ EXAMPLES="decay \
           simple \
           unconf \
           well \
-          zf"
+          zf \
+          ZoneSteady"
 for ex in $EXAMPLES
 do
   mv "$DISTPATH/examples-delete/$ex" "$DISTPATH/examples/."
