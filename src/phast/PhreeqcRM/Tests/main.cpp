@@ -13,6 +13,8 @@ extern void advection_f90(void);
 extern void advection_c(void);
 extern void species_f90(void);
 extern void species_c(void);
+extern void gas_c(void);
+extern void gas_f90(void);
 
 #if defined(__cplusplus)
 }
@@ -22,6 +24,7 @@ extern void species_c(void);
 extern int advection_cpp();
 extern int species_cpp();
 extern int units_tester();
+extern int gas_cpp();
 
 int main(int argc, char* argv[])
 {
@@ -47,19 +50,30 @@ int main(int argc, char* argv[])
 	mpi_tasks = 1;
 	mpi_myself = 0;
 #endif
-
+	std::cerr << mpi_myself << std::endl;
+	bool root = (mpi_myself == 0);
 	units_tester();
+	if (root) std::cerr << "Done units_tester.===================================" << std::endl;
 	advection_cpp();
+	if (root) std::cerr << "Done advection_cpp.==================================" << std::endl;
+	advection_c();
+	if (root) std::cerr << "Done advection_c.====================================" << std::endl;
+	species_cpp();
+	if (root) std::cerr << "Done species_cpp.====================================" << std::endl;
+	species_c();
+	if (root) std::cerr << "Done species_c.======================================" << std::endl;
+	gas_cpp();
+	if (root) std::cerr << "Done gas_ccp.========================================" << std::endl;
+	gas_c();
+	if (root) std::cerr << "Done gas_c.==========================================" << std::endl;
 #if defined(TEST_FORTRAN)
 	advection_f90();
-#endif
-	advection_c();
-	species_cpp();
-#if defined(TEST_FORTRAN)
+	if (root) std::cerr << "Done advection_f90.==================================" << std::endl;
 	species_f90();
+	if (root) std::cerr << "Done species_f90.====================================" << std::endl;
+	gas_f90();
+	if (root) std::cerr << "Done gas_f90.========================================" << std::endl;
 #endif
-	species_c();
-
 #if defined(USE_MPI)
 	MPI_Finalize();
 #endif

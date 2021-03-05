@@ -2282,6 +2282,7 @@ PhreeqcRM::DumpModule(bool dump_on, bool append)
 					}
 				}
 			}
+			if(total_cells <= 0) total_cells = 1;
 			if (mpi_myself == 0 && block_count * 100 / total_cells > pct)
 			{
 				int pct_block_count = (block_count * 10 / total_cells) * 10;
@@ -3460,6 +3461,545 @@ PhreeqcRM::GetErrorString(void)
 	return cummulative_error_string;
 }
 
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetGasCompMoles(std::vector<double>& m_out)
+/* ---------------------------------------------------------------------- */
+{
+	// retrieve gas component moles
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETGASCOMPMOLES;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+		const std::vector<std::string>& gc_names = GetGasComponents();
+		int n = this->mpi_myself;
+		std::vector<double> send_gas_moles;
+		for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			cxxGasPhase* gas_ptr = this->GetWorkers()[0]->Get_gas_phase(j);
+			for (size_t k = 0; k < gc_names.size(); k++)
+			{
+				double moles = (gas_ptr != NULL) ? gas_ptr->Get_component_moles(gc_names[k]) : -1.0;
+				send_gas_moles.push_back(moles);
+			}
+		}
+
+		// make buffer to recv solutions
+		double* recv_gas_moles = NULL;
+		int* recv_counts = NULL;
+		int* recv_displs = NULL;
+		if (this->mpi_myself == 0)
+		{
+			recv_gas_moles = new double[(size_t)this->count_chemistry * gc_names.size()];
+			recv_counts = new int[this->mpi_tasks];
+			recv_displs = new int[this->mpi_tasks];
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				recv_counts[i] = (end_cell[i] - start_cell[i] + 1) * (int) gc_names.size();
+				recv_displs[i] = start_cell[i] * (int) gc_names.size();
+			}
+		}
+
+		// Gather to root
+		double* send_buf = &send_gas_moles[0];
+		int my_length = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1) * (int)gc_names.size();
+		MPI_Gatherv(send_buf, my_length, MPI_DOUBLE,
+			recv_gas_moles, recv_counts, recv_displs, MPI_DOUBLE, 0, phreeqcrm_comm);
+
+		// Root processes to m_out
+		if (mpi_myself == 0)
+		{
+			// check size and fill elements, if necessary resize
+			m_out.resize(this->nxyz * gc_names.size());
+			std::fill(m_out.begin(), m_out.end(), 1e30);
+
+			int n = 0;
+			for (int j = 0; j < count_chemistry; j++)
+			{
+				std::vector<double> d;
+				for (size_t i = 0; i < gc_names.size(); i++)
+				{
+					d.push_back(recv_gas_moles[n++]);
+				}
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					double* m_ptr = &m_out[*it];
+					size_t i;
+					for (i = 0; i < gc_names.size(); i++)
+					{
+						m_ptr[this->nxyz * i] = d[i];
+					}
+				}
+			}
+			delete[] recv_gas_moles;
+			delete[] recv_counts;
+			delete[] recv_displs;
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetGasCompMoles");
+}
+#else
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetGasCompMoles(std::vector<double>& m_out)
+/* ---------------------------------------------------------------------- */
+{
+	// retrieve gas component moles
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		// resize and fill elements
+		m_out.resize(this->nxyz * this->GetGasComponentsCount());
+		std::fill(m_out.begin(), m_out.end(), 1e30);
+#ifdef USE_OPENMP
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel
+#pragma omp for
+#endif
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			const std::vector<std::string>& gc_names = GetGasComponents();
+			for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+			{
+				std::vector<double> d;
+				cxxGasPhase* gas_ptr = this->GetWorkers()[n]->Get_gas_phase(j);
+				for (size_t k = 0; k < gc_names.size(); k++)
+				{
+					double moles = (gas_ptr != NULL) ? gas_ptr->Get_component_moles(gc_names[k]) : -1.0;
+					d.push_back(moles);
+				}
+
+				// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					double* m_ptr = &m_out[*it];
+					size_t i;
+					for (i = 0; i < gc_names.size(); i++)
+					{
+						m_ptr[this->nxyz * i] = d[i];
+					}
+				}
+			}
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetGasCompMoles");
+}
+#endif
+
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetGasCompPressures(std::vector<double>& p_out)
+/* ---------------------------------------------------------------------- */
+{
+	// retrieve pressures
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETGASCOMPPRESSURES;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+		// retrieve reaction module pressures of gas components 
+		const std::vector<std::string>& gc_names = GetGasComponents();
+
+		int n = this->mpi_myself;
+		std::vector<double> send_gas_p;
+		for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			cxxGasPhase* gas_ptr = this->GetWorkers()[0]->Get_gas_phase(j);
+			for (size_t k = 0; k < gc_names.size(); k++)
+			{
+				double pressure = (gas_ptr != NULL) ? gas_ptr->Get_component_p(gc_names[k]) : -1.0;
+				send_gas_p.push_back(pressure);
+			}
+		}
+
+		double* recv_gas_p = NULL;
+		int* recv_counts = NULL;
+		int* recv_displs = NULL;
+		if (this->mpi_myself == 0)
+		{
+			recv_gas_p = new double[(size_t)this->count_chemistry * gc_names.size()];
+			recv_counts = new int[this->mpi_tasks];
+			recv_displs = new int[this->mpi_tasks];
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				recv_counts[i] = (end_cell[i] - start_cell[i] + 1) * (int)gc_names.size();
+				recv_displs[i] = start_cell[i] * (int)gc_names.size();
+			}
+		}
+
+		// Gather to root
+		double* send_buf = &send_gas_p[0];
+		int my_length = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1) * (int)gc_names.size();
+		MPI_Gatherv(send_buf, my_length, MPI_DOUBLE,
+			recv_gas_p, recv_counts, recv_displs, MPI_DOUBLE, 0, phreeqcrm_comm);
+
+		// Root processes to m
+		if (mpi_myself == 0)
+		{
+			// check size and fill elements, if necessary resize
+			p_out.resize(this->nxyz * gc_names.size());
+			std::fill(p_out.begin(), p_out.end(), 1e30);
+
+			int n = 0;
+			for (int j = 0; j < count_chemistry; j++)
+			{
+				std::vector<double> d;
+				for (size_t i = 0; i < gc_names.size(); i++)
+				{
+					d.push_back(recv_gas_p[n++]);
+				}
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					double* p_ptr = &p_out[*it];
+					size_t i;
+					for (i = 0; i < gc_names.size(); i++)
+					{
+						p_ptr[this->nxyz * i] = d[i];
+					}
+				}
+			}
+			delete[] recv_gas_p;
+			delete[] recv_counts;
+			delete[] recv_displs;
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetGasCompPressures");
+}
+#else
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetGasCompPressures(std::vector<double>& p_out)
+/* ---------------------------------------------------------------------- */
+{
+	// retrieve pressures
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		// resize and fill elements
+		p_out.resize(this->nxyz * this->GetGasComponentsCount());
+		std::fill(p_out.begin(), p_out.end(), 1e30);
+#ifdef USE_OPENMP
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel
+#pragma omp for
+#endif
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			const std::vector<std::string>& gc_names = GetGasComponents();
+			for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+			{
+				cxxGasPhase* gas_ptr = this->GetWorkers()[n]->Get_gas_phase(j);
+				std::vector<double> d;
+				for (size_t k = 0; k < gc_names.size(); k++)
+				{
+					double pressure = (gas_ptr != NULL) ? gas_ptr->Get_component_p(gc_names[k]) : -1.0;
+					d.push_back(pressure);
+				}
+				// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					double* p_ptr = &p_out[*it];
+					for (size_t i = 0; i < gc_names.size(); i++)
+					{
+						p_ptr[this->nxyz * i] = d[i];
+					}
+				}
+			}
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetGasCompPressures");
+}
+#endif
+
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetGasCompPhi(std::vector<double>& phi_out)
+/* ---------------------------------------------------------------------- */
+{
+	// retrieve phi
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETGASCOMPPHI;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+		const std::vector<std::string>& gc_names = GetGasComponents();
+		int n = this->mpi_myself;
+		std::vector<double> send_gas_phi;
+		for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			cxxGasPhase* gas_ptr = this->GetWorkers()[0]->Get_gas_phase(j);
+			for (size_t k = 0; k < gc_names.size(); k++)
+			{
+				double phi = (gas_ptr != NULL) ? gas_ptr->Get_component_phi(gc_names[k]) : -1.0;
+				send_gas_phi.push_back(phi);
+			}
+		}
+
+		// make buffer to recv solutions
+		double* recv_gas_phis = NULL;
+		int* recv_counts = NULL;
+		int* recv_displs = NULL;
+		if (this->mpi_myself == 0)
+		{
+			recv_gas_phis = new double[(size_t)this->count_chemistry * gc_names.size()];
+			recv_counts = new int[this->mpi_tasks];
+			recv_displs = new int[this->mpi_tasks];
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				recv_counts[i] = (end_cell[i] - start_cell[i] + 1) * (int)gc_names.size();
+				recv_displs[i] = start_cell[i] * (int)gc_names.size();
+			}
+		}
+
+		// Gather to root
+		double* buf = &send_gas_phi[0];
+		int my_length = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1) * (int)gc_names.size();
+		MPI_Gatherv(buf, my_length, MPI_DOUBLE,
+			recv_gas_phis, recv_counts, recv_displs, MPI_DOUBLE, 0, phreeqcrm_comm);
+
+		// Root processes to m
+		if (mpi_myself == 0)
+		{
+			// check size and fill elements, if necessary resize
+			phi_out.resize(this->nxyz * gc_names.size());
+			std::fill(phi_out.begin(), phi_out.end(), 1e30);
+
+			// Write vector into m
+			int n = 0;
+			for (int j = 0; j < count_chemistry; j++)
+			{
+				std::vector<double> d;
+				for (size_t i = 0; i < gc_names.size(); i++)
+				{
+					d.push_back(recv_gas_phis[n++]);
+				}
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					double* phi_ptr = &phi_out[*it];
+					size_t i;
+					for (i = 0; i < gc_names.size(); i++)
+					{
+						phi_ptr[this->nxyz * i] = d[i];
+					}
+				}
+			}
+			delete[] recv_gas_phis;
+			delete[] recv_counts;
+			delete[] recv_displs;
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetGasCompPhi");
+}
+#else
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetGasCompPhi(std::vector<double>& phi_out)
+/* ---------------------------------------------------------------------- */
+{
+	// retrieve phi
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		// resize and fill elements
+		phi_out.resize(this->nxyz * this->GetGasComponentsCount());
+		std::fill(phi_out.begin(), phi_out.end(), 1e30);
+#ifdef USE_OPENMP
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel
+#pragma omp for
+#endif
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			const std::vector<std::string>& gc_names = GetGasComponents();
+			for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+			{
+				cxxGasPhase * gas_ptr = this->GetWorkers()[n]->Get_gas_phase(j);
+				std::vector<double> d;
+				for (size_t k = 0; k < gc_names.size(); k++)
+				{
+					double phi = (gas_ptr != NULL) ? gas_ptr->Get_component_phi(gc_names[k]) : -1.0;
+					d.push_back(phi);
+				}
+				// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					double* phi_ptr = &phi_out[*it];
+					for (size_t i = 0; i < gc_names.size(); i++)
+					{
+						phi_ptr[this->nxyz * i] = d[i];
+					}
+				}
+			}
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetGasCompPhi");
+}
+#endif
+
+
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetGasPhaseVolume(std::vector<double>& v_out)
+/* ---------------------------------------------------------------------- */
+{
+	// retrieve gas phase volumes
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		if (this->mpi_myself == 0)
+		{
+			int method = METHOD_GETGASPHASEVOLUME;
+			MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+		}
+		const std::vector<std::string>& gc_names = GetGasComponents();
+		int n = this->mpi_myself;
+		std::vector<double> send_gas_v;
+		for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			cxxGasPhase* gas_ptr = this->GetWorkers()[0]->Get_gas_phase(j);
+			double volume = (gas_ptr != NULL) ? gas_ptr->Get_volume() : -1.0;
+			send_gas_v.push_back(volume);
+		}
+
+		// make buffer to recv solutions
+		double* recv_gas_p = NULL;
+		int* recv_counts = NULL;
+		int* recv_displs = NULL;
+		if (this->mpi_myself == 0)
+		{
+			recv_gas_p = new double[(size_t)this->count_chemistry];
+			recv_counts = new int[this->mpi_tasks];
+			recv_displs = new int[this->mpi_tasks];
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				recv_counts[i] = (end_cell[i] - start_cell[i] + 1);
+				recv_displs[i] = start_cell[i];
+			}
+		}
+
+		// Gather to root
+		double* send_buf = &send_gas_v[0];
+		int my_length = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1);
+		MPI_Gatherv(send_buf, my_length, MPI_DOUBLE,
+			recv_gas_p, recv_counts, recv_displs, MPI_DOUBLE, 0, phreeqcrm_comm);
+
+		if (mpi_myself == 0)
+		{
+			// resize and fill elements
+			v_out.resize(this->nxyz);
+			std::fill(v_out.begin(), v_out.end(), 1e30);
+			for (int j = 0; j < count_chemistry; j++)
+			{
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					v_out[*it] = recv_gas_p[j];
+				}
+			}
+			delete[] recv_gas_p;
+			delete[] recv_counts;
+			delete[] recv_displs;
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetGasPhaseVolume");
+}
+#else
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetGasPhaseVolume(std::vector<double>& v_out)
+/* ---------------------------------------------------------------------- */
+{
+	// retrieve pressures
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	try
+	{
+		// resize and fill elements
+		v_out.resize(this->nxyz);
+		std::fill(v_out.begin(), v_out.end(), 1e30);
+#ifdef USE_OPENMP
+		omp_set_num_threads(this->nthreads);
+#pragma omp parallel
+#pragma omp for
+#endif
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+			{
+				cxxGasPhase * gas_ptr = this->GetWorkers()[n]->Get_gas_phase(j);
+				double volume;
+				volume = (gas_ptr != NULL) ? gas_ptr->Get_volume() : -1.0;
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					v_out[*it] = volume;
+				}
+			}
+		}
+	}
+	catch (...)
+	{
+		return_value = IRM_FAIL;
+	}
+	return this->ReturnHandler(return_value, "PhreeqcRM::GetGasPhaseVolume");
+}
+#endif
+
 /* ---------------------------------------------------------------------- */
 IPhreeqc *
 PhreeqcRM::GetIPhreeqcPointer(int i)
@@ -3991,7 +4531,7 @@ PhreeqcRM::GetSpeciesConcentrations(std::vector<double> & species_conc)
 						}
 					}
 				}
-				delete recv_species;
+				delete[] recv_species;
 			}
 		}
 	}
@@ -4132,7 +4672,7 @@ PhreeqcRM::GetSpeciesLog10Gammas(std::vector<double> & species_log10gammas)
 						}
 					}
 				}
-				delete recv_species;
+				delete[] recv_species;
 			}
 		}
 	}
@@ -4187,6 +4727,149 @@ PhreeqcRM::GetSpeciesLog10Gammas(std::vector<double> & species_log10gammas)
 	return IRM_OK;
 }
 #endif
+
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetSpeciesLog10Molalities(std::vector<double>& species_log10molalities)
+/* ---------------------------------------------------------------------- */
+{
+	this->phreeqcrm_error_string.clear();
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_GETSPECIESLOG10MOLALITIES;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+
+	if (this->species_save_on)
+	{
+		size_t nspecies = this->species_names.size();
+		// Fill in root concentrations
+		if (this->mpi_myself == 0)
+		{
+			species_log10molalities.resize(nspecies * this->nxyz, 0);
+			for (int j = this->start_cell[0]; j <= this->end_cell[0]; j++)
+			{
+				std::vector<double> d;
+				d.resize(this->species_names.size(), 0);
+				{
+					std::map<int, double>::iterator it = this->workers[0]->Get_solution(j)->Get_log_molalities_map().begin();
+					for (; it != this->workers[0]->Get_solution(j)->Get_log_molalities_map().end(); it++)
+					{
+						// it is pointing to a species number, concentration
+						int rm_species_num = this->s_num2rm_species_num[it->first];
+						d[rm_species_num] = it->second;
+					}
+				}
+				{
+					std::vector<int>::iterator it;
+					for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+					{
+						double* d_ptr = &species_log10molalities[*it];
+						for (size_t i = 0; i < d.size(); i++)
+						{
+							d_ptr[this->nxyz * i] = d[i];
+						}
+					}
+				}
+			}
+		}
+		// Fill in worker concentrations
+		for (int n = 1; n < this->mpi_tasks; n++)
+		{
+			int ncells = this->end_cell[n] - start_cell[n] + 1;
+			if (this->mpi_myself == n)
+			{
+				species_log10molalities.resize(nspecies * ncells, 0);
+				for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+				{
+					int j0 = j - this->start_cell[n];
+					{
+						std::map<int, double>::iterator it = this->workers[0]->Get_solution(j)->Get_log_molalities_map().begin();
+						for (; it != this->workers[0]->Get_solution(j)->Get_log_molalities_map().end(); it++)
+						{
+							// it is pointing to a species number, concentration
+							int rm_species_num = this->s_num2rm_species_num[it->first];
+							species_log10molalities[rm_species_num * ncells + j0] = it->second;
+						}
+					}
+				}
+				MPI_Send((void*)&species_log10molalities.front(), (int)nspecies * ncells, MPI_DOUBLE, 0, 0, phreeqcrm_comm);
+			}
+			else if (this->mpi_myself == 0)
+			{
+				MPI_Status mpi_status;
+				double* recv_species = new double[(size_t)nspecies * ncells];
+				MPI_Recv(recv_species, (int)nspecies * ncells, MPI_DOUBLE, n, 0, phreeqcrm_comm, &mpi_status);
+				for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+				{
+					int j0 = j - this->start_cell[n];
+					std::vector<int>::iterator it;
+					for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+					{
+						double* d_ptr = &species_log10molalities[*it];
+						for (size_t i = 0; i < nspecies; i++)
+						{
+							d_ptr[this->nxyz * i] = recv_species[i * ncells + j0];
+						}
+					}
+				}
+				delete recv_species;
+			}
+		}
+	}
+	else
+	{
+		species_log10molalities.clear();
+	}
+	return IRM_OK;
+}
+#else
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::GetSpeciesLog10Molalities(std::vector<double>& species_log10molalities)
+/* ---------------------------------------------------------------------- */
+{
+	this->phreeqcrm_error_string.clear();
+	if (this->species_save_on)
+	{
+		size_t nspecies = this->species_names.size();
+		species_log10molalities.resize(nspecies * this->nxyz, 0);
+		for (int i = 0; i < this->nthreads; i++)
+		{
+			for (int j = this->start_cell[i]; j <= this->end_cell[i]; j++)
+			{
+				std::vector<double> d;
+				d.resize(this->species_names.size(), 0);
+				{
+					std::map<int, double>::iterator it = this->workers[i]->Get_solution(j)->Get_log_molalities_map().begin();
+					for (; it != this->workers[i]->Get_solution(j)->Get_log_molalities_map().end(); it++)
+					{
+						// it is pointing to a species number, concentration
+						int rm_species_num = this->s_num2rm_species_num[it->first];
+						d[rm_species_num] = it->second;
+					}
+				}
+				std::vector<int>::iterator it;
+				for (it = this->backward_mapping[j].begin(); it != this->backward_mapping[j].end(); it++)
+				{
+					double* d_ptr = &species_log10molalities[*it];
+					for (size_t i = 0; i < d.size(); i++)
+					{
+						d_ptr[this->nxyz * i] = d[i];
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		species_log10molalities.clear();
+	}
+	return IRM_OK;
+}
+#endif
+
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 const std::vector<double> &
@@ -5352,6 +6035,34 @@ PhreeqcRM::MpiWorker()
 					this->GetErrorString();
 				}
 				break;
+			case METHOD_GETGASCOMPMOLES:
+				if (debug_worker) std::cerr << "METHOD_GETGASCOMPMOLES" << std::endl;
+				{
+					std::vector<double> dummy;
+					this->GetGasCompMoles(dummy);
+				}
+				break;
+			case METHOD_GETGASCOMPPRESSURES:
+				if (debug_worker) std::cerr << "METHOD_GETGASCOMPPRESSURES" << std::endl;
+				{
+					std::vector<double> dummy;
+					this->GetGasCompPressures(dummy);
+				}
+				break;
+			case METHOD_GETGASCOMPPHI:
+				if (debug_worker) std::cerr << "METHOD_GETGASCOMPPHI" << std::endl;
+				{
+					std::vector<double> dummy;
+					this->GetGasCompPhi(dummy);
+				}
+				break;
+			case METHOD_GETGASPHASEVOLUME:
+				if (debug_worker) std::cerr << "METHOD_GETGASPHASEVOLUME" << std::endl;
+				{
+					std::vector<double> dummy;
+					this->GetGasPhaseVolume(dummy);
+				}
+				break;
 			case METHOD_GETPRESSURE:
 				if (debug_worker) std::cerr << "METHOD_GETPRESSURE" << std::endl;
 				{
@@ -5390,6 +6101,13 @@ PhreeqcRM::MpiWorker()
 				{
 					std::vector<double> c;
 					this->GetSpeciesLog10Gammas(c);
+				}
+				break;
+			case METHOD_GETSPECIESLOG10MOLALITIES:
+				if (debug_worker) std::cerr << "METHOD_GETSPECIESLOG10MOLALITIESS" << std::endl;
+				{
+					std::vector<double> c;
+					this->GetSpeciesLog10Molalities(c);
 				}
 				break;
 			case METHOD_GETTEMPERATURE:
@@ -5477,6 +6195,20 @@ PhreeqcRM::MpiWorker()
 				{
 					char c_dummy[2]=" ";
 					return_value = this->SetFilePrefix(c_dummy);
+				}
+				break;			
+			case METHOD_SETGASCOMPMOLES:
+					if (debug_worker) std::cerr << "METHOD_SETGASCOMPMOLES" << std::endl;
+					{
+						std::vector<double> dummy;
+						return_value = this->SetGasCompMoles(dummy);
+					}
+					break;
+			case METHOD_SETGASPHASEVOLUME:
+				if (debug_worker) std::cerr << "METHOD_SETGASPHASEVOLUME" << std::endl;
+				{
+					std::vector<double> dummy;
+					return_value = this->SetGasPhaseVolume(dummy);
 				}
 				break;
 			case METHOD_SETPARTITIONUZSOLIDS:
@@ -5715,8 +6447,10 @@ PhreeqcRM::OpenFiles(void)
 			// prefix.chem.txt
 			std::string cn = this->file_prefix;
 			cn.append(".chem.txt");
-			if(!this->phreeqcrm_io->output_open(cn.c_str()))
+			if (!this->phreeqcrm_io->output_open(cn.c_str()))
+			{
 				this->ErrorHandler(IRM_FAIL, "Failed to open .chem.txt file");
+			}
 		}
 	}
 	catch (...)
@@ -9267,6 +10001,400 @@ PhreeqcRM::SetConcentrations(const std::vector<double> &t)
 	}
 	return this->ReturnHandler(return_value, "PhreeqcRM::SetConcentrations");
 }
+#ifdef ORIG
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetGasCompMoles(const std::vector<double>& t)
+/* ---------------------------------------------------------------------- */
+{
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	std::vector<double> gas_moles_root;
+	if (mpi_myself == 0)
+	{
+		assert(t.size() >= this->nxyz * this->GasComponentsList.size());
+	}
+	if (this->mpi_myself == 0)
+	{
+		gas_moles_root.resize((size_t)this->count_chemistry * this->GasComponentsList.size(), -1.0);
+		for (size_t i = 0; i < (size_t)this->count_chemistry; i++)
+		{
+			int j = this->backward_mapping[i][0];
+			for (size_t k = 0; k < this->GasComponentsList.size(); k++)
+			{
+				gas_moles_root[i * this->GasComponentsList.size() + k] = t[k * this->nxyz + j];
+			}
+		}
+	}
+
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETGASCOMPMOLES;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+
+	double* send_buf = NULL;
+	int* send_counts = NULL;
+	int* send_displs = NULL;
+	double* recv_buf = NULL;
+	int recv_count;
+
+	std::vector<double> gas_moles;
+	gas_moles.resize((size_t)this->count_chemistry * (int)this->GasComponentsList.size(), -1.0);
+
+	recv_count = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1) * (int)this->GasComponentsList.size();
+
+	if (this->mpi_myself == 0)
+	{
+		send_buf = &gas_moles_root[0];
+		send_counts = new int[this->mpi_tasks];
+		send_displs = new int[this->mpi_tasks];
+		for (int j = 0; j < this->mpi_tasks; j++)
+		{
+			send_counts[j] = (end_cell[j] - start_cell[j] + 1) * (int)this->GasComponentsList.size();
+			send_displs[j] = start_cell[j] * (int)this->GasComponentsList.size();
+		}
+		recv_buf = &gas_moles[0];
+	}
+	else
+	{
+		recv_buf = &gas_moles[start_cell[this->mpi_myself] * this->GasComponentsList.size()];
+	}
+	MPI_Scatterv(send_buf, send_counts, send_displs, MPI_DOUBLE, recv_buf, recv_count, MPI_DOUBLE, 0, phreeqcrm_comm);
+
+	delete[] send_counts;
+	delete[] send_displs;
+
+	int n = mpi_myself;
+	for (size_t j = (size_t)this->start_cell[n]; j <= (size_t)this->end_cell[n]; j++)
+	{
+		cxxGasPhase temp_gas;
+		for (size_t k = 0; k < this->GasComponentsList.size(); k++)
+		{
+			double moles = gas_moles[j * (size_t)this->GasComponentsList.size() + k];
+			if (moles >= 0.0)
+			{
+				cxxGasComp temp_comp;
+				temp_comp.Set_phase_name(GasComponentsList[k]);
+				temp_comp.Set_moles(moles);
+				temp_gas.Get_gas_comps().push_back(temp_comp);
+			}
+		}
+
+		cxxGasPhase* gas_ptr = this->GetWorkers()[0] ->Get_gas_phase((int)j);
+		if (temp_gas.Get_gas_comps().size() > 0)
+		{
+			if (gas_ptr != NULL)
+			{
+				gas_ptr->Set_gas_comps(temp_gas.Get_gas_comps());
+			}
+			else
+			{
+				this->GetWorkers()[n]->Get_PhreeqcPtr()->Rxn_gas_phase_map[(int)j] = temp_gas;
+			}
+		}
+		else
+		{
+			if (gas_ptr != NULL)
+			{
+				this->GetWorkers()[n]->Get_PhreeqcPtr()->Rxn_gas_phase_map.erase((int)j);
+			}
+		}
+	}
+#else
+#ifdef USE_OPENMP
+	omp_set_num_threads(this->nthreads);
+#pragma omp parallel
+#pragma omp for
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		for (size_t j = (size_t)this->start_cell[n]; j <= (size_t)this->end_cell[n]; j++)
+		{
+			cxxGasPhase* gas_ptr = this->GetWorkers()[(int)n]->Get_gas_phase((int)j);
+			for (size_t k = 0; k < this->GasComponentsList.size(); k++)
+			{
+				double moles = gas_moles_root[j * this->GasComponentsList.size() + k];
+				if (moles >= 0.0)
+				{
+					gas_ptr->Set_component_moles(this->GasComponentsList[k], moles);
+				}
+				else
+				{
+					gas_ptr->Delete_component(this->GasComponentsList[k]);
+				}
+			}
+			if (gas_ptr->Get_gas_comps().size() == 0)
+			{
+				this->GetWorkers()[n]->Get_PhreeqcPtr()->Rxn_gas_phase_map.erase((int)j);
+			}
+		}
+	}
+#endif
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetGasCompMoles");
+}
+#endif
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetGasCompMoles(const std::vector<double>& m_in)
+/* ---------------------------------------------------------------------- */
+{
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	std::vector<double> send_gas_moles;
+	if (mpi_myself == 0)
+	{
+		assert(m_in.size() >= this->nxyz * this->GasComponentsList.size());
+	}
+	if (this->mpi_myself == 0)
+	{
+		send_gas_moles.resize((size_t)this->count_chemistry * this->GasComponentsList.size(), -1.0);
+		for (size_t i = 0; i < (size_t)this->count_chemistry; i++)
+		{
+			int j = this->backward_mapping[i][0];
+			for (size_t k = 0; k < this->GasComponentsList.size(); k++)
+			{
+				send_gas_moles[i * this->GasComponentsList.size() + k] = m_in[k * this->nxyz + j];
+			}
+		}
+	}
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETGASCOMPMOLES;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+	double* send_buf = NULL;
+	int* send_counts = NULL;
+	int* send_displs = NULL;
+	double* recv_buf = NULL;
+	int recv_count;
+
+	std::vector<double> recv_gas_moles;
+	recv_gas_moles.resize((size_t)this->count_chemistry * (int)this->GasComponentsList.size(), -1.0);
+
+	recv_count = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1) * (int)this->GasComponentsList.size();
+
+	if (this->mpi_myself == 0)
+	{
+		send_buf = &send_gas_moles[0];
+		send_counts = new int[this->mpi_tasks];
+		send_displs = new int[this->mpi_tasks];
+		for (int j = 0; j < this->mpi_tasks; j++)
+		{
+			send_counts[j] = (end_cell[j] - start_cell[j] + 1) * (int)this->GasComponentsList.size();
+			send_displs[j] = start_cell[j] * (int)this->GasComponentsList.size();
+		}
+		recv_buf = &recv_gas_moles[0];
+	}
+	else
+	{
+		recv_buf = &recv_gas_moles[start_cell[this->mpi_myself] * this->GasComponentsList.size()];
+	}
+	MPI_Scatterv(send_buf, send_counts, send_displs, MPI_DOUBLE, recv_buf, recv_count, MPI_DOUBLE, 0, phreeqcrm_comm);
+
+	delete[] send_counts;
+	delete[] send_displs;
+
+	int n = mpi_myself;
+	for (size_t j = (size_t)this->start_cell[n]; j <= (size_t)this->end_cell[n]; j++)
+	{
+		cxxGasPhase* gas_ptr = this->GetWorkers()[0]->Get_gas_phase((int)j);
+		if (gas_ptr != NULL) // Gas phase exists
+		{
+			for (size_t k = 0; k < this->GasComponentsList.size(); k++)
+			{
+				double moles = recv_gas_moles[j * this->GasComponentsList.size() + k];
+				if (moles >= 0.0)
+					gas_ptr->Set_component_moles(this->GasComponentsList[k], moles);
+				else
+					gas_ptr->Delete_component(this->GasComponentsList[k]);
+			}
+			if (gas_ptr->Get_gas_comps().size() == 0)
+				this->GetWorkers()[n]->Get_PhreeqcPtr()->Rxn_gas_phase_map.erase((int)j);
+		}
+		else  // no gas phase
+		{
+			cxxGasPhase temp_gas;
+			for (size_t k = 0; k < this->GasComponentsList.size(); k++)
+			{
+				double moles = recv_gas_moles[j * (size_t)this->GasComponentsList.size() + k];
+				if (moles >= 0.0)
+				{
+					cxxGasComp temp_comp;
+					temp_comp.Set_phase_name(GasComponentsList[k]);
+					temp_comp.Set_moles(moles);
+					temp_gas.Get_gas_comps().push_back(temp_comp);
+				}
+			}
+			if (temp_gas.Get_gas_comps().size() > 0)
+			{
+				this->GetWorkers()[n]->Get_PhreeqcPtr()->Rxn_gas_phase_map[(int)j] = temp_gas;
+			}
+		}
+	}
+#else
+#ifdef USE_OPENMP
+	omp_set_num_threads(this->nthreads);
+#pragma omp parallel
+#pragma omp for
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		for (size_t j = (size_t)this->start_cell[n]; j <= (size_t)this->end_cell[n]; j++)
+		{
+			cxxGasPhase* gas_ptr = this->GetWorkers()[(int)n]->Get_gas_phase((int)j);
+			if (gas_ptr != NULL) // gas phase exists
+			{
+				for (size_t k = 0; k < this->GasComponentsList.size(); k++)
+				{
+					double moles = send_gas_moles[j * this->GasComponentsList.size() + k];
+					if (moles >= 0.0)
+						gas_ptr->Set_component_moles(this->GasComponentsList[k], moles);
+					else
+						gas_ptr->Delete_component(this->GasComponentsList[k]);
+				}
+				if (gas_ptr->Get_gas_comps().size() == 0)
+					this->GetWorkers()[n]->Get_PhreeqcPtr()->Rxn_gas_phase_map.erase((int)j);
+			}
+			else  // no gas phase
+			{
+				cxxGasPhase temp_gas;
+				for (size_t k = 0; k < this->GasComponentsList.size(); k++)
+				{
+					double moles = send_gas_moles[j * (size_t)this->GasComponentsList.size() + k];
+					if (moles >= 0.0)
+					{
+						cxxGasComp temp_comp;
+						temp_comp.Set_phase_name(GasComponentsList[k]);
+						temp_comp.Set_moles(moles);
+						temp_gas.Get_gas_comps().push_back(temp_comp);
+					}
+				}
+
+				if (temp_gas.Get_gas_comps().size() > 0)
+				{
+					this->GetWorkers()[n]->Get_PhreeqcPtr()->Rxn_gas_phase_map[(int)j] = temp_gas;
+				}
+			}
+		}
+	}
+#endif
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetGasCompMoles");
+}
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+PhreeqcRM::SetGasPhaseVolume(const std::vector<double>& v_in)
+/* ---------------------------------------------------------------------- */
+{
+	this->phreeqcrm_error_string.clear();
+	IRM_RESULT return_value = IRM_OK;
+	std::vector<double> send_gas_volume;
+	if (mpi_myself == 0)
+	{
+		assert(v_in.size() >= this->nxyz);
+	}
+	if (this->mpi_myself == 0)
+	{
+		send_gas_volume.resize((size_t)this->count_chemistry, -1.0);
+		for (size_t i = 0; i < (size_t)this->count_chemistry; i++)
+		{
+			int j = this->backward_mapping[i][0];
+			send_gas_volume[i] = v_in[j];
+		}
+	}
+
+#ifdef USE_MPI
+	if (this->mpi_myself == 0)
+	{
+		int method = METHOD_SETGASPHASEVOLUME;
+		MPI_Bcast(&method, 1, MPI_INT, 0, phreeqcrm_comm);
+	}
+
+	double* send_buf = NULL;
+	int* send_counts = NULL;
+	int* send_displs = NULL;
+	double* recv_buf = NULL;
+	int recv_count;
+
+	std::vector<double> recv_gas_volume;
+	recv_gas_volume.resize((size_t)this->count_chemistry, -1.0);
+
+	recv_count = (end_cell[this->mpi_myself] - start_cell[this->mpi_myself] + 1);
+
+	if (this->mpi_myself == 0)
+	{
+		send_buf = &send_gas_volume[0];
+		send_counts = new int[this->mpi_tasks];
+		send_displs = new int[this->mpi_tasks];
+		for (int j = 0; j < this->mpi_tasks; j++)
+		{
+			send_counts[j] = (end_cell[j] - start_cell[j] + 1);
+			send_displs[j] = start_cell[j];
+		}
+		recv_buf = &recv_gas_volume[0];
+	}
+	else
+	{
+		recv_buf = &recv_gas_volume[start_cell[this->mpi_myself] ];
+	}
+	MPI_Scatterv(send_buf, send_counts, send_displs, MPI_DOUBLE, recv_buf, recv_count, MPI_DOUBLE, 0, phreeqcrm_comm);
+
+	delete[] send_counts;
+	delete[] send_displs;
+
+	int n = mpi_myself;
+	for (size_t j = (size_t)this->start_cell[n]; j <= (size_t)this->end_cell[n]; j++)
+	{
+		double volume = recv_gas_volume[j];
+		if (volume < 0.0) continue;
+		cxxGasPhase* gas_ptr = this->GetWorkers()[0]->Get_gas_phase((int)j);
+		if (gas_ptr != NULL) // Gas phase exists
+		{
+			gas_ptr->Set_volume(volume);
+			gas_ptr->Set_type(cxxGasPhase::GP_VOLUME);
+		}
+		else  // no gas phase
+		{
+			cxxGasPhase temp_gas;
+			temp_gas.Set_type(cxxGasPhase::GP_VOLUME);
+			temp_gas.Set_volume(volume);
+			this->GetWorkers()[n]->Get_PhreeqcPtr()->Get_Rxn_gas_phase_map()[(int)j] = temp_gas;
+		}
+	}
+#else
+#ifdef USE_OPENMP
+	omp_set_num_threads(this->nthreads);
+#pragma omp parallel
+#pragma omp for
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		for (size_t j = (size_t)this->start_cell[n]; j <= (size_t)this->end_cell[n]; j++)
+		{
+			if (send_gas_volume[j] < 0.0) continue;
+			cxxGasPhase* gas_ptr = this->GetWorkers()[(int)n]->Get_gas_phase((int)j);
+			if (gas_ptr != NULL) // gas phase exists
+			{
+				gas_ptr->Set_volume(send_gas_volume[j]);
+				gas_ptr->Set_type(cxxGasPhase::GP_VOLUME);
+			}
+			else  // no gas phase
+			{
+				cxxGasPhase temp_gas;
+				temp_gas.Set_type(cxxGasPhase::GP_VOLUME);
+				temp_gas.Set_volume(send_gas_volume[j]);
+				this->GetWorkers()[n]->Get_PhreeqcPtr()->Get_Rxn_gas_phase_map()[(int)j] = temp_gas;
+			}
+		}
+	}
+#endif
+	return this->ReturnHandler(return_value, "PhreeqcRM::SetGasPhaseVolume");
+}
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 PhreeqcRM::SetCurrentSelectedOutputUserNumber(int i)

@@ -729,6 +729,86 @@ RMF_GetFilePrefix(int * id, char *prefix, int *l)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
+RMF_GetGasCompMoles(int* id, double* m_out)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves moles of gas components for all grid nodes 
+	PhreeqcRM* Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> m_vector;
+		m_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetGasComponentsCount());
+		IRM_RESULT return_value = Reaction_module_ptr->GetGasCompMoles(m_vector);
+		if (return_value == IRM_OK)
+		{
+			memcpy(m_out, &m_vector.front(), m_vector.size() * sizeof(double));
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_GetGasCompPressures(int* id, double* p_out)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves pressures of gas components for all grid nodes 
+	PhreeqcRM* Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> p_vector;
+		p_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetGasComponentsCount());
+		IRM_RESULT return_value = Reaction_module_ptr->GetGasCompPressures(p_vector);
+		if (return_value == IRM_OK)
+		{
+			memcpy(p_out, &p_vector.front(), p_vector.size() * sizeof(double));
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_GetGasCompPhi(int* id, double* phi_out)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves fugacity coefficients of gas components for all grid nodes 
+	PhreeqcRM* Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> phi_vector;
+		phi_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetGasComponentsCount());
+		IRM_RESULT return_value = Reaction_module_ptr->GetGasCompPhi(phi_vector);
+		if (return_value == IRM_OK)
+		{
+			memcpy(phi_out, &phi_vector.front(), phi_vector.size() * sizeof(double));
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_GetGasPhaseVolume(int* id, double* v_out)
+/* ---------------------------------------------------------------------- */
+{
+	// Retrieves gas phase volumes for all grid nodes 
+	PhreeqcRM* Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> v_vector;
+		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
+		IRM_RESULT return_value = Reaction_module_ptr->GetGasPhaseVolume(v_vector);
+		if (return_value == IRM_OK)
+		{
+			memcpy(v_out, &v_vector.front(), v_vector.size() * sizeof(double));
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
 RMF_GetGfw(int *id, double * gfw)
 /* ---------------------------------------------------------------------- */
 {
@@ -1020,10 +1100,10 @@ RMF_GetSpeciesD25(int *id, double * diffc)
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-RMF_GetSpeciesLog10Gammas(int *id, double * species_log10gammas)
+RMF_GetSpeciesLog10Gammas(int* id, double* species_log10gammas)
 /* ---------------------------------------------------------------------- */
 {
-	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	PhreeqcRM* Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		IRM_RESULT return_value = IRM_OK;
@@ -1037,6 +1117,26 @@ RMF_GetSpeciesLog10Gammas(int *id, double * species_log10gammas)
 	}
 	return IRM_BADINSTANCE;
 }
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_GetSpeciesLog10Molalities(int *id, double * species_log10molalities)
+/* ---------------------------------------------------------------------- */
+{
+	PhreeqcRM * Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		IRM_RESULT return_value = IRM_OK;
+		std::vector<double> species_molalities_vector;
+		return_value = Reaction_module_ptr->GetSpeciesLog10Molalities(species_molalities_vector);
+		if (return_value == IRM_OK)
+		{
+			memcpy(species_log10molalities, &species_molalities_vector.front(), species_molalities_vector.size() * sizeof(double));
+		}
+		return return_value;
+	}
+	return IRM_BADINSTANCE;
+}
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RMF_GetSpeciesName(int *id, int *i_in, char *name, int *length)
@@ -1733,6 +1833,38 @@ RMF_SetFilePrefix(int *id, const char *name)
 		size_t strEnd = str.find_last_not_of(" \t\n");
 		str = str.substr(0, strEnd + 1);
 		return Reaction_module_ptr->SetFilePrefix(str.c_str());
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_SetGasCompMoles(int* id, double* m_in)
+/* ---------------------------------------------------------------------- */
+{
+	// Sets the moles of gas components in the cells
+	PhreeqcRM* Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> m_vector;
+		m_vector.resize(Reaction_module_ptr->GetGridCellCount() * Reaction_module_ptr->GetGasComponentsCount());
+		memcpy(&m_vector.front(), m_in, m_vector.size() * sizeof(double));
+		return Reaction_module_ptr->SetGasCompMoles(m_vector);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMF_SetGasPhaseVolume(int* id, double* v_in)
+/* ---------------------------------------------------------------------- */
+{
+	// Sets the volume of gas phase in the cells
+	PhreeqcRM* Reaction_module_ptr = PhreeqcRM::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::vector<double> v_vector;
+		v_vector.resize(Reaction_module_ptr->GetGridCellCount());
+		memcpy(&v_vector.front(), v_in, v_vector.size() * sizeof(double));
+		return Reaction_module_ptr->SetGasPhaseVolume(v_vector);
 	}
 	return IRM_BADINSTANCE;
 }
