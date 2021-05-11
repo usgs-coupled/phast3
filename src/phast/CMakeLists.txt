@@ -362,15 +362,9 @@ add_executable(phast3 ${phast3_SOURCES})
 
 set(LINK_LIBS ${LINK_LIBS} phastf)
 set(LINK_LIBS ${LINK_LIBS} PhreeqcRM)
-##set(LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
-##set(LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
 set(LINK_LIBS ${LINK_LIBS} hdf5::hdf5-shared)
 set(LINK_LIBS ${LINK_LIBS} hdf5::zlib-shared)
 
-message (STATUS "HDF5 C libs:${HDF5_FOUND} static:${HDF5_static_C_FOUND} and shared:${HDF5_shared_C_FOUND}")
-message (STATUS "HDF5_C_shared_LIBRARY=${HDF5_C_shared_LIBRARY}")
-message (STATUS "HDF5_C_SHARED_LIBRARY=${HDF5_C_SHARED_LIBRARY}")
-  
 
 if (PHAST_BUILD_MPI)
   include_directories(${MPI_CXX_INCLUDE_PATH})

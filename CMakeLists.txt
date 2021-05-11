@@ -43,22 +43,7 @@ endif()
 find_package(Boost 1.33)
 
 # check for HDF5 (set environmental variable HDF5_DIR)
-##find_package(HDF5 NAMES hdf5)
-###find_package(HDF5 1.12.0)
-
-# set (LIB_TYPE SHARED) # or STATIC
-# string(TOLOWER ${LIB_TYPE} SEARCH_TYPE)
-
-# find_package (HDF5 NAMES hdf5 COMPONENTS C ${SEARCH_TYPE})
-
-#find_package (HDF5 NAMES hdf5 COMPONENTS C shared)
-find_package(HDF5 1.12.0 REQUIRED) # $env:HDF5_DIR="C:\Program Files\HDF_Group\HDF5\1.12.0\cmake"
-######find_package(HDF5 1.12 REQUIRED NAMES hdf5 COMPONENTS C shared)
-##find_package(HDF5 NAMES hdf5 COMPONENTS C shared)
-
-##find_package (HDF5 COMPONENTS C ${SEARCH_TYPE})
-# find_package (HDF5) # Find non-cmake built HDF5
-
+find_package(HDF5 1.12.0 REQUIRED)
 
 # check for MPI
 option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)" "OFF")
