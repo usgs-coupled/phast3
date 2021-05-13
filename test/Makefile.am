@@ -1,7 +1,7 @@
 # Tests
 #
 
-TESTS = phrqex11
+TESTS = phrqex11 CMakeLists.txt
 
 EXTRA_DIST = $(TESTS)
 
