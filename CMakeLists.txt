@@ -43,7 +43,7 @@ endif()
 find_package(Boost 1.33)
 
 # check for HDF5 (set environmental variable HDF5_DIR)
-find_package(HDF5 1.12.0 REQUIRED)
+find_package(HDF5 1.10.4 REQUIRED)
 
 # check for MPI
 option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)" "OFF")

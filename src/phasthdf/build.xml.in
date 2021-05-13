@@ -4,7 +4,7 @@
         Builds phast.jar
     </description>
     
-    <property name="ver" value="1.2"/>
+    <property name="ver" value="1.6"/>
     <property name="depr" value="on"/>
 
     <property location="." name="srcdir"/>
