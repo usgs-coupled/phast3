@@ -6,7 +6,7 @@ set(CTEST_BINARY_DIRECTORY "${CTEST_SCRIPT_DIRECTORY}/../_build_mpi_x64")
 set(CTEST_CMAKE_GENERATOR "Visual Studio 11 2012 Win64")
 
 set(BUILD_OPTIONS -DCMAKE_INSTALL_PREFIX:PATH=${CTEST_BINARY_DIRECTORY}/INSTALL
-                  -DHDF5_DIR:PATH=C:/Program\ Files/HDF_Group/HDF5/1.8.14/cmake/hdf5
+                  -DHDF5_DIR:PATH=C:/Program\ Files/HDF_Group/HDF5/1.10.4/cmake/hdf5
                   -DPHAST_BUILD_MPI:BOOL=ON
                   -DPHAST_BUILD_OPENMP:BOOL=OFF
                   -DCMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS:BOOL=ON
