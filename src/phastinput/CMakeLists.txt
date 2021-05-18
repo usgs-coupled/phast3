@@ -5,7 +5,10 @@ project(phastinput CXX)
 
 # defines
 ADD_DEFINITIONS(-DANSI_DECLARATORS)
-#ADD_DEFINITIONS(-DTRILIBRARY) set in config.h
+if(NOT WIN32)
+  # TRILIBRARY is set in config.h for windows
+  ADD_DEFINITIONS(-DTRILIBRARY)
+endif()
 ADD_DEFINITIONS(-DPHRQ_IO_INPUT)
 ADD_DEFINITIONS(-DUSE_GZ)
 
