@@ -42,7 +42,7 @@ find_package(Boost 1.33)
 find_package(ZLIB REQUIRED)
 
 # check for HDF5 (set environmental variable HDF5_DIR or HDF5_ROOT)
-find_package(HDF5 REQUIRED)
+find_package(HDF5 1.8.14 REQUIRED)
 
 # check for MPI
 option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)" "OFF")
