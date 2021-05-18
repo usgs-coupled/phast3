@@ -313,7 +313,8 @@ PhreeqcRM/src/RM_interface_F.cpp
 
 # setup include directories
 include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${HDF5_INCLUDE_DIR})
+include_directories(${HDF5_INCLUDE_DIRS})
+include_directories(${ZLIB_INCLUDE_DIRS})
 include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src")
 include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast")
 include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc")
@@ -362,6 +363,7 @@ add_executable(phast3 ${phast3_SOURCES})
 
 set(LINK_LIBS ${LINK_LIBS} phastf)
 set(LINK_LIBS ${LINK_LIBS} PhreeqcRM)
+set(LINK_LIBS ${LINK_LIBS} ${ZLIB_LIBRARIES})
 set(LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
 
 if (PHAST_BUILD_MPI)

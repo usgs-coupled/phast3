@@ -1,8 +1,4 @@
-if (WIN32)
-cmake_minimum_required (VERSION 3.16)
-else()
-cmake_minimum_required (VERSION 2.8.10)
-endif()
+cmake_minimum_required(VERSION 3.16)
 
 project(phast CXX C Fortran)
 
@@ -42,8 +38,11 @@ endif()
 # check for boost
 find_package(Boost 1.33)
 
-# check for HDF5 (set environmental variable HDF5_DIR)
-find_package(HDF5 NAMES hdf5)
+# check for ZLIB
+find_package(ZLIB REQUIRED)
+
+# check for HDF5 (set environmental variable HDF5_DIR or HDF5_ROOT)
+find_package(HDF5 REQUIRED)
 
 # check for MPI
 option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)" "OFF")
