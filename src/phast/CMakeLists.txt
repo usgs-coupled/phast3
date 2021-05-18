@@ -130,15 +130,6 @@ add_library(phastf STATIC ${phastf_SOURCES})
 #
 project(PhreeqcRM CXX)
 
-ADD_DEFINITIONS(-DSWIG_SHARED_OBJ)
-ADD_DEFINITIONS(-DUSE_PHRQ_ALLOC)
-ADD_DEFINITIONS(-DUSE_GZ)
-
-ADD_DEFINITIONS(-DHDF5_CREATE)
-ADD_DEFINITIONS(-DH5Dcreate_vers=1)
-ADD_DEFINITIONS(-DH5Gcreate_vers=1)
-ADD_DEFINITIONS(-DH5Eset_auto_vers=1)
-
 if (PHAST_BUILD_MPI)
   ADD_DEFINITIONS(-DUSE_MPI)
 else()
@@ -324,6 +315,15 @@ include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/
 
 add_library(PhreeqcRM STATIC ${PhreeqcRM_SOURCES})
 
+# PhreeqcRM defines
+target_compile_definitions(PhreeqcRM 
+  PRIVATE
+    SWIG_SHARED_OBJ
+    USE_PHRQ_ALLOC
+    USE_GZ
+)
+
+
 if (PHAST_BUILD_OPENMP)
   SET_TARGET_PROPERTIES(PhreeqcRM PROPERTIES
                         COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
@@ -360,6 +360,16 @@ if (MSVC)
 endif()
 
 add_executable(phast3 ${phast3_SOURCES})
+
+# phast3 defines
+target_compile_definitions(phast3 
+  PRIVATE
+    USE_GZ
+    HDF5_CREATE
+    H5Dcreate_vers=1
+    H5Gcreate_vers=1
+    H5Eset_auto_vers=1    
+)
 
 set(LINK_LIBS ${LINK_LIBS} phastf)
 set(LINK_LIBS ${LINK_LIBS} PhreeqcRM)
