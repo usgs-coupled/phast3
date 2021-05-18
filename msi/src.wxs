@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <ComponentGroup Id="Src">
@@ -132,7 +132,7 @@
             <ComponentRef Id="write5_ss_flow.f90" />
             <ComponentRef Id="write6.f90" />
             <ComponentRef Id="zone_flow.f90" />
-            <ComponentRef Id="zone_flow_ss.f90" />
+            <ComponentRef Id="zone_flow_ss.F90" />
             <ComponentRef Id="char_star.h" />
             <ComponentRef Id="class_main.cpp" />
             <ComponentRef Id="cxxKinetics.cxx" />
@@ -850,8 +850,8 @@
                     <Component Id="zone_flow.f90" Guid="*">
                         <File Id="zone_flow.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\zone_flow.f90" />
                     </Component>
-                    <Component Id="zone_flow_ss.f90" Guid="*">
-                        <File Id="zone_flow_ss.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\zone_flow_ss.f90" />
+                    <Component Id="zone_flow_ss.F90" Guid="*">
+                        <File Id="zone_flow_ss.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\zone_flow_ss.F90" />
                     </Component>
                     <Directory Id="PHAST_KDtree" Name="KDtree">
                         <Component Id="PHAST_KDtree.cpp" Guid="*">

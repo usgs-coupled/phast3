@@ -715,7 +715,7 @@ XP_wbcflo.o: ../PhastFortran/XP_wbcflo.f90 module_dummy.o
 XP_wellsc.o: ../PhastFortran/XP_wellsc.f90 module_dummy.o
 XP_wellsr.o: ../PhastFortran/XP_wellsr.f90 module_dummy.o
 zone_flow.o: ../PhastFortran/zone_flow.f90 module_dummy.o
-zone_flow_ss.o: ../PhastFortran/zone_flow_ss.f90 module_dummy.o
+zone_flow_ss.o: ../PhastFortran/zone_flow_ss.F90 module_dummy.o
 #
 #  PHAST Fortran files
 #

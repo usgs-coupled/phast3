@@ -118,7 +118,7 @@ PhastFortran/write6.f90
 PhastFortran/xfer_to_manager.F90
 PhastFortran/xfer_to_workers.F90
 PhastFortran/zone_flow.f90
-PhastFortran/zone_flow_ss.f90
+PhastFortran/zone_flow_ss.F90
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90
 PhreeqcRM/src/RM_interface.F90
 )

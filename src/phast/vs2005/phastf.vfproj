@@ -201,7 +201,7 @@
 		<File RelativePath="..\PhastFortran\XP_wellsc.f90"/>
 		<File RelativePath="..\PhastFortran\XP_wellsr.f90"/>
 		<File RelativePath="..\PhastFortran\zone_flow.f90"/>
-		<File RelativePath="..\PhastFortran\zone_flow_ss.f90"/></Filter>
+		<File RelativePath="..\PhastFortran\zone_flow_ss.F90"/></Filter>
 		<Filter Name="HDF_OBJS">
 		<File RelativePath="..\PhastFortran\hdf_f.F90"/></Filter>
 		<Filter Name="MPI_OBJS">

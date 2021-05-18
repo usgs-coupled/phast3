@@ -1148,7 +1148,7 @@ XP_wbcflo.o:		../XP_wbcflo.f90	mach_mod.o modules_g.o XP_module.o
 XP_wellsc.o:		../XP_wellsc.f90	mach_mod.o modules_g.o modules_manager.o XP_module.o
 XP_wellsr.o:		../XP_wellsr.f90	mach_mod.o modules_g.o modules_manager.o XP_module.o
 zone_flow.o:		../zone_flow.f90	mach_mod.o modules_g.o modules_manager.o
-zone_flow_ss.o:		../zone_flow_ss.f90	mach_mod.o modules_g.o modules_manager.o
+zone_flow_ss.o:		../zone_flow_ss.F90	mach_mod.o modules_g.o modules_manager.o
 
 #
 #  Dependencies

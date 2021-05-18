@@ -154,7 +154,7 @@ PHAST_SRC=\
 	PhastFortran/XP_wellsc.f90\
 	PhastFortran/XP_wellsr.f90\
 	PhastFortran/zone_flow.f90\
-	PhastFortran/zone_flow_ss.f90\
+	PhastFortran/zone_flow_ss.F90\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CVar.hxx\
