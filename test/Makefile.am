@@ -3,7 +3,7 @@
 
 TESTS = phrqex11
 
-EXTRA_DIST = $(TESTS)
+EXTRA_DIST = $(TESTS) CMakeLists.txt
 
 TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) \
                     PATH=.$(PATH_SEPARATOR)../src/phastinput$(PATH_SEPARATOR)../src/phast$(PATH_SEPARATOR)$$PATH \

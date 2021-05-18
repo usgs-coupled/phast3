@@ -76,14 +76,13 @@ ELSE()
   install (FILES ${phast_DATABASE} DESTINATION ${CMAKE_INSTALL_DOCDIR}/database)
 ENDIF()
 
-### tests
-##enable_testing()
-##
+include(CTest)
 
 # subdirs
 add_subdirectory(doc)
 add_subdirectory(examples)
 #add_subdirectory(lib)
 add_subdirectory(src)
+add_subdirectory(test)
 
 include(CPack)
