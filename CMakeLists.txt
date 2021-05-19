@@ -29,7 +29,13 @@ if (PHAST_BUILD_OPENMP)
 endif()
 
 # check for boost
-find_package(Boost 1.33)
+# set BOOST_ROOT using environment or cache variable
+# ie 
+#   cmake -DBOOST_ROOT:PATH=c:\boost_1_76_0 ..
+# or
+#   set BOOST_ROOT=c:\boost_1_76_0
+#   cmake ..
+find_package(Boost 1.33 REQUIRED)
 
 # check for ZLIB
 find_package(ZLIB REQUIRED)
