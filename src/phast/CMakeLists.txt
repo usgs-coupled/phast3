@@ -123,7 +123,33 @@ PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90
 PhreeqcRM/src/RM_interface.F90
 )
 
+# phastf
 add_library(phastf STATIC ${phastf_SOURCES})
+
+# phast3 defines
+target_compile_definitions(phastf 
+  PRIVATE
+    $<$<BOOL:${PHAST_BUILD_MPI}>:USE_MPI>
+    $<$<BOOL:${PHAST_BUILD_OPENMP}>:USE_OPENMP>
+)
+
+message("PHAST_BUILD_MPI=$<BOOL:${PHAST_BUILD_MPI}>")
+message("PHAST_BUILD_OPENMP=$<BOOL:${PHAST_BUILD_OPENMP}>")
+
+##{{
+if (PHAST_BUILD_MPI)
+  ##ADD_DEFINITIONS(-DUSE_MPI)
+else()
+  if (PHAST_BUILD_OPENMP)
+    ##ADD_DEFINITIONS(-DUSE_OPENMP)
+    # SET_TARGET_PROPERTIES(phastf PROPERTIES
+    #                       COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+    #                       LINK_FLAGS "${OpenMP_Fortran_FLAGS}")
+    target_link_libraries(phastf OpenMP::OpenMP_Fortran)
+  endif()
+endif()
+##}}
+
 
 #
 # PhreeqcRM
@@ -131,10 +157,10 @@ add_library(phastf STATIC ${phastf_SOURCES})
 project(PhreeqcRM CXX)
 
 if (PHAST_BUILD_MPI)
-  ADD_DEFINITIONS(-DUSE_MPI)
+  ##ADD_DEFINITIONS(-DUSE_MPI)
 else()
   if (PHAST_BUILD_OPENMP)
-    ADD_DEFINITIONS(-DUSE_OPENMP)
+    ##ADD_DEFINITIONS(-DUSE_OPENMP)
     SET_TARGET_PROPERTIES(phastf PROPERTIES
                           COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
                           LINK_FLAGS "${OpenMP_Fortran_FLAGS}")
@@ -302,17 +328,7 @@ PhreeqcRM/src/RM_interface_C.cpp
 PhreeqcRM/src/RM_interface_F.cpp
 )
 
-# setup include directories
-include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${HDF5_INCLUDE_DIRS})
-include_directories(${ZLIB_INCLUDE_DIRS})
-include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src")
-include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast")
-include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc")
-include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp")
-include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common")
-include_directories("${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords")
-
+# PhreeqcRM
 add_library(PhreeqcRM STATIC ${PhreeqcRM_SOURCES})
 
 # PhreeqcRM defines
@@ -321,13 +337,28 @@ target_compile_definitions(PhreeqcRM
     SWIG_SHARED_OBJ
     USE_PHRQ_ALLOC
     USE_GZ
+    $<$<BOOL:${PHAST_BUILD_MPI}>:USE_MPI>
+    $<$<BOOL:${PHAST_BUILD_OPENMP}>:USE_OPENMP>
+)
+
+# PhreeqcRM include_directories
+target_include_directories(PhreeqcRM 
+  PRIVATE
+    "${ZLIB_INCLUDE_DIRS}"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords"
 )
 
 
 if (PHAST_BUILD_OPENMP)
-  SET_TARGET_PROPERTIES(PhreeqcRM PROPERTIES
-                        COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
-                        LINK_FLAGS "${OpenMP_CXX_FLAGS}")
+  # SET_TARGET_PROPERTIES(PhreeqcRM PROPERTIES
+  #                       COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
+  #                       LINK_FLAGS "${OpenMP_CXX_FLAGS}")
+  target_link_libraries(PhreeqcRM OpenMP::OpenMP_CXX)
 endif()
 
 #
@@ -359,6 +390,7 @@ if (MSVC)
   set(phast3_SOURCES ${phast3_SOURCES} resource.h)
 endif()
 
+# phast3
 add_executable(phast3 ${phast3_SOURCES})
 
 # phast3 defines
@@ -368,8 +400,24 @@ target_compile_definitions(phast3
     HDF5_CREATE
     H5Dcreate_vers=1
     H5Gcreate_vers=1
-    H5Eset_auto_vers=1    
+    H5Eset_auto_vers=1
+    ${HDF5_DEFINITIONS}
 )
+
+# phast3 include_directories
+target_include_directories(phast3 
+  PRIVATE
+    "${Boost_INCLUDE_DIRS}"
+    "${HDF5_INCLUDE_DIRS}"
+    "${ZLIB_INCLUDE_DIRS}"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common"
+    "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords"
+)
+
 
 set(LINK_LIBS ${LINK_LIBS} phastf)
 set(LINK_LIBS ${LINK_LIBS} PhreeqcRM)
@@ -386,9 +434,10 @@ endif()
 target_link_libraries(phast3 ${LINK_LIBS})
 
 if (PHAST_BUILD_OPENMP)
-  SET_TARGET_PROPERTIES(phast3 PROPERTIES
-                        COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
-                        LINK_FLAGS "${OpenMP_CXX_FLAGS}")
+  # SET_TARGET_PROPERTIES(phast3 PROPERTIES
+  #                       COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
+  #                       LINK_FLAGS "${OpenMP_CXX_FLAGS}")
+  target_link_libraries(phast3 OpenMP::OpenMP_CXX)
 endif()
 
 # install
