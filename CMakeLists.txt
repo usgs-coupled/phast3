@@ -68,6 +68,10 @@ if (PHAST_BUILD_MPI AND PHAST_BUILD_OPENMP)
   message(FATAL_ERROR "PHAST_BUILD_MPI and PHAST_BUILD_OPENMP are mutually exclusive.")
 endif()
 
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/database/phast.dat)
+  file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/database/phreeqc.dat ${CMAKE_CURRENT_SOURCE_DIR}/database/phast.dat COPY_ON_ERROR)
+endif()
+
 # database
 SET(phast_DATABASE
 database/Amm.dat
@@ -78,6 +82,7 @@ database/iso.dat
 database/llnl.dat
 database/minteq.dat
 database/minteq.v4.dat
+database/phast.dat
 database/pitzer.dat
 database/sit.dat
 database/Tipping_Hurley.dat
@@ -86,10 +91,8 @@ database/wateq4f.dat
 
 IF(WIN32)
   install (FILES ${phast_DATABASE} DESTINATION database)
-  install (FILES database/phreeqc.dat RENAME phast.dat DESTINATION database)
 ELSE()
   install (FILES ${phast_DATABASE} DESTINATION ${CMAKE_INSTALL_DOCDIR}/database)
-  install (FILES database/phreeqc.dat RENAME phast.dat DESTINATION database)
 ENDIF()
 
 include(CTest)
