@@ -45,13 +45,13 @@ B. Documentation
 
 PHAST:
 
-   Parkhurst, D.L., Kipp, K.L., and Charlton, S.R., 2010, PHAST Version 2—A program for simulating
+   Parkhurst, D.L., Kipp, K.L., and Charlton, S.R., 2010, PHAST Version 2ï¿½A program for simulating
       groundwater flow, solute transport, and multicomponent geochemical reactions: U.S. Geological
-      Survey Techniques and Methods 6–A35, 235 p.
+      Survey Techniques and Methods 6ï¿½A35, 235 p.
    
-   Parkhurst, D.L., Kipp, K.L., Engesgaard, Peter, and Charlton, S.R., 2004, PHAST—A program for
+   Parkhurst, D.L., Kipp, K.L., Engesgaard, Peter, and Charlton, S.R., 2004, PHASTï¿½A program for
       simulating ground-water flow, solute transport, and multicomponent geochemical reactions:
-      U.S. Geological Survey Techniques and Methods 6–A8, 154 p.
+      U.S. Geological Survey Techniques and Methods 6ï¿½A8, 154 p.
 
    Parkhurst, D.L., and Wissmeier, Laurin, 2015, PhreeqcRM--A reaction module for transport
       simulators based on the geochemical model PHREEQC: Advances in Water Resources, v. 83, p.
@@ -200,7 +200,7 @@ versions of the software. In general, to compile the software, you will need:
    make
    C++ compiler
    Fortran 90 compiler
-   hdf5 libraries >= 1.6.5
+   hdf5 libraries >= 1.8
    boost C++ libraries >= 1.33
    zlib libraries >= 1.2.2
 

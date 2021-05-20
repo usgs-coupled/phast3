@@ -3,6 +3,7 @@
 #
 project(phastf Fortran)
 
+# phastf srcs
 SET(phastf_SOURCES
 PhastFortran/XP_aplbce.f90
 PhastFortran/XP_aplbci.F90
@@ -123,32 +124,22 @@ PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90
 PhreeqcRM/src/RM_interface.F90
 )
 
-# phastf
+# phastf target
 add_library(phastf STATIC ${phastf_SOURCES})
 
-# phast3 defines
+# phastf defines
 target_compile_definitions(phastf 
   PRIVATE
     $<$<BOOL:${PHAST_BUILD_MPI}>:USE_MPI>
     $<$<BOOL:${PHAST_BUILD_OPENMP}>:USE_OPENMP>
 )
 
-message("PHAST_BUILD_MPI=$<BOOL:${PHAST_BUILD_MPI}>")
-message("PHAST_BUILD_OPENMP=$<BOOL:${PHAST_BUILD_OPENMP}>")
-
-##{{
-if (PHAST_BUILD_MPI)
-  ##ADD_DEFINITIONS(-DUSE_MPI)
-else()
-  if (PHAST_BUILD_OPENMP)
-    ##ADD_DEFINITIONS(-DUSE_OPENMP)
-    # SET_TARGET_PROPERTIES(phastf PROPERTIES
-    #                       COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
-    #                       LINK_FLAGS "${OpenMP_Fortran_FLAGS}")
-    target_link_libraries(phastf OpenMP::OpenMP_Fortran)
-  endif()
-endif()
-##}}
+# phastf link libraries
+target_link_libraries(phastf
+  PRIVATE
+    $<$<BOOL:${PHAST_BUILD_MPI}>:MPI::MPI_Fortran>
+    $<$<BOOL:${PHAST_BUILD_OPENMP}>:OpenMP::OpenMP_Fortran>
+)
 
 
 #
@@ -156,17 +147,7 @@ endif()
 #
 project(PhreeqcRM CXX)
 
-if (PHAST_BUILD_MPI)
-  ##ADD_DEFINITIONS(-DUSE_MPI)
-else()
-  if (PHAST_BUILD_OPENMP)
-    ##ADD_DEFINITIONS(-DUSE_OPENMP)
-    SET_TARGET_PROPERTIES(phastf PROPERTIES
-                          COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
-                          LINK_FLAGS "${OpenMP_Fortran_FLAGS}")
-  endif()
-endif()
-
+# PhreeqcRM srcs
 SET(PhreeqcRM_SOURCES
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx
@@ -328,7 +309,7 @@ PhreeqcRM/src/RM_interface_C.cpp
 PhreeqcRM/src/RM_interface_F.cpp
 )
 
-# PhreeqcRM
+# PhreeqcRM target
 add_library(PhreeqcRM STATIC ${PhreeqcRM_SOURCES})
 
 # PhreeqcRM defines
@@ -341,7 +322,7 @@ target_compile_definitions(PhreeqcRM
     $<$<BOOL:${PHAST_BUILD_OPENMP}>:USE_OPENMP>
 )
 
-# PhreeqcRM include_directories
+# PhreeqcRM include directories
 target_include_directories(PhreeqcRM 
   PRIVATE
     "${ZLIB_INCLUDE_DIRS}"
@@ -353,19 +334,20 @@ target_include_directories(PhreeqcRM
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords"
 )
 
+# PhreeqcRM link libraries
+target_link_libraries(PhreeqcRM
+  PRIVATE
+    $<$<BOOL:${PHAST_BUILD_MPI}>:MPI::MPI_CXX>
+    $<$<BOOL:${PHAST_BUILD_OPENMP}>:OpenMP::OpenMP_CXX>
+)
 
-if (PHAST_BUILD_OPENMP)
-  # SET_TARGET_PROPERTIES(PhreeqcRM PROPERTIES
-  #                       COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
-  #                       LINK_FLAGS "${OpenMP_CXX_FLAGS}")
-  target_link_libraries(PhreeqcRM OpenMP::OpenMP_CXX)
-endif()
 
 #
 # phast3
 #
 project(phast3 CXX)
 
+# phast3 srcs
 SET(phast3_SOURCES
 FileHandler.cpp
 FileHandler.h
@@ -390,7 +372,7 @@ if (MSVC)
   set(phast3_SOURCES ${phast3_SOURCES} resource.h)
 endif()
 
-# phast3
+# phast3 target
 add_executable(phast3 ${phast3_SOURCES})
 
 # phast3 defines
@@ -404,7 +386,7 @@ target_compile_definitions(phast3
     ${HDF5_DEFINITIONS}
 )
 
-# phast3 include_directories
+# phast3 include directories
 target_include_directories(phast3 
   PRIVATE
     "${Boost_INCLUDE_DIRS}"
@@ -418,27 +400,17 @@ target_include_directories(phast3
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords"
 )
 
-
-set(LINK_LIBS ${LINK_LIBS} phastf)
-set(LINK_LIBS ${LINK_LIBS} PhreeqcRM)
-set(LINK_LIBS ${LINK_LIBS} ${ZLIB_LIBRARIES})
-set(LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
-
-if (PHAST_BUILD_MPI)
-  include_directories(${MPI_CXX_INCLUDE_PATH})
-  include_directories(${MPI_Fortran_INCLUDE_PATH})
-  set(LINK_LIBS ${LINK_LIBS} ${MPI_CXX_LIBRARIES})
-  SET(LINK_LIBS ${LINK_LIBS} ${MPI_Fortran_LIBRARIES})
-endif()
-
-target_link_libraries(phast3 ${LINK_LIBS})
-
-if (PHAST_BUILD_OPENMP)
-  # SET_TARGET_PROPERTIES(phast3 PROPERTIES
-  #                       COMPILE_FLAGS "${OpenMP_CXX_FLAGS}"
-  #                       LINK_FLAGS "${OpenMP_CXX_FLAGS}")
-  target_link_libraries(phast3 OpenMP::OpenMP_CXX)
-endif()
+# phast3 link libraries
+target_link_libraries(phast3
+  PRIVATE
+    phastf
+    PhreeqcRM
+    ${ZLIB_LIBRARIES}
+    ${HDF5_LIBRARIES}
+    $<$<BOOL:${PHAST_BUILD_MPI}>:MPI::MPI_CXX>
+    $<$<BOOL:${PHAST_BUILD_MPI}>:MPI::MPI_Fortran>
+    $<$<BOOL:${PHAST_BUILD_OPENMP}>:OpenMP::OpenMP_CXX>
+)
 
 # install
 install(TARGETS phast3 DESTINATION ${CMAKE_INSTALL_BINDIR})
