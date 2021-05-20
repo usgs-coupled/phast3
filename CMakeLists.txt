@@ -53,7 +53,7 @@ find_package(HDF5 1.8 REQUIRED)
 option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)" "OFF")
 if (PHAST_BUILD_MPI)
   if(DEFINED ENV{MSMPI_INC} AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
-    # CMake's findMPI is broken for MSMPI(Fortran) starting with 3.17
+    # CMake's FindMPI is broken for MSMPI(Fortran) starting with 3.17
     message(STATUS "Using FindMPI from CMake 3.16 since MSMPI_INC is set")
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
   endif()
