@@ -1,6 +1,22 @@
 ---------------------------------------
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
+
+---------------------
+Git May 8, 2021
+---------------------
+Fixed a major bug in the new feature that writes SELECTED_OUTPUT and 
+USER_PUNCH prefix.wel.so_n.tsv, where n is the user number of the 
+SELECTED_OUTPUT definition. The concentrations of the topmost cell
+were used for the calculation, instead of the integrated concentrations
+from all the open intervals of the well. The concentrations from
+the integrated well-riser calculation are now used for the calculation that
+produces the SELECTED_OUTPUT and USER_PUNCH results.
+
+-----------------------------------------------------------------
+Version 3.7.0-15749 April 29, 2021
+-----------------------------------------------------------------
+
 ---------------------
 Git February 19, 2021
 ---------------------
@@ -19,7 +35,7 @@ Git February 19, 2020
 PHAST: Added new output files for wells. Selected output files can now 
 be written for wells. The SELECTED_OUTPUT and USER_PUNCH definitions 
 from the .chem.dat files are now used to write files named 
-prefix.well.so_n.tsv, where n is the user number of the SELECTED_OUTPUT 
+prefix.wel.so_n.tsv, where n is the user number of the SELECTED_OUTPUT 
 definition. 
 
 The water composition of an extraction well is run with the utility 

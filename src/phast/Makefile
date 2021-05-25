@@ -32,7 +32,7 @@ intel_64:    openmp_intel_64    openmp_intel_64_debug    mpi_intel_64    mpi_int
 
 
 MAKEFILE                = Makefile
-
+MAKE="C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/mingw32-make"
 #########################
 ####    gfortran_64  ####
 #########################
@@ -101,16 +101,17 @@ PHREEQC_INCLUDES = -I.. -I../PhreeqcRM/src \
                    -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp \
                    -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common \
                    -I../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords \
-		  -I${BOOST_ROOT}/include
+		  -I${BOOST_ROOT}/boost -I${BOOST_ROOT}
 
 
-PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM/src:../PhreeqcRM/src/IPhreeqcPhast:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords:../KDtree:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common
+PHREEQC_VPATH    = ..:../PhastFortran:../PhreeqcRM/src:../PhreeqcRM/src/IPhreeqcPhast:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords:../phastinput/KDtree:../PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
 # The following apply to GFortran versions
 FGFORTRAN=     gfortran
-LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
+#LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
+LIBGFORTRAN_64=-L"C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0" -lgfortran -lquadmath
 
 # The following apply to INTEL versions
 FINTEL=/lobo02home/intel/Compiler/11.0/083/bin/intel64/ifort
@@ -120,7 +121,7 @@ IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -ls
 # The following apply to Mpi versions
 #MPI_GFORTRAN_64=/usr/lib64/openmpi
 MPI_GFORTRAN_64 = /cxfs/projects/spack/opt/spack/linux-x86_64/gcc-4.4.7/openmpi-1.8.8-72q36csmgq7qgf6nuhqnthbxdghzjpfz
-BOOST_ROOT=/cxfs/projects/root/opt/boost/1.59.0/gcc
+BOOST_ROOT=C:/3rdParty/boost_1_75_0
 
 #MPI_IFORT_64=/raid/home/charlton/openmpi-1.5.4/lobo02-ifort-x64-static
 MPI_IFORT_64=/opt/intel/impi/5.0.1.035/intel64
@@ -140,10 +141,10 @@ MPI_IFORT_64=/opt/intel/impi/5.0.1.035/intel64
 
 # -----------------------------------------------------------------------------
 #hdf options
-HDF5_ROOT=/usr
+HDF5_ROOT="C:/Program Files/HDF_Group/HDF5/1.12.0"
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 #HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread
-HDF5_LIBS_64=-lhdf5 -lz -lpthread
+HDF5_LIBS_64=-L${HDF5_ROOT}/lib -lhdf5 -lz -lpthread
 
 # -----------------------------------------------------------------------------
 #hdf options
@@ -309,7 +310,7 @@ ifeq ($(CFG), MPICH_GFORTRAN)
   ZLIB_LIB=${ZLIB_ROOT}/lib/libz.a
   HDF5_ROOT    =/z/parkplace/home/dlpark/packages/5-1.6.6-linux
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-  HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lpthread $(SZIP_LIB) $(ZLIB_LIB)
+  HDF5_LIBS=-L${HDF5_ROOT}/lib -lpthread $(SZIP_LIB) $(ZLIB_LIB)
   MPICH_ROOT=/z/parkplace/home/dlpark/packages/mpich2-1.0.5p4
   MPICH_BIN=$(MPICH_ROOT)/bin
   MPICH_INCLUDES=-I$(MPICH_ROOT)/src/include
@@ -550,9 +551,9 @@ tidy.o \
 transport.o \
 utilities.o \
 \
-kdtree2.o \
-KDtree.o \
-Point.o
+../../phastinput/KDtree/kdtree2.o \
+../../phastinput/KDtree/KDtree.o \
+../../phastinput/KDtree/Point.o
 
 PHASTINPUT_FILES = ../KDtree/KDtree.cpp \
 	../KDtree/kdtree2.cpp \
@@ -711,7 +712,7 @@ XP_wbcflo.o: ../PhastFortran/XP_wbcflo.f90 module_dummy.o
 XP_wellsc.o: ../PhastFortran/XP_wellsc.f90 module_dummy.o
 XP_wellsr.o: ../PhastFortran/XP_wellsr.f90 module_dummy.o
 zone_flow.o: ../PhastFortran/zone_flow.f90 module_dummy.o
-zone_flow_ss.o: ../PhastFortran/zone_flow_ss.F90 module_dummy.o
+zone_flow_ss.o: ../PhastFortran/zone_flow_ss.f90 module_dummy.o
 #
 #  PHAST Fortran files
 #
