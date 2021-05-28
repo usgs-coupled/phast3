@@ -832,7 +832,7 @@ SUBROUTINE write5
               !              u2=pwkt(iwel)/(den0*gz)+zwt(iwel)  !***incorrect
               DO  is=1,ns
                  u10(is)=cwkt_mol(iwel,is)
-                 c_well(1,is) = c(mkt,is)
+                 c_well(1,is) = cwkt(iwel,is)
               END DO
            ELSE
               ! ... Observation well Q=0 ,WQMETH=0
@@ -840,7 +840,7 @@ SUBROUTINE write5
               IF (solute) THEN
                  DO  is=1,ns
                     u10(is)=c_mol(mkt,is)
-                    c_well(1,is) = c(mkt,is)
+                    c_well(1,is) = cwkt(iwel,is)
                  END DO
               ENDIF
            END IF
