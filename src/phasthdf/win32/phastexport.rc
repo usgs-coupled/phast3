@@ -163,7 +163,7 @@ END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-    IDS_NOJRE               "Sorry, phasthdf could not locate a suitable Java Runtime Environment.\nPlease download and install one from http://java.sun.com/getjava/download.html."
+    IDS_NOJRE               "Sorry, phasthdf could not locate a suitable Java Runtime Environment.\nPlease download and install Amazon Corretto 8 x64 JDK from https://aws.amazon.com/corretto."
     IDS_JRE_KEY             "SOFTWARE\\JavaSoft\\Java Runtime Environment"
     IDS_CUR_VER             "CurrentVersion"
     IDS_JAVAHOME            "JavaHome"
