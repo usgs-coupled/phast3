@@ -5,6 +5,7 @@ if (PHREEQCRM_FORTRAN_TESTING)
   # source
   SET(FortranAdvect_SOURCES
     advection_f90.F90
+	gas_f90.F90
     ../src/RM_interface.F90
     ../src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90
     species_f90.F90
@@ -12,6 +13,7 @@ if (PHREEQCRM_FORTRAN_TESTING)
   
   # place [*.F[90]] files into "Source Files"
   source_group("Source Files" FILES "advection_f90.F90")
+  source_group("Source Files" FILES "gas_f90.F90")
   source_group("Source Files" FILES "../src/RM_interface.F90")
   source_group("Source Files" FILES "../src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90")
   source_group("Source Files" FILES "species_f90.F90")
@@ -40,11 +42,19 @@ configure_file (
   "units.pqi.in"
   "units.pqi"
   )
+  
+# Tests/units.pqi
+configure_file (
+  "gas.pqi.in"
+  "gas.pqi"
+  )
 
 # source
 SET(TestRM_SOURCES
   advection_c.c
   advection_cpp.cpp
+  gas_c.c
+  gas_cpp.cpp
   main.cpp
   species_c.c
   species_cpp.cpp
@@ -58,19 +68,9 @@ if (PHREEQCRM_FORTRAN_TESTING)
 endif ()
 
 # library dependencies
-##{{
-##if (ZLIB_FOUND)
-##  set(EXTRA_LIBS ${EXTRA_LIBS} ${ZLIB_LIBRARIES})
-##endif()  
-##}}
 if (PHREEQCRM_FORTRAN_TESTING)
-  # need extra mpi fortran libs if using msmpi
-  if (MPI_Fortran_LIBRARIES MATCHES "msmpi.lib$")
-    STRING(REGEX REPLACE "msmpi.lib$" "msmpifec.lib" EXTRA_FORTRAN_LIB ${MPI_Fortran_LIBRARIES})
-    SET(EXTRA_LIBS ${EXTRA_LIBS} ${EXTRA_FORTRAN_LIB})
-  endif ()  
   if (PHREEQCRM_BUILD_MPI)
-    SET(EXTRA_LIBS ${EXTRA_LIBS} FortranAdvect PhreeqcRM ${MPI_CXX_LIBRARIES})
+    SET(EXTRA_LIBS ${EXTRA_LIBS} FortranAdvect PhreeqcRM ${MPI_CXX_LIBRARIES} ${MPI_Fortran_LIBRARIES})
   else ()
     SET(EXTRA_LIBS ${EXTRA_LIBS} FortranAdvect PhreeqcRM)
   endif ()

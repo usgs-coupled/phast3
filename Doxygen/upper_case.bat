@@ -47,11 +47,11 @@
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
-  @sed -i "s/rm_getcomponent/RM_GetComponent/g" %%f 
+  @sed -i "s/rm_getcomponentcount/RM_GetComponentCount/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
-  @sed -i "s/rm_getcomponentcount/RM_GetComponentCount/g" %%f 
+  @sed -i "s/rm_getcomponent/RM_GetComponent/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
@@ -67,15 +67,31 @@
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
-  @sed -i "s/rm_geterrorstring/RM_GetErrorString/g" %%f 
-  @del sed*
-)
-@FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_geterrorstringlength/RM_GetErrorStringLength/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_geterrorstring/RM_GetErrorString/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_getfileprefix/RM_GetFilePrefix/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getgascompmoles/RM_GetGasCompMoles/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getgascompphi/RM_GetGasCompPhi/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getgascomppressures/RM_GetGasCompPressures/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getgasphasevolume/RM_GetGasPhaseVolume/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
@@ -107,10 +123,6 @@
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
-  @sed -i "s/rm_getselectedoutput/RM_GetSelectedOutput/g" %%f 
-  @del sed*
-)
-@FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_getselectedoutputcolumncount/RM_GetSelectedOutputColumnCount/g" %%f 
   @del sed*
 )
@@ -127,6 +139,10 @@
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getselectedoutput/RM_GetSelectedOutput/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_getsolutionvolume/RM_GetSolutionVolume/g" %%f 
   @del sed*
 )
@@ -140,6 +156,10 @@
 )
 @FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_getspeciesd25/RM_GetSpeciesD25/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getspecieslog10molalities/RM_GetSpeciesLog10Molalities/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
@@ -199,11 +219,11 @@
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
-  @sed -i "s/rm_mpiworker/RM_MpiWorker/g" %%f 
+  @sed -i "s/rm_mpiworkerbreak/RM_MpiWorkerBreak/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
-  @sed -i "s/rm_mpiworkerbreak/RM_MpiWorkerBreak/g" %%f 
+  @sed -i "s/rm_mpiworker/RM_MpiWorker/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
@@ -255,7 +275,19 @@
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_seterroron/RM_SetErrorOn/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_setfileprefix/RM_SetFilePrefix/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_setgascompmoles/RM_SetGasCompMoles/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_setgasphasevolume/RM_SetGasPhaseVolume/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
@@ -315,15 +347,15 @@
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
-  @sed -i "s/rm_settime/RM_SetTime/g" %%f 
-  @del sed*
-)
-@FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_settimeconversion/RM_SetTimeConversion/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_settimestep/RM_SetTimeStep/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_settime/RM_SetTime/g" %%f 
   @del sed*
 )
 @FOR %%f IN (.\html\*.html) DO @(
@@ -368,6 +400,94 @@
 )
 @FOR %%f IN (.\html\*.html) DO @(
   @sed -i "s/rm_warningmessage/RM_WarningMessage/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getspecieslog10gammas/RM_GetSpeciesLog10Gammas/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getexchangespeciescount/RM_GetExchangeSpeciesCount/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getexchangespeciesname/RM_GetExchangeSpeciesName/g"   %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getexchangename/RM_GetExchangeName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsurfacespeciescount/RM_GetSurfaceSpeciesCount/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsurfacespeciesname/RM_GetSurfaceSpeciesName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsurfacetype/RM_GetSurfaceType/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsurfacename/RM_GetSurfaceName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getequilibriumphasescount/RM_GetEquilibriumPhasesCount/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getequilibriumphasesname/RM_GetEquilibriumPhasesName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getgascomponentscount/RM_GetGasComponentsCount/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getgascomponentsname/RM_GetGasComponentsName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getkineticreactionscount/RM_GetKineticReactionsCount/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getkineticreactionsname/RM_GetKineticReactionsName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsolidsolutioncomponentscount/RM_GetSolidSolutionComponentsCount/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsolidsolutioncomponentsname/RM_GetSolidSolutionComponentsName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsolidsolutionname/RM_GetSolidSolutionName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsicount/RM_GetSICount/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_getsiname/RM_GetSIName/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_statesave/RM_StateSave/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_stateapply/RM_StateApply/g" %%f 
+  @del sed*
+)
+@FOR %%f IN (.\html\*.html) DO @(
+  @sed -i "s/rm_statedelete/RM_StateDelete/g" %%f 
   @del sed*
 )
 

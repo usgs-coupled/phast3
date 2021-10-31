@@ -36,10 +36,10 @@ for f in html/*.html; do
   sed -i "s/rm_getchemistrycellcount/RM_GetChemistryCellCount/g" $f 
 done
 for f in html/*.html; do
-  sed -i "s/rm_getcomponent/RM_GetComponent/g" $f 
+  sed -i "s/rm_getcomponentcount/RM_GetComponentCount/g" $f 
 done
 for f in html/*.html; do
-  sed -i "s/rm_getcomponentcount/RM_GetComponentCount/g" $f 
+  sed -i "s/rm_getcomponent/RM_GetComponent/g" $f 
 done
 for f in html/*.html; do
   sed -i "s/rm_getconcentrations/RM_GetConcentrations/g" $f 
@@ -51,14 +51,37 @@ for f in html/*.html; do
   sed -i "s/rm_getendcell/RM_GetEndCell/g" $f 
 done
 for f in html/*.html; do
-  sed -i "s/rm_geterrorstring/RM_GetErrorString/g" $f 
+  sed -i "s/rm_geterrorstringlength/RM_GetErrorStringLength/g" $f 
 done
 for f in html/*.html; do
-  sed -i "s/rm_geterrorstringlength/RM_GetErrorStringLength/g" $f 
+  sed -i "s/rm_geterrorstring/RM_GetErrorString/g" $f 
 done
 for f in html/*.html; do
   sed -i "s/rm_getfileprefix/RM_GetFilePrefix/g" $f 
 done
+
+for f in html/*.html; do
+  sed -i "s/rm_getgascompmoles/RM_GetGasCompMoles/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_getgascomppressures/RM_GetGasCompPressures/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_getgascompphi/RM_GetGasCompPhi/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_getgasphasevolume/RM_GetGasPhaseVolume/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_setgascompmoles/RM_SetGasCompMoles/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_setgasphasevolume/RM_SetGasPhaseVolume/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_getspecieslog10molalities/RM_GetSpeciesLog10Molalities/g" $f 
+done
+
 for f in html/*.html; do
   sed -i "s/rm_getgfw/RM_GetGfw/g" $f 
 done
@@ -81,9 +104,6 @@ for f in html/*.html; do
   sed -i "s/rm_getsaturation/RM_GetSaturation/g" $f 
 done
 for f in html/*.html; do
-  sed -i "s/rm_getselectedoutput/RM_GetSelectedOutput/g" $f 
-done
-for f in html/*.html; do
   sed -i "s/rm_getselectedoutputcolumncount/RM_GetSelectedOutputColumnCount/g" $f 
 done
 for f in html/*.html; do
@@ -94,6 +114,9 @@ for f in html/*.html; do
 done
 for f in html/*.html; do
   sed -i "s/rm_getselectedoutputrowcount/RM_GetSelectedOutputRowCount/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_getselectedoutput/RM_GetSelectedOutput/g" $f 
 done
 for f in html/*.html; do
   sed -i "s/rm_getsolutionvolume/RM_GetSolutionVolume/g" $f 
@@ -150,10 +173,10 @@ for f in html/*.html; do
   sed -i "s/rm_logmessage/RM_LogMessage/g" $f 
 done
 for f in html/*.html; do
-  sed -i "s/rm_mpiworker/RM_MpiWorker/g" $f 
+  sed -i "s/rm_mpiworkerbreak/RM_MpiWorkerBreak/g" $f 
 done
 for f in html/*.html; do
-  sed -i "s/rm_mpiworkerbreak/RM_MpiWorkerBreak/g" $f 
+  sed -i "s/rm_mpiworker/RM_MpiWorker/g" $f 
 done
 for f in html/*.html; do
   sed -i "s/rm_openfiles/RM_OpenFiles/g" $f 
@@ -190,6 +213,9 @@ for f in html/*.html; do
 done
 for f in html/*.html; do
   sed -i "s/rm_seterrorhandlermode/RM_SetErrorHandlerMode/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_seterroron/RM_SetErrorOn/g" $f 
 done
 for f in html/*.html; do
   sed -i "s/rm_setfileprefix/RM_SetFilePrefix/g" $f 
@@ -237,13 +263,13 @@ for f in html/*.html; do
   sed -i "s/rm_settemperature/RM_SetTemperature/g" $f 
 done
 for f in html/*.html; do
-  sed -i "s/rm_settime/RM_SetTime/g" $f 
-done
-for f in html/*.html; do
   sed -i "s/rm_settimeconversion/RM_SetTimeConversion/g" $f 
 done
 for f in html/*.html; do
   sed -i "s/rm_settimestep/RM_SetTimeStep/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_settime/RM_SetTime/g" $f 
 done
 for f in html/*.html; do
   sed -i "s/rm_setunitsexchange/RM_SetUnitsExchange/g" $f 
@@ -277,6 +303,72 @@ for f in html/*.html; do
 done
 for f in html/*.html; do
   sed -i "s/rm_warningmessage/RM_WarningMessage/g" $f 
+done
+for f in html/*.html; do
+  sed -i "s/rm_getspecieslog10gammas/RM_GetSpeciesLog10Gammas/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getexchangespeciescount/RM_GetExchangeSpeciesCount/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getexchangespeciesname/RM_GetExchangeSpeciesName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getexchangename/RM_GetExchangeName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsurfacespeciescount/RM_GetSurfaceSpeciesCount/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsurfacespeciesname/RM_GetSurfaceSpeciesName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsurfacetype/RM_GetSurfaceType/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsurfacename/RM_GetSurfaceName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getequilibriumphasescount/RM_GetEquilibriumPhasesCount/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getequilibriumphasesname/RM_GetEquilibriumPhasesName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getgascomponentscount/RM_GetGasComponentsCount/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getgascomponentsname/RM_GetGasComponentsName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getkineticreactionscount/RM_GetKineticReactionsCount/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getkineticreactionsname/RM_GetKineticReactionsName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsolidsolutioncomponentscount/RM_GetSolidSolutionComponentsCount/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsolidsolutioncomponentsname/RM_GetSolidSolutionComponentsName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsolidsolutionname/RM_GetSolidSolutionName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsicount/RM_GetSICount/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_getsiname/RM_GetSIName/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_statesave/RM_StateSave/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_stateapply/RM_StateApply/g"  $f
+done
+for f in html/*.html; do
+  sed -i "s/rm_statedelete/RM_StateDelete/g"  $f
 done
 
 # Rename PhreeqcRM to mixed case 

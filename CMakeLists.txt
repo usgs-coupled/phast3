@@ -1,13 +1,6 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.10)
 
-if (POLICY CMP0054)
-  cmake_policy(PUSH)
-  cmake_policy(SET CMP0054 OLD)
-endif()
 project (PhreeqcRM CXX C)
-if (POLICY CMP0054)
-  cmake_policy(POP)
-endif()
 
 # check if this is the root project
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -41,16 +34,14 @@ IF(MSVC_VERSION EQUAL 1400 OR MSVC_VERSION GREATER 1400)
 ENDIF(MSVC_VERSION EQUAL 1400 OR MSVC_VERSION GREATER 1400) 
 
 # check for zlib
-if (NOT PHREEQCRM_EXTERNALLY_CONFIGURED)
-  if(NOT ZLIB_ROOT)
-    if(EXISTS $ENV{ZLIB_ROOT})
-      set(ZLIB_ROOT $ENV{ZLIB_ROOT})
-    endif()
+if(NOT ZLIB_ROOT)
+  if(EXISTS $ENV{ZLIB_ROOT})
+    set(ZLIB_ROOT $ENV{ZLIB_ROOT})
   endif()
-  option(PHREEQCRM_USE_ZLIB "Use zlib compression for dump files" OFF)
-  if (PHREEQCRM_USE_ZLIB)
-    find_package(ZLIB REQUIRED)
-  endif()
+endif()
+option(PHREEQCRM_USE_ZLIB "Use zlib compression for dump files" OFF)
+if (PHREEQCRM_USE_ZLIB)
+  find_package(ZLIB REQUIRED)
 endif()
 
 if (PHREEQCRM_USE_ZLIB AND ZLIB_FOUND)
@@ -58,19 +49,18 @@ if (PHREEQCRM_USE_ZLIB AND ZLIB_FOUND)
   include_directories(${ZLIB_INCLUDE_DIRS})
 endif()
 
-# check for openmp
-find_package(OpenMP)
+option(PHREEQCRM_DISABLE_OPENMP "Disable openmp" "OFF")
+if (NOT PHREEQCRM_DISABLE_OPENMP)
+  if (STANDALONE_BUILD EQUAL 1)
+    # check for openmp
+    find_package(OpenMP)
+  endif()
+endif()
 
 # check for MPI
 option(PHREEQCRM_BUILD_MPI "Build MPI configuration" "OFF")
 if (PHREEQCRM_BUILD_MPI)
-  if (POLICY CMP0054)
-    cmake_policy(SET CMP0054 OLD)
-  endif()
   find_package(MPI)
-  if (POLICY CMP0054)
-    cmake_policy(SET CMP0054 NEW)
-  endif()
 endif (PHREEQCRM_BUILD_MPI)
 
 
@@ -89,22 +79,17 @@ src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h
 src/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/advection.cpp
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/basicsubs.cpp
-src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.cpp
-src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.h
-src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.cpp
-src/IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.h
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cl1.cpp
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.cxx
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.cxx
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h
+src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_exports.h
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.cpp
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.cxx
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Utils.h
-src/IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.cpp
-src/IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.h
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.cpp
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.cpp
@@ -272,6 +257,7 @@ ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp
 ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h
 ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h
 ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h
+${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_exports.h
 ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h
 ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h
 ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h
@@ -293,27 +279,16 @@ ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90
 if (PHREEQCRM_BUILD_MPI)
   ADD_DEFINITIONS(-DUSE_MPI)
   include_directories(${MPI_CXX_INCLUDE_PATH})
-  if (PHREEQCRM_FORTRAN_TESTING AND MPI_Fortran_INCLUDE_PATH)
-    if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
-      include_directories(${MPI_Fortran_INCLUDE_PATH}/x64)
-      include_directories(${MPI_Fortran_INCLUDE_PATH}/amd64)
-    else()
-      include_directories(${MPI_Fortran_INCLUDE_PATH}/x86)
-      include_directories(${MPI_Fortran_INCLUDE_PATH}/i386)
-    endif()
-  endif()
   set(LINK_LIBS ${LINK_LIBS} ${MPI_CXX_LIBRARIES})
-  if (PHREEQCRM_FORTRAN_TESTING AND MPI_Fortran_LIBRARIES MATCHES "msmpi.lib$")
-    STRING(REGEX REPLACE "msmpi.lib$" "msmpifec.lib" EXTRA_FORTRAN_LIB ${MPI_Fortran_LIBRARIES})
-    SET(LINK_LIBS ${LINK_LIBS} ${EXTRA_FORTRAN_LIB})
+  if (PHREEQCRM_FORTRAN_TESTING)
+    include_directories(${MPI_Fortran_INCLUDE_PATH})
+    SET(LINK_LIBS ${LINK_LIBS} ${MPI_Fortran_LIBRARIES})
   endif ()  
 else()
-  if (OPENMP_FOUND)
-    ADD_DEFINITIONS(-DUSE_OPENMP)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
-    if (PHREEQCRM_FORTRAN_TESTING)
-      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+  if (NOT PHREEQCRM_DISABLE_OPENMP)
+    if (OPENMP_FOUND)
+      target_compile_definitions(PhreeqcRM PRIVATE USE_OPENMP)
+      target_link_libraries(PhreeqcRM PUBLIC OpenMP::OpenMP_CXX)
     endif()
   endif()
 endif()  
@@ -323,6 +298,11 @@ if (STANDALONE_BUILD EQUAL 1)
   install(TARGETS PhreeqcRM DESTINATION ${CMAKE_INSTALL_LIBDIR})
   install(FILES ${PhreeqcRM_Headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   install(FILES ${PhreeqcRM_SRC} DESTINATION src)
+else()
+  #option(PHREEQCRM_INSTALL_TARGETS "" OFF)  
+  if (PHREEQCRM_INSTALL_TARGETS)
+    install(TARGETS PhreeqcRM DESTINATION ${CMAKE_INSTALL_LIBDIR})
+  endif()
 endif()
 
 if (STANDALONE_BUILD EQUAL 1 AND MSVC)
