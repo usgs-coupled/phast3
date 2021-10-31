@@ -3,12 +3,6 @@
 #
 project(phastinput CXX)
 
-# defines
-ADD_DEFINITIONS(-DANSI_DECLARATORS)
-#ADD_DEFINITIONS(-DTRILIBRARY) set in config.h
-ADD_DEFINITIONS(-DPHRQ_IO_INPUT)
-ADD_DEFINITIONS(-DUSE_GZ)
-
 # setup include directories
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories("${CMAKE_SOURCE_DIR}/src/phastinput/common")
@@ -160,14 +154,20 @@ SET_SOURCE_FILES_PROPERTIES(${C_FILES} PROPERTIES LANGUAGE CXX)
 
 add_executable(phastinput ${phastinput_SOURCES})
 
+# defines
+target_compile_definitions(phastinput 
+  PRIVATE
+    ANSI_DECLARATORS
+    PHRQ_IO_INPUT
+    USE_GZ
+)
+if(NOT WIN32)
+  # TRILIBRARY is set in config.h for windows
+  target_compile_definitions(phastinput 
+    PRIVATE
+      TRILIBRARY
+  )
+endif()
+
 # install
 install(TARGETS phastinput DESTINATION ${CMAKE_INSTALL_BINDIR})
-##if (BUILD_CLR_LIBS)
-##  install(FILES "${PROJECT_SOURCE_DIR}/src/phreeqcpp/ZedGraph.dll" DESTINATION ${CMAKE_INSTALL_LIBDIR})
-##endif()
-
-
-### tests
-##enable_testing()
-##
-##add_subdirectory(Tests)

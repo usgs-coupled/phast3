@@ -5178,9 +5178,9 @@ find_cell_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_cells_
 			x2 = cells[*sit].x + width[0]/2.0;
 			y2 = cells[*sit].y + width[1]/2.0;
 			z2 = cells[*sit].z + width[2]/2.0;
-			Point min(x1, y1, z1);
-			Point max(x2, y2, z2);
-			zone z(min, max);
+			Point mn(x1, y1, z1);
+			Point mx(x2, y2, z2);
+			zone z(mn, mx);
 			struct index_range *r_ptr;
 			//r_ptr = zone_to_elt_range(&z, true);
 			r_ptr = zone_to_range(&z); // list of cells not elements in polyh

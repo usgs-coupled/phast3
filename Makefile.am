@@ -15,6 +15,7 @@ phastinput_SOURCES=\
 	common/Parser.h\
 	common/PHRQ_base.cxx\
 	common/PHRQ_base.h\
+	common/PHRQ_exports.h\
 	common/PHRQ_io.cpp\
 	common/PHRQ_io.h\
 	common/phrqtype.h\
