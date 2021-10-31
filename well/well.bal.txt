@@ -309,39 +309,39 @@
 
  Solute inflow ..............................................  1.887779E+03  (kg/min)     2.718402E+07  (kg)
  Solute outflow .............................................  1.882386E+03  (kg/min)     2.710636E+07  (kg)
- Change in solute in region from reactions ..................  7.928742E-07  (kg/min)     1.141739E-02  (kg)
- Change in solute in region .................................  5.393283E+00  (kg/min)     7.766328E+04  (kg)
- Residual imbalance .........................................  1.569796E-09  (kg/min)     2.260506E-05  (kg)
- Fractional imbalance .......................................                              0.0000
+ Change in solute in region from reactions .................. -7.020103E-09  (kg/min)    -1.010895E-04  (kg)
+ Change in solute in region .................................  5.393282E+00  (kg/min)     7.766327E+04  (kg)
+ Residual imbalance ......................................... -1.755026E-09  (kg/min)    -2.527237E-05  (kg)
+ Fractional imbalance .......................................                             -0.0000
 
 
           Component: H                             
 
  Solute inflow ..............................................  4.017764E-07  (kg/min)     5.785581E-03  (kg)
  Solute outflow .............................................  3.953515E-07  (kg/min)     5.693061E-03  (kg)
- Change in solute in region from reactions ..................  7.006093E-10  (kg/min)     1.008877E-05  (kg)
- Change in solute in region .................................  7.125558E-09  (kg/min)     1.026080E-04  (kg)
- Residual imbalance .........................................  1.508848E-19  (kg/min)     2.172741E-15  (kg)
+ Change in solute in region from reactions ..................  7.008219E-10  (kg/min)     1.009184E-05  (kg)
+ Change in solute in region .................................  7.125761E-09  (kg/min)     1.026110E-04  (kg)
+ Residual imbalance .........................................  1.539567E-19  (kg/min)     2.216977E-15  (kg)
  Fractional imbalance .......................................                              0.0000
 
 
           Component: O                             
 
  Solute inflow ..............................................  3.213544E-06  (kg/min)     4.627504E-02  (kg)
- Solute outflow .............................................  3.159556E-06  (kg/min)     4.549760E-02  (kg)
- Change in solute in region from reactions ..................  3.291605E-06  (kg/min)     4.739912E-02  (kg)
- Change in solute in region .................................  3.345594E-06  (kg/min)     4.817655E-02  (kg)
- Residual imbalance .........................................  1.151182E-18  (kg/min)     1.657702E-14  (kg)
+ Solute outflow .............................................  3.159639E-06  (kg/min)     4.549880E-02  (kg)
+ Change in solute in region from reactions ..................  5.549669E-09  (kg/min)     7.991524E-05  (kg)
+ Change in solute in region .................................  5.945501E-08  (kg/min)     8.561521E-04  (kg)
+ Residual imbalance .........................................  1.512582E-18  (kg/min)     2.178119E-14  (kg)
  Fractional imbalance .......................................                              0.0000
 
 
           Component: Charge                        
 
  Solute inflow .............................................. -3.105306E-09  (kg/min)    -4.471641E-05  (kg)
- Solute outflow ............................................. -2.730444E-09  (kg/min)    -3.931840E-05  (kg)
- Change in solute in region from reactions .................. -3.547936E-12  (kg/min)    -5.109027E-08  (kg)
- Change in solute in region ................................. -3.784100E-10  (kg/min)    -5.449104E-06  (kg)
- Residual imbalance .........................................  5.707120E-21  (kg/min)     8.218252E-17  (kg)
+ Solute outflow ............................................. -2.730444E-09  (kg/min)    -3.931839E-05  (kg)
+ Change in solute in region from reactions .................. -3.994488E-12  (kg/min)    -5.752063E-08  (kg)
+ Change in solute in region ................................. -3.788566E-10  (kg/min)    -5.455535E-06  (kg)
+ Residual imbalance .........................................  4.666681E-21  (kg/min)     6.720021E-17  (kg)
  Fractional imbalance .......................................                              0.0000
 
 
@@ -349,9 +349,9 @@
 
  Solute inflow ..............................................  1.338549E-01  (kg/min)     1.927510E+03  (kg)
  Solute outflow .............................................  6.673623E-02  (kg/min)     9.610018E+02  (kg)
- Change in solute in region from reactions ..................  3.789800E-09  (kg/min)     5.457312E-05  (kg)
+ Change in solute in region from reactions ..................  4.024324E-09  (kg/min)     5.795027E-05  (kg)
  Change in solute in region .................................  6.711865E-02  (kg/min)     9.665086E+02  (kg)
- Residual imbalance ......................................... -4.419813E-13  (kg/min)    -6.364530E-09  (kg)
+ Residual imbalance ......................................... -5.790923E-13  (kg/min)    -8.338930E-09  (kg)
  Fractional imbalance .......................................                             -0.0000
 
 
@@ -359,9 +359,9 @@
 
  Solute inflow ..............................................  8.679934E-02  (kg/min)     1.249910E+03  (kg)
  Solute outflow .............................................  4.327568E-02  (kg/min)     6.231698E+02  (kg)
- Change in solute in region from reactions ..................  2.375924E-09  (kg/min)     3.421330E-05  (kg)
+ Change in solute in region from reactions ..................  2.517764E-09  (kg/min)     3.625581E-05  (kg)
  Change in solute in region .................................  4.352366E-02  (kg/min)     6.267407E+02  (kg)
- Residual imbalance ......................................... -1.951466E-13  (kg/min)    -2.810111E-09  (kg)
+ Residual imbalance ......................................... -3.439658E-13  (kg/min)    -4.953108E-09  (kg)
  Fractional imbalance .......................................                             -0.0000
 
                Current Time Step by Boundary Condition Type
@@ -405,7 +405,7 @@
  Step total leakage b.c. solute net inflow ..................  0.000000E+00  (kg)
  Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
  Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow .......................... -4.549760E-02  (kg)
+ Step total well solute net inflow .......................... -4.549880E-02  (kg)
 
 
 
@@ -416,7 +416,7 @@
  Step total leakage b.c. solute net inflow ..................  0.000000E+00  (kg)
  Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
  Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  3.931840E-05  (kg)
+ Step total well solute net inflow ..........................  3.931839E-05  (kg)
 
 
 
@@ -457,32 +457,32 @@
 
  Cumulative solute inflow ...................................  1.087361E+08  (kg)
  Cumulative solute outflow ..................................  1.084254E+08  (kg)
- Cumulative change in solute in region from reactions .......  5.427361E-02  (kg)
+ Cumulative change in solute in region from reactions ....... -3.986359E-04  (kg)
  Cumulative change in solute in region ......................  3.106531E+05  (kg)
  Current solute in region ...................................  9.039032E+09  (kg)
- Residual imbalance..........................................  8.945167E-05  (kg)
- Fractional imbalance .......................................      0.0000
+ Residual imbalance.......................................... -8.285046E-06  (kg)
+ Fractional imbalance .......................................     -0.0000
 
 
           Component: H                             
 
  Cumulative solute inflow ...................................  2.314232E-02  (kg)
  Cumulative solute outflow ..................................  2.277225E-02  (kg)
- Cumulative change in solute in region from reactions .......  4.652100E-05  (kg)
- Cumulative change in solute in region ......................  4.165981E-04  (kg)
+ Cumulative change in solute in region from reactions .......  4.656265E-05  (kg)
+ Cumulative change in solute in region ......................  4.166393E-04  (kg)
  Current solute in region ...................................  1.898790E+00  (kg)
- Residual imbalance.......................................... -1.045691E-14  (kg)
+ Residual imbalance.......................................... -1.210143E-14  (kg)
  Fractional imbalance .......................................     -0.0000
 
 
           Component: O                             
 
  Cumulative solute inflow ...................................  1.851001E-01  (kg)
- Cumulative solute outflow ..................................  1.819903E-01  (kg)
- Cumulative change in solute in region from reactions .......  1.451035E-01  (kg)
- Cumulative change in solute in region ......................  1.482133E-01  (kg)
- Current solute in region ...................................  1.531956E+01  (kg)
- Residual imbalance.......................................... -2.700618E-14  (kg)
+ Cumulative solute outflow ..................................  1.819952E-01  (kg)
+ Cumulative change in solute in region from reactions .......  3.690521E-04  (kg)
+ Cumulative change in solute in region ......................  3.473999E-03  (kg)
+ Current solute in region ...................................  1.517523E+01  (kg)
+ Residual imbalance.......................................... -1.706968E-14  (kg)
  Fractional imbalance .......................................     -0.0000
 
 
@@ -490,10 +490,10 @@
 
  Cumulative solute inflow ................................... -1.788656E-04  (kg)
  Cumulative solute outflow .................................. -1.572736E-04  (kg)
- Cumulative change in solute in region from reactions ....... -1.280464E-07  (kg)
- Cumulative change in solute in region ...................... -2.172010E-05  (kg)
- Current solute in region ................................... -1.313259E-02  (kg)
- Residual imbalance..........................................  2.808084E-16  (kg)
+ Cumulative change in solute in region from reactions ....... -1.394881E-07  (kg)
+ Cumulative change in solute in region ...................... -2.173155E-05  (kg)
+ Current solute in region ................................... -1.313260E-02  (kg)
+ Residual imbalance..........................................  2.655211E-16  (kg)
  Fractional imbalance .......................................      0.0000
 
 
@@ -501,10 +501,10 @@
 
  Cumulative solute inflow ...................................  7.710041E+03  (kg)
  Cumulative solute outflow ..................................  3.844007E+03  (kg)
- Cumulative change in solute in region from reactions .......  1.577655E-04  (kg)
+ Cumulative change in solute in region from reactions .......  1.406333E-04  (kg)
  Cumulative change in solute in region ......................  3.866034E+03  (kg)
  Current solute in region ...................................  3.243158E+05  (kg)
- Residual imbalance.......................................... -5.162156E-08  (kg)
+ Residual imbalance.......................................... -5.183347E-08  (kg)
  Fractional imbalance .......................................     -0.0000
 
 
@@ -512,10 +512,10 @@
 
  Cumulative solute inflow ...................................  4.999642E+03  (kg)
  Cumulative solute outflow ..................................  2.492679E+03  (kg)
- Cumulative change in solute in region from reactions .......  9.935914E-05  (kg)
+ Cumulative change in solute in region from reactions .......  8.798752E-05  (kg)
  Cumulative change in solute in region ......................  2.506963E+03  (kg)
  Current solute in region ...................................  2.103054E+05  (kg)
- Residual imbalance.......................................... -3.139485E-08  (kg)
+ Residual imbalance.......................................... -3.324385E-08  (kg)
  Fractional imbalance .......................................     -0.0000
 
                Cumulative Summary by Boundary Condition Type
@@ -559,7 +559,7 @@
  Cumulative leakage b.c. solute net inflow ..................  0.000000E+00  (kg)
  Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
  Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow .......................... -1.819903E-01  (kg)
+ Cumulative well solute net inflow .......................... -1.819952E-01  (kg)
 
 
 

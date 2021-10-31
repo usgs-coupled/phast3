@@ -74,6 +74,8 @@ TIME_CONTROL
 #        -time_change		600 sec
         -time_step      0	10  day
         -time_change		40  day
+PRINT_INITIAL
+        -xyz_well               true
 PRINT_FREQUENCY
 	0
         -head                   end
@@ -83,8 +85,8 @@ PRINT_FREQUENCY
         -xyz_velocity           end
         -well                   end
         -xyz_well               end
-	-head			end
-	-xyz_chemistry	        end
+        -head                   end
+        -xyz_chemistry	        end
 
 ZONE_BUDGET 1  Surround well
 	-zone 1500 1500 -100    2500 2500 0

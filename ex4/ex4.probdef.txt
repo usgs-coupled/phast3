@@ -127,27 +127,27 @@
 
                Initial fluid in region ...............................  3.197353E+14  (kg) ;  3.197353E+11  (m^3)
 
-               Initial solute in region:H2O                             2.812429E+14  (kg)
+               Initial solute in region:H2O                             2.812427E+14  (kg)
 
-               Initial solute in region:H                               1.109797E+09  (kg)
+               Initial solute in region:H                               1.109796E+09  (kg)
 
-               Initial solute in region:O                               1.391263E+11  (kg)
+               Initial solute in region:O                               1.391262E+11  (kg)
 
-               Initial solute in region:Charge                         -8.367478E-02  (kg)
+               Initial solute in region:Charge                          2.328169E-02  (kg)
 
-               Initial solute in region:As                              2.107118E+05  (kg)
+               Initial solute in region:As                              2.107117E+05  (kg)
 
                Initial solute in region:C                               1.352437E+10  (kg)
 
-               Initial solute in region:Ca                              5.235379E+12  (kg)
+               Initial solute in region:Ca                              5.235377E+12  (kg)
 
-               Initial solute in region:Cl                              6.622203E+13  (kg)
+               Initial solute in region:Cl                              6.622200E+13  (kg)
 
                Initial solute in region:Mg                              1.107647E+12  (kg)
 
-               Initial solute in region:Na                              3.492783E+13  (kg)
+               Initial solute in region:Na                              3.492782E+13  (kg)
 
-               Initial solute in region:S                               4.260900E+10  (kg)
+               Initial solute in region:S                               4.260898E+10  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------

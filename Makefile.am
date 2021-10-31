@@ -421,3 +421,12 @@ zf= \
      zf/zf.chem.dat \
      zf/zf.subgrid.heads \
      zf/zf.trans.dat
+
+# ZoneSteady
+#
+example_ZoneSteadydir = $(EXAMPLES_DIR)/ZoneSteady
+
+dist_example_ZoneSteady_DATA = $(ZoneSteady)
+
+ZoneSteady= \
+     ZoneSteady/ZoneSteady.trans.dat

@@ -40,7 +40,7 @@ diffusion2d/diffusion2d.trans.dat
 diffusion2d/phast.dat
 )
 
-install(FILES ${decay} DESTINATION ${example_decaydir})
+install(FILES ${diffusion2d} DESTINATION ${example_diffusion2ddir})
 
 
 # disp2d
@@ -458,3 +458,14 @@ zf/zf.trans.dat
 )
 
 install(FILES ${zf} DESTINATION ${example_zfdir})
+
+
+# ZoneSteady
+#
+set(example_ZoneSteadydir ${EXAMPLES_DIR}/ZoneSteady)
+
+set(ZoneSteady
+ZoneSteady/ZoneSteady.trans.dat
+)
+
+install(FILES ${ZoneSteady} DESTINATION ${example_ZoneSteadydir})
