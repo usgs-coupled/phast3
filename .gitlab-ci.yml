@@ -1,6 +1,7 @@
 #
 # https://code.chs.usgs.gov/coupled/subtrees/phast3-doc
 # SRC 2020-12-02T18:39:55-07:00
+# SRC 2021-10-31T12:30:34-06:00  -- changed pull to squash -- HEAD:273fca5d8e17d805aa6ce1db63611934753614be
 #
 image: ${CI_REGISTRY}/coupled/containers/buildpack-deps:bionic-scm
 
@@ -68,7 +69,8 @@ subtree-sync:
       export GIT_EDITOR=true
 
       for remote in "${!urls[@]}"; do
-        git_subtree "pull" "${prefixes[$remote]}" "$remote" "${urls[$remote]}"
+        # git_subtree "pull" "${prefixes[$remote]}" "$remote" "${urls[$remote]}"
+        git subtree pull --prefix "${prefixes[$remote]}" --squash "${urls[$remote]}" master
       done
 
       for remote in "${!urls[@]}"; do
