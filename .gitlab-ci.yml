@@ -1,0 +1,107 @@
+#
+# https://code.chs.usgs.gov/coupled/subtrees/phast3-doc
+# SRC 2020-12-02T18:39:55-07:00
+#
+image: ${CI_REGISTRY}/coupled/containers/buildpack-deps:bionic-scm
+
+stages:
+  - sync
+  - trigger
+
+before_script:
+  - eval $(ssh-agent -s)
+  - echo "${SSH_PRIVATE_KEY_ENC}" | base64 --decode | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan ${CI_SERVER_HOST} >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  - git config --global user.email "darth@empire.com"
+  - git config --global user.name "Darth Vader"
+ 
+subtree-sync:
+  stage: sync
+
+  ##
+  ## Only run if on the master branch and the variable GROUP is set
+  ##
+  ## change this to
+  ## only:
+  ##  - master@$GROUP/subtrees/phast3-doc
+  ## and set GROUP to coupled before merge
+  only:
+    refs:
+      - master
+    variables:
+      - $GROUP
+  
+  script:
+    ##
+    ## Must re-clone in order for the subtree merge to work
+    ## tried re-setting the url for the origin but didn't work
+    ##
+    - cd ..
+    - rm -rf ${CI_PROJECT_NAME}
+    - git clone git@${CI_SERVER_HOST}:${CI_PROJECT_PATH}.git
+    - cd ${CI_PROJECT_NAME}
+
+    ##
+    ## Sync subtrees
+    ##
+    - |
+      #!/bin/bash -ex
+      # phast3─doc\      git@${CI_SERVER_HOST}:${GROUP}/subtrees/phast3-doc.git
+      # └─phreeqc3-doc\  └─git@${CI_SERVER_HOST}:${GROUP}/subtrees/phreeqc3-doc.git        phreeqc3-doc
+      #
+
+      git_subtree() {
+        git subtree "${1}" --prefix="${2}" "${4}" master 2>&1 | grep -v "^[[:digit:]].*/[[:digit:]].*"
+      }
+
+      declare -A urls=( \
+        ["phreeqc3-doc"]="git@${CI_SERVER_HOST}:${GROUP}/subtrees/phreeqc3-doc.git" \
+      )
+
+      declare -A prefixes=( \
+        ["phreeqc3-doc"]="phreeqc3-doc" \
+      )
+
+      export GIT_EDITOR=true
+
+      for remote in "${!urls[@]}"; do
+        git_subtree "pull" "${prefixes[$remote]}" "$remote" "${urls[$remote]}"
+      done
+
+      for remote in "${!urls[@]}"; do
+        git_subtree "push" "${prefixes[$remote]}" "$remote" "${urls[$remote]}"
+      done
+
+      git push origin master
+      git status
+
+trigger-downstream:
+  stage: trigger
+  ##
+  ## Only run if on the master branch and the variable GROUP is set
+  ##
+  ## change this to
+  ## only:
+  ##  - master@$GROUP/subtrees/phast3-doc
+  ## and set GROUP to coupled before merge
+  only:
+    refs:
+      - master
+    variables:
+      - $GROUP
+
+  # Downstream Projects
+  # triggers and ids are stored at the group level
+  # phast3 git@code.chs.usgs.gov:${GROUP}/phast3.git
+  # wphast git@code.chs.usgs.gov:${GROUP}/wphast.git
+  script:
+    - echo triggering phast3
+    - curl -X POST -F token=${PHAST3_TRIGGER} -F ref=master https://code.chs.usgs.gov/api/v4/projects/${PHAST3_ID}/trigger/pipeline
+    - echo triggering wphast
+    - curl -X POST -F token=${WPHAST_TRIGGER} -F ref=master https://code.chs.usgs.gov/api/v4/projects/${WPHAST_ID}/trigger/pipeline
+
+  # Upstream Projects
+  # phast3-doc git@code.chs.usgs.gov:${GROUP}/subtrees/phreeqc3-doc.git
