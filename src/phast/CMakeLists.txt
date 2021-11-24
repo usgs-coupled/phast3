@@ -384,6 +384,8 @@ target_compile_definitions(phast3
     H5Gcreate_vers=1
     H5Eset_auto_vers=1
     ${HDF5_DEFINITIONS}
+    $<$<BOOL:${PHAST_BUILD_MPI}>:USE_MPI>
+    $<$<BOOL:${PHAST_BUILD_OPENMP}>:USE_OPENMP>
 )
 
 # phast3 include directories
