@@ -3,6 +3,13 @@ PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
 
 ---------------------
+Git November 24, 2021
+---------------------
+PHAST: Fixed a misconfiguration in the phast3 CMake project.  This caused
+MPI runs to fail on the phast and phast4windows distributions for version
+3.7.1-15876.
+
+---------------------
 Git May 8, 2021
 ---------------------
 Fixed a major bug in the new feature that writes SELECTED_OUTPUT and 
