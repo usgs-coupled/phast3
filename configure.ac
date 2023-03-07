@@ -44,6 +44,9 @@ AX_PROG_CXX_MPI([test x"$with_mpi" != xno],[use_mpi=yes],[
 AC_PROG_AWK
 AC_PROG_CPP
 
+# testing if this fixes macOS build on github actions
+# c++11 is required by Darwin for yaml-cpp
+AX_CXX_COMPILE_STDCXX(11, [ext], [mandatory])
 
 # Check if the fortran test should be included
 AC_MSG_CHECKING([if Fortran test is added])
@@ -232,7 +235,9 @@ if test "X$with_mpi" != "Xno"; then
   PHAST_SUFFIX=mpi
 else
   if test "X$enable_openmp" != "Xno"; then
-    AC_DEFINE([USE_OPENMP], [], [Set to to use OpenMP])
+    if test "X$ac_cv_prog_cxx_openmp" != "Xunsupported"; then
+      AC_DEFINE([USE_OPENMP], [], [Set to use OpenMP])
+    fi
   fi
 fi
 
@@ -258,7 +263,11 @@ echo "Fortran Compiler             = $FC"
 echo "Fortran Libs                 = $FCLIBS"
 echo "LDFLAGS                      = $LDFLAGS"
 if test "X$enable_openmp" != "Xno"; then
-  echo "Enable OpenMP                = yes"
+  if test "X$ac_cv_prog_cxx_openmp" != "Xunsupported"; then
+    echo "Enable OpenMP                = yes"
+  else
+    echo "Enable OpenMP                = no"
+  fi
 else
   echo "Enable OpenMP                = no"
 fi

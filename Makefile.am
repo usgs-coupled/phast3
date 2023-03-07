@@ -1,7 +1,8 @@
 ACLOCAL_AMFLAGS=-I m4
 
 PHREEQCRM_CMAKELISTS=\
-	CMakeLists.txt
+	CMakeLists.txt\
+	PhreeqcRMConfig.cmake.in
 
 EXTRA_DIST=$(PHREEQCRM_CMAKELISTS)
 
@@ -165,6 +166,8 @@ libphreeqcrm_la_SOURCES=\
 	src/IPhreeqcPhast/IPhreeqcPhast.h\
 	src/IPhreeqcPhast/IPhreeqcPhastLib.cpp\
 	src/IPhreeqcPhast/IPhreeqcPhastLib.h\
+	src/BMI_methods.cpp\
+  	src/BMI_Var.h\
 	src/PhreeqcRM.cpp\
 	src/RM_interface_C.cpp\
 	src/RM_interface_F.cpp\
