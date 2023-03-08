@@ -319,6 +319,8 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h\
 	PhreeqcRM/src/IrmResult.h\
+	PhreeqcRM/src/BMI_methods.cpp\
+	PhreeqcRM/src/BMI_methods.h\
 	PhreeqcRM/src/PhreeqcRM.cpp\
 	PhreeqcRM/src/PhreeqcRM.h\
 	PhreeqcRM/src/RM_interface.F90\
