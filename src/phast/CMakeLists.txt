@@ -304,6 +304,8 @@ PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.cxx
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h
+PhreeqcRM/src/BMI_methods.cpp
+PhreeqcRM/src/BMI_Var.h
 PhreeqcRM/src/PhreeqcRM.cpp
 PhreeqcRM/src/RM_interface_C.cpp
 PhreeqcRM/src/RM_interface_F.cpp
