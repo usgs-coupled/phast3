@@ -1,3 +1,4 @@
+SetGridCellCount: 40
 SetErrorHandlerMode: 1
 SetComponentH2O: false
 SetRebalanceFraction: 0.5
@@ -15,6 +16,47 @@ SetUnitsSSassemblage: 1
 SetUnitsKinetics: 1
 SetTimeConversion: 1.1574074074074073e-05
 SetRepresentativeVolume:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+SetDensity:
   - 1
   - 1
   - 1

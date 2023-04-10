@@ -21,6 +21,7 @@ Tests/vs2012/x64
 
 # backup files
 *~
+.vshistory/
 
 # autotools
 aclocal.m4
@@ -36,7 +37,7 @@ m4/lt~obsolete.m4
 
 
 # ignore directories beginning with '_'
-/_*/
+_*/
 
 # dist files
 configure.ac.dist
@@ -47,3 +48,6 @@ src/PhreeqcRM.h.dist
 src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h.dist
 src/IPhreeqcPhast/IPhreeqc/Version.h.dist
 CMakeLists.txt.dist
+
+# mod files (vscode extension?)
+src/phreeqcrm.mod

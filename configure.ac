@@ -20,23 +20,27 @@ AC_DEFINE([NDEBUG], , [Must be set for PhreeqcRM])
 
 # check for --with-yaml-cpp
 AC_ARG_WITH([yaml-cpp],
-            AS_HELP_STRING([--with-yaml-cpp],
-                           [compile with yaml-cpp support. @<:@default=check@:>@]),
-            [], [with_yaml_cpp=check])
+            [AS_HELP_STRING([--with-yaml-cpp], [enable yaml-cpp support. @<:@default=no@:>@])],
+            [],
+            [with_yaml_cpp=no])
 
-AS_IF([test "x$with_yaml_cpp" != xno], [
-  PKG_CHECK_MODULES([yaml_cpp], [yaml-cpp], [have_yaml_cpp=true], [have_yaml_cpp=false])
-  if $have_yaml_cpp; then
-    AC_DEFINE([USE_YAML], [], [Enable yaml-cpp])
-    CPPFLAGS="$yaml_cpp_CFLAGS $CPPFLAGS"
-    LDFLAGS="$yaml_cpp_LIBS $LDFLAGS"
-  else
-    AS_IF([test "x$with_yaml_cpp" != xcheck], [
-      AC_MSG_FAILURE(
-        [--with-yaml-cpp was given, but test for yaml-cpp failed (try sudo apt install libyaml-cpp-dev)])
+useyaml_define=""
+phreeqcrm_requires=""
+AS_IF([test "x$with_yaml_cpp" != xno],
+  [PKG_CHECK_MODULES([YAML_CPP], [yaml-cpp],
+    [AC_DEFINE([USE_YAML],[1],[Enable yaml-cpp])
+      useyaml_define="-DUSE_YAML"
+      phreeqcrm_requires="yaml-cpp"
+      CPPFLAGS="$YAML_CPP_CFLAGS $CPPFLAGS"
+      LDFLAGS="$YAML_CPP_LIBS $LDFLAGS"
+    ],
+    [AC_MSG_FAILURE([--with-yaml-cpp was given, but test for yaml-cpp failed])
     ])
-  fi
-])
+  ]
+)
+AC_SUBST(useyaml_define)
+AC_SUBST(phreeqcrm_requires)
+AM_CONDITIONAL([PHREEQCRM_WITH_YAMLCPP], [test x"$with_yaml_cpp" != xno])
 
 # check for --with-mpi
 # If --with-mpi=auto is used, try to find MPI, but use standard C compiler if it is not found.
@@ -63,13 +67,10 @@ AX_PROG_CXX_MPI([test x"$with_mpi" != xno],[use_mpi=yes],[
 ])
 AC_PROG_AWK
 AC_PROG_CPP
+AC_PROG_LN_S
 
-# c++11 is required by Darwin for yaml-cpp
-if test "X$with_yaml_cpp" != "Xno"; then
-  if test "X$have_yaml_cpp" != "Xfalse"; then
-    AX_CXX_COMPILE_STDCXX(11, [ext], [mandatory])
-  fi
-fi
+# c++11 is required
+AX_CXX_COMPILE_STDCXX(11, [ext], [mandatory])
 
 # Check if the fortran test should be included
 AC_MSG_CHECKING([if Fortran test is added])
@@ -253,9 +254,11 @@ fi
 AM_CONDITIONAL([BUILD_OPENMP], [test "X$enable_openmp" != "Xno"])
 AM_CONDITIONAL([BUILD_MPI], [test "X$with_mpi" = "Xyes"])
 
+usempi_define=""
 if test "X$with_mpi" != "Xno"; then
   AC_DEFINE([USE_MPI], [], [Set to use MPI])
   PHAST_SUFFIX=mpi
+  usempi_define="-DUSE_MPI"
 else
   if test "X$enable_openmp" != "Xno"; then
     if test "X$ac_cv_prog_cxx_openmp" != "Xunsupported"; then
@@ -263,12 +266,14 @@ else
     fi
   fi
 fi
+AC_SUBST(usempi_define)
 
 AC_CONFIG_FILES([
   Makefile
   database/Makefile
   doc/Makefile
   Doxygen/Makefile
+  phreeqcrm.pc
   Tests/Makefile
   Tests/advect.pqi:Tests/advect.pqi
   Tests/gas.pqi:Tests/gas.pqi
@@ -295,13 +300,5 @@ else
   echo "Enable OpenMP                = no"
 fi
 echo "Enable MPI                   = $with_mpi"
-if test "X$with_yaml_cpp" != "Xno"; then
-  if test "X$have_yaml_cpp" != "Xfalse"; then
-    echo "Enable YAML-CPP              = yes"
-  else
-    echo "Enable YAML-CPP              = no"
-  fi
-else
-  echo "Enable YAML-CPP              = no"
-fi
+echo "Enable YAML-CPP              = $with_yaml_cpp"
 echo "*************************************"
