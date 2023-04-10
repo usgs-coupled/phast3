@@ -1,30 +1,49 @@
 ACLOCAL_AMFLAGS=-I m4
 
-PHREEQCRM_CMAKELISTS=\
+PHREEQCRM_EXTRA_DIST=\
 	CMakeLists.txt\
-	PhreeqcRMConfig.cmake.in
+	phreeqcrm.cmake.in\
+	PhreeqcRMConfig.cmake.in\
+	src/CMakeLists.txt\
+	src/numpy.i\
+	src/PhreeqcRM.i\
+	src/pyfragments.swg.in\
+	src/swig/CMakeLists.txt\
+	src/swig/python/CMakeLists.txt\
+	src/swig/python/PhreeqcRM_docstrings.i\
+	src/swig/python/SimpleAdvect.py
 
-EXTRA_DIST=$(PHREEQCRM_CMAKELISTS)
+EXTRA_DIST=$(PHREEQCRM_EXTRA_DIST)
 
 AM_CPPFLAGS=-I$(top_srcdir)/src/IPhreeqcPhast -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords
 
 AM_LDFLAGS=-release 3.0.0
+
+pkgconfigdir = $(datadir)/pkgconfig
+pkgconfig_DATA = phreeqcrm.pc
 
 # libtool libraries to build
 lib_LTLIBRARIES=libphreeqcrm.la
 
 # library sources for libphreeqcrm.la
 libphreeqcrm_la_SOURCES=\
+	src/BMI_interface_F.cpp\
+	src/BMI_interface_F.h\
+	src/BMI_Var.cpp\
+	src/BMI_Var.h\
+	src/bmi.hxx\
+	src/BMIPhreeqcRM.cpp\
+	src/BMIPhreeqcRM.h\
 	src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp\
 	src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx\
 	src/IPhreeqcPhast/IPhreeqc/CVar.hxx\
 	src/IPhreeqcPhast/IPhreeqc/Debug.h\
 	src/IPhreeqcPhast/IPhreeqc/ErrorReporter.hxx\
+	src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp\
+	src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.h\
 	src/IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp\
 	src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
-	src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp\
-	src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.h\
 	src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
 	src/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/advection.cpp\
@@ -82,10 +101,10 @@ libphreeqcrm_la_SOURCES=\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.cxx\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h\
-	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.cpp\
-	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.cpp\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.h\
+	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.cpp\
+	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/parse.cpp\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.cpp\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h\
@@ -96,8 +115,8 @@ libphreeqcrm_la_SOURCES=\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io_output.cpp\
-	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer_structures.cpp\
+	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h\
 	src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.cxx\
@@ -166,42 +185,48 @@ libphreeqcrm_la_SOURCES=\
 	src/IPhreeqcPhast/IPhreeqcPhast.h\
 	src/IPhreeqcPhast/IPhreeqcPhastLib.cpp\
 	src/IPhreeqcPhast/IPhreeqcPhastLib.h\
-	src/BMI_methods.cpp\
-  	src/BMI_Var.h\
 	src/PhreeqcRM.cpp\
 	src/RM_interface_C.cpp\
 	src/RM_interface_F.cpp\
 	src/RM_interface_F.h\
+	src/RMVARS.h\
+	src/VarManager.cpp\
+	src/VarManager.h\
+	src/YAML_interface_F.cpp\
+	src/YAML_interface_F.h\
 	src/YAMLPhreeqcRM.cpp\
 	src/YAMLPhreeqcRM.h
 
 
-
 include_HEADERS=\
+	$(top_srcdir)/src/BMI_Var.h\
+	$(top_srcdir)/src/bmi.hxx\
+	$(top_srcdir)/src/BMIPhreeqcRM.h\
 	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
 	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp\
 	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_exports.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h\
+	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h\
 	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/Var.h\
 	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqcPhast.h\
 	$(top_srcdir)/src/IrmResult.h\
 	$(top_srcdir)/src/PhreeqcRM.h\
 	$(top_srcdir)/src/RM_interface_C.h\
-	$(top_srcdir)/src/YAMLPhreeqcRM.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/Parser.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_base.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_exports.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/PHRQ_io.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common/phrqtype.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h\
-	${top_srcdir}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h
+	$(top_srcdir)/src/RMVARS.h\
+	$(top_srcdir)/src/VarManager.h\
+	$(top_srcdir)/src/YAMLPhreeqcRM.h
 
-
+FCDEFS=
 if PHREEQCRM_TEST_FORTRAN
-
-DEFS+=\
-	-DTEST_FORTRAN
+DEFS+=-DTEST_FORTRAN
+FCDEFS+=-DTEST_FORTRAN
 endif
 
 # Docs
@@ -211,13 +236,20 @@ sourcedir=$(docdir)/src
 dist_source_DATA=$(SRC)
 
 SRC=\
+	src/BMI_interface.F90\
+	src/BMI_not_implemented.inc\
 	src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90\
-	src/RM_interface.F90
+	src/RM_interface.F90\
+	src/YAML_interface.F90
+
 
 # We must override the default PPFCCOMPILE since ifort can't
 # handle the FC_FUNC define correctly so $(DEFS) is replaced
 # by $(FCDEFS)
 #
+if PHREEQCRM_WITH_YAMLCPP
+FCDEFS+=-DUSE_YAML
+endif
 PPFCCOMPILE = $(FC) $(FCDEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
         $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
 LTPPFCCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=FC $(AM_LIBTOOLFLAGS) \
