@@ -20,6 +20,11 @@ void WriteYAMLFile_cpp(void)
 	int nxyz = 40;
 	// Set GridCellCount
 	yrm.YAMLSetGridCellCount(nxyz);
+
+	int nthreads = 3;
+	// Set ThreadCount
+	yrm.YAMLThreadCount(nthreads);
+
 	// Set some properties
 	yrm.YAMLSetErrorHandlerMode(1);
 	yrm.YAMLSetComponentH2O(false);
@@ -48,13 +53,13 @@ void WriteYAMLFile_cpp(void)
 	yrm.YAMLSetRepresentativeVolume(rv);
 	// Set density
 	std::vector<double> density(nxyz, 1.0);
-	yrm.YAMLSetDensity(density);
+	yrm.YAMLSetDensityUser(density);
 	// Set initial porosity
 	std::vector<double> por(nxyz, 0.2);
 	yrm.YAMLSetPorosity(por);
 	// Set initial saturation
 	std::vector<double> sat(nxyz, 1.0);
-	yrm.YAMLSetSaturation(sat);
+	yrm.YAMLSetSaturationUser(sat);
 	// Set cells to print chemistry when print chemistry is turned on
 	std::vector<int> print_chemistry_mask(nxyz, 0);
 	for (int i = 0; i < nxyz / 2; i++)
@@ -88,6 +93,8 @@ void WriteYAMLFile_cpp(void)
 	initial_phreeqc = false;
 	std::string input = "DELETE; -all";
 	yrm.YAMLRunString(workers, initial_phreeqc, utility, input.c_str());
+	// Define additional output variables
+	yrm.YAMLAddOutputVars("AddOutputVars", "true");
 	// Determine number of components to transport
 	yrm.YAMLFindComponents();
 	// set array of initial conditions

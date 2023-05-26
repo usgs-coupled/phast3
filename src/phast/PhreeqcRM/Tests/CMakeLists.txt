@@ -29,9 +29,11 @@ if(PHREEQCRM_FORTRAN_TESTING)
     ../src/RM_interface.F90
     Advect_f90.F90
     AdvectBMI_f90.F90
+    AdvectBMI_f90_test.F90
     Gas_f90.F90
     SimpleAdvect_f90.F90
     Species_f90.F90
+    TestAllMethods_f90.F90
   )
 
   # place [*.F[90]] files into "Source Files"
@@ -41,9 +43,11 @@ if(PHREEQCRM_FORTRAN_TESTING)
   source_group("Source Files" FILES "../src/RM_interface.F90")
   source_group("Source Files" FILES "Advect_f90.F90")
   source_group("Source Files" FILES "AdvectBMI_f90.F90")
+  source_group("Source Files" FILES "AdvectBMI_f90_test.F90")
   source_group("Source Files" FILES "Gas_f90.F90")
   source_group("Source Files" FILES "SimpleAdvect_f90.F90")
   source_group("Source Files" FILES "Species_f90.F90")
+  source_group("Source Files" FILES "TestAllMethods_f90.F90")
   
   if(_PHREEQCRM_TEST_INSTALL)
     target_sources(FortranAdvect PRIVATE
@@ -65,8 +69,10 @@ if(PHREEQCRM_FORTRAN_TESTING)
   if(PHREEQCRM_WITH_YAML_CPP)
     target_sources(FortranAdvect PRIVATE
       WriteYAMLFile_f90.F90
+      WriteYAMLFile_f90_test.F90
     )
     source_group("Source Files" FILES "WriteYAMLFile_f90.F90")
+    source_group("Source Files" FILES "WriteYAMLFile_f90_test.F90")
 
     if(_PHREEQCRM_TEST_INSTALL)
       target_sources(FortranAdvect PRIVATE
@@ -91,6 +97,7 @@ project(TestRM CXX)
 
 # Tests/advect.pqi
 configure_file(advect.pqi advect.pqi COPYONLY)
+configure_file(all_reactants.pqi all_reactants.pqi COPYONLY)
 
 # Tests/phreeqc.dat
 configure_file(phreeqc.dat phreeqc.dat COPYONLY)
@@ -107,6 +114,7 @@ add_executable(TestRM)
 # TestRM C/CXX source
 target_sources(TestRM PRIVATE
   AdvectBMI_cpp.cpp
+  AdvectBMI_cpp_test.cpp
   Advect_c.c
   Advect_cpp.cpp
   Gas_c.c
@@ -116,11 +124,13 @@ target_sources(TestRM PRIVATE
   SimpleAdvect_cpp.cpp
   Species_c.c
   Species_cpp.cpp
+  TestAllMethods_cpp.cpp
 )
 
 if(PHREEQCRM_WITH_YAML_CPP)
   target_sources(TestRM PRIVATE
     WriteYAMLFile_cpp.cpp
+    WriteYAMLFile_cpp_test.cpp
   )
 endif()
 
@@ -141,6 +151,36 @@ if(PHREEQCRM_FORTRAN_TESTING)
   endif()
   target_link_libraries(TestRM FortranAdvect)
 endif()
+
+#-----------------------------------------------------------------------------#
+
+# test PhreeqcRM dtor
+add_executable(TestRMdtor)
+
+# sources
+target_sources(TestRMdtor PRIVATE TestRMdtor.cpp)
+
+# library dependencies
+target_link_libraries(TestRMdtor PhreeqcRM::PhreeqcRM)
+
+add_test(TestRMdtor TestRMdtor)
+
+#-----------------------------------------------------------------------------#
+
+# test BMIPhreeqcRM dtor
+add_executable(TestBMIdtor)
+
+# TestRM C/CXX source
+target_sources(TestBMIdtor PRIVATE
+  TestBMIdtor.cpp
+)
+
+# library dependencies
+target_link_libraries(TestBMIdtor PhreeqcRM::PhreeqcRM)
+
+add_test(TestBMIdtor TestBMIdtor)
+
+#-----------------------------------------------------------------------------#
 
 # test compile and run
 add_test(TestCompileAndRun TestRM)
@@ -197,6 +237,9 @@ set_property(TARGET TestRM APPEND
     Species_f90.chem.txt
     Species_f90.dmp
     Species_f90.log.txt
+    TestAllMethods_f90.chem.txt
+    TestAllMethods_f90.dmp
+    TestAllMethods_f90.log.txt
 )
 
 if(MSVC AND BUILD_SHARED_LIBS)
