@@ -49,17 +49,19 @@ endif()
 option(PHREEQCRM_BUILD_PYTHON "Build python wrapper using SWIG" OFF)
 if (PHREEQCRM_BUILD_PYTHON)
   find_package(SWIG REQUIRED)
-  # find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development Development.Module NumPy)
+  find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development Development.Module NumPy)
   # Set Python_ROOT_DIR to specify which python to use
   # ie -DPython_ROOT_DIR=C:/Python38-x64
-  find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development)
+  # find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development)
 endif()
+
+option(PHREEQCRM_NO_UTF8_ENCODING "Build without utf-8 encoding" OFF)
 
 set(PhreeqcRM_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/BMI_interface_F.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/BMI_interface_F.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/BMI_Var.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/BMI_Var.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/BMIVariant.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/BMIVariant.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/bmi.hxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/BMIPhreeqcRM.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/BMIPhreeqcRM.h
@@ -256,6 +258,10 @@ target_compile_definitions(PhreeqcRM PRIVATE SWIG_SHARED_OBJ)
 target_compile_definitions(PhreeqcRM PRIVATE USE_PHRQ_ALLOC)
 target_compile_definitions(PhreeqcRM PRIVATE IPhreeqc_EXPORTS)
 
+if (PHREEQCRM_NO_UTF8_ENCODING)
+  target_compile_definitions(PhreeqcRM PRIVATE NO_UTF8_ENCODING)
+endif()
+
 # Disable deprecation warnings for standard C and STL functions in VS2005
 # and later
 if(MSVC_VERSION EQUAL 1400 OR MSVC_VERSION GREATER 1400)
@@ -309,8 +315,8 @@ endif()
 
 set(PhreeqcRM_Headers
   ${PROJECT_SOURCE_DIR}/src/BMI_interface_F.h
-  ${PROJECT_SOURCE_DIR}/src/BMI_Var.h
-  ${PROJECT_SOURCE_DIR}/src/BMI_Var.h
+  ${PROJECT_SOURCE_DIR}/src/BMIVariant.h
+  ${PROJECT_SOURCE_DIR}/src/BMIVariant.h
   ${PROJECT_SOURCE_DIR}/src/bmi.hxx
   ${PROJECT_SOURCE_DIR}/src/BMIPhreeqcRM.h
   ${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h

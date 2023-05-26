@@ -1,7 +1,7 @@
 #ifdef USE_YAML
     subroutine WriteYAMLFile_f90()  BIND(C, NAME='WriteYAMLFile_f90')
     USE, intrinsic :: ISO_C_BINDING
-    USE YAML_interface
+    USE YAMLPhreeqcRM
     implicit none
     integer :: id
     integer :: status, i
@@ -26,6 +26,7 @@
     nxyz = 40;
 	! Set GridCellCount
 	status = YAMLSetGridCellCount(id, nxyz)
+	status = YAMLThreadCount(id, 3)
 	! Set some properties
 	status = YAMLSetErrorHandlerMode(id, 1)
 	status = YAMLSetComponentH2O(id, .false.)
@@ -55,7 +56,7 @@
 	! Set initial density
     allocate(density(nxyz))
     density = 1.0d0
-	status = YAMLSetDensity(id, density)
+	status = YAMLSetDensityUser(id, density)
     ! Set initial porosity
     allocate(por(nxyz))
     por = 0.2d0
@@ -63,7 +64,7 @@
 	! Set initial saturation
     allocate(sat(nxyz))
     sat = 1.0d0
-	status = YAMLSetSaturation(id, sat)   
+	status = YAMLSetSaturationUser(id, sat)   
 	! Set cells to print chemistry when print chemistry is turned on
     allocate(print_chemistry_mask(nxyz))
     print_chemistry_mask = 0

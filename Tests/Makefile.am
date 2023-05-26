@@ -2,12 +2,13 @@ EXTRA_DIST = CMakeLists.txt
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/IPhreeqcPhast -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp  -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords -I$(top_builddir)
 
-TESTS = test
-check_PROGRAMS = test
+TESTS = TestRM TestRMdtor TestBMIdtor
+check_PROGRAMS = TestRM TestRMdtor TestBMIdtor
 
-test_SOURCES =\
+TestRM_SOURCES =\
 	Advect_c.c\
 	AdvectBMI_cpp.cpp\
+	AdvectBMI_cpp_test.cpp\
 	Advect_cpp.cpp\
 	Gas_c.c\
 	Gas_cpp.cpp\
@@ -16,13 +17,27 @@ test_SOURCES =\
 	SimpleAdvect_cpp.cpp\
 	Species_c.c\
 	Species_cpp.cpp\
-	WriteYAMLFile_cpp.cpp
+	TestAllMethods_cpp.cpp\
+	WriteYAMLFile_cpp.cpp\
+	WriteYAMLFile_cpp_test.cpp
 
+TestRM_LDADD = $(top_builddir)/libphreeqcrm.la
+TestRM_LINK = $(CXXLINK)
 
-# Ubuntu 22.04.1
-# sudo apt install libyaml-cpp-dev
-test_LDADD = $(top_builddir)/libphreeqcrm.la
-test_LINK = $(CXXLINK)
+# TestBMIdtor
+
+TestBMIdtor_SOURCES = TestBMIdtor.cpp
+
+TestBMIdtor_LDADD = $(top_builddir)/libphreeqcrm.la
+TestBMIdtor_LINK = $(CXXLINK)
+
+# TestRMdtor
+
+TestRMdtor_SOURCES = TestRMdtor.cpp
+
+TestRMdtor_LDADD = $(top_builddir)/libphreeqcrm.la
+TestRMdtor_LINK = $(CXXLINK)
+
 
 CLEANFILES =\
 	Advect_c_utility.txt\
@@ -41,6 +56,9 @@ CLEANFILES =\
 	Advect_f90.chem.txt\
 	Advect_f90.dmp\
 	Advect_f90.log.txt\
+	AdvectBMI_cpp_test.chem.txt\
+	AdvectBMI_cpp_test.log.txt\
+	AdvectBMI_cpp_test.yaml\
 	AdvectBMI_cpp_units_utility.txt\
 	AdvectBMI_cpp_units_worker.txt\
 	AdvectBMI_cpp_utility.txt\
@@ -52,6 +70,9 @@ CLEANFILES =\
 	AdvectBMI_f90.dmp\
 	AdvectBMI_f90.log.txt\
 	AdvectBMI_f90.yaml\
+	AdvectBMI_test_py.chem.txt\
+	AdvectBMI_test_py.dump\
+	AdvectBMI_test_py.log.txt\
 	Advectcpp_utility.txt\
 	Advectcpp.dmp\
 	Gas_c_utility.txt\
@@ -82,6 +103,11 @@ CLEANFILES =\
 	Species_f90.chem.txt\
 	Species_f90.dmp\
 	Species_f90.log.txt\
+	TestAllMethods_cpp.chem.txt\
+	TestAllMethods_cpp.dump\
+	TestAllMethods_cpp.log.txt\
+	TestAllMethods_cpp.yaml\
+	testbmi_cpp.yaml\
 	Units_Worker.chem.txt\
 	Units_Worker.log.txt\
 	Utility_c.txt\
@@ -94,7 +120,7 @@ if PHREEQCRM_TEST_FORTRAN
 DEFS+=-DTEST_FORTRAN
 FCDEFS+=-DTEST_FORTRAN
 
-test_SOURCES+=\
+TestRM_SOURCES+=\
 	../src/BMI_interface.F90\
 	../src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90\
 	../src/RM_interface.F90\
@@ -106,7 +132,7 @@ test_SOURCES+=\
 	Species_f90.F90\
 	WriteYAMLFile_f90.F90
 
-test_LDADD+=$(FCLIBS)
+TestRM_LDADD+=$(FCLIBS)
 
 mostlyclean-local: clean-modules
 .PHONY: clean-modules
@@ -145,6 +171,8 @@ endif
 # by $(FCDEFS)
 #
 if PHREEQCRM_WITH_YAMLCPP
+# Ubuntu 22.04.1
+# sudo apt install libyaml-cpp-dev
 FCDEFS+=-DUSE_YAML
 endif
 PPFCCOMPILE = $(FC) $(FCDEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \

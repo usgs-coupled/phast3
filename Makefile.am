@@ -9,9 +9,14 @@ PHREEQCRM_EXTRA_DIST=\
 	src/PhreeqcRM.i\
 	src/pyfragments.swg.in\
 	src/swig/CMakeLists.txt\
+	src/swig/python/AdvectBMI_py.py\
 	src/swig/python/CMakeLists.txt\
 	src/swig/python/PhreeqcRM_docstrings.i\
-	src/swig/python/SimpleAdvect.py
+	src/swig/python/SimpleAdvect.py\
+	src/swig/python/TestAllMethods_py.py\
+	src/swig/python/WriteYAMLFile_py.py\
+	src/swig/python/YAMLPhreeqcRM.i\
+	src/swig/python/yamlphreeqcrm.py
 
 EXTRA_DIST=$(PHREEQCRM_EXTRA_DIST)
 
@@ -29,8 +34,8 @@ lib_LTLIBRARIES=libphreeqcrm.la
 libphreeqcrm_la_SOURCES=\
 	src/BMI_interface_F.cpp\
 	src/BMI_interface_F.h\
-	src/BMI_Var.cpp\
-	src/BMI_Var.h\
+	src/BMIVariant.cpp\
+	src/BMIVariant.h\
 	src/bmi.hxx\
 	src/BMIPhreeqcRM.cpp\
 	src/BMIPhreeqcRM.h\
@@ -199,7 +204,7 @@ libphreeqcrm_la_SOURCES=\
 
 
 include_HEADERS=\
-	$(top_srcdir)/src/BMI_Var.h\
+	$(top_srcdir)/src/BMIVariant.h\
 	$(top_srcdir)/src/bmi.hxx\
 	$(top_srcdir)/src/BMIPhreeqcRM.h\
 	$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h\
