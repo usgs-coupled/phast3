@@ -16,8 +16,8 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
   integer                      :: id, id1, nxyz, nthreads, nchem, ncomps, nspecies
   integer                      :: ngas
   integer                      :: nbound, isteps, nsteps, n_user, status
-  character(100)               :: string, yaml_filename
-  character(len=:), allocatable :: StringVector(:)
+  character(100)               :: string, yaml_filename, vtype
+  character(len=:), allocatable :: Names(:), StringVector(:), AllocString
   integer, allocatable         :: IntVector(:), IntVector2(:,:)
   real(kind=8), allocatable    :: p_atm(:), tc(:)
   real(kind=8), allocatable    :: DoubleVector(:), f1(:), DoubleVector2(:,:), f2(:,:)
@@ -30,8 +30,9 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
   real(kind=8)                 :: time, time_step, t
   real(kind=8), pointer        :: d_ptr
   integer, pointer             :: i_ptr
-  logical, pointer             :: b_ptr
+  logical(kind=1), pointer     :: b_ptr
   logical                      :: l
+  integer                      :: itemsize, nbytes, dim
   ! --------------------------------------------------------------------------
   ! Create PhreeqcRM
   ! --------------------------------------------------------------------------
@@ -47,14 +48,26 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	!
 	! Use all BMIPhreeqcRM methods roughly in order of use
 	!
+#ifdef USE_MPI
+  ! MPI
+	nxyz = 40
+	id = bmif_create(nxyz, MPI_COMM_WORLD)
+    if (RM_GetMpiMyself(id) > 0) then
+        status = RM_MpiWorker(id)
+        status = bmif_finalize(id)
+        return
+    endif
+#else
 	id = bmif_create()
+#endif    
 	write(*,*) "bmif_create"
 	!-------
 	status = bmif_initialize(id, yaml_filename)
+	status = RM_InitializeYAML(id, yaml_filename)
 	write(*,*) "bmif_initialize"
 	!-------
+	nxyz = RM_GetGridCellCount(id)
 	status = bmif_get_value(id, "GridCellCount", nxyz)
-	nxyz = RM_GetGridCellCount(id);
 	write(*,*) "GetGridCellCount"
 	!-------
 	n = RM_GetThreadCount(id)
@@ -187,7 +200,7 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	!-------
 	ncomps = RM_GetComponentCount(id)
 	status = bmif_get_value(id, "ComponentCount", ncomps)
-	status = bmif_get_value_ptr(id, "ComponentCount", i_ptr);
+	status = bmif_get_value_ptr(id, "ComponentCount", i_ptr)
 	write(*,*) "GetComponentCount)" 
 	!-------
 	status = bmif_get_value(id, "Components", StringVector)
@@ -197,8 +210,8 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	nspecies = RM_GetSpeciesCount(id)
 	write(*,*) "GetSpeciesCount "
 	!-------
-	status = RM_GetSpeciesName(id, 1, string)
-	write(*,*) "GetSpeciesName "
+	status = RM_GetSpeciesNames(id, StringVector)
+	write(*,*) "GetSpeciesNames "
 	!-------
     if(allocated(DoubleVector)) deallocate(DoubleVector)
     allocate(DoubleVector(nxyz*nspecies))
@@ -239,7 +252,7 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	!-------
 	status = bmif_get_value(id, "Gfw", DoubleVector)
 	status = RM_GetGfw(id, DoubleVector)
-	status = bmif_get_value_ptr(id, "Gfw", d_ptr);
+	status = bmif_get_value_ptr(id, "Gfw", d_ptr)
 	write(*,*) "GetGfw "
 	!-------
 	n = RM_GetKineticReactionsCount(id)
@@ -370,7 +383,7 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	d = RM_GetTime(id)
 	status = bmif_get_value(id, "Time", d)
 	status = bmif_get_current_time(id, d)
-	status = bmif_get_start_time(id, d);
+	status = bmif_get_start_time(id, d)
 	status = bmif_get_value_ptr(id, "Time", d_ptr)
 	write(*,*) "GetTime "
 	!-------
@@ -428,11 +441,21 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	status =RM_SetGasPhaseVolume(id, DoubleVector)
 	write(*,*) "SetGasPhaseVolume "
 	!-------
-	status = RM_GetIthConcentration(id, 1, DoubleVector);
-	write(*,*)  "GetIthConcentration ";
+    do i = 1, RM_GetComponentCount(id)
+		status = RM_GetIthConcentration(id, i, DoubleVector)
+		!-------
+		status = RM_SetIthConcentration(id, i, DoubleVector)
+    enddo
+	write(*,*)  "GetIthConcentration "
+	write(*,*)  "SetIthConcentration "
 	!-------
-	status = RM_GetIthSpeciesConcentration(id, 1, DoubleVector);
-	write(*,*) "GetIthSpeciesConcentration ";
+    do i = 1, RM_GetSpeciesCount(id)
+		status = RM_GetIthSpeciesConcentration(id, i, DoubleVector)
+		!-------
+		status = RM_SetIthSpeciesConcentration(id, i, DoubleVector)
+    enddo
+    write(*,*) "GetIthSpeciesConcentration "
+    write(*,*) "SetIthSpeciesConcentration "
 	!-------
 	status = bmif_get_value(id, "Porosity", DoubleVector)
 	status = RM_GetPorosity(id, DoubleVector)
@@ -489,10 +512,10 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	status = bmif_set_value(id, "Temperature", DoubleVector)
 	write(*,*) "SetTemperature "
 	!-------
-	status = bmif_get_value(id, "Viscosity", DoubleVector);
-	status = RM_GetViscosity(id, DoubleVector);
-	status = bmif_get_value_ptr(id, "Viscosity", d_ptr);	
-	write(*,*) "GetViscosity ";
+	status = bmif_get_value(id, "Viscosity", DoubleVector)
+	status = RM_GetViscosity(id, DoubleVector)
+	status = bmif_get_value_ptr(id, "Viscosity", d_ptr)	
+	write(*,*) "GetViscosity "
 	!
 	! Take a time step
 	!
@@ -539,7 +562,7 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	!-------
 	!b = RM_GetSelectedOutputOn(id)
 	status = bmif_get_value(id, "SelectedOutputOn", l)
-	status = bmif_get_value_ptr(id, "SelectedOutputOn", b_ptr);	
+	status = bmif_get_value_ptr(id, "SelectedOutputOn", b_ptr)	
 	write(*,*) "GetSelectedOutputOn "
 	!-------
 	n = RM_GetSelectedOutputRowCount(id)
@@ -551,7 +574,7 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	!
 	! Getters
 	!
-	status = RM_GetBackwardMapping(id, 1, IntVector, n)
+	status = RM_GetBackwardMapping(id, 1, IntVector)
 	write(*,*) "GetBackwardMapping "
 	!-------
 	!status = RM_GetDatabaseFileName(id, string)
@@ -563,12 +586,12 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	!n = RM_GetErrorHandlerMode()
 	!write(*,*) "GetErrorHandlerMode "
 	!-------
-	status = RM_GetErrorString(id, string)
-	status = bmif_get_value(id, "ErrorString", string)
+	status = RM_GetErrorString(id, AllocString)
+	status = bmif_get_value(id, "ErrorString", AllocString)
 	write(*,*) "GetErrorString "
 	!-------
-	status = RM_GetFilePrefix(id, string)
-	status = bmif_get_value(id, "FilePrefix", string)
+	status = RM_GetFilePrefix(id, AllocString)
+	status = bmif_get_value(id, "FilePrefix", AllocString)
 	write(*,*) "GetFilePrefix "
 	!-------
 	!status = RM_GetForwardMapping()  ! not implemented
@@ -636,10 +659,12 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	!
 	! Utilities
 	!
+#ifndef USE_MPI    
 	id1 = bmif_create(10, 1)  ! make another bmiphreeqcrm
 	status = RM_CloseFiles(id1) 
 	status = bmif_finalize(id1)   ! destroy the new bmiphreeqcrm
 	write(*,*) "CloseFiles "
+#endif    
 	!-------
 	deallocate(IntVector)
 	allocate(IntVector(1))
@@ -749,8 +774,54 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	write(*,*) "bmif_update"
 	!-------
 	status = bmif_update_until(id, 864000.0d0) 
-	write(*,*) "bmif_update"
+	write(*,*) "bmif_update_until"
 	!-------
+    
+	write(*,*) "AddOutputVars"
+	status = bmif_get_output_var_names(id, Names)
+	do i = 1, size(StringVector)
+		status = bmif_get_var_itemsize(id, Names(i), itemsize)
+		status = bmif_get_var_nbytes(id, Names(i), nbytes)
+		status = bmif_get_var_type(id, Names(i), string)
+		if (itemsize .eq. 0) itemsize=1
+		if (nbytes .eq. 0) nbytes=1
+		dim = nbytes / itemsize
+		status = bmif_get_var_type(id, Names(i), vtype)
+		if (vtype .eq. "real(kind=8)") then
+			if (dim .eq. 1) then
+				status = bmif_get_value(id, Names(i), d)
+                write(*,*) "     ", Names(i), "  ", d
+			else
+				status = bmif_get_value(id, Names(i), DoubleVector)
+                write(*,*) "     ", Names(i), "  ", DoubleVector(1)
+			endif
+		else if (vtype .eq. "integer") then
+			if (dim .eq. 1) then
+				status = bmif_get_value(id, Names(i), j)
+                write(*,*) "     ", Names(i), "  ", j
+			else
+				status = bmif_get_value(id, Names(i), IntVector)
+                write(*,*) "     ", Names(i), "  ", IntVector(1)
+			endif
+		else if (vtype .eq. "logical") then
+			if (dim == 1) then
+				status = bmif_get_value(id, Names(i), l)
+                write(*,*) "     ", Names(i), "  ", l
+			endif
+		else if (vtype(1:9) .eq. "character") then
+			if (dim == 1) then
+				status = bmif_get_value(id, Names(i), string)
+                write(*,*) "     ", Names(i), "  ", trim(string)
+			else
+				status = bmif_get_value(id, Names(i), StringVector)
+                write(*,*) "     ", Names(i), "  ", trim(StringVector(1))
+			endif
+		endif
+	enddo    
+ 
+#ifdef USE_MPI
+	status = RM_MpiWorkerBreak(id)
+#endif    
 	status = bmif_finalize(id)    ! void method
 	write(*,*) "bmif_finalize "
 
@@ -764,15 +835,20 @@ subroutine TestAllMethods_f90()  BIND(C, NAME='TestAllMethods_f90')
 	return
 
   ! Deallocate
+  deallocate(IntVector, IntVector2)
+  deallocate(DoubleVector, DoubleVector2)
+  deallocate(StringVector, AllocString)
   deallocate(IntVector)
-  deallocate(DoubleVector)
+  deallocate(Names)
   deallocate(v1, v2, f1)
   deallocate(ic1, ic2)
-  deallocate(cells)
-  deallocate(bc1)
+  deallocate(u1, u2, ic)
+  deallocate(cells, v1, v2)
+  deallocate(bc1, c, bc_species, bc2)
   deallocate(tc)
   deallocate(p_atm)
   return
 end subroutine TestAllMethods_f90
 
-#endif ! YAML
+! YAML
+#endif

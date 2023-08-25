@@ -20,16 +20,22 @@ if(WIN32 AND NOT CMAKE_INSTALL_DOCDIR)
   set(CMAKE_INSTALL_DOCDIR "doc")
 endif()
 
+include(GNUInstallDirs)
+
 option(PHREEQCRM_FORTRAN_TESTING "Build Fortran test" OFF)
 if(PHREEQCRM_FORTRAN_TESTING)
   enable_language(Fortran)
 endif()
 
-include(GNUInstallDirs)
-
 option(PHREEQCRM_WITH_YAML_CPP "Build with yaml-cpp support" OFF)
+if(DEFINED SKBUILD)
+  set(PHREEQCRM_WITH_YAML_CPP ON)
+endif()
 if(PHREEQCRM_WITH_YAML_CPP)
   find_package(yaml-cpp REQUIRED)
+  if(yaml-cpp_FOUND)
+    message(STATUS "Found yaml-cpp: TRUE (found version \"${yaml-cpp_VERSION}\")")
+  endif()
 endif()
 
 option(PHREEQCRM_DISABLE_OPENMP "Disable openmp" OFF)
@@ -47,12 +53,17 @@ if(PHREEQCRM_BUILD_MPI)
 endif()
 
 option(PHREEQCRM_BUILD_PYTHON "Build python wrapper using SWIG" OFF)
-if (PHREEQCRM_BUILD_PYTHON)
+if(DEFINED SKBUILD)
+  set(PHREEQCRM_BUILD_PYTHON ON)
+endif()
+if(PHREEQCRM_BUILD_PYTHON)
+  if(NOT PHREEQCRM_WITH_YAML_CPP)
+    message(FATAL_ERROR "Building python wrapper requires PHREEQCRM_WITH_YAML_CPP.")
+  endif()
   find_package(SWIG REQUIRED)
   find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development Development.Module NumPy)
   # Set Python_ROOT_DIR to specify which python to use
   # ie -DPython_ROOT_DIR=C:/Python38-x64
-  # find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development)
 endif()
 
 option(PHREEQCRM_NO_UTF8_ENCODING "Build without utf-8 encoding" OFF)
@@ -233,22 +244,28 @@ set(PhreeqcRM_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/YAMLPhreeqcRM.h
 )
 
-# setup include directories
-include_directories("${PROJECT_SOURCE_DIR}/src")
-include_directories("${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast")
-include_directories("${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc")
-include_directories("${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp")
-include_directories("${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common")
-include_directories("${PROJECT_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords")
-
 # dll/shared objects
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
-set(LIB_TYPE STATIC)
-if(BUILD_SHARED_LIBS)
-  set(LIB_TYPE SHARED)
-endif()
 
-add_library(PhreeqcRM ${LIB_TYPE} ${PhreeqcRM_SOURCES})
+add_library(PhreeqcRM ${PhreeqcRM_SOURCES})
+add_library(PhreeqcRM::PhreeqcRM ALIAS PhreeqcRM)
+
+target_include_directories(PhreeqcRM
+  PUBLIC
+    $<BUILD_INTERFACE:${PhreeqcRM_BINARY_DIR}>
+    $<BUILD_INTERFACE:${PhreeqcRM_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${PhreeqcRM_SOURCE_DIR}/src/IPhreeqcPhast>
+    $<BUILD_INTERFACE:${PhreeqcRM_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc>
+    $<BUILD_INTERFACE:${PhreeqcRM_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp>
+    $<BUILD_INTERFACE:${PhreeqcRM_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common>
+    $<BUILD_INTERFACE:${PhreeqcRM_SOURCE_DIR}/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+# generate "${PhreeqcRM_BINARY_DIR}/irm_dll_export.h"
+# based on how the PhreeqcRM library is built (BUILD_SHARED_LIBS)
+include(GenerateExportHeader)
+generate_export_header(PhreeqcRM BASE_NAME IRM_DLL)
 
 # c++11
 target_compile_features(PhreeqcRM PUBLIC cxx_std_11)
@@ -269,16 +286,29 @@ if(MSVC_VERSION EQUAL 1400 OR MSVC_VERSION GREATER 1400)
   target_compile_definitions(PhreeqcRM PRIVATE _SCL_SECURE_NO_WARNINGS)
 endif()
 
+if (WIN32 AND BUILD_SHARED_LIBS)
+  # Required to build IMPLIB
+  # (Seems to be automatically set when using Visual Studio as the generator)
+  # This is only necessary to export iphreeqc methods
+  # iphreeqc should be updated to use generate_export_header
+  target_compile_definitions(PhreeqcRM PRIVATE _WINDLL)
+endif()
+
 # init exportPackageDependencies
 set(exportPackageDependencies "")
 
 # yaml-cpp
 if(PHREEQCRM_WITH_YAML_CPP AND yaml-cpp_FOUND)
   target_compile_definitions(PhreeqcRM PUBLIC USE_YAML)
-  target_link_libraries(PhreeqcRM PUBLIC yaml-cpp)
+  if(TARGET yaml-cpp::yaml-cpp)
+    target_link_libraries(PhreeqcRM PUBLIC yaml-cpp::yaml-cpp)
+    string(APPEND exportPackageDependencies "find_dependency(yaml-cpp::yaml-cpp)\n")
+  else()
+    target_link_libraries(PhreeqcRM PUBLIC yaml-cpp)
+    string(APPEND exportPackageDependencies "find_dependency(yaml-cpp)\n")
+  endif()
   # set(phreeqcrm_requires "yaml-cpp")
   set(useyaml_define "-DUSE_YAML")
-  string(APPEND exportPackageDependencies "find_dependency(yaml-cpp)\n")
 endif()
 
 # check for zlib
@@ -314,6 +344,7 @@ if(MSVC AND BUILD_SHARED_LIBS AND PHREEQCRM_USE_ZLIB AND ZLIB_FOUND)
 endif()
 
 set(PhreeqcRM_Headers
+  ${PhreeqcRM_BINARY_DIR}/irm_dll_export.h
   ${PROJECT_SOURCE_DIR}/src/BMI_interface_F.h
   ${PROJECT_SOURCE_DIR}/src/BMIVariant.h
   ${PROJECT_SOURCE_DIR}/src/BMIVariant.h
@@ -418,7 +449,7 @@ endif()
 configure_file(phreeqcrm.cmake.in phreeqcrm.pc @ONLY)
 
 # install
-if(STANDALONE_BUILD EQUAL 1)
+if(STANDALONE_BUILD EQUAL 1 AND NOT DEFINED SKBUILD)
 
   include(CMakePackageConfigHelpers)
 
@@ -503,48 +534,34 @@ if(STANDALONE_BUILD EQUAL 1 AND MSVC)
   endif()
 endif()
 
-add_library(PhreeqcRM::PhreeqcRM ALIAS PhreeqcRM)
-
 if(STANDALONE_BUILD EQUAL 1)
   # tests
   enable_testing()
 
   # subdirs
-  add_subdirectory(database)
-  add_subdirectory(doc)
-  add_subdirectory(Doxygen)
-  add_subdirectory(Tests)
+  if(NOT DEFINED SKBUILD)
+    add_subdirectory(database)
+    add_subdirectory(doc)
+    add_subdirectory(Doxygen)
+    add_subdirectory(Tests)
+  endif()
 
-  if (PHREEQCRM_BUILD_PYTHON)
-    add_subdirectory(src)
+  if(PHREEQCRM_BUILD_PYTHON)
+    add_subdirectory(swig)
   endif()
 endif()
 
 # Turn off Incremental Linking for Debug and RelWithDebInfo
 if(MSVC)
-  foreach(FLAG_TYPE EXE MODULE SHARED)
-    # Debug
-    string(REPLACE "/INCREMENTAL:YES " "/INCREMENTAL:NO " CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG ${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG})
-    string(REGEX REPLACE " /INCREMENTAL:YES$" " /INCREMENTAL:NO" CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG ${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG})
-    string(REPLACE "/INCREMENTAL " "/INCREMENTAL:NO " CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG ${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG})
-    string(REGEX REPLACE " /INCREMENTAL$" " /INCREMENTAL:NO" CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG ${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG})
-    set(CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG
-        "${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_DEBUG}" CACHE STRING
-        "Flags used by the shared libraries linker during Debug builds."
-        FORCE
-    )
+  target_link_options(PhreeqcRM PRIVATE $<$<CONFIG:Debug,RelWithDebInfo>:/INCREMENTAL:NO>)
+endif()
 
-    # RelWithDebInfo
-    string(REPLACE "/INCREMENTAL:YES " "/INCREMENTAL:NO " CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO ${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO})
-    string(REGEX REPLACE " /INCREMENTAL:YES$" " /INCREMENTAL:NO" CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO ${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO})
-    string(REPLACE "/INCREMENTAL " "/INCREMENTAL:NO " CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO ${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO})
-    string(REGEX REPLACE " /INCREMENTAL$" " /INCREMENTAL:NO" CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO ${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO})
-    set(CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO
-        "${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO}" CACHE STRING
-        "Flags used by the shared libraries linker during Release with Debug Info builds."
-        FORCE
-    )
-  endforeach()
+if(DEFINED SKBUILD)
+  message(STATUS "SKBUILD IS defined")
+  #set_target_properties(PhreeqcRM TestRM TestBMIdtor TestRMdtor PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+  set_target_properties(PhreeqcRM PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+else()
+  message(STATUS "SKBUILD is NOT defined")
 endif()
 
 # get_cmake_property(_variableNames VARIABLES)

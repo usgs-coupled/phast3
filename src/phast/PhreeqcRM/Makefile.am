@@ -4,25 +4,31 @@ PHREEQCRM_EXTRA_DIST=\
 	CMakeLists.txt\
 	phreeqcrm.cmake.in\
 	PhreeqcRMConfig.cmake.in\
-	src/CMakeLists.txt\
-	src/numpy.i\
-	src/PhreeqcRM.i\
-	src/pyfragments.swg.in\
-	src/swig/CMakeLists.txt\
-	src/swig/python/AdvectBMI_py.py\
-	src/swig/python/CMakeLists.txt\
-	src/swig/python/PhreeqcRM_docstrings.i\
-	src/swig/python/SimpleAdvect.py\
-	src/swig/python/TestAllMethods_py.py\
-	src/swig/python/WriteYAMLFile_py.py\
-	src/swig/python/YAMLPhreeqcRM.i\
-	src/swig/python/yamlphreeqcrm.py
+	swig/CMakeLists.txt\
+	swig/numpy.i\
+	swig/PhreeqcRM.i\
+	swig/pyfragments.swg.in\
+	swig/python/AdvectBMI_py.py\
+	swig/python/BMIPhreeqcRM_docstrings.swg\
+	swig/python/CMakeLists.txt\
+	swig/python/PhreeqcRM_docstrings.swg\
+	swig/python/SimpleAdvect.py\
+	swig/python/test_basic.py\
+	swig/python/test_get_value.py\
+	swig/python/test_init.py\
+	swig/python/test_irf.py\
+	swig/python/test_set_value.py\
+	swig/python/TestAllMethods_py.py\
+	swig/python/WriteYAMLFile_py.py\
+	swig/python/yamlphreeqcrm.py\
+	swig/python/YAMLPhreeqcRM.swg
 
 EXTRA_DIST=$(PHREEQCRM_EXTRA_DIST)
 
 AM_CPPFLAGS=-I$(top_srcdir)/src/IPhreeqcPhast -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common -I$(top_srcdir)/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords
 
 AM_LDFLAGS=-release 3.0.0
+# AM_LDFLAGS= -no-undefined -release 3.0.0
 
 pkgconfigdir = $(datadir)/pkgconfig
 pkgconfig_DATA = phreeqcrm.pc
@@ -204,6 +210,7 @@ libphreeqcrm_la_SOURCES=\
 
 
 include_HEADERS=\
+	$(top_builddir)/irm_dll_export.h\
 	$(top_srcdir)/src/BMIVariant.h\
 	$(top_srcdir)/src/bmi.hxx\
 	$(top_srcdir)/src/BMIPhreeqcRM.h\

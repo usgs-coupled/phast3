@@ -357,7 +357,8 @@ void Species_c()
 				selected_out = (double*)malloc((size_t)(col * nxyz * sizeof(double)));
 				status = RM_GetSelectedOutput(id, selected_out);
 				// Print results
-				for (i = 0; i < RM_GetSelectedOutputRowCount(id) / 2; i++)
+				//for (i = 0; i < RM_GetSelectedOutputRowCount(id) / 2; i++)
+				for (i = 0; i < 1; i++)
 				{
 					fprintf(stderr, "Cell number %d\n", i);
 					fprintf(stderr, "     Density: %f\n", density[i]);
@@ -428,6 +429,7 @@ void Species_c()
 		free(components[i]);
 	}
 	free(components);
+	free(c_well);
 	free(ic1);
 	free(ic2);
 	free(f1);
@@ -436,11 +438,19 @@ void Species_c()
 	free(bc_f1);
 	free(bc_conc);
 	free(c);
+	free(gfw);
+	free(species_d);
 	free(species_c);
 	free(species_log10gammas);
+	free(species_log10molalities);
+	free(species_z);
 	free(density);
 	free(temperature);
 	free(pressure);
+	free(volume);
+	free(module_cells);
+	free(tc);
+	free(p_atm);
 }
 void speciesadvection_c(double* c, double* bc_conc, int ncomps, int nxyz, int dim)
 {

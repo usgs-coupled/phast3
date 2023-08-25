@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.61])
-AC_INIT([PhreeqcRM],[0.1.0-9067],[dlpark@usgs.gov])
+AC_INIT([PhreeqcRM],[0.1.0-9067],[charlton@usgs.gov])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -109,7 +109,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
-LT_INIT
+LT_INIT([win32-dll])
 
 
 # Checks for libraries.
@@ -269,6 +269,7 @@ fi
 AC_SUBST(usempi_define)
 
 AC_CONFIG_FILES([
+  irm_dll_export.h
   Makefile
   database/Makefile
   doc/Makefile

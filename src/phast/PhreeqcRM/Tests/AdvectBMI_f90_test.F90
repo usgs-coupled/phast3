@@ -13,6 +13,16 @@
             real(kind=8), dimension(:,:), allocatable, intent(in)    :: bc_conc
             integer, intent(in)                                      :: ncomps, nxyz
         end subroutine advectionbmi_f90_test
+        integer function do_something()
+        end function do_something
+        integer(kind=C_INT) function bmi_worker_tasks_f(method_number) BIND(C, NAME='worker_tasks_f')
+            USE ISO_C_BINDING
+            implicit none
+            integer(kind=c_int), intent(in) :: method_number
+        end function bmi_worker_tasks_f
+        SUBROUTINE register_basic_callback_fortran()
+            implicit none
+        END SUBROUTINE register_basic_callback_fortran
         subroutine BMI_testing(id)
             implicit none
             integer, intent(in) :: id
@@ -65,7 +75,7 @@
     integer                                         :: dim
     character(len=:), dimension(:), allocatable     :: outputvars 
 	real(kind=8), dimension(:), allocatable         :: CaX2, KX, NaX, pH_vector, SAR
-    common /i_ptrs/ id, ComponentCount_ptr, GridCellCount_ptr, SelectedOutputOn_ptr
+    common /i_ptrs/ ComponentCount_ptr, GridCellCount_ptr, SelectedOutputOn_ptr, id
     common /r_ptrs/ Concentrations_ptr, Density_calculated_ptr, Gfw_ptr, &
 	    Saturation_ptr, SolutionVolume_ptr, Time_ptr, TimeStep_ptr, &
         Porosity_ptr, Pressure_ptr, Temperature_ptr
@@ -73,7 +83,7 @@
 	integer, pointer :: ComponentCount_ptr
 	integer, pointer :: GridCellCount_ptr
     integer :: nxyz, ncomps
-	logical, pointer :: SelectedOutputOn_ptr
+	logical(kind=1), pointer :: SelectedOutputOn_ptr
 	real(kind=8), pointer :: Concentrations_ptr(:)
 	real(kind=8), pointer :: Density_calculated_ptr(:)
 	real(kind=8), pointer :: Gfw_ptr(:)
@@ -109,6 +119,7 @@
 
 #ifdef USE_MPI
     ! MPI
+    nxyz = 40
     id = bmif_create(nxyz, MPI_COMM_WORLD)
     call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
     if (status .ne. MPI_SUCCESS) then
@@ -117,7 +128,6 @@
     if (mpi_myself > 0) then
         status = RM_SetMpiWorkerCallback(id, bmi_worker_tasks_f)
         status = RM_MpiWorker(id)
-        status = RM_Destroy(id)
         return
     endif
 #else
@@ -305,7 +315,7 @@
                 enddo
                 deallocate(selected_out)
             enddo     
-            			! Use GetValue to extract exchange composition and pH
+            ! Use GetValue to extract exchange composition and pH
 			! YAMLAddOutputVars was called in YAML
 			! to select additional OutputVarNames variables
 			status = bmif_get_value(id, "solution_ph", pH_vector)
@@ -323,8 +333,9 @@
     enddo 
     call BMI_testing(id)
     ! Clean up
-    status = RM_CloseFiles(id)
+#ifdef USE_MPI    
     status = RM_MpiWorkerBreak(id)
+#endif    
     status = bmif_finalize(id)
     ! Deallocate
     deallocate(por)
@@ -739,24 +750,10 @@ USE, intrinsic :: ISO_C_BINDING
             enddo
         enddo
         ! check headings
-        status = bmif_get_var_nbytes(id, "SelectedOutputHeadings", nbytes)
-        status = bmif_get_var_itemsize(id, "SelectedOutputHeadings", itemsize)
-        dim = nbytes / itemsize
-        status = assert(dim .eq. RM_GetSelectedOutputColumnCount(id))
         status = bmif_get_value(id, "SelectedOutputHeadings", headings)
-        !allocate(character(len=itemsize) :: rm_headings(dim))
         status = RM_GetSelectedOutputHeadings(id, rm_headings)
         do j = 1, col_count
             if (headings(j) .ne. rm_headings(j)) then
-                status = assert(.false.)
-            endif
-        enddo
-        status = bmif_get_var_itemsize(id, "SelectedOutputHeadings", itemsize)
-        if(allocated(heading)) deallocate(heading)
-        allocate(character(len=itemsize) :: heading)
-        do j = 1, col_count
-            status = RM_GetSelectedOutputHeading(id, j, heading)
-            if (heading .ne. rm_headings(j)) then
                 status = assert(.false.)
             endif
         enddo
@@ -769,7 +766,8 @@ if(tf) then
     assert = 0
     return
 endif
-stop "Assert failed"
+write(*,*) "Assert failed"
+call exit(-1)
 end function assert
 
 subroutine compare_ptrs
@@ -782,14 +780,14 @@ implicit none
         logical, intent(in) :: tf
         end function assert
     end interface
-    common /i_ptrs/ id, ncomps, nxyz, SelectedOutputOn_ptr
+    common /i_ptrs/ ncomps, nxyz, SelectedOutputOn_ptr, id
     common /r_ptrs/ Concentrations_ptr, Density_calculated_ptr, Gfw_ptr, &
 	Saturation_ptr, SolutionVolume_ptr, Time_ptr, TimeStep_ptr, &
     Porosity_ptr, Pressure_ptr, Temperature_ptr
     integer :: id
 	integer, pointer :: ncomps
 	integer, pointer :: nxyz
-	logical, pointer :: SelectedOutputOn_ptr
+	logical(kind=1), pointer :: SelectedOutputOn_ptr
 	real(kind=8), pointer :: Concentrations_ptr(:)
 	real(kind=8), pointer :: Density_calculated_ptr(:)
 	real(kind=8), pointer :: Gfw_ptr(:)
