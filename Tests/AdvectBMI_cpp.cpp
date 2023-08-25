@@ -84,7 +84,6 @@ int AdvectBMI_cpp()
 #ifdef USE_MPI
 		// MPI
 		BMIPhreeqcRM brm(nxyz, MPI_COMM_WORLD);
-		some_data.brm_ptr = &brm;
 		MP_TYPE comm = MPI_COMM_WORLD;
 		int mpi_myself;
 		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
@@ -93,16 +92,15 @@ int AdvectBMI_cpp()
 		}
 		if (mpi_myself > 0)
 		{
-			brm.SetMpiWorkerCallbackC(bmi_worker_tasks_cc);
-			brm.SetMpiWorkerCallbackCookie(&some_data);
 			brm.MpiWorker();
+			brm.Finalize();
 			return EXIT_SUCCESS;
-		}
+		};
 #else
 		// OpenMP
 		BMIPhreeqcRM brm;
-#endif
 		// Use YAML file to initialize
+#endif
 		brm.Initialize(yaml_file);
 		// InputVarNames
 		{
@@ -352,6 +350,7 @@ int AdvectBMI_cpp()
 			}
 		}
 		// Clean up
+		status = brm.MpiWorkerBreak();
 		brm.Finalize();
 	}
 	catch (PhreeqcRMStop)
@@ -372,6 +371,7 @@ int AdvectBMI_cpp()
 #endif
 		return IRM_FAIL;
 	}
+
 	return EXIT_SUCCESS;
 }
 

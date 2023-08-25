@@ -30,10 +30,20 @@ void TestAllMethods_cpp()
 	// Use all BMIPhreeqcRM methods roughly in order of use
 	// 
 	//
+#ifndef USE_MPI
 	BMIPhreeqcRM bmi;
 	std::cerr << "BMIPhreeqcRM\n";
+#else
+	BMIPhreeqcRM bmi(nxyz, MPI_COMM_WORLD);
+	if (bmi.GetMpiMyself() > 0)
+	{
+		bmi.MpiWorker();
+		return;
+	}
+#endif
 	//-------
 	bmi.Initialize(YAML_filename);   // void function
+	bmi.InitializeYAML(YAML_filename);
 	std::cerr << "Initialize\n";
 	//-------
 	bmi.GetValue("GridCellCount", nxyz);
@@ -387,11 +397,23 @@ void TestAllMethods_cpp()
 	status = bmi.SetGasPhaseVolume(v);
 	std::cerr << "SetGasPhaseVolume \n";
 	//-------
-	status = bmi.GetIthConcentration(0, v);
+	for (size_t i = 0; i < bmi.GetComponentCount(); i++)
+	{
+		status = bmi.GetIthConcentration(i, v);
+		//-------
+		status = bmi.SetIthConcentration(i, v);
+	}
 	std::cerr << "GetIthConcentration \n";
+	std::cerr << "SetIthConcentration \n";
 	//-------
-	status = bmi.GetIthSpeciesConcentration(0, v);
+	for (int i = 0; i < bmi.GetSpeciesCount(); i++)
+	{
+		status = bmi.GetIthSpeciesConcentration(i, v);
+		//-------
+		status = bmi.SetIthSpeciesConcentration(i, v);
+	}
 	std::cerr << "GetIthSpeciesConcentration \n";
+	std::cerr << "SetIthSpeciesConcentration \n";
 	//-------
 	v = bmi.GetPorosity();
 	bmi.GetValue("Porosity", v);
@@ -591,13 +613,16 @@ void TestAllMethods_cpp()
 	//
 	// Utilities
 	//
-	BMIPhreeqcRM *bmi2 = new BMIPhreeqcRM(10, 1); // Make another instance
+#ifndef USE_MPI
+	BMIPhreeqcRM *bmi2 = new BMIPhreeqcRM(10, 2); // Make another instance
 	std::cerr << "Make a new instance with new. \n";
 	//-------
-	status = bmi.CloseFiles(); 
+	status = bmi2->CloseFiles(); 
 	std::cerr << "CloseFiles \n";
 	//-------
+	bmi2->Finalize();
 	delete bmi2; // delete new instance
+#endif
 	//-------
 	vi.clear();
 	vi.resize(1, 1);
@@ -696,20 +721,86 @@ void TestAllMethods_cpp()
 	//bmi.Initialize(YAML_filename);
 	// See above
 	bmi.SetValue("Time", 1.0);    // void method
-	std::cerr << "SetValue";
+	std::cerr << "SetValue\n";
 	//-------
 	bmi.Update();    // void method
-	std::cerr << "Update";
+	std::cerr << "Update\n";
 	//-------	
  	bmi.UpdateUntil(864000.0);      // void function
 	std::cerr << "UpdateUntil\n";
+
+	std::cerr << "AddOutputVars\n";
+	str_vector = bmi.GetOutputVarNames();
+	for (size_t i = 0; i < str_vector.size(); i++)
+	{
+		int	itemsize = bmi.GetVarItemsize(str_vector[i]);
+		int	nbytes = bmi.GetVarNbytes(str_vector[i]);
+		std::string	vtype = bmi.GetVarType(str_vector[i]);
+		if (itemsize == 0) itemsize++;
+		if (nbytes == 0) nbytes++;
+		int dim = nbytes / itemsize;
+		if (vtype == "double")
+		{
+			if (dim == 1)
+			{
+				double dest;
+				bmi.GetValue(str_vector[i], dest);
+				std::cerr << "     " << str_vector[i] << "  " << dest << std::endl;
+			}
+			else
+			{
+				std::vector<double> dest;
+				bmi.GetValue(str_vector[i], dest);
+				std::cerr << "     " << str_vector[i] << "  " << dest[0] << std::endl;
+			}
+		}
+		else if (vtype == "int")
+		{
+			if (dim == 1)
+			{
+				int dest;
+				bmi.GetValue(str_vector[i], dest);
+				std::cerr << "     " << str_vector[i] << "  " << dest << std::endl;
+			}
+			else
+			{
+				std::vector<int> dest;
+				bmi.GetValue(str_vector[i], dest);
+				std::cerr << "     " << str_vector[i] << "  " << dest[0] << std::endl;
+			}
+		} else if (vtype == "bool")
+		{
+			if (dim == 1)
+			{
+				bool dest;
+				bmi.GetValue(str_vector[i], dest);
+				std::cerr << "     " << str_vector[i] << "  " << dest << std::endl;
+			}
+		}
+		else if (vtype == "std::string")
+		{
+			if (dim == 1)
+			{
+				std::string dest;
+				bmi.GetValue(str_vector[i], dest);
+				std::cerr << "     " << str_vector[i] << "  " << dest << std::endl;
+			}
+			else
+			{
+				std::vector<std::string> dest;
+				bmi.GetValue(str_vector[i], dest);
+				std::cerr << "     " << str_vector[i] << "  " << dest[0] << std::endl;
+			}
+		}
+	}
+
+
 	//-------	
+	bmi.MpiWorkerBreak();
 	bmi.Finalize();    // void method
 	std::cerr << "Finalize \n";
 	//Should be private: status = bmi.ReturnHandler();
 	//TODO status = bmi.MpiAbort();
-	//TODO status = bmi.MpiWorker();
-	//TODO status = bmi.MpiWorkerBreak();
 	//TODO status = bmi.SetMpiWorkerCallbackC();
 	//TODO status = bmi.SetMpiWorkerCallbackCookie();
 	std::cerr << "Success.\n";

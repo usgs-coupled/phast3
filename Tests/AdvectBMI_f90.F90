@@ -57,14 +57,10 @@
     integer                                         :: dump_on, append
     integer                                         :: dim
 	real(kind=8), dimension(:), allocatable         :: CaX2, KX, NaX, pH_vector
-    common /i_ptrs/ id, ComponentCount_ptr, GridCellCount_ptr, SelectedOutputOn_ptr
-    common /r_ptrs/ Concentrations_ptr, Density_calculated_ptr, Gfw_ptr, &
-	    Saturation_ptr, SolutionVolume_ptr, Time_ptr, TimeStep_ptr, &
-        Porosity_ptr, Pressure_ptr, Temperature_ptr
     integer :: id
 	integer, pointer :: ComponentCount_ptr
 	integer, pointer :: GridCellCount_ptr
-	logical, pointer :: SelectedOutputOn_ptr
+	logical(kind=1), pointer :: SelectedOutputOn_ptr
 	real(kind=8), pointer :: Concentrations_ptr(:)
 	real(kind=8), pointer :: Density_calculated_ptr(:)
 	real(kind=8), pointer :: Gfw_ptr(:)
@@ -88,15 +84,15 @@
     yaml_file = "AdvectBMI_f90.yaml"
 #ifdef USE_MPI
     ! MPI
+    nxyz = GetGridCellCountYAML(yaml_file)
     id = bmif_create(nxyz, MPI_COMM_WORLD)
     call MPI_Comm_rank(MPI_COMM_WORLD, mpi_myself, status)
     if (status .ne. MPI_SUCCESS) then
         stop "Failed to get mpi_myself"
     endif
     if (mpi_myself > 0) then
-        status = RM_SetMpiWorkerCallback(id, bmi_worker_tasks_f)
         status = RM_MpiWorker(id)
-        status = RM_Destroy(id)
+        status = bmif_finalize(id)
         return
     endif
 #else
@@ -290,7 +286,7 @@
         endif
     enddo 
     ! Clean up
-    status = RM_CloseFiles(id)
+    !status = RM_CloseFiles(id)
     status = RM_MpiWorkerBreak(id)
     status = bmif_finalize(id)
     ! Deallocate

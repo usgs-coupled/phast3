@@ -55,3 +55,16 @@ src/phreeqcrm.mod
 # re-encoded files
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/print.utf-8.cpp
 src/IPhreeqcPhast/IPhreeqc/phreeqcpp/print.windows-1252.cpp
+
+# Doxygen/make
+src/RM_interface.F90.save
+src/YAML_interface.F90.save
+
+# wheels
+dist/
+
+# ex11-advect
+swig/python/ex11-advect/ex11-advect.yaml
+swig/python/ex11-advect/ex11-advect.chem.txt
+swig/python/ex11-advect/ex11-advect.log.txt
+swig/python/ex11-advect/.ipynb_checkpoints/

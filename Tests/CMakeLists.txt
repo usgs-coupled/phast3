@@ -24,9 +24,6 @@ if(PHREEQCRM_FORTRAN_TESTING)
 
   # TestRM Fortran source
   target_sources(FortranAdvect PRIVATE
-    ../src/BMI_interface.F90
-    ../src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90
-    ../src/RM_interface.F90
     Advect_f90.F90
     AdvectBMI_f90.F90
     AdvectBMI_f90_test.F90
@@ -37,10 +34,6 @@ if(PHREEQCRM_FORTRAN_TESTING)
   )
 
   # place [*.F[90]] files into "Source Files"
-  source_group("Source Files" FILES "../src/BMI_interface.F90")
-  source_group("Source Files" FILES "../src/BMI_not_implemented.inc")
-  source_group("Source Files" FILES "../src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90")
-  source_group("Source Files" FILES "../src/RM_interface.F90")
   source_group("Source Files" FILES "Advect_f90.F90")
   source_group("Source Files" FILES "AdvectBMI_f90.F90")
   source_group("Source Files" FILES "AdvectBMI_f90_test.F90")
@@ -48,19 +41,25 @@ if(PHREEQCRM_FORTRAN_TESTING)
   source_group("Source Files" FILES "SimpleAdvect_f90.F90")
   source_group("Source Files" FILES "Species_f90.F90")
   source_group("Source Files" FILES "TestAllMethods_f90.F90")
-  
+
   if(_PHREEQCRM_TEST_INSTALL)
     target_sources(FortranAdvect PRIVATE
+      ${PhreeqcRM_DIR}/src/BMI_interface.F90
       ${PhreeqcRM_DIR}/src/IPhreeqc_interface.F90
       ${PhreeqcRM_DIR}/src/RM_interface.F90
     )
-    source_group("Source Files" FILES "${PhreeqcRM_DIR}/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90")
+    source_group("Source Files" FILES "${PhreeqcRM_DIR}/src/BMI_interface.F90")
+    source_group("Source Files" FILES "${PhreeqcRM_DIR}/src/BMI_not_implemented.inc")
+    source_group("Source Files" FILES "${PhreeqcRM_DIR}/src/IPhreeqc_interface.F90")
     source_group("Source Files" FILES "${PhreeqcRM_DIR}/src/RM_interface.F90")
   else()
     target_sources(FortranAdvect PRIVATE
+      ../src/BMI_interface.F90
       ../src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90
       ../src/RM_interface.F90
     )
+    source_group("Source Files" FILES "../src/BMI_interface.F90")
+    source_group("Source Files" FILES "../src/BMI_not_implemented.inc")
     source_group("Source Files" FILES "../src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface.F90")
     source_group("Source Files" FILES "../src/RM_interface.F90")
   endif()
@@ -138,6 +137,11 @@ if(PHREEQCRM_FORTRAN_TESTING)
   target_compile_definitions(TestRM PRIVATE TEST_FORTRAN)
 endif()
 
+# Turn off Incremental Linking for Debug and RelWithDebInfo
+if(MSVC)
+  target_link_options(TestRM PRIVATE $<$<CONFIG:Debug,RelWithDebInfo>:/INCREMENTAL:NO>)
+endif()
+
 # library dependencies
 target_link_libraries(TestRM PhreeqcRM::PhreeqcRM)
 
@@ -160,6 +164,11 @@ add_executable(TestRMdtor)
 # sources
 target_sources(TestRMdtor PRIVATE TestRMdtor.cpp)
 
+# Turn off Incremental Linking for Debug and RelWithDebInfo
+if(MSVC)
+  target_link_options(TestRMdtor PRIVATE $<$<CONFIG:Debug,RelWithDebInfo>:/INCREMENTAL:NO>)
+endif()
+
 # library dependencies
 target_link_libraries(TestRMdtor PhreeqcRM::PhreeqcRM)
 
@@ -175,6 +184,11 @@ target_sources(TestBMIdtor PRIVATE
   TestBMIdtor.cpp
 )
 
+# Turn off Incremental Linking for Debug and RelWithDebInfo
+if(MSVC)
+  target_link_options(TestBMIdtor PRIVATE $<$<CONFIG:Debug,RelWithDebInfo>:/INCREMENTAL:NO>)
+endif()
+
 # library dependencies
 target_link_libraries(TestBMIdtor PhreeqcRM::PhreeqcRM)
 
@@ -183,7 +197,7 @@ add_test(TestBMIdtor TestBMIdtor)
 #-----------------------------------------------------------------------------#
 
 # test compile and run
-add_test(TestCompileAndRun TestRM)
+add_test(TestRM TestRM)
 
 set_property(TARGET TestRM APPEND
   PROPERTY ADDITIONAL_CLEAN_FILES
@@ -247,11 +261,26 @@ if(MSVC AND BUILD_SHARED_LIBS)
   add_custom_command(TARGET TestRM POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:PhreeqcRM> $<TARGET_FILE_DIR:TestRM>
   )
-  if(PHREEQCRM_WITH_YAML_CPP)
-    # copy yaml-cpp dll
-    add_custom_command(TARGET TestRM POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:yaml-cpp> $<TARGET_FILE_DIR:TestRM>
-    )
+endif()
+
+if(MSVC AND PHREEQCRM_WITH_YAML_CPP)
+  if(TARGET yaml-cpp::yaml-cpp)
+    get_target_property(yaml-cpp-type yaml-cpp::yaml-cpp TYPE)
+  else()
+    get_target_property(yaml-cpp-type yaml-cpp TYPE)
+  endif()
+  if(yaml-cpp-type STREQUAL SHARED_LIBRARY)
+    if(TARGET yaml-cpp::yaml-cpp)
+      # copy yaml-cpp dll
+      add_custom_command(TARGET TestRM POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:yaml-cpp::yaml-cpp> $<TARGET_FILE_DIR:TestRM>
+      )
+    else()
+      # copy yaml-cpp dll
+      add_custom_command(TARGET TestRM POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:yaml-cpp> $<TARGET_FILE_DIR:TestRM>
+      )
+    endif()
   endif()
 endif()
 

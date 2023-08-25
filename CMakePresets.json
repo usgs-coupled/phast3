@@ -7,6 +7,60 @@
   },
   "configurePresets": [
     {
+      "name": "cmemcheck",
+      "inherits": "ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Debug"
+        },
+        "PHREEQCRM_DISABLE_OPENMP": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "PHREEQCRM_WITH_YAML_CPP": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      }
+    },
+    {
+      "name": "cmemcheck-no-omp",
+      "inherits": "ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Debug"
+        },
+        "PHREEQCRM_DISABLE_OPENMP": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PHREEQCRM_WITH_YAML_CPP": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      }
+    },
+    {
       "name": "default",
       "hidden": true,
       "binaryDir": "${sourceDir}/_builds/${presetName}"
@@ -58,7 +112,7 @@
           "value": "ON"
         }
       }
-    },  
+    },
     {
       "name": "ninja-static-yaml-debug",
       "inherits": "ninja-static-yaml",
@@ -309,6 +363,37 @@
       }
     },
     {
+      "name": "ninja-vcpkg-static-yaml-python-310",
+      "inherits": "ninja-vcpkg-static-yaml-python",
+      "hidden": true,
+      "cacheVariables": {
+        "Python_ROOT_DIR": {
+          "type": "PATH",
+          "value": "C:/Python310-x64"
+        }
+      }
+    },
+    {
+      "name": "ninja-vcpkg-static-yaml-python-310-debug",
+      "inherits": "ninja-vcpkg-static-yaml-python-310",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Debug"
+        }
+      }
+    },
+    {
+      "name": "ninja-vcpkg-static-yaml-python-310-release",
+      "inherits": "ninja-vcpkg-static-yaml-python-310",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Release"
+        }
+      }
+    },
+    {
       "name": "ninja-vcpkg-shared",
       "inherits": "ninja-vcpkg",
       "hidden": true,
@@ -431,7 +516,7 @@
           "value": "ON"
         }
       }
-    },  
+    },
     {
       "name": "vs2019-static-yaml-python",
       "inherits": "vs2019-static-yaml",
@@ -521,6 +606,16 @@
       }
     },
     {
+      "name": "vs2019-vcpkg-static-yaml-python-310",
+      "inherits": "vs2019-vcpkg-static-yaml-python",
+      "cacheVariables": {
+        "Python_ROOT_DIR": {
+          "type": "PATH",
+          "value": "C:/Python310-x64"
+        }
+      }
+    },
+    {
       "name": "vs2019-vcpkg-shared",
       "hidden": true,
       "inherits": "vs2019-vcpkg",
@@ -540,7 +635,7 @@
           "value": "ON"
         }
       }
-    },  
+    },
     {
       "name": "vs2019-vcpkg-shared-yaml-python",
       "inherits": "vs2019-vcpkg-shared-yaml",
@@ -550,9 +645,27 @@
           "value": "ON"
         }
       }
+    },
+    {
+      "name": "vs2019-vcpkg-shared-yaml-python-310",
+      "inherits": "vs2019-vcpkg-shared-yaml-python",
+      "cacheVariables": {
+        "Python_ROOT_DIR": {
+          "type": "PATH",
+          "value": "C:/Python310-x64"
+        }
+      }
     }
   ],
   "buildPresets": [
+    {
+      "name": "cmemcheck",
+      "configurePreset": "cmemcheck"
+    },
+    {
+      "name": "cmemcheck-no-omp",
+      "configurePreset": "cmemcheck-no-omp"
+    },
     {
       "name": "ninja-static-debug",
       "configurePreset": "ninja-static-debug"
@@ -626,6 +739,14 @@
       "configurePreset": "ninja-vcpkg-static-yaml-python-release"
     },
     {
+      "name": "ninja-vcpkg-static-yaml-python-310-debug",
+      "configurePreset": "ninja-vcpkg-static-yaml-python-310-debug"
+    },
+    {
+      "name": "ninja-vcpkg-static-yaml-python-310-release",
+      "configurePreset": "ninja-vcpkg-static-yaml-python-310-release"
+    },
+    {
       "name": "ninja-vcpkg-shared-debug",
       "configurePreset": "ninja-vcpkg-shared-debug"
     },
@@ -686,6 +807,10 @@
       "configurePreset": "vs2019-vcpkg-static-yaml-python"
     },
     {
+      "name": "vs2019-vcpkg-static-yaml-python-310",
+      "configurePreset": "vs2019-vcpkg-static-yaml-python-310"
+    },
+    {
       "name": "vs2019-vcpkg-shared",
       "configurePreset": "vs2019-vcpkg-shared"
     },
@@ -696,9 +821,25 @@
     {
       "name": "vs2019-vcpkg-shared-yaml-python",
       "configurePreset": "vs2019-vcpkg-shared-yaml-python"
-    }
+    },
+    {
+      "name": "vs2019-vcpkg-shared-yaml-python-310",
+      "configurePreset": "vs2019-vcpkg-shared-yaml-python-310"
+    }    
   ],
   "testPresets": [
+    {
+      "name": "cmemcheck",
+      "configurePreset": "cmemcheck",
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
+    {
+      "name": "cmemcheck-no-omp",
+      "configurePreset": "cmemcheck-no-omp",
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
     {
       "name": "ninja-static-debug",
       "configurePreset": "ninja-static-debug",
@@ -808,6 +949,18 @@
       "execution": {"noTestsAction": "error", "stopOnFailure": true}
     },
     {
+      "name": "ninja-vcpkg-static-yaml-python-310-debug",
+      "configurePreset": "ninja-vcpkg-static-yaml-python-310-debug",
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
+    {
+      "name": "ninja-vcpkg-static-yaml-python-310-release",
+      "configurePreset": "ninja-vcpkg-static-yaml-python-310-release",
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
+    {
       "name": "ninja-vcpkg-shared-debug",
       "configurePreset": "ninja-vcpkg-shared-debug",
       "output": {"outputOnFailure": true},
@@ -844,8 +997,20 @@
       "execution": {"noTestsAction": "error", "stopOnFailure": true}
     },
     {
+      "name": "vs2019-vcpkg-static-yaml-python-310",
+      "configurePreset": "vs2019-vcpkg-static-yaml-python-310",
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
+    {
       "name": "vs2019-vcpkg-shared-yaml-python",
       "configurePreset": "vs2019-vcpkg-shared-yaml-python",
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
+    {
+      "name": "vs2019-vcpkg-shared-yaml-python-310",
+      "configurePreset": "vs2019-vcpkg-shared-yaml-python-310",
       "output": {"outputOnFailure": true},
       "execution": {"noTestsAction": "error", "stopOnFailure": true}
     }
