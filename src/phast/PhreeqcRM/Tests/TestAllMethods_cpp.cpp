@@ -25,26 +25,42 @@ void TestAllMethods_cpp()
 	yrm.YAMLSetGridCellCount(nxyz);
 	yrm.YAMLThreadCount(3);
 	std::string YAML_filename = "TestAllMethods_cpp.yaml";
-	yrm.WriteYAMLDoc(YAML_filename);
-	//
-	// Use all BMIPhreeqcRM methods roughly in order of use
-	// 
-	//
-#ifndef USE_MPI
-	BMIPhreeqcRM bmi;
-	std::cerr << "BMIPhreeqcRM\n";
-#else
+#ifdef USE_MPI
+	// MPI
+	int mpi_myself;
+	if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+	{
+		exit(4);
+	}
+	if (mpi_myself == 0)
+	{
+		yrm.WriteYAMLDoc(YAML_filename);
+		assert(PhreeqcRM::GetGridCellCountYAML(YAML_filename.c_str()) == nxyz);
+	}
+	if (MPI_Barrier(MPI_COMM_WORLD) != MPI_SUCCESS)  //  make sure yaml is finished being written
+	{
+		exit(4);
+	}
 	BMIPhreeqcRM bmi(nxyz, MPI_COMM_WORLD);
-	if (bmi.GetMpiMyself() > 0)
+	if (mpi_myself > 0)
 	{
 		bmi.MpiWorker();
+		bmi.Finalize();
 		return;
 	}
+#else
+	// OpenMP or serial
+	yrm.WriteYAMLDoc(YAML_filename);
+	BMIPhreeqcRM bmi;
 #endif
-	//-------
+	// Use YAML file to initialize
 	bmi.Initialize(YAML_filename);   // void function
 	bmi.InitializeYAML(YAML_filename);
 	std::cerr << "Initialize\n";
+	//
+	// Use all BMIPhreeqcRM methods roughly in order of use
+	// 
+
 	//-------
 	bmi.GetValue("GridCellCount", nxyz);
 	nxyz = bmi.GetGridCellCount();
