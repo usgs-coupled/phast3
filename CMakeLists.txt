@@ -10,6 +10,7 @@ project(
 # check if this is the root project
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(STANDALONE_BUILD 1)
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 else()
   set(STANDALONE_BUILD 0)
 endif()
@@ -302,11 +303,10 @@ if(PHREEQCRM_WITH_YAML_CPP AND yaml-cpp_FOUND)
   target_compile_definitions(PhreeqcRM PUBLIC USE_YAML)
   if(TARGET yaml-cpp::yaml-cpp)
     target_link_libraries(PhreeqcRM PUBLIC yaml-cpp::yaml-cpp)
-    string(APPEND exportPackageDependencies "find_dependency(yaml-cpp::yaml-cpp)\n")
   else()
     target_link_libraries(PhreeqcRM PUBLIC yaml-cpp)
-    string(APPEND exportPackageDependencies "find_dependency(yaml-cpp)\n")
   endif()
+  string(APPEND exportPackageDependencies "find_dependency(yaml-cpp)\n")
   # set(phreeqcrm_requires "yaml-cpp")
   set(useyaml_define "-DUSE_YAML")
 endif()
@@ -334,10 +334,10 @@ if(NOT CMAKE_DEBUG_POSTFIX)
   set_target_properties(PhreeqcRM PROPERTIES DEBUG_POSTFIX "d")
 endif()
 
-# At least with MSMPI PhreeqcRM.dll requires MPI_CXX_LIBRARIES to link
-if(MSVC AND BUILD_SHARED_LIBS AND PHREEQCRM_BUILD_MPI)
-  target_link_libraries(PhreeqcRM ${MPI_CXX_LIBRARIES})
-endif()
+# # At least with MSMPI PhreeqcRM.dll requires MPI_CXX_LIBRARIES to link
+# if(MSVC AND BUILD_SHARED_LIBS AND PHREEQCRM_BUILD_MPI)
+#   target_link_libraries(PhreeqcRM ${MPI_CXX_LIBRARIES})
+# endif()
 
 if(MSVC AND BUILD_SHARED_LIBS AND PHREEQCRM_USE_ZLIB AND ZLIB_FOUND)
   target_link_libraries(PhreeqcRM ${ZLIB_LIBRARIES})
@@ -386,10 +386,6 @@ if(PHREEQCRM_BUILD_MPI)
   # fortran interface files
   target_compile_definitions(PhreeqcRM PUBLIC USE_MPI)
   target_link_libraries(PhreeqcRM PUBLIC MPI::MPI_CXX)
-  if(PHREEQCRM_FORTRAN_TESTING)
-    ##include_directories(${MPI_Fortran_INCLUDE_PATH})
-    target_link_libraries(PhreeqcRM PUBLIC MPI::MPI_Fortran)
-  endif()
   set(usempi_define "-DUSE_MPI")
   string(APPEND exportPackageDependencies "find_dependency(MPI)\n")
 else()
@@ -486,6 +482,7 @@ if(STANDALONE_BUILD EQUAL 1 AND NOT DEFINED SKBUILD)
   )
 
   install(FILES ${PhreeqcRM_SRC}
+    # @todo consider installing into INCLUDE directory
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PhreeqcRM/src
   )
 

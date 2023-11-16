@@ -18,6 +18,11 @@ void advection_cpp(std::vector<double>& c, std::vector<double> bc_conc, int ncom
 int example_selected_output(PhreeqcRM& phreeqc_rm);
 double my_basic_callback(double x1, double x2, const char* str, void* cookie);
 
+#if defined(USE_MPI)
+MPI_Comm get_comm(int* rank, int nxyz);
+#endif
+
+
 class my_data
 {
 public:
@@ -439,22 +444,24 @@ int Advect_cpp()
 	}
 	catch (PhreeqcRMStop)
 	{
-		std::string e_string = "Advection_cpp failed with an error in PhreeqcRM.";
+		std::string e_string = "Advect_cpp failed with an error in PhreeqcRM.";
 		std::cerr << e_string << std::endl;
 #ifdef USE_MPI
 		MPI_Abort(MPI_COMM_WORLD, 1);
 #endif
 		return IRM_FAIL;
 	}
+#if 0
 	catch (...)
 	{
-		std::string e_string = "Advection_cpp failed with an unhandled exception.";
+		std::string e_string = "Advect_cpp failed with an unhandled exception.";
 		std::cerr << e_string << std::endl;
 #ifdef USE_MPI
 		MPI_Abort(MPI_COMM_WORLD, 1);
 #endif
 		return IRM_FAIL;
 	}
+#endif
 	return EXIT_SUCCESS;
 }
 void
@@ -483,13 +490,12 @@ int units_tester()
 
 		int nxyz = 3;
 #ifdef USE_MPI
-		// MPI
-		PhreeqcRM phreeqc_rm(nxyz, MPI_COMM_WORLD);
+		// Check for too many processes
 		int mpi_myself;
-		if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
-		{
-			exit(4);
-		}
+		MPI_Comm comm = get_comm(&mpi_myself, nxyz);
+		if (mpi_myself < 0) return EXIT_SUCCESS;  // do nothing
+
+		PhreeqcRM phreeqc_rm(nxyz, comm);
 		if (mpi_myself > 0)
 		{
 			phreeqc_rm.MpiWorker();
@@ -601,25 +607,33 @@ int units_tester()
 		util_ptr->SetOutputFileOn(true);
 		iphreeqc_result = util_ptr->RunString(input.c_str());
 		status = phreeqc_rm.MpiWorkerBreak();
+#ifdef USE_MPI
+		if (comm != MPI_COMM_WORLD)
+		{
+			MPI_Comm_free(&comm);
+		}
+#endif
 	}
 	catch (PhreeqcRMStop)
 	{
-		std::string e_string = "Units tester failed with an error in PhreeqcRM.";
+		std::string e_string = "units_tester failed with an error in PhreeqcRM.";
 		std::cerr << e_string << std::endl;
 #ifdef USE_MPI
 		MPI_Abort(MPI_COMM_WORLD, 1);
 #endif
 		return IRM_FAIL;
 	}
+#if 0
 	catch (...)
 	{
-		std::string e_string = "Units tester failed with an unhandled exception.";
+		std::string e_string = "units_tester failed with an unhandled exception.";
 		std::cerr << e_string << std::endl;
 #ifdef USE_MPI
 		MPI_Abort(MPI_COMM_WORLD, 1);
 #endif
 		return IRM_FAIL;
 	}
+#endif
 	return EXIT_SUCCESS;
 }
 #ifdef USE_MPI
@@ -666,8 +680,8 @@ void register_basic_callback(void* cookie)
 	my_data* data;
 #ifdef USE_MPI
 	int mpi_tasks, mpi_myself;
-#endif
 	int	method_number = 1001;
+#endif
 	data = (my_data*)cookie;
 
 #ifdef USE_MPI
@@ -816,3 +830,49 @@ int example_selected_output(PhreeqcRM& phreeqc_rm)
 
 	return(0);
 }
+#if defined(USE_MPI)
+MPI_Comm get_comm(int* rank, int nxyz)
+{
+	// Use at most nxyz processes
+	int world_size;
+	if (MPI_Comm_size(MPI_COMM_WORLD, &world_size) != MPI_SUCCESS)
+	{
+		exit(EXIT_FAILURE);
+	}
+	MPI_Comm comm = MPI_COMM_WORLD;
+	if (nxyz < world_size)
+	{
+		int world_rank;
+		if (MPI_Comm_rank(MPI_COMM_WORLD, &world_rank) != MPI_SUCCESS)
+		{
+			exit(EXIT_FAILURE);
+		}
+		if(world_rank < nxyz)
+		{
+			if (MPI_Comm_split(MPI_COMM_WORLD, 0, world_rank, &comm) != MPI_SUCCESS)
+			{
+				exit(EXIT_FAILURE);
+			}
+		}
+		else
+		{
+			// unused processes
+			if (MPI_Comm_split(MPI_COMM_WORLD, 1, world_rank, &comm) != MPI_SUCCESS)
+			{
+				exit(EXIT_FAILURE);
+			}
+			if (MPI_Comm_free(&comm) != MPI_SUCCESS)
+			{
+				exit(EXIT_FAILURE);
+			}
+			*rank = -1;
+			return MPI_COMM_WORLD;
+		}
+	}
+	if (MPI_Comm_rank(comm, rank) != MPI_SUCCESS)
+	{
+		exit(4);
+	}	
+	return comm;
+}
+#endif // USE_MPI
