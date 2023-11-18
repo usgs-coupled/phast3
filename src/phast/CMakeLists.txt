@@ -305,7 +305,7 @@ PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h
 PhreeqcRM/src/BMI_methods.cpp
-PhreeqcRM/src/BMI_Var.h
+PhreeqcRM/src/BMIVariant.h
 PhreeqcRM/src/PhreeqcRM.cpp
 PhreeqcRM/src/RM_interface_C.cpp
 PhreeqcRM/src/RM_interface_F.cpp
@@ -313,6 +313,9 @@ PhreeqcRM/src/RM_interface_F.cpp
 
 # PhreeqcRM target
 add_library(PhreeqcRM STATIC ${PhreeqcRM_SOURCES})
+
+# c++11
+target_compile_features(PhreeqcRM PUBLIC cxx_std_11)
 
 # PhreeqcRM defines
 target_compile_definitions(PhreeqcRM 
@@ -328,6 +331,7 @@ target_compile_definitions(PhreeqcRM
 target_include_directories(PhreeqcRM 
   PRIVATE
     "${ZLIB_INCLUDE_DIRS}"
+    "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc"
@@ -335,6 +339,11 @@ target_include_directories(PhreeqcRM
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords"
 )
+
+# generate "${PhreeqcRM_BINARY_DIR}/irm_dll_export.h"
+# based on how the PhreeqcRM library is built (BUILD_SHARED_LIBS)
+include(GenerateExportHeader)
+generate_export_header(PhreeqcRM BASE_NAME IRM_DLL)
 
 # PhreeqcRM link libraries
 target_link_libraries(PhreeqcRM
