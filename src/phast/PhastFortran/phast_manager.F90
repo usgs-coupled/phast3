@@ -773,23 +773,14 @@ INTEGER FUNCTION set_components()
     SAVE
     integer method, a_err, i, status
     ! makes the list of components on the Fortran side.
-#ifdef USE_MPI    
+#ifdef USE_MPI
     if (mpi_myself == 0) then
         CALL MPI_BCAST(METHOD_SETCOMPONENTS, 1, MPI_INTEGER, manager, world_comm, ierrmpi)  
     endif
-#endif    
+#endif
     !ns = RM_FindComponents(rm_id)
     ns = RM_GetComponentCount(rm_id)
-    ALLOCATE(comp_name(ns),  & 
-    STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: phast_manager, point 0"  
-        STOP
-    ENDIF
-    DO i = 1, ns
-        comp_name(i) = ' '
-        status = RM_GetComponent(rm_id, i, comp_name(i))
-    ENDDO  
+    status = RM_GetComponents(rm_id, comp_name)
     set_components = 0
 END FUNCTION set_components 
 SUBROUTINE process_restart_files()
@@ -956,7 +947,8 @@ REAL(kind=C_DOUBLE) FUNCTION my_basic_fortran_callback(x1, x2, str, l) BIND(C, n
     INTEGER(kind=C_INT),    INTENT(in), value :: l
     character(len=l) fstr
 
-    INTEGER :: list(4), i, j
+    INTEGER :: i, j
+    INTEGER, allocatable :: list(:)
     INTEGER :: size=4, rm_cell_number
     
     do i = 1, l
@@ -966,7 +958,7 @@ REAL(kind=C_DOUBLE) FUNCTION my_basic_fortran_callback(x1, x2, str, l) BIND(C, n
 	rm_cell_number = DINT(x1)
     my_basic_fortran_callback = -999.9
 	if (rm_cell_number .ge. 0 .and. rm_cell_number < RM_GetChemistryCellCount(rm_id)) then
-		if (RM_GetBackwardMapping(rm_id, rm_cell_number, list, size) .eq. 0) then
+		if (RM_GetBackwardMapping(rm_id, rm_cell_number, list) .eq. 0) then
             j = list(1)+1
 			if (fstr(1:l) .eq. "cell_volume") then
 				my_basic_fortran_callback = volume(j) * 1000.
