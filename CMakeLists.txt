@@ -154,6 +154,9 @@ SET_SOURCE_FILES_PROPERTIES(${C_FILES} PROPERTIES LANGUAGE CXX)
 
 add_executable(phastinput ${phastinput_SOURCES})
 
+# c++11
+target_compile_features(phastinput PUBLIC cxx_std_11)
+
 # defines
 target_compile_definitions(phastinput 
   PRIVATE
