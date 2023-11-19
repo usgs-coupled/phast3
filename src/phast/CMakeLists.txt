@@ -149,15 +149,22 @@ project(PhreeqcRM CXX)
 
 # PhreeqcRM srcs
 SET(PhreeqcRM_SOURCES
+PhreeqcRM/src/BMI_interface_F.cpp
+PhreeqcRM/src/BMI_interface_F.h
+PhreeqcRM/src/bmi.hxx
+PhreeqcRM/src/BMIPhreeqcRM.cpp
+PhreeqcRM/src/BMIPhreeqcRM.h
+PhreeqcRM/src/BMIVariant.cpp
+PhreeqcRM/src/BMIVariant.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/CVar.hxx
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/Debug.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/ErrorReporter.hxx
+PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp
-PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqc_interface_F.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/advection.cpp
@@ -220,10 +227,10 @@ PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.cxx
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.cxx
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h
-PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.cpp
-PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector_serial.h
+PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.cpp
+PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/parse.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h
@@ -234,8 +241,8 @@ PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords/Keywords.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io_output.cpp
-PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer_structures.cpp
+PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.cxx
@@ -304,15 +311,27 @@ PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.cxx
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhast.h
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.cpp
 PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h
-PhreeqcRM/src/BMI_methods.cpp
-PhreeqcRM/src/BMI_Var.h
+PhreeqcRM/src/IrmResult.h
 PhreeqcRM/src/PhreeqcRM.cpp
+PhreeqcRM/src/PhreeqcRM.h
 PhreeqcRM/src/RM_interface_C.cpp
+PhreeqcRM/src/RM_interface_C.h
 PhreeqcRM/src/RM_interface_F.cpp
+PhreeqcRM/src/RM_interface_F.h
+PhreeqcRM/src/RMVARS.h
+PhreeqcRM/src/VarManager.cpp
+PhreeqcRM/src/VarManager.h
+PhreeqcRM/src/YAML_interface_F.cpp
+PhreeqcRM/src/YAML_interface_F.h
+PhreeqcRM/src/YAMLPhreeqcRM.cpp
+PhreeqcRM/src/YAMLPhreeqcRM.h
 )
 
 # PhreeqcRM target
 add_library(PhreeqcRM STATIC ${PhreeqcRM_SOURCES})
+
+# c++11
+target_compile_features(PhreeqcRM PUBLIC cxx_std_11)
 
 # PhreeqcRM defines
 target_compile_definitions(PhreeqcRM 
@@ -328,6 +347,7 @@ target_compile_definitions(PhreeqcRM
 target_include_directories(PhreeqcRM 
   PRIVATE
     "${ZLIB_INCLUDE_DIRS}"
+    "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc"
@@ -335,6 +355,11 @@ target_include_directories(PhreeqcRM
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords"
 )
+
+# generate "${PhreeqcRM_BINARY_DIR}/irm_dll_export.h"
+# based on how the PhreeqcRM library is built (BUILD_SHARED_LIBS)
+include(GenerateExportHeader)
+generate_export_header(PhreeqcRM BASE_NAME IRM_DLL)
 
 # PhreeqcRM link libraries
 target_link_libraries(PhreeqcRM
@@ -396,6 +421,7 @@ target_include_directories(phast3
     "${Boost_INCLUDE_DIRS}"
     "${HDF5_INCLUDE_DIRS}"
     "${ZLIB_INCLUDE_DIRS}"
+    "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast"
     "${PROJECT_SOURCE_DIR}/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc"
@@ -425,4 +451,4 @@ if (WIN32 AND HDF5_INCLUDE_DIR)
   "${HDF5_INCLUDE_DIR}/../bin/zlib.dll"
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
-include (InstallRequiredSystemLibraries)
+# include (InstallRequiredSystemLibraries)
