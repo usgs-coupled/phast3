@@ -451,4 +451,9 @@ if (WIN32 AND HDF5_INCLUDE_DIR)
   "${HDF5_INCLUDE_DIR}/../bin/zlib.dll"
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
-# include (InstallRequiredSystemLibraries)
+
+if(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
+endif()
+include(InstallRequiredSystemLibraries)
+
