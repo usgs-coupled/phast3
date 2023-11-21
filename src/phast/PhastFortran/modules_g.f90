@@ -104,7 +104,7 @@ MODULE mcch
   CHARACTER(LEN=255), DIMENSION(:), ALLOCATABLE :: restart_files
   INTEGER :: num_restart_files
   CHARACTER(LEN=8) :: version_name="Parallel transport"
-  CHARACTER(LEN=30), DIMENSION(:), ALLOCATABLE :: comp_name
+  CHARACTER(:), DIMENSION(:), ALLOCATABLE :: comp_name
 END MODULE mcch
 
 MODULE mcg

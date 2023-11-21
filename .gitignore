@@ -339,3 +339,11 @@
 
 # /test/
 /test/Makefile.in
+
+# backup files
+*~
+.vshistory/
+
+# preset builds
+build/
+
