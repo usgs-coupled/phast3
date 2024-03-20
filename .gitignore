@@ -347,3 +347,5 @@
 # preset builds
 build/
 
+# ignore directories beginning with '_'
+_*/
