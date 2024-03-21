@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.61])
-AC_INIT([phast], [3.0.0-9238], [dlpark@usgs.gov])
+AC_INIT([phast], [3.7.6-16807], [dlpark@usgs.gov])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -51,6 +51,10 @@ AC_PROG_LN_S
 AC_PROG_CPP
 AC_PROG_F77
 ##AC_PROG_FC
+
+# c++11 is required
+AX_CXX_COMPILE_STDCXX(11, [ext], [mandatory])
+
 AX_PROG_FC_MPI([test x"$with_mpi" != xno],[use_mpi=yes],[
   use_mpi=no
   if test x"$with_mpi" = xyes; then
@@ -359,6 +363,7 @@ AC_CONFIG_FILES([
   examples/phrqex11/phrqex11.trans.dat
   src/Makefile
   src/phast/Makefile
+  src/phast/PhreeqcRM/irm_dll_export.h
   src/phast/phast
   src/phasthdf/Makefile
   src/phasthdf/build.xml

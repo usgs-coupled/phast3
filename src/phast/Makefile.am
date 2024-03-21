@@ -1,6 +1,6 @@
 EXTRA_DIST = CMakeLists.txt phast.rc phast_version.h resource.h
 
-AM_CPPFLAGS=-I$(srcdir)/PhreeqcRM/src -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords $(BOOST_CPPFLAGS)
+AM_CPPFLAGS=-I$(top_builddir)/src/phast/PhreeqcRM -I$(srcdir)/PhreeqcRM/src -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/common -I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc/phreeqcpp/PhreeqcKeywords $(BOOST_CPPFLAGS)
 
 AM_FCFLAGS=-I$(srcdir)/PhreeqcRM/src/IPhreeqcPhast/IPhreeqc
 
@@ -319,8 +319,13 @@ PHAST_SRC=\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.cpp\
 	PhreeqcRM/src/IPhreeqcPhast/IPhreeqcPhastLib.h\
 	PhreeqcRM/src/IrmResult.h\
-	PhreeqcRM/src/BMI_methods.cpp\
-	PhreeqcRM/src/BMI_Var.h\
+	PhreeqcRM/src/BMI_interface_F.cpp\
+	PhreeqcRM/src/BMI_interface_F.h\
+	PhreeqcRM/src/bmi.hxx\
+	PhreeqcRM/src/BMIPhreeqcRM.cpp\
+	PhreeqcRM/src/BMIPhreeqcRM.h\
+	PhreeqcRM/src/BMIVariant.cpp\
+	PhreeqcRM/src/BMIVariant.h\
 	PhreeqcRM/src/PhreeqcRM.cpp\
 	PhreeqcRM/src/PhreeqcRM.h\
 	PhreeqcRM/src/RM_interface.F90\
@@ -328,6 +333,13 @@ PHAST_SRC=\
 	PhreeqcRM/src/RM_interface_C.h\
 	PhreeqcRM/src/RM_interface_F.cpp\
 	PhreeqcRM/src/RM_interface_F.h\
+	PhreeqcRM/src/RMVARS.h\
+	PhreeqcRM/src/VarManager.cpp\
+	PhreeqcRM/src/VarManager.h\
+	PhreeqcRM/src/YAML_interface_F.cpp\
+	PhreeqcRM/src/YAML_interface_F.h\
+	PhreeqcRM/src/YAMLPhreeqcRM.cpp\
+	PhreeqcRM/src/YAMLPhreeqcRM.h\
 	TM_interface.cpp\
 	TM_interface.h
 
