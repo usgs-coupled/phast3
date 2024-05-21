@@ -133,15 +133,23 @@ D.1. Installing the Windows batch versions of PHAST
       zlib.dll             Utility dll for compression
    \database               Phreeqc database files.
       Amm.dat
+      ColdChem.dat
+      Concrete_PHR.dat
+      Concrete_PZ.dat
+      core10.dat
       frezchem.dat
       iso.dat
+      Kinec.v2.dat
       llnl.dat
       minteq.dat
       minteq.v4.dat
       phast.dat            Same as phreeqc.dat.
+      phreeqc_rates.dat
+      PHREEQC_ThermoddemV1.10_15Dec2020.dat
       pitzer.dat
       sit.dat
-      wateq4f.dat     
+      Tipping_Hurley.dat
+      wateq4f.dat
    \doc                    Published reports.
       phast2-TM6-A35.pdf   PHAST version 2 (and 3) documentation
       phreeqc.RELEASE.txt  Release notes for PHREEQC version @VERSION@
@@ -242,15 +250,23 @@ Follow the steps below to extract the files from a distribution tar file.
       /config                    More configure files
       /database                  Database files 
          Amm.dat
+         ColdChem.dat
+         Concrete_PHR.dat
+         Concrete_PZ.dat
+         core10.dat
          frezchem.dat
          iso.dat
+         Kinec.v2.dat
          llnl.dat
          minteq.dat
          minteq.v4.dat
          phast.dat               Same as phreeqc.dat.
+         phreeqc_rates.dat
+         PHREEQC_ThermoddemV1.10_15Dec2020.dat
          pitzer.dat
          sit.dat
-         wateq4f.dat     
+         Tipping_Hurley.dat
+         wateq4f.dat
       /doc                       Documentation files 
          phast2-TM6-A35.pdf      PHAST version 2 (and 3) documentation
          phreeqc2.pdf            PHREEQC version 2 documentation
@@ -357,15 +373,23 @@ E.8. Install the program.
     
       install/share/doc/phast-@VERSION@-@REVISION@/database
          Amm.dat
+         ColdChem.dat
+         Concrete_PHR.dat
+         Concrete_PZ.dat
+         core10.dat
          frezchem.dat
          iso.dat
+         Kinec.v2.dat
          llnl.dat
          minteq.dat
          minteq.v4.dat
          phast.dat                         Same as phreeqc.dat.
+         phreeqc_rates.dat
+         PHREEQC_ThermoddemV1.10_15Dec2020.dat
          pitzer.dat
          sit.dat
-         wateq4f.dat     
+         Tipping_Hurley.dat
+         wateq4f.dat
     
    Example input files:
     
