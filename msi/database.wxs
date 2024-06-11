@@ -4,13 +4,18 @@
         <ComponentGroup Id="Database">
             <ComponentRef Id="Amm.dat" />
             <ComponentRef Id="ColdChem.dat" />
+            <ComponentRef Id="Concrete_PHR.dat" />
+            <ComponentRef Id="Concrete_PZ.dat" />
             <ComponentRef Id="core10.dat" />
             <ComponentRef Id="frezchem.dat" />
             <ComponentRef Id="iso.dat" />
+            <ComponentRef Id="Kinec.v2.dat" />
             <ComponentRef Id="llnl.dat" />
             <ComponentRef Id="minteq.dat" />
             <ComponentRef Id="minteq.v4.dat" />
             <ComponentRef Id="phreeqc.dat" />
+            <ComponentRef Id="phreeqc_rates.dat" />
+            <ComponentRef Id="PHREEQC_ThermoddemV1.10_15Dec2020.dat" />
             <ComponentRef Id="pitzer.dat" />
             <ComponentRef Id="sit.dat" />
             <ComponentRef Id="Tipping_Hurley.dat" />
@@ -26,6 +31,12 @@
                 <Component Id="ColdChem.dat" Guid="*">
                   <File Id="ColdChem.dat" KeyPath="yes" Source="$(var.DbDir)\ColdChem.dat" />
                 </Component>
+                <Component Id="Concrete_PHR.dat" Guid="*">
+                  <File Id="Concrete_PHR.dat" KeyPath="yes" Source="$(var.DbDir)\Concrete_PHR.dat" />
+                </Component>
+                <Component Id="Concrete_PZ.dat" Guid="*">
+                  <File Id="Concrete_PZ.dat" KeyPath="yes" Source="$(var.DbDir)\Concrete_PZ.dat" />
+                </Component>
                 <Component Id="core10.dat" Guid="*">
                   <File Id="core10.dat" KeyPath="yes" Source="$(var.DbDir)\core10.dat" />
                 </Component>
@@ -34,6 +45,9 @@
                 </Component>
                 <Component Id="iso.dat" Guid="*">
                   <File Id="iso.dat" KeyPath="yes" Source="$(var.DbDir)\iso.dat" />
+                </Component>
+                <Component Id="Kinec.v2.dat" Guid="*">
+                  <File Id="Kinec.v2.dat" KeyPath="yes" Source="$(var.DbDir)\Kinec.v2.dat" />
                 </Component>
                 <Component Id="llnl.dat" Guid="*">
                   <File Id="llnl.dat" KeyPath="yes" Source="$(var.DbDir)\llnl.dat" />
@@ -46,6 +60,12 @@
                 </Component>
                 <Component Id="phreeqc.dat" Guid="*">
                   <File Id="phreeqc.dat" KeyPath="yes" Source="$(var.DbDir)\phast.dat" />
+                </Component>
+                <Component Id="phreeqc_rates.dat" Guid="*">
+                  <File Id="phreeqc_rates.dat" KeyPath="yes" Source="$(var.DbDir)\phreeqc_rates.dat" />
+                </Component>
+                <Component Id="PHREEQC_ThermoddemV1.10_15Dec2020.dat" Guid="*">
+                  <File Id="PHREEQC_ThermoddemV1.10_15Dec2020.dat" KeyPath="yes" Source="$(var.DbDir)\PHREEQC_ThermoddemV1.10_15Dec2020.dat" />
                 </Component>
                 <Component Id="pitzer.dat" Guid="*">
                   <File Id="pitzer.dat" KeyPath="yes" Source="$(var.DbDir)\pitzer.dat" />
