@@ -9,9 +9,14 @@ set(PHAST_VERSION_PATCH "0")
 set(PHAST_REVISION "9000")
 
 # set default windows installation path
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
   GetDefaultWindowsPrefixBase(CMAKE_GENERIC_PROGRAM_FILES)
-  SET(CMAKE_INSTALL_PREFIX "${CMAKE_GENERIC_PROGRAM_FILES}/USGS/${PROJECT_NAME}-${PHAST_VERSION_MAJOR}.${PHAST_VERSION_MINOR}.${PHAST_VERSION_PATCH}-${PHAST_REVISION}" CACHE PATH "Install path prefix, prepeneded onto install directories." FORCE)   
+  set(CMAKE_INSTALL_PREFIX
+      "${CMAKE_GENERIC_PROGRAM_FILES}/USGS/${PROJECT_NAME}-"
+      "${PHAST_VERSION_MAJOR}.${PHAST_VERSION_MINOR}."
+      "${PHAST_VERSION_PATCH}-${PHAST_REVISION}"
+      CACHE PATH "Install path prefix, prepended onto install directories."
+            FORCE)
 endif()
 
 include(GNUInstallDirs)
@@ -24,7 +29,7 @@ endif()
 
 # check for OpenMP
 option(PHAST_BUILD_OPENMP "Build OpenMP configuration" "OFF")
-if (PHAST_BUILD_OPENMP)
+if(PHAST_BUILD_OPENMP)
   find_package(OpenMP REQUIRED) 
 endif()
 
@@ -50,8 +55,9 @@ find_package(ZLIB REQUIRED)
 find_package(HDF5 1.8 REQUIRED)
 
 # check for MPI
-option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)" "OFF")
-if (PHAST_BUILD_MPI)
+option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)"
+       "OFF")
+if(PHAST_BUILD_MPI)
   if(DEFINED ENV{MSMPI_INC} AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
     # CMake's FindMPI is broken for MSMPI(Fortran) starting with 3.17
     message(STATUS "Using FindMPI from CMake 3.16 since MSMPI_INC is set")
@@ -59,46 +65,53 @@ if (PHAST_BUILD_MPI)
   endif()
   if(MSVC)
     # FindMPI sometimes fails without this
-    SET(MPI_Fortran_LINK_FLAGS ${MPI_Fortran_LINK_FLAGS} "/NODEFAULTLIB:LIBCMT.lib")
+    set(MPI_Fortran_LINK_FLAGS ${MPI_Fortran_LINK_FLAGS}
+                               "/NODEFAULTLIB:LIBCMT.lib")
   endif()
   find_package(MPI REQUIRED)
 endif()
-
-if (PHAST_BUILD_MPI AND PHAST_BUILD_OPENMP)
-  message(FATAL_ERROR "PHAST_BUILD_MPI and PHAST_BUILD_OPENMP are mutually exclusive.")
+     
+if(PHAST_BUILD_MPI AND PHAST_BUILD_OPENMP)
+  message(
+    FATAL_ERROR "PHAST_BUILD_MPI and PHAST_BUILD_OPENMP are mutually exclusive."
+  )
 endif()
 
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/database/phast.dat)
-  file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/database/phreeqc.dat ${CMAKE_CURRENT_SOURCE_DIR}/database/phast.dat COPY_ON_ERROR)
+
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/database/phast.dat)
+  file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/database/phreeqc.dat
+       ${CMAKE_CURRENT_SOURCE_DIR}/database/phast.dat COPY_ON_ERROR)
 endif()
+
+
 
 # database
 SET(phast_DATABASE
-database/Amm.dat
-database/ColdChem.dat
-database/Concrete_PHR.dat
-database/Concrete_PZ.dat
-database/core10.dat
-database/frezchem.dat
-database/iso.dat
-database/Kinec.v2.dat
-database/llnl.dat
-database/minteq.dat
-database/minteq.v4.dat
-database/phast.dat
-database/phreeqc_rates.dat
-database/PHREEQC_ThermoddemV1.10_15Dec2020.dat
-database/pitzer.dat
-database/sit.dat
-database/Tipping_Hurley.dat
-database/wateq4f.dat
+  database/Amm.dat
+  database/ColdChem.dat
+  database/Concrete_PHR.dat
+  database/Concrete_PZ.dat
+  database/core10.dat
+  database/frezchem.dat
+  database/iso.dat
+  database/Kinec.v2.dat
+  database/llnl.dat
+  database/minteq.dat
+  database/minteq.v4.dat
+  database/phast.dat
+  database/phreeqc_rates.dat
+  database/PHREEQC_ThermoddemV1.10_15Dec2020.dat
+  database/pitzer.dat
+  database/sit.dat
+  database/Tipping_Hurley.dat
+  database/wateq4f.dat
 )
 
-IF(WIN32)
-  install (FILES ${phast_DATABASE} DESTINATION database)
-ELSE()
-  install (FILES ${phast_DATABASE} DESTINATION ${CMAKE_INSTALL_DOCDIR}/database)
-ENDIF()
+if(WIN32)
+  install(FILES ${phast_DATABASE} DESTINATION database)
+else()
+  install(FILES ${phast_DATABASE} DESTINATION ${CMAKE_INSTALL_DOCDIR}/database)
+endif()
 
 include(CTest)
 
