@@ -444,12 +444,22 @@ target_link_libraries(phast3
 
 # install
 install(TARGETS phast3 DESTINATION ${CMAKE_INSTALL_BINDIR})
-if (WIN32 AND HDF5_INCLUDE_DIR)
-  install(FILES 
-  "${HDF5_INCLUDE_DIR}/../bin/hdf5.dll"
-  "${HDF5_INCLUDE_DIR}/../bin/szip.dll"
-  "${HDF5_INCLUDE_DIR}/../bin/zlib.dll"
-  DESTINATION ${CMAKE_INSTALL_BINDIR})
+if(WIN32 AND HDF5_INCLUDE_DIR)
+  set(HDF5_DLL "${HDF5_INCLUDE_DIR}/../bin/hdf5.dll")
+  if(EXISTS "${HDF5_DLL}")
+    install(FILES "${HDF5_DLL}"
+            DESTINATION ${CMAKE_INSTALL_BINDIR})
+  endif()
+  set(SZIP_DLL "${HDF5_INCLUDE_DIR}/../bin/szip.dll")
+  if(EXISTS "${SZIP_DLL}")
+    install(FILES "${SZIP_DLL}"
+            DESTINATION ${CMAKE_INSTALL_BINDIR})
+  endif()
+  set(ZLIB_DLL "${HDF5_INCLUDE_DIR}/../bin/zlib.dll")
+  if(EXISTS "${ZLIB_DLL}")
+    install(FILES "${ZLIB_DLL}"
+            DESTINATION ${CMAKE_INSTALL_BINDIR})
+  endif()
 endif()
 
 if(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
