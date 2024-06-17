@@ -64,6 +64,16 @@ jobs:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}  
 
+    - uses: mamba-org/setup-micromamba@v1
+      with:
+        micromamba-version: '1.5.6-0' # any version from https://github.com/mamba-org/micromamba-releases
+        environment-file: environment.yml
+        init-shell: >-
+          bash
+          powershell
+        cache-environment: true
+        post-cleanup: 'all'
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
