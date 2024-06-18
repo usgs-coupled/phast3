@@ -73,6 +73,12 @@ jobs:
         cache-environment: true
         post-cleanup: 'all'
 
+    - name: Install ninja valgrind (Linux)
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        sudo apt-get -y update
+        sudo apt-get install -y ninja-build valgrind
+
     - name: Set CONDA_PREFIX
       shell: bash
       run: echo "CONDA_PREFIX=${{ env.MAMBA_ROOT_PREFIX }}\envs\phast-dev" >> "$GITHUB_ENV"
