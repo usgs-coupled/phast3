@@ -83,6 +83,10 @@ jobs:
       shell: bash
       run: echo "CONDA_PREFIX=${{ env.MAMBA_ROOT_PREFIX }}/envs/phast-dev" >> "$GITHUB_ENV"
 
+    - name: Debug CONDA_PREFIX
+      shell: bash
+      run: find ${{ env.MAMBA_ROOT_PREFIX }}
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
