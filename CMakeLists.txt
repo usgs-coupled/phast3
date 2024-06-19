@@ -8,6 +8,9 @@ set(PHAST_VERSION_MINOR "0")
 set(PHAST_VERSION_PATCH "0")
 set(PHAST_REVISION "9000")
 
+include(CheckPIESupported)
+check_pie_supported()
+
 # set default windows installation path
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
   GetDefaultWindowsPrefixBase(CMAKE_GENERIC_PROGRAM_FILES)
