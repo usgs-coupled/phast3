@@ -8,7 +8,65 @@ on:
   pull_request:
     branches: [ "master" ]
 
+  workflow_dispatch:
+    inputs:
+
+      date:
+        description: 'DATE: Leave blank to use todays date'
+        required: false
+        default: ''
+
+      rel:
+        description: 'REL: Leave blank to automatically generate (2021-03-09 = 15700)'
+        required: false
+        default: ''
+
+      ver:
+        description: 'VER: Leave blank to use MAJOR.MINOR.(PATCH+1) (from https://github.com/usgs-coupled/phreeqc-version/blob/main/phreeqc-version.txt)'
+        required: false
+        default: ''  
+
 jobs:
+  init:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    env:
+      DATE: ${{ inputs.date }}
+      REL: ${{ inputs.rel }}
+      VER: ${{ inputs.ver }}
+    # Map step outputs to job outputs
+    outputs:
+      VER: ${{ steps.vars.outputs.VER }}
+      REL: ${{ steps.vars.outputs.REL }}
+      DATE: ${{ steps.vars.outputs.DATE }}
+      DATE_FULL: ${{ steps.vars.outputs.DATE_FULL }}
+      DATE_RFC_3339: ${{ steps.vars.outputs.DATE_RFC_3339 }}
+    steps:
+      - name: Setup vars
+        id: vars
+        run: |
+          if [ -z "${VER}" ]; then
+            echo VER="$(curl -sS https://raw.githubusercontent.com/usgs-coupled/phreeqc-version/main/next_ver.sh | sh)" >> "${GITHUB_OUTPUT}"
+          else
+            echo VER="${VER}"                                                                                           >> "${GITHUB_OUTPUT}"
+          fi
+          
+          if [ -z "${REL}" ]; then
+            echo REL="$(curl -sS https://raw.githubusercontent.com/usgs-coupled/phreeqc-version/main/rel.py | python3)" >> "${GITHUB_OUTPUT}"
+          else
+            echo REL="${REL}"                                                                                           >> "${GITHUB_OUTPUT}"
+          fi
+          
+          if [ -z "${DATE}" ]; then
+            echo DATE="$(TZ='America/Denver' date '+%x')"                                                               >> "${GITHUB_OUTPUT}"
+            echo DATE_RFC_3339="$(TZ='America/Denver' date --rfc-3339=date)"                                            >> "${GITHUB_OUTPUT}"
+            echo DATE_FULL="$(TZ='America/Denver' date)"                                                                >> "${GITHUB_OUTPUT}"
+          else
+            echo DATE="${DATE}"                                                                                         >> "${GITHUB_OUTPUT}"
+            echo DATE_RFC_3339="$(TZ='America/Denver' date --rfc-3339=date --date=${DATE})"                             >> "${GITHUB_OUTPUT}"
+            echo DATE_FULL="$(TZ='America/Denver' date --date=${DATE})"                                                 >> "${GITHUB_OUTPUT}"
+          fi    
+
   build:
     runs-on: ${{ matrix.os }}
 
@@ -79,13 +137,19 @@ jobs:
         sudo apt-get -y update
         sudo apt-get install -y ninja-build valgrind
 
-    - name: Set CONDA_PREFIX
+    - name: Set LIBRARY_PREFIX
+      if: ${{ runner.os == 'Windows' }}
       shell: bash
-      run: echo "CONDA_PREFIX=${{ env.MAMBA_ROOT_PREFIX }}/envs/phast-dev" >> "$GITHUB_ENV"
+      run: echo "LIBRARY_PREFIX=$(cygpath -m $MAMBA_ROOT_PREFIX/envs/phast-dev/Library)" >> "$GITHUB_ENV"
+
+    - name: Set LIBRARY_PREFIX
+      if: ${{ runner.os != 'Windows' }}
+      shell: bash
+      run: echo "LIBRARY_PREFIX=$MAMBA_ROOT_PREFIX/envs/phast-dev" >> "$GITHUB_ENV"
 
     - name: Debug CONDA_PREFIX
       shell: bash
-      run: find ${{ env.MAMBA_ROOT_PREFIX }}
+      run: find $MAMBA_ROOT_PREFIX
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -97,7 +161,7 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_Fortran_COMPILER=${{ steps.setup-fortran.outputs.fc }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DCMAKE_PREFIX_PATH="${{ env.CONDA_PREFIX }}/Library"
+        -DCMAKE_PREFIX_PATH="${{ env.LIBRARY_PREFIX }}"
         -S ${{ github.workspace }}
 
     - name: Build
