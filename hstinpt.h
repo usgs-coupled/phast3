@@ -770,7 +770,7 @@ chemistry_name, *
 	database_name;
 
 EXTERNAL char
-	error_string[10 * MAX_LENGTH];
+	error_string[11 * MAX_LENGTH];
 EXTERNAL char
 	tag[10 * MAX_LENGTH];
 EXTERNAL int
