@@ -407,6 +407,7 @@ dist_example_well_DATA = $(well)
 
 well= \
      well/phast.dat \
+	 well/well.chem.dat \
      well/well.trans.dat
      
      

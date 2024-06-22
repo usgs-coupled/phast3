@@ -27,24 +27,10 @@ UNITS
         -drain_thickness              m
         -drain_width                  m
 GRID
-        # 100 m grid
-        -uniform X 276400 281300  50  # 100 m grid
-        -uniform Y 811000 822300 114  # 100 m grid
-        -uniform Z -120   20      15  # 10  m grid
-#        # 50 m grid
-#        -uniform X 276400 281300  99  # 50 m grid
-#        -uniform Y 811000 822300 227  # 50 m grid
-#        -uniform Z -120   20      29  # 5  m grid
-#        # modified 25 m grid
-#        -uniform X 276400 281300  99  # 50 m grid
-#        -uniform Y 811000 822300 227  # 50 m grid
-#        -overlay_uniform X 277100 280300 129 # 25 m
-#        -overlay_uniform Y 813000 822000 361 # 25 m
-#        -uniform Z -120   20     57   # 2.5  m grid
-#        # true 25 m grid
-#        -uniform X 276400 281300 197  # 25 m grid
-#        -uniform Y 811000 822300 453  # 25 m grid
-#        -uniform Z -120   20     57   # 2.5  m grid
+
+        -uniform X 275000 285000  51         # 200 m grid
+        -uniform Y 810000 830000 101         # 200 m grid
+        -uniform Z -120   20      15         # 10  m grid        
         -snap   X                     0.001
         -snap   Y                     0.001
         -snap   Z                     0.001
@@ -55,7 +41,6 @@ GRID
 MEDIA
         # Default is inactive
         -domain
-        #-box 275000 810000 -200 285000 830000 50 MAP
                 -active               0
                 -porosity             0.39
                 -specific_storage     0.39 
@@ -77,20 +62,14 @@ MEDIA
                 -bottom    CONSTANT   GRID   0
                 -active                      1
         -prism
-                -description Plume submodel outline
-                -perimeter POINTS GRID 
-                        281100.   822300.    -200
-                        281100.   821100.    -200
-                        280500.   819000.    -200
-                        280000    817400.    -200
-                        279900.   816300.    -200
-                        279700.   814100.    -200
-                        279500.   811400.    -200
-                        279500.   809400.    -200        
-                        285000.   809400.    -200
-                        285000.   822300.    -200
-                        end_points        
-                -active                      0
+                -top       CONSTANT   GRID   20
+                -bottom    SHAPE      GRID   ../ex5/ArcData/SimpleBath.shp 10
+                -perimeter SHAPE      GRID   ../ex5/ArcData/SimplePonds.shp
+                -Kx                   30000
+                -Ky                   30000
+                -Kz                   30000
+                -porosity             1
+                -specific_storage     1
 FLUX_BC
         -prism
                 -description Rainfall
@@ -174,27 +153,43 @@ SPECIFIED_HEAD_BC
                         0             0.0
                 -associated_solution
                         0             1                        
-        -box 275000 822300 -200 285000 822300 20 MAP
-                -description Constant head at north end of sub region
-                -head   
-                        0  XYZT       GRID   ../ex5/plume.heads.xyzt
-                -associated_solution
-                        0             1                        
-        -box 279500 815300 -50 285000 822300 20 MAP
-                -description Constant head on part of east edge of sub region
-                -exterior_cells_only  X
-                -head        
-                        0  XYZT       GRID   ../ex5/plume.heads.xyzt
-                -associated_solution
-                        0             1
-        -prism
-                -description Constant head for ponds
-                -bottom    SHAPE      GRID   ../ex5/ArcData/SimpleBath.shp 10
-                -perimeter SHAPE      GRID   ../ex5/ArcData/SimplePonds.shp
-                -head        
-                        0  XYZT       GRID   ../ex5/plume.heads.xyzt
-                -associated_solution
-                        0             1
+
+DRAIN 1 East Boundary Quashnet R
+        -point  282107.6   820940.0
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    11.83
+        -point  282487.8    821288.7
+        -point  282757.6    821288.7
+        -point  282919.5    820702.8
+        -point  283205.1    819653.4
+        -point  283300.6    818796.2
+        -point  283204.1    818082.7
+        -point  283164.3    817427.9
+        -point  282915.4    816494.7
+        -point  282209.6    814714.3
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    0
+DRAIN 2 Childs River, Johns Pond drain
+        -point 281619.9    818867.5
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    10.56
+        -point  281589.3    818251.7
+        -point  281488.0    817897.2
+        -point  281342.9    817343.9
+        -point  281272.3    816543.5
+        -point  281319.4    816213.9
+        -point  281211.6    815490.0
+        -point  280897.2    814875.9
+                -width                20
+                -bed_hydraulic        10.00
+                -bed_thickness        1
+                -z                    0
 DRAIN 3 Bourne River
         -point  279187.9    815453.3
                 -width                20

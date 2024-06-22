@@ -216,7 +216,7 @@ DRAIN 5 West Boundary Coonamessett River
 ZONE_FLOW 1
         -box 276400 811000 -200 281300 822300 20
                 -description Plume submodel
-                -write_heads_xyzt     plume.heads.xyzt
+                -write_heads_xyzt     plume
 HEAD_IC
         -domain 
                 #----- Use the following line for EXAMPLE 5A, steady state simulation
