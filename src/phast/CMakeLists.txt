@@ -126,6 +126,7 @@ PhreeqcRM/src/RM_interface.F90
 
 # phastf target
 add_library(phastf STATIC ${phastf_SOURCES})
+set_property(TARGET phastf PROPERTY POSITION_INDEPENDENT_CODE TRUE)
 
 # phastf defines
 target_compile_definitions(phastf 
@@ -329,6 +330,7 @@ PhreeqcRM/src/YAMLPhreeqcRM.h
 
 # PhreeqcRM target
 add_library(PhreeqcRM STATIC ${PhreeqcRM_SOURCES})
+set_property(TARGET PhreeqcRM PROPERTY POSITION_INDEPENDENT_CODE TRUE)
 
 # c++11
 target_compile_features(PhreeqcRM PUBLIC cxx_std_11)
@@ -401,6 +403,7 @@ endif()
 
 # phast3 target
 add_executable(phast3 ${phast3_SOURCES})
+set_property(TARGET phast3 PROPERTY POSITION_INDEPENDENT_CODE TRUE)
 
 # phast3 defines
 target_compile_definitions(phast3 

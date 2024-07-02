@@ -440,6 +440,7 @@ set(example_welldir ${EXAMPLES_DIR}/well)
 
 set(well
 well/phast.dat
+well/well.chem.dat
 well/well.trans.dat
 )
 

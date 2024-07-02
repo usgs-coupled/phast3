@@ -8,13 +8,17 @@ set(PHAST_VERSION_MINOR "0")
 set(PHAST_VERSION_PATCH "0")
 set(PHAST_REVISION "9000")
 
+include(CheckPIESupported)
+check_pie_supported()
+
 # set default windows installation path
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
   GetDefaultWindowsPrefixBase(CMAKE_GENERIC_PROGRAM_FILES)
-  set(CMAKE_INSTALL_PREFIX
-      "${CMAKE_GENERIC_PROGRAM_FILES}/USGS/${PROJECT_NAME}-"
-      "${PHAST_VERSION_MAJOR}.${PHAST_VERSION_MINOR}."
-      "${PHAST_VERSION_PATCH}-${PHAST_REVISION}"
+  set(W_PREFIX)
+  string(APPEND W_PREFIX "${CMAKE_GENERIC_PROGRAM_FILES}/USGS/${PROJECT_NAME}-")
+  string(APPEND W_PREFIX "${PHAST_VERSION_MAJOR}.${PHAST_VERSION_MINOR}.")
+  string(APPEND W_PREFIX "${PHAST_VERSION_PATCH}-${PHAST_REVISION}")
+  set(CMAKE_INSTALL_PREFIX ${W_PREFIX}
       CACHE PATH "Install path prefix, prepended onto install directories."
             FORCE)
 endif()
@@ -52,6 +56,7 @@ find_package(ZLIB REQUIRED)
 #   cmake ..
 # or
 #   cmake -D "CMAKE_PREFIX_PATH:PATH=D:/lib/boost_1_76_0;C:/Program Files/HDF_Group/HDF5/1.12.0" ..
+# set(HDF5_FIND_DEBUG TRUE)
 find_package(HDF5 1.8 REQUIRED)
 
 # check for MPI
@@ -68,6 +73,9 @@ if(PHAST_BUILD_MPI)
     set(MPI_Fortran_LINK_FLAGS ${MPI_Fortran_LINK_FLAGS}
                                "/NODEFAULTLIB:LIBCMT.lib")
   endif()
+  # To prioritize Intel's MPI, set the I_MPI_ROOT environment variable
+  # ie (set I_MPI_ROOT=C:\Program Files (x86)\Intel\oneAPI\mpi\latest)
+  # or ($env:I_MPI_ROOT="C:\Program Files (x86)\Intel\oneAPI\mpi\latest")
   find_package(MPI REQUIRED)
 endif()
      

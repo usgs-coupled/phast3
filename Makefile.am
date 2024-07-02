@@ -1,6 +1,16 @@
-ACLOCAL_AMFLAGS = -I m4
-EXTRA_DIST = CMakeLists.txt INSTALL NOTICE README RELEASE database/CMakeLists.txt
-SUBDIRS = doc examples src test
+ACLOCAL_AMFLAGS=-I m4
+EXTRA_DIST=\
+	cmake/FindMPI.cmake\
+	cmake/FindPackageHandleStandardArgs.cmake\
+	cmake/FindPackageMessage.cmake\
+	CMakeLists.txt\
+	database/CMakeLists.txt\
+	environment.yml\
+	INSTALL\
+	NOTICE\
+	README\
+	RELEASE
+SUBDIRS=doc examples src test
 
 # Docs
 #
