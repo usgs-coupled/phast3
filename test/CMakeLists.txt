@@ -26,3 +26,14 @@ add_test(NAME phastinput.phrqex11
 add_test(NAME phast.phrqex11
   COMMAND $<TARGET_FILE:phast3>
 )
+
+# MPI test
+if(PHAST_BUILD_MPI)
+  # mpiexec.phast.phrqex11
+  add_test(NAME mpiexec.phast.phrqex11
+           COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
+           ${MPIEXEC_PREFLAGS}
+           $<TARGET_FILE:phast3>
+           ${MPIEXEC_POSTFLAGS}
+           )
+endif()
