@@ -56,6 +56,7 @@ find_package(ZLIB REQUIRED)
 #   cmake ..
 # or
 #   cmake -D "CMAKE_PREFIX_PATH:PATH=D:/lib/boost_1_76_0;C:/Program Files/HDF_Group/HDF5/1.12.0" ..
+# set(HDF5_FIND_DEBUG TRUE)
 find_package(HDF5 1.8 REQUIRED)
 
 # check for MPI
@@ -72,6 +73,9 @@ if(PHAST_BUILD_MPI)
     set(MPI_Fortran_LINK_FLAGS ${MPI_Fortran_LINK_FLAGS}
                                "/NODEFAULTLIB:LIBCMT.lib")
   endif()
+  # To prioritize Intel's MPI, set the I_MPI_ROOT environment variable
+  # ie (set I_MPI_ROOT=C:\Program Files (x86)\Intel\oneAPI\mpi\latest)
+  # or ($env:I_MPI_ROOT="C:\Program Files (x86)\Intel\oneAPI\mpi\latest")
   find_package(MPI REQUIRED)
 endif()
      
