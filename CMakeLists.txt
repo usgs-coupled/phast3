@@ -57,7 +57,7 @@ find_package(ZLIB REQUIRED)
 # or
 #   cmake -D "CMAKE_PREFIX_PATH:PATH=D:/lib/boost_1_76_0;C:/Program Files/HDF_Group/HDF5/1.12.0" ..
 # set(HDF5_FIND_DEBUG TRUE)
-find_package(HDF5 1.8 REQUIRED)
+find_package(HDF5 REQUIRED)
 
 # check for MPI
 option(PHAST_BUILD_MPI "Build MPI configuration (Overrides OpenMP option)"

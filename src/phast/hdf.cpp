@@ -713,6 +713,14 @@ hdf_finalize_headings(int iso)
 		sprintf(error_string, "Unable to open HDF file:%s\n", root[iso].hdf_file_name.c_str());
 		error_msg(error_string, STOP);
 	}
+#if H5_VERSION_GE(1, 10, 2)
+	// force hdf5 1.8
+	if (H5Fset_libver_bounds(root[iso].hdf_file_id, H5F_LIBVER_EARLIEST, H5F_LIBVER_V18) < 0)
+	{
+		sprintf(error_string, "H5Fset_libver_bounds failed:%s\n", root[iso].hdf_file_name.c_str());
+		error_msg(error_string, STOP);
+	}
+#endif
 }
 
 /*-------------------------------------------------------------------------
@@ -805,6 +813,14 @@ HDF_INTERMEDIATE(void)
 			sprintf(error_string, "Unable to open HDF file:%s\n", int_fn);
 			error_msg(error_string, STOP);
 		}
+#if H5_VERSION_GE(1, 10, 2)
+		// force hdf5 1.8
+		if (H5Fset_libver_bounds(root[iso].hdf_file_id, H5F_LIBVER_EARLIEST, H5F_LIBVER_V18) < 0)
+		{
+			sprintf(error_string, "H5Fset_libver_bounds failed:%s\n", int_fn);
+			error_msg(error_string, STOP);
+		}
+#endif
 
 		// finalize intermediate
 		hdf_finalize_headings(iso);
@@ -822,6 +838,14 @@ HDF_INTERMEDIATE(void)
 			sprintf(error_string, "Unable to open HDF file:%s\n", root[iso].hdf_file_name.c_str());
 			error_msg(error_string, STOP);
 		}
+#if H5_VERSION_GE(1, 10, 2)
+		// force hdf5 1.8
+		if (H5Fset_libver_bounds(root[iso].hdf_file_id, H5F_LIBVER_EARLIEST, H5F_LIBVER_V18) < 0)
+		{
+			sprintf(error_string, "H5Fset_libver_bounds failed:%s\n", root[iso].hdf_file_name.c_str());
+			error_msg(error_string, STOP);
+		}
+#endif
 	}
 }
 
@@ -1325,6 +1349,14 @@ open_hdf_file(int iso, const char *prefix, int prefix_l)
 		sprintf(error_string, "Unable to open HDF file:%s\n", hdf_file_name);
 		error_msg(error_string, STOP);
 	}
+#if H5_VERSION_GE(1, 10, 2)
+	// force hdf5 1.8
+	if (H5Fset_libver_bounds(file_id, H5F_LIBVER_EARLIEST, H5F_LIBVER_V18) < 0)
+	{
+		sprintf(error_string, "H5Fset_libver_bounds failed file:%s\n", hdf_file_name);
+		error_msg(error_string, STOP);
+	}
+#endif
 	return file_id;
 }
 
