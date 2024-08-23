@@ -139,6 +139,7 @@ D.1. Installing the Windows batch versions of PHAST
       core10.dat
       frezchem.dat
       iso.dat
+      Kinec_v3.dat
       Kinec.v2.dat
       llnl.dat
       minteq.dat
@@ -256,6 +257,7 @@ Follow the steps below to extract the files from a distribution tar file.
          core10.dat
          frezchem.dat
          iso.dat
+         Kinec_v3.dat
          Kinec.v2.dat
          llnl.dat
          minteq.dat
@@ -379,6 +381,7 @@ E.8. Install the program.
          core10.dat
          frezchem.dat
          iso.dat
+         Kinec_v3.dat
          Kinec.v2.dat
          llnl.dat
          minteq.dat

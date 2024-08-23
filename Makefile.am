@@ -26,6 +26,7 @@ DATABASE=\
 	database/core10.dat\
 	database/frezchem.dat\
 	database/iso.dat\
+	database/Kinec_v3.dat\
 	database/Kinec.v2.dat\
 	database/llnl.dat\
 	database/minteq.dat\

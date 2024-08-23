@@ -9,6 +9,7 @@
             <ComponentRef Id="core10.dat" />
             <ComponentRef Id="frezchem.dat" />
             <ComponentRef Id="iso.dat" />
+            <ComponentRef Id="Kinec_v3.dat" />
             <ComponentRef Id="Kinec.v2.dat" />
             <ComponentRef Id="llnl.dat" />
             <ComponentRef Id="minteq.dat" />
@@ -45,6 +46,9 @@
                 </Component>
                 <Component Id="iso.dat" Guid="*">
                   <File Id="iso.dat" KeyPath="yes" Source="$(var.DbDir)\iso.dat" />
+                </Component>
+                <Component Id="Kinec_v3.dat" Guid="*">
+                  <File Id="Kinec_v3.dat" KeyPath="yes" Source="$(var.DbDir)\Kinec_v3.dat" />
                 </Component>
                 <Component Id="Kinec.v2.dat" Guid="*">
                   <File Id="Kinec.v2.dat" KeyPath="yes" Source="$(var.DbDir)\Kinec.v2.dat" />
