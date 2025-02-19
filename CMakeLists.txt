@@ -112,6 +112,7 @@ SET(phast_DATABASE
   database/PHREEQC_ThermoddemV1.10_15Dec2020.dat
   database/pitzer.dat
   database/sit.dat
+  database/stimela.dat
   database/Tipping_Hurley.dat
   database/wateq4f.dat
 )

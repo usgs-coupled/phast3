@@ -19,6 +19,7 @@
             <ComponentRef Id="PHREEQC_ThermoddemV1.10_15Dec2020.dat" />
             <ComponentRef Id="pitzer.dat" />
             <ComponentRef Id="sit.dat" />
+            <ComponentRef Id="stimela.dat" />
             <ComponentRef Id="Tipping_Hurley.dat" />
             <ComponentRef Id="wateq4f.dat" />
         </ComponentGroup>
@@ -76,6 +77,9 @@
                 </Component>
                 <Component Id="sit.dat" Guid="*">
                   <File Id="sit.dat" KeyPath="yes" Source="$(var.DbDir)\sit.dat" />
+                </Component>
+                <Component Id="stimela.dat" Guid="*">
+                  <File Id="stimela.dat" KeyPath="yes" Source="$(var.DbDir)\stimela.dat" />
                 </Component>
                 <Component Id="Tipping_Hurley.dat" Guid="*">
                   <File Id="Tipping_Hurley.dat" KeyPath="yes" Source="$(var.DbDir)\Tipping_Hurley.dat" />

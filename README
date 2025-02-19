@@ -149,6 +149,7 @@ D.1. Installing the Windows batch versions of PHAST
       PHREEQC_ThermoddemV1.10_15Dec2020.dat
       pitzer.dat
       sit.dat
+      stimela.dat
       Tipping_Hurley.dat
       wateq4f.dat
    \doc                    Published reports.
@@ -267,6 +268,7 @@ Follow the steps below to extract the files from a distribution tar file.
          PHREEQC_ThermoddemV1.10_15Dec2020.dat
          pitzer.dat
          sit.dat
+         stimela.dat
          Tipping_Hurley.dat
          wateq4f.dat
       /doc                       Documentation files 
@@ -391,6 +393,7 @@ E.8. Install the program.
          PHREEQC_ThermoddemV1.10_15Dec2020.dat
          pitzer.dat
          sit.dat
+         stimela.dat
          Tipping_Hurley.dat
          wateq4f.dat
     
