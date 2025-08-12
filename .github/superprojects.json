@@ -1,0 +1,8 @@
+{
+  "usgs-coupled-subtrees/phast3-doc": {
+    "superprojects": [
+      "usgs-coupled-subtrees/phast3",
+      "usgs-coupled-subtrees/wphast"
+    ]
+  }
+}
